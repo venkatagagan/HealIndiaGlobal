@@ -6,6 +6,7 @@ import '../../../core/repositories/patient_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../data/countries.dart';
 import '../widgets/companion_form_sheet.dart';
 
@@ -18,24 +19,27 @@ class CompanionsScreen extends ConsumerWidget {
   Future<void> _delete(BuildContext context, WidgetRef ref, PatientCompanion c) async {
     final ok = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove companion?'),
-        content: Text('${c.fullName} will be removed from your travel companions.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Remove'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final l10n = context.l10n;
+        return AlertDialog(
+          title: Text(l10n.companionsRemoveTitle),
+          content: Text(l10n.companionsRemoveBody(c.fullName)),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.commonRemove),
+            ),
+          ],
+        );
+      },
     );
     if (ok != true) return;
     try {
       await ref.read(patientRepositoryProvider).deleteCompanion(c.id);
       ref.invalidate(companionsProvider);
-      if (context.mounted) showInfoSnack(context, 'Companion removed');
+      if (context.mounted) showInfoSnack(context, context.l10n.companionsRemovedSnack);
     } on Object catch (e) {
       if (context.mounted) showErrorSnack(context, e);
     }
@@ -43,25 +47,27 @@ class CompanionsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final value = ref.watch(companionsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Travel companions')),
+      appBar: AppBar(title: Text(l10n.companionsTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final saved = await showCompanionForm(context);
-          if (saved != null && context.mounted) showInfoSnack(context, '${saved.fullName} added');
+          if (saved == null || !context.mounted) return;
+          showInfoSnack(context, context.l10n.companionsAddedSnack(saved.fullName));
         },
         icon: const Icon(Icons.person_add_alt_1_rounded),
-        label: const Text('Add companion'),
+        label: Text(l10n.companionAdd),
       ),
       body: AsyncValueView<List<PatientCompanion>>(
         value: value,
         onRetry: () => ref.invalidate(companionsProvider),
         data: (items) => items.isEmpty
-            ? const EmptyView(
+            ? EmptyView(
                 icon: Icons.group_outlined,
-                title: 'No companions yet',
-                message: 'Add the family member or friend travelling with you so we can arrange their attendant visa.',
+                title: l10n.companionsEmptyTitle,
+                message: l10n.companionsEmptyMessage,
               )
             : RefreshIndicator(
                 onRefresh: () => ref.refresh(companionsProvider.future),
@@ -72,13 +78,13 @@ class CompanionsScreen extends ConsumerWidget {
                   itemBuilder: (context, i) {
                     final c = items[i];
                     final details = [
-                      c.relationship,
-                      if (c.nationality != null) '${countryFlag(c.nationality)} ${countryName(c.nationality)}',
-                      if (c.dateOfBirth != null) 'Born ${Dates.day(c.dateOfBirth)}',
-                      if (c.passportLast4 != null) 'Passport •••• ${c.passportLast4}',
-                    ].whereType<String>().join(' · ');
+                      if (c.relationship != null) companionRelationshipLabel(l10n, c.relationship!),
+                      if (c.nationality != null) '${countryFlag(c.nationality)} ${countryName(c.nationality, l10n)}',
+                      if (c.dateOfBirth != null) l10n.companionsBorn(Dates.day(c.dateOfBirth)),
+                      if (c.passportLast4 != null) l10n.companionsPassportLast4(c.passportLast4!),
+                    ].join(' · ');
                     return AppCard(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 4, 8),
                       child: Row(
                         children: [
                           Avatar(name: c.fullName, size: 44),
@@ -93,12 +99,12 @@ class CompanionsScreen extends ConsumerWidget {
                             ),
                           ),
                           IconButton(
-                            tooltip: 'Edit ${c.fullName}',
+                            tooltip: l10n.companionsEditTooltip(c.fullName),
                             icon: const Icon(Icons.edit_outlined),
                             onPressed: () => showCompanionForm(context, existing: c),
                           ),
                           IconButton(
-                            tooltip: 'Remove ${c.fullName}',
+                            tooltip: l10n.companionsRemoveTooltip(c.fullName),
                             icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
                             onPressed: () => _delete(context, ref, c),
                           ),

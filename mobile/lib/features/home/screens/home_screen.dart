@@ -10,6 +10,7 @@ import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/home_banners.dart';
 import '../widgets/specialty_tile.dart';
 
@@ -65,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Row(
                 children: [
-                  Expanded(child: Text('All specialties', style: context.text.titleLarge)),
+                  Expanded(child: Text(context.l10n.homeAllSpecialties, style: context.text.titleLarge)),
                   Text('${all.length}', style: context.text.labelMedium),
                 ],
               ),
@@ -99,6 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final auth = ref.watch(authStateProvider);
     final specialties = ref.watch(specialtiesProvider);
     final dashboard = auth.hasSession ? ref.watch(patientDashboardProvider).value : null;
@@ -123,13 +125,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 sliver: SliverList.list(
                   children: [
-                    Semantics(
-                      header: true,
-                      child: Text('What brings you to India?', style: context.text.headlineSmall),
-                    ),
+                    Semantics(header: true, child: Text(l10n.homeTitle, style: context.text.headlineSmall)),
                     const SizedBox(height: 4),
                     Text(
-                      'Select your medical need',
+                      l10n.homeSubtitle,
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
                     const SizedBox(height: 14),
@@ -138,7 +137,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       textInputAction: TextInputAction.search,
                       onSubmitted: _submitSearch,
                       decoration: InputDecoration(
-                        hintText: 'Search for a condition',
+                        hintText: l10n.homeSearchHint,
                         prefixIcon: const Icon(Icons.search_rounded),
                         isDense: true,
                         border: OutlineInputBorder(
@@ -154,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           borderSide: const BorderSide(color: AppColors.primary),
                         ),
                         suffixIcon: IconButton(
-                          tooltip: 'Search',
+                          tooltip: l10n.homeSearchButton,
                           icon: const Icon(Icons.arrow_forward_rounded),
                           onPressed: () => _submitSearch(_search.text),
                         ),
@@ -179,9 +178,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           hasScrollBody: false,
                           child: EmptyView(
                             icon: Icons.medical_services_outlined,
-                            title: 'No specialties yet',
-                            message: 'Search hospitals and doctors instead.',
-                            actionLabel: 'Search',
+                            title: l10n.homeNoSpecialtiesTitle,
+                            message: l10n.homeNoSpecialtiesMessage,
+                            actionLabel: l10n.homeSearchButton,
                             onAction: () => context.go(Routes.search),
                           ),
                         ),
@@ -232,12 +231,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: () => _startScreening(visible[i]),
             );
           }
+          final l10n = context.l10n;
           return SpecialtyTile(
-            title: 'More',
-            subtitle: 'Other Specialties',
+            title: l10n.homeMoreTile,
+            subtitle: l10n.homeMoreTileSubtitle,
             icon: Icons.add_circle_outline_rounded,
             accent: specialtyAccent(5),
-            savingsLabel: combinedSavingsLabel(rest),
+            savingsLabel: combinedSavingsLabel(rest, l10n: l10n),
             onTap: () => _showAll(all),
           );
         }, childCount: visible.length + (showMore ? 1 : 0)),

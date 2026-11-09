@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import 'enums.dart';
 import 'json.dart';
 
@@ -82,9 +83,9 @@ class User {
   /// Name to greet the user with (falls back to "Guest" / email local part).
   String get displayName {
     if (fullName.trim().isNotEmpty) return fullName.trim();
-    if (isGuest) return 'Guest';
+    if (isGuest) return L10n.current.coreUserGuest;
     final e = email;
-    return e == null ? 'Patient' : e.split('@').first;
+    return e == null ? L10n.current.coreUserPatient : e.split('@').first;
   }
 
   Map<String, dynamic> toJson() => {

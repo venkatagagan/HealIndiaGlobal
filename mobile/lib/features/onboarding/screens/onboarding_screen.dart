@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_controller.dart';
 import '../../../core/config/app_preferences.dart';
+import '../../../core/i18n/language_picker.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../onboarding_content.dart';
 
 /// 3-page carousel: Welcome Impact, Trust & Excellence, Security & Process (Get Started / Explore as Guest).
@@ -88,6 +90,9 @@ class _ImpactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = context.text;
+    final l10n = context.l10n;
+    final footnote = OnboardingContent.impactStatFootnote(l10n);
+    final caption = OnboardingContent.accreditationsCaption(l10n);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: DecoratedBox(
@@ -113,11 +118,11 @@ class _ImpactPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            Brand.name,
+                            l10n.appName,
                             style: text.titleSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                           ),
                           Text(
-                            Brand.tagline,
+                            l10n.appTagline,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: text.labelSmall?.copyWith(color: Colors.white70),
@@ -125,10 +130,11 @@ class _ImpactPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const LanguageButton(foregroundColor: Colors.white),
                     TextButton(
                       onPressed: onSkip,
                       style: TextButton.styleFrom(foregroundColor: Colors.white),
-                      child: const Text('Skip'),
+                      child: Text(l10n.commonSkip),
                     ),
                   ],
                 ),
@@ -148,33 +154,29 @@ class _ImpactPage extends StatelessWidget {
                     color: const Color(0x26FFFFFF),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
-                  child: Text('Welcome', style: text.labelSmall?.copyWith(color: Colors.white)),
+                  child: Text(l10n.onboardingWelcomeChip, style: text.labelSmall?.copyWith(color: Colors.white)),
                 ),
                 const SizedBox(height: 6),
                 Semantics(
-                  label: '${OnboardingContent.impactStat} ${OnboardingContent.impactStatCaption}',
+                  label: '${OnboardingContent.impactStat(l10n)} ${OnboardingContent.impactStatCaption(l10n)}',
                   excludeSemantics: true,
                   child: Column(
                     children: [
                       Text(
-                        OnboardingContent.impactStat,
+                        OnboardingContent.impactStat(l10n),
                         style: text.displaySmall?.copyWith(color: const Color(0xFFE9D5FF), fontWeight: FontWeight.w900),
                       ),
                       Text(
-                        OnboardingContent.impactStatCaption,
+                        OnboardingContent.impactStatCaption(l10n),
                         style: text.titleSmall?.copyWith(color: const Color(0xFFE9D5FF)),
                       ),
-                      if (OnboardingContent.impactStatFootnote.isNotEmpty)
-                        Text(
-                          OnboardingContent.impactStatFootnote,
-                          style: text.labelSmall?.copyWith(color: Colors.white60),
-                        ),
+                      if (footnote.isNotEmpty) Text(footnote, style: text.labelSmall?.copyWith(color: Colors.white60)),
                     ],
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  OnboardingContent.impactHeadline,
+                  OnboardingContent.impactHeadline(l10n),
                   textAlign: TextAlign.center,
                   style: text.headlineSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                 ),
@@ -182,17 +184,17 @@ class _ImpactPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    for (final b in OnboardingContent.accreditations)
+                    for (final b in OnboardingContent.accreditations(l10n))
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: _AccreditationChip(badge: b),
                       ),
                   ],
                 ),
-                if (OnboardingContent.accreditationsCaption.isNotEmpty) ...[
+                if (caption.isNotEmpty) ...[
                   const SizedBox(height: 6),
                   Text(
-                    OnboardingContent.accreditationsCaption,
+                    caption,
                     textAlign: TextAlign.center,
                     style: text.labelSmall?.copyWith(color: Colors.white70),
                   ),
@@ -204,7 +206,7 @@ class _ImpactPage extends StatelessWidget {
                     const Spacer(),
                     Semantics(
                       button: true,
-                      label: 'Next page',
+                      label: l10n.onboardingNextPage,
                       child: Material(
                         color: Colors.white,
                         shape: const CircleBorder(),
@@ -302,7 +304,7 @@ class _TrustPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                for (final p in OnboardingContent.trustPoints) ...[
+                                for (final p in OnboardingContent.trustPoints(context.l10n)) ...[
                                   _TrustCard(point: p),
                                   const SizedBox(height: 10),
                                 ],
@@ -320,7 +322,7 @@ class _TrustPage extends StatelessWidget {
                       children: [
                         PageDots(count: OnboardingScreen.pageCount, index: page, activeColor: AppColors.primary),
                         const SizedBox(height: 12),
-                        PrimaryButton(label: 'Next', onPressed: onNext),
+                        PrimaryButton(label: context.l10n.commonNext, onPressed: onNext),
                       ],
                     ),
                   ),
@@ -377,6 +379,9 @@ class _TestimonialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final author = OnboardingContent.testimonialAuthor(l10n);
+    final disclaimer = OnboardingContent.testimonialDisclaimer(l10n);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -387,7 +392,7 @@ class _TestimonialCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Avatar(name: OnboardingContent.testimonialAuthor, size: 40, square: true),
+          Avatar(name: author, size: 40, square: true),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -400,21 +405,17 @@ class _TestimonialCard extends StatelessWidget {
                   runSpacing: 4,
                   children: [
                     RatingStars(rating: OnboardingContent.testimonialRating.toDouble(), showValue: false, size: 16),
-                    if (OnboardingContent.testimonialDisclaimer.isNotEmpty)
-                      StatusBadge(
-                        label: OnboardingContent.testimonialDisclaimer,
-                        color: context.palette.textSecondary,
-                        dense: true,
-                      ),
+                    if (disclaimer.isNotEmpty)
+                      StatusBadge(label: disclaimer, color: context.palette.textSecondary, dense: true),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  OnboardingContent.testimonialQuote,
+                  OnboardingContent.testimonialQuote(l10n),
                   style: context.text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
-                Text('- ${OnboardingContent.testimonialAuthor}', style: context.text.bodySmall),
+                Text('- $author', style: context.text.bodySmall),
               ],
             ),
           ),
@@ -436,6 +437,7 @@ class _ProcessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = context.text;
+    final l10n = context.l10n;
     return Theme(
       data: AppTheme.dark(),
       child: Builder(
@@ -454,13 +456,13 @@ class _ProcessPage extends StatelessWidget {
                           const BrandSvg(BrandAssets.onboardingSecurity, height: 140),
                           const SizedBox(height: 12),
                           Text(
-                            Brand.name,
+                            l10n.appName,
                             style: text.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                           ),
                           const SizedBox(height: 4),
-                          Text(Brand.tagline, style: text.bodyMedium?.copyWith(color: Colors.white70)),
+                          Text(l10n.appTagline, style: text.bodyMedium?.copyWith(color: Colors.white70)),
                           const SizedBox(height: 28),
-                          for (final s in OnboardingContent.processSteps) _ProcessStep(point: s),
+                          for (final s in OnboardingContent.processSteps(l10n)) _ProcessStep(point: s),
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -468,14 +470,14 @@ class _ProcessPage extends StatelessWidget {
                               const Icon(Icons.lock_outline_rounded, size: 16, color: AppColors.primary),
                               const SizedBox(width: 6),
                               Text(
-                                OnboardingContent.securityBadge,
+                                OnboardingContent.securityBadge(l10n),
                                 style: text.labelMedium?.copyWith(color: Colors.white),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            OnboardingContent.securityFooter,
+                            OnboardingContent.securityFooter(l10n),
                             textAlign: TextAlign.center,
                             style: text.labelSmall?.copyWith(color: Colors.white60),
                           ),
@@ -487,10 +489,10 @@ class _ProcessPage extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Column(
                       children: [
-                        PrimaryButton(label: 'Get Started', onPressed: guestLoading ? null : onGetStarted),
+                        PrimaryButton(label: l10n.onboardingGetStarted, onPressed: guestLoading ? null : onGetStarted),
                         const SizedBox(height: 12),
                         SecondaryButton(
-                          label: 'Explore as Guest',
+                          label: l10n.onboardingExploreAsGuest,
                           loading: guestLoading,
                           onPressed: onGuest,
                           foregroundColor: Colors.white,
@@ -557,7 +559,7 @@ class PageDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final inactive = inactiveColor ?? activeColor.withValues(alpha: 0.35);
     return Semantics(
-      label: 'Page ${index + 1} of $count',
+      label: context.l10n.onboardingPageDots(index + 1, count),
       excludeSemantics: true,
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -7,6 +7,7 @@ import '../../../core/repositories/document_repository.dart';
 import '../../../core/repositories/payment_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../trips/services/file_actions.dart';
 import 'payment_result_screen.dart';
 
@@ -39,13 +40,14 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
   Widget build(BuildContext context) {
     final details = widget.checkout.bankTransfer;
     final order = widget.checkout.order;
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Bank Transfer'), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.bankTransferTitle), centerTitle: true),
       body: details == null
-          ? const EmptyView(
+          ? EmptyView(
               icon: Icons.account_balance_outlined,
-              title: 'Bank transfer is not available',
-              message: 'Please choose another payment method.',
+              title: l10n.bankTransferUnavailableTitle,
+              message: l10n.bankTransferUnavailableBody,
             )
           : Form(
               key: _formKey,
@@ -59,7 +61,7 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Amount to transfer', style: context.text.labelMedium),
+                        Text(l10n.bankTransferAmount, style: context.text.labelMedium),
                         const SizedBox(height: 4),
                         MoneyText(
                           order.amountMinor,
@@ -68,32 +70,31 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
                           style: context.text.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 4),
-                        Text('Order ${order.orderNumber}', style: context.text.bodySmall),
+                        Text(l10n.bankTransferOrder(order.orderNumber), style: context.text.bodySmall),
                       ],
                     ),
                   ),
-                  const SectionTitle('SWIFT Details'),
+                  SectionTitle(l10n.bankSwiftDetails),
                   AppCard(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     child: Column(
                       children: [
-                        _CopyRow(label: 'Beneficiary', value: details.beneficiaryName),
-                        _CopyRow(label: 'Bank', value: details.bankName),
-                        _CopyRow(label: 'Account number', value: details.accountNumber),
+                        _CopyRow(label: l10n.bankBeneficiary, value: details.beneficiaryName),
+                        _CopyRow(label: l10n.bankName, value: details.bankName),
+                        _CopyRow(label: l10n.bankAccountNumber, value: details.accountNumber),
                         if (details.swift != null) _CopyRow(label: 'SWIFT / BIC', value: details.swift!),
                         if (details.iban != null) _CopyRow(label: 'IBAN', value: details.iban!),
                         if (details.ifsc != null) _CopyRow(label: 'IFSC', value: details.ifsc!),
-                        _CopyRow(label: 'Payment reference', value: details.reference, highlight: true),
+                        _CopyRow(label: l10n.bankPaymentReference, value: details.reference, highlight: true),
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Quote the payment reference exactly so we can match your transfer. International transfers '
-                    'usually take 1-3 business days; your booking is confirmed once our finance team verifies the funds.',
+                    l10n.bankTransferInstructions,
                     style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                   ),
-                  const SectionTitle('Proof of transfer'),
+                  SectionTitle(l10n.bankProofSection),
                   AppCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,7 +107,7 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
                             subtitle: Text(_proof!.sizeLabel),
                             trailing: TextButton(
                               onPressed: _submitting ? null : _pickProof,
-                              child: const Text('Replace'),
+                              child: Text(l10n.bankProofReplace),
                             ),
                           )
                         else if (_progress != null)
@@ -116,7 +117,7 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
                           )
                         else
                           SecondaryButton(
-                            label: 'Upload transfer receipt',
+                            label: l10n.bankProofUpload,
                             icon: Icons.upload_file_rounded,
                             onPressed: _pickProof,
                           ),
@@ -125,28 +126,21 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
                           controller: _reference,
                           textInputAction: TextInputAction.done,
                           maxLength: 100,
-                          decoration: const InputDecoration(
-                            labelText: 'Bank transaction reference (UTR / MT103)',
-                            counterText: '',
-                          ),
-                          validator: (v) =>
-                              (v == null || v.trim().length < 4) ? 'Enter the reference from your bank' : null,
+                          decoration: InputDecoration(labelText: l10n.bankReferenceLabel, counterText: ''),
+                          validator: (v) => (v == null || v.trim().length < 4) ? l10n.bankReferenceRequired : null,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
                   PrimaryButton(
-                    label: 'Submit proof',
+                    label: l10n.bankSubmitProof,
                     tone: ButtonTone.violet,
                     loading: _submitting,
                     onPressed: _proof == null ? null : _submit,
                   ),
                   const SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("I'll upload the proof later"),
-                  ),
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.bankUploadLater)),
                 ],
               ),
             ),
@@ -193,9 +187,7 @@ class _BankTransferScreenState extends ConsumerState<BankTransferScreen> {
             kind: PaymentResultKind.pending,
             booking: widget.booking,
             order: order ?? widget.checkout.order,
-            message:
-                'Thanks! We received your transfer details. Your booking is confirmed once the funds arrive '
-                '(usually 1-3 business days).',
+            message: context.l10n.bankProofReceived,
           ),
         ),
       );
@@ -236,11 +228,11 @@ class _CopyRow extends StatelessWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Copy $label',
+            tooltip: context.l10n.bankCopyTooltip(label),
             icon: const Icon(Icons.copy_rounded, size: 20),
             onPressed: () async {
               await Clipboard.setData(ClipboardData(text: value));
-              if (context.mounted) showInfoSnack(context, '$label copied');
+              if (context.mounted) showInfoSnack(context, context.l10n.bankCopied(label));
             },
           ),
         ],

@@ -11,6 +11,7 @@ import '../../../core/repositories/payment_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../agent_routes.dart';
 import '../data/agent_repository.dart';
 import '../shared/portal_widgets.dart';
@@ -40,8 +41,9 @@ class _AgentBookingsScreenState extends ConsumerState<AgentBookingsScreen> {
   @override
   Widget build(BuildContext context) {
     final bookings = ref.watch(bookingsProvider(_status));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Bookings & payments')),
+      appBar: AppBar(title: Text(l10n.agentBookingsTitle)),
       body: Column(
         children: [
           StatusFilterBar<BookingStatus>(
@@ -58,10 +60,10 @@ class _AgentBookingsScreenState extends ConsumerState<AgentBookingsScreen> {
                 onRetry: () => ref.invalidate(bookingsProvider(_status)),
                 data: (page) => page.items.isEmpty
                     ? ListView(
-                        children: const [
+                        children: [
                           EmptyView(
-                            title: 'No bookings',
-                            message: 'Accept a hospital quote, then book the treatment for your patient.',
+                            title: l10n.agentBookingsEmpty,
+                            message: l10n.agentBookingsEmptyHint,
                             icon: Icons.event_busy_outlined,
                           ),
                         ],
@@ -88,6 +90,7 @@ class BookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final b = booking;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -108,14 +111,14 @@ class BookingTile extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            b.patient?.fullName ?? 'Patient',
+            b.patient?.fullName ?? l10n.portalPatientLabel,
             style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           Text(
             [
               b.procedure?.name ?? '',
               b.hospital.name,
-              'admission ${Dates.day(b.admissionDate)}',
+              l10n.agentBookingAdmissionShort(Dates.day(b.admissionDate)),
             ].where((s) => s.isNotEmpty).join(' · '),
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
@@ -127,11 +130,11 @@ class BookingTile extends StatelessWidget {
               MoneyText(b.totalMinor, b.currency, style: context.text.titleSmall),
               if (b.balanceDueMinor > 0)
                 Text(
-                  'due ${money(b.balanceDueMinor, b.currency)}',
+                  l10n.agentBookingDueShort(money(b.balanceDueMinor, b.currency)),
                   style: context.text.bodySmall?.copyWith(color: AppColors.warning),
                 )
               else
-                Text('paid in full', style: context.text.bodySmall?.copyWith(color: AppColors.primary)),
+                Text(l10n.agentBookingPaidInFull, style: context.text.bodySmall?.copyWith(color: AppColors.primary)),
             ],
           ),
         ],
@@ -183,7 +186,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
       );
       if (choice.gateway == PaymentGateway.mock) {
         await repo.completeMock(checkout.order.id);
-        if (mounted) showInfoSnack(context, 'Test payment completed');
+        if (mounted) showInfoSnack(context, context.l10n.agentTestPaymentCompleted);
       } else if (checkout.bankTransfer != null && mounted) {
         await _showBankDetails(checkout);
       }
@@ -197,20 +200,22 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
 
   Future<void> _showBankDetails(Checkout checkout) {
     final t = checkout.bankTransfer!;
+    final l10n = context.l10n;
     final text = [
-      'Beneficiary: ${t.beneficiaryName}',
-      'Bank: ${t.bankName}',
-      'Account: ${t.accountNumber}',
+      l10n.agentBankBeneficiary(t.beneficiaryName),
+      l10n.agentBankName(t.bankName),
+      l10n.agentBankAccount(t.accountNumber),
+      // Banking code names (IFSC / SWIFT / IBAN) are international identifiers, not translated.
       if (t.ifsc != null) 'IFSC: ${t.ifsc}',
       if (t.swift != null) 'SWIFT: ${t.swift}',
       if (t.iban != null) 'IBAN: ${t.iban}',
-      'Reference: ${t.reference}',
-      'Amount: ${money(checkout.order.amountMinor, checkout.order.currency)}',
+      l10n.agentBankReference(t.reference),
+      l10n.agentBankAmount(money(checkout.order.amountMinor, checkout.order.currency)),
     ].join('\n');
     return showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Bank transfer details'),
+        title: Text(l10n.agentBankTransferDetailsTitle),
         content: SelectableText(text),
         actions: [
           TextButton(
@@ -218,7 +223,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
               await Clipboard.setData(ClipboardData(text: text));
               if (ctx.mounted) Navigator.of(ctx).pop();
             },
-            child: const Text('Copy & close'),
+            child: Text(l10n.agentCopyAndClose),
           ),
         ],
       ),
@@ -226,11 +231,12 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
   }
 
   Future<void> _cancel(Booking b) async {
+    final l10n = context.l10n;
     final reason = await promptText(
       context,
-      title: 'Cancel booking ${b.bookingNumber}?',
-      label: 'Reason',
-      confirmLabel: 'Cancel booking',
+      title: l10n.agentCancelBookingTitle(b.bookingNumber),
+      label: l10n.agentReason,
+      confirmLabel: l10n.agentCancelBooking,
       required: true,
       maxLines: 3,
     );
@@ -239,7 +245,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
     try {
       await ref.read(bookingRepositoryProvider).cancel(b.id, reason: reason);
       _refresh();
-      if (mounted) showInfoSnack(context, 'Booking cancelled; refund follows the hospital policy');
+      if (mounted) showInfoSnack(context, l10n.agentBookingCancelledRefund);
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
@@ -250,8 +256,9 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
   @override
   Widget build(BuildContext context) {
     final booking = ref.watch(bookingProvider(widget.bookingId));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(booking.value?.bookingNumber ?? 'Booking')),
+      appBar: AppBar(title: Text(booking.value?.bookingNumber ?? l10n.portalBookingLabel)),
       body: AsyncValueView(
         value: booking,
         onRetry: () => ref.invalidate(bookingProvider(widget.bookingId)),
@@ -268,7 +275,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
                       children: [
                         Expanded(
                           child: Text(
-                            b.patient?.fullName ?? 'Patient',
+                            b.patient?.fullName ?? l10n.portalPatientLabel,
                             style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -276,34 +283,39 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
                       ],
                     ),
                     const SizedBox(height: 8),
-                    InfoRow('Hospital', [b.hospital.name, b.hospital.city].whereType<String>().join(', ')),
-                    InfoRow('Doctor', b.doctor?.fullName),
-                    InfoRow('Treatment', b.procedure?.name ?? b.package?.name),
-                    InfoRow('Admission', Dates.day(b.admissionDate)),
-                    if (b.dischargeDate != null) InfoRow('Discharge', Dates.day(b.dischargeDate)),
                     InfoRow(
-                      'Payment plan',
-                      b.paymentOption == PaymentOption.installments
-                          ? '${b.installmentMonths ?? ''} monthly installments'
+                      l10n.portalHospitalLabel,
+                      [b.hospital.name, b.hospital.city].whereType<String>().join(', '),
+                    ),
+                    InfoRow(l10n.portalDoctorLabel, b.doctor?.fullName),
+                    InfoRow(l10n.agentBookingTreatment, b.procedure?.name ?? b.package?.name),
+                    InfoRow(l10n.agentBookingAdmission, Dates.day(b.admissionDate)),
+                    if (b.dischargeDate != null) InfoRow(l10n.agentBookingDischarge, Dates.day(b.dischargeDate)),
+                    InfoRow(
+                      l10n.agentBookingPaymentPlan,
+                      b.paymentOption == PaymentOption.installments && b.installmentMonths != null
+                          ? l10n.agentBookingMonthlyInstallments(b.installmentMonths!)
                           : b.paymentOption.label,
                     ),
                   ],
                 ),
               ),
-              const SectionTitle('Price summary'),
+              SectionTitle(l10n.agentPriceSummary),
               AppCard(
                 child: Column(
                   children: [
-                    InfoRow('Treatment', money(b.subtotalMinor, b.currency)),
-                    if (b.discountMinor > 0) InfoRow('Discount', '− ${money(b.discountMinor, b.currency)}'),
-                    if (b.serviceFeeMinor > 0) InfoRow('Service fee', money(b.serviceFeeMinor, b.currency)),
-                    if (b.taxMinor > 0) InfoRow('Tax', money(b.taxMinor, b.currency)),
-                    InfoRow('Total', money(b.totalMinor, b.currency)),
-                    InfoRow('Deposit', money(b.depositMinor, b.currency)),
-                    InfoRow('Paid', money(b.amountPaidMinor, b.currency)),
-                    if (b.amountRefundedMinor > 0) InfoRow('Refunded', money(b.amountRefundedMinor, b.currency)),
+                    InfoRow(l10n.agentBookingTreatment, money(b.subtotalMinor, b.currency)),
+                    if (b.discountMinor > 0)
+                      InfoRow(l10n.agentPriceDiscount, '− ${money(b.discountMinor, b.currency)}'),
+                    if (b.serviceFeeMinor > 0) InfoRow(l10n.agentPriceServiceFee, money(b.serviceFeeMinor, b.currency)),
+                    if (b.taxMinor > 0) InfoRow(l10n.agentPriceTax, money(b.taxMinor, b.currency)),
+                    InfoRow(l10n.portalTotal, money(b.totalMinor, b.currency)),
+                    InfoRow(l10n.agentPriceDeposit, money(b.depositMinor, b.currency)),
+                    InfoRow(l10n.agentPricePaid, money(b.amountPaidMinor, b.currency)),
+                    if (b.amountRefundedMinor > 0)
+                      InfoRow(l10n.agentPriceRefunded, money(b.amountRefundedMinor, b.currency)),
                     InfoRow(
-                      'Balance due',
+                      l10n.agentPriceBalanceDue,
                       null,
                       valueWidget: Text(
                         money(b.balanceDueMinor, b.currency),
@@ -320,7 +332,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
                 const SizedBox(height: 12),
                 PrimaryButton(
                   key: const ValueKey('agent-collect-payment'),
-                  label: 'Collect payment',
+                  label: l10n.agentCollectPayment,
                   icon: Icons.payments_outlined,
                   tone: ButtonTone.violet,
                   loading: _busy,
@@ -328,14 +340,14 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
                 ),
               ],
               if (b.paymentOption == PaymentOption.installments) _installments(b),
-              const SectionTitle('Payments'),
+              SectionTitle(l10n.agentPaymentsSection),
               AsyncValueView(
                 value: ref.watch(agentBookingOrdersProvider(b.id)),
                 compactError: true,
                 onRetry: () => ref.invalidate(agentBookingOrdersProvider(b.id)),
                 data: (orders) => orders.isEmpty
                     ? Text(
-                        'No payments yet.',
+                        l10n.agentPaymentsEmpty,
                         style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                       )
                     : Column(
@@ -354,7 +366,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
               ),
               const SizedBox(height: 16),
               SecondaryButton(
-                label: 'Open case',
+                label: l10n.agentOpenCase,
                 icon: Icons.folder_shared_outlined,
                 onPressed: () => context.push(AgentRoutes.caseDetail(b.caseId)),
               ),
@@ -363,7 +375,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
                 TextButton.icon(
                   onPressed: _busy ? null : () => _cancel(b),
                   icon: const Icon(Icons.cancel_outlined, color: AppColors.danger),
-                  label: const Text('Cancel booking', style: TextStyle(color: AppColors.danger)),
+                  label: Text(l10n.agentCancelBooking, style: const TextStyle(color: AppColors.danger)),
                 ),
               ],
             ],
@@ -376,7 +388,7 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
   Widget _installments(Booking b) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const SectionTitle('Installments'),
+      SectionTitle(context.l10n.agentInstallmentsSection),
       AsyncValueView(
         value: ref.watch(agentBookingInstallmentsProvider(b.id)),
         compactError: true,
@@ -387,12 +399,12 @@ class _AgentBookingDetailScreenState extends ConsumerState<AgentBookingDetailScr
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text('#${i.seq} · ${money(i.amountMinor, i.currency)}'),
-                subtitle: Text('Due ${Dates.day(i.dueDate)}'),
+                subtitle: Text(context.l10n.agentInstallmentDue(Dates.day(i.dueDate))),
                 trailing: i.status == InstallmentStatus.paid || i.status == InstallmentStatus.cancelled
                     ? StatusBadge.forEnum(i.status, dense: true)
                     : TextButton(
                         onPressed: _busy ? null : () => _collect(b, installment: i),
-                        child: const Text('Collect'),
+                        child: Text(context.l10n.agentInstallmentCollect),
                       ),
               ),
           ],
@@ -437,6 +449,7 @@ class _CollectPaymentSheetState extends State<_CollectPaymentSheet> {
         : b.amountPaidMinor == 0
         ? const [PaymentPurpose.bookingDeposit, PaymentPurpose.bookingFull]
         : const [PaymentPurpose.bookingBalance];
+    final l10n = context.l10n;
     final amount = switch (_purpose) {
       PaymentPurpose.installment => widget.installment?.amountMinor ?? 0,
       PaymentPurpose.bookingDeposit => b.depositMinor,
@@ -449,10 +462,10 @@ class _CollectPaymentSheetState extends State<_CollectPaymentSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Collect payment', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+            Text(l10n.agentCollectPayment, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
             Text(
-              'The amount is computed by the server; the patient can also pay in their own app.',
+              l10n.agentCollectPaymentHint,
               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
             const SizedBox(height: 12),
@@ -470,15 +483,16 @@ class _CollectPaymentSheetState extends State<_CollectPaymentSheet> {
             RadioGroup<PaymentGateway>(
               groupValue: _gateway,
               onChanged: (v) => setState(() => _gateway = v ?? _gateway),
-              child: const Column(
+              child: Column(
                 children: [
                   RadioListTile<PaymentGateway>(
                     contentPadding: EdgeInsets.zero,
                     value: PaymentGateway.bankTransfer,
-                    title: Text('Bank transfer (SWIFT / NEFT)'),
+                    title: Text(l10n.agentCollectBankTransferOption),
                   ),
+                  // Debug builds only: developer test gateway, not translated.
                   if (kDebugMode)
-                    RadioListTile<PaymentGateway>(
+                    const RadioListTile<PaymentGateway>(
                       contentPadding: EdgeInsets.zero,
                       value: PaymentGateway.mock,
                       title: Text('Test payment (development only)'),
@@ -488,7 +502,7 @@ class _CollectPaymentSheetState extends State<_CollectPaymentSheet> {
             ),
             const SizedBox(height: 12),
             PrimaryButton(
-              label: 'Continue · ~${money(amount, b.currency)}',
+              label: l10n.agentCollectContinueAmount(money(amount, b.currency)),
               onPressed: () => Navigator.of(context).pop(_PaymentChoice(_purpose, _gateway)),
             ),
           ],
@@ -559,8 +573,9 @@ class _AgentCreateBookingScreenState extends ConsumerState<AgentCreateBookingScr
   @override
   Widget build(BuildContext context) {
     final detail = ref.watch(caseDetailProvider(widget.caseId));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Book treatment')),
+      appBar: AppBar(title: Text(l10n.agentBookTreatment)),
       body: AsyncValueView(
         value: detail,
         onRetry: () => ref.invalidate(caseDetailProvider(widget.caseId)),
@@ -585,25 +600,25 @@ class _AgentCreateBookingScreenState extends ConsumerState<AgentCreateBookingScr
                   ],
                 ),
               ),
-              const SectionTitle('Admission date'),
+              SectionTitle(l10n.agentAdmissionDate),
               AppCard(
                 onTap: _pickDate,
                 child: Row(
                   children: [
                     const Icon(Icons.calendar_month_rounded, color: AppColors.violet),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(_admission == null ? 'Choose a date' : Dates.weekday(_admission))),
+                    Expanded(child: Text(_admission == null ? l10n.agentChooseDate : Dates.weekday(_admission))),
                     const Icon(Icons.chevron_right_rounded),
                   ],
                 ),
               ),
-              const SectionTitle('Payment'),
+              SectionTitle(l10n.agentPaymentSection),
               SegmentedButton<PaymentOption>(
                 showSelectedIcon: false,
-                segments: const [
-                  ButtonSegment(value: PaymentOption.deposit, label: Text('Deposit')),
-                  ButtonSegment(value: PaymentOption.full, label: Text('Full')),
-                  ButtonSegment(value: PaymentOption.installments, label: Text('Plan')),
+                segments: [
+                  ButtonSegment(value: PaymentOption.deposit, label: Text(l10n.agentPaymentOptionDeposit)),
+                  ButtonSegment(value: PaymentOption.full, label: Text(l10n.agentPaymentOptionFull)),
+                  ButtonSegment(value: PaymentOption.installments, label: Text(l10n.agentPaymentOptionPlan)),
                 ],
                 selected: {_option},
                 onSelectionChanged: (s) => setState(() => _option = s.first),
@@ -615,7 +630,7 @@ class _AgentCreateBookingScreenState extends ConsumerState<AgentCreateBookingScr
                   children: [
                     for (final m in const [3, 6, 12])
                       ChoiceChip(
-                        label: Text('$m months'),
+                        label: Text(l10n.agentInstallmentMonthsChip(m)),
                         selected: _months == m,
                         onSelected: (_) => setState(() => _months = m),
                       ),
@@ -626,11 +641,11 @@ class _AgentCreateBookingScreenState extends ConsumerState<AgentCreateBookingScr
                 contentPadding: EdgeInsets.zero,
                 value: _insurance,
                 onChanged: (v) => setState(() => _insurance = v ?? false),
-                title: const Text('Patient wants to claim insurance'),
+                title: Text(l10n.agentInsuranceClaim),
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                label: 'Create booking',
+                label: l10n.agentCreateBooking,
                 loading: _saving,
                 onPressed: _admission == null || _saving ? null : _submit,
               ),

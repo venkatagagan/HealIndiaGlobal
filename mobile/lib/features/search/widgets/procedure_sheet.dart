@@ -9,6 +9,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../profile/data/countries.dart';
 import 'catalog_cards.dart';
 import 'save_button.dart';
@@ -36,6 +37,7 @@ class ProcedureSheet extends ConsumerWidget {
     final country = (ref.watch(currentUserProvider)?.countryCode ?? 'US').toUpperCase();
     final currency = ref.watch(preferredCurrencyProvider);
     final benchmark = p.benchmarkFor(country) ?? (p.benchmarks.isEmpty ? null : p.benchmarks.first);
+    final l10n = context.l10n;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -64,18 +66,18 @@ class ProcedureSheet extends ConsumerWidget {
               children: [
                 InfoStat(
                   icon: Icons.local_hotel_outlined,
-                  value: p.hospitalStayDays == null ? '-' : '${p.hospitalStayDays} days',
-                  label: 'In hospital',
+                  value: p.hospitalStayDays == null ? '-' : l10n.procedureDays(p.hospitalStayDays!),
+                  label: l10n.procedureInHospital,
                 ),
                 InfoStat(
                   icon: Icons.healing_outlined,
-                  value: p.recoveryDays == null ? '-' : '${p.recoveryDays} days',
-                  label: 'Recovery',
+                  value: p.recoveryDays == null ? '-' : l10n.procedureDays(p.recoveryDays!),
+                  label: l10n.procedureRecovery,
                 ),
                 InfoStat(
                   icon: Icons.flight_outlined,
-                  value: p.totalStayDays == null ? '-' : '${p.totalStayDays} days',
-                  label: 'Total stay in India',
+                  value: p.totalStayDays == null ? '-' : l10n.procedureDays(p.totalStayDays!),
+                  label: l10n.procedureTotalStayInIndia,
                 ),
               ],
             ),
@@ -87,7 +89,7 @@ class ProcedureSheet extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Treatment in India', style: context.text.labelMedium),
+                  Text(l10n.costTreatmentInIndia, style: context.text.labelMedium),
                   const SizedBox(height: 4),
                   ApproxPrice(
                     p.indiaPriceMinMinor!,
@@ -98,7 +100,7 @@ class ProcedureSheet extends ConsumerWidget {
                   if (benchmark != null) ...[
                     const SizedBox(height: 10),
                     Text(
-                      'Typical cost in ${countryName(benchmark.countryCode)}',
+                      l10n.procedureTypicalCostIn(countryName(benchmark.countryCode)),
                       style: context.text.labelMedium,
                     ),
                     MoneyText(
@@ -108,14 +110,14 @@ class ProcedureSheet extends ConsumerWidget {
                       style: context.text.titleMedium?.copyWith(color: AppColors.danger),
                     ),
                     if (benchmark.waitTimeText != null)
-                      Text('Wait time: ${benchmark.waitTimeText}', style: context.text.bodySmall),
+                      Text(l10n.procedureWaitTime(benchmark.waitTimeText!), style: context.text.bodySmall),
                   ],
                 ],
               ),
             ),
           const SizedBox(height: 20),
           PrimaryButton(
-            label: 'Compare costs',
+            label: l10n.procedureCompareCosts,
             icon: Icons.compare_arrows_rounded,
             onPressed: () {
               final router = GoRouter.of(context);
@@ -125,7 +127,7 @@ class ProcedureSheet extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           SecondaryButton(
-            label: 'Get matched',
+            label: l10n.catalogGetMatched,
             icon: Icons.auto_awesome_outlined,
             onPressed: () {
               final router = GoRouter.of(context);

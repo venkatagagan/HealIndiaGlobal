@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../core/auth/auth_repository.dart';
 import '../../../core/config/app_preferences.dart';
+import '../../../core/i18n/language_picker.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
@@ -12,6 +13,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/widgets/auth_widgets.dart';
 import '../../onboarding/onboarding_content.dart';
 import '../data/countries.dart';
@@ -28,6 +30,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final auth = ref.watch(authStateProvider);
     final user = auth.user;
     final full = auth.isAuthenticated;
@@ -60,31 +63,31 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 const _PersonalInfoCard(),
                 SettingsGroup(
-                  title: 'My journey',
+                  title: l10n.profileMyJourney,
                   children: [
                     SettingsTile(
                       icon: Icons.folder_shared_outlined,
-                      title: 'My cases & quotes',
+                      title: l10n.profileMyCasesQuotes,
                       onTap: () => context.push(Routes.cases),
                     ),
                     SettingsTile(
                       icon: Icons.description_outlined,
-                      title: 'Documents',
-                      subtitle: 'Passport, medical reports, visas, invoices',
+                      title: l10n.profileDocuments,
+                      subtitle: l10n.profileDocumentsSubtitle,
                       color: AppColors.info,
                       onTap: () => context.push(Routes.documents),
                     ),
                     SettingsTile(
                       icon: Icons.group_outlined,
-                      title: 'Travel companions',
-                      subtitle: _companionsSubtitle(ref),
+                      title: l10n.companionsTitle,
+                      subtitle: _companionsSubtitle(ref, l10n),
                       color: AppColors.violet,
                       onTap: () => context.push(Routes.companions),
                     ),
                     SettingsTile(
                       icon: Icons.bookmark_border_rounded,
-                      title: 'Saved',
-                      subtitle: 'Hospitals, doctors and treatments',
+                      title: l10n.savedTitle,
+                      subtitle: l10n.profileSavedSubtitle,
                       color: AppColors.warning,
                       onTap: () => context.push(Routes.saved),
                     ),
@@ -94,17 +97,17 @@ class ProfileScreen extends ConsumerWidget {
               const _PreferencesGroup(),
               if (full) _SecurityGroup(user: user),
               SettingsGroup(
-                title: 'About',
+                title: l10n.profileAbout,
                 children: [
                   SettingsTile(
                     icon: Icons.gavel_outlined,
-                    title: 'Terms of service',
+                    title: l10n.profileTermsOfService,
                     color: context.palette.textSecondary,
                     onTap: () => openLegalUrl(context, OnboardingContent.termsUrl),
                   ),
                   SettingsTile(
                     icon: Icons.privacy_tip_outlined,
-                    title: 'Privacy policy',
+                    title: l10n.profilePrivacyPolicy,
                     color: context.palette.textSecondary,
                     onTap: () => openLegalUrl(context, OnboardingContent.privacyUrl),
                   ),
@@ -119,13 +122,13 @@ class ProfileScreen extends ConsumerWidget {
                     key: const Key('profile-delete-account'),
                     style: TextButton.styleFrom(foregroundColor: context.colors.error),
                     icon: const Icon(Icons.delete_forever_outlined),
-                    label: const Text('Delete account'),
+                    label: Text(l10n.commonDeleteAccount),
                     onPressed: () async {
                       final router = GoRouter.of(context);
                       final deleted = await showDeleteAccountSheet(context, isGuest: auth.isGuest);
                       if (!deleted) return;
                       router.go(Routes.auth);
-                      if (context.mounted) showInfoSnack(context, 'Your account has been deleted.');
+                      if (context.mounted) showInfoSnack(context, context.l10n.deleteAccountDoneSnack);
                     },
                   ),
                 ),
@@ -137,10 +140,10 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  String? _companionsSubtitle(WidgetRef ref) {
+  String? _companionsSubtitle(WidgetRef ref, AppLocalizations l10n) {
     final list = ref.watch(companionsProvider).value;
-    if (list == null) return 'People travelling with you';
-    if (list.isEmpty) return 'Add the people travelling with you';
+    if (list == null) return l10n.companionsSubtitleDefault;
+    if (list.isEmpty) return l10n.companionsSubtitleEmpty;
     return list.map((c) => c.fullName).join(', ');
   }
 }
@@ -153,8 +156,9 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final u = user;
-    final name = u?.displayName ?? 'Guest';
+    final name = u?.displayName ?? l10n.profileGuest;
     return AppCard(
       child: Row(
         children: [
@@ -173,19 +177,19 @@ class _Header extends StatelessWidget {
                   runSpacing: 4,
                   children: [
                     if (isGuest || u == null)
-                      const StatusBadge(label: 'Guest', color: AppColors.warning, dense: true)
+                      StatusBadge(label: l10n.profileGuest, color: AppColors.warning, dense: true)
                     else ...[
-                      const StatusBadge(label: 'Patient', color: AppColors.primary, dense: true),
+                      StatusBadge(label: l10n.profilePatientBadge, color: AppColors.primary, dense: true),
                       if (u.emailVerified)
-                        const StatusBadge(
-                          label: 'Email verified',
+                        StatusBadge(
+                          label: l10n.profileEmailVerified,
                           color: AppColors.info,
                           icon: Icons.verified_rounded,
                           dense: true,
                         ),
                       if ((u.countryCode ?? '').isNotEmpty)
                         StatusBadge(
-                          label: '${countryFlag(u.countryCode)} ${countryName(u.countryCode)}',
+                          label: '${countryFlag(u.countryCode)} ${countryName(u.countryCode, l10n)}',
                           color: context.palette.textSecondary,
                           dense: true,
                         ),
@@ -197,7 +201,7 @@ class _Header extends StatelessWidget {
           ),
           if (!isGuest && u != null)
             IconButton(
-              tooltip: 'Edit profile',
+              tooltip: l10n.editProfileTitle,
               icon: const Icon(Icons.edit_outlined),
               onPressed: () => context.push(Routes.profileEdit),
             ),
@@ -212,21 +216,18 @@ class _GuestUpgradeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AppCard(
       gradient: AppColors.heroGradient,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Create your free account',
+            l10n.profileGuestUpgradeTitle,
             style: context.text.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Keep your screenings and matches, request quotes, book treatment, upload documents and chat '
-            'with your coordinator.',
-            style: context.text.bodySmall?.copyWith(color: Colors.white),
-          ),
+          Text(l10n.profileGuestUpgradeBody, style: context.text.bodySmall?.copyWith(color: Colors.white)),
           const SizedBox(height: 14),
           Row(
             children: [
@@ -237,13 +238,13 @@ class _GuestUpgradeCard extends StatelessWidget {
                   minimumSize: const Size(0, 44),
                 ),
                 onPressed: () => context.push(Routes.registerFrom(Routes.profile)),
-                child: const Text('Create account'),
+                child: Text(l10n.profileCreateAccount),
               ),
               const SizedBox(width: 8),
               TextButton(
                 style: TextButton.styleFrom(foregroundColor: Colors.white),
                 onPressed: () => context.push(Routes.loginFrom(Routes.profile)),
-                child: const Text('Log in'),
+                child: Text(l10n.authLogIn),
               ),
             ],
           ),
@@ -258,6 +259,7 @@ class _PersonalInfoCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final value = ref.watch(patientProfileProvider);
     return AppCard(
       child: Column(
@@ -265,11 +267,11 @@ class _PersonalInfoCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text('Personal information', style: context.text.titleMedium)),
+              Expanded(child: Text(l10n.profilePersonalInfo, style: context.text.titleMedium)),
               TextButton.icon(
                 onPressed: () => context.push(Routes.profileEdit),
                 icon: const Icon(Icons.edit_outlined, size: 18),
-                label: const Text('Edit'),
+                label: Text(l10n.commonEdit),
               ),
             ],
           ),
@@ -285,7 +287,7 @@ class _PersonalInfoCard extends ConsumerWidget {
                   ? null
                   : [
                       p.maskedPassport,
-                      if (p.passportExpiry != null) 'expires ${Dates.day(p.passportExpiry)}',
+                      if (p.passportExpiry != null) l10n.profilePassportExpires(Dates.day(p.passportExpiry)),
                     ].join(' · ');
               final expiringSoon = p.passportExpiry != null && Dates.daysUntil(p.passportExpiry!) < 180;
               return Column(
@@ -293,28 +295,30 @@ class _PersonalInfoCard extends ConsumerWidget {
                 children: [
                   InfoRow(
                     icon: Icons.cake_outlined,
-                    label: 'Date of birth',
+                    label: l10n.profileDateOfBirth,
                     value: p.dateOfBirth == null ? null : Dates.day(p.dateOfBirth),
                   ),
-                  InfoRow(icon: Icons.wc_rounded, label: 'Gender', value: p.gender?.label),
+                  InfoRow(icon: Icons.wc_rounded, label: l10n.profileGender, value: p.gender?.label),
                   InfoRow(
                     icon: Icons.flag_outlined,
-                    label: 'Nationality',
-                    value: p.nationality == null ? null : '${countryFlag(p.nationality)} ${countryName(p.nationality)}',
+                    label: l10n.profileNationality,
+                    value: p.nationality == null
+                        ? null
+                        : '${countryFlag(p.nationality)} ${countryName(p.nationality, l10n)}',
                   ),
-                  InfoRow(icon: Icons.phone_outlined, label: 'Phone', value: p.phone),
-                  InfoRow(icon: Icons.badge_outlined, label: 'Passport', value: passport),
+                  InfoRow(icon: Icons.phone_outlined, label: l10n.profilePhone, value: p.phone),
+                  InfoRow(icon: Icons.badge_outlined, label: l10n.profilePassport, value: passport),
                   if (expiringSoon)
                     Padding(
-                      padding: const EdgeInsets.only(left: 28, bottom: 4),
+                      padding: const EdgeInsetsDirectional.only(start: 28, bottom: 4),
                       child: Text(
-                        'Your passport must be valid for at least 6 months to apply for an e-Medical visa.',
+                        l10n.profilePassportValidityWarning,
                         style: context.text.bodySmall?.copyWith(color: AppColors.warning),
                       ),
                     ),
                   InfoRow(
                     icon: Icons.contact_emergency_outlined,
-                    label: 'Emergency contact',
+                    label: l10n.profileEmergencyContact,
                     value: ec == null || ec.isEmpty
                         ? null
                         : [
@@ -323,7 +327,7 @@ class _PersonalInfoCard extends ConsumerWidget {
                             ec.phone,
                           ].whereType<String>().join(' '),
                   ),
-                  InfoRow(icon: Icons.bloodtype_outlined, label: 'Blood group', value: p.bloodGroup),
+                  InfoRow(icon: Icons.bloodtype_outlined, label: l10n.profileBloodGroup, value: p.bloodGroup),
                 ],
               );
             },
@@ -341,7 +345,7 @@ class _PreferencesGroup extends ConsumerWidget {
     final current = ref.read(preferredCurrencyProvider);
     final picked = await showChoiceSheet<String>(
       context,
-      title: 'Preferred currency',
+      title: context.l10n.settingsPreferredCurrency,
       options: Currencies.supported,
       selected: current,
       labelOf: (c) => c,
@@ -357,72 +361,52 @@ class _PreferencesGroup extends ConsumerWidget {
     }
   }
 
-  Future<void> _pickLanguage(BuildContext context, WidgetRef ref, String current) async {
-    final picked = await showChoiceSheet<String>(
-      context,
-      title: 'Preferred language',
-      options: kLanguages.keys.toList(),
-      selected: current,
-      labelOf: (c) => kLanguages[c] ?? c,
-    );
-    if (picked == null || picked == current) return;
-    try {
-      final user = await ref.read(authRepositoryProvider).updateMe(preferredLanguage: picked);
-      ref.read(authControllerProvider.notifier).setUser(user);
-      if (context.mounted) {
-        showInfoSnack(context, 'Coordinators and hospitals will contact you in ${kLanguages[picked] ?? picked}.');
-      }
-    } on Object catch (e) {
-      if (context.mounted) showErrorSnack(context, e);
-    }
-  }
-
   Future<void> _pickTheme(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
     final picked = await showChoiceSheet<ThemeMode>(
       context,
-      title: 'Appearance',
+      title: l10n.settingsAppearance,
       options: const [ThemeMode.dark, ThemeMode.light, ThemeMode.system],
       selected: ref.read(themeModeProvider),
-      labelOf: _themeLabel,
+      labelOf: (m) => _themeLabel(l10n, m),
     );
     if (picked != null) await ref.read(themeModeProvider.notifier).set(picked);
   }
 
-  static String _themeLabel(ThemeMode m) => switch (m) {
-    ThemeMode.dark => 'Dark',
-    ThemeMode.light => 'Light',
-    ThemeMode.system => 'Match device',
+  static String _themeLabel(AppLocalizations l10n, ThemeMode m) => switch (m) {
+    ThemeMode.dark => l10n.settingsThemeDark,
+    ThemeMode.light => l10n.settingsThemeLight,
+    ThemeMode.system => l10n.settingsThemeSystem,
   };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final currency = ref.watch(preferredCurrencyProvider);
     final theme = ref.watch(themeModeProvider);
-    final auth = ref.watch(authStateProvider);
-    final language = auth.user?.preferredLanguage ?? 'en';
     return SettingsGroup(
-      title: 'Preferences',
+      title: l10n.settingsPreferences,
       children: [
         SettingsTile(
           icon: Icons.payments_outlined,
-          title: 'Currency',
-          subtitle: 'Prices are shown as estimates in $currency',
+          title: l10n.settingsCurrency,
+          subtitle: l10n.settingsCurrencySubtitle(currency),
           trailing: _Value(currency),
           onTap: () => _pickCurrency(context, ref),
         ),
-        if (auth.isAuthenticated)
-          SettingsTile(
-            icon: Icons.translate_rounded,
-            title: 'Language',
-            color: AppColors.info,
-            trailing: _Value(kLanguages[language] ?? language),
-            onTap: () => _pickLanguage(context, ref, language),
-          ),
+        // App language: saved on the device and, when signed in, to the profile (`preferred_language`).
+        SettingsTile(
+          icon: Icons.translate_rounded,
+          title: l10n.languageSettingTitle,
+          color: AppColors.info,
+          trailing: _Value(currentLanguageName(ref)),
+          onTap: () => showLanguagePicker(context, ref),
+        ),
         SettingsTile(
           icon: Icons.dark_mode_outlined,
-          title: 'Appearance',
+          title: l10n.settingsAppearance,
           color: AppColors.violet,
-          trailing: _Value(_themeLabel(theme)),
+          trailing: _Value(_themeLabel(l10n, theme)),
           onTap: () => _pickTheme(context, ref),
         ),
       ],
@@ -437,44 +421,41 @@ class _SecurityGroup extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final u = user;
     return SettingsGroup(
-      title: 'Security',
+      title: l10n.settingsSecurity,
       children: [
         SettingsTile(
           icon: Icons.lock_reset_rounded,
-          title: 'Change password',
+          title: l10n.passwordChangeTitle,
           color: AppColors.info,
           onTap: () async {
             final changed = await showChangePasswordSheet(context);
             if (changed && context.mounted) {
-              showInfoSnack(context, 'Password updated. Other devices have been signed out.');
+              showInfoSnack(context, context.l10n.passwordUpdatedSnack);
             }
           },
         ),
         if (u != null && !u.emailVerified && (u.email ?? '').isNotEmpty)
           SettingsTile(
             icon: Icons.mark_email_unread_outlined,
-            title: 'Verify your email',
-            subtitle: 'Check ${u.email} for the verification link',
+            title: l10n.accountVerifyEmail,
+            subtitle: l10n.accountVerifyEmailSubtitle(u.email!),
             color: AppColors.warning,
             trailing: TextButton(
               onPressed: () async {
                 try {
                   await ref.read(authRepositoryProvider).resendVerification();
-                  if (context.mounted) showInfoSnack(context, 'Verification email sent');
+                  if (context.mounted) showInfoSnack(context, context.l10n.accountVerificationSent);
                 } on Object catch (e) {
                   if (context.mounted) showErrorSnack(context, e);
                 }
               },
-              child: const Text('Resend'),
+              child: Text(l10n.accountResend),
             ),
           ),
-        const SettingsTile(
-          icon: Icons.shield_outlined,
-          title: 'Your data',
-          subtitle: 'Medical data is encrypted and shared only with hospitals you choose.',
-        ),
+        SettingsTile(icon: Icons.shield_outlined, title: l10n.accountYourData, subtitle: l10n.accountYourDataSubtitle),
       ],
     );
   }
@@ -495,22 +476,21 @@ class _LogoutButtonState extends ConsumerState<_LogoutButton> {
   Future<void> _logout() async {
     final ok = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(widget.isGuest ? 'Exit guest mode?' : 'Log out?'),
-        content: Text(
-          widget.isGuest
-              ? 'Your guest screenings will be lost unless you create an account first.'
-              : 'You can log back in any time with your email and password.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(widget.isGuest ? 'Exit' : 'Log out'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final l10n = context.l10n;
+        return AlertDialog(
+          title: Text(widget.isGuest ? l10n.accountExitGuestTitle : l10n.accountLogOutTitle),
+          content: Text(widget.isGuest ? l10n.accountExitGuestBody : l10n.accountLogOutBody),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(widget.isGuest ? l10n.accountExit : l10n.commonLogOut),
+            ),
+          ],
+        );
+      },
     );
     if (ok != true || !mounted) return;
     final router = GoRouter.of(context);
@@ -527,8 +507,9 @@ class _LogoutButtonState extends ConsumerState<_LogoutButton> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return SecondaryButton(
-      label: widget.isGuest ? 'Exit guest mode' : 'Log out',
+      label: widget.isGuest ? l10n.accountExitGuestMode : l10n.commonLogOut,
       icon: Icons.logout_rounded,
       loading: _loading,
       foregroundColor: AppColors.danger,

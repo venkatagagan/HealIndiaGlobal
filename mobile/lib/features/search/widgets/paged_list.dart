@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Infinite-scrolling list over a paginated endpoint (`Page[...]`, PLAN §3).
 ///
@@ -104,7 +105,7 @@ class _PagedListState<T> extends State<PagedList<T>> {
               : Padding(
                   padding: const EdgeInsets.all(16),
                   child: Center(
-                    child: Text('$_total result${_total == 1 ? '' : 's'}', style: Theme.of(context).textTheme.bodySmall),
+                    child: Text(context.l10n.searchResultCount(_total), style: Theme.of(context).textTheme.bodySmall),
                   ),
                 ));
     return NotificationListener<ScrollNotification>(

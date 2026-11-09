@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import 'doctor.dart';
 import 'hospital.dart';
 import 'json.dart';
@@ -86,7 +87,7 @@ class ScreeningMatch {
   final MatchSavings? savings;
 
   /// `95% Match`
-  String get matchLabel => '${matchScore.round()}% Match';
+  String get matchLabel => L10n.current.coreMatchScore(matchScore.round());
 
   Map<String, dynamic> toJson() => {
     'id': id,

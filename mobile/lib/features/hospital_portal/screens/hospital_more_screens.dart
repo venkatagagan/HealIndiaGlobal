@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../agent_portal/shared/portal_account_menu.dart';
 import '../../agent_portal/shared/portal_api.dart';
 import '../../agent_portal/shared/portal_widgets.dart';
@@ -28,6 +29,7 @@ class HospitalMoreScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     final hospitals = user?.hospitals ?? const <UserHospital>[];
     final active = ref.watch(activeHospitalProvider);
+    final l10n = context.l10n;
     Widget link(IconData icon, String title, String subtitle, String route, {Key? key}) => AppCard(
       key: key,
       margin: const EdgeInsets.only(bottom: 10),
@@ -50,7 +52,7 @@ class HospitalMoreScreen extends ConsumerWidget {
       ),
     );
     return Scaffold(
-      appBar: AppBar(title: const Text('More')),
+      appBar: AppBar(title: Text(l10n.hpTabMore)),
       body: ListView(
         padding: AppSpacing.pageAll,
         children: [
@@ -78,23 +80,23 @@ class HospitalMoreScreen extends ConsumerWidget {
               ],
             ),
           ),
-          link(Icons.route_outlined, 'Itineraries', 'Appointments, surgery slots, pickups', HospitalRoutes.itineraries),
+          link(Icons.route_outlined, l10n.hpItineraries, l10n.hpMoreItinerariesSubtitle, HospitalRoutes.itineraries),
           link(
             Icons.assignment_ind_outlined,
-            'Visa invitation letters',
-            'Medical visa requests from patients',
+            l10n.hpVisaLettersTitle,
+            l10n.hpMoreVisasSubtitle,
             HospitalRoutes.visas,
             key: const ValueKey('hospital-more-visas'),
           ),
-          link(Icons.badge_outlined, 'Doctors', 'Your specialists and their profiles', HospitalRoutes.doctors),
+          link(Icons.badge_outlined, l10n.hpDoctorsTitle, l10n.hpMoreDoctorsSubtitle, HospitalRoutes.doctors),
           link(
             Icons.price_change_outlined,
-            'Price list',
-            'Procedures, price ranges and packages',
+            l10n.priceListTitle,
+            l10n.hpMorePriceListSubtitle,
             HospitalRoutes.priceList,
           ),
           if (hospitals.length > 1) ...[
-            const SectionTitle('Acting for'),
+            SectionTitle(l10n.hpActingFor),
             for (final h in hospitals)
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -108,13 +110,10 @@ class HospitalMoreScreen extends ConsumerWidget {
               ),
           ],
           const SizedBox(height: 16),
-          Text(
-            'Profile, members, availability and price edits are available on the hospital web portal.',
-            style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
-          ),
+          Text(l10n.hpWebPortalNote, style: context.text.bodySmall?.copyWith(color: context.palette.textMuted)),
           const SizedBox(height: 12),
           SecondaryButton(
-            label: 'Log out',
+            label: l10n.commonLogOut,
             icon: Icons.logout_rounded,
             onPressed: () => ref.read(authControllerProvider.notifier).logout(),
           ),
@@ -123,7 +122,7 @@ class HospitalMoreScreen extends ConsumerWidget {
             key: const ValueKey('hospital-delete-account'),
             onPressed: () => confirmDeletePortalAccount(context),
             icon: const Icon(Icons.delete_forever_outlined, color: AppColors.danger),
-            label: const Text('Delete account', style: TextStyle(color: AppColors.danger)),
+            label: Text(l10n.commonDeleteAccount, style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
@@ -147,8 +146,9 @@ class _VisaRequestsScreenState extends ConsumerState<VisaRequestsScreen> {
   @override
   Widget build(BuildContext context) {
     final visas = ref.watch(hospitalVisasProvider(_status));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Visa invitation letters')),
+      appBar: AppBar(title: Text(l10n.hpVisaLettersTitle)),
       body: Column(
         children: [
           StatusFilterBar<VisaStatus>(
@@ -165,7 +165,7 @@ class _VisaRequestsScreenState extends ConsumerState<VisaRequestsScreen> {
                 onRetry: () => ref.invalidate(hospitalVisasProvider(_status)),
                 data: (list) => list.isEmpty
                     ? ListView(
-                        children: const [EmptyView(title: 'No visa requests', icon: Icons.assignment_ind_outlined)],
+                        children: [EmptyView(title: l10n.hpNoVisaRequests, icon: Icons.assignment_ind_outlined)],
                       )
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
@@ -181,7 +181,7 @@ class _VisaRequestsScreenState extends ConsumerState<VisaRequestsScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          v.patientName ?? 'Patient',
+                                          v.patientName ?? l10n.hpPatientFallback,
                                           style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                                         ),
                                         Text(
@@ -194,7 +194,7 @@ class _VisaRequestsScreenState extends ConsumerState<VisaRequestsScreen> {
                                         ),
                                         if (v.needsInvitation)
                                           Text(
-                                            'Invitation letter needed',
+                                            l10n.hpInvitationLetterNeeded,
                                             style: context.text.labelSmall?.copyWith(color: AppColors.warning),
                                           ),
                                       ],
@@ -306,13 +306,17 @@ class _VisaSheetState extends ConsumerState<_VisaSheet> {
   @override
   Widget build(BuildContext context) {
     final v = widget.visa;
+    final l10n = context.l10n;
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(v.patientName ?? 'Visa request', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          Text(
+            v.patientName ?? l10n.hpVisaRequestFallback,
+            style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
           Text(
             '${v.caseNumber ?? ''} · ${v.visaType.label}',
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
@@ -328,12 +332,16 @@ class _VisaSheetState extends ConsumerState<_VisaSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    _letterId == null ? 'No invitation letter yet' : 'Invitation letter: ${_letterName ?? 'uploaded'}',
+                    _letterId == null
+                        ? l10n.hpNoInvitationLetterYet
+                        : _letterName == null
+                        ? l10n.hpInvitationLetterUploaded
+                        : l10n.hpInvitationLetterNamed(_letterName!),
                   ),
                 ),
                 TextButton(
                   onPressed: _busy ? null : _uploadLetter,
-                  child: Text(_letterId == null ? 'Upload' : 'Replace'),
+                  child: Text(_letterId == null ? l10n.commonUpload : l10n.hpReplace),
                 ),
               ],
             ),
@@ -341,23 +349,23 @@ class _VisaSheetState extends ConsumerState<_VisaSheet> {
           const SizedBox(height: 12),
           DropdownButtonFormField<VisaStatus>(
             initialValue: _status,
-            decoration: const InputDecoration(labelText: 'Status'),
+            decoration: InputDecoration(labelText: l10n.hpStatusLabel),
             items: [for (final s in VisaStatus.values) DropdownMenuItem(value: s, child: Text(s.label))],
             onChanged: (s) => setState(() => _status = s ?? _status),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _reference,
-            decoration: const InputDecoration(labelText: 'e-Visa application reference'),
+            decoration: InputDecoration(labelText: l10n.hpEvisaReferenceLabel),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _notes,
             maxLines: 2,
-            decoration: const InputDecoration(labelText: 'Notes'),
+            decoration: InputDecoration(labelText: l10n.hpNotesLabel),
           ),
           const SizedBox(height: 16),
-          PrimaryButton(label: 'Save', loading: _busy, onPressed: _busy ? null : _save),
+          PrimaryButton(label: l10n.commonSave, loading: _busy, onPressed: _busy ? null : _save),
         ],
       ),
     );
@@ -372,13 +380,14 @@ class HospitalDoctorsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Doctors')),
+      appBar: AppBar(title: Text(l10n.hpDoctorsTitle)),
       body: AsyncValueView(
         value: ref.watch(hospitalDoctorsProvider),
         onRetry: () => ref.invalidate(hospitalDoctorsProvider),
         data: (list) => list.isEmpty
-            ? const EmptyView(title: 'No doctors listed', icon: Icons.badge_outlined)
+            ? EmptyView(title: l10n.hpNoDoctorsListed, icon: Icons.badge_outlined)
             : ListView(
                 padding: AppSpacing.pageAll,
                 children: [
@@ -398,7 +407,7 @@ class HospitalDoctorsScreen extends ConsumerWidget {
                                 Text(
                                   [
                                     ?d.specialty?.name,
-                                    if (d.experienceYears != null) '${d.experienceYears} yrs',
+                                    if (d.experienceYears != null) l10n.hpYearsShort(d.experienceYears!),
                                     if (d.qualifications.isNotEmpty) d.qualifications.join(', '),
                                   ].join(' · '),
                                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
@@ -411,10 +420,10 @@ class HospitalDoctorsScreen extends ConsumerWidget {
                                     if (d.ratingAvg != null)
                                       RatingStars(rating: d.ratingAvg!, count: d.ratingCount, size: 14),
                                     if (d.teleconsultAvailable)
-                                      const StatusBadge(label: 'Tele-consult', dense: true, color: AppColors.info),
+                                      StatusBadge(label: l10n.hpTeleconsultBadge, dense: true, color: AppColors.info),
                                     if (d.consultationFeeMinor != null)
                                       StatusBadge(
-                                        label: 'Fee ${money(d.consultationFeeMinor!, d.currency)}',
+                                        label: l10n.hpConsultationFee(money(d.consultationFeeMinor!, d.currency)),
                                         dense: true,
                                         color: AppColors.violet,
                                       ),
@@ -441,13 +450,14 @@ class PriceListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Price list')),
+      appBar: AppBar(title: Text(l10n.priceListTitle)),
       body: AsyncValueView(
         value: ref.watch(hospitalProceduresProvider),
         onRetry: () => ref.invalidate(hospitalProceduresProvider),
         data: (list) => list.isEmpty
-            ? const EmptyView(title: 'No procedures priced yet', icon: Icons.price_change_outlined)
+            ? EmptyView(title: l10n.priceListEmpty, icon: Icons.price_change_outlined)
             : ListView(
                 padding: AppSpacing.pageAll,
                 children: [
@@ -473,8 +483,9 @@ class PriceListScreen extends ConsumerWidget {
                           ),
                           Text(
                             [
-                              if (p.hospitalStayDays != null) '${p.hospitalStayDays} day stay',
-                              if (p.successRatePct != null) '${p.successRatePct!.toStringAsFixed(0)}% success',
+                              if (p.hospitalStayDays != null) l10n.priceListStayDays(p.hospitalStayDays!),
+                              if (p.successRatePct != null)
+                                l10n.priceListSuccessRate(p.successRatePct!.toStringAsFixed(0)),
                             ].join(' · '),
                             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                           ),

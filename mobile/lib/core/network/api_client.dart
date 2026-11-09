@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../auth/token_storage.dart';
 import '../config/env.dart';
 import '../models/json.dart';
@@ -147,7 +148,7 @@ class ApiClient {
     CancelToken? cancelToken,
   }) async {
     if (bytes == null && filePath == null) {
-      throw const ApiException(statusCode: 0, code: 'bad_request', message: 'No file selected.');
+      throw ApiException(statusCode: 0, code: 'bad_request', message: L10n.current.coreNoFileSelected);
     }
     final mediaType = contentType == null ? null : DioMediaType.parse(contentType);
     final MultipartFile file = bytes != null

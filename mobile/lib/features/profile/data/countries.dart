@@ -1,8 +1,13 @@
 /// ISO-3166 alpha-2 countries offered in nationality / residence pickers (patients' main source
 /// markets first are not special-cased; the list is alphabetical). Unknown stored codes are still
-/// displayed as-is by [countryName].
+/// displayed as-is by [countryName]. The ISO codes are the wire values; names shown to users come
+/// from the ARB keys `country<ISO2>` (e.g. `countryIN`).
 library;
 
+import '../../../l10n/l10n.dart';
+
+/// Codes with their English names (the source text of the `country<ISO2>` keys), alphabetical in English.
+/// For display use [countryName] / [countryOptions].
 const Map<String, String> kCountries = {
   'AF': 'Afghanistan',
   'DZ': 'Algeria',
@@ -152,11 +157,171 @@ const Map<String, String> kCountries = {
   'ZW': 'Zimbabwe',
 };
 
-/// Display name for an ISO-2 code (falls back to the code itself).
-String countryName(String? code) {
+/// Display name for an ISO-2 code in the app language ([l], or [L10n.current] when omitted); falls back to
+/// the code itself for unknown codes.
+String countryName(String? code, [AppLocalizations? l]) {
   if (code == null || code.isEmpty) return '';
-  return kCountries[code.toUpperCase()] ?? code.toUpperCase();
+  final upper = code.toUpperCase();
+  return _localizedCountry(l ?? L10n.current, upper) ?? kCountries[upper] ?? upper;
 }
+
+/// Picker options: ISO code -> localized name, sorted by the localized name.
+List<MapEntry<String, String>> countryOptions(AppLocalizations l) {
+  final list = [for (final code in kCountries.keys) MapEntry(code, countryName(code, l))];
+  list.sort((a, b) => a.value.compareTo(b.value));
+  return list;
+}
+
+/// Localized name of a known ISO-2 code (null when unknown).
+String? _localizedCountry(AppLocalizations l, String code) => switch (code) {
+  'AF' => l.countryAF,
+  'DZ' => l.countryDZ,
+  'AO' => l.countryAO,
+  'AR' => l.countryAR,
+  'AM' => l.countryAM,
+  'AU' => l.countryAU,
+  'AT' => l.countryAT,
+  'AZ' => l.countryAZ,
+  'BH' => l.countryBH,
+  'BD' => l.countryBD,
+  'BY' => l.countryBY,
+  'BE' => l.countryBE,
+  'BT' => l.countryBT,
+  'BW' => l.countryBW,
+  'BR' => l.countryBR,
+  'BN' => l.countryBN,
+  'BG' => l.countryBG,
+  'BI' => l.countryBI,
+  'KH' => l.countryKH,
+  'CM' => l.countryCM,
+  'CA' => l.countryCA,
+  'TD' => l.countryTD,
+  'CL' => l.countryCL,
+  'CN' => l.countryCN,
+  'CO' => l.countryCO,
+  'CD' => l.countryCD,
+  'CI' => l.countryCI,
+  'HR' => l.countryHR,
+  'CY' => l.countryCY,
+  'CZ' => l.countryCZ,
+  'DK' => l.countryDK,
+  'DJ' => l.countryDJ,
+  'EG' => l.countryEG,
+  'ER' => l.countryER,
+  'EE' => l.countryEE,
+  'ET' => l.countryET,
+  'FJ' => l.countryFJ,
+  'FI' => l.countryFI,
+  'FR' => l.countryFR,
+  'GA' => l.countryGA,
+  'GM' => l.countryGM,
+  'GE' => l.countryGE,
+  'DE' => l.countryDE,
+  'GH' => l.countryGH,
+  'GR' => l.countryGR,
+  'GN' => l.countryGN,
+  'GY' => l.countryGY,
+  'HK' => l.countryHK,
+  'HU' => l.countryHU,
+  'IS' => l.countryIS,
+  'IN' => l.countryIN,
+  'ID' => l.countryID,
+  'IR' => l.countryIR,
+  'IQ' => l.countryIQ,
+  'IE' => l.countryIE,
+  'IL' => l.countryIL,
+  'IT' => l.countryIT,
+  'JM' => l.countryJM,
+  'JP' => l.countryJP,
+  'JO' => l.countryJO,
+  'KZ' => l.countryKZ,
+  'KE' => l.countryKE,
+  'KW' => l.countryKW,
+  'KG' => l.countryKG,
+  'LA' => l.countryLA,
+  'LV' => l.countryLV,
+  'LB' => l.countryLB,
+  'LS' => l.countryLS,
+  'LR' => l.countryLR,
+  'LY' => l.countryLY,
+  'LT' => l.countryLT,
+  'LU' => l.countryLU,
+  'MG' => l.countryMG,
+  'MW' => l.countryMW,
+  'MY' => l.countryMY,
+  'MV' => l.countryMV,
+  'ML' => l.countryML,
+  'MT' => l.countryMT,
+  'MR' => l.countryMR,
+  'MU' => l.countryMU,
+  'MX' => l.countryMX,
+  'MD' => l.countryMD,
+  'MN' => l.countryMN,
+  'MA' => l.countryMA,
+  'MZ' => l.countryMZ,
+  'MM' => l.countryMM,
+  'NA' => l.countryNA,
+  'NP' => l.countryNP,
+  'NL' => l.countryNL,
+  'NZ' => l.countryNZ,
+  'NE' => l.countryNE,
+  'NG' => l.countryNG,
+  'NO' => l.countryNO,
+  'OM' => l.countryOM,
+  'PK' => l.countryPK,
+  'PS' => l.countryPS,
+  'PA' => l.countryPA,
+  'PG' => l.countryPG,
+  'PE' => l.countryPE,
+  'PH' => l.countryPH,
+  'PL' => l.countryPL,
+  'PT' => l.countryPT,
+  'QA' => l.countryQA,
+  'RO' => l.countryRO,
+  'RU' => l.countryRU,
+  'RW' => l.countryRW,
+  'SA' => l.countrySA,
+  'SN' => l.countrySN,
+  'RS' => l.countryRS,
+  'SC' => l.countrySC,
+  'SL' => l.countrySL,
+  'SG' => l.countrySG,
+  'SK' => l.countrySK,
+  'SI' => l.countrySI,
+  'SO' => l.countrySO,
+  'ZA' => l.countryZA,
+  'KR' => l.countryKR,
+  'SS' => l.countrySS,
+  'ES' => l.countryES,
+  'LK' => l.countryLK,
+  'SD' => l.countrySD,
+  'SR' => l.countrySR,
+  'SE' => l.countrySE,
+  'CH' => l.countryCH,
+  'SY' => l.countrySY,
+  'TW' => l.countryTW,
+  'TJ' => l.countryTJ,
+  'TZ' => l.countryTZ,
+  'TH' => l.countryTH,
+  'TG' => l.countryTG,
+  'TT' => l.countryTT,
+  'TN' => l.countryTN,
+  'TR' => l.countryTR,
+  'TM' => l.countryTM,
+  'UG' => l.countryUG,
+  'UA' => l.countryUA,
+  'AE' => l.countryAE,
+  'GB' => l.countryGB,
+  'US' => l.countryUS,
+  'UY' => l.countryUY,
+  'UZ' => l.countryUZ,
+  'VE' => l.countryVE,
+  'VN' => l.countryVN,
+  'YE' => l.countryYE,
+  'ZM' => l.countryZM,
+  'ZW' => l.countryZW,
+  _ => null,
+};
 
 /// Regional-indicator flag emoji for an ISO-2 code (`IN` -> 🇮🇳).
 String countryFlag(String? code) {
@@ -167,15 +332,3 @@ String countryFlag(String? code) {
   if (a < 65 || a > 90 || b < 65 || b > 90) return '';
   return String.fromCharCodes([0x1F1E6 + a - 65, 0x1F1E6 + b - 65]);
 }
-
-/// App UI / communication languages a patient can choose (`preferred_language`).
-const Map<String, String> kLanguages = {
-  'en': 'English',
-  'ar': 'Arabic',
-  'fr': 'French',
-  'hi': 'Hindi',
-  'es': 'Spanish',
-  'ru': 'Russian',
-  'bn': 'Bengali',
-  'sw': 'Swahili',
-};

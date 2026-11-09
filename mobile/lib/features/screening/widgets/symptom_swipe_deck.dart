@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 
 /// Color of a symptom answer (no = red, maybe = amber, yes = green).
 Color answerColor(SymptomAnswer a) => switch (a) {
@@ -12,8 +13,9 @@ Color answerColor(SymptomAnswer a) => switch (a) {
   SymptomAnswer.yes => AppColors.primary,
 };
 
-/// Stack of swipeable symptom cards. Swipe right = yes, left = no, up = maybe, or tap the
-/// X / - / check buttons.
+/// Stack of swipeable symptom cards. Swipe towards the end side = yes (right in LTR, left in RTL),
+/// towards the start side = no, up = maybe, or tap the X / - / check buttons (which follow the same
+/// reading direction).
 class SymptomSwipeDeck extends StatefulWidget {
   const SymptomSwipeDeck({super.key, required this.symptoms, required this.onAnswer, this.emptyMessage});
 
@@ -57,9 +59,13 @@ class _SymptomSwipeDeckState extends State<SymptomSwipeDeck> with SingleTickerPr
     super.dispose();
   }
 
+  /// 1 in left-to-right layouts, -1 in right-to-left ones ("yes" is always towards the end side).
+  double get _dir => Directionality.of(context) == TextDirection.rtl ? -1 : 1;
+
   SymptomAnswer? get _hint {
-    if (_drag.dx > _threshold / 2) return SymptomAnswer.yes;
-    if (_drag.dx < -_threshold / 2) return SymptomAnswer.no;
+    final dx = _drag.dx * _dir;
+    if (dx > _threshold / 2) return SymptomAnswer.yes;
+    if (dx < -_threshold / 2) return SymptomAnswer.no;
     if (_drag.dy < -_threshold / 2) return SymptomAnswer.maybe;
     return null;
   }
@@ -74,7 +80,7 @@ class _SymptomSwipeDeckState extends State<SymptomSwipeDeck> with SingleTickerPr
 
   void _answer(SymptomAnswer a) {
     if (widget.symptoms.isEmpty) return;
-    final w = MediaQuery.sizeOf(context).width;
+    final w = MediaQuery.sizeOf(context).width * _dir;
     _animateTo(switch (a) {
       SymptomAnswer.yes => Offset(w, 0),
       SymptomAnswer.no => Offset(-w, 0),
@@ -83,8 +89,9 @@ class _SymptomSwipeDeckState extends State<SymptomSwipeDeck> with SingleTickerPr
   }
 
   void _onPanEnd(DragEndDetails d) {
-    if (_drag.dx > _threshold) return _answer(SymptomAnswer.yes);
-    if (_drag.dx < -_threshold) return _answer(SymptomAnswer.no);
+    final dx = _drag.dx * _dir;
+    if (dx > _threshold) return _answer(SymptomAnswer.yes);
+    if (dx < -_threshold) return _answer(SymptomAnswer.no);
     if (_drag.dy < -_threshold) return _answer(SymptomAnswer.maybe);
     _animateTo(Offset.zero, null);
   }
@@ -103,7 +110,7 @@ class _SymptomSwipeDeckState extends State<SymptomSwipeDeck> with SingleTickerPr
             clipBehavior: Clip.none,
             children: [
               if (!hasCards)
-                _EmptyCard(message: widget.emptyMessage ?? 'All suggestions answered. Add anything else below.')
+                _EmptyCard(message: widget.emptyMessage ?? context.l10n.symptomDeckAllAnswered)
               else ...[
                 if (items.length > 1)
                   Transform.translate(
@@ -152,7 +159,7 @@ class _SymptomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hintColor = hint == null ? null : answerColor(hint!);
     return Semantics(
-      label: '$name. Do you have this symptom? Swipe right for yes, left for no, up for maybe.',
+      label: context.l10n.symptomCardSemantics(name),
       excludeSemantics: true,
       child: Container(
         width: 280,
@@ -189,13 +196,16 @@ class _SymptomCard extends StatelessWidget {
                           style: context.text.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 4),
-                        Text('Swipe or tap to answer', style: context.text.labelSmall?.copyWith(color: Colors.white70)),
+                        Text(
+                          context.l10n.symptomSwipeOrTap,
+                          style: context.text.labelSmall?.copyWith(color: Colors.white70),
+                        ),
                       ],
                     ),
                   ),
                   if (hint != null)
                     Align(
-                      alignment: Alignment.topRight,
+                      alignment: AlignmentDirectional.topEnd,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
@@ -260,7 +270,7 @@ class _AnswerButton extends StatelessWidget {
       child: Semantics(
         button: true,
         enabled: enabled,
-        label: 'Answer ${answer.label}',
+        label: context.l10n.symptomAnswerSemantics(answer.label),
         excludeSemantics: true,
         child: Material(
           color: c.withValues(alpha: enabled ? 0.28 : 0.1),

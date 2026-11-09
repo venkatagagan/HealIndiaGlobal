@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
 /// Read-only star rating with optional "(4.8/5 from 230 reviews)" caption.
@@ -35,9 +36,12 @@ class RatingStars extends StatelessWidget {
           ),
         ),
     ];
-    final caption = count == null ? '(${r.toStringAsFixed(1)}/5)' : '(${r.toStringAsFixed(1)}/5 from $count reviews)';
+    final l10n = context.l10n;
+    final value = r.toStringAsFixed(1);
+    final reviews = count;
+    final caption = reviews == null ? l10n.coreRatingCaption(value) : l10n.coreRatingCaptionReviews(reviews, value);
     return Semantics(
-      label: 'Rated ${r.toStringAsFixed(1)} out of 5${count == null ? '' : ' from $count reviews'}',
+      label: reviews == null ? l10n.coreRatingSemantics(value) : l10n.coreRatingSemanticsReviews(reviews, value),
       excludeSemantics: onChanged == null,
       child: Row(
         mainAxisSize: MainAxisSize.min,

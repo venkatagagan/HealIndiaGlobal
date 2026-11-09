@@ -9,6 +9,7 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/document_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// A file chosen by the user, read into memory (works on web and mobile).
 class PickedFile {
@@ -29,11 +30,11 @@ Future<PickedFile?> pickDocumentFile() async {
   final file = files.first;
   final size = await file.length();
   if (size != null && size > DocumentRepository.maxUploadBytes) {
-    throw const ApiException(statusCode: 0, code: 'validation_error', message: 'File is too large (max 20 MB).');
+    throw ApiException(statusCode: 0, code: 'validation_error', message: L10n.current.documentsFileTooLarge);
   }
   final bytes = await file.readAsBytes();
   if (bytes.length > DocumentRepository.maxUploadBytes) {
-    throw const ApiException(statusCode: 0, code: 'validation_error', message: 'File is too large (max 20 MB).');
+    throw ApiException(statusCode: 0, code: 'validation_error', message: L10n.current.documentsFileTooLarge);
   }
   return PickedFile(name: file.name, bytes: bytes);
 }
@@ -54,7 +55,7 @@ Future<void> downloadDocument(BuildContext context, DocumentRepository repo, App
   try {
     final bytes = await repo.download(doc.id);
     final saved = await saveBytes(fileName: doc.fileName, bytes: bytes, mimeType: doc.contentType);
-    if (saved && context.mounted) showInfoSnack(context, 'Saved ${doc.fileName}');
+    if (saved && context.mounted) showInfoSnack(context, context.l10n.documentsSaved(doc.fileName));
   } catch (e) {
     if (context.mounted) showErrorSnack(context, e);
   }
@@ -77,7 +78,7 @@ Future<void> openDocument(BuildContext context, DocumentRepository repo, AppDocu
               ListTile(
                 title: Text(doc.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
                 trailing: IconButton(
-                  tooltip: 'Close',
+                  tooltip: ctx.l10n.commonClose,
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () => Navigator.of(ctx).pop(),
                 ),
@@ -87,10 +88,8 @@ Future<void> openDocument(BuildContext context, DocumentRepository repo, AppDocu
                   child: Image.memory(
                     bytes,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) => const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Text('This image format cannot be previewed. Use Download instead.'),
-                    ),
+                    errorBuilder: (_, _, _) =>
+                        Padding(padding: const EdgeInsets.all(24), child: Text(ctx.l10n.documentsPreviewUnavailable)),
                   ),
                 ),
               ),
@@ -109,9 +108,9 @@ Future<void> openDocument(BuildContext context, DocumentRepository repo, AppDocu
     if (uri == null) return;
     if (uri.scheme == 'file' || uri.scheme == 'content') {
       final opened = await launchUrl(uri).catchError((_) => false);
-      if (!opened && context.mounted) showInfoSnack(context, 'Saved ${doc.fileName}');
+      if (!opened && context.mounted) showInfoSnack(context, context.l10n.documentsSaved(doc.fileName));
     } else if (context.mounted) {
-      showInfoSnack(context, 'Saved ${doc.fileName}');
+      showInfoSnack(context, context.l10n.documentsSaved(doc.fileName));
     }
   } catch (e) {
     if (context.mounted) showErrorSnack(context, e);
@@ -152,7 +151,7 @@ Future<DocumentKind?> pickDocumentKind(BuildContext context, {DocumentKind? init
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-            child: Text('What are you uploading?', style: ctx.text.titleMedium),
+            child: Text(ctx.l10n.documentsWhatAreYouUploading, style: ctx.text.titleMedium),
           ),
           for (final k in patientUploadKinds)
             ListTile(

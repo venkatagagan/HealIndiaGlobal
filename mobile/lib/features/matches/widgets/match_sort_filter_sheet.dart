@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
+import '../../search/providers/search_providers.dart' show filterLanguageLabel;
 import '../providers/match_view.dart';
 
 /// Result of [showMatchSortFilterSheet].
@@ -56,6 +58,7 @@ class _SortFilterSheetState extends State<_SortFilterSheet> {
   Widget build(BuildContext context) {
     final languages = _languages;
     final cities = _cities;
+    final l10n = context.l10n;
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.85),
@@ -63,34 +66,38 @@ class _SortFilterSheetState extends State<_SortFilterSheet> {
           shrinkWrap: true,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           children: [
-            Text('Sort by', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+            Text(l10n.matchSortBy, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             RadioGroup<MatchSort>(
               groupValue: _sort,
               onChanged: (v) => setState(() => _sort = v ?? _sort),
               child: Column(
                 children: [
                   for (final s in MatchSort.values)
-                    RadioListTile<MatchSort>(value: s, contentPadding: EdgeInsets.zero, title: Text(s.label)),
+                    RadioListTile<MatchSort>(
+                      value: s,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(s.localizedLabel(l10n)),
+                    ),
                 ],
               ),
             ),
             const SizedBox(height: 8),
-            Text('Filter', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+            Text(l10n.matchFilterTitle, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
-              title: const Text('JCI accredited hospitals only'),
+              title: Text(l10n.matchFilterJciOnly),
               value: _filters.jciOnly,
               onChanged: (v) => setState(() => _filters = _filters.copyWith(jciOnly: v)),
             ),
             SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Offers video consultation'),
+              title: Text(l10n.matchFilterVideoConsult),
               value: _filters.teleconsultOnly,
               onChanged: (v) => setState(() => _filters = _filters.copyWith(teleconsultOnly: v)),
             ),
             if (languages.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text('Speaks', style: context.text.labelLarge),
+              Text(l10n.matchFilterSpeaks, style: context.text.labelLarge),
               const SizedBox(height: 8),
               ChipToggleGroup<String>(
                 options: languages,
@@ -99,14 +106,14 @@ class _SortFilterSheetState extends State<_SortFilterSheet> {
                   for (final l in languages)
                     if (_filters.languages.contains(l.toLowerCase())) l,
                 },
-                labelOf: (l) => l,
+                labelOf: (l) => filterLanguageLabel(l, l10n),
                 onChanged: (s) =>
                     setState(() => _filters = _filters.copyWith(languages: {for (final l in s) l.toLowerCase()})),
               ),
             ],
             if (cities.length > 1) ...[
               const SizedBox(height: 16),
-              Text('City', style: context.text.labelLarge),
+              Text(l10n.filtersCityLabel, style: context.text.labelLarge),
               const SizedBox(height: 8),
               ChipToggleGroup<String>(
                 options: cities,
@@ -125,7 +132,7 @@ class _SortFilterSheetState extends State<_SortFilterSheet> {
               children: [
                 Expanded(
                   child: SecondaryButton(
-                    label: 'Reset',
+                    label: l10n.commonReset,
                     onPressed: () =>
                         Navigator.of(context).pop((sort: MatchSort.bestMatch, filters: const MatchFilters())),
                   ),
@@ -133,7 +140,7 @@ class _SortFilterSheetState extends State<_SortFilterSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: PrimaryButton(
-                    label: 'Apply',
+                    label: l10n.commonApply,
                     onPressed: () => Navigator.of(context).pop((sort: _sort, filters: _filters)),
                   ),
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Asks for consent to AI processing of the questionnaire (PLAN §9.9, `consent_ai`).
 ///
@@ -19,6 +20,7 @@ class _AiConsentSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     Widget point(IconData icon, String text) => Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -48,35 +50,25 @@ class _AiConsentSheet extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Use AI recommendations?',
+                    l10n.consentAiTitle,
                     style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            point(
-              Icons.description_outlined,
-              'Your answers (and any reports you attached) are sent to our AI service to suggest relevant '
-              'specialties, procedures and questions for your doctor.',
-            ),
-            point(
-              Icons.medical_information_outlined,
-              'This is not a diagnosis. A qualified doctor at the hospital reviews your case before any treatment.',
-            ),
-            point(
-              Icons.lock_outline_rounded,
-              'Your data is used only for this screening and is never sold. You can withdraw consent in your profile.',
-            ),
-            point(Icons.rule_rounded, 'Prefer not to? We will match you with our standard rules-based engine instead.'),
+            point(Icons.description_outlined, l10n.consentAiPointData),
+            point(Icons.medical_information_outlined, l10n.consentAiPointNotDiagnosis),
+            point(Icons.lock_outline_rounded, l10n.consentAiPointPrivacy),
+            point(Icons.rule_rounded, l10n.consentAiPointAlternative),
             const SizedBox(height: 8),
             PrimaryButton(
-              label: 'I agree, use AI',
+              label: l10n.consentAiAgree,
               tone: ButtonTone.violet,
               onPressed: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: 10),
-            SecondaryButton(label: 'Use standard matching', onPressed: () => Navigator.of(context).pop(false)),
+            SecondaryButton(label: l10n.consentAiDecline, onPressed: () => Navigator.of(context).pop(false)),
           ],
         ),
       ),

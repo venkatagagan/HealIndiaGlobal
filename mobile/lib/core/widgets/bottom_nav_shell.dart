@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n.dart';
+
 /// Bottom navigation tab definition.
 class NavTab {
-  const NavTab({required this.label, required this.icon, required this.selectedIcon});
+  const NavTab({required this.labelOf, required this.icon, required this.selectedIcon});
 
-  final String label;
+  /// Tab label in the language of the given strings.
+  final String Function(AppLocalizations l10n) labelOf;
   final IconData icon;
   final IconData selectedIcon;
+
+  /// Label in the app's current language.
+  String get label => labelOf(L10n.current);
 }
+
+String _homeLabel(AppLocalizations l) => l.navHome;
+String _searchLabel(AppLocalizations l) => l.navSearch;
+String _tripsLabel(AppLocalizations l) => l.navTrips;
+String _messagesLabel(AppLocalizations l) => l.navMessages;
+String _profileLabel(AppLocalizations l) => l.navProfile;
 
 /// The five patient tabs (order = StatefulShellRoute branch order).
 const List<NavTab> kNavTabs = [
-  NavTab(label: 'Home', icon: Icons.home_outlined, selectedIcon: Icons.home_rounded),
-  NavTab(label: 'Search', icon: Icons.search_rounded, selectedIcon: Icons.search_rounded),
-  NavTab(label: 'Trips', icon: Icons.flight_takeoff_outlined, selectedIcon: Icons.flight_takeoff_rounded),
-  NavTab(label: 'Messages', icon: Icons.chat_bubble_outline_rounded, selectedIcon: Icons.chat_bubble_rounded),
-  NavTab(label: 'Profile', icon: Icons.person_outline_rounded, selectedIcon: Icons.person_rounded),
+  NavTab(labelOf: _homeLabel, icon: Icons.home_outlined, selectedIcon: Icons.home_rounded),
+  NavTab(labelOf: _searchLabel, icon: Icons.search_rounded, selectedIcon: Icons.search_rounded),
+  NavTab(labelOf: _tripsLabel, icon: Icons.flight_takeoff_outlined, selectedIcon: Icons.flight_takeoff_rounded),
+  NavTab(labelOf: _messagesLabel, icon: Icons.chat_bubble_outline_rounded, selectedIcon: Icons.chat_bubble_rounded),
+  NavTab(labelOf: _profileLabel, icon: Icons.person_outline_rounded, selectedIcon: Icons.person_rounded),
 ];
 
 /// Scaffold with the Home · Search · Trips · Messages · Profile bottom bar around a
@@ -36,6 +48,7 @@ class BottomNavShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
@@ -44,8 +57,8 @@ class BottomNavShell extends StatelessWidget {
         destinations: [
           for (var i = 0; i < kNavTabs.length; i++)
             NavigationDestination(
-              label: kNavTabs[i].label,
-              tooltip: kNavTabs[i].label,
+              label: kNavTabs[i].labelOf(l10n),
+              tooltip: kNavTabs[i].labelOf(l10n),
               icon: _badged(Icon(kNavTabs[i].icon), badges[i] ?? 0),
               selectedIcon: _badged(Icon(kNavTabs[i].selectedIcon), badges[i] ?? 0),
             ),

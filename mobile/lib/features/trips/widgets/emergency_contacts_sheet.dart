@@ -6,6 +6,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/repositories/patient_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../services/journey_actions.dart';
 
 /// Bottom sheet listing the 24/7 helpline, WhatsApp, local emergency number, the case coordinator
@@ -29,6 +30,7 @@ class _EmergencyContacts extends ConsumerWidget {
     final helplines = ref.watch(helplinesProvider);
     final profile = ref.watch(patientProfileProvider).value;
     final contact = profile?.emergencyContact;
+    final l10n = context.l10n;
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.8),
@@ -36,10 +38,10 @@ class _EmergencyContacts extends ConsumerWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           children: [
-            Text('Emergency Contacts', style: context.text.titleLarge),
+            Text(l10n.emergencyContactsTitle, style: context.text.titleLarge),
             const SizedBox(height: 4),
             Text(
-              'In a medical emergency in India call the local emergency number first.',
+              l10n.emergencyContactsIntro,
               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
             const SizedBox(height: 12),
@@ -51,21 +53,21 @@ class _EmergencyContacts extends ConsumerWidget {
                   _ContactTile(
                     icon: Icons.emergency_rounded,
                     color: AppColors.danger,
-                    title: 'Emergency services (India)',
+                    title: l10n.emergencyContactsServicesIndia,
                     number: h.emergency,
                   ),
                   if (h.support24x7 != null)
                     _ContactTile(
                       icon: Icons.support_agent_rounded,
                       color: AppColors.violet,
-                      title: 'Heal India Global 24/7 helpline',
+                      title: l10n.emergencyContactsHelpline,
                       number: h.support24x7!,
                     ),
                   if (h.whatsapp != null)
                     _ContactTile(
                       icon: Icons.chat_rounded,
                       color: AppColors.primary,
-                      title: 'WhatsApp support',
+                      title: l10n.emergencyContactsWhatsApp,
                       number: h.whatsapp!,
                       whatsapp: true,
                     ),
@@ -84,14 +86,14 @@ class _EmergencyContacts extends ConsumerWidget {
               _ContactTile(
                 icon: Icons.badge_rounded,
                 color: AppColors.cyan,
-                title: 'Coordinator - ${coordinator!.fullName}',
+                title: l10n.emergencyContactsCoordinator(coordinator!.fullName),
                 number: coordinator!.phone!,
               ),
             if (contact != null && !contact.isEmpty && contact.phone != null)
               _ContactTile(
                 icon: Icons.family_restroom_rounded,
                 color: AppColors.warning,
-                title: [contact.name ?? 'My emergency contact', ?contact.relationship].join(' · '),
+                title: [contact.name ?? l10n.emergencyContactsMine, ?contact.relationship].join(' · '),
                 number: contact.phone!,
               ),
           ],

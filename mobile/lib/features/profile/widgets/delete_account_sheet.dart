@@ -5,6 +5,7 @@ import '../../../core/auth/auth_controller.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/widgets/auth_widgets.dart';
 
 /// In-app account deletion (App Store 5.1.1(v), Google Play account-deletion policy; BACKLOG #15):
@@ -30,7 +31,7 @@ class DeleteAccountSheet extends ConsumerStatefulWidget {
 
   final bool isGuest;
 
-  /// Word the user types to confirm.
+  /// Word the user types to confirm (Latin in every language; the server and [_confirmed] compare it).
   static const confirmWord = 'DELETE';
 
   @override
@@ -116,6 +117,7 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final mfa = !widget.isGuest && (ref.watch(currentUserProvider)?.mfaEnabled ?? false);
     final blockers = _blockers;
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
@@ -127,22 +129,11 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Delete account', style: context.text.titleLarge),
+            Text(l10n.commonDeleteAccount, style: context.text.titleLarge),
             const SizedBox(height: 8),
-            Text(
-              widget.isGuest
-                  ? 'This permanently deletes your guest account, screenings and saved items.'
-                  : 'This permanently deletes your account, profile, companions, saved items and uploaded '
-                        'documents, and signs you out on every device. It cannot be undone.',
-              style: context.text.bodyMedium,
-            ),
+            Text(widget.isGuest ? l10n.deleteAccountGuestBody : l10n.deleteAccountBody, style: context.text.bodyMedium),
             const SizedBox(height: 8),
-            Text(
-              'Records we must keep by law (invoices, payments, refunds and hospital treatment records) are '
-              'retained for the legal retention period with access restricted, then erased. Open bookings '
-              'or pending payments may need to be settled or cancelled first.',
-              style: muted,
-            ),
+            Text(l10n.deleteAccountRetention, style: muted),
             const SizedBox(height: 16),
             if (_error != null) ...[FormErrorBanner(message: _error!), const SizedBox(height: 12)],
             if (blockers != null) ...[
@@ -157,8 +148,8 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
             if (!widget.isGuest) ...[
               PasswordField(
                 controller: _password,
-                label: 'Password',
-                helperText: 'Leave blank if you signed in with Google or Apple and never set one',
+                label: l10n.deleteAccountPasswordLabel,
+                helperText: l10n.deleteAccountPasswordHelper,
                 errorText: _fieldErrors['password'],
                 textInputAction: TextInputAction.next,
               ),
@@ -173,8 +164,8 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
                 maxLength: 10,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelText: 'Authenticator code',
-                  helperText: 'The 6-digit code from your authenticator app',
+                  labelText: l10n.deleteAccountOtpLabel,
+                  helperText: l10n.deleteAccountOtpHelper,
                   counterText: '',
                   errorText: _fieldErrors['otp_code'],
                 ),
@@ -186,7 +177,7 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
               maxLength: 500,
               maxLines: 2,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(labelText: 'Why are you leaving? (optional)', counterText: ''),
+              decoration: InputDecoration(labelText: l10n.deleteAccountReasonLabel, counterText: ''),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -194,12 +185,12 @@ class _DeleteAccountSheetState extends ConsumerState<DeleteAccountSheet> {
               controller: _confirm,
               autocorrect: false,
               textCapitalization: TextCapitalization.characters,
-              decoration: const InputDecoration(labelText: 'Type ${DeleteAccountSheet.confirmWord} to confirm'),
+              decoration: InputDecoration(labelText: l10n.deleteAccountConfirmLabel(DeleteAccountSheet.confirmWord)),
               onSubmitted: (_) => _submit(),
             ),
             const SizedBox(height: 20),
             PrimaryButton(
-              label: 'Delete my account permanently',
+              label: l10n.deleteAccountSubmit,
               tone: ButtonTone.red,
               loading: _loading,
               onPressed: _confirmed ? _submit : null,
@@ -223,12 +214,12 @@ Map<String, int> deletionBlockers(Object? details) {
   return out;
 }
 
-/// Human label of a deletion blocker key.
-String deletionBlockerLabel(String key) => switch (key) {
-  'active_cases' => 'Cases in progress',
-  'active_bookings' => 'Upcoming or active bookings',
-  'pending_payments' => 'Payments in progress',
-  'listed_hospitals_owned' => 'Listed hospitals you own',
+/// Human label of a deletion blocker key (unknown keys are humanized, untranslated).
+String deletionBlockerLabel(AppLocalizations l, String key) => switch (key) {
+  'active_cases' => l.deleteAccountBlockerActiveCases,
+  'active_bookings' => l.deleteAccountBlockerActiveBookings,
+  'pending_payments' => l.deleteAccountBlockerPendingPayments,
+  'listed_hospitals_owned' => l.deleteAccountBlockerHospitalsOwned,
   _ => key.isEmpty ? key : (key[0].toUpperCase() + key.substring(1)).replaceAll('_', ' '),
 };
 
@@ -247,6 +238,7 @@ class _BlockersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AppCard(
       key: const Key('delete-account-blockers'),
       borderColor: AppColors.warning,
@@ -254,7 +246,7 @@ class _BlockersCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('These need to be closed first', style: context.text.titleSmall),
+          Text(l10n.deleteAccountBlockersTitle, style: context.text.titleSmall),
           const SizedBox(height: 6),
           for (final e in blockers.entries)
             Padding(
@@ -263,7 +255,7 @@ class _BlockersCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.pending_actions_outlined, size: 18, color: AppColors.warning),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(deletionBlockerLabel(e.key))),
+                  Expanded(child: Text(deletionBlockerLabel(l10n, e.key))),
                   Text('${e.value}', style: context.text.titleSmall),
                 ],
               ),
@@ -271,15 +263,14 @@ class _BlockersCard extends StatelessWidget {
           const SizedBox(height: 10),
           if (requestSent)
             Text(
-              'Deletion request sent. Our support team will close your account once these are settled and '
-              'confirm by e-mail.',
+              l10n.deleteAccountRequestSent,
               key: const Key('delete-account-request-sent'),
               style: context.text.bodySmall,
             )
           else
             SecondaryButton(
               key: const Key('delete-account-request'),
-              label: 'Request deletion',
+              label: l10n.deleteAccountRequestButton,
               icon: Icons.support_agent_rounded,
               loading: requesting,
               onPressed: requesting ? null : onRequest,

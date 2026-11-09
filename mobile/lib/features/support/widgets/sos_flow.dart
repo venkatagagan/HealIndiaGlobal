@@ -9,6 +9,7 @@ import '../../../core/repositories/travel_repository.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../trips/services/journey_actions.dart';
 
 /// Confirms and sends an SOS (`POST /travel/sos`), then offers to call local emergency services.
@@ -34,7 +35,7 @@ Future<void> runSosFlow(
   if (request.shareLocation) {
     final fix = await _withProgress(
       context,
-      'Getting your location…',
+      context.l10n.sosGettingLocation,
       ref.read(locationServiceProvider).currentLocation(),
     );
     if (fix.point != null) onLocated?.call(fix.point!);
@@ -46,7 +47,7 @@ Future<void> runSosFlow(
   try {
     await _withProgress(
       context,
-      'Sending your alert…',
+      context.l10n.sosSendingAlert,
       ref
           .read(travelRepositoryProvider)
           .sos(
@@ -64,15 +65,16 @@ Future<void> runSosFlow(
     return;
   }
   if (!context.mounted) return;
+  final l10n = context.l10n;
   final String? locationNote;
   if (!request.shareLocation) {
     locationNote = null;
   } else if (gpsFailure == null) {
-    locationNote = 'Your current location was shared with the team.';
+    locationNote = l10n.sosLocationShared;
   } else if (point != null) {
-    locationNote = '${gpsFailure.message} The place you marked on the map was shared instead.';
+    locationNote = l10n.sosLocationFallbackMarked(gpsFailure.messageIn(l10n));
   } else {
-    locationNote = '${gpsFailure.message} Tell the team where you are when they call.';
+    locationNote = l10n.sosLocationFallbackNone(gpsFailure.messageIn(l10n));
   }
   await _offerEmergencyCall(context, ref, failed: false, locationNote: locationNote);
 }
@@ -115,6 +117,7 @@ Future<void> _offerEmergencyCall(
 }) async {
   final emergency = ref.read(helplinesProvider).value?.emergency ?? '112';
   final helpline = ref.read(helplinesProvider).value?.support24x7;
+  final l10n = context.l10n;
   await showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -123,15 +126,11 @@ Future<void> _offerEmergencyCall(
         color: failed ? AppColors.danger : AppColors.primary,
         size: 40,
       ),
-      title: Text(failed ? 'Alert could not be sent' : 'Help is on the way'),
+      title: Text(failed ? l10n.sosResultFailedTitle : l10n.sosResultSentTitle),
       content: Text(
         failed
-            ? 'Please call for help directly.'
-            : [
-                'Your coordinator and our 24/7 support team have been alerted and will call you shortly.',
-                ?locationNote,
-                'If your life is in danger, call emergency services now.',
-              ].join('\n\n'),
+            ? l10n.sosResultFailedBody
+            : [l10n.sosResultSentBody, ?locationNote, l10n.sosResultDangerNote].join('\n\n'),
       ),
       actions: [
         if (helpline != null)
@@ -140,7 +139,7 @@ Future<void> _offerEmergencyCall(
               Navigator.of(ctx).pop();
               callNumber(context, helpline);
             },
-            child: const Text('Call helpline'),
+            child: Text(l10n.sosCallHelpline),
           ),
         FilledButton.icon(
           style: FilledButton.styleFrom(backgroundColor: AppColors.dangerStrong, foregroundColor: Colors.white),
@@ -149,9 +148,9 @@ Future<void> _offerEmergencyCall(
             Navigator.of(ctx).pop();
             callNumber(context, emergency);
           },
-          label: Text('Call $emergency'),
+          label: Text(l10n.sosCallNumber(emergency)),
         ),
-        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
+        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l10n.commonClose)),
       ],
     ),
   );
@@ -178,45 +177,41 @@ class _SosConfirmDialogState extends State<_SosConfirmDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
       icon: const Icon(Icons.sos_rounded, color: AppColors.danger, size: 40),
-      title: const Text('Send an emergency alert?'),
+      title: Text(l10n.sosConfirmTitle),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Your coordinator and our 24/7 support team are alerted immediately.'),
+            Text(l10n.sosConfirmBody),
             const SizedBox(height: 12),
             TextField(
               controller: _message,
               maxLines: 2,
               maxLength: 2000,
-              decoration: const InputDecoration(labelText: 'What is happening? (optional)'),
+              decoration: InputDecoration(labelText: l10n.sosMessageLabel),
             ),
             CheckboxListTile(
               key: const ValueKey('sos-share-location'),
               contentPadding: EdgeInsets.zero,
               value: _share,
               onChanged: (v) => setState(() => _share = v ?? false),
-              title: const Text('Share my current location with the support team'),
-              subtitle: Text(
-                widget.hasMarkedLocation
-                    ? 'Used only for this alert. If your phone cannot find you, the place you marked on the map is '
-                          'shared instead.'
-                    : 'Used only for this alert, so we can find you faster. Your phone may ask for permission.',
-              ),
+              title: Text(l10n.sosShareLocationTitle),
+              subtitle: Text(widget.hasMarkedLocation ? l10n.sosShareLocationMarkedHint : l10n.sosShareLocationHint),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.commonCancel)),
         FilledButton(
           key: const ValueKey('sos-confirm'),
           style: FilledButton.styleFrom(backgroundColor: AppColors.dangerStrong, foregroundColor: Colors.white),
           onPressed: () => Navigator.of(context).pop((message: _message.text.trim(), shareLocation: _share)),
-          child: const Text('Send SOS'),
+          child: Text(l10n.sosSendButton),
         ),
       ],
     );

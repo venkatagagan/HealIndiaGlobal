@@ -5,6 +5,7 @@ import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import 'catalog_cards.dart';
 
 /// Collapsible long text ("About").
@@ -46,7 +47,7 @@ class _ExpandableTextState extends State<ExpandableText> {
               TextButton(
                 style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 36)),
                 onPressed: () => setState(() => _expanded = !_expanded),
-                child: Text(_expanded ? 'Show less' : 'Read more'),
+                child: Text(_expanded ? context.l10n.catalogShowLess : context.l10n.catalogReadMore),
               ),
           ],
         );
@@ -75,7 +76,11 @@ class HospitalProcedureCard extends StatelessWidget {
             children: [
               Expanded(child: Text(p.procedure.name, style: context.text.titleSmall)),
               if (p.successRatePct != null)
-                StatusBadge(label: '${p.successRatePct!.round()}% Success', color: AppColors.primary, dense: true),
+                StatusBadge(
+                  label: context.l10n.catalogSuccessBadge(p.successRatePct!.round()),
+                  color: AppColors.primary,
+                  dense: true,
+                ),
             ],
           ),
           const SizedBox(height: 4),
@@ -86,7 +91,7 @@ class HospitalProcedureCard extends StatelessWidget {
             style: context.text.titleMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w800),
           ),
           if (p.hospitalStayDays != null)
-            Text('${p.hospitalStayDays} days in hospital', style: context.text.bodySmall),
+            Text(context.l10n.catalogDaysInHospital(p.hospitalStayDays!), style: context.text.bodySmall),
           if (p.inclusions.isNotEmpty) ...[
             const SizedBox(height: 8),
             Wrap(
@@ -150,10 +155,7 @@ class ReviewTile extends StatelessWidget {
             const SizedBox(height: 6),
             Text(r.title!, style: context.text.titleSmall),
           ],
-          if ((r.body ?? '').isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(r.body!, style: context.text.bodySmall),
-          ],
+          if ((r.body ?? '').isNotEmpty) ...[const SizedBox(height: 4), Text(r.body!, style: context.text.bodySmall)],
           if ((r.patientName ?? '').isNotEmpty) ...[
             const SizedBox(height: 6),
             Text('- ${r.patientName}', style: context.text.labelSmall),
@@ -181,7 +183,7 @@ class ContactRow extends StatelessWidget {
       trailing: const Icon(Icons.open_in_new_rounded, size: 18),
       onTap: () async {
         final ok = await launchUrl(uri, mode: LaunchMode.externalApplication).catchError((_) => false);
-        if (!ok && context.mounted) showInfoSnack(context, 'Could not open $label');
+        if (!ok && context.mounted) showInfoSnack(context, context.l10n.catalogCouldNotOpen(label));
       },
     );
   }
@@ -261,11 +263,19 @@ class DetailActionsBar extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: SecondaryButton(label: 'Get matched', icon: Icons.auto_awesome_outlined, onPressed: onGetMatched),
+              child: SecondaryButton(
+                label: context.l10n.catalogGetMatched,
+                icon: Icons.auto_awesome_outlined,
+                onPressed: onGetMatched,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: PrimaryButton(label: 'Request quote', icon: Icons.request_quote_outlined, onPressed: onRequestQuote),
+              child: PrimaryButton(
+                label: context.l10n.quoteRequestButton,
+                icon: Icons.request_quote_outlined,
+                onPressed: onRequestQuote,
+              ),
             ),
           ],
         ),

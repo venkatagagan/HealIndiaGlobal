@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/l10n.dart';
 import '../../providers/screening_draft.dart';
 import '../screening_step_scaffold.dart';
 import '../symptom_swipe_deck.dart';
@@ -30,15 +31,18 @@ class _SymptomsStepState extends ConsumerState<SymptomsStep> with ScreeningStepA
     super.dispose();
   }
 
+  static const _maxNameLength = 120;
+  static const _maxSymptoms = 60;
+
   void _addCustom() {
     final name = _custom.text.trim();
     if (name.isEmpty) return;
-    if (name.length > 120) {
-      showInfoSnack(context, 'Keep the symptom under 120 characters.');
+    if (name.length > _maxNameLength) {
+      showInfoSnack(context, context.l10n.screeningSymptomTooLong(_maxNameLength));
       return;
     }
-    if ((draft?.symptoms.length ?? 0) >= 60) {
-      showInfoSnack(context, 'You can add up to 60 symptoms.');
+    if ((draft?.symptoms.length ?? 0) >= _maxSymptoms) {
+      showInfoSnack(context, context.l10n.screeningSymptomLimit(_maxSymptoms));
       return;
     }
     edit((d) => d.answer(name, SymptomAnswer.yes));
@@ -52,31 +56,30 @@ class _SymptomsStepState extends ConsumerState<SymptomsStep> with ScreeningStepA
     final suggestions = ref.watch(symptomSuggestionsProvider(query));
     final answered = d.answeredNames;
     final mine = d.positiveSymptoms;
+    final l10n = context.l10n;
 
     return ScreeningStepScaffold(
       step: step,
-      title: 'Which symptoms are you experiencing?',
-      primaryLabel: 'Next',
+      title: l10n.screeningStep2Title,
+      primaryLabel: l10n.commonNext,
       busy: busy,
       onPrimary: goNext,
       onBack: goPrevious,
       onPrevious: goPrevious,
       onSaveExit: saveAndExit,
-      help:
-          'Swipe a card right (or tap the check) if you have the symptom, left (or X) if you do not, and up '
-          '(or -) if you are not sure. Add anything we did not ask about below.',
+      help: l10n.screeningStep2Help,
       children: [
         VoiceIntakeButton(screeningId: screeningId),
         const SizedBox(height: 12),
         suggestions.when(
-          loading: () => const SizedBox(height: 260, child: LoadingView(message: 'Loading suggestions...')),
+          loading: () => SizedBox(height: 260, child: LoadingView(message: l10n.screeningSymptomsLoading)),
           error: (e, _) => Column(
             children: [
               ErrorView(error: e, compact: true, onRetry: () => ref.invalidate(symptomSuggestionsProvider(query))),
               SymptomSwipeDeck(
                 symptoms: const [],
                 onAnswer: (_, _) {},
-                emptyMessage: 'Suggestions are unavailable. Add your symptoms below.',
+                emptyMessage: l10n.screeningSymptomsUnavailable,
               ),
             ],
           ),
@@ -89,11 +92,11 @@ class _SymptomsStepState extends ConsumerState<SymptomsStep> with ScreeningStepA
           ),
         ),
         const SizedBox(height: 24),
-        Text('Your Symptoms', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+        Text(l10n.screeningYourSymptoms, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 10),
         if (mine.isEmpty)
           Text(
-            'Symptoms you answer "yes" or "maybe" to appear here.',
+            l10n.screeningYourSymptomsEmpty,
             style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
           )
         else
@@ -104,7 +107,7 @@ class _SymptomsStepState extends ConsumerState<SymptomsStep> with ScreeningStepA
               for (final s in mine)
                 ChipToggle(
                   key: ValueKey('my-symptom-${s.name}'),
-                  label: s.answer == SymptomAnswer.maybe ? '${s.name} (maybe)' : s.name,
+                  label: s.answer == SymptomAnswer.maybe ? l10n.screeningSymptomMaybeChip(s.name) : s.name,
                   selected: true,
                   selectedColor: s.answer == SymptomAnswer.maybe
                       ? AppColors.warning
@@ -120,18 +123,22 @@ class _SymptomsStepState extends ConsumerState<SymptomsStep> with ScreeningStepA
             Expanded(
               child: TextField(
                 controller: _custom,
-                maxLength: 120,
+                maxLength: _maxNameLength,
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) => _addCustom(),
-                decoration: const InputDecoration(
-                  hintText: 'Add another symptom',
+                decoration: InputDecoration(
+                  hintText: l10n.screeningAddAnotherSymptom,
                   counterText: '',
-                  prefixIcon: Icon(Icons.add_comment_outlined),
+                  prefixIcon: const Icon(Icons.add_comment_outlined),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            IconButton.filled(tooltip: 'Add symptom', onPressed: _addCustom, icon: const Icon(Icons.add_rounded)),
+            IconButton.filled(
+              tooltip: l10n.symptomAddTooltip,
+              onPressed: _addCustom,
+              icon: const Icon(Icons.add_rounded),
+            ),
           ],
         ),
       ],

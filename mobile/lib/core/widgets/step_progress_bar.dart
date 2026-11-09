@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
 /// "Step 2 of 4" label + rounded progress bar (questionnaire header).
@@ -27,7 +28,10 @@ class StepProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = total <= 0 ? 0.0 : (step / total).clamp(0.0, 1.0);
-    final label = 'Step $step of $total${suffix == null ? '' : ' · $suffix'}';
+    final extra = suffix;
+    final label = extra == null
+        ? context.l10n.coreStepProgress(step, total)
+        : context.l10n.coreStepProgressWithSuffix(step, total, extra);
     return Semantics(
       label: label,
       value: '${(value * 100).round()}%',

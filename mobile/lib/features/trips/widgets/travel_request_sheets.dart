@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/repositories/travel_repository.dart';
@@ -7,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/travel_providers.dart';
 
 /// Shared bottom-sheet frame for travel requests.
@@ -105,7 +107,10 @@ class _PickerField extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: InputDecorator(
           decoration: InputDecoration(labelText: label, suffixIcon: Icon(icon)),
-          child: Text(value ?? 'Select', style: value == null ? TextStyle(color: context.palette.textMuted) : null),
+          child: Text(
+            value ?? context.l10n.travelSelect,
+            style: value == null ? TextStyle(color: context.palette.textMuted) : null,
+          ),
         ),
       ),
     );
@@ -157,22 +162,25 @@ class _VisaRequestFormState extends ConsumerState<_VisaRequestForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return _SheetFrame(
-      title: 'Visa assistance',
-      subtitle:
-          'We prepare the hospital invitation letter and guide you through the Indian e-Medical visa '
-          'application.',
-      submitLabel: 'Request visa assistance',
+      title: l10n.visaAssistanceTitle,
+      subtitle: l10n.visaAssistanceSubtitle,
+      submitLabel: l10n.visaRequestAssistance,
       busy: _busy,
       onSubmit: _submit,
       children: [
         SegmentedButton<VisaType>(
-          segments: const [
-            ButtonSegment(value: VisaType.eMedical, label: Text('Patient'), icon: Icon(Icons.person_rounded)),
+          segments: [
+            ButtonSegment(
+              value: VisaType.eMedical,
+              label: Text(l10n.visaForPatient),
+              icon: const Icon(Icons.person_rounded),
+            ),
             ButtonSegment(
               value: VisaType.eMedicalAttendant,
-              label: Text('Attendant'),
-              icon: Icon(Icons.people_alt_rounded),
+              label: Text(l10n.visaForAttendant),
+              icon: const Icon(Icons.people_alt_rounded),
             ),
           ],
           selected: {_type},
@@ -183,7 +191,7 @@ class _VisaRequestFormState extends ConsumerState<_VisaRequestForm> {
           controller: _notes,
           maxLines: 3,
           maxLength: 2000,
-          decoration: const InputDecoration(labelText: 'Notes (nationality, travel dates, companions)'),
+          decoration: InputDecoration(labelText: l10n.visaNotesLabel),
         ),
       ],
     );
@@ -226,23 +234,28 @@ class _TravelRequestFormState extends ConsumerState<_TravelRequestForm> {
   DateTime? _when;
   int _passengers = 1;
   bool _busy = false;
+  bool _prefilled = false;
 
   bool get _isFlight => widget.kind == TravelKind.flight;
   bool get _isPickup => widget.kind == TravelKind.airportPickup;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_prefilled) return;
+    _prefilled = true;
+    final l10n = context.l10n;
     final city = widget.destinationCity ?? '';
+    final airport = city.isEmpty ? l10n.travelAirport : l10n.travelCityAirport(city);
     switch (widget.kind) {
       case TravelKind.flight:
         _to.text = city;
       case TravelKind.airportPickup:
-        _from.text = city.isEmpty ? 'Airport' : '$city airport';
-        _to.text = 'Hospital / hotel';
+        _from.text = airport;
+        _to.text = l10n.travelHospitalOrHotel;
       case TravelKind.airportDrop:
-        _from.text = 'Hospital / hotel';
-        _to.text = city.isEmpty ? 'Airport' : '$city airport';
+        _from.text = l10n.travelHospitalOrHotel;
+        _to.text = airport;
       case TravelKind.localTransport:
         break;
     }
@@ -258,35 +271,28 @@ class _TravelRequestFormState extends ConsumerState<_TravelRequestForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final (title, subtitle, whenLabel) = switch (widget.kind) {
-      TravelKind.flight => (
-        'Request a flight',
-        'Our travel desk sends you fare options; nothing is charged until you confirm.',
-        'Preferred departure',
-      ),
-      TravelKind.airportPickup => (
-        'Airport pickup',
-        'A driver meets you at arrivals and takes you to your hospital or hotel.',
-        'Arrival date & time',
-      ),
-      TravelKind.airportDrop => ('Airport drop', 'We take you to the airport for your flight home.', 'Pickup time'),
-      TravelKind.localTransport => ('Local transport', 'Car with driver for appointments in the city.', 'Start'),
+      TravelKind.flight => (l10n.flightRequestTitle, l10n.flightRequestSubtitle, l10n.flightPreferredDeparture),
+      TravelKind.airportPickup => (l10n.travelAirportPickup, l10n.travelPickupSubtitle, l10n.travelArrivalDateTime),
+      TravelKind.airportDrop => (l10n.travelAirportDrop, l10n.travelDropSubtitle, l10n.travelPickupTime),
+      TravelKind.localTransport => (l10n.travelLocalTransport, l10n.travelLocalTransportSubtitle, l10n.travelStart),
     };
     return _SheetFrame(
       title: title,
       subtitle: subtitle,
-      submitLabel: 'Send request',
+      submitLabel: l10n.travelSendRequest,
       busy: _busy,
       onSubmit: _when == null ? null : _submit,
       children: [
         TextField(
           controller: _from,
-          decoration: InputDecoration(labelText: _isFlight ? 'From (city or airport)' : 'From'),
+          decoration: InputDecoration(labelText: _isFlight ? l10n.flightFromCityOrAirport : l10n.travelFrom),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _to,
-          decoration: const InputDecoration(labelText: 'To'),
+          decoration: InputDecoration(labelText: l10n.travelTo),
         ),
         const SizedBox(height: 12),
         _PickerField(
@@ -305,21 +311,21 @@ class _TravelRequestFormState extends ConsumerState<_TravelRequestForm> {
             controller: _flight,
             maxLength: 20,
             textCapitalization: TextCapitalization.characters,
-            decoration: const InputDecoration(labelText: 'Flight number (optional)', counterText: ''),
+            decoration: InputDecoration(labelText: l10n.flightNumberOptional, counterText: ''),
           ),
           const SizedBox(height: 12),
         ],
         Row(
           children: [
-            Expanded(child: Text('Passengers', style: context.text.bodyLarge)),
+            Expanded(child: Text(l10n.travelPassengers, style: context.text.bodyLarge)),
             IconButton(
-              tooltip: 'Fewer passengers',
+              tooltip: l10n.travelFewerPassengers,
               onPressed: _passengers > 1 ? () => setState(() => _passengers--) : null,
               icon: const Icon(Icons.remove_circle_outline_rounded),
             ),
             Text('$_passengers', style: context.text.titleMedium),
             IconButton(
-              tooltip: 'More passengers',
+              tooltip: l10n.travelMorePassengers,
               onPressed: _passengers < 20 ? () => setState(() => _passengers++) : null,
               icon: const Icon(Icons.add_circle_outline_rounded),
             ),
@@ -330,7 +336,7 @@ class _TravelRequestFormState extends ConsumerState<_TravelRequestForm> {
           controller: _notes,
           maxLines: 2,
           maxLength: 2000,
-          decoration: const InputDecoration(labelText: 'Notes (wheelchair, luggage, preferences)'),
+          decoration: InputDecoration(labelText: l10n.travelNotesLabel),
         ),
       ],
     );
@@ -402,10 +408,11 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
   @override
   Widget build(BuildContext context) {
     final options = ref.watch(accommodationOptionsProvider(widget.hospitalId));
+    final l10n = context.l10n;
     return _SheetFrame(
-      title: 'Request accommodation',
-      subtitle: 'Stays near your hospital. Our team confirms availability and price before booking.',
-      submitLabel: 'Send request',
+      title: l10n.stayRequestAccommodation,
+      subtitle: l10n.staySheetSubtitle,
+      submitLabel: l10n.travelSendRequest,
       busy: _busy,
       onSubmit: _providerId == null || _range == null ? null : _submit,
       children: [
@@ -417,10 +424,7 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
             onRetry: () => ref.invalidate(accommodationOptionsProvider(widget.hospitalId)),
           ),
           data: (list) => list.isEmpty
-              ? Text(
-                  'No partner stays are listed for this hospital yet. Ask your coordinator in Messages.',
-                  style: context.text.bodyMedium,
-                )
+              ? Text(l10n.stayNoPartners, style: context.text.bodyMedium)
               : Column(
                   children: [
                     for (final p in list)
@@ -448,7 +452,8 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
                                     [
                                       p.type.label,
                                       if (p.starRating != null) '${p.starRating!.toStringAsFixed(0)}★',
-                                      if (p.distanceKm != null) '${p.distanceKm!.toStringAsFixed(1)} km',
+                                      if (p.distanceKm != null)
+                                        l10n.stayDistanceKm(NumberFormat('0.0').format(p.distanceKm)),
                                     ].join(' · '),
                                     style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                                   ),
@@ -457,7 +462,7 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
                             ),
                             if (p.nightlyRateMinor != null)
                               Text(
-                                '${formatMoney(p.nightlyRateMinor!, p.currency)}/night',
+                                l10n.stayPerNight(formatMoney(p.nightlyRateMinor!, p.currency)),
                                 style: context.text.labelMedium,
                               ),
                           ],
@@ -468,7 +473,7 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
         ),
         const SizedBox(height: 8),
         _PickerField(
-          label: 'Check-in - check-out',
+          label: l10n.stayCheckInOut,
           value: _range == null ? null : '${Dates.day(_range!.start)} - ${Dates.day(_range!.end)}',
           onTap: () async {
             final today = Dates.dateOnly(DateTime.now());
@@ -483,15 +488,15 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
         ),
         Row(
           children: [
-            Expanded(child: Text('Guests', style: context.text.bodyLarge)),
+            Expanded(child: Text(l10n.stayGuests, style: context.text.bodyLarge)),
             IconButton(
-              tooltip: 'Fewer guests',
+              tooltip: l10n.stayFewerGuests,
               onPressed: _guests > 1 ? () => setState(() => _guests--) : null,
               icon: const Icon(Icons.remove_circle_outline_rounded),
             ),
             Text('$_guests', style: context.text.titleMedium),
             IconButton(
-              tooltip: 'More guests',
+              tooltip: l10n.stayMoreGuests,
               onPressed: _guests < 20 ? () => setState(() => _guests++) : null,
               icon: const Icon(Icons.add_circle_outline_rounded),
             ),
@@ -501,7 +506,7 @@ class _AccommodationRequestFormState extends ConsumerState<_AccommodationRequest
           controller: _notes,
           maxLines: 2,
           maxLength: 2000,
-          decoration: const InputDecoration(labelText: 'Notes (room type, accessibility, diet)'),
+          decoration: InputDecoration(labelText: l10n.stayNotesLabel),
         ),
       ],
     );
@@ -561,29 +566,26 @@ class _ServiceRequestFormState extends ConsumerState<_ServiceRequestForm> {
   @override
   Widget build(BuildContext context) {
     final options = ref.watch(serviceProviderOptionsProvider((kind: widget.kind, city: widget.city)));
+    final l10n = context.l10n;
     final (title, subtitle, notesHint) = switch (widget.kind) {
-      ServiceKind.translator => (
-        'Get a translator',
-        'A medical interpreter for consultations and hospital stays.',
-        'Language needed (e.g. Arabic, French)',
+      ServiceKind.translator => (l10n.travelTranslatorTitle, l10n.travelTranslatorSubtitle, l10n.travelTranslatorNotes),
+      ServiceKind.localGuide => (l10n.travelGuideTitle, l10n.travelGuideSubtitle, l10n.travelGuideNotes),
+      _ => (
+        l10n.travelServiceRequestTitle(widget.kind.label.toLowerCase()),
+        l10n.travelServiceSubtitle,
+        l10n.travelNotes,
       ),
-      ServiceKind.localGuide => (
-        'Book a local guide',
-        'A trusted guide for errands, shopping and sightseeing during recovery.',
-        'What would you like help with?',
-      ),
-      _ => ('Request ${widget.kind.label.toLowerCase()}', 'Our team confirms details and price with you.', 'Notes'),
     };
     final providers = options.value ?? const <LocalServiceProvider>[];
     return _SheetFrame(
       title: title,
       subtitle: subtitle,
-      submitLabel: 'Send request',
+      submitLabel: l10n.travelSendRequest,
       busy: _busy,
       onSubmit: _submit,
       children: [
         _PickerField(
-          label: 'When do you need it?',
+          label: l10n.travelWhenNeeded,
           value: _start == null ? null : Dates.dayTime(_start),
           icon: Icons.schedule_rounded,
           onTap: () async {
@@ -593,14 +595,14 @@ class _ServiceRequestFormState extends ConsumerState<_ServiceRequestForm> {
         ),
         if (options.isLoading) const LinearProgressIndicator(),
         if (providers.isNotEmpty) ...[
-          Text('Preferred provider (optional)', style: context.text.labelLarge),
+          Text(l10n.travelPreferredProvider, style: context.text.labelLarge),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               ChipToggle(
-                label: 'Any available',
+                label: l10n.travelAnyAvailable,
                 selected: _providerId == null,
                 selectedColor: AppColors.violet,
                 onChanged: (_) => setState(() => _providerId = null),

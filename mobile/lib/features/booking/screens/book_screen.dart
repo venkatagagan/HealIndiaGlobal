@@ -13,6 +13,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../logic/admission_availability.dart';
 import '../logic/booking_gates.dart';
 import '../logic/payment_plan.dart';
@@ -64,7 +65,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   Widget build(BuildContext context) {
     final caseAsync = ref.watch(caseDetailProvider(widget.caseId));
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Dates'), centerTitle: true),
+      appBar: AppBar(title: Text(context.l10n.bookSelectDatesTitle), centerTitle: true),
       body: AsyncValueView<MedicalCaseDetail>(
         value: caseAsync,
         onRetry: () => ref.invalidate(caseDetailProvider(widget.caseId)),
@@ -76,9 +77,9 @@ class _BookScreenState extends ConsumerState<BookScreen> {
           if (!c.isOpen) {
             return EmptyView(
               icon: Icons.block_rounded,
-              title: 'This case is ${c.status.label.toLowerCase()}',
-              message: 'Open a new enquiry to book treatment.',
-              actionLabel: 'View case',
+              title: context.l10n.bookCaseClosedTitle(c.status.label.toLowerCase()),
+              message: context.l10n.bookCaseClosedBody,
+              actionLabel: context.l10n.caseViewCase,
               onAction: () => context.pushReplacement(Routes.caseDetail(c.id)),
             );
           }
@@ -91,7 +92,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
               minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: PrimaryButton(
                 key: const ValueKey('proceed-to-payment'),
-                label: 'Proceed to Payment',
+                label: context.l10n.bookProceedToPayment,
                 tone: ButtonTone.violet,
                 loading: _submitting,
                 onPressed: _canSubmit ? () => _submit(caseAsync.value!) : null,
@@ -144,6 +145,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   }
 
   Widget _form(MedicalCaseDetail c) {
+    final l10n = context.l10n;
     final hospitalAsync = ref.watch(hospitalDetailProvider(c.hospital.id));
     final hospital = hospitalAsync.value;
     final packages = hospital == null ? null : packagesForCase(hospital, c);
@@ -163,10 +165,10 @@ class _BookScreenState extends ConsumerState<BookScreen> {
     final selectedPkg = packages?.where((p) => p.package.id == _packageId).firstOrNull;
     final selectedQuote = _quoteId != null && accepted?.id == _quoteId ? accepted : null;
     final duration = selectedQuote?.estimatedStayDays != null
-        ? formatStayRange(selectedQuote!.estimatedStayDays, null)
+        ? formatStayRange(selectedQuote!.estimatedStayDays, null, l10n)
         : (procedure != null
-              ? formatStayRange(procedure.hospitalStayDays, procedure.totalStayDays)
-              : formatStayRange(selectedPkg?.hospitalProcedure.hospitalStayDays, null));
+              ? formatStayRange(procedure.hospitalStayDays, procedure.totalStayDays, l10n)
+              : formatStayRange(selectedPkg?.hospitalProcedure.hospitalStayDays, null, l10n));
 
     final today = Dates.dateOnly(DateTime.now());
     final priceMinor = selectedQuote?.totalMinor ?? selectedPkg?.package.priceMinor;
@@ -203,11 +205,11 @@ class _BookScreenState extends ConsumerState<BookScreen> {
         const SizedBox(height: 8),
         Text.rich(
           TextSpan(
-            text: 'Treatment duration: ',
+            text: l10n.bookTreatmentDurationLabel,
             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
             children: [
               TextSpan(
-                text: duration == null ? 'confirmed by the hospital' : '$duration required',
+                text: duration == null ? l10n.bookDurationConfirmedByHospital : l10n.bookDurationRequired(duration),
                 style: TextStyle(color: context.colors.onSurface, fontWeight: FontWeight.w700),
               ),
             ],
@@ -217,20 +219,20 @@ class _BookScreenState extends ConsumerState<BookScreen> {
         if (_date != null) ...[
           const SizedBox(height: 4),
           Text(
-            'Admission on ${Dates.weekday(_date)} ${_date!.year}',
+            l10n.bookAdmissionOn('${Dates.weekday(_date)} ${_date!.year}'),
             textAlign: TextAlign.center,
             style: context.text.bodySmall?.copyWith(color: AppColors.violet, fontWeight: FontWeight.w600),
           ),
         ],
-        const SectionTitle('Select Package'),
+        SectionTitle(l10n.bookSelectPackage),
         if (accepted != null)
           OptionRadioCard(
             key: ValueKey('quote-${accepted.id}'),
-            title: 'Accepted hospital quote',
+            title: l10n.bookAcceptedQuote,
             subtitle: [
-              if (accepted.estimatedStayDays != null) '${accepted.estimatedStayDays} days stay',
-              if (accepted.validUntil != null) 'valid until ${Dates.day(accepted.validUntil)}',
-              if (accepted.lineItems.isNotEmpty) '${accepted.lineItems.length} itemized charges',
+              if (accepted.estimatedStayDays != null) l10n.bookingStayDaysLabel(accepted.estimatedStayDays!),
+              if (accepted.validUntil != null) l10n.bookingValidUntil(Dates.day(accepted.validUntil)),
+              if (accepted.lineItems.isNotEmpty) l10n.bookItemizedCharges(accepted.lineItems.length),
             ].join(' · '),
             selected: _quoteId == accepted.id,
             onTap: () => setState(() {
@@ -251,13 +253,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
             onRetry: () => ref.invalidate(hospitalDetailProvider(c.hospital.id)),
           )
         else if ((packages ?? const []).isEmpty && accepted == null)
-          AppCard(
-            child: Text(
-              'This hospital has not published packages for this treatment yet. '
-              'Ask for a personalised quote from your case page.',
-              style: context.text.bodyMedium,
-            ),
-          ),
+          AppCard(child: Text(l10n.bookNoPackages, style: context.text.bodyMedium)),
         for (final p
             in packages ??
                 const <({TreatmentPackage package, String procedureName, HospitalProcedure hospitalProcedure})>[])
@@ -276,7 +272,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
               savingsMinor: p.package.savingsMinor,
             ),
           ),
-        const SectionTitle('Payment Option'),
+        SectionTitle(l10n.bookPaymentOptionSection),
         _paymentOptions(priceMinor, priceCcy),
         const SizedBox(height: 8),
         CheckboxListTile(
@@ -284,9 +280,9 @@ class _BookScreenState extends ConsumerState<BookScreen> {
           contentPadding: EdgeInsets.zero,
           value: _insurance,
           onChanged: (v) => setState(() => _insurance = v ?? false),
-          title: const Text('I want to claim insurance'),
+          title: Text(l10n.bookingInsuranceClaim),
           subtitle: Text(
-            'Our team will help you with the claim paperwork.',
+            l10n.bookInsuranceHelp,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
           controlAffinity: ListTileControlAffinity.trailing,
@@ -313,9 +309,12 @@ class _BookScreenState extends ConsumerState<BookScreen> {
       spacing: 16,
       runSpacing: 4,
       children: [
-        dot(AppColors.primary, 'Available'),
-        dot(AppColors.violet, 'Selected'),
-        dot(context.palette.textMuted, availability?.restricted ?? true ? 'Unavailable' : 'Past'),
+        dot(AppColors.primary, context.l10n.bookLegendAvailable),
+        dot(AppColors.violet, context.l10n.bookLegendSelected),
+        dot(
+          context.palette.textMuted,
+          availability?.restricted ?? true ? context.l10n.bookLegendUnavailable : context.l10n.bookLegendPast,
+        ),
       ],
     );
   }
@@ -326,9 +325,9 @@ class _BookScreenState extends ConsumerState<BookScreen> {
       if (pkg.description != null && pkg.description!.isNotEmpty) pkg.description!,
       if (pkg.description == null || pkg.description!.isEmpty)
         switch (pkg.tier) {
-          PackageTier.medicalOnly => 'Core treatment package',
-          PackageTier.medicalStay => 'Treatment + accommodation',
-          PackageTier.allInclusive => 'Treatment, stay, transfers & translator',
+          PackageTier.medicalOnly => context.l10n.bookPackageMedicalOnly,
+          PackageTier.medicalStay => context.l10n.bookPackageMedicalStay,
+          PackageTier.allInclusive => context.l10n.bookPackageAllInclusive,
         },
     ];
     final bullets = pkg.includes.bullets;
@@ -337,9 +336,10 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   }
 
   Widget _paymentOptions(int? priceMinor, String currency) {
+    final l10n = context.l10n;
     String? perMonth() {
       if (priceMinor == null || priceMinor <= 0) return null;
-      return '≈ ${formatMoney((priceMinor / _months).ceil(), currency)} / month before fees';
+      return l10n.bookInstallmentPerMonth(formatMoney((priceMinor / _months).ceil(), currency));
     }
 
     return Column(
@@ -347,22 +347,22 @@ class _BookScreenState extends ConsumerState<BookScreen> {
       children: [
         OptionRadioCard(
           key: const ValueKey('option-full'),
-          title: 'Pay in full',
-          subtitle: 'One payment for the whole treatment',
+          title: l10n.bookingPayInFull,
+          subtitle: l10n.bookPayInFullSubtitle,
           selected: _option == PaymentOption.full,
           onTap: () => setState(() => _option = PaymentOption.full),
         ),
         OptionRadioCard(
           key: const ValueKey('option-deposit'),
-          title: 'Pay a deposit now',
-          subtitle: 'Secure your date; the balance is due before admission',
+          title: l10n.bookPayDeposit,
+          subtitle: l10n.bookPayDepositSubtitle,
           selected: _option == PaymentOption.deposit,
           onTap: () => setState(() => _option = PaymentOption.deposit),
         ),
         OptionRadioCard(
           key: const ValueKey('option-installments'),
-          title: 'Monthly installments',
-          subtitle: '3, 6 or 12 months',
+          title: l10n.bookMonthlyInstallments,
+          subtitle: l10n.bookInstallmentChoices,
           selected: _option == PaymentOption.installments,
           onTap: () => setState(() => _option = PaymentOption.installments),
           footer: _option != PaymentOption.installments
@@ -376,7 +376,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
                         for (final m in _installmentChoices)
                           ChipToggle(
                             key: ValueKey('months-$m'),
-                            label: '$m months',
+                            label: l10n.bookMonths(m),
                             selected: _months == m,
                             selectedColor: AppColors.violet,
                             onChanged: (_) => setState(() => _months = m),
@@ -454,7 +454,7 @@ class _PriceColumn extends StatelessWidget {
           MoneyText(
             savingsMinor,
             currency,
-            prefix: 'Save ',
+            prefix: context.l10n.bookSavePrefix,
             style: context.text.labelMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w700),
           ),
         ApproxMoneyText(minor, currency),
@@ -472,6 +472,7 @@ class _ExistingBooking extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -489,26 +490,23 @@ class _ExistingBooking extends StatelessWidget {
               Text('${booking.hospital.name}${booking.hospital.city == null ? '' : ', ${booking.hospital.city}'}'),
               if (booking.admissionDate != null)
                 Text(
-                  'Admission ${Dates.day(booking.admissionDate)}',
+                  l10n.bookingAdmissionDate(Dates.day(booking.admissionDate)),
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               const SizedBox(height: 12),
-              Text(
-                'This case already has a booking. Continue with it, or cancel it from the case page to choose new dates.',
-                style: context.text.bodyMedium,
-              ),
+              Text(l10n.bookExistingBookingBody, style: context.text.bodyMedium),
             ],
           ),
         ),
         const SizedBox(height: 16),
         if (booking.balanceDueMinor > 0)
           PrimaryButton(
-            label: 'Continue to payment',
+            label: l10n.bookContinueToPayment,
             tone: ButtonTone.violet,
             onPressed: () => context.pushReplacement(Routes.pay(booking.id)),
           ),
         const SizedBox(height: 10),
-        SecondaryButton(label: 'View case', onPressed: () => context.pushReplacement(Routes.caseDetail(caseId))),
+        SecondaryButton(label: l10n.caseViewCase, onPressed: () => context.pushReplacement(Routes.caseDetail(caseId))),
       ],
     );
   }

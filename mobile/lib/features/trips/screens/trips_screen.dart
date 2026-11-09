@@ -9,6 +9,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../messages/widgets/notification_bell.dart';
 import '../services/journey_actions.dart';
 import '../widgets/checklist_tile.dart';
@@ -61,6 +62,7 @@ class _Dashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final booking = dashboard.nextBooking;
     final checklist = [...dashboard.checklist]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
     return ListView(
@@ -73,7 +75,7 @@ class _Dashboard extends ConsumerWidget {
           _BalanceCard(booking: booking),
         ],
         if (checklist.isNotEmpty) ...[
-          const SectionTitle('Your Checklist'),
+          SectionTitle(l10n.checklistTitle),
           AppCard(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Column(
@@ -88,7 +90,7 @@ class _Dashboard extends ConsumerWidget {
           ),
         ],
         if (dashboard.todaySchedule.isNotEmpty) ...[
-          const SectionTitle("Today's Schedule"),
+          SectionTitle(l10n.tripsTodaySchedule),
           for (final item in dashboard.todaySchedule.take(3))
             AppCard(
               margin: const EdgeInsets.only(bottom: 8),
@@ -105,7 +107,7 @@ class _Dashboard extends ConsumerWidget {
               ),
             ),
         ],
-        const SectionTitle('Quick Actions'),
+        SectionTitle(l10n.tripsQuickActions),
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
@@ -117,55 +119,55 @@ class _Dashboard extends ConsumerWidget {
             _QuickAction(
               key: const ValueKey('qa-documents'),
               icon: Icons.upload_file_rounded,
-              label: 'Upload Documents',
+              label: l10n.tripsUploadDocuments,
               onTap: () => context.push(Routes.documentsFor(caseId: booking?.caseId)),
             ),
             _QuickAction(
               key: const ValueKey('qa-chat'),
               icon: Icons.chat_outlined,
-              label: 'Chat with\nCoordinator',
+              label: l10n.tripsChatWithCoordinator,
               onTap: () => openCoordinatorChat(context, ref, caseId: booking?.caseId),
             ),
             _QuickAction(
               key: const ValueKey('qa-emergency'),
               icon: Icons.contact_emergency_outlined,
-              label: 'Emergency\nContacts',
+              label: l10n.tripsEmergencyContacts,
               onTap: () => showEmergencyContactsSheet(context, coordinator: dashboard.coordinator),
             ),
             _QuickAction(
               key: const ValueKey('qa-guide'),
               icon: Icons.description_outlined,
-              label: 'Pre-arrival Guide',
+              label: l10n.preArrivalTitle,
               onTap: () =>
                   Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PreArrivalGuideScreen())),
             ),
           ],
         ),
-        const SectionTitle('Your Journey'),
+        SectionTitle(l10n.journeySectionTitle),
         if (booking != null)
           _LinkCard(
             icon: Icons.flight_rounded,
-            title: 'Visa & Travel',
-            subtitle: 'Visa, flights, airport pickup, stay, translator',
+            title: l10n.travelVisaAndTravel,
+            subtitle: l10n.tripsTravelSubtitle,
             onTap: () => _openTravel(context, booking),
           ),
         _LinkCard(
           icon: Icons.support_agent_rounded,
-          title: 'In-Country Support',
-          subtitle: 'Map, schedule, helpline, translator, SOS',
+          title: l10n.tripsSupportTitle,
+          subtitle: l10n.tripsSupportSubtitle,
           onTap: () => context.push(Routes.support),
         ),
         _LinkCard(
           icon: Icons.folder_shared_outlined,
-          title: 'My Cases',
-          subtitle: dashboard.activeCases == 1 ? '1 active case' : '${dashboard.activeCases} active cases',
+          title: l10n.tripsMyCases,
+          subtitle: l10n.tripsActiveCases(dashboard.activeCases),
           onTap: () => context.push(Routes.cases),
         ),
         if (dashboard.coordinator != null)
           _LinkCard(
             icon: Icons.badge_outlined,
-            title: 'Your coordinator: ${dashboard.coordinator!.fullName}',
-            subtitle: 'Message them any time',
+            title: l10n.tripsYourCoordinator(dashboard.coordinator!.fullName),
+            subtitle: l10n.tripsMessageAnyTime,
             onTap: () => openCoordinatorChat(context, ref, caseId: booking?.caseId),
           ),
       ],
@@ -220,21 +222,21 @@ class _Countdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = days;
+    final l10n = context.l10n;
     final (String big, String unit) = switch (d) {
-      null => ('--', 'days'),
-      0 => ('Today', ''),
-      < 0 => booking.status == BookingStatus.completed ? ('Done', '') : ('Now', ''),
-      1 => ('1', 'day'),
-      _ => ('$d', 'days'),
+      null => ('--', l10n.tripsCountdownUnit(0)),
+      0 => (l10n.tripsCountdownToday, ''),
+      < 0 => booking.status == BookingStatus.completed ? (l10n.tripsCountdownDone, '') : (l10n.tripsCountdownNow, ''),
+      _ => ('$d', l10n.tripsCountdownUnit(d)),
     };
-    final label = d != null && d < 0 ? 'Treatment in progress' : 'Until Treatment';
+    final label = d != null && d < 0 ? l10n.tripsTreatmentInProgress : l10n.tripsUntilTreatment;
     return Column(
       children: [
         const SizedBox(height: 8),
         Text(label, style: context.text.titleSmall?.copyWith(color: context.palette.textSecondary)),
         const SizedBox(height: 4),
         Semantics(
-          label: d != null && d > 0 ? '$d days until treatment' : label,
+          label: d != null && d > 0 ? l10n.tripsDaysUntilTreatment(d) : label,
           excludeSemantics: true,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -291,7 +293,7 @@ class _BalanceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  booking.isPendingPayment ? 'Payment needed to confirm' : 'Balance due',
+                  booking.isPendingPayment ? context.l10n.tripsPaymentNeeded : context.l10n.tripsBalanceDue,
                   style: context.text.labelMedium?.copyWith(color: context.palette.textSecondary),
                 ),
                 MoneyText(
@@ -310,7 +312,7 @@ class _BalanceCard extends StatelessWidget {
               minimumSize: const Size(0, 44),
             ),
             onPressed: () => context.push(Routes.pay(booking.id)),
-            child: const Text('Pay now'),
+            child: Text(context.l10n.tripsPayNow),
           ),
         ],
       ),
@@ -329,21 +331,21 @@ class _NoTrip extends StatelessWidget {
         children: [
           const Icon(Icons.flight_takeoff_rounded, size: 40, color: AppColors.violet),
           const SizedBox(height: 10),
-          Text('No upcoming treatment yet', style: context.text.titleMedium, textAlign: TextAlign.center),
+          Text(context.l10n.tripsNoTripTitle, style: context.text.titleMedium, textAlign: TextAlign.center),
           const SizedBox(height: 4),
           Text(
-            'Find the right hospital with a free AI screening, or continue a case you started.',
+            context.l10n.tripsNoTripBody,
             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 14),
           PrimaryButton(
-            label: 'Find my treatment',
+            label: context.l10n.caseFindMyTreatment,
             tone: ButtonTone.violet,
             onPressed: () => context.push(Routes.screeningStart()),
           ),
           const SizedBox(height: 8),
-          SecondaryButton(label: 'My cases', onPressed: () => context.push(Routes.cases)),
+          SecondaryButton(label: context.l10n.casesTitle, onPressed: () => context.push(Routes.cases)),
         ],
       ),
     );

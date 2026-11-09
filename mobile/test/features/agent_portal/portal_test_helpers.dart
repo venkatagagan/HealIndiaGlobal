@@ -8,9 +8,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heal_india_global/core/auth/auth_controller.dart';
 import 'package:heal_india_global/core/auth/token_storage.dart';
+import 'package:heal_india_global/core/config/app_preferences.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/network/api_client.dart';
 import 'package:heal_india_global/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Auth controller with a fixed signed-in user (no network).
 class PortalFakeAuth extends AuthController {
@@ -247,9 +249,12 @@ Future<void> pumpPortal(
     httpClientAdapter: adapter,
   );
   final router = GoRouter(initialLocation: initialLocation, routes: routes);
+  SharedPreferences.setMockInitialValues({});
+  final prefs = await SharedPreferences.getInstance();
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
         tokenStorageProvider.overrideWithValue(InMemoryTokenStorage()),
         apiClientProvider.overrideWithValue(api),
         authControllerProvider.overrideWith(() => PortalFakeAuth(user)),

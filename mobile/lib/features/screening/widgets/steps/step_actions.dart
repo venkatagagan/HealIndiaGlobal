@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/routes.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/l10n.dart';
 import '../../providers/screening_draft.dart';
 
 /// Common props of a questionnaire step.
@@ -33,7 +34,7 @@ mixin ScreeningStepActions<T extends ScreeningStepView> on ConsumerState<T> {
     final d = draft;
     if (d == null) return false;
     if (validate) {
-      final problem = d.validate(step);
+      final problem = d.validate(step, context.l10n);
       if (problem != null) {
         showInfoSnack(context, problem);
         return false;
@@ -73,7 +74,7 @@ mixin ScreeningStepActions<T extends ScreeningStepView> on ConsumerState<T> {
     if (busy) return;
     if (!await persist(validate: false)) return;
     if (!mounted) return;
-    showInfoSnack(context, 'Progress saved. Continue any time from Home.');
+    showInfoSnack(context, context.l10n.screeningProgressSaved);
     context.go(Routes.home);
   }
 }

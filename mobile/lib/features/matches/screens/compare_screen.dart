@@ -7,6 +7,7 @@ import '../../../core/repositories/screening_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
 import '../widgets/consultation_request.dart';
 import 'match_detail_screen.dart';
@@ -24,14 +25,15 @@ class CompareScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = screeningId;
+    final l10n = context.l10n;
     if (id == null || id.isEmpty || matchIds.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Compare')),
+        appBar: AppBar(title: Text(l10n.compareTitleShort)),
         body: EmptyView(
           icon: Icons.compare_arrows_rounded,
-          title: 'Nothing to compare',
-          message: 'Select 2 or 3 matches from your results to compare them side by side.',
-          actionLabel: 'Start a screening',
+          title: l10n.compareNothingTitle,
+          message: l10n.compareNothingMessage,
+          actionLabel: l10n.compareStartScreening,
           onAction: () => context.go(Routes.screeningNew),
         ),
       );
@@ -39,7 +41,7 @@ class CompareScreen extends ConsumerWidget {
     final matches = ref.watch(screeningMatchesProvider(id));
     final screening = ref.watch(screeningProvider(id)).value;
     return Scaffold(
-      appBar: AppBar(title: const Text('Compare Matches')),
+      appBar: AppBar(title: Text(l10n.compareTitle)),
       body: AsyncValueView<List<ScreeningMatch>>(
         value: matches,
         onRetry: () => ref.invalidate(screeningMatchesProvider(id)),
@@ -52,8 +54,8 @@ class CompareScreen extends ConsumerWidget {
           if (picked.isEmpty) {
             return EmptyView(
               icon: Icons.search_off_rounded,
-              title: 'These matches are no longer available',
-              actionLabel: 'Back to matches',
+              title: l10n.compareNoLongerAvailable,
+              actionLabel: l10n.compareBackToMatches,
               onAction: () => context.go(Routes.matches(id)),
             );
           }
@@ -76,12 +78,13 @@ class _CompareTable extends StatelessWidget {
     final lowest = matches.map((m) => m.estimatedCostMinor).reduce((a, b) => a < b ? a : b);
     final best = matches.map((m) => m.matchScore).reduce((a, b) => a > b ? a : b);
     final sameCurrency = matches.map((m) => m.currency).toSet().length == 1;
+    final l10n = context.l10n;
 
     TableRow row(String label, Widget Function(ScreeningMatch m) cell, {bool shaded = false}) => TableRow(
       decoration: BoxDecoration(color: shaded ? context.palette.surfaceAlt.withValues(alpha: 0.5) : null),
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 12, 8, 12),
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 8, 12),
           child: Text(
             label,
             style: context.text.labelMedium?.copyWith(
@@ -140,7 +143,7 @@ class _CompareTable extends StatelessWidget {
               ],
             ),
             row(
-              'Match',
+              l10n.compareRowMatch,
               (m) => StatusBadge(
                 label: m.matchLabel,
                 color: m.matchScore == best ? AppColors.primary : AppColors.info,
@@ -148,29 +151,42 @@ class _CompareTable extends StatelessWidget {
               ),
               shaded: true,
             ),
-            row('Specialty', (m) => text(m.doctor?.specialty?.name ?? m.hospital.specialties.take(2).join(', '))),
             row(
-              'Experience',
-              (m) => text(m.doctor?.experienceYears == null ? null : '${m.doctor!.experienceYears} years'),
+              l10n.filtersSpecialtyLabel,
+              (m) => text(m.doctor?.specialty?.name ?? m.hospital.specialties.take(2).join(', ')),
+            ),
+            row(
+              l10n.doctorDetailExperience,
+              (m) => text(
+                m.doctor?.experienceYears == null ? null : l10n.compareExperienceYears(m.doctor!.experienceYears!),
+              ),
               shaded: true,
             ),
             row(
-              'Success rate',
-              (m) => text(m.doctor?.successRatePct == null ? null : '${m.doctor!.successRatePct!.round()}%'),
+              l10n.doctorDetailSuccessRate,
+              (m) => text(
+                m.doctor?.successRatePct == null ? null : l10n.catalogPercent(m.doctor!.successRatePct!.round()),
+              ),
             ),
-            row('Rating', (m) {
+            row(l10n.compareRowRating, (m) {
               final r = m.doctor?.ratingAvg ?? m.hospital.ratingAvg;
               final c = m.doctor?.ratingCount ?? m.hospital.ratingCount;
               return r == null ? text(null) : text('★ ${r.toStringAsFixed(1)} ($c)');
             }, shaded: true),
-            row('Hospital', (m) => text([m.hospital.name, m.hospital.city].whereType<String>().join(', '))),
             row(
-              'Accreditation',
+              l10n.compareRowHospital,
+              (m) => text([m.hospital.name, m.hospital.city].whereType<String>().join(', ')),
+            ),
+            row(
+              l10n.compareRowAccreditation,
               (m) => text(m.hospital.accreditations.map((a) => a.toUpperCase()).join(', ')),
               shaded: true,
             ),
-            row('Languages', (m) => text({...?m.doctor?.languages, ...m.hospital.languages}.take(5).join(', '))),
-            row('Est. cost', (m) {
+            row(
+              l10n.compareRowLanguages,
+              (m) => text({...?m.doctor?.languages, ...m.hospital.languages}.take(5).join(', ')),
+            ),
+            row(l10n.compareRowEstCost, (m) {
               final isLowest = sameCurrency && m.estimatedCostMinor == lowest && matches.length > 1;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,20 +199,24 @@ class _CompareTable extends StatelessWidget {
                       color: isLowest ? AppColors.primary : AppColors.danger,
                     ),
                   ),
-                  if (isLowest) Text('Lowest', style: context.text.labelSmall?.copyWith(color: AppColors.primary)),
+                  if (isLowest)
+                    Text(l10n.compareLowest, style: context.text.labelSmall?.copyWith(color: AppColors.primary)),
                 ],
               );
             }, shaded: true),
             row(
-              'Savings',
+              l10n.compareRowSavings,
               (m) => text(
-                m.savings == null ? null : '${m.savings!.pctMin}-${m.savings!.pctMax}%',
+                m.savings == null ? null : l10n.comparePercentRange(m.savings!.pctMin, m.savings!.pctMax),
                 style: context.text.bodySmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w700),
               ),
             ),
-            row('Package', (m) => text(m.package?.name), shaded: true),
-            row('Video consult', (m) => text((m.doctor?.teleconsultAvailable ?? false) ? 'Yes' : 'No')),
-            row('Why', (m) => text(m.reasons.take(3).join('\n')), shaded: true),
+            row(l10n.compareRowPackage, (m) => text(m.package?.name), shaded: true),
+            row(
+              l10n.catalogVideoConsult,
+              (m) => text((m.doctor?.teleconsultAvailable ?? false) ? l10n.commonYes : l10n.commonNo),
+            ),
+            row(l10n.compareRowWhy, (m) => text(m.reasons.take(3).join('\n')), shaded: true),
             TableRow(
               children: [
                 const SizedBox.shrink(),
@@ -206,7 +226,7 @@ class _CompareTable extends StatelessWidget {
                     child: Column(
                       children: [
                         PrimaryButton(
-                          label: 'Book',
+                          label: l10n.compareBook,
                           tone: ButtonTone.red,
                           onPressed: () => requestConsultation(
                             context,
@@ -217,7 +237,7 @@ class _CompareTable extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         SecondaryButton(
-                          label: 'Details',
+                          label: l10n.compareDetails,
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (_) =>

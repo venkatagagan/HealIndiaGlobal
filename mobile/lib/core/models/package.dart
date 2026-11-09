@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import 'enums.dart';
 import 'json.dart';
 import 'refs.dart';
@@ -30,13 +31,16 @@ class PackageIncludes {
   final int followupTeleconsults;
 
   /// Human readable bullet list.
-  List<String> get bullets => [
-    if (accommodationNights > 0) '$accommodationNights nights accommodation',
-    if (airportPickup) 'Airport pickup',
-    if (translator) 'Translator',
-    if (meals) 'Meals',
-    if (localTransport) 'Local transport',
-    if (followupTeleconsults > 0) '$followupTeleconsults follow-up teleconsults',
+  List<String> get bullets => bulletsFor(L10n.current);
+
+  /// [bullets] in the language of [l10n].
+  List<String> bulletsFor(AppLocalizations l10n) => [
+    if (accommodationNights > 0) l10n.corePackageNightsAccommodation(accommodationNights),
+    if (airportPickup) l10n.corePackageAirportPickup,
+    if (translator) l10n.corePackageTranslator,
+    if (meals) l10n.corePackageMeals,
+    if (localTransport) l10n.corePackageLocalTransport,
+    if (followupTeleconsults > 0) l10n.corePackageFollowupTeleconsults(followupTeleconsults),
   ];
 
   Map<String, dynamic> toJson() => {

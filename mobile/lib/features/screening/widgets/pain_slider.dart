@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 
 /// Emoji for a 0-10 pain value.
 String painEmoji(int value) => switch (value) {
@@ -12,14 +13,17 @@ String painEmoji(int value) => switch (value) {
   _ => '😫',
 };
 
-/// Word for a 0-10 pain value.
-String painLabel(int value) => switch (value) {
-  <= 0 => 'No pain',
-  <= 3 => 'Mild',
-  <= 6 => 'Moderate',
-  <= 8 => 'Severe',
-  _ => 'Worst possible',
-};
+/// Word for a 0-10 pain value, in the language of [l] (default: [L10n.current]).
+String painLabel(int value, [AppLocalizations? l]) {
+  final s = l ?? L10n.current;
+  return switch (value) {
+    <= 0 => s.painNone,
+    <= 3 => s.painMild,
+    <= 6 => s.painModerate,
+    <= 8 => s.painSevere,
+    _ => s.painWorst,
+  };
+}
 
 /// Color for a 0-10 pain value (green -> amber -> red).
 Color painColor(int value) {
@@ -39,13 +43,14 @@ class PainSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = painColor(value);
+    final l10n = context.l10n;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Pain Intensity', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+        Text(l10n.painIntensityTitle, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: 2),
         Text(
-          '$value/10 · ${painLabel(value)}',
+          l10n.painValueLabel(value, painLabel(value, l10n)),
           style: context.text.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w700),
         ),
         SliderTheme(
@@ -63,7 +68,7 @@ class PainSlider extends StatelessWidget {
             max: 10,
             divisions: 10,
             label: '$value',
-            semanticFormatterCallback: (v) => 'Pain ${v.round()} out of 10, ${painLabel(v.round())}',
+            semanticFormatterCallback: (v) => l10n.painSemantics(v.round(), painLabel(v.round(), l10n)),
             onChanged: (v) => onChanged(v.round()),
           ),
         ),

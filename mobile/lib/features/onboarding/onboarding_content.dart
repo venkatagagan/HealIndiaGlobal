@@ -1,85 +1,92 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
+
 /// Editable marketing copy for the onboarding carousel.
 ///
-/// The business owns these numbers and claims: change them here only (no other file hard-codes
-/// them). Keep the copy honest (PLAN §9): figures must be backed by partner-hospital data, and
-/// accreditations are those held by partner hospitals, not by the platform itself.
+/// The business owns these numbers and claims: change them here and in the `onboarding*` strings of
+/// `l10n_parts/a_core_home.json` (every language) only — no other file hard-codes them. Keep the copy honest
+/// (PLAN §9): figures must be backed by partner-hospital data, and accreditations are those held by partner
+/// hospitals, not by the platform itself.
 abstract final class OnboardingContent {
   // ---------------------------------------------------------------- page 1 — Welcome Impact
   /// Headline statistic ("500,000+").
-  static const impactStat = '500,000+';
+  static String impactStat(AppLocalizations l) => l.onboardingImpactStat;
 
   /// Caption below the statistic.
-  static const impactStatCaption = 'Patients Treated';
+  static String impactStatCaption(AppLocalizations l) => l.onboardingImpactStatCaption;
 
   /// Small qualifier shown under the caption (empty string hides it).
-  static const impactStatFootnote = 'across our partner hospitals';
+  static String impactStatFootnote(AppLocalizations l) => l.onboardingImpactStatFootnote;
 
   /// Main promise.
-  static const impactHeadline = 'World-Class Healthcare at 70% Less Cost';
+  static String impactHeadline(AppLocalizations l) => l.onboardingImpactHeadline;
 
   /// Accreditation chips (short code + accessible description).
-  static const accreditations = <OnboardingBadge>[
-    OnboardingBadge(code: 'JCI', description: 'Joint Commission International accredited partner hospitals'),
-    OnboardingBadge(code: 'NABH', description: 'NABH accredited partner hospitals'),
-    OnboardingBadge(code: 'WHO', description: 'Care that follows WHO patient-safety guidelines'),
+  static List<OnboardingBadge> accreditations(AppLocalizations l) => [
+    OnboardingBadge(code: 'JCI', description: l.onboardingBadgeJciDescription),
+    OnboardingBadge(code: 'NABH', description: l.onboardingBadgeNabhDescription),
+    OnboardingBadge(code: 'WHO', description: l.onboardingBadgeWhoDescription),
   ];
 
   /// Caption under the accreditation chips (empty string hides it).
-  static const accreditationsCaption = 'Accreditations held by our partner hospitals';
+  static String accreditationsCaption(AppLocalizations l) => l.onboardingAccreditationsCaption;
 
   // ---------------------------------------------------------------- page 2 — Trust & Excellence
-  static const trustTitle = 'Care you can trust';
+  static String trustTitle(AppLocalizations l) => l.onboardingTrustTitle;
 
-  static const trustPoints = <OnboardingPoint>[
+  static List<OnboardingPoint> trustPoints(AppLocalizations l) => [
     OnboardingPoint(
       icon: Icons.translate_rounded,
-      title: 'English-Speaking Doctors',
-      subtitle: 'Communicate with ease.',
+      title: l.onboardingTrustDoctorsTitle,
+      subtitle: l.onboardingTrustDoctorsSubtitle,
     ),
-    OnboardingPoint(icon: Icons.schedule_rounded, title: 'Zero Wait Time', subtitle: 'Get prompt medical attention.'),
+    OnboardingPoint(
+      icon: Icons.schedule_rounded,
+      title: l.onboardingTrustWaitTitle,
+      subtitle: l.onboardingTrustWaitSubtitle,
+    ),
     OnboardingPoint(
       icon: Icons.verified_outlined,
-      title: 'Joint Commission Certified',
-      subtitle: 'Internationally accredited partner facilities.',
+      title: l.onboardingTrustCertifiedTitle,
+      subtitle: l.onboardingTrustCertifiedSubtitle,
     ),
   ];
 
   /// Testimonial card. Marked as illustrative in the UI until replaced by a verified review.
-  static const testimonialQuote = '"Saved \$45,000 on my cardiac surgery with better care than home."';
-  static const testimonialAuthor = 'Patient from the USA';
+  static String testimonialQuote(AppLocalizations l) => l.onboardingTestimonialQuote;
+  static String testimonialAuthor(AppLocalizations l) => l.onboardingTestimonialAuthor;
   static const testimonialRating = 5;
 
-  /// Label rendered on the testimonial; set to '' once the quote is a verified, consented review.
-  static const testimonialDisclaimer = 'Illustrative example';
+  /// Label rendered on the testimonial; set to '' (every language) once the quote is a verified, consented review.
+  static String testimonialDisclaimer(AppLocalizations l) => l.onboardingTestimonialDisclaimer;
 
   // ---------------------------------------------------------------- page 3 — Security & Process
-  static const processSteps = <OnboardingPoint>[
+  static List<OnboardingPoint> processSteps(AppLocalizations l) => [
     OnboardingPoint(
       icon: Icons.assignment_outlined,
-      title: 'Share Condition',
-      subtitle: 'Securely provide your medical information.',
+      title: l.onboardingStepShareTitle,
+      subtitle: l.onboardingStepShareSubtitle,
     ),
     OnboardingPoint(
       icon: Icons.person_search_outlined,
-      title: 'Get Matched',
-      subtitle: 'Our AI finds the best hospitals for you.',
+      title: l.onboardingStepMatchTitle,
+      subtitle: l.onboardingStepMatchSubtitle,
     ),
     OnboardingPoint(
       icon: Icons.query_stats_rounded,
-      title: 'Compare Costs',
-      subtitle: 'Transparent pricing to make informed decisions.',
+      title: l.onboardingStepCompareTitle,
+      subtitle: l.onboardingStepCompareSubtitle,
     ),
     OnboardingPoint(
       icon: Icons.event_available_outlined,
-      title: 'Book Treatment',
-      subtitle: 'Schedule your appointment hassle-free.',
+      title: l.onboardingStepBookTitle,
+      subtitle: l.onboardingStepBookSubtitle,
     ),
   ];
 
-  static const securityBadge = 'Encrypted & Secure';
-  static const securityFooter = 'Your medical data is encrypted and shared only with hospitals you choose';
+  static String securityBadge(AppLocalizations l) => l.onboardingSecurityBadge;
+  static String securityFooter(AppLocalizations l) => l.onboardingSecurityFooter;
 
   // ---------------------------------------------------------------- legal links (auth screens)
   static const termsUrl = 'https://healindiaglobal.com/terms';

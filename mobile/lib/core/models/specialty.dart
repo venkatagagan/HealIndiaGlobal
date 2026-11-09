@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import 'json.dart';
 
 /// `SpecialtyOut` (PLAN §8.4).
@@ -40,8 +41,8 @@ class Specialty {
     final lo = savingsMinPct;
     final hi = savingsMaxPct;
     if (lo == null && hi == null) return null;
-    if (lo == null || hi == null || lo == hi) return 'Save ${lo ?? hi}%';
-    return 'Save $lo-$hi%';
+    if (lo == null || hi == null || lo == hi) return L10n.current.coreSavePercent((lo ?? hi)!);
+    return L10n.current.coreSavePercentRange(lo, hi);
   }
 
   Map<String, dynamic> toJson() => {

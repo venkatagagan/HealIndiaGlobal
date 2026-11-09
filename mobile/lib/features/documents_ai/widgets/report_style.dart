@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 import '../models/document_analysis.dart';
 
 /// Shared colors / labels of the report UI.
 abstract final class ReportStyle {
-  static const disclaimer = 'AI-generated — always confirm with your doctor.';
+  /// AI disclaimer in the current language (widgets with a context can use `context.l10n.reportAiDisclaimer`).
+  static String get disclaimer => L10n.current.reportAiDisclaimer;
 
   static Color labFlag(LabFlag f) => switch (f) {
     LabFlag.normal => AppColors.primary,
@@ -30,7 +32,7 @@ class EditedMarker extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
     decoration: BoxDecoration(color: AppColors.violetSoft, borderRadius: BorderRadius.circular(AppRadius.pill)),
     child: Text(
-      'Edited',
+      context.l10n.reportEdited,
       style: context.text.labelSmall?.copyWith(color: AppColors.violet, fontWeight: FontWeight.w700),
     ),
   );

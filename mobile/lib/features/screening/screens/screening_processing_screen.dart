@@ -11,6 +11,7 @@ import '../../../core/repositories/screening_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/brain_backdrop.dart';
 import '../providers/emergency_ack.dart';
 import '../widgets/emergency_guidance.dart';
@@ -26,8 +27,15 @@ class ScreeningProcessingScreen extends ConsumerStatefulWidget {
 
   final String screeningId;
 
-  /// Steps of the animated checklist.
-  static const steps = ['Analyzing your condition', 'Matching with specialists', 'Calculating savings'];
+  /// Number of steps of the animated checklist.
+  static const stepCount = 3;
+
+  /// Steps of the animated checklist, in the language of [l].
+  static List<String> steps(AppLocalizations l) => [
+    l.screeningProcessingStepAnalyzing,
+    l.screeningProcessingStepMatching,
+    l.screeningProcessingStepSavings,
+  ];
 
   @override
   ConsumerState<ScreeningProcessingScreen> createState() => _ScreeningProcessingScreenState();
@@ -73,7 +81,7 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
     _active = 0;
     if (!initial) setState(() {});
     _stepTimer = Timer.periodic(_stepInterval, (t) {
-      if (_active < ScreeningProcessingScreen.steps.length - 1) {
+      if (_active < ScreeningProcessingScreen.stepCount - 1) {
         setState(() => _active++);
       } else {
         t.cancel();
@@ -118,13 +126,13 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
     } else if ((s.urgency ?? s.aiResult?.urgency) == Urgency.emergency) {
       _stepTimer?.cancel();
       setState(() {
-        _active = ScreeningProcessingScreen.steps.length;
+        _active = ScreeningProcessingScreen.stepCount;
         _stage = _Stage.emergency;
       });
     } else {
       _stepTimer?.cancel();
       setState(() {
-        _active = ScreeningProcessingScreen.steps.length;
+        _active = ScreeningProcessingScreen.stepCount;
         _stage = _Stage.done;
       });
       _leaveTimer = Timer(const Duration(milliseconds: 700), _openMatches);
@@ -190,7 +198,7 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(56, 12, 8, 4),
+                    padding: const EdgeInsetsDirectional.fromSTEB(56, 12, 8, 4),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -208,7 +216,7 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
                                   ),
                                 ),
                                 Text(
-                                  Brand.tagline,
+                                  context.l10n.appTagline,
                                   textAlign: TextAlign.center,
                                   style: context.text.labelSmall?.copyWith(color: Colors.white70),
                                 ),
@@ -217,7 +225,7 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
                           ),
                         ),
                         IconButton(
-                          tooltip: 'What is happening?',
+                          tooltip: context.l10n.screeningProcessingHelpTitle,
                           color: Colors.white,
                           icon: const Icon(Icons.help_outline_rounded),
                           onPressed: () => _showHelp(context),
@@ -238,7 +246,9 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
   }
 
   Widget _body(BuildContext context) {
+    final l10n = context.l10n;
     final white = context.text.bodyMedium?.copyWith(color: Colors.white);
+    final steps = ScreeningProcessingScreen.steps(l10n);
     switch (_stage) {
       case _Stage.waiting:
       case _Stage.done:
@@ -251,20 +261,20 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
               Semantics(
                 liveRegion: true,
                 child: Text(
-                  _stage == _Stage.done ? 'Your matches are ready!' : 'Finding Your Perfect Match...',
+                  _stage == _Stage.done ? l10n.screeningProcessingReady : l10n.screeningProcessingFinding,
                   textAlign: TextAlign.center,
                   style: context.text.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w900),
                 ),
               ),
               const SizedBox(height: 28),
-              for (var i = 0; i < ScreeningProcessingScreen.steps.length; i++)
+              for (var i = 0; i < steps.length; i++)
                 _ChecklistRow(
-                  label: ScreeningProcessingScreen.steps[i],
+                  label: steps[i],
                   state: i < _active ? _RowState.done : (i == _active ? _RowState.active : _RowState.pending),
                 ),
               const SizedBox(height: 28),
               Text(
-                'Tip: you can compare up to 3 matches side by side and see the full cost breakdown.',
+                l10n.screeningProcessingTip,
                 textAlign: TextAlign.center,
                 style: white?.copyWith(color: Colors.white70, fontSize: 12),
               ),
@@ -274,44 +284,44 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
       case _Stage.failed:
         return _Problem(
           icon: Icons.error_outline_rounded,
-          title: 'We could not complete the analysis',
+          title: l10n.screeningProcessingFailedTitle,
           message: _screening?.error?.trim().isNotEmpty == true
               ? _screening!.error!
-              : 'Something went wrong while analysing your answers.',
-          primaryLabel: 'Try again',
+              : l10n.screeningProcessingFailedMessage,
+          primaryLabel: l10n.commonTryAgain,
           loading: _retrying,
           onPrimary: _rerun,
-          secondaryLabel: 'Start a new screening',
+          secondaryLabel: l10n.screeningStartNewButton,
           onSecondary: () => context.go(Routes.screeningStart(specialty: _screening?.specialty?.slug)),
         );
       case _Stage.timeout:
         return _Problem(
           icon: Icons.hourglass_bottom_rounded,
-          title: 'This is taking longer than usual',
-          message: 'We will notify you as soon as your matches are ready. You can keep waiting or come back later.',
-          primaryLabel: 'Keep waiting',
+          title: l10n.screeningProcessingTimeoutTitle,
+          message: l10n.screeningProcessingTimeoutMessage,
+          primaryLabel: l10n.screeningProcessingKeepWaiting,
           onPrimary: _startWatching,
-          secondaryLabel: 'Go to Home',
+          secondaryLabel: l10n.screeningGoHome,
           onSecondary: () => context.go(Routes.home),
         );
       case _Stage.notSubmitted:
         return _Problem(
           icon: Icons.edit_note_rounded,
-          title: 'This screening has not been submitted',
-          message: 'Finish the questionnaire to get your matches.',
-          primaryLabel: 'Continue questionnaire',
+          title: l10n.screeningNotSubmittedTitle,
+          message: l10n.screeningNotSubmittedMessage,
+          primaryLabel: l10n.screeningContinueQuestionnaire,
           onPrimary: () => context.go(Routes.screeningStep(_id, 4)),
-          secondaryLabel: 'Go to Home',
+          secondaryLabel: l10n.screeningGoHome,
           onSecondary: () => context.go(Routes.home),
         );
       case _Stage.error:
         return _Problem(
           icon: Icons.wifi_off_rounded,
-          title: 'We lost track of your screening',
+          title: l10n.screeningProcessingLostTitle,
           message: errorMessage(_error),
-          primaryLabel: 'Retry',
+          primaryLabel: l10n.commonRetry,
           onPrimary: _startWatching,
-          secondaryLabel: 'Go to Home',
+          secondaryLabel: l10n.screeningGoHome,
           onSecondary: () => context.go(Routes.home),
         );
     }
@@ -320,13 +330,9 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
   void _showHelp(BuildContext context) => showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('What is happening?'),
-      content: const Text(
-        'We review your answers (with AI if you agreed), suggest the right specialty and match you with '
-        'accredited Indian hospitals and doctors by expertise, language, budget and availability. This usually '
-        'takes under a minute. It is not a diagnosis.',
-      ),
-      actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('OK'))],
+      title: Text(ctx.l10n.screeningProcessingHelpTitle),
+      content: Text(ctx.l10n.screeningProcessingHelpBody),
+      actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(ctx.l10n.commonOk))],
     ),
   );
 }
@@ -375,12 +381,7 @@ class _ChecklistRow extends StatelessWidget {
       ),
     };
     return Semantics(
-      label:
-          '$label, ${switch (state) {
-            _RowState.done => 'done',
-            _RowState.active => 'in progress',
-            _RowState.pending => 'pending',
-          }}',
+      label: context.l10n.screeningChecklistRowSemantics(label, state.name),
       excludeSemantics: true,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),

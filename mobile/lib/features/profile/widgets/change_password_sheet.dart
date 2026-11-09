@@ -5,6 +5,7 @@ import '../../../core/auth/auth_repository.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/validators.dart';
 import '../../auth/widgets/auth_widgets.dart';
 
@@ -69,6 +70,7 @@ class _ChangePasswordSheetState extends ConsumerState<ChangePasswordSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + bottom),
@@ -79,40 +81,40 @@ class _ChangePasswordSheetState extends ConsumerState<ChangePasswordSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Change password', style: context.text.titleLarge),
+              Text(l10n.passwordChangeTitle, style: context.text.titleLarge),
               const SizedBox(height: 16),
               if (_error != null) ...[FormErrorBanner(message: _error!), const SizedBox(height: 12)],
               PasswordField(
                 controller: _current,
-                label: 'Current password',
-                helperText: 'Leave blank if you signed up with Google and never set one',
+                label: l10n.passwordCurrent,
+                helperText: l10n.passwordCurrentHelper,
                 errorText: _fieldErrors['current_password'],
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 12),
               PasswordField(
                 controller: _next,
-                label: 'New password',
+                label: l10n.passwordNew,
                 validator: (v) {
                   final base = AuthValidators.newPassword(v);
                   if (base != null) return base;
-                  return v == _current.text ? 'Choose a password different from the current one' : null;
+                  return v == _current.text ? l10n.passwordMustDiffer : null;
                 },
                 errorText: _fieldErrors['new_password'],
                 autofillHints: const [AutofillHints.newPassword],
                 textInputAction: TextInputAction.next,
-                helperText: 'At least ${AuthValidators.passwordMinLength} characters with a letter and a number',
+                helperText: l10n.passwordPolicyHelper(AuthValidators.passwordMinLength),
               ),
               const SizedBox(height: 12),
               PasswordField(
                 controller: _confirm,
-                label: 'Confirm new password',
-                validator: (v) => v != _next.text ? 'Passwords do not match' : null,
+                label: l10n.passwordConfirmNew,
+                validator: (v) => v != _next.text ? l10n.passwordMismatch : null,
                 autofillHints: const [AutofillHints.newPassword],
                 onSubmitted: (_) => _submit(),
               ),
               const SizedBox(height: 20),
-              PrimaryButton(label: 'Update password', loading: _loading, onPressed: _submit),
+              PrimaryButton(label: l10n.passwordUpdateButton, loading: _loading, onPressed: _submit),
             ],
           ),
         ),

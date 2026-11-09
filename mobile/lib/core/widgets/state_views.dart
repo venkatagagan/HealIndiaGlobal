@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../network/api_exception.dart';
 import '../theme/app_theme.dart';
 import 'buttons.dart';
@@ -99,7 +100,8 @@ class ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final api = error == null ? null : ApiException.from(error!);
     final offline = api?.isNetwork ?? false;
-    final heading = title ?? (offline ? 'You are offline' : 'Something went wrong');
+    final l10n = context.l10n;
+    final heading = title ?? (offline ? l10n.coreErrorOffline : l10n.commonSomethingWentWrong);
     final message = errorMessage(error);
     if (compact) {
       return Padding(
@@ -109,7 +111,7 @@ class ErrorView extends StatelessWidget {
             Icon(offline ? Icons.wifi_off_rounded : Icons.error_outline_rounded, color: AppColors.danger, size: 20),
             const SizedBox(width: 8),
             Expanded(child: Text(message, style: context.text.bodySmall)),
-            if (onRetry != null) TextButton(onPressed: onRetry, child: const Text('Retry')),
+            if (onRetry != null) TextButton(onPressed: onRetry, child: Text(l10n.commonRetry)),
           ],
         ),
       );
@@ -135,7 +137,12 @@ class ErrorView extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 20),
-              SecondaryButton(label: 'Try again', icon: Icons.refresh_rounded, onPressed: onRetry, expand: false),
+              SecondaryButton(
+                label: l10n.commonTryAgain,
+                icon: Icons.refresh_rounded,
+                onPressed: onRetry,
+                expand: false,
+              ),
             ],
           ],
         ),

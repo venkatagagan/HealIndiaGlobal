@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../l10n/l10n.dart';
 import '../config/env.dart';
 import '../network/api_exception.dart';
 
@@ -35,10 +36,10 @@ class GoogleSignInService {
   /// Runs the Google sign-in flow and returns the ID token, or null if the user cancelled.
   Future<String?> signInForIdToken() async {
     if (!isConfigured) {
-      throw const ApiException(
+      throw ApiException(
         statusCode: 0,
         code: 'google_not_configured',
-        message: 'Google sign-in is not available in this build.',
+        message: L10n.current.coreGoogleSignInUnavailable,
       );
     }
     await _ensureInitialized();
@@ -46,12 +47,12 @@ class GoogleSignInService {
       final account = await GoogleSignIn.instance.authenticate();
       final idToken = account.authentication.idToken;
       if (idToken == null || idToken.isEmpty) {
-        throw const ApiException(statusCode: 0, code: 'google_failed', message: 'Google did not return a token.');
+        throw ApiException(statusCode: 0, code: 'google_failed', message: L10n.current.coreGoogleNoToken);
       }
       return idToken;
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) return null;
-      throw ApiException(statusCode: 0, code: 'google_failed', message: e.description ?? 'Google sign-in failed.');
+      throw ApiException(statusCode: 0, code: 'google_failed', message: e.description ?? L10n.current.coreGoogleSignInFailed);
     }
   }
 

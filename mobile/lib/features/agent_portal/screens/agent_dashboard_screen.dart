@@ -6,6 +6,7 @@ import '../../../core/auth/auth_controller.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../agent_routes.dart';
 import '../data/agent_models.dart';
 import '../data/agent_repository.dart';
@@ -22,7 +23,9 @@ class AgentDashboardScreen extends ConsumerWidget {
     final firstName = (user?.fullName ?? '').split(' ').first;
     return Scaffold(
       appBar: AppBar(
-        title: Text(firstName.isEmpty ? 'Agent dashboard' : 'Hi, $firstName'),
+        title: Text(
+          firstName.isEmpty ? context.l10n.agentDashboardTitle : context.l10n.agentDashboardGreeting(firstName),
+        ),
         actions: const [PortalAccountMenu(), SizedBox(width: 8)],
       ),
       body: RefreshIndicator(
@@ -57,11 +60,15 @@ class _ProfileBanner extends ConsumerWidget {
     if (profile == null || profile.isActive) return const SizedBox.shrink();
     final rejected = profile.status == AgentStatus.rejected || profile.kycStatus == KycStatus.rejected;
     final color = rejected ? AppColors.danger : AppColors.warning;
+    final l10n = context.l10n;
     final message = switch (profile.kycStatus) {
-      KycStatus.notSubmitted => 'Submit your KYC documents on the agent web portal to start earning commissions.',
-      KycStatus.pending => 'Your KYC is under review. You can add patients meanwhile.',
-      KycStatus.rejected => 'KYC rejected${profile.rejectionReason == null ? '' : ': ${profile.rejectionReason}'}',
-      KycStatus.approved => 'Your agency account is ${profile.status.label.toLowerCase()}.',
+      KycStatus.notSubmitted => l10n.kycBannerNotSubmitted,
+      KycStatus.pending => l10n.kycBannerPending,
+      KycStatus.rejected =>
+        profile.rejectionReason == null
+            ? l10n.kycBannerRejected
+            : l10n.kycBannerRejectedWithReason(profile.rejectionReason!),
+      KycStatus.approved => l10n.agentAccountStatusBanner(profile.status.label.toLowerCase()),
     };
     return AppCard(
       margin: const EdgeInsets.only(bottom: 16),
@@ -85,6 +92,7 @@ class _DashboardBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final d = data;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,52 +100,52 @@ class _DashboardBody extends StatelessWidget {
         KpiGrid(
           tiles: [
             KpiTile(
-              label: 'Patients',
+              label: l10n.agentKpiPatients,
               value: '${d.patientsTotal}',
               icon: Icons.groups_rounded,
               color: AppColors.info,
               onTap: () => selectPortalTab(context, AgentRoutes.tabPatients),
             ),
             KpiTile(
-              label: 'Active cases',
+              label: l10n.agentKpiActiveCases,
               value: '${d.activeCases}',
               icon: Icons.folder_shared_rounded,
               color: AppColors.violet,
               onTap: () => selectPortalTab(context, AgentRoutes.tabCases),
             ),
             KpiTile(
-              label: 'Confirmed bookings',
+              label: l10n.agentKpiConfirmedBookings,
               value: '${d.bookingsConfirmed}',
               icon: Icons.event_available_rounded,
               onTap: () => selectPortalTab(context, AgentRoutes.tabBookings),
             ),
             KpiTile(
-              label: 'Conversion',
+              label: l10n.agentKpiConversion,
               value: d.conversionLabel,
               icon: Icons.trending_up_rounded,
               color: AppColors.cyan,
             ),
             KpiTile(
-              label: 'Commission pending',
+              label: l10n.commissionKpiPending,
               value: money(d.commissionPendingMinor, d.currency),
               icon: Icons.hourglass_top_rounded,
               color: AppColors.warning,
               onTap: () => selectPortalTab(context, AgentRoutes.tabEarnings),
             ),
             KpiTile(
-              label: 'Commission paid',
+              label: l10n.commissionKpiPaid,
               value: money(d.commissionPaidMinor, d.currency),
               icon: Icons.payments_rounded,
               onTap: () => selectPortalTab(context, AgentRoutes.tabEarnings),
             ),
           ],
         ),
-        const SectionTitle('Quick actions'),
+        SectionTitle(l10n.agentQuickActions),
         Row(
           children: [
             Expanded(
               child: PrimaryButton(
-                label: 'Add patient',
+                label: l10n.agentAddPatient,
                 icon: Icons.person_add_alt_1_rounded,
                 onPressed: () => context.push(AgentRoutes.newPatient),
               ),
@@ -145,33 +153,33 @@ class _DashboardBody extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: SecondaryButton(
-                label: 'Run screening',
+                label: l10n.agentRunScreening,
                 icon: Icons.health_and_safety_outlined,
                 onPressed: () => selectPortalTab(context, AgentRoutes.tabPatients),
               ),
             ),
           ],
         ),
-        const SectionTitle('Commission by month'),
+        SectionTitle(l10n.commissionByMonth),
         AppCard(
           child: MonthlyBars(
             points: [for (final m in d.monthly) (m.month, m.commissionMinor)],
             format: (v) => money(v.toInt(), d.currency, compact: true),
           ),
         ),
-        const SectionTitle('Cases by month'),
+        SectionTitle(l10n.agentCasesByMonth),
         AppCard(
           child: MonthlyBars(points: [for (final m in d.monthly) (m.month, m.cases)], color: AppColors.violet),
         ),
         SectionTitle(
-          'Recent cases',
-          actionLabel: 'All cases',
+          l10n.agentRecentCases,
+          actionLabel: l10n.agentAllCases,
           onAction: () => selectPortalTab(context, AgentRoutes.tabCases),
         ),
         if (d.recentCases.isEmpty)
-          const EmptyView(
-            title: 'No cases yet',
-            message: 'Add a patient, run a screening and request quotes from hospitals.',
+          EmptyView(
+            title: l10n.agentDashboardNoCases,
+            message: l10n.agentDashboardNoCasesHint,
             icon: Icons.folder_open_outlined,
           )
         else

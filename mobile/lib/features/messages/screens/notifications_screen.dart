@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/messaging_repository.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../logic/notification_routes.dart';
 import '../widgets/notification_tile.dart';
 
@@ -27,15 +28,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final async = ref.watch(notificationsProvider);
     final hasUnread = async.value?.any((n) => !n.isRead && !_readIds.contains(n.id)) ?? false;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(l10n.notificationsTitle),
         centerTitle: true,
         actions: [
           if (hasUnread)
-            TextButton(onPressed: _markingAll ? null : _markAll, child: const Text('Mark all read')),
+            TextButton(onPressed: _markingAll ? null : _markAll, child: Text(l10n.notificationsMarkAllRead)),
         ],
       ),
       body: RefreshIndicator(
@@ -47,12 +49,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             if (list.isEmpty) {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(height: 60),
+                children: [
+                  const SizedBox(height: 60),
                   EmptyView(
                     icon: Icons.notifications_off_outlined,
-                    title: 'You are all caught up',
-                    message: 'Quotes, booking updates, reminders and messages will show up here.',
+                    title: l10n.notificationsEmptyTitle,
+                    message: l10n.notificationsEmptyMessage,
                   ),
                 ],
               );

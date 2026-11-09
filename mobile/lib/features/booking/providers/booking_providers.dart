@@ -29,9 +29,10 @@ final admissionAvailabilityProvider = FutureProvider.autoDispose.family<Admissio
   return AdmissionAvailability.fromSlots(slots);
 });
 
-/// "Pay with Face ID" / "Pay with fingerprint" / "Pay".
-final payButtonLabelProvider = FutureProvider.autoDispose<String>(
-  (ref) => ref.watch(biometricServiceProvider).payLabel(),
+/// Biometric offered on the pay button ("Pay with Face ID" / "Pay with fingerprint" / "Pay"); the
+/// label is built in the widget so it follows the app language.
+final payButtonBiometricProvider = FutureProvider.autoDispose<PayBiometric>(
+  (ref) => ref.watch(biometricServiceProvider).payBiometric(),
 );
 
 /// Razorpay native checkout (Android / iOS). Overridden in tests.

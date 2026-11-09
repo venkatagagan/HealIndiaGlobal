@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
+import '../../../l10n/l10n.dart';
 
 /// Group of settings rows inside a card.
 class SettingsGroup extends StatelessWidget {
@@ -105,7 +106,7 @@ class InfoRow extends StatelessWidget {
           SizedBox(width: 128, child: Text(label, style: context.text.bodySmall)),
           Expanded(
             child: Text(
-              v.isEmpty ? 'Not added' : v,
+              v.isEmpty ? context.l10n.profileNotAdded : v,
               style: context.text.bodyMedium?.copyWith(
                 color: v.isEmpty ? context.palette.textMuted : null,
                 fontWeight: v.isEmpty ? null : FontWeight.w600,
@@ -162,7 +163,7 @@ class DateField extends StatelessWidget {
           suffixIcon: value == null
               ? const Icon(Icons.arrow_drop_down_rounded)
               : IconButton(
-                  tooltip: 'Clear $label',
+                  tooltip: context.l10n.profileClearField(label),
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () => onChanged(null),
                 ),
@@ -196,7 +197,7 @@ Future<T?> showChoiceSheet<T>(
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Text(title, style: context.text.titleLarge),
             ),
           ),

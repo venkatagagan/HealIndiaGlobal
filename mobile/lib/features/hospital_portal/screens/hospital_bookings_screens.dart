@@ -6,6 +6,7 @@ import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../agent_portal/shared/portal_widgets.dart';
 import '../data/hospital_models.dart';
 import '../data/hospital_repository.dart';
@@ -24,19 +25,22 @@ class AdmissionsScreen extends ConsumerStatefulWidget {
 class _AdmissionsScreenState extends ConsumerState<AdmissionsScreen> {
   BookingStatus _status = BookingStatus.confirmed;
 
-  static const _labels = {
-    BookingStatus.confirmed: 'Upcoming',
-    BookingStatus.admitted: 'In treatment',
-    BookingStatus.completed: 'Discharged',
-    BookingStatus.pendingPayment: 'Awaiting payment',
-    BookingStatus.cancelled: 'Cancelled',
+  /// Filter chips: status -> (chip label, empty-state title).
+  static Map<BookingStatus, (String, String)> _labels(AppLocalizations l) => {
+    BookingStatus.confirmed: (l.hpAdmissionsUpcoming, l.hpAdmissionsEmptyUpcoming),
+    BookingStatus.admitted: (l.hpKpiInTreatment, l.hpAdmissionsEmptyInTreatment),
+    BookingStatus.completed: (l.hpAdmissionsDischarged, l.hpAdmissionsEmptyDischarged),
+    BookingStatus.pendingPayment: (l.hpAdmissionsAwaitingPayment, l.hpAdmissionsEmptyAwaitingPayment),
+    BookingStatus.cancelled: (l.hpAdmissionsCancelled, l.hpAdmissionsEmptyCancelled),
   };
 
   @override
   Widget build(BuildContext context) {
     final bookings = ref.watch(hospitalBookingsProvider(_status));
+    final l10n = context.l10n;
+    final labels = _labels(l10n);
     return Scaffold(
-      appBar: AppBar(title: const Text('Admissions')),
+      appBar: AppBar(title: Text(l10n.hpAdmissionsTitle)),
       body: Column(
         children: [
           SizedBox(
@@ -45,11 +49,11 @@ class _AdmissionsScreenState extends ConsumerState<AdmissionsScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               children: [
-                for (final e in _labels.entries)
+                for (final e in labels.entries)
                   Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsetsDirectional.only(end: 8),
                     child: ChoiceChip(
-                      label: Text(e.value),
+                      label: Text(e.value.$1),
                       selected: _status == e.key,
                       onSelected: (_) => setState(() => _status = e.key),
                     ),
@@ -68,9 +72,7 @@ class _AdmissionsScreenState extends ConsumerState<AdmissionsScreen> {
                     ..sort((a, b) => (a.admissionDate ?? DateTime(2100)).compareTo(b.admissionDate ?? DateTime(2100)));
                   if (items.isEmpty) {
                     return ListView(
-                      children: [
-                        EmptyView(title: 'No ${_labels[_status]!.toLowerCase()} patients', icon: Icons.bed_outlined),
-                      ],
+                      children: [EmptyView(title: labels[_status]!.$2, icon: Icons.bed_outlined)],
                     );
                   }
                   return ListView(
@@ -96,6 +98,7 @@ class _AdmissionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = booking;
     final days = b.admissionDate == null ? null : Dates.daysUntil(b.admissionDate!);
+    final l10n = context.l10n;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
       onTap: () => context.push(HospitalRoutes.booking(b.id)),
@@ -108,7 +111,7 @@ class _AdmissionTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  b.patient?.fullName ?? 'Patient',
+                  b.patient?.fullName ?? l10n.hpPatientFallback,
                   style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 Text(
@@ -122,10 +125,11 @@ class _AdmissionTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   b.status == BookingStatus.completed
-                      ? 'Discharged ${Dates.day(b.dischargeDate ?? b.completedAt)}'
+                      ? l10n.hpTileDischarged(Dates.day(b.dischargeDate ?? b.completedAt))
                       : b.status == BookingStatus.admitted
-                      ? 'Admitted ${Dates.day(b.admittedAt ?? b.admissionDate)}'
-                      : 'Admission ${Dates.day(b.admissionDate)}${days != null && days >= 0 ? ' · in $days day${days == 1 ? '' : 's'}' : ''}',
+                      ? l10n.hpTileAdmitted(Dates.day(b.admittedAt ?? b.admissionDate))
+                      : '${l10n.hpTileAdmission(Dates.day(b.admissionDate))}'
+                            '${days != null && days >= 0 ? ' · ${l10n.hpTileInDays(days)}' : ''}',
                   style: context.text.labelMedium,
                 ),
               ],
@@ -175,21 +179,24 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
   }
 
   Future<void> _admit(Booking b) async {
+    final l10n = context.l10n;
+    final name = b.patient?.fullName;
     final note = await promptText(
       context,
-      title: 'Admit ${b.patient?.fullName ?? 'patient'}?',
-      label: 'Note (optional)',
-      confirmLabel: 'Admit',
+      title: name == null ? l10n.hpAdmitPatientTitle : l10n.hpAdmitNamedTitle(name),
+      label: l10n.hpNoteOptional,
+      confirmLabel: l10n.hpAdmitButton,
     );
     if (note == null || !mounted) return;
-    await _guard(() => ref.read(hospitalRepositoryProvider).admit(b.id, note: note), 'Patient admitted');
+    await _guard(() => ref.read(hospitalRepositoryProvider).admit(b.id, note: note), l10n.hpPatientAdmitted);
   }
 
   Future<void> _discharge(Booking b) async {
     final now = DateTime.now();
+    final l10n = context.l10n;
     final date = await showDatePicker(
       context: context,
-      helpText: 'Discharge date',
+      helpText: l10n.hpDischargeDate,
       initialDate: now,
       firstDate: b.admittedAt ?? b.admissionDate ?? now.subtract(const Duration(days: 365)),
       lastDate: now,
@@ -197,14 +204,14 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
     if (date == null || !mounted) return;
     final note = await promptText(
       context,
-      title: 'Discharge summary note',
-      label: 'Note (optional)',
-      confirmLabel: 'Discharge',
+      title: l10n.hpDischargeNoteTitle,
+      label: l10n.hpNoteOptional,
+      confirmLabel: l10n.hpDischargeButton,
     );
     if (note == null || !mounted) return;
     await _guard(
       () => ref.read(hospitalRepositoryProvider).discharge(b.id, note: note, dischargeDate: date),
-      'Patient discharged',
+      l10n.hpPatientDischarged,
     );
   }
 
@@ -216,21 +223,22 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
       builder: (_) => _ItineraryForm(defaultLocation: b.hospital.name),
     );
     if (draft == null || !mounted) return;
-    await _guard(() => ref.read(hospitalRepositoryProvider).addItinerary(b.id, draft), 'Added to itinerary');
+    await _guard(() => ref.read(hospitalRepositoryProvider).addItinerary(b.id, draft), context.l10n.hpAddedToItinerary);
   }
 
   @override
   Widget build(BuildContext context) {
     final booking = ref.watch(hospitalBookingProvider(widget.bookingId));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(booking.value?.bookingNumber ?? 'Booking')),
+      appBar: AppBar(title: Text(booking.value?.bookingNumber ?? l10n.hpBookingFallbackTitle)),
       floatingActionButton: booking.value == null || !booking.value!.isActive
           ? null
           : FloatingActionButton.extended(
               heroTag: 'hospital-add-itinerary',
               onPressed: _busy ? null : () => _addItinerary(booking.value!),
               icon: const Icon(Icons.add_task_rounded),
-              label: const Text('Itinerary'),
+              label: Text(l10n.hpItinerary),
             ),
       body: AsyncValueView(
         value: booking,
@@ -248,7 +256,7 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
                       children: [
                         Expanded(
                           child: Text(
-                            b.patient?.fullName ?? 'Patient',
+                            b.patient?.fullName ?? l10n.hpPatientFallback,
                             style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -256,14 +264,14 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
                       ],
                     ),
                     const SizedBox(height: 8),
-                    InfoRow('Treatment', b.procedure?.name ?? b.package?.name),
-                    InfoRow('Doctor', b.doctor?.fullName),
-                    InfoRow('Admission', Dates.day(b.admissionDate)),
-                    if (b.admittedAt != null) InfoRow('Admitted', Dates.dayTime(b.admittedAt)),
-                    if (b.dischargeDate != null) InfoRow('Discharge', Dates.day(b.dischargeDate)),
-                    InfoRow('Length of stay', b.durationDays == null ? null : '${b.durationDays} days'),
-                    InfoRow('Total', money(b.totalMinor, b.currency)),
-                    InfoRow('Paid', money(b.amountPaidMinor, b.currency)),
+                    InfoRow(l10n.hpInfoTreatment, b.procedure?.name ?? b.package?.name),
+                    InfoRow(l10n.hpInfoDoctor, b.doctor?.fullName),
+                    InfoRow(l10n.hpInfoAdmission, Dates.day(b.admissionDate)),
+                    if (b.admittedAt != null) InfoRow(l10n.hpInfoAdmitted, Dates.dayTime(b.admittedAt)),
+                    if (b.dischargeDate != null) InfoRow(l10n.hpInfoDischarge, Dates.day(b.dischargeDate)),
+                    InfoRow(l10n.hpInfoLengthOfStay, b.durationDays == null ? null : l10n.hpDays(b.durationDays!)),
+                    InfoRow(l10n.hpTotal, money(b.totalMinor, b.currency)),
+                    InfoRow(l10n.hpInfoPaid, money(b.amountPaidMinor, b.currency)),
                   ],
                 ),
               ),
@@ -271,7 +279,7 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
               if (b.status == BookingStatus.confirmed)
                 PrimaryButton(
                   key: const ValueKey('hospital-admit'),
-                  label: 'Admit patient',
+                  label: l10n.hpAdmitPatientButton,
                   icon: Icons.login_rounded,
                   tone: ButtonTone.violet,
                   loading: _busy,
@@ -280,23 +288,20 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
               if (b.status == BookingStatus.admitted)
                 PrimaryButton(
                   key: const ValueKey('hospital-discharge'),
-                  label: 'Discharge patient',
+                  label: l10n.hpDischargePatientButton,
                   icon: Icons.logout_rounded,
                   loading: _busy,
                   onPressed: _busy ? null : () => _discharge(b),
                 ),
               if (b.status == BookingStatus.pendingPayment)
-                Text(
-                  'Awaiting the patient deposit. Admission opens once the booking is confirmed.',
-                  style: context.text.bodySmall?.copyWith(color: AppColors.warning),
-                ),
+                Text(l10n.hpAwaitingDeposit, style: context.text.bodySmall?.copyWith(color: AppColors.warning)),
               const SizedBox(height: 4),
               TextButton.icon(
                 onPressed: () => context.push(HospitalRoutes.caseDetail(b.caseId)),
                 icon: const Icon(Icons.folder_shared_outlined),
-                label: const Text('Open case'),
+                label: Text(l10n.hpOpenCase),
               ),
-              const SectionTitle('Itinerary'),
+              SectionTitle(l10n.hpItinerary),
               _ItineraryList(booking: b, busy: _busy, guard: _guard),
             ],
           ),
@@ -316,6 +321,7 @@ class _ItineraryList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repo = ref.read(hospitalRepositoryProvider);
+    final l10n = context.l10n;
     return AsyncValueView(
       value: ref.watch(hospitalItineraryProvider(booking.id)),
       compactError: true,
@@ -323,7 +329,7 @@ class _ItineraryList extends ConsumerWidget {
       data: (items) {
         if (items.isEmpty) {
           return Text(
-            'No itinerary yet — add appointments, the surgery slot, pickup and follow-ups.',
+            l10n.hpNoItineraryYet,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           );
         }
@@ -334,7 +340,7 @@ class _ItineraryList extends ConsumerWidget {
             for (final it in sorted)
               AppCard(
                 margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 4, 8),
                 child: Row(
                   children: [
                     Icon(_kindIcon(it.kind), color: AppColors.statusColor(it.status.json)),
@@ -368,20 +374,20 @@ class _ItineraryList extends ConsumerWidget {
                       onSelected: (v) => switch (v) {
                         'done' => guard(
                           () => repo.setItineraryStatus(booking.id, it.id, ItineraryItemStatus.done),
-                          'Marked done',
+                          l10n.hpItineraryMarkedDone,
                         ),
                         'cancel' => guard(
                           () => repo.setItineraryStatus(booking.id, it.id, ItineraryItemStatus.cancelled),
-                          'Cancelled',
+                          l10n.hpItineraryCancelled,
                         ),
-                        _ => guard(() => repo.deleteItinerary(booking.id, it.id), 'Removed'),
+                        _ => guard(() => repo.deleteItinerary(booking.id, it.id), l10n.hpItineraryRemoved),
                       },
                       itemBuilder: (_) => [
                         if (it.status != ItineraryItemStatus.done)
-                          const PopupMenuItem(value: 'done', child: Text('Mark done')),
+                          PopupMenuItem(value: 'done', child: Text(l10n.hpItineraryMarkDone)),
                         if (it.status == ItineraryItemStatus.scheduled)
-                          const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
-                        const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                          PopupMenuItem(value: 'cancel', child: Text(l10n.commonCancel)),
+                        PopupMenuItem(value: 'delete', child: Text(l10n.commonDelete)),
                       ],
                     ),
                   ],
@@ -446,17 +452,18 @@ class _ItineraryFormState extends State<_ItineraryForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Add to itinerary', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          Text(l10n.hpAddToItinerary, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           DropdownButtonFormField<ItineraryKind>(
             initialValue: _kind,
-            decoration: const InputDecoration(labelText: 'Type'),
+            decoration: InputDecoration(labelText: l10n.hpItineraryTypeLabel),
             items: [for (final k in ItineraryKind.values) DropdownMenuItem(value: k, child: Text(k.label))],
             onChanged: (v) => setState(() => _kind = v ?? _kind),
           ),
@@ -464,28 +471,28 @@ class _ItineraryFormState extends State<_ItineraryForm> {
           TextField(
             key: const ValueKey('itinerary-title'),
             controller: _title,
-            decoration: const InputDecoration(labelText: 'Title (e.g. Pre-op consultation)'),
+            decoration: InputDecoration(labelText: l10n.hpItineraryTitleLabel),
           ),
           const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.schedule_rounded),
-            title: Text(_startsAt == null ? 'Date & time' : Dates.dayTime(_startsAt)),
+            title: Text(_startsAt == null ? l10n.hpItineraryDateTime : Dates.dayTime(_startsAt)),
             onTap: _pickWhen,
           ),
           TextField(
             controller: _location,
-            decoration: const InputDecoration(labelText: 'Location'),
+            decoration: InputDecoration(labelText: l10n.hpItineraryLocationLabel),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _description,
             maxLines: 2,
-            decoration: const InputDecoration(labelText: 'Instructions for the patient (optional)'),
+            decoration: InputDecoration(labelText: l10n.hpItineraryInstructionsLabel),
           ),
           const SizedBox(height: 16),
           PrimaryButton(
-            label: 'Add',
+            label: l10n.commonAdd,
             onPressed: () {
               if (_title.text.trim().isEmpty) return;
               Navigator.of(context).pop(
@@ -515,29 +522,30 @@ class ItinerariesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final upcoming = ref.watch(hospitalBookingsProvider(BookingStatus.confirmed));
     final admitted = ref.watch(hospitalBookingsProvider(BookingStatus.admitted));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Itineraries')),
+      appBar: AppBar(title: Text(l10n.hpItineraries)),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(hospitalBookingsProvider),
         child: ListView(
           padding: AppSpacing.pageAll,
           children: [
-            const SectionTitle('In treatment', padding: EdgeInsets.only(bottom: 10)),
+            SectionTitle(l10n.hpKpiInTreatment, padding: const EdgeInsets.only(bottom: 10)),
             AsyncValueView(
               value: admitted,
               compactError: true,
               onRetry: () => ref.invalidate(hospitalBookingsProvider(BookingStatus.admitted)),
               data: (p) => p.items.isEmpty
-                  ? Text('Nobody admitted right now.', style: context.text.bodySmall)
+                  ? Text(l10n.hpNobodyAdmitted, style: context.text.bodySmall)
                   : Column(children: [for (final b in p.items) _AdmissionTile(booking: b)]),
             ),
-            const SectionTitle('Upcoming arrivals'),
+            SectionTitle(l10n.hpUpcomingArrivals),
             AsyncValueView(
               value: upcoming,
               compactError: true,
               onRetry: () => ref.invalidate(hospitalBookingsProvider(BookingStatus.confirmed)),
               data: (p) => p.items.isEmpty
-                  ? Text('No confirmed bookings.', style: context.text.bodySmall)
+                  ? Text(l10n.hpNoConfirmedBookings, style: context.text.bodySmall)
                   : Column(children: [for (final b in p.items) _AdmissionTile(booking: b)]),
             ),
           ],

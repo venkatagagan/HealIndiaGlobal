@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/features/booking/logic/admission_availability.dart';
 import 'package:heal_india_global/features/booking/logic/payment_plan.dart';
+import 'package:heal_india_global/l10n/l10n.dart';
 
 Booking _booking({
   PaymentOption option = PaymentOption.full,
@@ -77,7 +78,7 @@ void main() {
       expect(due.purpose, PaymentPurpose.installment);
       expect(due.installment!.id, 'i2');
       expect(due.amountMinor, 25000);
-      expect(due.label, 'Installment 2 due now');
+      expect(due.label(L10n.current), 'Installment 2 due now');
     });
 
     test('installments without a schedule fall back to the deposit', () {

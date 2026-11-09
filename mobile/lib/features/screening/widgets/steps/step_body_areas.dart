@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/l10n.dart';
 import '../../providers/screening_draft.dart';
 import '../body_map.dart';
 import '../pain_slider.dart';
@@ -26,15 +27,16 @@ class _BodyAreasStepState extends ConsumerState<BodyAreasStep> with ScreeningSte
   Widget build(BuildContext context) {
     final d = ref.watch(screeningDraftProvider(screeningId)).requireValue;
     final areas = d.bodyAreas.toList()..sort();
+    final l10n = context.l10n;
     return ScreeningStepScaffold(
       step: step,
       accent: AppColors.danger,
       primaryTone: ButtonTone.red,
-      title: 'Where are you experiencing issues?',
+      title: l10n.screeningStep1Title,
       subtitle: d.specialtyName == null
-          ? 'Tap on the body to select the area.'
-          : 'Tap on the body to select the area · ${d.specialtyName}',
-      primaryLabel: 'Next',
+          ? l10n.screeningStep1Subtitle
+          : l10n.screeningStep1SubtitleWithSpecialty(d.specialtyName!),
+      primaryLabel: l10n.commonNext,
       busy: busy,
       onPrimary: goNext,
       onSaveExit: saveAndExit,
@@ -50,7 +52,7 @@ class _BodyAreasStepState extends ConsumerState<BodyAreasStep> with ScreeningSte
           duration: const Duration(milliseconds: 200),
           child: areas.isEmpty
               ? Text(
-                  'No area selected yet',
+                  l10n.screeningNoAreaSelected,
                   textAlign: TextAlign.center,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
                 )
@@ -61,7 +63,7 @@ class _BodyAreasStepState extends ConsumerState<BodyAreasStep> with ScreeningSte
                   children: [
                     for (final a in areas)
                       ChipToggle(
-                        label: BodyRegion.labelOf(a),
+                        label: BodyRegion.labelOf(a, l10n),
                         selected: true,
                         selectedColor: AppColors.danger,
                         onChanged: null,
