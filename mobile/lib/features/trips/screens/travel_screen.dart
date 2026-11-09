@@ -7,6 +7,7 @@ import '../../../core/repositories/travel_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../services/file_actions.dart';
 import '../widgets/travel_request_sheets.dart';
 
@@ -35,6 +36,7 @@ class TravelScreen extends ConsumerWidget {
     final travel = ref.watch(travelBookingsProvider(caseId));
     final stays = ref.watch(accommodationBookingsProvider(caseId));
     final services = ref.watch(serviceBookingsProvider(caseId));
+    final l10n = context.l10n;
 
     Future<void> refresh() async {
       ref
@@ -45,17 +47,17 @@ class TravelScreen extends ConsumerWidget {
     }
 
     void done(bool? ok) {
-      if (ok == true && context.mounted) showInfoSnack(context, 'Request sent. Our travel desk will get back to you.');
+      if (ok == true && context.mounted) showInfoSnack(context, context.l10n.travelRequestSent);
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Visa & Travel'), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.travelVisaAndTravel), centerTitle: true),
       body: RefreshIndicator(
         onRefresh: refresh,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
           children: [
-            const SectionTitle('Medical visa', padding: EdgeInsets.only(top: 8, bottom: 10)),
+            SectionTitle(l10n.visaSectionTitle, padding: const EdgeInsets.only(top: 8, bottom: 10)),
             _section<List<VisaRequest>>(
               context,
               visas,
@@ -63,15 +65,13 @@ class TravelScreen extends ConsumerWidget {
               builder: (list) => list.isEmpty
                   ? _EmptyRequest(
                       icon: Icons.assignment_ind_outlined,
-                      text:
-                          'Most international patients need an Indian e-Medical visa. We provide the hospital '
-                          'invitation letter and help you apply.',
-                      action: 'Request visa assistance',
+                      text: l10n.visaEmptyText,
+                      action: l10n.visaRequestAssistance,
                       onAction: () async => done(await showVisaRequestSheet(context, caseId: caseId)),
                     )
                   : Column(children: [for (final v in list) _VisaCard(visa: v)]),
             ),
-            const SectionTitle('Flights & airport transfers'),
+            SectionTitle(l10n.flightSectionTitle),
             _section<List<TravelBooking>>(
               context,
               travel,
@@ -83,7 +83,7 @@ class TravelScreen extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        'No flight or transfer requests yet.',
+                        l10n.flightNoRequests,
                         style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
                       ),
                     ),
@@ -96,7 +96,7 @@ class TravelScreen extends ConsumerWidget {
               children: [
                 _RequestChip(
                   icon: Icons.flight_rounded,
-                  label: 'Request flight',
+                  label: l10n.flightRequestChip,
                   onTap: () async => done(
                     await showTravelRequestSheet(
                       context,
@@ -108,7 +108,7 @@ class TravelScreen extends ConsumerWidget {
                 ),
                 _RequestChip(
                   icon: Icons.airport_shuttle_rounded,
-                  label: 'Airport pickup',
+                  label: l10n.travelAirportPickup,
                   onTap: () async => done(
                     await showTravelRequestSheet(
                       context,
@@ -120,7 +120,7 @@ class TravelScreen extends ConsumerWidget {
                 ),
                 _RequestChip(
                   icon: Icons.flight_takeoff_rounded,
-                  label: 'Airport drop',
+                  label: l10n.travelAirportDrop,
                   onTap: () async => done(
                     await showTravelRequestSheet(
                       context,
@@ -132,7 +132,7 @@ class TravelScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SectionTitle('Accommodation'),
+            SectionTitle(l10n.stayAccommodation),
             _section<List<AccommodationBooking>>(
               context,
               stays,
@@ -140,8 +140,8 @@ class TravelScreen extends ConsumerWidget {
               builder: (list) => list.isEmpty
                   ? _EmptyRequest(
                       icon: Icons.hotel_outlined,
-                      text: 'Hotels, guest houses and service apartments close to your hospital.',
-                      action: 'Request accommodation',
+                      text: l10n.stayEmptyText,
+                      action: l10n.stayRequestAccommodation,
                       onAction: () async => done(
                         await showAccommodationRequestSheet(
                           context,
@@ -156,10 +156,10 @@ class TravelScreen extends ConsumerWidget {
                       children: [
                         for (final s in list) _StayTile(stay: s),
                         Align(
-                          alignment: Alignment.centerLeft,
+                          alignment: AlignmentDirectional.centerStart,
                           child: TextButton.icon(
                             icon: const Icon(Icons.add_rounded),
-                            label: const Text('Request another stay'),
+                            label: Text(l10n.stayRequestAnother),
                             onPressed: () async => done(
                               await showAccommodationRequestSheet(context, caseId: caseId, hospitalId: hospitalId),
                             ),
@@ -168,7 +168,7 @@ class TravelScreen extends ConsumerWidget {
                       ],
                     ),
             ),
-            const SectionTitle('Local services'),
+            SectionTitle(l10n.travelLocalServices),
             _section<List<ServiceBooking>>(
               context,
               services,
@@ -181,7 +181,7 @@ class TravelScreen extends ConsumerWidget {
               children: [
                 _RequestChip(
                   icon: Icons.translate_rounded,
-                  label: 'Translator',
+                  label: l10n.travelTranslator,
                   onTap: () async => done(
                     await showServiceRequestSheet(
                       context,
@@ -193,7 +193,7 @@ class TravelScreen extends ConsumerWidget {
                 ),
                 _RequestChip(
                   icon: Icons.map_rounded,
-                  label: 'Local guide',
+                  label: l10n.travelLocalGuide,
                   onTap: () async => done(
                     await showServiceRequestSheet(
                       context,
@@ -205,7 +205,7 @@ class TravelScreen extends ConsumerWidget {
                 ),
                 _RequestChip(
                   icon: Icons.directions_car_rounded,
-                  label: 'Transport',
+                  label: l10n.travelTransport,
                   onTap: () async => done(
                     await showServiceRequestSheet(
                       context,
@@ -333,15 +333,18 @@ class _VisaCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(_hint(visa.status), style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary)),
+          Text(
+            _hint(context.l10n, visa.status),
+            style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
+          ),
           if (visa.applicationReference != null) ...[
             const SizedBox(height: 4),
-            Text('Application ref: ${visa.applicationReference}', style: context.text.bodySmall),
+            Text(context.l10n.visaApplicationRef(visa.applicationReference!), style: context.text.bodySmall),
           ],
           if (letterId != null)
             TextButton.icon(
               icon: const Icon(Icons.mark_email_read_outlined),
-              label: const Text('Invitation letter'),
+              label: Text(context.l10n.visaInvitationLetter),
               onPressed: () async {
                 final repo = ref.read(documentRepositoryProvider);
                 try {
@@ -357,13 +360,13 @@ class _VisaCard extends ConsumerWidget {
     );
   }
 
-  static String _hint(VisaStatus s) => switch (s) {
-    VisaStatus.notStarted => 'We have your request and will list the documents you need.',
-    VisaStatus.documentsPending => 'Upload your passport and medical reports in Documents.',
-    VisaStatus.invitationIssued => 'Your invitation letter is ready. Apply at indianvisaonline.gov.in.',
-    VisaStatus.applied => 'Application submitted. Decisions usually take 3-5 working days.',
-    VisaStatus.approved => 'Visa approved. Carry a printed copy when you travel.',
-    VisaStatus.rejected => 'The application was not approved. Your coordinator will contact you.',
+  static String _hint(AppLocalizations l10n, VisaStatus s) => switch (s) {
+    VisaStatus.notStarted => l10n.visaHintNotStarted,
+    VisaStatus.documentsPending => l10n.visaHintDocumentsPending,
+    VisaStatus.invitationIssued => l10n.visaHintInvitationIssued,
+    VisaStatus.applied => l10n.visaHintApplied,
+    VisaStatus.approved => l10n.visaHintApproved,
+    VisaStatus.rejected => l10n.visaHintRejected,
   };
 }
 
@@ -382,7 +385,10 @@ class _TravelTile extends StatelessWidget {
       TravelKind.localTransport => Icons.directions_car_rounded,
     };
     final when = b.departAt ?? b.arriveAt;
-    final route = [b.fromLocation, b.toLocation].whereType<String>().where((s) => s.isNotEmpty).join(' → ');
+    final route = [
+      b.fromLocation,
+      b.toLocation,
+    ].whereType<String>().where((s) => s.isNotEmpty).join(context.l10n.travelRouteArrow);
     return AppCard(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -395,7 +401,7 @@ class _TravelTile extends StatelessWidget {
             if (route.isNotEmpty) route,
             if (when != null) Dates.dayTime(when),
             if (b.flightNumber != null) b.flightNumber!,
-            if (b.pnr != null) 'PNR ${b.pnr}',
+            if (b.pnr != null) context.l10n.flightPnr(b.pnr!),
           ].join('\n'),
         ),
         isThreeLine: route.isNotEmpty && when != null,
@@ -419,12 +425,12 @@ class _StayTile extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         leading: const Icon(Icons.hotel_rounded, color: AppColors.violet),
-        title: Text(s.providerName ?? 'Accommodation'),
+        title: Text(s.providerName ?? context.l10n.stayAccommodation),
         subtitle: Text(
           [
             if (s.checkIn != null && s.checkOut != null) '${Dates.dayShort(s.checkIn)} - ${Dates.day(s.checkOut)}',
-            '${s.guests} ${s.guests == 1 ? 'guest' : 'guests'}',
-            if (s.confirmationCode != null) 'Conf. ${s.confirmationCode}',
+            context.l10n.stayGuestCount(s.guests),
+            if (s.confirmationCode != null) context.l10n.stayConfirmationCode(s.confirmationCode!),
           ].join(' · '),
         ),
         trailing: StatusBadge.forEnum(s.status, dense: true),

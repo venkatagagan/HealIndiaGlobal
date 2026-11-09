@@ -11,6 +11,7 @@ import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/validators.dart';
 import '../../auth/widgets/auth_widgets.dart';
 import '../data/countries.dart';
@@ -29,7 +30,7 @@ class EditProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(patientProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit profile')),
+      appBar: AppBar(title: Text(context.l10n.editProfileTitle)),
       body: AsyncValueView<PatientProfile>(
         value: value,
         onRetry: () => ref.invalidate(patientProfileProvider),
@@ -103,8 +104,8 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
   bool get _hasEmergencyInput =>
       _ecName.text.trim().isNotEmpty || _ecRelationship.text.trim().isNotEmpty || _ecPhone.text.trim().isNotEmpty;
 
-  String? _ecRequired(String? v, String what) =>
-      _hasEmergencyInput && (v ?? '').trim().isEmpty ? 'Add the $what or clear the emergency contact' : null;
+  /// [message]: the localized "add the field or clear the emergency contact" error for that field.
+  String? _ecRequired(String? v, String message) => _hasEmergencyInput && (v ?? '').trim().isEmpty ? message : null;
 
   Future<void> _save() async {
     setState(() {
@@ -113,7 +114,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
     });
     if (!(_formKey.currentState?.validate() ?? false)) {
       // Inline errors may be scrolled out of view; say so where the user is looking.
-      showInfoSnack(context, 'Please fix the highlighted fields.');
+      showInfoSnack(context, context.l10n.editProfileFixFields);
       return;
     }
     if (_saving) return;
@@ -160,7 +161,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
       }
       ref.invalidate(patientProfileProvider);
       if (!mounted) return;
-      showInfoSnack(context, 'Profile saved');
+      showInfoSnack(context, context.l10n.editProfileSaved);
       if (context.canPop()) {
         context.pop();
       } else {
@@ -191,13 +192,14 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
   );
 
   Widget _countryDropdown(String label, String? value, ValueChanged<String?> onChanged, String field) {
+    final l10n = context.l10n;
     return DropdownButtonFormField<String?>(
       initialValue: kCountries.containsKey(value) ? value : null,
       isExpanded: true,
       decoration: _dec(label, Icons.flag_outlined, field),
       items: [
-        const DropdownMenuItem<String?>(value: null, child: Text('Not set')),
-        for (final e in kCountries.entries)
+        DropdownMenuItem<String?>(value: null, child: Text(l10n.profileNotSet)),
+        for (final e in countryOptions(l10n))
           DropdownMenuItem<String?>(value: e.key, child: Text('${countryFlag(e.key)}  ${e.value}')),
       ],
       onChanged: onChanged,
@@ -206,6 +208,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     const gap = SizedBox(height: 12);
     final now = DateTime.now();
     return Form(
@@ -214,7 +217,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           if (_error != null) ...[FormErrorBanner(message: _error!), gap],
-          const SectionTitle('Personal details', padding: EdgeInsets.only(bottom: 10)),
+          SectionTitle(l10n.editProfilePersonalDetails, padding: const EdgeInsets.only(bottom: 10)),
           Row(
             children: [
               Expanded(
@@ -222,7 +225,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                   controller: _first,
                   textCapitalization: TextCapitalization.words,
                   maxLength: 100,
-                  decoration: _dec('First name', Icons.person_outline_rounded, 'first_name'),
+                  decoration: _dec(l10n.editProfileFirstName, Icons.person_outline_rounded, 'first_name'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -231,14 +234,14 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                   controller: _last,
                   textCapitalization: TextCapitalization.words,
                   maxLength: 100,
-                  decoration: _dec('Last name', Icons.person_outline_rounded, 'last_name'),
+                  decoration: _dec(l10n.editProfileLastName, Icons.person_outline_rounded, 'last_name'),
                 ),
               ),
             ],
           ),
           gap,
           DateField(
-            label: 'Date of birth',
+            label: l10n.profileDateOfBirth,
             value: _dob,
             icon: Icons.cake_outlined,
             firstDate: DateTime(1900),
@@ -250,18 +253,23 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
           DropdownButtonFormField<Gender?>(
             initialValue: _gender,
             isExpanded: true,
-            decoration: _dec('Gender', Icons.wc_rounded, 'gender'),
+            decoration: _dec(l10n.profileGender, Icons.wc_rounded, 'gender'),
             items: [
-              const DropdownMenuItem<Gender?>(value: null, child: Text('Not set')),
+              DropdownMenuItem<Gender?>(value: null, child: Text(l10n.profileNotSet)),
               for (final g in Gender.values) DropdownMenuItem<Gender?>(value: g, child: Text(g.label)),
             ],
             onChanged: (g) => setState(() => _gender = g),
           ),
           gap,
-          _countryDropdown('Nationality', _nationality, (v) => setState(() => _nationality = v), 'nationality'),
+          _countryDropdown(
+            l10n.profileNationality,
+            _nationality,
+            (v) => setState(() => _nationality = v),
+            'nationality',
+          ),
           gap,
           _countryDropdown(
-            'Country of residence',
+            l10n.editProfileCountryOfResidence,
             _residence,
             (v) => setState(() => _residence = v),
             'country_of_residence',
@@ -271,7 +279,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             controller: _phone,
             keyboardType: TextInputType.phone,
             validator: AuthValidators.optionalPhone,
-            decoration: _dec('Phone', Icons.phone_outlined, 'phone', hint: '+44 20 7946 0000'),
+            decoration: _dec(l10n.profilePhone, Icons.phone_outlined, 'phone', hint: '+44 20 7946 0000'),
           ),
           gap,
           TextFormField(
@@ -281,7 +289,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             decoration: _dec('WhatsApp', Icons.chat_outlined, 'whatsapp'),
           ),
 
-          const SectionTitle('Passport', subtitle: 'Needed for your medical visa invitation letter'),
+          SectionTitle(l10n.profilePassport, subtitle: l10n.editProfilePassportSubtitle),
           TextFormField(
             controller: _passport,
             textCapitalization: TextCapitalization.characters,
@@ -291,20 +299,20 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             validator: (v) {
               final s = (v ?? '').replaceAll(RegExp(r'[\s-]'), '');
               if (s.isEmpty) return null;
-              return RegExp(r'^[A-Za-z0-9]{5,20}$').hasMatch(s) ? null : 'Use 5-20 letters or digits';
+              return RegExp(r'^[A-Za-z0-9]{5,20}$').hasMatch(s) ? null : l10n.editProfilePassportInvalid;
             },
             decoration: _dec(
-              p.passportLast4 == null ? 'Passport number' : 'New passport number',
+              p.passportLast4 == null ? l10n.editProfilePassportNumber : l10n.profileNewPassportNumber,
               Icons.badge_outlined,
               'passport_number',
               helper: p.passportLast4 == null
-                  ? 'Stored encrypted. Only the last 4 digits are ever shown.'
-                  : 'On file: ${p.maskedPassport}. Leave blank to keep it.',
+                  ? l10n.editProfilePassportHelperNew
+                  : l10n.editProfilePassportOnFile('${p.maskedPassport}'),
             ),
           ),
           gap,
           DateField(
-            label: 'Passport expiry',
+            label: l10n.editProfilePassportExpiry,
             value: _passportExpiry,
             icon: Icons.event_busy_outlined,
             firstDate: DateTime(now.year - 1),
@@ -313,37 +321,37 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             onChanged: (d) => setState(() => _passportExpiry = d),
           ),
 
-          const SectionTitle('Emergency contact'),
+          SectionTitle(l10n.profileEmergencyContact),
           TextFormField(
             controller: _ecName,
             textCapitalization: TextCapitalization.words,
             maxLength: 200,
-            validator: (v) => _ecRequired(v, 'name'),
-            decoration: _dec('Name', Icons.contact_emergency_outlined, 'name'),
+            validator: (v) => _ecRequired(v, l10n.editProfileEcNameRequired),
+            decoration: _dec(l10n.editProfileName, Icons.contact_emergency_outlined, 'name'),
           ),
           gap,
           TextFormField(
             controller: _ecRelationship,
             textCapitalization: TextCapitalization.words,
             maxLength: 60,
-            validator: (v) => _ecRequired(v, 'relationship'),
-            decoration: _dec('Relationship', Icons.diversity_3_outlined, 'relationship'),
+            validator: (v) => _ecRequired(v, l10n.editProfileEcRelationshipRequired),
+            decoration: _dec(l10n.profileRelationship, Icons.diversity_3_outlined, 'relationship'),
           ),
           gap,
           TextFormField(
             controller: _ecPhone,
             keyboardType: TextInputType.phone,
             maxLength: 32,
-            validator: (v) => _ecRequired(v, 'phone') ?? AuthValidators.optionalPhone(v),
-            decoration: _dec('Phone', Icons.phone_outlined, 'emergency_contact'),
+            validator: (v) => _ecRequired(v, l10n.editProfileEcPhoneRequired) ?? AuthValidators.optionalPhone(v),
+            decoration: _dec(l10n.profilePhone, Icons.phone_outlined, 'emergency_contact'),
           ),
 
-          const SectionTitle('Medical information', subtitle: 'Shared only with hospitals you request quotes from'),
+          SectionTitle(l10n.editProfileMedicalInfo, subtitle: l10n.editProfileMedicalInfoSubtitle),
           DropdownButtonFormField<String?>(
             initialValue: kBloodGroups.contains(_bloodGroup) ? _bloodGroup : null,
-            decoration: _dec('Blood group', Icons.bloodtype_outlined, 'blood_group'),
+            decoration: _dec(l10n.profileBloodGroup, Icons.bloodtype_outlined, 'blood_group'),
             items: [
-              const DropdownMenuItem<String?>(value: null, child: Text('Not set')),
+              DropdownMenuItem<String?>(value: null, child: Text(l10n.profileNotSet)),
               for (final b in kBloodGroups) DropdownMenuItem<String?>(value: b, child: Text(b)),
             ],
             onChanged: (v) => setState(() => _bloodGroup = v),
@@ -354,7 +362,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             minLines: 1,
             maxLines: 4,
             maxLength: 5000,
-            decoration: _dec('Allergies', Icons.warning_amber_rounded, 'allergies'),
+            decoration: _dec(l10n.editProfileAllergies, Icons.warning_amber_rounded, 'allergies'),
           ),
           gap,
           TextFormField(
@@ -362,14 +370,14 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             minLines: 2,
             maxLines: 8,
             maxLength: 20000,
-            decoration: _dec('Medical history', Icons.history_rounded, 'medical_history'),
+            decoration: _dec(l10n.editProfileMedicalHistory, Icons.history_rounded, 'medical_history'),
           ),
 
-          const SectionTitle('Insurance'),
+          SectionTitle(l10n.editProfileInsurance),
           TextFormField(
             controller: _insurer,
             maxLength: 200,
-            decoration: _dec('Insurance provider', Icons.health_and_safety_outlined, 'insurance_provider'),
+            decoration: _dec(l10n.editProfileInsuranceProvider, Icons.health_and_safety_outlined, 'insurance_provider'),
           ),
           gap,
           TextFormField(
@@ -377,24 +385,22 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
             autocorrect: false,
             maxLength: 64,
             decoration: _dec(
-              p.insurancePolicyLast4 == null ? 'Policy number' : 'New policy number',
+              p.insurancePolicyLast4 == null ? l10n.editProfilePolicyNumber : l10n.editProfileNewPolicyNumber,
               Icons.policy_outlined,
               'insurance_policy_number',
-              helper: p.insurancePolicyLast4 == null
-                  ? null
-                  : 'On file: •••• ${p.insurancePolicyLast4}. Leave blank to keep it.',
+              helper: p.insurancePolicyLast4 == null ? null : l10n.editProfilePolicyOnFile('${p.insurancePolicyLast4}'),
             ),
           ),
 
-          const SectionTitle('Preferences'),
+          SectionTitle(l10n.settingsPreferences),
           DropdownButtonFormField<String>(
             initialValue: Currencies.supported.contains(_currency) ? _currency : 'USD',
-            decoration: _dec('Preferred currency', Icons.payments_outlined, 'preferred_currency'),
+            decoration: _dec(l10n.settingsPreferredCurrency, Icons.payments_outlined, 'preferred_currency'),
             items: [for (final c in Currencies.supported) DropdownMenuItem(value: c, child: Text(c))],
             onChanged: (v) => setState(() => _currency = v ?? _currency),
           ),
           const SizedBox(height: 24),
-          PrimaryButton(label: 'Save changes', loading: _saving, onPressed: _save),
+          PrimaryButton(label: l10n.editProfileSaveChanges, loading: _saving, onPressed: _save),
         ],
       ),
     );

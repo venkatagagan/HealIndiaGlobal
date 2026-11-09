@@ -6,6 +6,7 @@ import '../../../core/models/models.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/screening_draft.dart';
 import '../widgets/steps/step_body_areas.dart';
 import '../widgets/steps/step_preferences.dart';
@@ -29,7 +30,7 @@ class ScreeningStepScreen extends ConsumerWidget {
     return draft.when(
       skipLoadingOnReload: true,
       skipLoadingOnRefresh: true,
-      loading: () => const Scaffold(body: LoadingView(message: 'Loading your answers...')),
+      loading: () => Scaffold(body: LoadingView(message: context.l10n.screeningLoadingAnswers)),
       error: (e, _) => Scaffold(
         appBar: AppBar(),
         body: ErrorView(error: e, onRetry: () => ref.invalidate(screeningDraftProvider(screeningId))),
@@ -55,22 +56,21 @@ class _AlreadySubmitted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final done = screening.isCompleted;
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Screening')),
+      appBar: AppBar(title: Text(l10n.screeningAlreadySubmittedAppBar)),
       body: EmptyView(
         icon: done ? Icons.task_alt_rounded : Icons.hourglass_top_rounded,
-        title: done ? 'Your results are ready' : 'This screening was already submitted',
-        message: done
-            ? 'Answers can no longer be changed. Start a new screening to answer again.'
-            : 'We are analysing your answers.',
-        actionLabel: done ? 'View my matches' : 'See progress',
+        title: done ? l10n.screeningResultsReadyTitle : l10n.screeningAlreadySubmittedTitle,
+        message: done ? l10n.screeningResultsReadyMessage : l10n.screeningAnalysingMessage,
+        actionLabel: done ? l10n.screeningViewMatches : l10n.screeningSeeProgress,
         onAction: () => context.go(done ? Routes.matches(screening.id) : Routes.screeningProcessing(screening.id)),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SecondaryButton(
-            label: 'Start a new screening',
+            label: l10n.screeningStartNewButton,
             onPressed: () => context.go(Routes.screeningStart(specialty: screening.specialty?.slug)),
             foregroundColor: context.colors.onSurface,
           ),

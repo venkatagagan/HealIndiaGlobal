@@ -4,19 +4,20 @@ import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Short "what to do next" hint for a case (null when nothing is pending on the patient).
-String? caseNextStep(MedicalCase c) {
+String? caseNextStep(MedicalCase c, AppLocalizations l10n) {
   final b = c.booking;
   if (b != null && b.status != BookingStatus.cancelled) {
-    if (b.isPendingPayment) return 'Payment needed to confirm your booking';
-    if (b.balanceDueMinor > 0 && b.status == BookingStatus.confirmed) return 'Balance due before admission';
+    if (b.isPendingPayment) return l10n.caseNextPaymentNeeded;
+    if (b.balanceDueMinor > 0 && b.status == BookingStatus.confirmed) return l10n.caseNextBalanceDue;
     return null;
   }
   return switch (c.status) {
-    CaseStatus.enquiry => 'Waiting for the hospital quote',
-    CaseStatus.quoted => 'Review your quote',
-    CaseStatus.accepted => 'Choose your admission date',
+    CaseStatus.enquiry => l10n.caseNextWaitingForQuote,
+    CaseStatus.quoted => l10n.caseNextReviewQuote,
+    CaseStatus.accepted => l10n.caseNextChooseDate,
     _ => null,
   };
 }
@@ -31,7 +32,7 @@ class CaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = medicalCase;
-    final next = caseNextStep(c);
+    final next = caseNextStep(c, context.l10n);
     final q = c.latestQuote;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -118,6 +119,7 @@ class QuoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final q = quote;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -128,16 +130,16 @@ class QuoteCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text('Hospital quote', style: context.text.titleSmall)),
+              Expanded(child: Text(l10n.caseHospitalQuote, style: context.text.titleSmall)),
               StatusBadge.forEnum(q.status, dense: true),
             ],
           ),
           const SizedBox(height: 4),
           Text(
             [
-              if (q.preparedByName != null) 'By ${q.preparedByName}',
+              if (q.preparedByName != null) l10n.caseQuoteBy(q.preparedByName!),
               if (q.createdAt != null) Dates.day(q.createdAt),
-              if (q.validUntil != null) 'valid until ${Dates.day(q.validUntil)}',
+              if (q.validUntil != null) l10n.bookingValidUntil(Dates.day(q.validUntil)),
             ].join(' · '),
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
@@ -176,7 +178,7 @@ class QuoteCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  q.estimatedStayDays == null ? 'Total' : 'Total · ${q.estimatedStayDays} days stay',
+                  q.estimatedStayDays == null ? l10n.paymentTotal : l10n.caseQuoteTotalStay(q.estimatedStayDays!),
                   style: context.text.titleSmall,
                 ),
               ),
@@ -193,13 +195,13 @@ class QuoteCard extends StatelessWidget {
               children: [
                 if (onReject != null)
                   Expanded(
-                    child: SecondaryButton(label: 'Decline', onPressed: busy ? null : onReject),
+                    child: SecondaryButton(label: l10n.caseDecline, onPressed: busy ? null : onReject),
                   ),
                 if (onReject != null && onAccept != null) const SizedBox(width: 10),
                 if (onAccept != null)
                   Expanded(
                     child: PrimaryButton(
-                      label: 'Accept quote',
+                      label: l10n.caseAcceptQuote,
                       tone: ButtonTone.violet,
                       loading: busy,
                       onPressed: onAccept,
@@ -210,7 +212,7 @@ class QuoteCard extends StatelessWidget {
           ],
           if (onBook != null) ...[
             const SizedBox(height: 12),
-            PrimaryButton(label: 'Choose admission date', tone: ButtonTone.violet, onPressed: onBook),
+            PrimaryButton(label: l10n.caseChooseAdmissionDate, tone: ButtonTone.violet, onPressed: onBook),
           ],
         ],
       ),
@@ -289,7 +291,7 @@ Future<String?> askReason(
   BuildContext context, {
   required String title,
   required String confirmLabel,
-  String hint = 'Reason (optional)',
+  String? hint,
   bool required = false,
   String? message,
 }) {
@@ -309,12 +311,12 @@ Future<String?> askReason(
               maxLines: 3,
               maxLength: 500,
               onChanged: (_) => setState(() {}),
-              decoration: InputDecoration(labelText: hint),
+              decoration: InputDecoration(labelText: hint ?? ctx.l10n.caseReasonOptional),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Back')),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(ctx.l10n.commonBack)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.dangerStrong, foregroundColor: Colors.white),
             onPressed: required && controller.text.trim().isEmpty
@@ -336,16 +338,17 @@ class RefundPolicyCard extends StatelessWidget {
 
   final Booking booking;
 
-  static String tierLabel(RefundTier t, RefundTier? next) {
+  static String tierLabel(AppLocalizations l10n, RefundTier t, RefundTier? next) {
     final when = t.daysBefore <= 0
-        ? 'Less than ${next?.daysBefore ?? 1} days before admission'
-        : '${t.daysBefore}+ days before admission';
-    final refund = t.refundPct <= 0 ? 'no refund' : '${t.refundPct}% refund';
-    return '$when: $refund';
+        ? l10n.refundTierLessThanDays(next?.daysBefore ?? 1)
+        : l10n.refundTierDaysOrMore(t.daysBefore);
+    final refund = t.refundPct <= 0 ? l10n.refundNone : l10n.refundPercent(t.refundPct);
+    return l10n.refundTierLine(when, refund);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final tiers = booking.refundPolicy;
     final muted = context.text.bodySmall?.copyWith(color: context.palette.textSecondary);
     return Container(
@@ -355,25 +358,21 @@ class RefundPolicyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cancellation & refunds', style: context.text.titleSmall),
+          Text(l10n.refundPolicyTitle, style: context.text.titleSmall),
           const SizedBox(height: 6),
           if (tiers.isEmpty)
-            Text(
-              'The cancellation policy in force when your booking is confirmed applies: the earlier you cancel '
-              'before admission, the more is refunded.',
-              style: muted,
-            )
+            Text(l10n.refundPolicyGeneral, style: muted)
           else ...[
             for (var i = 0; i < tiers.length; i++)
               Padding(
                 padding: const EdgeInsets.only(bottom: 2),
-                child: Text('• ${tierLabel(tiers[i], i > 0 ? tiers[i - 1] : null)}', style: context.text.bodySmall),
+                child: Text(
+                  '• ${tierLabel(l10n, tiers[i], i > 0 ? tiers[i - 1] : null)}',
+                  style: context.text.bodySmall,
+                ),
               ),
             const SizedBox(height: 4),
-            Text(
-              'Locked in for this booking. If the hospital or Heal India Global cancels, you get a full refund.',
-              style: muted,
-            ),
+            Text(l10n.refundPolicyLocked, style: muted),
           ],
         ],
       ),

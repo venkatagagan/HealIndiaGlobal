@@ -6,16 +6,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../l10n/l10n.dart';
+
 /// Why no location could be read. [message] is shown to the patient.
 enum LocationFailure {
-  serviceOff('Location is switched off on your phone.'),
-  denied('Location permission was not given.'),
-  blocked('Location is blocked for this app in your phone settings.'),
-  unavailable('Your phone could not find your location in time.');
+  serviceOff,
+  denied,
+  blocked,
+  unavailable;
 
-  const LocationFailure(this.message);
+  /// Patient-facing explanation in the app language.
+  String get message => messageIn(L10n.current);
 
-  final String message;
+  /// [message] in the language of [l10n].
+  String messageIn(AppLocalizations l10n) => switch (this) {
+    serviceOff => l10n.coreLocationServiceOff,
+    denied => l10n.coreLocationDenied,
+    blocked => l10n.coreLocationBlocked,
+    unavailable => l10n.coreLocationUnavailable,
+  };
 }
 
 /// One location reading: [point] when found, otherwise [failure].

@@ -11,6 +11,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
 import '../widgets/consultation_request.dart';
 
@@ -82,7 +83,7 @@ class _CostComparisonScreenState extends ConsumerState<CostComparisonScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Treatment Comparison', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+        title: Text(context.l10n.costTitle, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
       ),
       body: waitingForContext
           ? const LoadingView()
@@ -101,7 +102,7 @@ class _CostComparisonScreenState extends ConsumerState<CostComparisonScreen> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                 child: PrimaryButton(
-                  label: match != null ? 'Book Consultation' : 'Find Hospitals',
+                  label: match != null ? context.l10n.consultationBookTitle : context.l10n.costFindHospitals,
                   icon: match != null ? Icons.event_available_rounded : Icons.search_rounded,
                   onPressed: () {
                     if (match != null) {
@@ -133,6 +134,7 @@ class _Comparison extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(costComparisonProvider(args));
+    final l10n = context.l10n;
     return AsyncValueView<CostComparison>(
       value: data,
       onRetry: () => ref.invalidate(costComparisonProvider(args)),
@@ -148,10 +150,11 @@ class _Comparison extends ConsumerWidget {
           const SizedBox(height: 8),
           Center(
             child: PopupMenuButton<String>(
-              tooltip: 'Change home country',
+              tooltip: l10n.costChangeCountryTooltip,
               onSelected: onCountry,
               itemBuilder: (_) => [
-                for (final code in kComparisonCountries) PopupMenuItem(value: code, child: Text(countryName(code))),
+                for (final code in kComparisonCountries)
+                  PopupMenuItem(value: code, child: Text(countryName(code, l10n))),
               ],
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -159,7 +162,7 @@ class _Comparison extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Compare with ${countryName(c.home.countryCode ?? args.country)}',
+                      l10n.costCompareWith(countryName(c.home.countryCode ?? args.country, l10n)),
                       style: context.text.labelLarge?.copyWith(color: AppColors.info),
                     ),
                     const Icon(Icons.arrow_drop_down_rounded, color: AppColors.info),
@@ -175,26 +178,29 @@ class _Comparison extends ConsumerWidget {
               children: [
                 Expanded(
                   child: _SideCard(
-                    title: 'Treatment in ${countryName(c.home.countryCode ?? args.country)}',
+                    title: l10n.costTreatmentIn(countryName(c.home.countryCode ?? args.country, l10n)),
                     rows: [
-                      ('Cost', formatMoneyRange(c.home.minMinor, c.home.maxMinor, c.home.currency), null),
-                      ('Wait Time', c.home.waitTimeText ?? 'Varies', null),
-                      ('Insurance Coverage', 'Varies by plan', null),
+                      (l10n.costRowCost, formatMoneyRange(c.home.minMinor, c.home.maxMinor, c.home.currency), null),
+                      (l10n.costRowWaitTime, c.home.waitTimeText ?? l10n.costVaries, null),
+                      (l10n.costRowInsurance, l10n.costVariesByPlan, null),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _SideCard(
-                    title: 'Treatment in India',
+                    title: l10n.costTreatmentInIndia,
                     highlighted: true,
                     rows: [
-                      ('Cost', formatMoneyRange(c.india.minMinor, c.india.maxMinor, c.india.currency), null),
-                      ('Wait Time', c.india.waitTimeText ?? '1-2 weeks', null),
+                      (l10n.costRowCost, formatMoneyRange(c.india.minMinor, c.india.maxMinor, c.india.currency), null),
+                      (l10n.costRowWaitTime, c.india.waitTimeText ?? l10n.costIndiaDefaultWait, null),
                       (
-                        'Savings',
-                        '${formatMoneyRange(c.savings.minMinor, c.savings.maxMinor, c.savings.currency)} '
-                            '(${c.savings.pctMin}-${c.savings.pctMax}%)',
+                        l10n.compareRowSavings,
+                        l10n.costSavingsValue(
+                          formatMoneyRange(c.savings.minMinor, c.savings.maxMinor, c.savings.currency),
+                          c.savings.pctMin,
+                          c.savings.pctMax,
+                        ),
                         AppColors.primary,
                       ),
                     ],
@@ -204,15 +210,11 @@ class _Comparison extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text('Itemized Cost Breakdown', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+          Text(l10n.costItemizedTitle, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 10),
           ..._itemRows(context, c),
           const SizedBox(height: 12),
-          Text(
-            'Estimates for comparison only. Your final price comes from the hospital\'s personalised quote. '
-            'Home-country figures are typical published ranges and vary by provider and insurance.',
-            style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
-          ),
+          Text(l10n.costDisclaimer, style: context.text.labelSmall?.copyWith(color: context.palette.textMuted)),
         ],
       ),
     );
@@ -226,11 +228,12 @@ class _Comparison extends ConsumerWidget {
         final ib = order.indexOf(b.category);
         return (ia < 0 ? 99 : ia).compareTo(ib < 0 ? 99 : ib);
       });
+    final l10n = context.l10n;
     if (items.isEmpty) {
       return [
         AppCard(
           child: Text(
-            'A detailed breakdown is included in the hospital quote.',
+            l10n.costBreakdownInQuote,
             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
           ),
         ),
@@ -252,20 +255,20 @@ class _Comparison extends ConsumerWidget {
                 key: PageStorageKey('cost-${i.category}'),
                 shape: const Border(),
                 title: Text(
-                  costCategoryLabel(i.category),
+                  costCategoryLabel(i.category, l10n),
                   style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    costCategoryHint(i.category),
+                    costCategoryHint(i.category, l10n),
                     style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                   ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      Expanded(child: Text('India', style: context.text.bodyMedium)),
+                      Expanded(child: Text(countryName('IN', l10n), style: context.text.bodyMedium)),
                       MoneyText(
                         i.amountMinor,
                         i.currency,
@@ -279,7 +282,7 @@ class _Comparison extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Typical in ${countryName(c.home.countryCode)}',
+                            l10n.costTypicalIn(countryName(c.home.countryCode, l10n)),
                             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
                           ),
                         ),
@@ -348,6 +351,7 @@ class _ProcedurePickerState extends ConsumerState<_ProcedurePicker> {
   @override
   Widget build(BuildContext context) {
     final options = ref.watch(_procedureOptionsProvider(widget.specialty));
+    final l10n = context.l10n;
     return Column(
       children: [
         Padding(
@@ -355,17 +359,17 @@ class _ProcedurePickerState extends ConsumerState<_ProcedurePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Choose a treatment', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+              Text(l10n.costChooseTreatment, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 4),
               Text(
-                'Compare what it costs at home and in India.',
+                l10n.costChooseTreatmentSubtitle,
                 style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
               ),
               const SizedBox(height: 12),
               TextField(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search_rounded),
-                  hintText: 'Search treatments',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  hintText: l10n.costSearchTreatments,
                 ),
                 onChanged: (v) => setState(() => _q = v.trim().toLowerCase()),
               ),
@@ -378,7 +382,7 @@ class _ProcedurePickerState extends ConsumerState<_ProcedurePicker> {
             onRetry: () => ref.invalidate(_procedureOptionsProvider(widget.specialty)),
             data: (items) {
               final list = items.where((p) => _q.isEmpty || p.name.toLowerCase().contains(_q)).toList();
-              if (list.isEmpty) return const EmptyView(title: 'No treatments found', icon: Icons.search_off_rounded);
+              if (list.isEmpty) return EmptyView(title: l10n.costNoTreatmentsFound, icon: Icons.search_off_rounded);
               return ListView.separated(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 itemCount: list.length,

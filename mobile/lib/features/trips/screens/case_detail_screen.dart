@@ -12,6 +12,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../booking/logic/booking_gates.dart';
 import '../services/file_actions.dart';
 import '../services/journey_actions.dart';
@@ -48,12 +49,12 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
     final detail = ref.watch(caseDetailProvider(widget.caseId));
     return Scaffold(
       appBar: AppBar(
-        title: Text(detail.value?.caseNumber ?? 'Case'),
+        title: Text(detail.value?.caseNumber ?? context.l10n.caseTitleFallback),
         centerTitle: true,
         actions: [
           if (detail.value != null)
             IconButton(
-              tooltip: 'Message about this case',
+              tooltip: context.l10n.caseMessageTooltip,
               icon: const Icon(Icons.chat_outlined),
               onPressed: () => openCoordinatorChat(context, ref, caseId: widget.caseId),
             ),
@@ -71,6 +72,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   }
 
   Widget _body(MedicalCaseDetail c) {
+    final l10n = context.l10n;
     final booking = c.booking != null && c.booking!.status != BookingStatus.cancelled ? c.booking : null;
     final quotes = [...c.quotes]..sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
     if (quotes.isEmpty && c.latestQuote != null) quotes.add(c.latestQuote!);
@@ -81,7 +83,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
         _header(c),
-        if (caseNextStep(c) case final next?) ...[
+        if (caseNextStep(c, l10n) case final next?) ...[
           const SizedBox(height: 10),
           AppCard(
             color: AppColors.violet.withValues(alpha: 0.12),
@@ -98,15 +100,12 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
             ),
           ),
         ],
-        if (booking != null) ...[const SectionTitle('Booking'), _bookingCard(c, booking)],
-        const SectionTitle('Quotes'),
+        if (booking != null) ...[SectionTitle(l10n.bookingLabel), _bookingCard(c, booking)],
+        SectionTitle(l10n.caseQuotesSection),
         if (quotes.isEmpty)
           AppCard(
             child: Text(
-              c.status == CaseStatus.enquiry
-                  ? 'The hospital is reviewing your case. You will be notified when the itemized quote arrives '
-                        '(usually within 48 hours).'
-                  : 'No quotes on this case.',
+              c.status == CaseStatus.enquiry ? l10n.caseQuotePending : l10n.caseNoQuotes,
               style: context.text.bodyMedium,
             ),
           ),
@@ -123,20 +122,20 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
         if (booking == null && c.isOpen && c.status != CaseStatus.accepted)
           TextButton.icon(
             icon: const Icon(Icons.inventory_2_outlined),
-            label: const Text('Book a fixed-price package instead'),
+            label: Text(l10n.caseBookPackageInstead),
             onPressed: () => context.push(Routes.book(c.id)),
           ),
         if (c.medicalSummary != null && c.medicalSummary!.isNotEmpty) ...[
-          const SectionTitle('Medical summary'),
+          SectionTitle(l10n.caseMedicalSummary),
           AppCard(child: Text(c.medicalSummary!, style: context.text.bodyMedium)),
         ],
         if (c.patientNotes != null && c.patientNotes!.isNotEmpty) ...[
-          const SectionTitle('Your notes'),
+          SectionTitle(l10n.caseYourNotes),
           AppCard(child: Text(c.patientNotes!, style: context.text.bodyMedium)),
         ],
         SectionTitle(
-          'Documents',
-          actionLabel: 'Manage',
+          l10n.documentsTitle,
+          actionLabel: l10n.caseDocumentsManage,
           onAction: () => context.push(Routes.documentsFor(caseId: c.id)),
         ),
         if (c.documents.isEmpty)
@@ -146,12 +145,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
               children: [
                 const Icon(Icons.upload_file_rounded, color: AppColors.violet),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Upload reports, scans and your passport so the hospital can prepare.',
-                    style: context.text.bodyMedium,
-                  ),
-                ),
+                Expanded(child: Text(l10n.caseDocumentsEmpty, style: context.text.bodyMedium)),
               ],
             ),
           )
@@ -170,12 +164,12 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
               ),
             ),
         if (c.timeline.isNotEmpty) ...[
-          const SectionTitle('Status timeline'),
+          SectionTitle(l10n.caseStatusTimeline),
           AppCard(child: CaseTimeline(entries: c.timeline)),
         ],
         const SizedBox(height: 16),
         SecondaryButton(
-          label: 'Message the care team',
+          label: l10n.caseMessageCareTeam,
           icon: Icons.chat_outlined,
           onPressed: () => openCoordinatorChat(context, ref, caseId: c.id),
         ),
@@ -184,7 +178,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
           TextButton(
             onPressed: _busy ? null : () => _cancelCase(c),
             style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            child: const Text('Cancel this case'),
+            child: Text(l10n.caseCancelThisCase),
           ),
         ],
       ],
@@ -192,6 +186,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   }
 
   Widget _header(MedicalCaseDetail c) {
+    final l10n = context.l10n;
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,9 +201,9 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
           _iconLine(Icons.local_hospital_outlined, [c.hospital.name, ?c.hospital.city].join(', ')),
           if (c.doctor != null)
             _iconLine(Icons.person_outline_rounded, [c.doctor!.fullName, ?c.doctor!.specialtyName].join(' · ')),
-          if (c.coordinator != null) _iconLine(Icons.badge_outlined, 'Coordinator: ${c.coordinator!.fullName}'),
-          if (c.agent != null) _iconLine(Icons.handshake_outlined, 'Agent: ${c.agent!.agencyName}'),
-          if (c.createdAt != null) _iconLine(Icons.schedule_rounded, 'Opened ${Dates.day(c.createdAt)}'),
+          if (c.coordinator != null) _iconLine(Icons.badge_outlined, l10n.caseCoordinator(c.coordinator!.fullName)),
+          if (c.agent != null) _iconLine(Icons.handshake_outlined, l10n.caseAgent(c.agent!.agencyName)),
+          if (c.createdAt != null) _iconLine(Icons.schedule_rounded, l10n.caseOpenedOn(Dates.day(c.createdAt))),
         ],
       ),
     );
@@ -228,6 +223,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   );
 
   Widget _bookingCard(MedicalCaseDetail c, Booking b) {
+    final l10n = context.l10n;
     Widget row(String label, Widget value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -250,31 +246,31 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          if (b.package != null) row('Package', Text(b.package!.name)),
-          if (b.admissionDate != null) row('Admission', Text(Dates.day(b.admissionDate))),
-          if (b.durationDays != null) row('Duration', Text('${b.durationDays} days')),
-          row('Payment plan', Text(_planLabel(b))),
-          row('Total', MoneyText(b.totalMinor, b.currency)),
-          row('Paid', MoneyText(b.amountPaidMinor - b.amountRefundedMinor, b.currency)),
+          if (b.package != null) row(l10n.caseBookingPackage, Text(b.package!.name)),
+          if (b.admissionDate != null) row(l10n.caseBookingAdmission, Text(Dates.day(b.admissionDate))),
+          if (b.durationDays != null) row(l10n.caseBookingDuration, Text(l10n.caseDurationDays(b.durationDays!))),
+          row(l10n.caseBookingPaymentPlan, Text(_planLabel(l10n, b))),
+          row(l10n.paymentTotal, MoneyText(b.totalMinor, b.currency)),
+          row(l10n.caseBookingPaid, MoneyText(b.amountPaidMinor - b.amountRefundedMinor, b.currency)),
           row(
-            'Balance',
+            l10n.paymentBalance,
             MoneyText(
               b.balanceDueMinor,
               b.currency,
               style: TextStyle(fontWeight: FontWeight.w800, color: b.balanceDueMinor > 0 ? AppColors.violet : null),
             ),
           ),
-          if (b.insuranceClaimRequested) row('Insurance', const Text('Claim requested')),
+          if (b.insuranceClaimRequested) row(l10n.paymentInsurance, Text(l10n.caseClaimRequested)),
           const SizedBox(height: 12),
           if (b.balanceDueMinor > 0)
             PrimaryButton(
-              label: b.isPendingPayment ? 'Pay to confirm' : 'Pay balance',
+              label: b.isPendingPayment ? l10n.casePayToConfirm : l10n.casePayBalance,
               tone: ButtonTone.violet,
               onPressed: () => context.push(Routes.pay(b.id)),
             ),
           const SizedBox(height: 8),
           SecondaryButton(
-            label: 'Visa & Travel',
+            label: l10n.travelVisaAndTravel,
             icon: Icons.flight_rounded,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -294,7 +290,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
             TextButton(
               style: TextButton.styleFrom(foregroundColor: context.colors.error),
               onPressed: _busy ? null : () => _cancelBooking(b),
-              child: const Text('Cancel booking'),
+              child: Text(l10n.caseCancelBooking),
             ),
           ],
         ],
@@ -302,10 +298,13 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
     );
   }
 
-  static String _planLabel(Booking b) => switch (b.paymentOption) {
-    PaymentOption.full => 'Pay in full',
-    PaymentOption.deposit => 'Deposit + balance',
-    PaymentOption.installments => '${b.installmentMonths ?? ''} monthly installments'.trim(),
+  static String _planLabel(AppLocalizations l10n, Booking b) => switch (b.paymentOption) {
+    PaymentOption.full => l10n.bookingPayInFull,
+    PaymentOption.deposit => l10n.caseDepositPlusBalance,
+    PaymentOption.installments =>
+      b.installmentMonths == null
+          ? l10n.caseMonthlyInstallmentsNoCount
+          : l10n.caseMonthlyInstallments(b.installmentMonths!),
   };
 
   void _refresh() {
@@ -318,13 +317,11 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Accept this quote?'),
-        content: const Text(
-          'The hospital will reserve your treatment plan. Next you choose your admission date and pay the deposit.',
-        ),
+        title: Text(ctx.l10n.caseAcceptQuoteTitle),
+        content: Text(ctx.l10n.caseAcceptQuoteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Not yet')),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Accept')),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(ctx.l10n.caseNotYet)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(ctx.l10n.caseAccept)),
         ],
       ),
     );
@@ -342,7 +339,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
       }
       _refresh();
       if (mounted) {
-        showInfoSnack(context, 'Quote accepted');
+        showInfoSnack(context, context.l10n.caseQuoteAccepted);
         await context.push(Routes.book(c.id, quoteId: q.id));
       }
     } catch (e) {
@@ -353,7 +350,11 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   }
 
   Future<void> _reject(MedicalCaseDetail c, Quote q) async {
-    final reason = await askReason(context, title: 'Decline this quote?', confirmLabel: 'Decline');
+    final reason = await askReason(
+      context,
+      title: context.l10n.caseDeclineQuoteTitle,
+      confirmLabel: context.l10n.caseDecline,
+    );
     if (reason == null) return;
     setState(() => _busyQuoteId = q.id);
     try {
@@ -369,11 +370,11 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   Future<void> _cancelBooking(Booking b) async {
     final reason = await askReason(
       context,
-      title: 'Cancel booking?',
-      confirmLabel: 'Cancel booking',
-      hint: 'Reason',
+      title: context.l10n.caseCancelBookingTitle,
+      confirmLabel: context.l10n.caseCancelBooking,
+      hint: context.l10n.caseReason,
       required: true,
-      message: 'Refunds follow the cancellation policy: the earlier you cancel before admission, the more is refunded.',
+      message: context.l10n.caseCancelBookingPolicy,
     );
     if (reason == null) return;
     setState(() => _busy = true);
@@ -381,7 +382,7 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
       await ref.read(bookingRepositoryProvider).cancel(b.id, reason: reason);
       ref.invalidate(bookingProvider(b.id));
       _refresh();
-      if (mounted) showInfoSnack(context, 'Booking cancelled. Any refund is returned to your original payment method.');
+      if (mounted) showInfoSnack(context, context.l10n.caseBookingCancelled);
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
@@ -390,7 +391,11 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
   }
 
   Future<void> _cancelCase(MedicalCaseDetail c) async {
-    final reason = await askReason(context, title: 'Cancel this case?', confirmLabel: 'Cancel case');
+    final reason = await askReason(
+      context,
+      title: context.l10n.caseCancelCaseTitle,
+      confirmLabel: context.l10n.caseCancelCase,
+    );
     if (reason == null) return;
     setState(() => _busy = true);
     try {

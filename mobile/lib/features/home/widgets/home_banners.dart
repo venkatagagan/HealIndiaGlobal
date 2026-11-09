@@ -5,6 +5,7 @@ import '../../../core/models/models.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
+import '../../../l10n/l10n.dart';
 
 /// Upcoming-trip banner from `/patient/dashboard.next_booking` (taps through to the Trips tab).
 class UpcomingTripBanner extends StatelessWidget {
@@ -15,23 +16,24 @@ class UpcomingTripBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final days = daysUntil ?? (booking.admissionDate == null ? null : Dates.daysUntil(booking.admissionDate!));
     final when = switch (days) {
-      null => 'Date to be confirmed',
-      0 => 'Today',
-      1 => 'Tomorrow',
-      final d when d < 0 => 'In progress',
-      final d => 'In $d days',
+      null => l10n.homeTripDateTbc,
+      0 => l10n.homeTripToday,
+      1 => l10n.homeTripTomorrow,
+      final d when d < 0 => l10n.homeTripInProgress,
+      final d => l10n.homeTripInDays(d),
     };
     final what = [booking.procedure?.name, booking.hospital.name].whereType<String>().join(' · ');
     return _BannerCard(
       gradient: const LinearGradient(colors: [Color(0xFF7C3AED), Color(0xFF2563EB)]),
       icon: Icons.flight_takeoff_rounded,
-      eyebrow: 'Your upcoming trip',
-      title: what.isEmpty ? 'Treatment in India' : what,
+      eyebrow: l10n.homeTripEyebrow,
+      title: what.isEmpty ? l10n.homeTripFallbackTitle : what,
       subtitle: [
         when,
-        if (booking.admissionDate != null) 'Admission ${Dates.day(booking.admissionDate)}',
+        if (booking.admissionDate != null) l10n.homeTripAdmission(Dates.day(booking.admissionDate)),
         booking.hospital.city,
       ].whereType<String>().where((s) => s.isNotEmpty).join(' · '),
       onTap: () => context.go(Routes.trips),
@@ -47,28 +49,29 @@ class ScreeningResumeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final specialty = screening.specialty?.name;
     final (title, subtitle, target) = switch (screening.status) {
       ScreeningStatus.completed => (
-        'Your matches are ready',
-        specialty == null ? 'See hospitals and doctors matched to you' : '$specialty · see your matched doctors',
+        l10n.homeMatchesReadyTitle,
+        specialty == null ? l10n.homeMatchesReadySubtitle : l10n.homeMatchesReadySubtitleSpecialty(specialty),
         Routes.matches(screening.id),
       ),
       ScreeningStatus.processing => (
-        'Finding your best matches',
-        'We are analysing your answers',
+        l10n.homeScreeningProcessingTitle,
+        l10n.homeScreeningProcessingSubtitle,
         Routes.screeningProcessing(screening.id),
       ),
       _ => (
-        'Continue your screening',
-        specialty == null ? 'Pick up where you left off' : '$specialty · pick up where you left off',
+        l10n.homeScreeningContinueTitle,
+        specialty == null ? l10n.homeScreeningContinueSubtitle : l10n.homeScreeningContinueSubtitleSpecialty(specialty),
         Routes.screeningStep(screening.id, 1),
       ),
     };
     return _BannerCard(
       gradient: const LinearGradient(colors: [Color(0xFF15803D), Color(0xFF0E7490)]),
       icon: Icons.assignment_turned_in_outlined,
-      eyebrow: 'AI screening',
+      eyebrow: l10n.homeScreeningEyebrow,
       title: title,
       subtitle: subtitle,
       onTap: () => context.push(target),

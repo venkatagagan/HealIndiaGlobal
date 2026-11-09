@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../agent_portal/shared/portal_widgets.dart';
 import '../../trips/services/file_actions.dart';
 import '../data/hospital_models.dart';
@@ -31,8 +32,9 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
   @override
   Widget build(BuildContext context) {
     final cases = ref.watch(hospitalCasesProvider(_status));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Enquiries')),
+      appBar: AppBar(title: Text(l10n.hpTabEnquiries)),
       body: Column(
         children: [
           StatusFilterBar<CaseStatus>(
@@ -47,7 +49,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
               CaseStatus.cancelled,
             ],
             selected: _status,
-            labelOf: (s) => s == CaseStatus.enquiry ? 'New' : s.label,
+            labelOf: (s) => s == CaseStatus.enquiry ? l10n.hpEnquiriesFilterNew : s.label,
             onSelected: (s) => setState(() => _status = s),
           ),
           Expanded(
@@ -60,8 +62,8 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                     ? ListView(
                         children: [
                           EmptyView(
-                            title: _status == CaseStatus.enquiry ? 'No new enquiries' : 'No cases',
-                            message: 'Patients and agents send enquiries from the matching results.',
+                            title: _status == CaseStatus.enquiry ? l10n.hpNoNewEnquiries : l10n.hpNoCases,
+                            message: l10n.hpEnquiriesEmptyMessage,
                             icon: Icons.inbox_outlined,
                           ),
                         ],
@@ -102,11 +104,12 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
   bool _busy = false;
 
   Future<void> _decline(MedicalCaseDetail c) async {
+    final l10n = context.l10n;
     final note = await promptText(
       context,
-      title: 'Decline ${c.caseNumber}?',
-      label: 'Reason shared with the patient',
-      confirmLabel: 'Decline',
+      title: l10n.hpDeclineTitle(c.caseNumber),
+      label: l10n.hpDeclineReasonLabel,
+      confirmLabel: l10n.hpDeclineButton,
       required: true,
       maxLines: 3,
     );
@@ -118,7 +121,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
         ..invalidate(hospitalCaseDetailProvider(c.id))
         ..invalidate(hospitalCasesProvider)
         ..invalidate(hospitalDashboardProvider);
-      if (mounted) showInfoSnack(context, 'Enquiry declined');
+      if (mounted) showInfoSnack(context, context.l10n.hpEnquiryDeclined);
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
@@ -131,8 +134,9 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
     final detail = ref.watch(hospitalCaseDetailProvider(widget.caseId));
     final c = detail.value;
     final canQuote = c != null && (c.status == CaseStatus.enquiry || c.status == CaseStatus.quoted);
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(c?.caseNumber ?? 'Case')),
+      appBar: AppBar(title: Text(c?.caseNumber ?? l10n.hpCaseFallbackTitle)),
       bottomNavigationBar: !canQuote
           ? null
           : SafeArea(
@@ -142,7 +146,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
                   children: [
                     Expanded(
                       child: SecondaryButton(
-                        label: 'Decline',
+                        label: l10n.hpDeclineButton,
                         foregroundColor: AppColors.danger,
                         borderColor: AppColors.danger,
                         onPressed: _busy ? null : () => _decline(c),
@@ -153,7 +157,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
                       flex: 2,
                       child: PrimaryButton(
                         key: const ValueKey('hospital-prepare-quote'),
-                        label: c.quotes.isEmpty ? 'Prepare quote' : 'Send revised quote',
+                        label: c.quotes.isEmpty ? l10n.hpPrepareQuote : l10n.hpSendRevisedQuote,
                         icon: Icons.request_quote_outlined,
                         onPressed: _busy ? null : () => context.push(HospitalRoutes.quoteBuilder(c.id)),
                       ),
@@ -176,6 +180,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
   List<Widget> _body(MedicalCaseDetail c) {
     final p = c.patient;
     final s = c.screening;
+    final l10n = context.l10n;
     return [
       AppCard(
         child: Column(
@@ -190,11 +195,15 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        p?.fullName ?? 'Patient',
+                        p?.fullName ?? l10n.hpPatientFallback,
                         style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Text(
-                        [?p?.nationality, ?p?.gender?.label, if (p?.age != null) '${p!.age} yrs'].join(' · '),
+                        [
+                          ?p?.nationality,
+                          ?p?.gender?.label,
+                          if (p?.age != null) l10n.hpYearsShort(p!.age!),
+                        ].join(' · '),
                         style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                       ),
                     ],
@@ -204,11 +213,11 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
               ],
             ),
             const Divider(height: 24),
-            InfoRow('Treatment', c.title),
-            InfoRow('Doctor', c.doctor?.fullName),
-            InfoRow('Via agent', c.agent?.agencyName),
-            InfoRow('Coordinator', c.coordinator?.fullName),
-            InfoRow('Received', Dates.dayTime(c.createdAt)),
+            InfoRow(l10n.hpInfoTreatment, c.title),
+            InfoRow(l10n.hpInfoDoctor, c.doctor?.fullName),
+            InfoRow(l10n.hpInfoViaAgent, c.agent?.agencyName),
+            InfoRow(l10n.hpInfoCoordinator, c.coordinator?.fullName),
+            InfoRow(l10n.hpInfoReceived, Dates.dayTime(c.createdAt)),
           ],
         ),
       ),
@@ -221,7 +230,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
               const Icon(Icons.event_available_rounded, color: AppColors.violet),
               const SizedBox(width: 12),
               Expanded(
-                child: Text('Booking ${c.booking!.bookingNumber} · admission ${Dates.day(c.booking!.admissionDate)}'),
+                child: Text(l10n.hpCaseBookingLine(c.booking!.bookingNumber, Dates.day(c.booking!.admissionDate))),
               ),
               StatusBadge.forEnum(c.booking!.status, dense: true),
             ],
@@ -229,7 +238,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
         ),
       ],
       if ((c.patientNotes ?? '').isNotEmpty || (c.medicalSummary ?? '').isNotEmpty) ...[
-        const SectionTitle('Patient notes'),
+        SectionTitle(l10n.hpPatientNotes),
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,26 +253,29 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
         ),
       ],
       if (s != null) ...[
-        const SectionTitle('Screening'),
+        SectionTitle(l10n.hpScreening),
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (s.aiResult != null) ...[Text(s.aiResult!.summary), const Divider(height: 20)],
-              InfoRow('Specialty', s.specialty?.name),
-              InfoRow('Body areas', s.bodyAreas.map(humanizeEnumValue).join(', ')),
-              InfoRow('Pain', s.painIntensity == null ? null : '${s.painIntensity}/10'),
-              InfoRow('Symptoms', s.symptoms.where((x) => x.answer != SymptomAnswer.no).map((x) => x.name).join(', ')),
+              InfoRow(l10n.hpInfoSpecialty, s.specialty?.name),
+              InfoRow(l10n.hpInfoBodyAreas, s.bodyAreas.map(humanizeEnumValue).join(', ')),
+              InfoRow(l10n.hpInfoPain, s.painIntensity == null ? null : '${s.painIntensity}/10'),
               InfoRow(
-                'Duration',
+                l10n.hpInfoSymptoms,
+                s.symptoms.where((x) => x.answer != SymptomAnswer.no).map((x) => x.name).join(', '),
+              ),
+              InfoRow(
+                l10n.hpInfoDuration,
                 s.durationValue == null ? null : '${s.durationValue} ${s.durationUnit?.label.toLowerCase() ?? ''}',
               ),
               if (s.urgency != null)
                 InfoRow(
-                  'Urgency',
+                  l10n.hpInfoUrgency,
                   null,
                   valueWidget: Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: StatusBadge.forEnum(s.urgency!, dense: true),
                   ),
                 ),
@@ -277,7 +289,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
         ),
       ],
       if (c.documents.isNotEmpty) ...[
-        const SectionTitle('Medical documents'),
+        SectionTitle(l10n.hpMedicalDocuments),
         for (final d in c.documents)
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -285,15 +297,15 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
             title: Text(d.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
             subtitle: Text('${d.kind.label} · ${d.sizeLabel}'),
             trailing: IconButton(
-              tooltip: 'Download',
+              tooltip: l10n.commonDownload,
               icon: const Icon(Icons.download_rounded),
               onPressed: () => downloadDocument(context, ref.read(documentRepositoryProvider), d),
             ),
           ),
       ],
-      const SectionTitle('Quotes'),
+      SectionTitle(l10n.hpQuotesSection),
       if (c.quotes.isEmpty)
-        Text('No quote sent yet.', style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary))
+        Text(l10n.hpNoQuoteYet, style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary))
       else
         for (final q in c.quotes)
           AppCard(
@@ -303,7 +315,7 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text('Sent ${Dates.day(q.createdAt)}', style: context.text.labelLarge)),
+                    Expanded(child: Text(l10n.hpQuoteSentOn(Dates.day(q.createdAt)), style: context.text.labelLarge)),
                     StatusBadge.forEnum(q.status, dense: true),
                   ],
                 ),
@@ -428,16 +440,17 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
 
   Future<void> _send() async {
     final draft = _draft();
-    final problem = draft.problem;
+    final l10n = context.l10n;
+    final problem = draft.problemIn(l10n);
     if (problem != null) {
       showInfoSnack(context, problem);
       return;
     }
     final ok = await confirmAction(
       context,
-      title: 'Send quote?',
-      message: 'Total ${money(draft.totalMinor, draft.currency)} — the patient is notified immediately.',
-      confirmLabel: 'Send',
+      title: l10n.hpSendQuoteConfirmTitle,
+      message: l10n.hpSendQuoteConfirmMessage(money(draft.totalMinor, draft.currency)),
+      confirmLabel: l10n.commonSend,
     );
     if (!ok || !mounted) return;
     setState(() => _sending = true);
@@ -448,7 +461,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
         ..invalidate(hospitalCasesProvider)
         ..invalidate(hospitalDashboardProvider);
       if (mounted) {
-        showInfoSnack(context, 'Quote sent');
+        showInfoSnack(context, context.l10n.hpQuoteSent);
         context.pop();
       }
     } catch (e) {
@@ -465,8 +478,9 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
     if (detail.hasValue && !priceList.isLoading) {
       _prefill(detail.requireValue, priceList.value ?? const []);
     }
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text('Quote · ${detail.value?.caseNumber ?? ''}')),
+      appBar: AppBar(title: Text(l10n.hpQuoteBuilderTitle(detail.value?.caseNumber ?? ''))),
       body: AsyncValueView(
         value: detail,
         onRetry: () => ref.invalidate(hospitalCaseDetailProvider(widget.caseId)),
@@ -477,7 +491,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                 padding: AppSpacing.pageAll,
                 children: [
                   Text(
-                    '${c.patient?.fullName ?? 'Patient'} · ${c.title}',
+                    '${c.patient?.fullName ?? l10n.hpPatientFallback} · ${c.title}',
                     style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 12),
@@ -485,7 +499,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                     key: const ValueKey('quote-plan'),
                     controller: _plan,
                     maxLines: 4,
-                    decoration: const InputDecoration(labelText: 'Treatment plan'),
+                    decoration: InputDecoration(labelText: l10n.hpTreatmentPlanLabel),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -493,7 +507,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           initialValue: _currency,
-                          decoration: const InputDecoration(labelText: 'Currency'),
+                          decoration: InputDecoration(labelText: l10n.hpCurrencyLabel),
                           items: [
                             for (final ccy in {...Currencies.supported, _currency})
                               DropdownMenuItem(value: ccy, child: Text(ccy)),
@@ -507,7 +521,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                           controller: _stay,
                           keyboardType: TextInputType.number,
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: const InputDecoration(labelText: 'Stay (days)'),
+                          decoration: InputDecoration(labelText: l10n.hpStayDaysLabel),
                         ),
                       ),
                     ],
@@ -516,7 +530,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.event_outlined),
-                    title: Text('Valid until ${Dates.day(_validUntil)}'),
+                    title: Text(l10n.hpValidUntil(Dates.day(_validUntil))),
                     trailing: const Icon(Icons.edit_calendar_outlined),
                     onTap: () async {
                       final now = DateTime.now();
@@ -529,10 +543,10 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                       if (d != null) setState(() => _validUntil = d);
                     },
                   ),
-                  const SectionTitle('Line items'),
+                  SectionTitle(l10n.hpLineItems),
                   for (var i = 0; i < _lines.length; i++) _lineEditor(i),
                   Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: TextButton.icon(
                       key: const ValueKey('quote-add-line'),
                       onPressed: _lines.length >= 50
@@ -541,7 +555,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                               () => _lines.add(_LineControllers(QuoteLineDraft(category: QuoteLineCategory.other))),
                             ),
                       icon: const Icon(Icons.add_rounded),
-                      label: const Text('Add line item'),
+                      label: Text(l10n.hpAddLineItem),
                     ),
                   ),
                   const Divider(height: 24),
@@ -551,7 +565,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                       final total = _lines.fold<int>(0, (s, l) => s + l.line.amountMinor);
                       return Row(
                         children: [
-                          Expanded(child: Text('Total', style: context.text.titleMedium)),
+                          Expanded(child: Text(l10n.hpTotal, style: context.text.titleMedium)),
                           Text(
                             money(total, _currency),
                             key: const ValueKey('quote-total'),
@@ -567,7 +581,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                   const SizedBox(height: 20),
                   PrimaryButton(
                     key: const ValueKey('quote-send'),
-                    label: 'Send quote',
+                    label: l10n.hpSendQuote,
                     icon: Icons.send_rounded,
                     loading: _sending,
                     onPressed: _sending ? null : _send,
@@ -580,9 +594,10 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
 
   Widget _lineEditor(int i) {
     final l = _lines[i];
+    final l10n = context.l10n;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 4, 8),
       child: Column(
         children: [
           Row(
@@ -591,13 +606,13 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                 child: DropdownButtonFormField<QuoteLineCategory>(
                   initialValue: l.line.category,
                   isDense: true,
-                  decoration: const InputDecoration(labelText: 'Category'),
+                  decoration: InputDecoration(labelText: l10n.hpCategoryLabel),
                   items: [for (final c in QuoteLineCategory.values) DropdownMenuItem(value: c, child: Text(c.label))],
                   onChanged: (v) => setState(() => l.line.category = v ?? l.line.category),
                 ),
               ),
               IconButton(
-                tooltip: 'Remove',
+                tooltip: l10n.commonRemove,
                 onPressed: _lines.length <= 1
                     ? null
                     : () => setState(() {
@@ -615,7 +630,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                 child: TextField(
                   key: ValueKey('quote-line-desc-$i'),
                   controller: l.description,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: InputDecoration(labelText: l10n.hpDescriptionLabel),
                 ),
               ),
               const SizedBox(width: 8),
@@ -626,7 +641,7 @@ class _QuoteBuilderScreenState extends ConsumerState<QuoteBuilderScreen> {
                   controller: l.amount,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
-                  decoration: InputDecoration(labelText: 'Amount ($_currency)'),
+                  decoration: InputDecoration(labelText: l10n.hpAmountLabel(_currency)),
                   onChanged: (_) => setState(() {}),
                 ),
               ),

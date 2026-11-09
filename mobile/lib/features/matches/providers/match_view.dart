@@ -1,18 +1,26 @@
 import '../../../core/models/models.dart';
+import '../../../l10n/l10n.dart';
 
 /// Max matches selectable for side-by-side comparison.
 const int kMaxCompare = 3;
 
-/// Sort orders of the matches list.
+/// Sort orders of the matches list (client-side only; [name] is the stable identifier).
 enum MatchSort {
-  bestMatch('Best match'),
-  lowestCost('Lowest cost'),
-  highestRating('Highest rating'),
-  mostExperience('Most experience');
+  bestMatch,
+  lowestCost,
+  highestRating,
+  mostExperience;
 
-  const MatchSort(this.label);
+  /// Label in the app's language.
+  String localizedLabel(AppLocalizations l) => switch (this) {
+    MatchSort.bestMatch => l.matchSortBestMatch,
+    MatchSort.lowestCost => l.matchSortLowestCost,
+    MatchSort.highestRating => l.matchSortHighestRating,
+    MatchSort.mostExperience => l.matchSortMostExperience,
+  };
 
-  final String label;
+  /// Label in the app's current language (code without a BuildContext).
+  String get label => localizedLabel(L10n.current);
 }
 
 /// Client-side filters of the matches list.
@@ -78,59 +86,68 @@ List<ScreeningMatch> applyMatchView(List<ScreeningMatch> matches, MatchSort sort
   return out;
 }
 
-/// Display name of an ISO-3166 alpha-2 code ("US" -> "USA").
-String countryName(String? code) {
+/// Display name of an ISO-3166 alpha-2 code ("US" -> "USA") in the app's language ([l10n] defaults to
+/// [L10n.current]). Unknown codes are shown as-is.
+String countryName(String? code, [AppLocalizations? l10n]) {
+  final l = l10n ?? L10n.current;
   final c = (code ?? '').toUpperCase();
-  return const {
-        'US': 'USA',
-        'GB': 'UK',
-        'CA': 'Canada',
-        'AU': 'Australia',
-        'NZ': 'New Zealand',
-        'AE': 'UAE',
-        'SA': 'Saudi Arabia',
-        'OM': 'Oman',
-        'QA': 'Qatar',
-        'KW': 'Kuwait',
-        'BH': 'Bahrain',
-        'IQ': 'Iraq',
-        'NG': 'Nigeria',
-        'KE': 'Kenya',
-        'TZ': 'Tanzania',
-        'ET': 'Ethiopia',
-        'BD': 'Bangladesh',
-        'NP': 'Nepal',
-        'LK': 'Sri Lanka',
-        'AF': 'Afghanistan',
-        'UZ': 'Uzbekistan',
-        'DE': 'Germany',
-        'FR': 'France',
-        'ES': 'Spain',
-        'IT': 'Italy',
-        'RU': 'Russia',
-        'IN': 'India',
-      }[c] ??
-      (c.isEmpty ? 'your country' : c);
+  return switch (c) {
+    'US' => l.costCountryUs,
+    'GB' => l.costCountryGb,
+    'CA' => l.costCountryCa,
+    'AU' => l.costCountryAu,
+    'NZ' => l.costCountryNz,
+    'AE' => l.costCountryAe,
+    'SA' => l.costCountrySa,
+    'OM' => l.costCountryOm,
+    'QA' => l.costCountryQa,
+    'KW' => l.costCountryKw,
+    'BH' => l.costCountryBh,
+    'IQ' => l.costCountryIq,
+    'NG' => l.costCountryNg,
+    'KE' => l.costCountryKe,
+    'TZ' => l.costCountryTz,
+    'ET' => l.costCountryEt,
+    'BD' => l.costCountryBd,
+    'NP' => l.costCountryNp,
+    'LK' => l.costCountryLk,
+    'AF' => l.costCountryAf,
+    'UZ' => l.costCountryUz,
+    'DE' => l.costCountryDe,
+    'FR' => l.costCountryFr,
+    'ES' => l.costCountryEs,
+    'IT' => l.costCountryIt,
+    'RU' => l.costCountryRu,
+    'IN' => l.costCountryIn,
+    '' => l.costCountryYours,
+    _ => c,
+  };
 }
 
-/// Human label of a `QuoteLineCategory` / itemized cost category.
-String costCategoryLabel(String category) => switch (category) {
-  'surgery' => 'Surgery',
-  'hospital_stay' || 'hospital' => 'Hospital',
-  'medications' => 'Medications',
-  'tests_scans' => 'Tests & Scans',
-  'doctor_fees' => 'Doctor Fees',
-  'implants' => 'Implants',
-  _ => 'Other',
-};
+/// Human label of a `QuoteLineCategory` / itemized cost category ([l10n] defaults to [L10n.current]).
+String costCategoryLabel(String category, [AppLocalizations? l10n]) {
+  final l = l10n ?? L10n.current;
+  return switch (category) {
+    'surgery' => l.costCategorySurgery,
+    'hospital_stay' || 'hospital' => l.costCategoryHospital,
+    'medications' => l.costCategoryMedications,
+    'tests_scans' => l.costCategoryTestsScans,
+    'doctor_fees' => l.costCategoryDoctorFees,
+    'implants' => l.costCategoryImplants,
+    _ => l.costCategoryOther,
+  };
+}
 
-/// Short description of what a cost category typically covers.
-String costCategoryHint(String category) => switch (category) {
-  'surgery' => 'Surgeon and anaesthesia fees, operating theatre and consumables.',
-  'hospital_stay' || 'hospital' => 'Room, nursing care, meals and ICU if required.',
-  'medications' => 'Medicines during your stay and on discharge.',
-  'tests_scans' => 'Pre-operative tests, imaging and lab work.',
-  'doctor_fees' => 'Consultations and follow-up visits.',
-  'implants' => 'Implants, stents or prosthetics where needed.',
-  _ => 'Other charges included in the estimate.',
-};
+/// Short description of what a cost category typically covers ([l10n] defaults to [L10n.current]).
+String costCategoryHint(String category, [AppLocalizations? l10n]) {
+  final l = l10n ?? L10n.current;
+  return switch (category) {
+    'surgery' => l.costCategorySurgeryHint,
+    'hospital_stay' || 'hospital' => l.costCategoryHospitalHint,
+    'medications' => l.costCategoryMedicationsHint,
+    'tests_scans' => l.costCategoryTestsScansHint,
+    'doctor_fees' => l.costCategoryDoctorFeesHint,
+    'implants' => l.costCategoryImplantsHint,
+    _ => l.costCategoryOtherHint,
+  };
+}

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
-/// Grid tile on "What brings you to India?": accent left border, colored icon, name, short
+/// Grid tile on "What brings you to India?": accent start border, colored icon, name, short
 /// subtitle and the "Save X-Y%" line (design: Service Category Selection).
 class SpecialtyTile extends StatelessWidget {
   const SpecialtyTile({
@@ -63,9 +64,9 @@ class SpecialtyTile extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              border: Border(left: BorderSide(color: accent, width: 3)),
+              border: BorderDirectional(start: BorderSide(color: accent, width: 3)),
             ),
-            padding: const EdgeInsets.fromLTRB(12, 12, 10, 12),
+            padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 10, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,7 +105,8 @@ class SpecialtyTile extends StatelessWidget {
 }
 
 /// "Save 10-30%" for a set of specialties (min of minimums .. max of maximums), or null.
-String? combinedSavingsLabel(Iterable<Specialty> specialties) {
+/// [l10n] defaults to the app's current language.
+String? combinedSavingsLabel(Iterable<Specialty> specialties, {AppLocalizations? l10n}) {
   int? lo;
   int? hi;
   for (final s in specialties) {
@@ -114,5 +116,6 @@ String? combinedSavingsLabel(Iterable<Specialty> specialties) {
     if (b != null) hi = hi == null || b > hi ? b : hi;
   }
   if (lo == null || hi == null) return null;
-  return lo == hi ? 'Save $lo%' : 'Save $lo-$hi%';
+  final l = l10n ?? L10n.current;
+  return lo == hi ? l.coreSavePercent(lo) : l.coreSavePercentRange(lo, hi);
 }

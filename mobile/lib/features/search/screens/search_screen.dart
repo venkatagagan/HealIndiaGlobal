@@ -9,6 +9,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/search_providers.dart';
 import '../widgets/catalog_cards.dart';
 import '../widgets/filters_sheet.dart';
@@ -89,13 +90,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
   Widget build(BuildContext context) {
     final specialties = ref.watch(specialtiesProvider).value ?? const <Specialty>[];
     String specialtyName(String slug) => specialties.where((s) => s.slug == slug).firstOrNull?.name ?? slug;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 8),
               child: Row(
                 children: [
                   Expanded(
@@ -105,7 +107,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                       onChanged: _onChanged,
                       onSubmitted: _submit,
                       decoration: InputDecoration(
-                        hintText: 'Search hospitals, doctors, treatments',
+                        hintText: l10n.searchHint,
                         prefixIcon: const Icon(Icons.search_rounded),
                         isDense: true,
                         suffixIcon: ListenableBuilder(
@@ -113,7 +115,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                           builder: (context, _) => _input.text.isEmpty
                               ? const SizedBox.shrink()
                               : IconButton(
-                                  tooltip: 'Clear search',
+                                  tooltip: l10n.searchClearTooltip,
                                   icon: const Icon(Icons.close_rounded),
                                   onPressed: _clearQuery,
                                 ),
@@ -134,7 +136,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Filters',
+                    tooltip: l10n.searchFiltersTooltip,
                     onPressed: _openFilters,
                     icon: Badge(
                       isLabelVisible: _filters.activeCount > 0,
@@ -146,20 +148,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
               ),
             ),
             if (_query.length >= 2) _SpecialtySuggestions(query: _query, filters: _filters, onSelect: _setFilters),
-            if (_filters.activeCount > 0) _ActiveFilters(filters: _filters, onChanged: _setFilters, nameOf: specialtyName),
+            if (_filters.activeCount > 0)
+              _ActiveFilters(filters: _filters, onChanged: _setFilters, nameOf: specialtyName),
             TabBar(
               controller: _tabs,
-              tabs: const [
-                Tab(text: 'Hospitals'),
-                Tab(text: 'Doctors'),
-                Tab(text: 'Procedures'),
+              tabs: [
+                Tab(text: l10n.searchTabHospitals),
+                Tab(text: l10n.searchTabDoctors),
+                Tab(text: l10n.searchTabProcedures),
               ],
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabs,
-                children: [_hospitals(), _doctors(), _procedures()],
-              ),
+              child: TabBarView(controller: _tabs, children: [_hospitals(), _doctors(), _procedures()]),
             ),
           ],
         ),
@@ -167,13 +167,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
     );
   }
 
-  Widget _emptyResults(String what) => EmptyView(
+  Widget _emptyResults(String title) => EmptyView(
     icon: Icons.search_off_rounded,
-    title: 'No $what found',
+    title: title,
     message: _filters.activeCount > 0 || _query.isNotEmpty
-        ? 'Try a different search or clear your filters.'
-        : 'Check back soon - new partners are added regularly.',
-    actionLabel: _filters.activeCount > 0 ? 'Clear filters' : null,
+        ? context.l10n.searchEmptyTryDifferent
+        : context.l10n.searchEmptyCheckBack,
+    actionLabel: _filters.activeCount > 0 ? context.l10n.searchClearFilters : null,
     onAction: _filters.activeCount > 0 ? () => _setFilters(const SearchFilters()) : null,
   );
 
@@ -192,7 +192,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
         sort: f.sort?.json,
         page: page,
       ),
-      empty: _emptyResults('hospitals'),
+      empty: _emptyResults(context.l10n.searchNoHospitalsFound),
       itemBuilder: (context, h) => HospitalListTile(hospital: h, onTap: () => context.push(Routes.hospital(h.id))),
     );
   }
@@ -205,7 +205,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
       key: ValueKey('doctors|$q|${f.cacheKey}'),
       fetch: (page) =>
           repo.doctors(q: q, specialty: f.specialty, language: f.language, gender: f.doctorGender, page: page),
-      empty: _emptyResults('doctors'),
+      empty: _emptyResults(context.l10n.searchNoDoctorsFound),
       itemBuilder: (context, d) => DoctorListTile(doctor: d, onTap: () => context.push(Routes.doctor(d.id))),
     );
   }
@@ -217,7 +217,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
       value: value,
       onRetry: () => ref.invalidate(searchProceduresProvider(query)),
       data: (items) => items.isEmpty
-          ? _emptyResults('procedures')
+          ? _emptyResults(context.l10n.searchNoProceduresFound)
           : RefreshIndicator(
               onRefresh: () => ref.refresh(searchProceduresProvider(query).future),
               child: ListView.separated(
@@ -274,14 +274,19 @@ class _ActiveFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final f = filters;
+    final l10n = context.l10n;
     final chips = <(String, SearchFilters)>[
       if (f.specialty != null) (nameOf(f.specialty!), f.copyWith(specialty: () => null)),
       if (f.city != null) (f.city!, f.copyWith(city: () => null)),
       if (f.accreditation != null)
         (kAccreditations[f.accreditation] ?? f.accreditation!.toUpperCase(), f.copyWith(accreditation: () => null)),
-      if (f.language != null) (f.language!, f.copyWith(language: () => null)),
-      if (f.doctorGender != null) ('${f.doctorGender!.label} doctors', f.copyWith(doctorGender: () => null)),
-      if (f.sort != null) (f.sort!.label, f.copyWith(sort: () => null)),
+      if (f.language != null) (filterLanguageLabel(f.language!, l10n), f.copyWith(language: () => null)),
+      if (f.doctorGender != null)
+        (
+          l10n.searchGenderDoctorsChip(f.doctorGender!.json, f.doctorGender!.label),
+          f.copyWith(doctorGender: () => null),
+        ),
+      if (f.sort != null) (f.sort!.localizedLabel(l10n), f.copyWith(sort: () => null)),
     ];
     return SizedBox(
       height: 44,

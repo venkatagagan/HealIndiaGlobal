@@ -5,6 +5,7 @@ import '../../../core/models/models.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../screening/widgets/body_map.dart';
 import '../../screening/widgets/pain_slider.dart';
 import '../models/voice_models.dart';
@@ -62,6 +63,7 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
     final slugs = {for (final s in specialties) s.slug};
     final severity = _v.severity ?? const ScreeningSeverity();
     final sectionStyle = context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800);
+    final l10n = context.l10n;
     Widget section(String title) => Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 8),
       child: Semantics(header: true, child: Text(title, style: sectionStyle)),
@@ -70,26 +72,26 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        section('Medical area'),
+        section(l10n.intakeMedicalArea),
         DropdownButtonFormField<String?>(
           key: const ValueKey('intake-specialty'),
           initialValue: slugs.contains(_v.specialtySlug) ? _v.specialtySlug : null,
           isExpanded: true,
-          decoration: const InputDecoration(labelText: 'Specialty (optional)'),
+          decoration: InputDecoration(labelText: l10n.intakeSpecialtyOptional),
           items: [
-            const DropdownMenuItem<String?>(child: Text('Not sure')),
+            DropdownMenuItem<String?>(child: Text(l10n.intakeNotSure)),
             for (final s in specialties) DropdownMenuItem<String?>(value: s.slug, child: Text(s.name)),
           ],
           onChanged: on ? (v) => _set(_v.copyWith(specialtySlug: v, clearSpecialty: v == null)) : null,
         ),
-        section('Where is the problem?'),
+        section(l10n.intakeWhereProblem),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             for (final r in BodyRegion.values)
               ChipToggle(
-                label: r.label,
+                label: r.labelIn(l10n),
                 selected: _v.bodyAreas.contains(r.json),
                 selectedColor: AppColors.danger,
                 onChanged: on
@@ -110,11 +112,11 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
         const SizedBox(height: 16),
         if (_v.painIntensity == null)
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: TextButton.icon(
               onPressed: on ? () => _set(_v.copyWith(painIntensity: 5)) : null,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Add pain intensity'),
+              label: Text(l10n.intakeAddPain),
             ),
           )
         else
@@ -125,7 +127,7 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
               onChanged: (p) => _set(_v.copyWith(painIntensity: p)),
             ),
           ),
-        section('Symptoms'),
+        section(l10n.intakeSymptoms),
         for (final s in _v.symptoms)
           _SymptomRow(
             key: ValueKey('intake-symptom-${s.name.toLowerCase()}'),
@@ -158,18 +160,18 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
                 controller: _newSymptom,
                 enabled: on,
                 maxLength: 120,
-                decoration: const InputDecoration(hintText: 'Add a symptom', counterText: '', isDense: true),
+                decoration: InputDecoration(hintText: l10n.intakeAddSymptomHint, counterText: '', isDense: true),
                 onSubmitted: (_) => _addSymptom(),
               ),
             ),
             IconButton(
-              tooltip: 'Add symptom',
+              tooltip: l10n.symptomAddTooltip,
               onPressed: on ? _addSymptom : null,
               icon: const Icon(Icons.add_circle_rounded, color: AppColors.primary),
             ),
           ],
         ),
-        section('How long have you had it?'),
+        section(l10n.intakeHowLong),
         Row(
           children: [
             SizedBox(
@@ -207,11 +209,11 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
             ),
           ],
         ),
-        section('Daily impact'),
+        section(l10n.intakeDailyImpact),
         for (final (label, value, apply) in [
-          ('Work', severity.work, (SeverityLevel l) => severity.copyWith(work: l)),
-          ('Sleep', severity.sleep, (SeverityLevel l) => severity.copyWith(sleep: l)),
-          ('Mobility', severity.mobility, (SeverityLevel l) => severity.copyWith(mobility: l)),
+          (l10n.screeningImpactWork, severity.work, (SeverityLevel l) => severity.copyWith(work: l)),
+          (l10n.screeningImpactSleep, severity.sleep, (SeverityLevel l) => severity.copyWith(sleep: l)),
+          (l10n.screeningImpactMobility, severity.mobility, (SeverityLevel l) => severity.copyWith(mobility: l)),
         ])
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -239,7 +241,7 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
               ],
             ),
           ),
-        section('Previous treatments'),
+        section(l10n.intakePreviousTreatments),
         for (final t in PreviousTreatment.values)
           CheckboxListTile(
             value: _v.previousTreatments.contains(t.json),
@@ -261,7 +263,7 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
                   )
                 : null,
           ),
-        section('Notes'),
+        section(l10n.intakeNotesLabel),
         TextFormField(
           key: const ValueKey('intake-notes'),
           initialValue: _v.notes,
@@ -269,7 +271,7 @@ class _IntakeReviewFormState extends ConsumerState<IntakeReviewForm> {
           minLines: 2,
           maxLines: 6,
           maxLength: 4000,
-          decoration: const InputDecoration(hintText: 'Anything else the doctor should know'),
+          decoration: InputDecoration(hintText: l10n.intakeNotesHint),
           onChanged: (t) => _set(_v.copyWith(notes: t)),
         ),
       ],
@@ -286,10 +288,11 @@ class _SymptomRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget btn(SymptomAnswer a, IconData icon, Color color, String tip) {
+    final l10n = context.l10n;
+    Widget btn(SymptomAnswer a, IconData icon, Color color) {
       final on = symptom.answer == a;
       return IconButton(
-        tooltip: '$tip: ${symptom.name}',
+        tooltip: l10n.symptomAnswerTooltip(a.label, symptom.name),
         isSelected: on,
         onPressed: onAnswer == null ? null : () => onAnswer!(a),
         style: IconButton.styleFrom(
@@ -305,11 +308,11 @@ class _SymptomRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(symptom.name, style: context.text.bodyMedium)),
-          btn(SymptomAnswer.no, Icons.close_rounded, AppColors.danger, 'No'),
-          btn(SymptomAnswer.maybe, Icons.remove_rounded, AppColors.warning, 'Maybe'),
-          btn(SymptomAnswer.yes, Icons.check_rounded, AppColors.primary, 'Yes'),
+          btn(SymptomAnswer.no, Icons.close_rounded, AppColors.danger),
+          btn(SymptomAnswer.maybe, Icons.remove_rounded, AppColors.warning),
+          btn(SymptomAnswer.yes, Icons.check_rounded, AppColors.primary),
           IconButton(
-            tooltip: 'Remove ${symptom.name}',
+            tooltip: l10n.symptomRemoveTooltip(symptom.name),
             onPressed: onRemove,
             icon: const Icon(Icons.delete_outline_rounded, size: 20),
           ),

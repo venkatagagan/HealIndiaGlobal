@@ -9,6 +9,7 @@ import '../../../core/repositories/document_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../trips/services/file_actions.dart';
 import '../agent_routes.dart';
 import '../data/agent_models.dart';
@@ -45,13 +46,14 @@ class _AgentPatientsScreenState extends ConsumerState<AgentPatientsScreen> {
   @override
   Widget build(BuildContext context) {
     final patients = ref.watch(agentPatientsProvider(_q));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('My patients')),
+      appBar: AppBar(title: Text(l10n.agentPatientsTitle)),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'agent-add-patient',
         onPressed: () => context.push(AgentRoutes.newPatient),
         icon: const Icon(Icons.person_add_alt_1_rounded),
-        label: const Text('Add patient'),
+        label: Text(l10n.agentAddPatient),
       ),
       body: Column(
         children: [
@@ -60,7 +62,10 @@ class _AgentPatientsScreenState extends ConsumerState<AgentPatientsScreen> {
             child: TextField(
               controller: _search,
               onChanged: _onChanged,
-              decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Search patients'),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search_rounded),
+                hintText: l10n.agentPatientsSearchHint,
+              ),
             ),
           ),
           Expanded(
@@ -73,8 +78,8 @@ class _AgentPatientsScreenState extends ConsumerState<AgentPatientsScreen> {
                     ? ListView(
                         children: [
                           EmptyView(
-                            title: _q.isEmpty ? 'No patients yet' : 'No patients match "$_q"',
-                            message: 'Add a patient to run a screening and request hospital quotes for them.',
+                            title: _q.isEmpty ? l10n.agentPatientsEmpty : l10n.agentPatientsNoMatch(_q),
+                            message: l10n.agentPatientsEmptyHint,
                             icon: Icons.groups_outlined,
                           ),
                         ],
@@ -100,6 +105,7 @@ class _PatientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final p = patient;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -116,16 +122,16 @@ class _PatientTile extends StatelessWidget {
                 Text(
                   [
                     ?p.nationality,
-                    if (p.dateOfBirth != null) '${Dates.age(p.dateOfBirth!)} yrs',
-                    '${p.casesCount} case${p.casesCount == 1 ? '' : 's'}',
-                    '${p.screeningsCount} screening${p.screeningsCount == 1 ? '' : 's'}',
+                    if (p.dateOfBirth != null) l10n.agentPatientAgeYears(Dates.age(p.dateOfBirth!)),
+                    l10n.agentPatientCasesCount(p.casesCount),
+                    l10n.agentPatientScreeningsCount(p.screeningsCount),
                   ].join(' · '),
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ],
             ),
           ),
-          if (!p.accountActivated) const StatusBadge(label: 'Managed', dense: true, color: AppColors.violet),
+          if (!p.accountActivated) StatusBadge(label: l10n.agentPatientManaged, dense: true, color: AppColors.violet),
           const Icon(Icons.chevron_right_rounded),
         ],
       ),
@@ -224,7 +230,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
         ..invalidate(agentPatientProvider(saved.id))
         ..invalidate(agentDashboardProvider);
       if (!mounted) return;
-      showInfoSnack(context, _isEdit ? 'Patient updated' : 'Patient added');
+      showInfoSnack(context, _isEdit ? context.l10n.agentPatientUpdated : context.l10n.agentPatientAdded);
       if (_isEdit) {
         context.pop();
       } else {
@@ -237,15 +243,16 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
     }
   }
 
-  String? _required(String? v) => (v == null || v.trim().isEmpty) ? 'Required' : null;
+  String? _required(String? v) => (v == null || v.trim().isEmpty) ? context.l10n.agentFormRequired : null;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     if (_isEdit) {
       final existing = ref.watch(agentPatientProvider(widget.patientId!));
       if (!existing.hasValue) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Edit patient')),
+          appBar: AppBar(title: Text(l10n.agentEditPatient)),
           body: AsyncValueView(
             value: existing,
             onRetry: () => ref.invalidate(agentPatientProvider(widget.patientId!)),
@@ -256,7 +263,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
       _fill(existing.requireValue);
     }
     return Scaffold(
-      appBar: AppBar(title: Text(_isEdit ? 'Edit patient' : 'Add patient')),
+      appBar: AppBar(title: Text(_isEdit ? l10n.agentEditPatient : l10n.agentAddPatient)),
       body: Form(
         key: _form,
         child: ListView(
@@ -269,7 +276,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
                     key: const ValueKey('patient-first-name'),
                     controller: _first,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(labelText: 'First name'),
+                    decoration: InputDecoration(labelText: l10n.agentPatientFirstName),
                     validator: _required,
                   ),
                 ),
@@ -279,7 +286,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
                     key: const ValueKey('patient-last-name'),
                     controller: _last,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(labelText: 'Last name'),
+                    decoration: InputDecoration(labelText: l10n.agentPatientLastName),
                     validator: _required,
                   ),
                 ),
@@ -291,43 +298,45 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
               controller: _nationality,
               textCapitalization: TextCapitalization.characters,
               maxLength: 2,
-              decoration: const InputDecoration(labelText: 'Nationality (ISO code, e.g. NG, AE, US)', counterText: ''),
+              decoration: InputDecoration(labelText: l10n.agentPatientNationalityLabel, counterText: ''),
               validator: (v) =>
-                  RegExp(r'^[A-Za-z]{2}$').hasMatch((v ?? '').trim()) ? null : 'Enter a 2-letter country code',
+                  RegExp(r'^[A-Za-z]{2}$').hasMatch((v ?? '').trim()) ? null : l10n.agentPatientNationalityInvalid,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _email,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'E-mail (optional)',
-                helperText: 'The patient receives an invitation to activate their account.',
+              decoration: InputDecoration(
+                labelText: l10n.agentPatientEmailOptional,
+                helperText: l10n.agentPatientEmailHelper,
               ),
               validator: (v) {
                 final s = (v ?? '').trim();
-                return s.isEmpty || RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(s) ? null : 'Invalid e-mail';
+                return s.isEmpty || RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(s)
+                    ? null
+                    : l10n.agentPatientEmailInvalid;
               },
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _phone,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: 'Phone (optional)'),
+              decoration: InputDecoration(labelText: l10n.agentPatientPhoneOptional),
             ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.cake_outlined),
-              title: Text(_dob == null ? 'Date of birth (optional)' : Dates.day(_dob)),
+              title: Text(_dob == null ? l10n.agentPatientDobOptional : Dates.day(_dob)),
               trailing: const Icon(Icons.edit_calendar_outlined),
               onTap: () => _pickDate(dob: true),
             ),
             const SizedBox(height: 4),
             SegmentedButton<Gender?>(
-              segments: const [
-                ButtonSegment(value: Gender.female, label: Text('Female')),
-                ButtonSegment(value: Gender.male, label: Text('Male')),
-                ButtonSegment(value: Gender.other, label: Text('Other')),
+              segments: [
+                ButtonSegment(value: Gender.female, label: Text(Gender.female.label)),
+                ButtonSegment(value: Gender.male, label: Text(Gender.male.label)),
+                ButtonSegment(value: Gender.other, label: Text(Gender.other.label)),
               ],
               emptySelectionAllowed: true,
               selected: {?_gender},
@@ -337,23 +346,25 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
             TextFormField(
               controller: _history,
               maxLines: 4,
-              decoration: const InputDecoration(labelText: 'Medical history (optional)'),
+              decoration: InputDecoration(labelText: l10n.agentPatientMedicalHistoryOptional),
             ),
             if (_isEdit) ...[
-              const SectionTitle('Travel & medical details'),
+              SectionTitle(l10n.agentPatientTravelMedicalSection),
               TextFormField(
                 controller: _passport,
                 textCapitalization: TextCapitalization.characters,
-                decoration: const InputDecoration(
-                  labelText: 'Passport number',
-                  helperText: 'Leave empty to keep the stored passport.',
+                decoration: InputDecoration(
+                  labelText: l10n.agentPatientPassportNumber,
+                  helperText: l10n.agentPatientPassportKeepHelper,
                 ),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.badge_outlined),
                 title: Text(
-                  _passportExpiry == null ? 'Passport expiry' : 'Passport expires ${Dates.day(_passportExpiry)}',
+                  _passportExpiry == null
+                      ? l10n.agentPatientPassportExpiry
+                      : l10n.agentPatientPassportExpires(Dates.day(_passportExpiry)),
                 ),
                 trailing: const Icon(Icons.edit_calendar_outlined),
                 onTap: () => _pickDate(dob: false),
@@ -363,7 +374,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
                   Expanded(
                     child: TextFormField(
                       controller: _blood,
-                      decoration: const InputDecoration(labelText: 'Blood group'),
+                      decoration: InputDecoration(labelText: l10n.agentPatientBloodGroup),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -371,7 +382,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
                     flex: 2,
                     child: TextFormField(
                       controller: _allergies,
-                      decoration: const InputDecoration(labelText: 'Allergies'),
+                      decoration: InputDecoration(labelText: l10n.agentPatientAllergies),
                     ),
                   ),
                 ],
@@ -380,7 +391,7 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
             const SizedBox(height: 24),
             PrimaryButton(
               key: const ValueKey('patient-save'),
-              label: _isEdit ? 'Save changes' : 'Add patient',
+              label: _isEdit ? l10n.agentSaveChanges : l10n.agentAddPatient,
               loading: _saving,
               onPressed: _saving ? null : _save,
             ),
@@ -402,12 +413,13 @@ class AgentPatientDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final patient = ref.watch(agentPatientProvider(patientId));
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(patient.value?.fullName ?? 'Patient'),
+        title: Text(patient.value?.fullName ?? l10n.portalPatientLabel),
         actions: [
           IconButton(
-            tooltip: 'Edit',
+            tooltip: l10n.commonEdit,
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => context.push(AgentRoutes.editPatient(patientId)),
           ),
@@ -434,7 +446,7 @@ class AgentPatientDetailScreen extends ConsumerWidget {
                   Expanded(
                     child: PrimaryButton(
                       key: const ValueKey('agent-run-screening'),
-                      label: 'Run screening',
+                      label: l10n.agentRunScreening,
                       icon: Icons.health_and_safety_outlined,
                       onPressed: () => context.push(AgentRoutes.newScreening(p.id)),
                     ),
@@ -442,7 +454,7 @@ class AgentPatientDetailScreen extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: SecondaryButton(
-                      label: 'Request quote',
+                      label: l10n.agentRequestQuote,
                       icon: Icons.request_quote_outlined,
                       onPressed: () => context.push(AgentRoutes.requestQuote(p.id)),
                     ),
@@ -467,6 +479,7 @@ class _PatientHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final p = patient;
     return AppCard(
       child: Column(
@@ -482,7 +495,7 @@ class _PatientHeader extends StatelessWidget {
                   children: [
                     Text(p.fullName, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                     Text(
-                      p.accountActivated ? 'Account activated' : 'Managed by you · invite pending',
+                      p.accountActivated ? l10n.agentPatientAccountActivated : l10n.agentPatientInvitePending,
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
                   ],
@@ -491,22 +504,25 @@ class _PatientHeader extends StatelessWidget {
             ],
           ),
           const Divider(height: 24),
-          InfoRow('Nationality', p.nationality),
+          InfoRow(l10n.agentPatientNationality, p.nationality),
           InfoRow(
-            'Date of birth',
-            p.dateOfBirth == null ? null : '${Dates.day(p.dateOfBirth)} (${Dates.age(p.dateOfBirth!)} yrs)',
+            l10n.agentPatientDob,
+            p.dateOfBirth == null
+                ? null
+                : l10n.agentPatientDobWithAge(Dates.day(p.dateOfBirth), Dates.age(p.dateOfBirth!)),
           ),
-          InfoRow('Gender', p.gender?.label),
-          InfoRow('E-mail', p.email),
-          InfoRow('Phone', p.phone),
+          InfoRow(l10n.agentPatientGender, p.gender?.label),
+          InfoRow(l10n.agentPatientEmail, p.email),
+          InfoRow(l10n.agentPatientPhone, p.phone),
           InfoRow(
-            'Passport',
+            l10n.agentPatientPassport,
             p.passportLast4 == null
                 ? null
-                : '•••• ${p.passportLast4}${p.passportExpiry == null ? '' : ' · exp ${Dates.day(p.passportExpiry)}'}',
+                : '•••• ${p.passportLast4}'
+                      '${p.passportExpiry == null ? '' : ' · ${l10n.agentPatientPassportExpShort(Dates.day(p.passportExpiry))}'}',
           ),
-          if ((p.medicalHistory ?? '').isNotEmpty) InfoRow('Medical history', p.medicalHistory),
-          if ((p.allergies ?? '').isNotEmpty) InfoRow('Allergies', p.allergies),
+          if ((p.medicalHistory ?? '').isNotEmpty) InfoRow(l10n.agentPatientMedicalHistory, p.medicalHistory),
+          if ((p.allergies ?? '').isNotEmpty) InfoRow(l10n.agentPatientAllergies, p.allergies),
         ],
       ),
     );
@@ -520,17 +536,18 @@ class _ScreeningsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionTitle('Screenings'),
+        SectionTitle(l10n.agentScreeningsSection),
         AsyncValueView(
           value: ref.watch(patientScreeningsProvider(patientId)),
           compactError: true,
           onRetry: () => ref.invalidate(patientScreeningsProvider(patientId)),
           data: (list) => list.isEmpty
               ? Text(
-                  'No screenings yet — run one to get AI-matched hospitals and doctors.',
+                  l10n.agentScreeningsEmpty,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 )
               : Column(
@@ -548,7 +565,7 @@ class _ScreeningsSection extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    s.specialty?.name ?? 'General screening',
+                                    s.specialty?.name ?? l10n.agentGeneralScreening,
                                     style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                                   ),
                                   Text(
@@ -579,12 +596,13 @@ class _CasesSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cases = ref.watch(patientCasesProvider(patientId));
     final quoted = (cases.value ?? const <MedicalCase>[]).where((c) => c.latestQuote != null).length;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionTitle(
-          'Cases & quotes',
-          actionLabel: quoted >= 1 ? 'Compare quotes' : null,
+          l10n.agentCasesTitle,
+          actionLabel: quoted >= 1 ? l10n.agentCompareQuotes : null,
           onAction: quoted >= 1 ? () => context.push(AgentRoutes.compare(patientId)) : null,
         ),
         AsyncValueView(
@@ -593,7 +611,7 @@ class _CasesSection extends ConsumerWidget {
           onRetry: () => ref.invalidate(patientCasesProvider(patientId)),
           data: (list) => list.isEmpty
               ? Text(
-                  'No hospital enquiries yet.',
+                  l10n.agentPatientCasesEmpty,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 )
               : Column(
@@ -654,7 +672,7 @@ class _DocumentsSectionState extends ConsumerState<_DocumentsSection> {
           .read(documentRepositoryProvider)
           .upload(fileName: file.name, bytes: file.bytes, kind: kind, patientId: widget.patientId);
       ref.invalidate(patientDocumentsProvider(widget.patientId));
-      if (mounted) showInfoSnack(context, 'Uploaded ${file.name}');
+      if (mounted) showInfoSnack(context, context.l10n.agentDocumentUploaded(file.name));
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
@@ -665,12 +683,13 @@ class _DocumentsSectionState extends ConsumerState<_DocumentsSection> {
   @override
   Widget build(BuildContext context) {
     final docs = ref.watch(patientDocumentsProvider(widget.patientId));
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SectionTitle(
-          'Documents',
-          actionLabel: _uploading ? 'Uploading…' : 'Upload',
+          l10n.agentDocumentsSection,
+          actionLabel: _uploading ? l10n.agentDocumentUploading : l10n.commonUpload,
           onAction: _uploading ? null : _upload,
         ),
         AsyncValueView(
@@ -679,7 +698,7 @@ class _DocumentsSectionState extends ConsumerState<_DocumentsSection> {
           onRetry: () => ref.invalidate(patientDocumentsProvider(widget.patientId)),
           data: (list) => list.isEmpty
               ? Text(
-                  'Upload reports, scans and the passport so hospitals can quote accurately.',
+                  l10n.agentDocumentsEmpty,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 )
               : Column(
@@ -691,7 +710,7 @@ class _DocumentsSectionState extends ConsumerState<_DocumentsSection> {
                         title: Text(d.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text('${d.kind.label} · ${d.sizeLabel} · ${Dates.day(d.createdAt)}'),
                         trailing: IconButton(
-                          tooltip: 'Download',
+                          tooltip: l10n.commonDownload,
                           icon: const Icon(Icons.download_rounded),
                           onPressed: () => downloadDocument(context, ref.read(documentRepositoryProvider), d),
                         ),

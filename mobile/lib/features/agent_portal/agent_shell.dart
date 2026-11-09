@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import 'screens/agent_bookings_screens.dart';
 import 'screens/agent_cases_screens.dart';
 import 'screens/agent_dashboard_screen.dart';
@@ -19,25 +20,46 @@ class AgentShell extends StatelessWidget {
   static const tabs = [
     PortalTab(
       label: 'Dashboard',
+      labelBuilder: _dashboardLabel,
       icon: Icons.space_dashboard_outlined,
       selectedIcon: Icons.space_dashboard_rounded,
       builder: _dashboard,
     ),
-    PortalTab(label: 'Patients', icon: Icons.groups_outlined, selectedIcon: Icons.groups_rounded, builder: _patients),
-    PortalTab(label: 'Cases', icon: Icons.folder_shared_outlined, selectedIcon: Icons.folder_shared, builder: _cases),
+    PortalTab(
+      label: 'Patients',
+      labelBuilder: _patientsLabel,
+      icon: Icons.groups_outlined,
+      selectedIcon: Icons.groups_rounded,
+      builder: _patients,
+    ),
+    PortalTab(
+      label: 'Cases',
+      labelBuilder: _casesLabel,
+      icon: Icons.folder_shared_outlined,
+      selectedIcon: Icons.folder_shared,
+      builder: _cases,
+    ),
     PortalTab(
       label: 'Bookings',
+      labelBuilder: _bookingsLabel,
       icon: Icons.event_available_outlined,
       selectedIcon: Icons.event_available_rounded,
       builder: _bookings,
     ),
     PortalTab(
       label: 'Earnings',
+      labelBuilder: _earningsLabel,
       icon: Icons.account_balance_wallet_outlined,
       selectedIcon: Icons.account_balance_wallet_rounded,
       builder: _earnings,
     ),
   ];
+
+  static String _dashboardLabel(AppLocalizations l) => l.agentTabDashboard;
+  static String _patientsLabel(AppLocalizations l) => l.agentTabPatients;
+  static String _casesLabel(AppLocalizations l) => l.agentTabCases;
+  static String _bookingsLabel(AppLocalizations l) => l.agentTabBookings;
+  static String _earningsLabel(AppLocalizations l) => l.agentTabEarnings;
 
   static Widget _dashboard(BuildContext _) => const AgentDashboardScreen();
   static Widget _patients(BuildContext _) => const AgentPatientsScreen();

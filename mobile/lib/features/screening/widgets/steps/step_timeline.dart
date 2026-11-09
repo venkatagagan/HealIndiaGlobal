@@ -9,6 +9,7 @@ import '../../../../core/repositories/document_repository.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/l10n.dart';
 import '../../../documents_ai/screens/report_capture_screen.dart';
 import '../../providers/screening_draft.dart';
 import '../screening_step_scaffold.dart';
@@ -87,29 +88,33 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
     if (d == null) return;
     final room = kMaxScreeningReports - d.reports.length - _uploads.length;
     if (room <= 0) {
-      showInfoSnack(context, 'You can attach up to $kMaxScreeningReports reports.');
+      showInfoSnack(context, context.l10n.screeningAttachLimit(kMaxScreeningReports));
       return;
     }
     final result = await context.push<ReportCaptureResult>(
       Routes.reportCaptureFor(screeningId: screeningId, kind: DocumentKind.medicalReport),
     );
     if (result == null || result.documents.isEmpty || !mounted) return;
-    final label = result.analysis?.effective.docType?.label ?? 'Medical report';
+    final l10n = context.l10n;
+    final label = result.analysis?.effective.docType?.label ?? l10n.screeningReportDefaultLabel;
     final status = result.confirmed
-        ? ' · AI reading confirmed'
-        : (result.analysis == null || result.analysis!.isRejected ? '' : ' · AI reading to review');
+        ? ' · ${l10n.screeningReportAiConfirmed}'
+        : (result.analysis == null || result.analysis!.isRejected ? '' : ' · ${l10n.screeningReportAiToReview}');
     final docs = result.documents.take(room).toList();
     edit(
       (x) => x.copyWith(
         reports: [
           ...x.reports,
           for (final (i, doc) in docs.indexed)
-            ScreeningReport(id: doc.id, name: docs.length == 1 ? '$label$status' : '$label p.${i + 1}$status'),
+            ScreeningReport(
+              id: doc.id,
+              name: docs.length == 1 ? '$label$status' : '${l10n.screeningReportPage(label, i + 1)}$status',
+            ),
         ],
       ),
     );
     if (docs.length < result.documents.length) {
-      showInfoSnack(context, 'Only $kMaxScreeningReports report pages can be attached to a screening.');
+      showInfoSnack(context, l10n.screeningAttachPagesLimit(kMaxScreeningReports));
     }
   }
 
@@ -117,7 +122,7 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
     final d = draft;
     if (d == null) return;
     if (d.reports.length + _uploads.length >= kMaxScreeningReports) {
-      showInfoSnack(context, 'You can attach up to $kMaxScreeningReports reports.');
+      showInfoSnack(context, context.l10n.screeningAttachLimit(kMaxScreeningReports));
       return;
     }
     final PlatformFile? file;
@@ -161,11 +166,12 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
   @override
   Widget build(BuildContext context) {
     final d = ref.watch(screeningDraftProvider(screeningId)).requireValue;
+    final l10n = context.l10n;
     return ScreeningStepScaffold(
       step: step,
-      title: 'How long have you had this condition?',
+      title: l10n.screeningStep3Title,
       titleAlign: TextAlign.start,
-      primaryLabel: 'Next',
+      primaryLabel: l10n.commonNext,
       busy: busy || _uploads.isNotEmpty,
       onPrimary: goNext,
       onBack: goPrevious,
@@ -181,7 +187,7 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
         Row(
           children: [
             IconButton.filledTonal(
-              tooltip: 'Decrease',
+              tooltip: l10n.screeningDecrease,
               onPressed: (d.durationValue ?? 0) > 1 ? () => _setValue(d.durationValue! - 1) : null,
               icon: const Icon(Icons.remove_rounded),
             ),
@@ -200,7 +206,7 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
             ),
             const SizedBox(width: 8),
             IconButton.filledTonal(
-              tooltip: 'Increase',
+              tooltip: l10n.screeningIncrease,
               onPressed: () => _setValue((d.durationValue ?? 0) + 1),
               icon: const Icon(Icons.add_rounded),
             ),
@@ -214,33 +220,33 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
           ],
         ),
         const SizedBox(height: 24),
-        Text('Severity', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+        Text(l10n.screeningSeverity, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 2),
-        Text('Daily Impact', style: context.text.titleSmall?.copyWith(color: context.palette.textSecondary)),
+        Text(l10n.screeningDailyImpact, style: context.text.titleSmall?.copyWith(color: context.palette.textSecondary)),
         const SizedBox(height: 10),
         _SeverityRow(
           icon: Icons.work_outline_rounded,
-          title: 'Work',
-          subtitle: 'How much does it affect your work?',
+          title: l10n.screeningImpactWork,
+          subtitle: l10n.screeningImpactWorkQuestion,
           value: d.severity.work,
           onChanged: (v) => edit((x) => x.copyWith(severity: _withSeverity(x.severity, work: v))),
         ),
         _SeverityRow(
           icon: Icons.bedtime_outlined,
-          title: 'Sleep',
-          subtitle: 'How much does it affect your sleep?',
+          title: l10n.screeningImpactSleep,
+          subtitle: l10n.screeningImpactSleepQuestion,
           value: d.severity.sleep,
           onChanged: (v) => edit((x) => x.copyWith(severity: _withSeverity(x.severity, sleep: v))),
         ),
         _SeverityRow(
           icon: Icons.accessible_forward_rounded,
-          title: 'Mobility',
-          subtitle: 'How much does it affect mobility?',
+          title: l10n.screeningImpactMobility,
+          subtitle: l10n.screeningImpactMobilityQuestion,
           value: d.severity.mobility,
           onChanged: (v) => edit((x) => x.copyWith(severity: _withSeverity(x.severity, mobility: v))),
         ),
         const SizedBox(height: 16),
-        Text('Previous Treatments', style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+        Text(l10n.screeningPreviousTreatments, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 10),
         for (final t in PreviousTreatment.values)
           Padding(
@@ -265,10 +271,10 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
         const SizedBox(height: 16),
         Text.rich(
           TextSpan(
-            text: 'Previous Reports ',
+            text: '${l10n.screeningPreviousReports} ',
             children: [
               TextSpan(
-                text: '(Optional)',
+                text: l10n.screeningOptionalParen,
                 style: TextStyle(color: context.palette.textSecondary, fontWeight: FontWeight.w400),
               ),
             ],
@@ -278,12 +284,12 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
         const SizedBox(height: 10),
         _UploadBox(onTap: busy ? null : _scan),
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: TextButton.icon(
             key: const ValueKey('report-plain-upload'),
             onPressed: busy ? null : _upload,
             icon: const Icon(Icons.attach_file_rounded, size: 18),
-            label: const Text('Attach a file without AI (e.g. DICOM)'),
+            label: Text(l10n.screeningAttachWithoutAi),
           ),
         ),
         for (final r in d.reports)
@@ -305,10 +311,7 @@ class _TimelineStepState extends ConsumerState<TimelineStep> with ScreeningStepA
           maxLines: 3,
           maxLength: 4000,
           onChanged: (t) => edit((x) => x.copyWith(notes: t)),
-          decoration: const InputDecoration(
-            labelText: 'Anything else we should know? (optional)',
-            alignLabelWithHint: true,
-          ),
+          decoration: InputDecoration(labelText: l10n.screeningNotesLabel, alignLabelWithHint: true),
         ),
       ],
     );
@@ -381,7 +384,7 @@ class _SeverityRow extends StatelessWidget {
               for (final l in _levels) ...[
                 Expanded(
                   child: _LevelPill(
-                    label: '$title ${l.label}',
+                    label: context.l10n.screeningSeverityPillSemantics(title, l.label),
                     text: l.label,
                     color: severityColor(l),
                     selected: value == l,
@@ -451,9 +454,10 @@ class _UploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Semantics(
       button: true,
-      label: 'Scan or upload medical reports',
+      label: l10n.screeningScanUpload,
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
@@ -473,13 +477,10 @@ class _UploadBox extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Scan or upload medical reports',
-                  style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                ),
+                Text(l10n.screeningScanUpload, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
-                  'Photograph paper pages or pick a PDF · our AI reads it and you confirm the details',
+                  l10n.screeningScanUploadHint,
                   textAlign: TextAlign.center,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
@@ -506,7 +507,7 @@ class _ReportTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: AppCard(
-        padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+        padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 4, 8),
         child: Row(
           children: [
             const Icon(Icons.description_outlined, color: AppColors.primary),
@@ -524,7 +525,11 @@ class _ReportTile extends StatelessWidget {
               ),
             ),
             if (progress == null && onRemove != null)
-              IconButton(tooltip: 'Remove $name', icon: const Icon(Icons.close_rounded), onPressed: onRemove)
+              IconButton(
+                tooltip: context.l10n.screeningRemoveReportTooltip(name),
+                icon: const Icon(Icons.close_rounded),
+                onPressed: onRemove,
+              )
             else
               const SizedBox(width: 12),
           ],

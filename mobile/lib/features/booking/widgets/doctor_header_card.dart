@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// "Dr. Rajesh Sharma / Cardiologist / Apollo Hospital, New Delhi" card with photo and an expand
 /// chevron revealing qualifications, experience and languages.
@@ -25,14 +26,16 @@ class _DoctorHeaderCardState extends State<DoctorHeaderCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final d = widget.doctor;
     final name = d?.fullName ?? widget.doctorRef?.fullName;
-    final specialty = d?.specialty?.name ?? widget.doctorRef?.specialtyName ?? widget.specialtyName ?? 'Treatment';
+    final specialty =
+        d?.specialty?.name ?? widget.doctorRef?.specialtyName ?? widget.specialtyName ?? l10n.bookingTreatmentFallback;
     final place = [widget.hospital.name, if (widget.hospital.city != null) widget.hospital.city].join(', ');
     final hasDetails =
         d != null && (d.qualifications.isNotEmpty || d.experienceYears != null || d.languages.isNotEmpty);
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -45,7 +48,7 @@ class _DoctorHeaderCardState extends State<DoctorHeaderCard> {
                     if (name != null)
                       Text(name, style: context.text.labelMedium?.copyWith(color: context.palette.textSecondary)),
                     Text(
-                      _profession(specialty),
+                      _profession(l10n, specialty),
                       style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     Text(
@@ -61,7 +64,7 @@ class _DoctorHeaderCardState extends State<DoctorHeaderCard> {
               Avatar(imageUrl: d?.photoUrl, name: name ?? widget.hospital.name, size: 64, square: true),
               if (hasDetails)
                 IconButton(
-                  tooltip: _expanded ? 'Hide doctor details' : 'Show doctor details',
+                  tooltip: _expanded ? l10n.bookDoctorHideDetails : l10n.bookDoctorShowDetails,
                   onPressed: () => setState(() => _expanded = !_expanded),
                   icon: AnimatedRotation(
                     turns: _expanded ? 0.5 : 0,
@@ -82,8 +85,9 @@ class _DoctorHeaderCardState extends State<DoctorHeaderCard> {
             ),
             const SizedBox(height: 8),
             if (d.experienceYears != null)
-              Text('${d.experienceYears} years of experience', style: context.text.bodySmall),
-            if (d.languages.isNotEmpty) Text('Speaks ${d.languages.join(', ')}', style: context.text.bodySmall),
+              Text(l10n.bookDoctorExperience(d.experienceYears!), style: context.text.bodySmall),
+            if (d.languages.isNotEmpty)
+              Text(l10n.bookDoctorSpeaks(d.languages.join(', ')), style: context.text.bodySmall),
             if (d.ratingAvg != null) ...[
               const SizedBox(height: 4),
               RatingStars(rating: d.ratingAvg!, count: d.ratingCount),
@@ -95,21 +99,19 @@ class _DoctorHeaderCardState extends State<DoctorHeaderCard> {
   }
 
   /// "Cardiology" -> "Cardiologist" style label when it is a common specialty; otherwise unchanged.
-  static String _profession(String specialty) {
-    const map = {
-      'cardiology': 'Cardiologist',
-      'orthopedics': 'Orthopedic Surgeon',
-      'orthopaedics': 'Orthopedic Surgeon',
-      'oncology': 'Oncologist',
-      'neurology': 'Neurologist',
-      'dental': 'Dentist',
-      'dentistry': 'Dentist',
-      'urology': 'Urologist',
-      'nephrology': 'Nephrologist',
-      'gastroenterology': 'Gastroenterologist',
-      'ophthalmology': 'Ophthalmologist',
-      'dermatology': 'Dermatologist',
+  static String _profession(AppLocalizations l10n, String specialty) {
+    return switch (specialty.toLowerCase()) {
+      'cardiology' => l10n.bookProfessionCardiologist,
+      'orthopedics' || 'orthopaedics' => l10n.bookProfessionOrthopedicSurgeon,
+      'oncology' => l10n.bookProfessionOncologist,
+      'neurology' => l10n.bookProfessionNeurologist,
+      'dental' || 'dentistry' => l10n.bookProfessionDentist,
+      'urology' => l10n.bookProfessionUrologist,
+      'nephrology' => l10n.bookProfessionNephrologist,
+      'gastroenterology' => l10n.bookProfessionGastroenterologist,
+      'ophthalmology' => l10n.bookProfessionOphthalmologist,
+      'dermatology' => l10n.bookProfessionDermatologist,
+      _ => specialty,
     };
-    return map[specialty.toLowerCase()] ?? specialty;
   }
 }

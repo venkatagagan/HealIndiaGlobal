@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
-/// Brand constants.
+/// Brand constants (English). On screen use `context.l10n.appName` / `appTagline`.
 abstract final class Brand {
   static const name = 'Heal India Global';
   static const tagline = 'Your Gateway to Indian Medical Excellence';
@@ -63,6 +64,7 @@ class BrandHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final titleColor = onDark ? Colors.white : context.colors.onSurface;
     final taglineColor = onDark ? Colors.white70 : context.palette.textSecondary;
     final texts = Column(
@@ -70,13 +72,13 @@ class BrandHeader extends StatelessWidget {
       crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
-          Brand.name,
+          l10n.appName,
           style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: titleColor),
           textAlign: centered ? TextAlign.center : TextAlign.start,
         ),
         if (showTagline)
           Text(
-            Brand.tagline,
+            l10n.appTagline,
             style: context.text.labelSmall?.copyWith(color: taglineColor),
             textAlign: centered ? TextAlign.center : TextAlign.start,
             maxLines: 2,
@@ -94,18 +96,19 @@ class BrandHeader extends StatelessWidget {
     );
     return Semantics(
       header: true,
-      label: '${Brand.name}. ${Brand.tagline}',
+      label: '${l10n.appName}. ${l10n.appTagline}',
       excludeSemantics: true,
       child: Padding(
         padding: padding,
-        child: SizedBox(
-          height: showTagline ? 48 : 32,
+        // Minimum (not fixed) height: a translated tagline may need its second line.
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: showTagline ? 48 : 32),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Align(alignment: centered ? Alignment.center : Alignment.centerLeft, child: _inset(title)),
-              if (leading != null) Align(alignment: Alignment.centerLeft, child: leading),
-              if (trailing != null) Align(alignment: Alignment.centerRight, child: trailing),
+              Align(alignment: centered ? Alignment.center : AlignmentDirectional.centerStart, child: _inset(title)),
+              if (leading != null) Align(alignment: AlignmentDirectional.centerStart, child: leading),
+              if (trailing != null) Align(alignment: AlignmentDirectional.centerEnd, child: trailing),
             ],
           ),
         ),
@@ -114,7 +117,7 @@ class BrandHeader extends StatelessWidget {
   }
 
   Widget _inset(Widget child) {
-    if (!centered && leading != null) return Padding(padding: const EdgeInsets.only(left: 44), child: child);
+    if (!centered && leading != null) return Padding(padding: const EdgeInsetsDirectional.only(start: 44), child: child);
     if (centered && (leading != null || trailing != null)) {
       return Padding(padding: const EdgeInsets.symmetric(horizontal: 48), child: child);
     }

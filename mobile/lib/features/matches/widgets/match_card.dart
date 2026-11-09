@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// "Your Top Matches" card: photo + hospital image, match % pill, success badge, specialty and
 /// experience, hospital, qualification chips, rating, estimated total cost (red) and
@@ -42,6 +43,7 @@ class MatchCard extends StatelessWidget {
     final rating = doctor?.ratingAvg ?? hospital.ratingAvg;
     final ratingCount = doctor != null ? doctor.ratingCount : hospital.ratingCount;
     final success = doctor?.successRatePct;
+    final l10n = context.l10n;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -67,9 +69,9 @@ class MatchCard extends StatelessWidget {
                     Expanded(child: _Cover(url: hospital.coverImageUrl)),
                   ],
                 ),
-                Positioned(
+                PositionedDirectional(
                   top: 10,
-                  right: 10,
+                  end: 10,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
@@ -102,7 +104,7 @@ class MatchCard extends StatelessWidget {
                     ),
                     if (success != null)
                       StatusBadge(
-                        label: '${success.round()}% Success',
+                        label: l10n.catalogSuccessBadge(success.round()),
                         color: const Color(0xFF60A5FA),
                         icon: Icons.verified_outlined,
                         dense: true,
@@ -125,7 +127,7 @@ class MatchCard extends StatelessWidget {
                 ],
                 const Divider(height: 24),
                 Text(
-                  'Estimated Total Cost',
+                  l10n.matchCardEstimatedTotalCost,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
                 MoneyText(
@@ -135,7 +137,7 @@ class MatchCard extends StatelessWidget {
                 ),
                 if (m.savings != null)
                   Text(
-                    'Save ${m.savings!.pctMin}-${m.savings!.pctMax}% vs home',
+                    l10n.matchCardSaveVsHome(m.savings!.pctMin, m.savings!.pctMax),
                     style: context.text.labelSmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w700),
                   ),
                 const SizedBox(height: 14),
@@ -145,7 +147,7 @@ class MatchCard extends StatelessWidget {
                       child: Semantics(
                         selected: selected,
                         child: SecondaryButton(
-                          label: selected ? 'Added' : 'Compare',
+                          label: selected ? l10n.matchCardAdded : l10n.matchCardCompare,
                           icon: selected ? Icons.check_circle_rounded : Icons.add_circle_outline_rounded,
                           filled: true,
                           onPressed: compareEnabled || selected ? onCompare : null,
@@ -154,7 +156,11 @@ class MatchCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: PrimaryButton(label: 'View Details', tone: ButtonTone.red, onPressed: onDetails),
+                      child: PrimaryButton(
+                        label: l10n.matchCardViewDetails,
+                        tone: ButtonTone.red,
+                        onPressed: onDetails,
+                      ),
                     ),
                   ],
                 ),

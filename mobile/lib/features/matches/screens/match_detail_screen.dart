@@ -10,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
 import '../widgets/consultation_request.dart';
 
@@ -42,6 +43,7 @@ class MatchDetailScreen extends ConsumerWidget {
     final hospital = m.hospital;
     final title = doctor?.fullName ?? hospital.name;
     final detail = doctor == null ? null : ref.watch(doctorDetailProvider(doctor.id));
+    final l10n = context.l10n;
 
     return Scaffold(
       body: CustomScrollView(
@@ -86,14 +88,18 @@ class MatchDetailScreen extends ConsumerWidget {
                   children: [
                     if (doctor?.successRatePct != null)
                       StatusBadge(
-                        label: '${doctor!.successRatePct!.round()}% Success',
+                        label: l10n.catalogSuccessBadge(doctor!.successRatePct!.round()),
                         color: const Color(0xFF60A5FA),
                         icon: Icons.verified_outlined,
                       ),
                     for (final a in hospital.accreditations)
                       StatusBadge(label: a.toUpperCase(), color: AppColors.violet),
                     if (doctor?.teleconsultAvailable ?? false)
-                      const StatusBadge(label: 'Video consult', color: AppColors.cyan, icon: Icons.videocam_outlined),
+                      StatusBadge(
+                        label: l10n.catalogVideoConsult,
+                        color: AppColors.cyan,
+                        icon: Icons.videocam_outlined,
+                      ),
                   ],
                 ),
                 if ((doctor?.ratingAvg ?? hospital.ratingAvg) != null) ...[
@@ -104,7 +110,7 @@ class MatchDetailScreen extends ConsumerWidget {
                   ),
                 ],
                 if (m.reasons.isNotEmpty) ...[
-                  const SectionTitle('Why this match'),
+                  SectionTitle(l10n.matchDetailWhyThisMatch),
                   AppCard(
                     child: Column(
                       children: [
@@ -123,7 +129,7 @@ class MatchDetailScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                const SectionTitle('Estimated cost'),
+                SectionTitle(l10n.matchDetailEstimatedCost),
                 AppCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +148,7 @@ class MatchDetailScreen extends ConsumerWidget {
                         const SizedBox(height: 6),
                         Text.rich(
                           TextSpan(
-                            text: 'In ${countryName(m.savings!.homeCountry)}: ',
+                            text: l10n.matchDetailInCountry(countryName(m.savings!.homeCountry, l10n)),
                             children: [
                               TextSpan(
                                 text: formatMoneyRange(
@@ -152,7 +158,7 @@ class MatchDetailScreen extends ConsumerWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: '  ·  Save ${m.savings!.pctMin}-${m.savings!.pctMax}%',
+                                text: '  ·  ${l10n.matchDetailSavePct(m.savings!.pctMin, m.savings!.pctMax)}',
                                 style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
                               ),
                             ],
@@ -162,22 +168,25 @@ class MatchDetailScreen extends ConsumerWidget {
                       ],
                       const SizedBox(height: 8),
                       Text(
-                        'Final price comes from the hospital quote after they review your case.',
+                        l10n.matchDetailFinalPriceNote,
                         style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
                       ),
                       Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: AlignmentDirectional.centerStart,
                         child: TextButton.icon(
                           onPressed: () => _openCostComparison(context),
                           icon: const Icon(Icons.compare_arrows_rounded),
-                          label: const Text('See full cost comparison'),
+                          label: Text(l10n.matchDetailSeeFullComparison),
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (m.package != null) ...[const SectionTitle('Suggested package'), _PackageCard(package: m.package!)],
-                const SectionTitle('Hospital'),
+                if (m.package != null) ...[
+                  SectionTitle(l10n.matchDetailSuggestedPackage),
+                  _PackageCard(package: m.package!),
+                ],
+                SectionTitle(l10n.compareRowHospital),
                 AppCard(
                   onTap: () => context.push(Routes.hospital(hospital.slug.isNotEmpty ? hospital.slug : hospital.id)),
                   child: Row(
@@ -196,7 +205,7 @@ class MatchDetailScreen extends ConsumerWidget {
                               ),
                             if (hospital.internationalDesk)
                               Text(
-                                'International patient desk',
+                                l10n.catalogInternationalPatientDesk,
                                 style: context.text.labelSmall?.copyWith(color: AppColors.primary),
                               ),
                           ],
@@ -228,7 +237,7 @@ class MatchDetailScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: SecondaryButton(
-                  label: 'Compare Costs',
+                  label: l10n.matchDetailCompareCosts,
                   filled: true,
                   onPressed: () => _openCostComparison(context),
                 ),
@@ -236,7 +245,7 @@ class MatchDetailScreen extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: PrimaryButton(
-                  label: 'Book Consultation',
+                  label: l10n.consultationBookTitle,
                   tone: ButtonTone.red,
                   onPressed: () => requestConsultation(
                     context,
@@ -261,11 +270,12 @@ class _DoctorDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (detail.bio?.trim().isNotEmpty ?? false) ...[
-          const SectionTitle('About'),
+          SectionTitle(l10n.catalogAboutSection),
           Text(detail.bio!, style: context.text.bodyMedium),
         ],
         if (detail.subSpecialties.isNotEmpty || detail.languages.isNotEmpty) ...[
@@ -286,12 +296,12 @@ class _DoctorDetailSection extends StatelessWidget {
             children: [
               const Icon(Icons.event_available_rounded, color: AppColors.primary, size: 18),
               const SizedBox(width: 8),
-              Text('Next available: ${Dates.day(detail.nextAvailableDate)}', style: context.text.bodyMedium),
+              Text(l10n.availabilityNextAvailable(Dates.day(detail.nextAvailableDate)), style: context.text.bodyMedium),
             ],
           ),
         ],
         if (detail.procedures.isNotEmpty) ...[
-          const SectionTitle('Procedures & packages'),
+          SectionTitle(l10n.matchDetailProceduresPackages),
           for (final p in detail.procedures)
             AppCard(
               margin: const EdgeInsets.only(bottom: 10),
@@ -308,7 +318,7 @@ class _DoctorDetailSection extends StatelessWidget {
                   ),
                   if (p.hospitalStayDays != null)
                     Text(
-                      '${p.hospitalStayDays} days in hospital',
+                      l10n.catalogDaysInHospital(p.hospitalStayDays!),
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
                   for (final pkg in p.packages)

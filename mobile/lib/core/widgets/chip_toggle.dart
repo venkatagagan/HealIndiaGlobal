@@ -42,7 +42,7 @@ class ChipToggle extends StatelessWidget {
           customBorder: const StadiumBorder(),
           onTap: onChanged == null ? null : () => onChanged!(!selected),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(14, 8, onDeleted != null ? 6 : 14, 8),
+            padding: EdgeInsetsDirectional.fromSTEB(14, 8, onDeleted != null ? 6 : 14, 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

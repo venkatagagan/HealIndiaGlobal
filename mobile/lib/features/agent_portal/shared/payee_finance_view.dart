@@ -4,16 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import 'payee_finance.dart';
 import 'portal_widgets.dart';
 
 /// Read-only settlements view of the signed-in payee: balances, items (commissions / settlements),
 /// payouts and a statement. Used by the agent "Earnings" tab and the hospital "Settlements" tab.
 class PayeeFinanceView extends ConsumerStatefulWidget {
-  const PayeeFinanceView({super.key, required this.title, this.itemsLabel = 'Settlements', this.header});
+  const PayeeFinanceView({super.key, required this.title, this.itemsLabel, this.header});
 
   final String title;
-  final String itemsLabel;
+
+  /// Label of the items segment; defaults to "Settlements".
+  final String? itemsLabel;
 
   /// Optional widget shown above the balances (e.g. the agent referral card).
   final Widget? header;
@@ -37,6 +40,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: RefreshIndicator(
@@ -49,9 +53,9 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
             const SizedBox(height: 16),
             SegmentedButton<int>(
               segments: [
-                ButtonSegment(value: 0, label: Text(widget.itemsLabel)),
-                const ButtonSegment(value: 1, label: Text('Payouts')),
-                const ButtonSegment(value: 2, label: Text('Statement')),
+                ButtonSegment(value: 0, label: Text(widget.itemsLabel ?? l10n.payeeSettlementsTab)),
+                ButtonSegment(value: 1, label: Text(l10n.payeePayoutsTab)),
+                ButtonSegment(value: 2, label: Text(l10n.payeeStatementTab)),
               ],
               selected: {_section},
               showSelectedIcon: false,
@@ -70,6 +74,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
   }
 
   Widget _items() {
+    final l10n = context.l10n;
     const statuses = ['pending', 'eligible', 'on_hold', 'batched', 'paid', 'reversed'];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -79,13 +84,13 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
           runSpacing: 6,
           children: [
             ChoiceChip(
-              label: const Text('All'),
+              label: Text(l10n.portalFilterAll),
               selected: _status == null,
               onSelected: (_) => setState(() => _status = null),
             ),
             for (final s in statuses)
               ChoiceChip(
-                label: Text(humanize(s)),
+                label: Text(payeeStatusLabel(l10n, s)),
                 selected: _status == s,
                 onSelected: (_) => setState(() => _status = s),
               ),
@@ -97,7 +102,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
           compactError: true,
           onRetry: () => ref.invalidate(settlementItemsProvider(_status)),
           data: (page) => page.items.isEmpty
-              ? const EmptyView(title: 'Nothing here yet', icon: Icons.receipt_long_outlined)
+              ? EmptyView(title: l10n.payeeItemsEmpty, icon: Icons.receipt_long_outlined)
               : Column(children: [for (final i in page.items) _ItemTile(item: i)]),
         ),
       ],
@@ -109,7 +114,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
     compactError: true,
     onRetry: () => ref.invalidate(payoutsProvider),
     data: (page) => page.items.isEmpty
-        ? const EmptyView(title: 'No payouts yet', icon: Icons.account_balance_outlined)
+        ? EmptyView(title: context.l10n.payeePayoutsEmpty, icon: Icons.account_balance_outlined)
         : Column(
             children: [
               for (final p in page.items)
@@ -128,8 +133,8 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
                             Text(
                               [
                                 Dates.day(p.processedAt ?? p.createdAt),
-                                if (p.utr != null) 'UTR ${p.utr}',
-                                if (p.method != null) humanize(p.method!),
+                                if (p.utr != null) context.l10n.payeePayoutUtr(p.utr!),
+                                if (p.method != null) payeeMethodLabel(context.l10n, p.method!),
                               ].where((s) => s.isNotEmpty).join(' · '),
                               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                             ),
@@ -138,7 +143,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
                           ],
                         ),
                       ),
-                      statusBadge(p.status),
+                      statusBadge(p.status, l10n: context.l10n),
                     ],
                   ),
                 ),
@@ -147,6 +152,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
   );
 
   Widget _statement() {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -155,7 +161,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
           children: [
             for (final d in const [30, 90, 365])
               ChoiceChip(
-                label: Text(d == 365 ? '12 months' : '$d days'),
+                label: Text(d == 365 ? l10n.payeeStatementTwelveMonths : l10n.payeeStatementDays(d)),
                 selected: _days == d,
                 onSelected: (_) => setState(() => _days = d),
               ),
@@ -172,17 +178,20 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
               AppCard(
                 child: Column(
                   children: [
-                    InfoRow('Period', '${Dates.day(s.fromDate)} – ${Dates.day(s.toDate)}'),
-                    InfoRow('Opening balance', money(s.openingBalanceMinor, s.currency)),
-                    InfoRow('Earned', money(s.totalEarnedMinor, s.currency)),
-                    InfoRow('Paid out', money(s.totalPaidMinor, s.currency)),
-                    InfoRow('Closing balance', money(s.closingBalanceMinor, s.currency)),
+                    InfoRow(
+                      l10n.payeeStatementPeriod,
+                      l10n.payeeStatementPeriodRange(Dates.day(s.fromDate), Dates.day(s.toDate)),
+                    ),
+                    InfoRow(l10n.payeeOpeningBalance, money(s.openingBalanceMinor, s.currency)),
+                    InfoRow(l10n.payeeEarned, money(s.totalEarnedMinor, s.currency)),
+                    InfoRow(l10n.payeePaidOut, money(s.totalPaidMinor, s.currency)),
+                    InfoRow(l10n.payeeClosingBalance, money(s.closingBalanceMinor, s.currency)),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
               if (s.rows.isEmpty)
-                const EmptyView(title: 'No transactions in this period', icon: Icons.description_outlined)
+                EmptyView(title: l10n.payeeStatementEmpty, icon: Icons.description_outlined)
               else
                 for (final r in s.rows)
                   ListTile(
@@ -211,7 +220,7 @@ class _PayeeFinanceViewState extends ConsumerState<PayeeFinanceView> {
                           ),
                         ),
                         Text(
-                          'Bal ${money(r.balanceMinor, s.currency)}',
+                          l10n.payeeStatementBalance(money(r.balanceMinor, s.currency)),
                           style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
                         ),
                       ],
@@ -232,6 +241,12 @@ String humanize(String v) {
   return s[0].toUpperCase() + s.substring(1);
 }
 
+/// Label of a raw payout method; provider names (Razorpay) stay humanized.
+String payeeMethodLabel(AppLocalizations l10n, String method) => switch (method) {
+  'manual_bank_transfer' => l10n.payeeMethodManualBankTransfer,
+  _ => humanize(method),
+};
+
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard({required this.value, required this.onRetry});
 
@@ -240,6 +255,7 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AsyncValueView(
       value: value,
       compactError: true,
@@ -248,11 +264,15 @@ class _SummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AppCard(
-            gradient: const LinearGradient(colors: [Color(0xFF14532D), Color(0xFF0F172A)]),
+            gradient: const LinearGradient(
+              begin: AlignmentDirectional.centerStart,
+              end: AlignmentDirectional.centerEnd,
+              colors: [Color(0xFF14532D), Color(0xFF0F172A)],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Paid to date', style: context.text.bodySmall?.copyWith(color: Colors.white70)),
+                Text(l10n.payeePaidToDate, style: context.text.bodySmall?.copyWith(color: Colors.white70)),
                 Text(
                   money(s.paidMinor, s.currency),
                   style: context.text.headlineSmall?.copyWith(fontWeight: FontWeight.w800, color: Colors.white),
@@ -260,8 +280,8 @@ class _SummaryCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   [
-                    'Outstanding ${money(s.outstandingMinor, s.currency)}',
-                    if (s.nextPayoutDate != null) 'next payout ${Dates.day(s.nextPayoutDate)}',
+                    l10n.payeeOutstanding(money(s.outstandingMinor, s.currency)),
+                    if (s.nextPayoutDate != null) l10n.payeeNextPayout(Dates.day(s.nextPayoutDate)),
                   ].join(' · '),
                   style: context.text.bodySmall?.copyWith(color: Colors.white70),
                 ),
@@ -272,24 +292,24 @@ class _SummaryCard extends StatelessWidget {
           KpiGrid(
             tiles: [
               KpiTile(
-                label: 'Pending',
+                label: l10n.payeeKpiPending,
                 value: money(s.pendingMinor, s.currency),
                 icon: Icons.hourglass_top_rounded,
                 color: AppColors.warning,
               ),
               KpiTile(
-                label: 'Eligible for payout',
+                label: l10n.payeeKpiEligible,
                 value: money(s.eligibleMinor, s.currency),
                 icon: Icons.verified_rounded,
               ),
               KpiTile(
-                label: 'On hold',
+                label: l10n.payeeKpiOnHold,
                 value: money(s.onHoldMinor, s.currency),
                 icon: Icons.pause_circle_outline_rounded,
                 color: AppColors.danger,
               ),
               KpiTile(
-                label: 'In payout batch',
+                label: l10n.payeeKpiBatched,
                 value: money(s.batchedMinor, s.currency),
                 icon: Icons.local_shipping_outlined,
                 color: AppColors.violet,
@@ -309,6 +329,7 @@ class _ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final i = item;
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -319,11 +340,11 @@ class _ItemTile extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  i.bookingNumber ?? 'Booking',
+                  i.bookingNumber ?? l10n.portalBookingLabel,
                   style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
-              statusBadge(i.status),
+              statusBadge(i.status, l10n: l10n),
             ],
           ),
           const SizedBox(height: 6),
@@ -331,9 +352,11 @@ class _ItemTile extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Gross ${money(i.grossMinor, i.currency)} · fee ${money(i.commissionMinor, i.currency)}'
-                  '${i.taxMinor > 0 ? ' · GST ${money(i.taxMinor, i.currency)}' : ''}'
-                  '${i.tdsMinor > 0 ? ' · TDS ${money(i.tdsMinor, i.currency)}' : ''}',
+                  [
+                    l10n.payeeItemGrossFee(money(i.grossMinor, i.currency), money(i.commissionMinor, i.currency)),
+                    if (i.taxMinor > 0) l10n.payeeItemGst(money(i.taxMinor, i.currency)),
+                    if (i.tdsMinor > 0) l10n.payeeItemTds(money(i.tdsMinor, i.currency)),
+                  ].join(' · '),
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ),
@@ -346,11 +369,14 @@ class _ItemTile extends StatelessWidget {
           if (i.holdReason != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text('On hold: ${i.holdReason}', style: context.text.bodySmall?.copyWith(color: AppColors.danger)),
+              child: Text(
+                l10n.payeeItemOnHoldReason(i.holdReason!),
+                style: context.text.bodySmall?.copyWith(color: AppColors.danger),
+              ),
             ),
           if (i.eligibleAt != null)
             Text(
-              'Eligible ${Dates.day(i.eligibleAt)}',
+              l10n.payeeItemEligibleOn(Dates.day(i.eligibleAt)),
               style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
             ),
         ],

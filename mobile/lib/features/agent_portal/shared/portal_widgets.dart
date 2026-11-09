@@ -2,21 +2,36 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// One bottom-nav destination of a partner shell.
 class PortalTab {
-  const PortalTab({required this.label, required this.icon, required this.selectedIcon, required this.builder});
+  const PortalTab({
+    required this.label,
+    required this.icon,
+    required this.selectedIcon,
+    required this.builder,
+    this.labelBuilder,
+  });
 
+  /// English label (shown when [labelBuilder] is null).
   final String label;
   final IconData icon;
   final IconData selectedIcon;
   final WidgetBuilder builder;
+
+  /// Localized label (a static / top-level function so tab lists can stay `const`).
+  final String Function(AppLocalizations l10n)? labelBuilder;
+
+  /// The label in the app's current language.
+  String labelOf(AppLocalizations l10n) => labelBuilder?.call(l10n) ?? label;
 }
 
 /// Bottom-navigation shell: keeps every visited tab alive (IndexedStack), builds tabs lazily.
@@ -45,6 +60,7 @@ class PortalShellScaffoldState extends State<PortalShellScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: IndexedStack(
         index: _index,
@@ -59,8 +75,8 @@ class PortalShellScaffoldState extends State<PortalShellScaffold> {
         destinations: [
           for (var i = 0; i < widget.tabs.length; i++)
             NavigationDestination(
-              label: widget.tabs[i].label,
-              tooltip: widget.tabs[i].label,
+              label: widget.tabs[i].labelOf(l10n),
+              tooltip: widget.tabs[i].labelOf(l10n),
               icon: _badged(Icon(widget.tabs[i].icon), widget.badges[i] ?? 0),
               selectedIcon: _badged(Icon(widget.tabs[i].selectedIcon), widget.badges[i] ?? 0),
             ),
@@ -105,7 +121,7 @@ class KpiTile extends StatelessWidget {
           const SizedBox(height: 10),
           FittedBox(
             fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: Text(value, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           ),
           const SizedBox(height: 2),
@@ -156,7 +172,10 @@ class MonthlyBars extends StatelessWidget {
     if (points.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text('No activity yet', style: context.text.bodySmall?.copyWith(color: context.palette.textMuted)),
+        child: Text(
+          context.l10n.portalNoActivityYet,
+          style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
+        ),
       );
     }
     final maxV = points.map((p) => p.$2).fold<num>(0, (a, b) => b > a ? b : a);
@@ -203,12 +222,11 @@ class MonthlyBars extends StatelessWidget {
   }
 }
 
-/// `2026-07` -> `Jul`; anything else is returned unchanged.
+/// `2026-07` -> `Jul` (abbreviated month in the app language); anything else is returned unchanged.
 String monthLabel(String month) {
   final d = DateTime.tryParse(month.length == 7 ? '$month-01' : month);
   if (d == null) return month;
-  const names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return names[d.month - 1];
+  return DateFormat.MMM().format(d);
 }
 
 /// Label / value row used in detail cards.
@@ -244,9 +262,30 @@ class InfoRow extends StatelessWidget {
   }
 }
 
-/// Status pill for a raw wire value (`pending_payment` -> "Pending payment").
-StatusBadge statusBadge(String status, {bool dense = true}) =>
-    StatusBadge(label: humanizeEnumValue(status), color: AppColors.statusColor(status), dense: dense);
+/// Status pill for a raw wire value (`pending_payment` -> "Pending payment"); settlement / payout
+/// statuses are translated (see [payeeStatusLabel]), other values are humanized.
+StatusBadge statusBadge(String status, {bool dense = true, AppLocalizations? l10n}) => StatusBadge(
+  label: payeeStatusLabel(l10n ?? L10n.current, status),
+  color: AppColors.statusColor(status),
+  dense: dense,
+);
+
+/// Label of a raw settlement-item / payout status (`on_hold` -> "On hold") in the app language;
+/// unknown values are humanized.
+String payeeStatusLabel(AppLocalizations l10n, String status) => switch (status) {
+  'pending' => l10n.payeeStatusPending,
+  'eligible' => l10n.payeeStatusEligible,
+  'on_hold' => l10n.payeeStatusOnHold,
+  'batched' => l10n.payeeStatusBatched,
+  'paid' => l10n.payeeStatusPaid,
+  'reversed' => l10n.payeeStatusReversed,
+  'queued' => l10n.payeeStatusQueued,
+  'processing' => l10n.payeeStatusProcessing,
+  'processed' => l10n.payeeStatusProcessed,
+  'failed' => l10n.payeeStatusFailed,
+  'needs_reconciliation' => l10n.payeeStatusNeedsReconciliation,
+  _ => humanizeEnumValue(status),
+};
 
 /// Formats a money amount (minor units), e.g. `₹120,000` / `$4,500`.
 String money(int minor, String currency, {bool compact = false}) => formatMoney(minor, currency, compact: compact);
@@ -262,6 +301,7 @@ class CaseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final c = medicalCase;
     final q = c.latestQuote;
     return AppCard(
@@ -283,7 +323,7 @@ class CaseTile extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            showPatient ? (c.patient?.fullName ?? 'Patient') : c.title,
+            showPatient ? (c.patient?.fullName ?? l10n.portalPatientLabel) : c.title,
             style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 2),
@@ -304,14 +344,14 @@ class CaseTile extends StatelessWidget {
               children: [
                 Icon(Icons.request_quote_outlined, size: 16, color: context.palette.textMuted),
                 MoneyText(q.totalMinor, q.currency, style: context.text.titleSmall),
-                statusBadge(q.status.json),
+                StatusBadge.forEnum(q.status, dense: true),
               ],
             ),
           ],
           if (c.createdAt != null) ...[
             const SizedBox(height: 6),
             Text(
-              'Opened ${Dates.relative(c.createdAt)}',
+              l10n.portalCaseOpened(Dates.relative(c.createdAt)),
               style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
             ),
           ],
@@ -329,6 +369,7 @@ class QuoteBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final q = quote;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,7 +404,7 @@ class QuoteBreakdown extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text('Total', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              child: Text(l10n.portalTotal, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
             ),
             MoneyText(
               q.totalMinor,
@@ -375,9 +416,9 @@ class QuoteBreakdown extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           [
-            if (q.estimatedStayDays != null) '${q.estimatedStayDays} day stay',
-            if (q.validUntil != null) 'valid until ${Dates.day(q.validUntil)}',
-            if (q.preparedByName != null) 'by ${q.preparedByName}',
+            if (q.estimatedStayDays != null) l10n.portalQuoteStayDays(q.estimatedStayDays!),
+            if (q.validUntil != null) l10n.portalQuoteValidUntil(Dates.day(q.validUntil)),
+            if (q.preparedByName != null) l10n.portalQuotePreparedBy(q.preparedByName!),
           ].join(' · '),
           style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
         ),
@@ -386,12 +427,12 @@ class QuoteBreakdown extends StatelessWidget {
   }
 }
 
-/// Asks for confirmation; resolves true when confirmed.
+/// Asks for confirmation; resolves true when confirmed. [confirmLabel] defaults to "Confirm".
 Future<bool> confirmAction(
   BuildContext context, {
   required String title,
   String? message,
-  String confirmLabel = 'Confirm',
+  String? confirmLabel,
   bool destructive = false,
 }) async {
   final ok = await showDialog<bool>(
@@ -400,11 +441,11 @@ Future<bool> confirmAction(
       title: Text(title),
       content: message == null ? null : Text(message),
       actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(ctx.l10n.commonCancel)),
         FilledButton(
           style: destructive ? FilledButton.styleFrom(backgroundColor: AppColors.danger) : null,
           onPressed: () => Navigator.of(ctx).pop(true),
-          child: Text(confirmLabel),
+          child: Text(confirmLabel ?? ctx.l10n.commonConfirm),
         ),
       ],
     ),
@@ -412,12 +453,12 @@ Future<bool> confirmAction(
   return ok ?? false;
 }
 
-/// Asks for a single line / paragraph of text; null when cancelled.
+/// Asks for a single line / paragraph of text; null when cancelled. [confirmLabel] defaults to "Save".
 Future<String?> promptText(
   BuildContext context, {
   required String title,
   String label = '',
-  String confirmLabel = 'Save',
+  String? confirmLabel,
   String? initial,
   bool required = false,
   int maxLines = 1,
@@ -448,7 +489,7 @@ class _PromptDialog extends StatefulWidget {
 
   final String title;
   final String label;
-  final String confirmLabel;
+  final String? confirmLabel;
   final String? initial;
   final bool required;
   final int maxLines;
@@ -477,14 +518,14 @@ class _PromptDialogState extends State<_PromptDialog> {
         decoration: InputDecoration(labelText: widget.label),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.commonCancel)),
         FilledButton(
           onPressed: () {
             final v = _ctrl.text.trim();
             if (widget.required && v.isEmpty) return;
             Navigator.of(context).pop(v);
           },
-          child: Text(widget.confirmLabel),
+          child: Text(widget.confirmLabel ?? context.l10n.commonSave),
         ),
       ],
     );
@@ -499,14 +540,16 @@ class StatusFilterBar<T> extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     required this.labelOf,
-    this.allLabel = 'All',
+    this.allLabel,
   });
 
   final List<T> options;
   final T? selected;
   final ValueChanged<T?> onSelected;
   final String Function(T) labelOf;
-  final String allLabel;
+
+  /// Label of the "all" chip; defaults to "All".
+  final String? allLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -517,12 +560,16 @@ class StatusFilterBar<T> extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: ChoiceChip(label: Text(allLabel), selected: selected == null, onSelected: (_) => onSelected(null)),
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: ChoiceChip(
+              label: Text(allLabel ?? context.l10n.portalFilterAll),
+              selected: selected == null,
+              onSelected: (_) => onSelected(null),
+            ),
           ),
           for (final o in options)
             Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(label: Text(labelOf(o)), selected: selected == o, onSelected: (_) => onSelected(o)),
             ),
         ],

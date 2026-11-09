@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 
 /// Local emergency number for an ISO country code (112 is the international fallback).
 String emergencyNumberFor(String? countryCode) => switch ((countryCode ?? '').toUpperCase()) {
@@ -24,7 +25,7 @@ class EmergencyGuidanceView extends StatelessWidget {
     this.advice,
     this.onViewResults,
     this.onClose,
-    this.acknowledgeLabel = 'I understand - view my results anyway',
+    this.acknowledgeLabel,
   });
 
   final List<String> redFlags;
@@ -35,19 +36,20 @@ class EmergencyGuidanceView extends StatelessWidget {
   final VoidCallback? onViewResults;
   final VoidCallback? onClose;
 
-  /// Label of the [onViewResults] acknowledgement button.
-  final String acknowledgeLabel;
+  /// Label of the [onViewResults] acknowledgement button (default: "I understand - view my results anyway").
+  final String? acknowledgeLabel;
 
   Future<void> _call(BuildContext context, String number) async {
     final ok = await launchUrl(Uri(scheme: 'tel', path: number));
     if (!ok && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Dial $number from your phone now.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.emergencyDialNow(number))));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final number = emergencyNumberFor(homeCountry);
+    final l10n = context.l10n;
     const fg = Colors.white;
     return Container(
       color: const Color(0xFFB91C1C),
@@ -56,9 +58,9 @@ class EmergencyGuidanceView extends StatelessWidget {
           children: [
             if (onClose != null)
               Align(
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerEnd,
                 child: IconButton(
-                  tooltip: 'Close',
+                  tooltip: l10n.commonClose,
                   onPressed: onClose,
                   icon: const Icon(Icons.close_rounded, color: fg),
                 ),
@@ -73,17 +75,14 @@ class EmergencyGuidanceView extends StatelessWidget {
                     header: true,
                     liveRegion: true,
                     child: Text(
-                      'Emergency — seek local care now',
+                      l10n.emergencyTitle,
                       textAlign: TextAlign.center,
                       style: context.text.headlineMedium?.copyWith(color: fg, fontWeight: FontWeight.w900),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    advice?.trim().isNotEmpty == true
-                        ? advice!
-                        : 'Some of your answers may indicate a medical emergency. Please do not wait to travel. '
-                              'Go to the nearest emergency department or call your local emergency number immediately.',
+                    advice?.trim().isNotEmpty == true ? advice! : l10n.emergencyBody,
                     textAlign: TextAlign.center,
                     style: context.text.bodyLarge?.copyWith(color: fg),
                   ),
@@ -99,7 +98,7 @@ class EmergencyGuidanceView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Warning signs we noticed',
+                            l10n.emergencyWarningSigns,
                             style: context.text.titleSmall?.copyWith(color: fg, fontWeight: FontWeight.w800),
                           ),
                           const SizedBox(height: 8),
@@ -123,7 +122,7 @@ class EmergencyGuidanceView extends StatelessWidget {
                   ],
                   const SizedBox(height: 20),
                   Text(
-                    'This screening is not a diagnosis.',
+                    l10n.emergencyNotDiagnosis,
                     textAlign: TextAlign.center,
                     style: context.text.bodySmall?.copyWith(color: fg.withValues(alpha: 0.85)),
                   ),
@@ -142,14 +141,14 @@ class EmergencyGuidanceView extends StatelessWidget {
                       minimumSize: const Size(double.infinity, 56),
                     ),
                     icon: const Icon(Icons.call_rounded),
-                    label: Text('Call emergency services ($number)'),
+                    label: Text(l10n.emergencyCallButton(number)),
                   ),
                   if (onViewResults != null) ...[
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: onViewResults,
                       style: TextButton.styleFrom(foregroundColor: fg),
-                      child: Text(acknowledgeLabel, textAlign: TextAlign.center),
+                      child: Text(acknowledgeLabel ?? l10n.emergencyAckViewResults, textAlign: TextAlign.center),
                     ),
                   ],
                 ],

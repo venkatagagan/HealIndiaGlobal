@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart' show ProgressCallback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../models/models.dart';
 import '../network/api_client.dart';
 
@@ -32,14 +33,14 @@ class DocumentRepository {
   }) async {
     final ext = fileName.contains('.') ? fileName.split('.').last.toLowerCase() : '';
     if (!allowedExtensions.contains(ext)) {
-      throw const ApiException(
+      throw ApiException(
         statusCode: 0,
         code: 'validation_error',
-        message: 'Unsupported file type. Use PDF, JPG, PNG, WEBP, HEIC or DICOM.',
+        message: L10n.current.coreUploadUnsupportedType,
       );
     }
     if (bytes != null && bytes.length > maxUploadBytes) {
-      throw const ApiException(statusCode: 0, code: 'validation_error', message: 'File is too large (max 20 MB).');
+      throw ApiException(statusCode: 0, code: 'validation_error', message: L10n.current.coreUploadTooLarge);
     }
     final data = await _api.upload(
       '/documents',

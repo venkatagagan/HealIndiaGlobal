@@ -3,6 +3,7 @@ import 'package:flutter/semantics.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import 'body_map_data.dart';
 
 /// Body areas of a screening. [json] values are the ONE body-area vocabulary shared by the backend,
@@ -12,23 +13,41 @@ import 'body_map_data.dart';
 /// Every region except [skin] and [general] is a tappable path of the design body map
 /// (`assets/body_map/body-{front,back}.svg`); those two are offered as chips below the map.
 enum BodyRegion {
-  head('head', 'Head'),
-  neck('neck', 'Neck'),
-  chest('chest', 'Chest'),
-  abdomen('abdomen', 'Abdomen'),
-  pelvis('pelvis', 'Pelvis'),
-  back('back', 'Back'),
-  leftArm('left_arm', 'Left arm'),
-  rightArm('right_arm', 'Right arm'),
-  leftLeg('left_leg', 'Left leg'),
-  rightLeg('right_leg', 'Right leg'),
-  skin('skin', 'Skin'),
-  general('general', 'Whole body / general');
+  head('head'),
+  neck('neck'),
+  chest('chest'),
+  abdomen('abdomen'),
+  pelvis('pelvis'),
+  back('back'),
+  leftArm('left_arm'),
+  rightArm('right_arm'),
+  leftLeg('left_leg'),
+  rightLeg('right_leg'),
+  skin('skin'),
+  general('general');
 
-  const BodyRegion(this.json, this.label);
+  const BodyRegion(this.json);
 
   final String json;
-  final String label;
+
+  /// Display name in the app language ([L10n.current]); prefer [labelIn] with `context.l10n`.
+  String get label => labelIn(L10n.current);
+
+  /// Display name in the language of [l].
+  String labelIn(AppLocalizations l) => switch (this) {
+    head => l.bodyMapHead,
+    neck => l.bodyMapNeck,
+    chest => l.bodyMapChest,
+    abdomen => l.bodyMapAbdomen,
+    pelvis => l.bodyMapPelvis,
+    back => l.bodyMapRegionBack,
+    leftArm => l.bodyMapLeftArm,
+    rightArm => l.bodyMapRightArm,
+    leftLeg => l.bodyMapLeftLeg,
+    rightLeg => l.bodyMapRightLeg,
+    skin => l.bodyMapSkin,
+    general => l.bodyMapGeneral,
+  };
 
   /// Regions that are not drawn on the silhouette.
   static const offMap = [BodyRegion.skin, BodyRegion.general];
@@ -40,10 +59,11 @@ enum BodyRegion {
     return null;
   }
 
-  /// Label for any area value (unknown values are humanized).
-  static String labelOf(String raw) {
+  /// Label for any area value (unknown values are humanized), in the language of [l]
+  /// (default: [L10n.current]).
+  static String labelOf(String raw, [AppLocalizations? l]) {
     final r = fromJson(raw);
-    if (r != null) return r.label;
+    if (r != null) return r.labelIn(l ?? L10n.current);
     final s = raw.replaceAll('_', ' ');
     return s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
   }
@@ -139,7 +159,6 @@ Path parseSvgPath(String d) {
   return path;
 }
 
-
 /// Interactive human silhouette (front / back) with tappable, highlighted regions.
 ///
 /// [selected] and [onChanged] use `body_areas` wire values (`head`, `left_arm`, ...).
@@ -213,6 +232,7 @@ class _BodyMapState extends State<BodyMap> {
                     highlight: widget.highlightColor,
                     isDark: context.isDark,
                     textDirection: Directionality.of(context),
+                    l10n: context.l10n,
                     onRegionTap: _toggle,
                   ),
                 ),
@@ -229,7 +249,7 @@ class _BodyMapState extends State<BodyMap> {
             for (final r in BodyRegion.offMap)
               ChipToggle(
                 key: ValueKey('body-area-${r.json}'),
-                label: r.label,
+                label: r.labelIn(context.l10n),
                 leading: Icon(
                   r == BodyRegion.skin ? Icons.back_hand_outlined : Icons.accessibility_new_rounded,
                   size: 16,
@@ -287,7 +307,12 @@ class _ViewToggle extends StatelessWidget {
       width: 220,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(color: context.palette.surfaceAlt, borderRadius: BorderRadius.circular(AppRadius.pill)),
-      child: Row(children: [seg(BodyView.front, 'Front'), seg(BodyView.back, 'Back')]),
+      child: Row(
+        children: [
+          seg(BodyView.front, context.l10n.bodyMapViewFront),
+          seg(BodyView.back, context.l10n.bodyMapViewBack),
+        ],
+      ),
     );
   }
 }
@@ -300,6 +325,7 @@ class BodyMapPainter extends CustomPainter {
     required this.highlight,
     required this.isDark,
     this.textDirection = TextDirection.ltr,
+    this.l10n,
     this.onRegionTap,
   });
 
@@ -308,6 +334,9 @@ class BodyMapPainter extends CustomPainter {
   final Color highlight;
   final bool isDark;
   final TextDirection textDirection;
+
+  /// Strings for the region semantics labels (default: [L10n.current]).
+  final AppLocalizations? l10n;
   final ValueChanged<BodyRegion>? onRegionTap;
 
   @override
@@ -348,7 +377,7 @@ class BodyMapPainter extends CustomPainter {
       final isOn = selected.contains(region.json);
       final fill = Paint()
         ..shader = LinearGradient(
-          begin: Alignment.topLeft,
+          begin: Alignment.topLeft, // lighting of the drawing, not text direction
           end: Alignment.bottomRight,
           colors: isOn ? [highlight, Color.lerp(highlight, Colors.black, 0.35)!] : [baseTop, baseBottom],
         ).createShader(bounds);
@@ -401,12 +430,13 @@ class BodyMapPainter extends CustomPainter {
   @override
   SemanticsBuilderCallback get semanticsBuilder => (size) {
     final (scale, offset) = BodyMapGeometry.fit(size);
+    final l = l10n ?? L10n.current;
     return [
       for (final region in BodyMapGeometry.regionsFor(view))
         CustomPainterSemantics(
           rect: _scaleRect(BodyMapGeometry.pathFor(region, view).getBounds(), scale, offset),
           properties: SemanticsProperties(
-            label: region.label,
+            label: region.labelIn(l),
             textDirection: textDirection,
             button: true,
             selected: selected.contains(region.json),
@@ -432,5 +462,5 @@ class BodyMapPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(BodyMapPainter oldDelegate) =>
-      oldDelegate.view != view || oldDelegate.selected != selected;
+      oldDelegate.view != view || oldDelegate.selected != selected || oldDelegate.l10n != l10n;
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../core/config/app_preferences.dart';
@@ -13,12 +14,14 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/dates.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/l10n.dart';
 import '../../providers/screening_draft.dart';
 import '../ai_consent_sheet.dart';
 import '../screening_step_scaffold.dart';
 import 'step_actions.dart';
 
-/// Preferred-language options with flags (sent as names; the server normalizes them).
+/// Preferred-language options with flags. The English names are the wire values (sent as names; the
+/// server normalizes them); [languageOptionLabel] gives the display name.
 const List<(String, String)> kLanguageOptions = [
   ('Hindi', '🇮🇳'),
   ('English', '🇬🇧'),
@@ -27,6 +30,17 @@ const List<(String, String)> kLanguageOptions = [
   ('French', '🇫🇷'),
   ('Russian', '🇷🇺'),
 ];
+
+/// Display name of a [kLanguageOptions] wire value in the language of [l] (unknown values as-is).
+String languageOptionLabel(String name, AppLocalizations l) => switch (name) {
+  'Hindi' => l.screeningLangHindi,
+  'English' => l.screeningLangEnglish,
+  'Arabic' => l.screeningLangArabic,
+  'Spanish' => l.screeningLangSpanish,
+  'French' => l.screeningLangFrench,
+  'Russian' => l.screeningLangRussian,
+  _ => name,
+};
 
 /// Budget slider bounds in USD (converted to the patient's currency for display and storage).
 const int kBudgetMinUsd = 5000;
@@ -93,7 +107,7 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
       edit((x) => x.copyWith(preferences: ScreeningPreferences(useAi: x.preferences.useAi)));
       d = draft!;
     }
-    final problem = d.validate(step);
+    final problem = d.validate(step, context.l10n);
     if (problem != null) {
       showInfoSnack(context, problem);
       return;
@@ -146,13 +160,14 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
             toUsd(p.budgetMaxMinor!, p.budgetCurrency ?? budgetCcy),
           )
         : const RangeValues(kBudgetMinUsd + 0.0, kBudgetMaxUsd + 0.0);
+    final l10n = context.l10n;
 
     return ScreeningStepScaffold(
       step: step,
       optional: true,
-      title: 'Personalize Your Matches',
+      title: l10n.screeningStep4Title,
       titleAlign: TextAlign.start,
-      primaryLabel: 'Find My Doctors',
+      primaryLabel: l10n.screeningFindDoctors,
       busy: busy,
       onPrimary: _find,
       onBack: goPrevious,
@@ -162,18 +177,18 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
         child: TextButton(
           onPressed: busy ? null : () => _find(useDefaults: true),
           style: TextButton.styleFrom(foregroundColor: context.palette.textSecondary),
-          child: const Text('Skip & Use Defaults', style: TextStyle(decoration: TextDecoration.underline)),
+          child: Text(l10n.screeningSkipDefaults, style: const TextStyle(decoration: TextDecoration.underline)),
         ),
       ),
       children: [
-        const _Label('Language'),
+        _Label(l10n.languageSettingTitle),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             for (final (name, flag) in kLanguageOptions)
               ChipToggle(
-                label: name,
+                label: languageOptionLabel(name, l10n),
                 leading: Text(flag, style: const TextStyle(fontSize: 16)),
                 selected: p.languages.any((l) => l.toLowerCase() == name.toLowerCase()),
                 onChanged: (on) => _setPrefs(
@@ -189,12 +204,12 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
               ),
           ],
         ),
-        const _Label('Doctor Gender'),
+        _Label(l10n.screeningPrefDoctorGender),
         _GenderSegments(
           value: p.doctorGender,
           onChanged: (g) => _setPrefs((x) => x.copyWith(doctorGender: g)),
         ),
-        const _Label('Budget Range'),
+        _Label(l10n.screeningPrefBudgetRange),
         RangeSlider(
           values: range,
           min: kBudgetMinUsd.toDouble(),
@@ -217,7 +232,7 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
               Text(formatMoney(toMinor(range.start), budgetCcy, compact: true), style: context.text.labelMedium),
               Expanded(
                 child: Text(
-                  hasBudget ? 'Your budget' : 'Any budget',
+                  hasBudget ? l10n.screeningPrefYourBudget : l10n.screeningPrefAnyBudget,
                   textAlign: TextAlign.center,
                   style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
                 ),
@@ -228,13 +243,13 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
         ),
         if (hasBudget)
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: TextButton(
               onPressed: () => _setPrefs((x) => _rebuild(x, clearBudget: true)),
-              child: const Text('Clear budget'),
+              child: Text(l10n.screeningPrefClearBudget),
             ),
           ),
-        const _Label('Travel Window'),
+        _Label(l10n.screeningPrefTravelWindow),
         _TravelCalendar(
           focusedDay: _focusedDay,
           start: p.travelWindowStart,
@@ -263,8 +278,8 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
             padding: const EdgeInsets.only(top: 8),
             child: Text(
               p.travelWindowEnd == null
-                  ? 'From ${Dates.day(p.travelWindowStart)} - pick an end date'
-                  : '${Dates.day(p.travelWindowStart)} - ${Dates.day(p.travelWindowEnd)}',
+                  ? l10n.screeningPrefTravelFrom(Dates.day(p.travelWindowStart))
+                  : l10n.screeningPrefTravelRange(Dates.day(p.travelWindowStart), Dates.day(p.travelWindowEnd)),
               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
           ),
@@ -273,9 +288,9 @@ class _PreferencesStepState extends ConsumerState<PreferencesStep> with Screenin
           contentPadding: EdgeInsets.zero,
           value: p.useAi,
           activeTrackColor: AppColors.primary,
-          title: Text('Use AI Recommendations', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          title: Text(l10n.screeningPrefUseAi, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
           subtitle: Text(
-            p.useAi ? 'Requires your consent before analysis' : 'Standard rules-based matching',
+            p.useAi ? l10n.screeningPrefUseAiOn : l10n.screeningPrefUseAiOff,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
           onChanged: (v) => _setPrefs((x) => x.copyWith(useAi: v)),
@@ -389,7 +404,7 @@ class _TravelCalendar extends StatelessWidget {
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: text.copyWith(color: context.palette.textSecondary),
           weekendStyle: text.copyWith(color: context.palette.textSecondary),
-          dowTextFormatter: (d, locale) => 'SMTWTFS'[d.weekday % 7],
+          dowTextFormatter: (d, locale) => DateFormat.EEEEE(locale?.toString()).format(d),
         ),
         calendarStyle: CalendarStyle(
           cellMargin: const EdgeInsets.all(3),

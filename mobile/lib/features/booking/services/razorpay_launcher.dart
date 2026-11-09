@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../../l10n/l10n.dart';
+
 /// Result of a Razorpay checkout.
 sealed class RazorpayOutcome {
   const RazorpayOutcome();
@@ -52,7 +54,7 @@ class NativeRazorpayLauncher implements RazorpayLauncher {
       final orderId = r.orderId;
       final signature = r.signature;
       if (paymentId == null || orderId == null || signature == null) {
-        complete(const RazorpayFailure(message: 'The payment response was incomplete. Please contact support.'));
+        complete(RazorpayFailure(message: L10n.current.paymentResponseIncomplete));
       } else {
         complete(RazorpaySuccess(paymentId: paymentId, orderId: orderId, signature: signature));
       }
@@ -61,21 +63,21 @@ class NativeRazorpayLauncher implements RazorpayLauncher {
       final cancelled = r.code == Razorpay.PAYMENT_CANCELLED;
       complete(
         RazorpayFailure(
-          message: cancelled ? 'Payment cancelled.' : (r.message ?? 'The payment could not be completed.'),
+          message: cancelled ? L10n.current.paymentCancelled : (r.message ?? L10n.current.paymentNotCompleted),
           cancelled: cancelled,
         ),
       );
     });
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, (ExternalWalletResponse r) {
-      complete(RazorpayExternalWallet(r.walletName ?? 'wallet'));
+      complete(RazorpayExternalWallet(r.walletName ?? L10n.current.paymentWalletFallback));
     });
     try {
       razorpay.open(options);
       return await completer.future;
     } on PlatformException catch (e) {
-      return RazorpayFailure(message: e.message ?? 'Card payments are not available on this device.');
+      return RazorpayFailure(message: e.message ?? L10n.current.paymentCardsUnavailableOnDevice);
     } on MissingPluginException {
-      return const RazorpayFailure(message: 'Card payments are not available on this device.');
+      return RazorpayFailure(message: L10n.current.paymentCardsUnavailableOnDevice);
     } finally {
       razorpay.clear();
     }

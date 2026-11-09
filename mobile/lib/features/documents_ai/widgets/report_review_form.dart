@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 import '../models/document_analysis.dart';
 import 'report_style.dart';
 
@@ -77,7 +78,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
       initialDate: _date ?? now,
       firstDate: DateTime(1950),
       lastDate: now,
-      helpText: 'Report date',
+      helpText: context.l10n.reportDateLabel,
     );
     if (picked != null) _changed(() => _date = picked);
   }
@@ -85,26 +86,27 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
   @override
   Widget build(BuildContext context) {
     final on = widget.enabled;
+    final l10n = context.l10n;
     final critical = _labs.where((r) => r.value.flag == LabFlag.critical).map((r) => r.value).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (critical.isNotEmpty) ...[
           ReportAlertBanner(
-            title: 'Critical values in this report',
+            title: l10n.reportCriticalValuesInReport,
             lines: [for (final v in critical) '${v.test}: ${v.value} ${v.unit}'.trim()],
           ),
           const SizedBox(height: 8),
         ],
         ReportSectionHeader(
-          'About this report',
+          l10n.reportAboutSection,
           edited: _edited('doc_type') || _edited('report_date') || _edited('facility_name'),
         ),
         DropdownButtonFormField<ReportDocType>(
           key: const ValueKey('report-doc-type'),
           initialValue: _docType,
           isExpanded: true,
-          decoration: const InputDecoration(labelText: 'Document type'),
+          decoration: InputDecoration(labelText: l10n.reportDocTypeLabel),
           items: [for (final t in ReportDocType.values) DropdownMenuItem(value: t, child: Text(t.label))],
           onChanged: on ? (v) => _changed(() => _docType = v) : null,
         ),
@@ -117,16 +119,16 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 child: InputDecorator(
                   decoration: InputDecoration(
-                    labelText: 'Report date',
+                    labelText: l10n.reportDateLabel,
                     suffixIcon: _date == null || !on
                         ? const Icon(Icons.event_rounded)
                         : IconButton(
-                            tooltip: 'Clear date',
+                            tooltip: l10n.reportClearDate,
                             icon: const Icon(Icons.close_rounded),
                             onPressed: () => _changed(() => _date = null),
                           ),
                   ),
-                  child: Text(_date == null ? 'Not stated' : DateFormat.yMMMd().format(_date!)),
+                  child: Text(_date == null ? l10n.reportDateNotStated : DateFormat.yMMMd().format(_date!)),
                 ),
               ),
             ),
@@ -137,24 +139,24 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
           key: const ValueKey('report-facility'),
           initialValue: _facility,
           enabled: on,
-          decoration: const InputDecoration(labelText: 'Hospital / laboratory'),
+          decoration: InputDecoration(labelText: l10n.reportFacilityLabel),
           onChanged: (v) => _changed(() => _facility = v),
         ),
-        ReportSectionHeader('Summary', edited: _edited('summary_patient')),
+        ReportSectionHeader(l10n.reportSummary, edited: _edited('summary_patient')),
         TextFormField(
           key: const ValueKey('report-summary'),
           initialValue: _summary,
           enabled: on,
           minLines: 3,
           maxLines: 8,
-          decoration: const InputDecoration(hintText: 'What the report says, in plain words'),
+          decoration: InputDecoration(hintText: l10n.reportSummaryHint),
           onChanged: (v) => _changed(() => _summary = v),
         ),
         ReportSectionHeader(
-          'Key findings',
+          l10n.reportKeyFindings,
           edited: _edited('key_findings'),
           trailing: _AddButton(
-            label: 'Add finding',
+            label: l10n.findingAdd,
             onPressed: on ? () => _changed(() => _findings.add(_Row(const KeyFinding(finding: '')))) : null,
           ),
         ),
@@ -162,14 +164,14 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
           _RowCard(
             key: r.key,
             onRemove: on ? () => _changed(() => _findings.remove(r)) : null,
-            removeLabel: 'Remove finding ${i + 1}',
+            removeLabel: l10n.findingRemove(i + 1),
             children: [
               TextFormField(
                 key: ValueKey('finding-$i'),
                 initialValue: r.value.finding,
                 enabled: on,
                 maxLines: null,
-                decoration: const InputDecoration(labelText: 'Finding', isDense: true),
+                decoration: InputDecoration(labelText: l10n.findingLabel, isDense: true),
                 onChanged: (v) => _changed(() => r.value = r.value.copyWith(finding: v)),
               ),
               const SizedBox(height: 8),
@@ -183,10 +185,10 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
             ],
           ),
         ReportSectionHeader(
-          'Lab values',
+          l10n.reportLabValues,
           edited: _edited('lab_values'),
           trailing: _AddButton(
-            label: 'Add value',
+            label: l10n.labAddValue,
             onPressed: on ? () => _changed(() => _labs.add(_Row(const LabValue(test: '')))) : null,
           ),
         ),
@@ -195,13 +197,13 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
             key: r.key,
             accent: ReportStyle.labFlag(r.value.flag),
             onRemove: on ? () => _changed(() => _labs.remove(r)) : null,
-            removeLabel: 'Remove lab value ${i + 1}',
+            removeLabel: l10n.labRemoveValue(i + 1),
             children: [
               TextFormField(
                 key: ValueKey('lab-test-$i'),
                 initialValue: r.value.test,
                 enabled: on,
-                decoration: const InputDecoration(labelText: 'Test', isDense: true),
+                decoration: InputDecoration(labelText: l10n.reportLabTest, isDense: true),
                 onChanged: (v) => _changed(() => r.value = r.value.copyWith(test: v)),
               ),
               const SizedBox(height: 8),
@@ -212,7 +214,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
                       key: ValueKey('lab-value-$i'),
                       initialValue: r.value.value,
                       enabled: on,
-                      decoration: const InputDecoration(labelText: 'Value', isDense: true),
+                      decoration: InputDecoration(labelText: l10n.labValueLabel, isDense: true),
                       onChanged: (v) => _changed(() => r.value = r.value.copyWith(value: v)),
                     ),
                   ),
@@ -221,7 +223,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
                     child: TextFormField(
                       initialValue: r.value.unit,
                       enabled: on,
-                      decoration: const InputDecoration(labelText: 'Unit', isDense: true),
+                      decoration: InputDecoration(labelText: l10n.labUnitLabel, isDense: true),
                       onChanged: (v) => _changed(() => r.value = r.value.copyWith(unit: v)),
                     ),
                   ),
@@ -231,7 +233,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
               TextFormField(
                 initialValue: r.value.referenceRange,
                 enabled: on,
-                decoration: const InputDecoration(labelText: 'Reference range', isDense: true),
+                decoration: InputDecoration(labelText: l10n.labReferenceRangeLabel, isDense: true),
                 onChanged: (v) => _changed(() => r.value = r.value.copyWith(referenceRange: v)),
               ),
               const SizedBox(height: 8),
@@ -245,10 +247,10 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
             ],
           ),
         ReportSectionHeader(
-          'Medications',
+          l10n.reportMedications,
           edited: _edited('medications'),
           trailing: _AddButton(
-            label: 'Add medication',
+            label: l10n.reportAddMedication,
             onPressed: on ? () => _changed(() => _meds.add(_Row(const ReportMedication(name: '')))) : null,
           ),
         ),
@@ -256,13 +258,13 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
           _RowCard(
             key: r.key,
             onRemove: on ? () => _changed(() => _meds.remove(r)) : null,
-            removeLabel: 'Remove medication ${i + 1}',
+            removeLabel: l10n.reportRemoveMedication(i + 1),
             children: [
               TextFormField(
                 key: ValueKey('med-name-$i'),
                 initialValue: r.value.name,
                 enabled: on,
-                decoration: const InputDecoration(labelText: 'Medicine', isDense: true),
+                decoration: InputDecoration(labelText: l10n.reportMedicineLabel, isDense: true),
                 onChanged: (v) => _changed(() => r.value = r.value.copyWith(name: v)),
               ),
               const SizedBox(height: 8),
@@ -272,7 +274,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
                     child: TextFormField(
                       initialValue: r.value.dose,
                       enabled: on,
-                      decoration: const InputDecoration(labelText: 'Dose', isDense: true),
+                      decoration: InputDecoration(labelText: l10n.reportDoseLabel, isDense: true),
                       onChanged: (v) => _changed(() => r.value = r.value.copyWith(dose: v)),
                     ),
                   ),
@@ -281,7 +283,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
                     child: TextFormField(
                       initialValue: r.value.frequency,
                       enabled: on,
-                      decoration: const InputDecoration(labelText: 'How often', isDense: true),
+                      decoration: InputDecoration(labelText: l10n.reportFrequencyLabel, isDense: true),
                       onChanged: (v) => _changed(() => r.value = r.value.copyWith(frequency: v)),
                     ),
                   ),
@@ -289,9 +291,27 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
               ),
             ],
           ),
-        ..._stringSection('Diagnoses mentioned', 'diagnoses_mentioned', 'Add diagnosis', _diagnoses, on),
-        ..._stringSection('Procedures mentioned', 'procedures_mentioned', 'Add procedure', _procedures, on),
-        ..._stringSection('Recommendations', 'recommendations', 'Add recommendation', _recommendations, on),
+        ..._stringSection(
+          l10n.reportDiagnosesMentioned,
+          'diagnoses_mentioned',
+          l10n.reportAddDiagnosis,
+          _diagnoses,
+          on,
+        ),
+        ..._stringSection(
+          l10n.reportProceduresMentioned,
+          'procedures_mentioned',
+          l10n.reportAddProcedure,
+          _procedures,
+          on,
+        ),
+        ..._stringSection(
+          l10n.reportRecommendations,
+          'recommendations',
+          l10n.reportAddRecommendation,
+          _recommendations,
+          on,
+        ),
       ],
     );
   }
@@ -314,7 +334,7 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
             isDense: true,
             suffixIcon: on
                 ? IconButton(
-                    tooltip: 'Remove',
+                    tooltip: context.l10n.commonRemove,
                     icon: const Icon(Icons.close_rounded, size: 18),
                     onPressed: () => _changed(() => rows.remove(r)),
                   )
@@ -323,7 +343,8 @@ class _ReportReviewFormState extends State<ReportReviewForm> {
           onChanged: (v) => _changed(() => r.value = v),
         ),
       ),
-    if (rows.isEmpty) Text('None', style: context.text.bodySmall?.copyWith(color: context.palette.textMuted)),
+    if (rows.isEmpty)
+      Text(context.l10n.reportNone, style: context.text.bodySmall?.copyWith(color: context.palette.textMuted)),
   ];
 }
 
@@ -343,21 +364,23 @@ class _AddButton extends StatelessWidget {
 }
 
 class _RowCard extends StatelessWidget {
-  const _RowCard({super.key, required this.children, this.onRemove, this.removeLabel = 'Remove', this.accent});
+  const _RowCard({super.key, required this.children, this.onRemove, this.removeLabel, this.accent});
 
   final List<Widget> children;
   final VoidCallback? onRemove;
-  final String removeLabel;
+
+  /// Tooltip of the remove button (defaults to "Remove").
+  final String? removeLabel;
   final Color? accent;
 
   @override
   Widget build(BuildContext context) => Container(
     margin: const EdgeInsets.only(bottom: 10),
-    padding: const EdgeInsets.fromLTRB(12, 10, 4, 12),
+    padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 4, 12),
     decoration: BoxDecoration(
       color: context.palette.surfaceAlt,
       borderRadius: BorderRadius.circular(AppRadius.md),
-      border: Border(left: BorderSide(color: accent ?? context.palette.border, width: 4)),
+      border: BorderDirectional(start: BorderSide(color: accent ?? context.palette.border, width: 4)),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,7 +388,11 @@ class _RowCard extends StatelessWidget {
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
         ),
-        IconButton(tooltip: removeLabel, onPressed: onRemove, icon: const Icon(Icons.delete_outline_rounded)),
+        IconButton(
+          tooltip: removeLabel ?? context.l10n.commonRemove,
+          onPressed: onRemove,
+          icon: const Icon(Icons.delete_outline_rounded),
+        ),
       ],
     ),
   );

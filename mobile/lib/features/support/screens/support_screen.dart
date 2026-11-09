@@ -13,6 +13,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../messages/logic/notification_routes.dart';
 import '../../messages/widgets/notification_tile.dart';
 import '../../trips/providers/travel_providers.dart';
@@ -62,6 +63,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     ];
 
     final schedule = _schedule(itinerary, dashboard.value?.todaySchedule ?? const []);
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -80,7 +82,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 children: [
                   BrandHeader(
                     leading: IconButton(
-                      tooltip: 'Back',
+                      tooltip: l10n.commonBack,
                       icon: const Icon(Icons.arrow_back_rounded),
                       onPressed: () => context.canPop() ? context.pop() : context.go(Routes.trips),
                     ),
@@ -102,7 +104,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     myLocation: _myLocation,
                     onMarkLocation: (p) {
                       setState(() => _myLocation = p);
-                      showInfoSnack(context, 'Location marked. It is shared only if you send an SOS.');
+                      showInfoSnack(context, l10n.supportLocationMarked);
                     },
                   ),
                   if (dashboard.hasError)
@@ -118,12 +120,12 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     onTap: () => _showItinerary(itinerary ?? dashboard.value?.todaySchedule ?? const []),
                   ),
                   SectionTitle(
-                    'Real-time Notifications',
-                    actionLabel: 'See all',
+                    l10n.supportRealtimeNotifications,
+                    actionLabel: l10n.commonSeeAll,
                     onAction: () => context.push(Routes.notifications),
                   ),
                   _LatestNotifications(onOpen: _openNotification),
-                  const SectionTitle('Cultural Tips'),
+                  SectionTitle(l10n.cultureTipsTitle),
                   ref
                       .watch(culturalTipsProvider)
                       .when(
@@ -131,14 +133,14 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                         error: (e, _) =>
                             ErrorView(error: e, compact: true, onRetry: () => ref.invalidate(culturalTipsProvider)),
                         data: (tips) => tips.isEmpty
-                            ? Text('Tips will appear here soon.', style: context.text.bodyMedium)
+                            ? Text(l10n.cultureTipsEmpty, style: context.text.bodyMedium)
                             : CulturalTipsCarousel(tips: tips),
                       ),
                 ],
               ),
             ),
-            Positioned(
-              right: 16,
+            PositionedDirectional(
+              end: 16,
               bottom: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -146,7 +148,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   _ActionPill(
                     key: const ValueKey('fab-helpline'),
                     icon: Icons.call_rounded,
-                    label: 'Call 24/7 Helpline',
+                    label: l10n.supportCallHelpline,
                     color: AppColors.danger,
                     onTap: _callHelpline,
                   ),
@@ -154,7 +156,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   _ActionPill(
                     key: const ValueKey('fab-translator'),
                     icon: Icons.translate_rounded,
-                    label: 'Get Translator',
+                    label: l10n.supportGetTranslator,
                     color: AppColors.info,
                     onTap: () => _requestService(caseId, ServiceKind.translator, booking?.hospital.city),
                   ),
@@ -162,7 +164,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   _ActionPill(
                     key: const ValueKey('fab-guide'),
                     icon: Icons.map_outlined,
-                    label: 'Local Guide',
+                    label: l10n.supportLocalGuide,
                     color: AppColors.primaryDark,
                     onTap: () => _requestService(caseId, ServiceKind.localGuide, booking?.hospital.city),
                   ),
@@ -200,16 +202,14 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   Future<void> _requestService(String? caseId, ServiceKind kind, String? city) async {
     if (caseId == null) {
-      showInfoSnack(context, 'Book your treatment first, or ask our support team in Messages.');
+      showInfoSnack(context, context.l10n.supportBookFirst);
       return;
     }
     final ok = await showServiceRequestSheet(context, caseId: caseId, kind: kind, city: city);
     if (ok == true && mounted) {
       showInfoSnack(
         context,
-        kind == ServiceKind.translator
-            ? 'Translator requested. Your coordinator will confirm shortly.'
-            : 'Local guide requested. Your coordinator will confirm shortly.',
+        kind == ServiceKind.translator ? context.l10n.supportTranslatorRequested : context.l10n.supportGuideRequested,
       );
     }
   }
@@ -238,10 +238,10 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             shrinkWrap: true,
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             children: [
-              Text('Your schedule', style: ctx.text.titleLarge),
+              Text(ctx.l10n.supportScheduleTitle, style: ctx.text.titleLarge),
               const SizedBox(height: 8),
               if (sorted.isEmpty)
-                Text('Your hospital will add appointments here.', style: ctx.text.bodyMedium)
+                Text(ctx.l10n.supportScheduleEmpty, style: ctx.text.bodyMedium)
               else
                 for (final i in sorted)
                   ListTile(
@@ -251,7 +251,10 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     subtitle: Text(
                       [
                         if (i.startsAt != null)
-                          '${Dates.weekday(i.startsAt)}, ${Dates.timeRange(i.startsAt, i.endsAt)}',
+                          ctx.l10n.supportScheduleWhen(
+                            Dates.weekday(i.startsAt),
+                            Dates.timeRange(i.startsAt, i.endsAt),
+                          ),
                         ?i.location,
                       ].join('\n'),
                     ),
@@ -287,6 +290,7 @@ class _ScheduleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i = item;
+    final l10n = context.l10n;
     return AppCard(
       onTap: onTap,
       child: Row(
@@ -296,12 +300,12 @@ class _ScheduleCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isToday || i == null ? "Today's Schedule" : 'Next on your schedule',
+                  isToday || i == null ? l10n.supportTodaysSchedule : l10n.supportNextOnSchedule,
                   style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  i?.title ?? 'Nothing scheduled today',
+                  i?.title ?? l10n.supportNothingToday,
                   style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 if (i?.startsAt != null) ...[
@@ -341,7 +345,7 @@ class _LatestNotifications extends ConsumerWidget {
       data: (list) {
         if (list.isEmpty) {
           return Text(
-            'Appointment reminders and updates appear here as they happen.',
+            context.l10n.supportNotificationsEmpty,
             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
           );
         }
@@ -406,7 +410,7 @@ class _SosButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'SOS emergency alert',
+      label: context.l10n.sosButtonSemantics,
       excludeSemantics: true,
       child: Material(
         color: AppColors.danger,

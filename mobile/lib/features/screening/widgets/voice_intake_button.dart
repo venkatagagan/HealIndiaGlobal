@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../voice/models/voice_models.dart';
 import '../providers/intake_merge.dart';
 import '../providers/screening_draft.dart';
@@ -23,7 +24,7 @@ class VoiceIntakeButton extends ConsumerWidget {
     final controller = ref.read(screeningDraftProvider(screeningId).notifier);
     final draft = ref.read(screeningDraftProvider(screeningId)).value;
     if (draft == null) return;
-    final merge = mergeIntake(draft, result.intake);
+    final merge = mergeIntake(draft, result.intake, context.l10n);
     controller.edit((_) => merge.draft);
     var replaced = 0;
     if (merge.conflicts.isNotEmpty) {
@@ -39,11 +40,15 @@ class VoiceIntakeButton extends ConsumerWidget {
       }
     }
     if (!context.mounted) return;
-    final parts = [
-      if (merge.applied.isNotEmpty) 'Added ${merge.applied.join(', ')}',
-      if (replaced > 0) 'updated $replaced answer${replaced == 1 ? '' : 's'}',
-    ];
-    showInfoSnack(context, parts.isEmpty ? 'Your answers already match what you said.' : '${parts.join('; ')}.');
+    final l10n = context.l10n;
+    final fields = merge.applied.join(l10n.intakeListSeparator);
+    final message = switch ((merge.applied.isNotEmpty, replaced > 0)) {
+      (true, true) => l10n.intakeVoiceAddedAndUpdated(fields, replaced),
+      (true, false) => l10n.intakeVoiceAddedOnly(fields),
+      (false, true) => l10n.intakeVoiceUpdatedOnly(replaced),
+      (false, false) => l10n.intakeVoiceAlreadyMatch,
+    };
+    showInfoSnack(context, message);
   }
 
   @override
@@ -57,7 +62,7 @@ class VoiceIntakeButton extends ConsumerWidget {
       shape: const StadiumBorder(),
     ),
     icon: const Icon(Icons.mic_rounded),
-    label: const Text('Describe it by voice'),
+    label: Text(context.l10n.voiceIntakeTitle),
   );
 }
 
@@ -75,37 +80,40 @@ class _IntakeConflictSheetState extends State<IntakeConflictSheet> {
   final Set<int> _use = {};
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Some answers differ', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
-          const SizedBox(height: 6),
-          Text(
-            'Tick the answers you want to replace with what you said. Unticked answers stay as they are.',
-            style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
-          ),
-          const SizedBox(height: 8),
-          for (final (i, c) in widget.conflicts.indexed)
-            CheckboxListTile(
-              value: _use.contains(i),
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: AppColors.primary,
-              onChanged: (v) => setState(() => v == true ? _use.add(i) : _use.remove(i)),
-              title: Text(c.label, style: context.text.titleSmall),
-              subtitle: Text('Yours: ${c.current}\nFrom your voice: ${c.suggested}'),
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.intakeConflictTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 6),
+            Text(
+              l10n.intakeConflictHint,
+              style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
-          const SizedBox(height: 12),
-          PrimaryButton(
-            label: 'Apply',
-            onPressed: () => Navigator.of(context).pop([for (final i in _use) widget.conflicts[i]]),
-          ),
-        ],
+            const SizedBox(height: 8),
+            for (final (i, c) in widget.conflicts.indexed)
+              CheckboxListTile(
+                value: _use.contains(i),
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: AppColors.primary,
+                onChanged: (v) => setState(() => v == true ? _use.add(i) : _use.remove(i)),
+                title: Text(c.label, style: context.text.titleSmall),
+                subtitle: Text(l10n.intakeConflictCompare(c.current, c.suggested)),
+              ),
+            const SizedBox(height: 12),
+            PrimaryButton(
+              label: l10n.commonApply,
+              onPressed: () => Navigator.of(context).pop([for (final i in _use) widget.conflicts[i]]),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

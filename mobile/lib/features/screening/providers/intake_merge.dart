@@ -1,4 +1,5 @@
 import '../../../core/models/models.dart';
+import '../../../l10n/l10n.dart';
 import '../../voice/models/voice_models.dart';
 import '../widgets/body_map.dart';
 import 'screening_draft.dart';
@@ -29,7 +30,10 @@ class IntakeMerge {
 /// Applies a patient-confirmed [IntakeSuggestion] to a screening draft without silently
 /// overwriting answers the patient already gave (PLAN §7.2): empty fields are filled, lists are
 /// extended, and differing answers are returned as [IntakeMerge.conflicts] for the patient to resolve.
-IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
+///
+/// Labels are in the language of [l10n] (default: [L10n.current]).
+IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s, [AppLocalizations? l10n]) {
+  final l = l10n ?? L10n.current;
   final applied = <String>[];
   final conflicts = <IntakeFieldConflict>[];
   var out = d;
@@ -39,7 +43,7 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
   final areas = s.bodyAreas.where(known.contains).toSet().difference(out.bodyAreas);
   if (areas.isNotEmpty) {
     out = out.copyWith(bodyAreas: {...out.bodyAreas, ...areas});
-    applied.add('body areas');
+    applied.add(l.intakeAppliedBodyAreas);
   }
 
   // pain: the draft starts at 5; treat it as unanswered until saved on the server
@@ -47,11 +51,11 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
   if (pain != null && pain != out.painIntensity) {
     if (d.source.painIntensity == null) {
       out = out.copyWith(painIntensity: pain);
-      applied.add('pain intensity');
+      applied.add(l.intakeAppliedPainIntensity);
     } else {
       conflicts.add(
         IntakeFieldConflict(
-          label: 'Pain intensity',
+          label: l.intakeConflictPainIntensity,
           current: '${out.painIntensity}/10',
           suggested: '$pain/10',
           apply: (x) => x.copyWith(painIntensity: pain),
@@ -80,7 +84,7 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
       );
     }
   }
-  if (addedSymptom) applied.add('symptoms');
+  if (addedSymptom) applied.add(l.intakeAppliedSymptoms);
 
   // duration
   final dv = s.durationValue;
@@ -88,13 +92,13 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
     final unit = s.durationUnit ?? out.durationUnit;
     if (out.durationValue == null) {
       out = out.copyWith(durationValue: dv, durationUnit: unit);
-      applied.add('duration');
+      applied.add(l.intakeAppliedDuration);
     } else if (out.durationValue != dv || out.durationUnit != unit) {
       conflicts.add(
         IntakeFieldConflict(
-          label: 'How long',
-          current: '${out.durationValue} ${out.durationUnit.label.toLowerCase()}',
-          suggested: '$dv ${unit.label.toLowerCase()}',
+          label: l.intakeConflictHowLong,
+          current: l.intakeDurationValue(out.durationValue!, out.durationUnit.label.toLowerCase()),
+          suggested: l.intakeDurationValue(dv, unit.label.toLowerCase()),
           apply: (x) => x.copyWith(durationValue: dv, durationUnit: unit),
         ),
       );
@@ -106,10 +110,20 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
   if (sev != null) {
     var filled = false;
     for (final (label, mine, theirs, set) in [
-      ('Work', out.severity.work, sev.work, (ScreeningSeverity v, SeverityLevel l) => v.copyWith(work: l)),
-      ('Sleep', out.severity.sleep, sev.sleep, (ScreeningSeverity v, SeverityLevel l) => v.copyWith(sleep: l)),
       (
-        'Mobility',
+        l.screeningImpactWork,
+        out.severity.work,
+        sev.work,
+        (ScreeningSeverity v, SeverityLevel l) => v.copyWith(work: l),
+      ),
+      (
+        l.screeningImpactSleep,
+        out.severity.sleep,
+        sev.sleep,
+        (ScreeningSeverity v, SeverityLevel l) => v.copyWith(sleep: l),
+      ),
+      (
+        l.screeningImpactMobility,
         out.severity.mobility,
         sev.mobility,
         (ScreeningSeverity v, SeverityLevel l) => v.copyWith(mobility: l),
@@ -122,7 +136,7 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
       } else {
         conflicts.add(
           IntakeFieldConflict(
-            label: 'Daily impact: $label',
+            label: l.intakeConflictDailyImpact(label),
             current: mine.label,
             suggested: theirs.label,
             apply: (x) => x.copyWith(severity: set(x.severity, theirs)),
@@ -130,7 +144,7 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
         );
       }
     }
-    if (filled) applied.add('daily impact');
+    if (filled) applied.add(l.intakeAppliedDailyImpact);
   }
 
   // previous treatments: union of known values
@@ -138,7 +152,7 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
   final newTreatments = s.previousTreatments.where(treatments.contains).toSet().difference(out.previousTreatments);
   if (newTreatments.isNotEmpty) {
     out = out.copyWith(previousTreatments: {...out.previousTreatments, ...newTreatments});
-    applied.add('previous treatments');
+    applied.add(l.intakeAppliedPreviousTreatments);
   }
 
   // notes
@@ -146,11 +160,11 @@ IntakeMerge mergeIntake(ScreeningDraft d, IntakeSuggestion s) {
   if (notes.isNotEmpty && notes != out.notes.trim()) {
     if (out.notes.trim().isEmpty) {
       out = out.copyWith(notes: notes);
-      applied.add('notes');
+      applied.add(l.intakeAppliedNotes);
     } else {
       conflicts.add(
         IntakeFieldConflict(
-          label: 'Notes',
+          label: l.intakeNotesLabel,
           current: out.notes.trim(),
           suggested: notes,
           apply: (x) => x.copyWith(notes: notes),

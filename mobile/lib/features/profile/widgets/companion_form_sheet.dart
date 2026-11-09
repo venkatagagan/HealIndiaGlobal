@@ -6,11 +6,25 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/patient_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../auth/widgets/auth_widgets.dart';
 import '../data/countries.dart';
 import 'profile_widgets.dart';
 
+/// Relationship values stored on the companion (English wire values; shown via [companionRelationshipLabel]).
 const kRelationships = ['Spouse', 'Parent', 'Child', 'Sibling', 'Relative', 'Friend', 'Caregiver'];
+
+/// Localized label of a [kRelationships] value; free-text values from the API are shown as-is.
+String companionRelationshipLabel(AppLocalizations l, String value) => switch (value) {
+  'Spouse' => l.companionRelationshipSpouse,
+  'Parent' => l.companionRelationshipParent,
+  'Child' => l.companionRelationshipChild,
+  'Sibling' => l.companionRelationshipSibling,
+  'Relative' => l.companionRelationshipRelative,
+  'Friend' => l.companionRelationshipFriend,
+  'Caregiver' => l.companionRelationshipCaregiver,
+  _ => value,
+};
 
 /// Add (when [existing] is null) or edit a travel companion. Returns the saved companion.
 Future<PatientCompanion?> showCompanionForm(BuildContext context, {PatientCompanion? existing}) =>
@@ -84,6 +98,7 @@ class _CompanionFormSheetState extends ConsumerState<CompanionFormSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
     final relationships = {...kRelationships, ?_relationship}.toList();
     final last4 = widget.existing?.passportLast4;
@@ -96,21 +111,21 @@ class _CompanionFormSheetState extends ConsumerState<CompanionFormSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(widget.existing == null ? 'Add companion' : 'Edit companion', style: context.text.titleLarge),
-              const SizedBox(height: 4),
               Text(
-                'Companions travel with you as medical attendants and need their own visa.',
-                style: context.text.bodySmall,
+                widget.existing == null ? l10n.companionAdd : l10n.companionEditTitle,
+                style: context.text.titleLarge,
               ),
+              const SizedBox(height: 4),
+              Text(l10n.companionFormIntro, style: context.text.bodySmall),
               const SizedBox(height: 16),
               if (_error != null) ...[FormErrorBanner(message: _error!), const SizedBox(height: 12)],
               TextFormField(
                 controller: _name,
                 textCapitalization: TextCapitalization.words,
                 maxLength: 200,
-                validator: (v) => (v ?? '').trim().isEmpty ? 'Enter the full name' : null,
+                validator: (v) => (v ?? '').trim().isEmpty ? l10n.companionFullNameRequired : null,
                 decoration: InputDecoration(
-                  labelText: 'Full name (as on passport)',
+                  labelText: l10n.companionFullNameLabel,
                   prefixIcon: const Icon(Icons.person_outline_rounded),
                   errorText: _fieldErrors['full_name'],
                   counterText: '',
@@ -120,13 +135,16 @@ class _CompanionFormSheetState extends ConsumerState<CompanionFormSheet> {
               DropdownButtonFormField<String>(
                 initialValue: _relationship,
                 isExpanded: true,
-                validator: (v) => v == null ? 'Choose the relationship' : null,
+                validator: (v) => v == null ? l10n.companionRelationshipRequired : null,
                 decoration: InputDecoration(
-                  labelText: 'Relationship',
+                  labelText: l10n.profileRelationship,
                   prefixIcon: const Icon(Icons.diversity_3_outlined),
                   errorText: _fieldErrors['relationship'],
                 ),
-                items: [for (final r in relationships) DropdownMenuItem(value: r, child: Text(r))],
+                items: [
+                  for (final r in relationships)
+                    DropdownMenuItem(value: r, child: Text(companionRelationshipLabel(l10n, r))),
+                ],
                 onChanged: (v) => setState(() => _relationship = v),
               ),
               const SizedBox(height: 12),
@@ -134,19 +152,19 @@ class _CompanionFormSheetState extends ConsumerState<CompanionFormSheet> {
                 initialValue: kCountries.containsKey(_nationality) ? _nationality : null,
                 isExpanded: true,
                 decoration: InputDecoration(
-                  labelText: 'Nationality',
+                  labelText: l10n.profileNationality,
                   prefixIcon: const Icon(Icons.flag_outlined),
                   errorText: _fieldErrors['nationality'],
                 ),
                 items: [
-                  for (final e in kCountries.entries)
+                  for (final e in countryOptions(l10n))
                     DropdownMenuItem(value: e.key, child: Text('${countryFlag(e.key)}  ${e.value}')),
                 ],
                 onChanged: (v) => setState(() => _nationality = v),
               ),
               const SizedBox(height: 12),
               DateField(
-                label: 'Date of birth',
+                label: l10n.profileDateOfBirth,
                 value: _dob,
                 firstDate: DateTime(1900),
                 lastDate: DateTime.now(),
@@ -164,18 +182,20 @@ class _CompanionFormSheetState extends ConsumerState<CompanionFormSheet> {
                 validator: (v) {
                   final s = (v ?? '').trim();
                   if (s.isEmpty) return null;
-                  return RegExp(r'^[A-Za-z0-9]{5,20}$').hasMatch(s) ? null : 'Enter a valid passport number';
+                  return RegExp(r'^[A-Za-z0-9]{5,20}$').hasMatch(s) ? null : l10n.companionPassportInvalid;
                 },
                 decoration: InputDecoration(
-                  labelText: last4 == null ? 'Passport number (optional)' : 'New passport number',
-                  helperText: last4 == null ? 'Stored encrypted' : 'Current: •••• $last4 - leave blank to keep',
+                  labelText: last4 == null ? l10n.companionPassportOptional : l10n.profileNewPassportNumber,
+                  helperText: last4 == null
+                      ? l10n.companionPassportStoredEncrypted
+                      : l10n.companionPassportCurrent(last4),
                   prefixIcon: const Icon(Icons.badge_outlined),
                   errorText: _fieldErrors['passport_number'],
                   counterText: '',
                 ),
               ),
               const SizedBox(height: 20),
-              PrimaryButton(label: 'Save companion', loading: _loading, onPressed: _save),
+              PrimaryButton(label: l10n.companionSave, loading: _loading, onPressed: _save),
             ],
           ),
         ),

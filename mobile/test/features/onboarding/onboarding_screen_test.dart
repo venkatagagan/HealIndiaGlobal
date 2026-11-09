@@ -4,6 +4,7 @@ import 'package:heal_india_global/core/auth/auth_controller.dart';
 import 'package:heal_india_global/core/config/app_preferences.dart';
 import 'package:heal_india_global/features/onboarding/onboarding_content.dart';
 import 'package:heal_india_global/features/onboarding/screens/onboarding_screen.dart';
+import 'package:heal_india_global/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fl_harness.dart';
@@ -12,26 +13,26 @@ void main() {
   testWidgets('carousel shows the three pages from the content constants', (tester) async {
     await pumpScreen(tester, path: '/onboarding', screen: (_) => const OnboardingScreen());
 
-    expect(find.text(OnboardingContent.impactStat), findsOneWidget);
-    expect(find.text(OnboardingContent.impactHeadline), findsOneWidget);
-    for (final b in OnboardingContent.accreditations) {
+    expect(find.text(OnboardingContent.impactStat(L10n.current)), findsOneWidget);
+    expect(find.text(OnboardingContent.impactHeadline(L10n.current)), findsOneWidget);
+    for (final b in OnboardingContent.accreditations(L10n.current)) {
       expect(find.text(b.code), findsOneWidget);
     }
     expect(find.text('Skip'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
-    for (final p in OnboardingContent.trustPoints) {
+    for (final p in OnboardingContent.trustPoints(L10n.current)) {
       expect(find.text(p.title), findsOneWidget);
     }
-    expect(find.text(OnboardingContent.testimonialDisclaimer), findsOneWidget);
+    expect(find.text(OnboardingContent.testimonialDisclaimer(L10n.current)), findsOneWidget);
 
     await tester.tap(find.text('Next'));
     await tester.pumpAndSettle();
-    for (final s in OnboardingContent.processSteps) {
+    for (final s in OnboardingContent.processSteps(L10n.current)) {
       expect(find.text(s.title), findsOneWidget);
     }
-    expect(find.text(OnboardingContent.securityFooter), findsOneWidget);
+    expect(find.text(OnboardingContent.securityFooter(L10n.current)), findsOneWidget);
     expect(find.text('Get Started'), findsOneWidget);
     expect(find.text('Explore as Guest'), findsOneWidget);
   });

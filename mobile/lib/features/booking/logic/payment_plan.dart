@@ -1,4 +1,5 @@
 import '../../../core/models/models.dart';
+import '../../../l10n/l10n.dart';
 
 /// What the patient owes right now on a booking, and which [PaymentPurpose] the order must use.
 ///
@@ -15,13 +16,14 @@ class PaymentDue {
   /// Set when [purpose] is [PaymentPurpose.installment].
   final Installment? installment;
 
-  String get label => switch (purpose) {
-    PaymentPurpose.bookingDeposit => 'Deposit due now',
-    PaymentPurpose.bookingBalance => 'Balance due now',
-    PaymentPurpose.bookingFull => 'Due now',
+  /// "Deposit due now" / "Installment 2 due now" ... in the language of [l10n].
+  String label(AppLocalizations l10n) => switch (purpose) {
+    PaymentPurpose.bookingDeposit => l10n.paymentDueDeposit,
+    PaymentPurpose.bookingBalance => l10n.paymentDueBalance,
+    PaymentPurpose.bookingFull => l10n.paymentDueNow,
     PaymentPurpose.installment =>
-      installment == null ? 'Installment due now' : 'Installment ${installment!.seq} due now',
-    PaymentPurpose.consultationFee || PaymentPurpose.service => 'Due now',
+      installment == null ? l10n.paymentDueInstallment : l10n.paymentDueInstallmentSeq(installment!.seq),
+    PaymentPurpose.consultationFee || PaymentPurpose.service => l10n.paymentDueNow,
   };
 }
 
@@ -91,11 +93,12 @@ PaymentDue? computePaymentDue(Booking booking, {List<Installment> installments =
   }
 }
 
-/// "5-7 days" / "5 days" / null from a min and max stay.
-String? formatStayRange(int? minDays, int? maxDays) {
+/// "5-7 days" / "5 days" / null from a min and max stay ([l10n] defaults to the current app language).
+String? formatStayRange(int? minDays, int? maxDays, [AppLocalizations? l10n]) {
+  final l = l10n ?? L10n.current;
   final lo = minDays ?? maxDays;
   final hi = maxDays ?? minDays;
   if (lo == null || hi == null || lo <= 0) return null;
-  if (hi <= lo) return '$lo ${lo == 1 ? 'day' : 'days'}';
-  return '$lo-$hi days';
+  if (hi <= lo) return l.bookingStayDays(lo);
+  return l.bookingStayDaysRange(lo, hi);
 }

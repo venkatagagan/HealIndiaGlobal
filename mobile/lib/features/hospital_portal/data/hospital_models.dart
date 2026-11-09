@@ -1,4 +1,5 @@
 import '../../../core/models/models.dart';
+import '../../../l10n/l10n.dart';
 
 /// `monthly[]` point of `GET /hospital-portal/dashboard`.
 class HospitalMonthPoint {
@@ -140,12 +141,15 @@ class QuoteDraft {
 
   int get totalMinor => lines.fold(0, (sum, l) => sum + l.amountMinor);
 
-  /// Validation message, or null when the quote can be sent.
-  String? get problem {
-    if (treatmentPlan.trim().isEmpty) return 'Describe the treatment plan';
-    if (lines.isEmpty) return 'Add at least one line item';
-    if (lines.any((l) => !l.isValid)) return 'Every line item needs a description and an amount';
-    if (lines.length > 50) return 'At most 50 line items';
+  /// Validation message in the current language, or null when the quote can be sent.
+  String? get problem => problemIn(L10n.current);
+
+  /// Validation message in [l], or null when the quote can be sent.
+  String? problemIn(AppLocalizations l) {
+    if (treatmentPlan.trim().isEmpty) return l.hpQuoteProblemPlan;
+    if (lines.isEmpty) return l.hpQuoteProblemNoLines;
+    if (lines.any((x) => !x.isValid)) return l.hpQuoteProblemIncompleteLine;
+    if (lines.length > 50) return l.hpQuoteProblemTooManyLines;
     return null;
   }
 

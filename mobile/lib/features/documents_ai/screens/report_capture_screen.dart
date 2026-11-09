@@ -5,6 +5,7 @@ import '../../../core/models/models.dart';
 import '../../../core/repositories/document_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../data/document_analysis_repository.dart';
 import '../data/report_page_source.dart';
 import '../models/document_analysis.dart';
@@ -67,22 +68,20 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
 
   Future<void> _add(Future<List<ReportPage>> Function(ReportPageSource s) pick) async {
     if (_pages.length >= _max) {
-      showInfoSnack(context, 'A report can have up to $_max pages.');
+      showInfoSnack(context, context.l10n.reportMaxPages(_max));
       return;
     }
     try {
       final picked = await pick(ref.read(reportPageSourceProvider));
       if (!mounted || picked.isEmpty) return;
       final tooBig = picked.where((p) => (p.bytes?.length ?? 0) > DocumentRepository.maxUploadBytes);
-      if (tooBig.isNotEmpty) showInfoSnack(context, '${tooBig.first.name} is too large (max 20 MB).');
+      if (tooBig.isNotEmpty) showInfoSnack(context, context.l10n.reportFileTooLarge(tooBig.first.name));
       setState(() => _pages.addAll(picked.where((p) => !tooBig.contains(p)).take(_max - _pages.length)));
     } catch (e) {
       if (mounted) {
         showErrorSnack(
           context,
-          '$e'.contains('denied') || '$e'.contains('permission')
-              ? 'Please allow camera / photo access in your phone settings to add pages.'
-              : e,
+          '$e'.contains('denied') || '$e'.contains('permission') ? context.l10n.reportPermissionNeeded : e,
         );
       }
     }
@@ -95,10 +94,11 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
       _progress = 0;
     });
     final docs = ref.read(documentRepositoryProvider);
+    final l10n = context.l10n;
     try {
       for (final (i, p) in _pages.indexed) {
         if (_uploaded.containsKey(p.id)) continue;
-        setState(() => _status = 'Uploading page ${i + 1} of ${_pages.length}…');
+        setState(() => _status = l10n.reportUploadingPage(i + 1, _pages.length));
         final doc = await docs.upload(
           fileName: p.name,
           kind: _kind,
@@ -117,7 +117,7 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
         return;
       }
       setState(() {
-        _status = 'Sending to AI…';
+        _status = l10n.reportSendingToAi;
         _progress = null;
       });
       final analysis = await ref
@@ -142,6 +142,7 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
   @override
   Widget build(BuildContext context) {
     final analysis = _analysis;
+    final l10n = context.l10n;
     if (analysis != null) {
       return PopScope(
         canPop: false,
@@ -149,26 +150,23 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
           if (!didPop) _finish(analysis);
         },
         child: Scaffold(
-          appBar: AppBar(title: const Text('Review your report')),
+          appBar: AppBar(title: Text(l10n.reportReviewTitle)),
           body: ReportAnalysisView(analysisId: analysis.id, initial: analysis, onFinished: _finish),
         ),
       );
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a medical report')),
+      appBar: AppBar(title: Text(l10n.reportCaptureTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          Text(
-            'Take a photo of each page of a paper report, choose photos, or upload a PDF.',
-            style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
-          ),
+          Text(l10n.reportCaptureIntro, style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary)),
           const SizedBox(height: 16),
           Row(
             children: [
               _SourceTile(
                 icon: Icons.photo_camera_rounded,
-                label: 'Take photo',
+                label: l10n.reportTakePhoto,
                 color: AppColors.primary,
                 onTap: _busy
                     ? null
@@ -180,14 +178,14 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
               const SizedBox(width: 10),
               _SourceTile(
                 icon: Icons.photo_library_rounded,
-                label: 'Choose from gallery',
+                label: l10n.reportChooseFromGallery,
                 color: AppColors.violet,
                 onTap: _busy ? null : () => _add((s) => s.pickPhotos(limit: _max - _pages.length)),
               ),
               const SizedBox(width: 10),
               _SourceTile(
                 icon: Icons.picture_as_pdf_rounded,
-                label: 'Upload PDF',
+                label: l10n.reportUploadPdf,
                 color: AppColors.danger,
                 onTap: _busy
                     ? null
@@ -199,7 +197,10 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          Text('Pages (${_pages.length}/$_max)', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+          Text(
+            l10n.reportPagesCount(_pages.length, _max),
+            style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 8),
           if (_pages.isEmpty)
             Container(
@@ -209,7 +210,7 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Text(
-                'No pages yet. Tip: lay the page flat in good light and fill the frame.',
+                l10n.reportNoPagesTip,
                 textAlign: TextAlign.center,
                 style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
               ),
@@ -232,7 +233,7 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
               ],
             ),
           const SizedBox(height: 20),
-          Text('What kind of document is it?', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+          Text(l10n.reportKindQuestion, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -257,12 +258,10 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
                   value: _consentAi,
                   activeThumbColor: AppColors.primary,
                   onChanged: _busy ? null : (v) => setState(() => _consentAi = v),
-                  title: Text('Read my report with AI', style: context.text.titleSmall),
+                  title: Text(l10n.reportReadWithAi, style: context.text.titleSmall),
                 ),
                 Text(
-                  'Our AI assistant reads the pages and lists your test results, diagnoses and medicines. '
-                  'You check and correct everything before it is used, and it is only shared with hospitals '
-                  'you choose. You can switch this off and simply upload the report.',
+                  l10n.reportAiConsentText,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ],
@@ -283,7 +282,7 @@ class _ReportCaptureScreenState extends ConsumerState<ReportCaptureScreen> {
                 const SizedBox(height: 10),
               ],
               PrimaryButton(
-                label: _consentAi ? 'Read my report with AI' : 'Upload report',
+                label: _consentAi ? l10n.reportReadWithAi : l10n.reportUploadButton,
                 icon: _consentAi ? Icons.auto_awesome_rounded : Icons.cloud_upload_outlined,
                 loading: _busy,
                 onPressed: _pages.isEmpty || _busy ? null : _submit,
@@ -371,7 +370,10 @@ class _PageTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Page ${index + 1}', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  context.l10n.reportPageNumber(index + 1),
+                  style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
                 Text(
                   page.name,
                   maxLines: 1,
@@ -383,14 +385,14 @@ class _PageTile extends StatelessWidget {
           ),
           if (uploaded) const Icon(Icons.cloud_done_rounded, color: AppColors.primary, size: 20),
           IconButton(
-            tooltip: 'Remove page ${index + 1}',
+            tooltip: context.l10n.reportRemovePage(index + 1),
             onPressed: onRemove,
             icon: const Icon(Icons.delete_outline_rounded),
           ),
           ReorderableDragStartListener(
             index: index,
             child: Tooltip(
-              message: 'Drag to reorder',
+              message: context.l10n.reportDragToReorder,
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Icon(Icons.drag_handle_rounded, color: context.palette.textMuted),

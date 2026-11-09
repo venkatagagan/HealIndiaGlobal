@@ -10,6 +10,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../agent_routes.dart';
 import '../data/agent_repository.dart';
 import '../shared/portal_widgets.dart';
@@ -30,8 +31,9 @@ class _AgentCasesScreenState extends ConsumerState<AgentCasesScreen> {
   @override
   Widget build(BuildContext context) {
     final cases = ref.watch(agentCasesProvider(_status));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Cases & quotes')),
+      appBar: AppBar(title: Text(l10n.agentCasesTitle)),
       body: Column(
         children: [
           StatusFilterBar<CaseStatus>(
@@ -56,10 +58,10 @@ class _AgentCasesScreenState extends ConsumerState<AgentCasesScreen> {
                 onRetry: () => ref.invalidate(agentCasesProvider(_status)),
                 data: (page) => page.items.isEmpty
                     ? ListView(
-                        children: const [
+                        children: [
                           EmptyView(
-                            title: 'No cases',
-                            message: 'Open a patient and request a quote from a hospital.',
+                            title: l10n.agentCasesEmpty,
+                            message: l10n.agentCasesEmptyHint,
                             icon: Icons.folder_open_outlined,
                           ),
                         ],
@@ -118,49 +120,57 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
   }
 
   Future<void> _accept(MedicalCaseDetail c, Quote q) async {
+    final l10n = context.l10n;
     final ok = await confirmAction(
       context,
-      title: 'Accept this quote?',
-      message:
-          '${c.hospital.name} · ${money(q.totalMinor, q.currency)}. Other open quotes stay available until booked.',
-      confirmLabel: 'Accept',
+      title: l10n.agentAcceptQuoteTitle,
+      message: l10n.agentAcceptQuoteMessage(c.hospital.name, money(q.totalMinor, q.currency)),
+      confirmLabel: l10n.agentQuoteAccept,
     );
     if (!ok || !mounted) return;
-    await _run(c, () => ref.read(caseRepositoryProvider).acceptQuote(c.id, q.id), 'Quote accepted');
+    await _run(c, () => ref.read(caseRepositoryProvider).acceptQuote(c.id, q.id), l10n.agentQuoteAccepted);
   }
 
   Future<void> _reject(MedicalCaseDetail c, Quote q) async {
-    final reason = await promptText(context, title: 'Reject quote', label: 'Reason (optional)', confirmLabel: 'Reject');
+    final l10n = context.l10n;
+    final reason = await promptText(
+      context,
+      title: l10n.agentRejectQuoteTitle,
+      label: l10n.agentReasonOptional,
+      confirmLabel: l10n.agentQuoteReject,
+    );
     if (reason == null || !mounted) return;
     await _run(
       c,
       () => ref.read(caseRepositoryProvider).rejectQuote(c.id, q.id, reason: reason.isEmpty ? null : reason),
-      'Quote rejected',
+      l10n.agentQuoteRejected,
     );
   }
 
   Future<void> _cancel(MedicalCaseDetail c) async {
+    final l10n = context.l10n;
     final ok = await confirmAction(
       context,
-      title: 'Cancel this case?',
-      message: 'The hospital will be notified.',
-      confirmLabel: 'Cancel case',
+      title: l10n.agentCancelCaseTitle,
+      message: l10n.agentCancelCaseMessage,
+      confirmLabel: l10n.agentCancelCase,
       destructive: true,
     );
     if (!ok || !mounted) return;
-    await _run(c, () => ref.read(caseRepositoryProvider).cancel(c.id), 'Case cancelled');
+    await _run(c, () => ref.read(caseRepositoryProvider).cancel(c.id), l10n.agentCaseCancelled);
   }
 
   @override
   Widget build(BuildContext context) {
     final detail = ref.watch(caseDetailProvider(widget.caseId));
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(detail.value?.caseNumber ?? 'Case'),
+        title: Text(detail.value?.caseNumber ?? l10n.agentCaseFallbackTitle),
         actions: [
           if (detail.value != null && detail.value!.isOpen && detail.value!.booking == null)
             IconButton(
-              tooltip: 'Cancel case',
+              tooltip: l10n.agentCancelCase,
               icon: const Icon(Icons.cancel_outlined),
               onPressed: _busy ? null : () => _cancel(detail.value!),
             ),
@@ -178,6 +188,7 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
   }
 
   List<Widget> _body(MedicalCaseDetail c) {
+    final l10n = context.l10n;
     final accepted = c.quotes.where((q) => q.status == QuoteStatus.accepted).firstOrNull;
     final patientId = c.patient?.id;
     return [
@@ -194,12 +205,12 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            InfoRow('Patient', c.patient?.fullName),
-            InfoRow('Hospital', [c.hospital.name, c.hospital.city].whereType<String>().join(', ')),
-            InfoRow('Doctor', c.doctor?.fullName),
-            InfoRow('Coordinator', c.coordinator?.fullName),
-            InfoRow('Opened', Dates.day(c.createdAt)),
-            if ((c.patientNotes ?? '').isNotEmpty) InfoRow('Notes', c.patientNotes),
+            InfoRow(l10n.portalPatientLabel, c.patient?.fullName),
+            InfoRow(l10n.portalHospitalLabel, [c.hospital.name, c.hospital.city].whereType<String>().join(', ')),
+            InfoRow(l10n.portalDoctorLabel, c.doctor?.fullName),
+            InfoRow(l10n.agentCaseCoordinator, c.coordinator?.fullName),
+            InfoRow(l10n.agentCaseOpenedLabel, Dates.day(c.createdAt)),
+            if ((c.patientNotes ?? '').isNotEmpty) InfoRow(l10n.agentCaseNotes, c.patientNotes),
           ],
         ),
       ),
@@ -207,13 +218,13 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
         const SizedBox(height: 12),
         PrimaryButton(
           key: const ValueKey('agent-book-treatment'),
-          label: 'Book treatment',
+          label: l10n.agentBookTreatment,
           icon: Icons.event_available_rounded,
           onPressed: () => context.push(AgentRoutes.book(c.id, quoteId: accepted.id)),
         ),
       ],
       if (c.booking != null) ...[
-        const SectionTitle('Booking'),
+        SectionTitle(l10n.portalBookingLabel),
         AppCard(
           onTap: () => context.push(AgentRoutes.booking(c.booking!.id)),
           child: Row(
@@ -227,8 +238,10 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
                       style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     Text(
-                      'Admission ${Dates.day(c.booking!.admissionDate)} · balance '
-                      '${money(c.booking!.balanceDueMinor, c.booking!.currency)}',
+                      l10n.agentCaseBookingSummary(
+                        Dates.day(c.booking!.admissionDate),
+                        money(c.booking!.balanceDueMinor, c.booking!.currency),
+                      ),
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
                   ],
@@ -240,13 +253,13 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
         ),
       ],
       SectionTitle(
-        'Quotes',
-        actionLabel: patientId == null ? null : 'Compare hospitals',
+        l10n.agentQuotesSection,
+        actionLabel: patientId == null ? null : l10n.agentCompareHospitals,
         onAction: patientId == null ? null : () => context.push(AgentRoutes.compare(patientId)),
       ),
       if (c.quotes.isEmpty)
         Text(
-          'Waiting for ${c.hospital.name} to send an itemised quote.',
+          l10n.agentQuotesWaiting(c.hospital.name),
           style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
         )
       else
@@ -258,7 +271,7 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text('Quote · ${Dates.day(q.createdAt)}', style: context.text.labelLarge)),
+                    Expanded(child: Text(l10n.agentQuoteDated(Dates.day(q.createdAt)), style: context.text.labelLarge)),
                     StatusBadge.forEnum(q.status, dense: true),
                   ],
                 ),
@@ -269,13 +282,16 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: SecondaryButton(label: 'Reject', onPressed: _busy ? null : () => _reject(c, q)),
+                        child: SecondaryButton(
+                          label: l10n.agentQuoteReject,
+                          onPressed: _busy ? null : () => _reject(c, q),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: PrimaryButton(
                           key: ValueKey('accept-quote-${q.id}'),
-                          label: 'Accept',
+                          label: l10n.agentQuoteAccept,
                           loading: _busy,
                           onPressed: _busy ? null : () => _accept(c, q),
                         ),
@@ -287,7 +303,7 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
             ),
           ),
       if (c.documents.isNotEmpty) ...[
-        const SectionTitle('Documents'),
+        SectionTitle(l10n.agentDocumentsSection),
         for (final d in c.documents)
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -297,7 +313,7 @@ class _AgentCaseDetailScreenState extends ConsumerState<AgentCaseDetailScreen> {
           ),
       ],
       if (c.timeline.isNotEmpty) ...[
-        const SectionTitle('Timeline'),
+        SectionTitle(l10n.agentTimelineSection),
         for (final t in c.timeline.reversed)
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -373,8 +389,9 @@ class QuoteComparisonScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cases = ref.watch(patientCasesProvider(patientId));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Compare quotes')),
+      appBar: AppBar(title: Text(l10n.agentCompareQuotes)),
       body: AsyncValueView(
         value: cases,
         onRetry: () => ref.invalidate(patientCasesProvider(patientId)),
@@ -382,10 +399,10 @@ class QuoteComparisonScreen extends ConsumerWidget {
           final cmp = QuoteComparison.fromCases(list);
           if (cmp.columns.isEmpty) {
             return EmptyView(
-              title: 'No quotes to compare yet',
-              message: 'Request quotes from several hospitals; they appear here as soon as hospitals reply.',
+              title: l10n.agentCompareEmpty,
+              message: l10n.agentCompareEmptyHint,
               icon: Icons.compare_arrows_rounded,
-              actionLabel: 'Request a quote',
+              actionLabel: l10n.agentRequestAQuote,
               onAction: () => context.push(AgentRoutes.requestQuote(patientId)),
             );
           }
@@ -398,14 +415,21 @@ class QuoteComparisonScreen extends ConsumerWidget {
                   color: AppColors.primarySoft,
                   borderColor: AppColors.primary,
                   child: Text(
-                    'Best price: ${money(cheapest.quote.totalMinor, cheapest.quote.currency)} at '
-                    '${cheapest.medicalCase.hospital.name}'
-                    '${cmp.spreadMinor > 0 ? ' — saves ${money(cmp.spreadMinor, cheapest.quote.currency)} vs the highest quote' : ''}.',
+                    cmp.spreadMinor > 0
+                        ? l10n.agentCompareBestPriceSaves(
+                            money(cheapest.quote.totalMinor, cheapest.quote.currency),
+                            cheapest.medicalCase.hospital.name,
+                            money(cmp.spreadMinor, cheapest.quote.currency),
+                          )
+                        : l10n.agentCompareBestPrice(
+                            money(cheapest.quote.totalMinor, cheapest.quote.currency),
+                            cheapest.medicalCase.hospital.name,
+                          ),
                   ),
                 ),
               if (!cmp.sameCurrency)
                 Text(
-                  'Quotes are in different currencies; compare totals with care.',
+                  l10n.agentCompareMixedCurrencies,
                   style: context.text.bodySmall?.copyWith(color: AppColors.warning),
                 ),
               const SizedBox(height: 12),
@@ -421,7 +445,7 @@ class QuoteComparisonScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               SecondaryButton(
-                label: 'Request another hospital',
+                label: l10n.agentCompareRequestAnother,
                 icon: Icons.add_business_outlined,
                 onPressed: () => context.push(AgentRoutes.requestQuote(patientId)),
               ),
@@ -433,21 +457,27 @@ class QuoteComparisonScreen extends ConsumerWidget {
   }
 
   Widget _labelsColumn(BuildContext context, QuoteComparison cmp) {
+    final l10n = context.l10n;
     final style = context.text.bodySmall?.copyWith(color: context.palette.textSecondary);
     Widget cell(String t) => SizedBox(
       height: _QuoteColumnCard.rowHeight,
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: AlignmentDirectional.centerStart,
         child: Text(t, style: style),
       ),
     );
     return Padding(
-      padding: const EdgeInsets.only(top: _QuoteColumnCard.headerHeight + 16, right: 8),
+      padding: const EdgeInsetsDirectional.only(top: _QuoteColumnCard.headerHeight + 16, end: 8),
       child: SizedBox(
         width: 96,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [cell('Total'), cell('Stay'), cell('Valid until'), for (final c in cmp.categories) cell(c.label)],
+          children: [
+            cell(l10n.portalTotal),
+            cell(l10n.agentCompareStay),
+            cell(l10n.agentCompareValidUntil),
+            for (final c in cmp.categories) cell(c.label),
+          ],
         ),
       ),
     );
@@ -473,11 +503,12 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
 
   Future<void> _accept() async {
     final col = widget.column;
+    final l10n = context.l10n;
     final ok = await confirmAction(
       context,
-      title: 'Accept ${col.medicalCase.hospital.name}?',
-      message: 'Total ${money(col.quote.totalMinor, col.quote.currency)}',
-      confirmLabel: 'Accept',
+      title: l10n.agentCompareAcceptTitle(col.medicalCase.hospital.name),
+      message: l10n.agentCompareAcceptMessage(money(col.quote.totalMinor, col.quote.currency)),
+      confirmLabel: l10n.agentQuoteAccept,
     );
     if (!ok || !mounted) return;
     setState(() => _busy = true);
@@ -487,7 +518,7 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
       if (pid != null) ref.invalidate(patientCasesProvider(pid));
       ref.invalidate(agentCasesProvider);
       if (mounted) {
-        showInfoSnack(context, 'Quote accepted');
+        showInfoSnack(context, context.l10n.agentQuoteAccepted);
         unawaited(context.push(AgentRoutes.caseDetail(col.medicalCase.id)));
       }
     } catch (e) {
@@ -501,10 +532,11 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
   Widget build(BuildContext context) {
     final col = widget.column;
     final q = col.quote;
+    final l10n = context.l10n;
     Widget cell(String t, {bool strong = false}) => SizedBox(
       height: _QuoteColumnCard.rowHeight,
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: AlignmentDirectional.centerStart,
         child: Text(
           t,
           style: strong
@@ -518,7 +550,7 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
     );
     return Container(
       width: 180,
-      margin: const EdgeInsets.only(right: 10),
+      margin: const EdgeInsetsDirectional.only(end: 10),
       child: AppCard(
         selected: widget.best,
         padding: const EdgeInsets.all(12),
@@ -542,7 +574,7 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
                       StatusBadge.forEnum(q.status, dense: true),
                       if (widget.best) ...[
                         const SizedBox(width: 4),
-                        const StatusBadge(label: 'Best', dense: true, color: AppColors.primary),
+                        StatusBadge(label: l10n.agentCompareBest, dense: true, color: AppColors.primary),
                       ],
                     ],
                   ),
@@ -551,15 +583,18 @@ class _QuoteColumnCardState extends ConsumerState<_QuoteColumnCard> {
             ),
             const SizedBox(height: 4),
             cell(money(q.totalMinor, q.currency), strong: true),
-            cell(q.estimatedStayDays == null ? '—' : '${q.estimatedStayDays} days'),
+            cell(q.estimatedStayDays == null ? '—' : l10n.agentCompareStayDays(q.estimatedStayDays!)),
             cell(q.validUntil == null ? '—' : Dates.dayShort(q.validUntil)),
             for (final cat in widget.cmp.categories)
               cell(col.byCategory[cat] == null ? '—' : money(col.byCategory[cat]!, q.currency)),
             const SizedBox(height: 8),
             if (q.isActionable)
-              PrimaryButton(label: 'Accept', loading: _busy, onPressed: _busy ? null : _accept)
+              PrimaryButton(label: l10n.agentQuoteAccept, loading: _busy, onPressed: _busy ? null : _accept)
             else
-              SecondaryButton(label: 'Open', onPressed: () => context.push(AgentRoutes.caseDetail(col.medicalCase.id))),
+              SecondaryButton(
+                label: l10n.commonOpen,
+                onPressed: () => context.push(AgentRoutes.caseDetail(col.medicalCase.id)),
+              ),
           ],
         ),
       ),
@@ -615,7 +650,7 @@ class _RequestQuoteScreenState extends ConsumerState<RequestQuoteScreen> {
         ..invalidate(patientCasesProvider(widget.patientId))
         ..invalidate(agentCasesProvider);
       if (mounted) {
-        showInfoSnack(context, 'Quote requested from ${h.name}');
+        showInfoSnack(context, context.l10n.agentQuoteRequestedFrom(h.name));
         context.pushReplacement(AgentRoutes.caseDetail(created.id));
       }
     } catch (e) {
@@ -628,14 +663,18 @@ class _RequestQuoteScreenState extends ConsumerState<RequestQuoteScreen> {
   @override
   Widget build(BuildContext context) {
     final hospitals = ref.watch(_hospitalSearchProvider(_q));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Request a quote')),
+      appBar: AppBar(title: Text(l10n.agentRequestAQuote)),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: TextField(
-              decoration: const InputDecoration(prefixIcon: Icon(Icons.search_rounded), hintText: 'Search hospitals'),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search_rounded),
+                hintText: l10n.agentSearchHospitalsHint,
+              ),
               onChanged: (v) {
                 _debounce?.cancel();
                 _debounce = Timer(const Duration(milliseconds: 350), () => setState(() => _q = v.trim()));
@@ -674,7 +713,7 @@ class _RequestQuoteScreenState extends ConsumerState<RequestQuoteScreen> {
                         ],
                       ),
                     ),
-                  if (page.items.isEmpty) const EmptyView(title: 'No hospitals found', icon: Icons.search_off_rounded),
+                  if (page.items.isEmpty) EmptyView(title: l10n.agentNoHospitalsFound, icon: Icons.search_off_rounded),
                 ],
               ),
             ),
@@ -688,11 +727,11 @@ class _RequestQuoteScreenState extends ConsumerState<RequestQuoteScreen> {
                 children: [
                   TextField(
                     controller: _notes,
-                    decoration: const InputDecoration(labelText: 'Notes for the hospital (optional)'),
+                    decoration: InputDecoration(labelText: l10n.agentNotesForHospitalOptional),
                   ),
                   const SizedBox(height: 10),
                   PrimaryButton(
-                    label: _hospital == null ? 'Select a hospital' : 'Request quote from ${_hospital!.name}',
+                    label: _hospital == null ? l10n.agentSelectHospital : l10n.agentRequestQuoteFrom(_hospital!.name),
                     loading: _saving,
                     onPressed: _hospital == null || _saving ? null : _submit,
                   ),

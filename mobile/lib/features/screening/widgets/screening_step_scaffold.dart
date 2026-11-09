@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/screening_draft.dart';
 
 /// Shared layout of the questionnaire steps: brand header (back + "Save & Exit"), "Step N of 4"
@@ -67,7 +68,7 @@ class ScreeningStepScaffold extends StatelessWidget {
                 step: step,
                 total: kScreeningSteps,
                 color: accent,
-                suffix: optional ? 'Optional' : null,
+                suffix: optional ? context.l10n.commonOptional : null,
               ),
             ),
             Expanded(
@@ -115,7 +116,11 @@ class ScreeningStepScaffold extends StatelessWidget {
                 children: [
                   if (onPrevious != null) ...[
                     Expanded(
-                      child: SecondaryButton(label: 'Previous', filled: true, onPressed: busy ? null : onPrevious),
+                      child: SecondaryButton(
+                        label: context.l10n.screeningPrevious,
+                        filled: true,
+                        onPressed: busy ? null : onPrevious,
+                      ),
                     ),
                     const SizedBox(width: 12),
                   ],
@@ -141,14 +146,19 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 8, 8, 4),
+      padding: const EdgeInsetsDirectional.fromSTEB(4, 8, 8, 4),
       child: Row(
         children: [
           if (onBack != null)
-            IconButton(tooltip: 'Back', icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20), onPressed: onBack)
+            IconButton(
+              tooltip: l10n.commonBack,
+              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+              onPressed: onBack,
+            )
           else
-            const Padding(padding: EdgeInsets.only(left: 12, right: 10), child: BrandLogo(size: 32)),
+            const Padding(padding: EdgeInsetsDirectional.only(start: 12, end: 10), child: BrandLogo(size: 32)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +166,7 @@ class _Header extends StatelessWidget {
               children: [
                 Text(Brand.name, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                 Text(
-                  Brand.tagline,
+                  l10n.appTagline,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
@@ -166,14 +176,14 @@ class _Header extends StatelessWidget {
           ),
           if (help != null)
             IconButton(
-              tooltip: 'Help',
+              tooltip: l10n.screeningHelpTooltip,
               icon: const Icon(Icons.help_outline_rounded),
               onPressed: () => showDialog<void>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('How this works'),
+                  title: Text(l10n.screeningHelpDialogTitle),
                   content: Text(help!),
-                  actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Got it'))],
+                  actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l10n.screeningHelpGotIt))],
                 ),
               ),
             ),
@@ -181,7 +191,7 @@ class _Header extends StatelessWidget {
             TextButton(
               onPressed: onSaveExit,
               style: TextButton.styleFrom(foregroundColor: context.colors.onSurface),
-              child: const Text('Save & Exit'),
+              child: Text(l10n.screeningSaveExit),
             ),
         ],
       ),

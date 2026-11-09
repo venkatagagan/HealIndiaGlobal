@@ -8,6 +8,7 @@ import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../providers/search_providers.dart';
 
 /// Bookmark toggle for hospitals / doctors / procedures (`POST|DELETE /patient/saved`).
@@ -47,7 +48,7 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
         await repo.save(widget.entityType, widget.entityId);
       }
       ref.invalidate(savedItemsProvider);
-      if (mounted) showInfoSnack(context, saved ? 'Removed from saved' : 'Saved to your list');
+      if (mounted) showInfoSnack(context, saved ? context.l10n.savedRemovedSnack : context.l10n.savedAddedSnack);
     } on Object catch (e) {
       if (mounted) {
         setState(() => _optimistic = null);
@@ -69,8 +70,11 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: const Text('Create a free account to save hospitals and doctors.'),
-          action: SnackBarAction(label: 'Sign up', onPressed: () => context.push(Routes.registerFrom(here))),
+          content: Text(context.l10n.savedGuestPrompt),
+          action: SnackBarAction(
+            label: context.l10n.savedSignUpAction,
+            onPressed: () => context.push(Routes.registerFrom(here)),
+          ),
         ),
       );
   }
@@ -80,7 +84,7 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
     final keys = ref.watch(savedKeysProvider).value ?? const <String>{};
     final saved = _optimistic ?? keys.contains(savedKey(widget.entityType, widget.entityId));
     return IconButton(
-      tooltip: saved ? 'Remove from saved' : 'Save',
+      tooltip: saved ? context.l10n.savedRemoveTooltip : context.l10n.commonSave,
       isSelected: saved,
       onPressed: () => _toggle(saved),
       icon: Icon(

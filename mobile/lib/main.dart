@@ -1,30 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart' show Intl;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'core/config/app_preferences.dart';
+import 'core/i18n/locale_controller.dart';
 import 'core/network/api_exception.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/l10n.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Intl.defaultLocale = 'en_US';
-  await initializeDateFormatting('en_US');
+  // Date / number symbols for every language; the active locale is set by the localizations delegate
+  // (L10n.setCurrent) whenever the app language changes.
+  await initializeDateFormatting();
   _installErrorHandlers();
 
   final prefs = await SharedPreferences.getInstance();
-
-  runApp(
-    ProviderScope(
-      retry: riverpodRetry,
-      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
-      child: const HealIndiaApp(),
-    ),
+  final container = ProviderContainer(
+    retry: riverpodRetry,
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
   );
+  // Enabled languages + admin string overrides: cached copy now, fresh copy in the background.
+  unawaited(container.read(localeControllerProvider.notifier).refreshRemote());
+
+  runApp(UncontrolledProviderScope(container: container, child: const HealIndiaApp()));
 }
 
 /// Riverpod 3 retries failed providers automatically; only retry transient failures
@@ -58,21 +62,22 @@ class _FriendlyErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
+    final rtl = L10n.rtlLanguages.contains(L10n.current.localeName.split('_').first);
+    return ColoredBox(
       color: AppColors.darkBackground,
       child: Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 40),
-              SizedBox(height: 12),
+              const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 40),
+              const SizedBox(height: 12),
               Text(
-                'Something went wrong displaying this section.',
+                L10n.current.commonErrorDisplayingSection,
                 textAlign: TextAlign.center,
-                textDirection: TextDirection.ltr,
-                style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 14, decoration: TextDecoration.none),
+                textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+                style: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14, decoration: TextDecoration.none),
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import '../models/enums.dart';
 import '../network/api_exception.dart';
 
@@ -17,8 +18,8 @@ const registrableRoles = [UserRole.patient, UserRole.agent, UserRole.hospital];
 
 /// The generic public-door error (no account enumeration): shown when a staff account tries to
 /// sign in on mobile, mirroring the backend's 401 "Invalid email or password".
-const invalidCredentialsError = ApiException(
+ApiException get invalidCredentialsError => ApiException(
   statusCode: 401,
   code: 'invalid_credentials',
-  message: 'Invalid email or password.',
+  message: L10n.current.coreInvalidCredentials,
 );

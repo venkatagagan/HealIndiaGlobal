@@ -5,9 +5,16 @@ mixin JsonEnum on Enum {
   /// The exact snake_case value used by the API.
   String get json;
 
-  /// Human readable label for UI.
-  String get label => humanizeEnumValue(json);
+  /// English label: the source text of the ARB key `enum<Type><Value>` and the fallback.
+  String get englishLabel => humanizeEnumValue(json);
+
+  /// Human readable label for UI, in the app's current language (see [enumLabelResolver]).
+  String get label => enumLabelResolver?.call(this) ?? englishLabel;
 }
+
+/// Looks up the localized label of an enum value (installed by `lib/l10n/l10n.dart`; null in pure
+/// Dart code and tests that do not load the app's localizations, which then get [JsonEnum.englishLabel]).
+String? Function(JsonEnum value)? enumLabelResolver;
 
 /// `pending_payment` -> `Pending payment`.
 String humanizeEnumValue(String v) {
@@ -102,7 +109,7 @@ enum DoctorGenderPref with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     DoctorGenderPref.noPreference => 'No Preference',
     _ => humanizeEnumValue(json),
   };
@@ -194,7 +201,7 @@ enum PackageTier with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     PackageTier.medicalOnly => 'Medical Only',
     PackageTier.medicalStay => 'Medical + Stay',
     PackageTier.allInclusive => 'All-inclusive',
@@ -345,7 +352,7 @@ enum QuoteLineCategory with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     QuoteLineCategory.hospitalStay => 'Hospital Stay',
     QuoteLineCategory.testsScans => 'Tests & Scans',
     QuoteLineCategory.doctorFees => 'Doctor Fees',
@@ -387,7 +394,7 @@ enum PaymentOption with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     PaymentOption.full => 'Pay in full',
     PaymentOption.deposit => 'Deposit',
     PaymentOption.installments => 'Payment plan',
@@ -449,7 +456,7 @@ enum ItineraryKind with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     ItineraryKind.checkin => 'Check-in',
     ItineraryKind.checkout => 'Check-out',
     ItineraryKind.followup => 'Follow-up',
@@ -576,7 +583,7 @@ enum DocumentKind with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     DocumentKind.kycPan => 'PAN card',
     DocumentKind.kycGst => 'GST certificate',
     DocumentKind.kycIdProof => 'ID proof',
@@ -637,7 +644,7 @@ enum PaymentGateway with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     PaymentGateway.razorpay => 'Credit/Debit Card',
     PaymentGateway.stripe => 'Card (Stripe)',
     PaymentGateway.bankTransfer => 'Bank Transfer',
@@ -803,7 +810,7 @@ enum VisaType with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     VisaType.eMedical => 'e-Medical Visa',
     VisaType.eMedicalAttendant => 'e-Medical Attendant Visa',
   };
@@ -902,7 +909,7 @@ enum TriageEngine with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     TriageEngine.claude => 'AI (Claude)',
     TriageEngine.rules => 'Rules engine',
   };
@@ -977,7 +984,7 @@ enum ChecklistKey with JsonEnum {
   final String json;
 
   @override
-  String get label => switch (this) {
+  String get englishLabel => switch (this) {
     ChecklistKey.flightBooked => 'Flight Booking',
     _ => humanizeEnumValue(json),
   };

@@ -10,6 +10,7 @@ import '../../../core/repositories/case_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Opens the "Request quote" flow for a hospital (optionally a doctor). Guests and signed-out users
 /// are sent to registration first (cases need a full account).
@@ -48,7 +49,7 @@ Future<void> requestQuote(
     ),
   );
   if (caseId != null && context.mounted) {
-    showInfoSnack(context, 'Quote requested. The hospital usually replies within 48 hours.');
+    showInfoSnack(context, context.l10n.quoteRequestedSnack);
     await context.push(Routes.caseDetail(caseId));
   }
 }
@@ -119,6 +120,7 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    final l10n = context.l10n;
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + bottom),
       child: SingleChildScrollView(
@@ -126,7 +128,7 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Request a quote', style: context.text.titleLarge),
+            Text(l10n.quoteSheetTitle, style: context.text.titleLarge),
             const SizedBox(height: 4),
             Text(
               widget.doctorName == null ? widget.hospitalName : '${widget.doctorName} · ${widget.hospitalName}',
@@ -137,9 +139,9 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
               DropdownButtonFormField<String?>(
                 initialValue: _procedureId,
                 isExpanded: true,
-                decoration: const InputDecoration(labelText: 'Treatment (optional)'),
+                decoration: InputDecoration(labelText: l10n.quoteTreatmentLabel),
                 items: [
-                  const DropdownMenuItem<String?>(value: null, child: Text('Not sure yet')),
+                  DropdownMenuItem<String?>(value: null, child: Text(l10n.quoteTreatmentNotSure)),
                   for (final p in widget.procedures)
                     DropdownMenuItem<String?>(value: p.procedure.id, child: Text(p.procedure.name)),
                 ],
@@ -152,9 +154,9 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
               minLines: 3,
               maxLines: 6,
               maxLength: 2000,
-              decoration: const InputDecoration(
-                labelText: 'Tell the hospital about your condition',
-                hintText: 'Diagnosis, current treatment, preferred travel dates...',
+              decoration: InputDecoration(
+                labelText: l10n.quoteNotesLabel,
+                hintText: l10n.quoteNotesHint,
                 alignLabelWithHint: true,
               ),
             ),
@@ -163,11 +165,7 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
               onChanged: (v) => setState(() => _consent = v ?? false),
               controlAffinity: ListTileControlAffinity.leading,
               contentPadding: EdgeInsets.zero,
-              title: Text(
-                'I agree to share my profile, medical notes and documents with ${widget.hospitalName} '
-                'so they can prepare a quote.',
-                style: context.text.bodySmall,
-              ),
+              title: Text(l10n.quoteConsent(widget.hospitalName), style: context.text.bodySmall),
             ),
             if (_error != null)
               Padding(
@@ -176,7 +174,7 @@ class _RequestQuoteSheetState extends ConsumerState<RequestQuoteSheet> {
               ),
             const SizedBox(height: 8),
             PrimaryButton(
-              label: 'Send request',
+              label: l10n.quoteSendRequest,
               icon: Icons.send_rounded,
               loading: _loading,
               onPressed: _consent ? _submit : null,

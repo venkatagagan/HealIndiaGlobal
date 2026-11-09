@@ -15,3 +15,5 @@ key.properties
 
 # Firebase config for push notifications (per environment, never committed; see mobile/RELEASE.md)
 app/google-services.json
+# Kotlin compiler daemon session files (created during Gradle builds)
+.kotlin/

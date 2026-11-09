@@ -36,7 +36,8 @@ int majorToMinor(num major, String currency) => (major * Currencies.factor(curre
 ///
 /// * [showDecimals] `null` (default) hides the fraction when it is zero.
 /// * [compact] renders `$12.5K` style values (used on small cards and slider labels).
-String formatMoney(int minor, String currency, {bool? showDecimals, bool compact = false, String locale = 'en_US'}) {
+/// * [locale] defaults to the app language (`Intl.defaultLocale`); the currency stays [currency].
+String formatMoney(int minor, String currency, {bool? showDecimals, bool compact = false, String? locale}) {
   final ccy = currency.toUpperCase();
   final exp = Currencies.exponent(ccy);
   final major = minorToMajor(minor, ccy);

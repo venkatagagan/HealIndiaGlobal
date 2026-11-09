@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 import '../widgets/widgets.dart';
 import 'routes.dart';
@@ -22,11 +23,11 @@ class SplashScreen extends StatelessWidget {
                 const BrandLogo(size: 72, color: Colors.white, background: Color(0x33FFFFFF)),
                 const SizedBox(height: 20),
                 Text(
-                  Brand.name,
+                  context.l10n.appName,
                   style: context.text.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
-                Text(Brand.tagline, style: context.text.bodyMedium?.copyWith(color: Colors.white70)),
+                Text(context.l10n.appTagline, style: context.text.bodyMedium?.copyWith(color: Colors.white70)),
                 const SizedBox(height: 36),
                 const SizedBox(
                   width: 28,
@@ -50,13 +51,15 @@ class NotFoundScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final where = location;
     return Scaffold(
       appBar: AppBar(),
       body: EmptyView(
         icon: Icons.explore_off_outlined,
-        title: 'Page not found',
-        message: location == null ? null : 'We could not find "$location".',
-        actionLabel: 'Go home',
+        title: l10n.routerNotFoundTitle,
+        message: where == null ? null : l10n.routerNotFoundMessage(where),
+        actionLabel: l10n.routerGoHome,
         onAction: () => context.go(Routes.home),
       ),
     );

@@ -9,6 +9,7 @@ import '../../../core/repositories/case_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../screening/providers/emergency_ack.dart';
 
 /// "Book Consultation": asks for consent to share the screening with the hospital, creates a case
@@ -41,7 +42,7 @@ Future<MedicalCase?> requestConsultation(
     ),
   );
   if (created != null && context.mounted) {
-    showInfoSnack(context, 'Request ${created.caseNumber} sent to ${match.hospital.name}.');
+    showInfoSnack(context, context.l10n.consultationRequestSentSnack(created.caseNumber, match.hospital.name));
     await context.push(Routes.book(created.id, packageId: match.package?.id));
   }
   return created;
@@ -84,7 +85,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
 
   Future<void> _submit() async {
     if (!_consent) {
-      setState(() => _error = 'Please agree to share your information with the hospital.');
+      setState(() => _error = context.l10n.consultationConsentRequired);
       return;
     }
     setState(() {
@@ -123,9 +124,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
       if (mounted) {
         setState(() {
           _guestUpgrade = isGuestUpgradeRequired(e);
-          _error = _guestUpgrade
-              ? 'Create a free account to send requests to hospitals. Your screening answers are kept.'
-              : errorMessage(e);
+          _error = _guestUpgrade ? context.l10n.consultationGuestUpgrade : errorMessage(e);
         });
       }
     } finally {
@@ -137,6 +136,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
   Widget build(BuildContext context) {
     final m = widget.match;
     final who = m.doctor?.fullName ?? m.hospital.name;
+    final l10n = context.l10n;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
@@ -146,7 +146,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Book Consultation', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+              Text(l10n.consultationBookTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 6),
               Text(
                 '$who · ${m.hospital.name}${m.hospital.city == null ? '' : ', ${m.hospital.city}'}',
@@ -161,9 +161,9 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
                 controller: _notes,
                 maxLines: 3,
                 maxLength: 2000,
-                decoration: const InputDecoration(
-                  labelText: 'Message to the hospital (optional)',
-                  hintText: 'Preferred dates, questions, companions travelling with you...',
+                decoration: InputDecoration(
+                  labelText: l10n.consultationMessageLabel,
+                  hintText: l10n.consultationMessageHint,
                   alignLabelWithHint: true,
                 ),
               ),
@@ -173,11 +173,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
                 controlAffinity: ListTileControlAffinity.leading,
                 activeColor: AppColors.primary,
                 onChanged: _busy ? null : (v) => setState(() => _consent = v ?? false),
-                title: Text(
-                  'I agree to share my screening answers, reports and medical information with '
-                  '${m.hospital.name} so they can review my case and prepare a quote.',
-                  style: context.text.bodySmall,
-                ),
+                title: Text(l10n.consultationConsent(m.hospital.name), style: context.text.bodySmall),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 4),
@@ -186,7 +182,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
               const SizedBox(height: 12),
               if (_guestUpgrade)
                 PrimaryButton(
-                  label: 'Create free account',
+                  label: l10n.consultationCreateAccount,
                   onPressed: () {
                     final router = GoRouter.of(context);
                     final here = router.routeInformationProvider.value.uri.toString();
@@ -195,10 +191,10 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
                   },
                 )
               else
-                PrimaryButton(label: 'Send request', loading: _busy, onPressed: _submit),
+                PrimaryButton(label: l10n.quoteSendRequest, loading: _busy, onPressed: _submit),
               const SizedBox(height: 8),
               Text(
-                'The hospital replies with a personalised quote. You only pay after you accept it.',
+                l10n.consultationPayAfterAccept,
                 textAlign: TextAlign.center,
                 style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
               ),

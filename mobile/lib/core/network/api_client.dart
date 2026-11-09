@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../auth/token_storage.dart';
 import '../config/env.dart';
 import '../models/json.dart';
@@ -19,6 +20,8 @@ export 'api_exception.dart';
 /// * On a 401 it performs a **single-flight** `POST /auth/refresh` with the stored refresh token
 ///   (concurrent 401s share one refresh) and replays the request once.
 /// * Every failure is thrown as an [ApiException] (PLAN §3 error envelope).
+/// * Sends `Accept-Language: <ApiClient.languageCode>` (the app language, kept current by the locale
+///   controller) so server messages, AI summaries and voice intake use the patient's language.
 /// * Emits [sessionExpired] when the refresh token is rejected (the auth controller signs out) and
 ///   [sessionRefreshed] after a successful rotation.
 class ApiClient {
@@ -31,6 +34,10 @@ class ApiClient {
     }
     dio.interceptors.add(_AuthInterceptor(this));
   }
+
+  /// Language code of the app UI (`en`, `ar`, ...), sent as `Accept-Language` on every request. Set by
+  /// the locale controller whenever the app language changes.
+  static String languageCode = 'en';
 
   /// Pass as `options:` extra to skip the bearer header and 401-refresh handling (login, register...).
   static const Map<String, Object?> noAuth = {_kSkipAuth: true};
@@ -141,7 +148,7 @@ class ApiClient {
     CancelToken? cancelToken,
   }) async {
     if (bytes == null && filePath == null) {
-      throw const ApiException(statusCode: 0, code: 'bad_request', message: 'No file selected.');
+      throw ApiException(statusCode: 0, code: 'bad_request', message: L10n.current.coreNoFileSelected);
     }
     final mediaType = contentType == null ? null : DioMediaType.parse(contentType);
     final MultipartFile file = bytes != null
@@ -277,6 +284,7 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    options.headers['Accept-Language'] ??= ApiClient.languageCode;
     if (!_skips(options)) {
       await _client._tokens.load();
       final token = _client._tokens.accessToken;

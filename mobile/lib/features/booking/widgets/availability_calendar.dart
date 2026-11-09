@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
+import '../../../l10n/l10n.dart';
 
 /// Month grid used on "Select Dates": available days are green circles, unavailable days grey,
 /// the selected day violet (design "Treatment Selection").
@@ -30,8 +31,6 @@ class AvailabilityCalendar extends StatelessWidget {
   /// Shows a thin progress bar while the month's availability loads.
   final bool loading;
 
-  static const _weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
   bool _canGo(int delta) {
     final target = DateTime(month.year, month.month + delta);
     if (delta < 0 && firstMonth != null) return !target.isBefore(DateTime(firstMonth!.year, firstMonth!.month));
@@ -46,6 +45,8 @@ class AvailabilityCalendar extends StatelessWidget {
     final leading = first.weekday % 7; // Sunday-first grid
     final cells = leading + daysInMonth;
     final rows = (cells / 7).ceil();
+    // Sunday-first narrow weekday names in the app language ("S M T W T F S" in English).
+    final weekdays = MaterialLocalizations.of(context).narrowWeekdays;
 
     Widget arrow(int delta) {
       final enabled = _canGo(delta);
@@ -54,7 +55,7 @@ class AvailabilityCalendar extends StatelessWidget {
         shape: const CircleBorder(),
         child: IconButton(
           key: ValueKey(delta < 0 ? 'calendar-prev' : 'calendar-next'),
-          tooltip: delta < 0 ? 'Previous month' : 'Next month',
+          tooltip: delta < 0 ? context.l10n.bookCalendarPreviousMonth : context.l10n.bookCalendarNextMonth,
           visualDensity: VisualDensity.compact,
           iconSize: 20,
           onPressed: enabled ? () => onMonthChanged(DateTime(month.year, month.month + delta)) : null,
@@ -74,7 +75,7 @@ class AvailabilityCalendar extends StatelessWidget {
         const SizedBox(height: 10),
         Row(
           children: [
-            for (final w in _weekdays)
+            for (final w in weekdays)
               Expanded(
                 child: Text(
                   w,
@@ -104,8 +105,8 @@ class AvailabilityCalendar extends StatelessWidget {
                   ),
               ],
             ),
-            Align(alignment: Alignment.centerLeft, child: arrow(-1)),
-            Align(alignment: Alignment.centerRight, child: arrow(1)),
+            Align(alignment: AlignmentDirectional.centerStart, child: arrow(-1)),
+            Align(alignment: AlignmentDirectional.centerEnd, child: arrow(1)),
           ],
         ),
       ],
@@ -129,7 +130,10 @@ class AvailabilityCalendar extends StatelessWidget {
       bg = context.palette.surfaceAlt;
       fg = context.palette.textMuted;
     }
-    final label = '${Dates.day(date)}, ${isSelected ? 'selected' : (available ? 'available' : 'unavailable')}';
+    final label = context.l10n.bookCalendarDaySemantics(
+      Dates.day(date),
+      isSelected ? 'selected' : (available ? 'available' : 'unavailable'),
+    );
     return Center(
       child: Semantics(
         button: available,

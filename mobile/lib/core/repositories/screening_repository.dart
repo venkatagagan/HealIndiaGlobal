@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../models/models.dart';
 import '../network/api_client.dart';
 
@@ -59,10 +60,10 @@ class ScreeningRepository {
         if (!e.isRetryable || ++failures >= 5) rethrow;
       }
       if (DateTime.now().isAfter(deadline)) {
-        throw const ApiException(
+        throw ApiException(
           statusCode: 0,
           code: 'timeout',
-          message: 'Analysis is taking longer than expected. We will notify you when it is ready.',
+          message: L10n.current.coreScreeningAnalysisSlow,
         );
       }
       await Future<void>.delayed(interval);

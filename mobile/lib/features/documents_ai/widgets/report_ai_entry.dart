@@ -8,6 +8,7 @@ import '../../../core/models/models.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../data/document_analysis_repository.dart';
 import '../screens/report_capture_screen.dart';
 import 'report_analysis_card.dart';
@@ -25,7 +26,7 @@ class ReportAiEntryButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => IconButton(
     key: const ValueKey('report-ai-entry'),
-    tooltip: 'Read reports with AI',
+    tooltip: context.l10n.reportAiEntryTooltip,
     icon: const Icon(Icons.document_scanner_outlined),
     onPressed: () => showModalBottomSheet<void>(
       context: context,
@@ -55,6 +56,7 @@ class ReportAnalysesSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final analyses = ref.watch(documentAnalysesProvider(caseId));
+    final l10n = context.l10n;
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.8),
@@ -62,15 +64,12 @@ class ReportAnalysesSheet extends ConsumerWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           children: [
-            Text('Your reports, read by AI', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+            Text(l10n.reportSheetTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
-            Text(
-              'Photograph a paper report or pick a PDF. You check and confirm everything before it is used.',
-              style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
-            ),
+            Text(l10n.reportSheetIntro, style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary)),
             const SizedBox(height: 12),
             PrimaryButton(
-              label: 'Scan a report',
+              label: l10n.reportScanButton,
               icon: Icons.photo_camera_rounded,
               onPressed: () => _scan(context, ref),
             ),
@@ -85,7 +84,7 @@ class ReportAnalysesSheet extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(
-                          'No AI readings yet.',
+                          l10n.reportNoReadings,
                           textAlign: TextAlign.center,
                           style: context.text.bodySmall?.copyWith(color: context.palette.textMuted),
                         ),

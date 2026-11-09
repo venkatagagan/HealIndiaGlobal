@@ -10,6 +10,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Creates a draft screening (POST /screenings) and replaces itself with step 1.
 ///
@@ -59,30 +60,31 @@ class _ScreeningStartScreenState extends ConsumerState<ScreeningStartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final autoStart = widget.specialtySlug?.trim().isNotEmpty ?? false;
     if (autoStart || _creating || _error != null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('AI Screening')),
+        appBar: AppBar(title: Text(l10n.screeningAppBarTitle)),
         body: _error != null
             ? ErrorView(
                 error: _error,
-                title: 'Could not start your screening',
+                title: l10n.screeningStartErrorTitle,
                 onRetry: () => _start(_pendingSlug ?? widget.specialtySlug),
               )
-            : const LoadingView(message: 'Preparing your questionnaire...'),
+            : LoadingView(message: l10n.screeningStartPreparing),
       );
     }
     final specialties = ref.watch(specialtiesProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Screening')),
+      appBar: AppBar(title: Text(l10n.screeningAppBarTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
         children: [
           const BrandHeader(padding: EdgeInsets.only(bottom: 16)),
-          Text('What brings you to India?', style: context.text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+          Text(l10n.screeningStartHeading, style: context.text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 4),
           Text(
-            'Pick the area of care. Four short steps help us match you with the right doctors.',
+            l10n.screeningStartSubtitle,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
           const SizedBox(height: 16),
@@ -114,9 +116,12 @@ class _ScreeningStartScreenState extends ConsumerState<ScreeningStartScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Not sure?', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                       Text(
-                        'Describe your symptoms and we will suggest a specialty.',
+                        l10n.screeningStartNotSure,
+                        style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        l10n.screeningStartNotSureBody,
                         style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                       ),
                     ],
@@ -190,9 +195,15 @@ class _ResumeCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Continue your screening', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                 Text(
-                  [s.specialty?.name ?? 'General', if (s.createdAt != null) Dates.relative(s.createdAt)].join(' · '),
+                  context.l10n.screeningResumeTitle,
+                  style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                Text(
+                  [
+                    s.specialty?.name ?? context.l10n.screeningResumeGeneral,
+                    if (s.createdAt != null) Dates.relative(s.createdAt),
+                  ].join(' · '),
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ],

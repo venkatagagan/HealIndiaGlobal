@@ -8,6 +8,7 @@ import '../../../core/repositories/case_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/case_widgets.dart';
 
 /// My cases list (quotes, booking status) with status filter.
@@ -44,7 +45,7 @@ class _CasesScreenState extends ConsumerState<CasesScreen> {
     });
     final cases = ref.watch(casesProvider(_status));
     return Scaffold(
-      appBar: AppBar(title: const Text('My cases'), centerTitle: true),
+      appBar: AppBar(title: Text(context.l10n.casesTitle), centerTitle: true),
       body: Column(
         children: [
           SizedBox(
@@ -57,7 +58,7 @@ class _CasesScreenState extends ConsumerState<CasesScreen> {
               itemBuilder: (_, i) {
                 final s = _filters[i];
                 return ChipToggle(
-                  label: s?.label ?? 'All',
+                  label: s?.label ?? context.l10n.caseFilterAll,
                   selected: _status == s,
                   selectedColor: AppColors.violet,
                   onChanged: (_) => setState(() => _status = s),
@@ -79,9 +80,11 @@ class _CasesScreenState extends ConsumerState<CasesScreen> {
                         const SizedBox(height: 40),
                         EmptyView(
                           icon: Icons.folder_open_rounded,
-                          title: _status == null ? 'No cases yet' : 'No ${_status!.label.toLowerCase()} cases',
-                          message: 'Request a quote from a matched hospital to start a case.',
-                          actionLabel: 'Find my treatment',
+                          title: _status == null
+                              ? context.l10n.casesEmptyTitle
+                              : context.l10n.casesEmptyFilteredTitle(_status!.label.toLowerCase()),
+                          message: context.l10n.casesEmptyBody,
+                          actionLabel: context.l10n.caseFindMyTreatment,
                           onAction: () => context.push(Routes.screeningStart()),
                         ),
                       ],
@@ -97,7 +100,7 @@ class _CasesScreenState extends ConsumerState<CasesScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            'Showing ${page.items.length} of ${page.total}. Use the filters to narrow the list.',
+                            context.l10n.casesShowingCount(page.items.length, page.total),
                             textAlign: TextAlign.center,
                             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                           ),

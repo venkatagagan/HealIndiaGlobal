@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../l10n/l10n.dart';
 import '../network/api_exception.dart';
 
 /// Result of a successful Apple authorization, forwarded to `POST /auth/apple`.
@@ -63,7 +64,7 @@ class AppleSignInService {
       );
       final token = c.identityToken;
       if (token == null || token.isEmpty) {
-        throw const ApiException(statusCode: 0, code: 'apple_failed', message: 'Apple did not return a token.');
+        throw ApiException(statusCode: 0, code: 'apple_failed', message: L10n.current.coreAppleNoToken);
       }
       final name = [c.givenName, c.familyName].whereType<String>().where((s) => s.trim().isNotEmpty).join(' ');
       return AppleCredential(
@@ -76,7 +77,7 @@ class AppleSignInService {
       if (e.code == AuthorizationErrorCode.canceled) return null;
       throw ApiException(statusCode: 0, code: 'apple_failed', message: e.message);
     } on SignInWithAppleException catch (e) {
-      throw ApiException(statusCode: 0, code: 'apple_failed', message: 'Sign in with Apple failed ($e).');
+      throw ApiException(statusCode: 0, code: 'apple_failed', message: L10n.current.coreAppleSignInFailed('$e'));
     }
   }
 

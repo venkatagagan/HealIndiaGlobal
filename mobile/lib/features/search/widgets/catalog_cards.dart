@@ -8,6 +8,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import 'save_button.dart';
 
 /// Price in the patient's preferred currency (display-only FX estimate, prefixed with "≈"), falling
@@ -37,7 +38,7 @@ class ApproxPrice extends ConsumerWidget {
     final lo = convertMinor(minor, from, preferred, fx);
     final hi = maxMinor == null ? null : convertMinor(maxMinor!, from, preferred, fx);
     return Tooltip(
-      message: 'Estimated from ${formatMoney(minor, from)} at today\'s rate',
+      message: context.l10n.catalogApproxPriceTooltip(formatMoney(minor, from)),
       child: MoneyText(lo, preferred, maxMinor: hi, style: style, prefix: '$prefix≈ '),
     );
   }
@@ -115,7 +116,7 @@ class HospitalListTile extends StatelessWidget {
     final h = hospital;
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(12, 12, 4, 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 4, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -156,8 +157,8 @@ class HospitalListTile extends StatelessWidget {
                     children: [
                       AccreditationBadges(h.accreditations),
                       if (h.internationalDesk)
-                        const StatusBadge(
-                          label: 'International desk',
+                        StatusBadge(
+                          label: context.l10n.catalogInternationalDesk,
                           color: AppColors.violet,
                           icon: Icons.public_rounded,
                           dense: true,
@@ -170,7 +171,7 @@ class HospitalListTile extends StatelessWidget {
                   ApproxPrice(
                     h.startingPriceMinor!,
                     h.currency,
-                    prefix: 'From ',
+                    prefix: context.l10n.catalogPriceFromPrefix,
                     style: context.text.labelLarge?.copyWith(color: AppColors.primary),
                   ),
                 ],
@@ -197,7 +198,7 @@ class DoctorListTile extends StatelessWidget {
     final d = doctor;
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(12, 12, 4, 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 4, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -227,13 +228,13 @@ class DoctorListTile extends StatelessWidget {
                   children: [
                     if (d.successRatePct != null)
                       StatusBadge(
-                        label: '${d.successRatePct!.round()}% Success',
+                        label: context.l10n.catalogSuccessBadge(d.successRatePct!.round()),
                         color: AppColors.primary,
                         dense: true,
                       ),
                     if (d.teleconsultAvailable)
-                      const StatusBadge(
-                        label: 'Video consult',
+                      StatusBadge(
+                        label: context.l10n.catalogVideoConsult,
                         color: AppColors.info,
                         icon: Icons.videocam_outlined,
                         dense: true,
@@ -265,7 +266,7 @@ class ProcedureListTile extends StatelessWidget {
     final p = procedure;
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(12, 12, 4, 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 4, 12),
       child: Row(
         children: [
           Container(
@@ -283,7 +284,7 @@ class ProcedureListTile extends StatelessWidget {
                 Text(
                   [
                     p.specialty?.name,
-                    if (p.hospitalStayDays != null) '${p.hospitalStayDays} days in hospital',
+                    if (p.hospitalStayDays != null) context.l10n.catalogDaysInHospital(p.hospitalStayDays!),
                   ].whereType<String>().join(' · '),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

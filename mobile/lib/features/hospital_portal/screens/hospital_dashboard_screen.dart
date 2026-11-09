@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../agent_portal/shared/portal_account_menu.dart';
 import '../../agent_portal/shared/portal_api.dart';
 import '../../agent_portal/shared/portal_widgets.dart';
@@ -19,9 +20,10 @@ class HospitalDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hospital = ref.watch(activeHospitalProvider);
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(hospital?.name ?? 'Hospital dashboard'),
+        title: Text(hospital?.name ?? l10n.hpDashboardTitle),
         actions: const [PortalAccountMenu(), SizedBox(width: 8)],
       ),
       body: RefreshIndicator(
@@ -35,9 +37,9 @@ class HospitalDashboardScreen extends ConsumerWidget {
           padding: AppSpacing.pageAll,
           children: [
             if (hospital == null)
-              const EmptyView(
-                title: 'No hospital linked',
-                message: 'Ask your hospital administrator to invite you as a member.',
+              EmptyView(
+                title: l10n.hpNoHospitalTitle,
+                message: l10n.hpNoHospitalMessage,
                 icon: Icons.domain_disabled_outlined,
               )
             else ...[
@@ -64,11 +66,11 @@ class _ListingBanner extends ConsumerWidget {
     if (listing == null || listing.status == HospitalStatus.active) return const SizedBox.shrink();
     final bad = listing.status == HospitalStatus.rejected || listing.status == HospitalStatus.suspended;
     final color = bad ? AppColors.danger : AppColors.warning;
+    final l10n = context.l10n;
     final text = switch (listing.status) {
-      HospitalStatus.draft =>
-        'Your listing is a draft. Complete the profile on the hospital web portal and submit it for review.',
-      HospitalStatus.pendingReview => 'Your listing is under review. Patients will see it once approved.',
-      _ => 'Your listing is ${listing.status.label.toLowerCase()}. Contact Heal India Global support.',
+      HospitalStatus.draft => l10n.hpListingDraft,
+      HospitalStatus.pendingReview => l10n.hpListingPendingReview,
+      _ => l10n.hpListingOtherStatus(listing.status.label.toLowerCase()),
     };
     return AppCard(
       margin: const EdgeInsets.only(bottom: 16),
@@ -93,34 +95,35 @@ class _DashboardBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = data;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         KpiGrid(
           tiles: [
             KpiTile(
-              label: 'Open enquiries',
+              label: l10n.hpKpiOpenEnquiries,
               value: '${d.enquiriesOpen}',
               icon: Icons.inbox_rounded,
               color: AppColors.info,
               onTap: () => selectPortalTab(context, HospitalRoutes.tabEnquiries),
             ),
             KpiTile(
-              label: 'Quotes awaiting patient',
+              label: l10n.hpKpiQuotesAwaiting,
               value: '${d.quotesPending}',
               icon: Icons.request_quote_rounded,
               color: AppColors.warning,
               onTap: () => selectPortalTab(context, HospitalRoutes.tabEnquiries),
             ),
             KpiTile(
-              label: 'Upcoming admissions',
+              label: l10n.hpKpiUpcomingAdmissions,
               value: '${d.bookingsUpcoming}',
               icon: Icons.event_available_rounded,
               color: AppColors.violet,
               onTap: () => selectPortalTab(context, HospitalRoutes.tabPatients),
             ),
             KpiTile(
-              label: 'In treatment',
+              label: l10n.hpKpiInTreatment,
               value: '${d.patientsInTreatment}',
               icon: Icons.bed_rounded,
               color: AppColors.cyan,
@@ -135,7 +138,7 @@ class _DashboardBody extends StatelessWidget {
             children: [
               const Icon(Icons.trending_up_rounded, color: AppColors.primary),
               const SizedBox(width: 12),
-              Expanded(child: Text('Revenue this month', style: context.text.bodyMedium)),
+              Expanded(child: Text(l10n.hpRevenueThisMonth, style: context.text.bodyMedium)),
               Text(
                 money(d.revenueMonthMinor, d.currency),
                 style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary),
@@ -143,24 +146,24 @@ class _DashboardBody extends StatelessWidget {
             ],
           ),
         ),
-        const SectionTitle('Revenue by month'),
+        SectionTitle(l10n.hpRevenueByMonth),
         AppCard(
           child: MonthlyBars(
             points: [for (final m in d.monthly) (m.month, m.revenueMinor)],
             format: (v) => money(v.toInt(), d.currency, compact: true),
           ),
         ),
-        const SectionTitle('Bookings by month'),
+        SectionTitle(l10n.hpBookingsByMonth),
         AppCard(
           child: MonthlyBars(points: [for (final m in d.monthly) (m.month, m.bookings)], color: AppColors.violet),
         ),
         SectionTitle(
-          'Recent cases',
-          actionLabel: 'Enquiries',
+          l10n.hpRecentCases,
+          actionLabel: l10n.hpTabEnquiries,
           onAction: () => selectPortalTab(context, HospitalRoutes.tabEnquiries),
         ),
         if (d.recentCases.isEmpty)
-          const EmptyView(title: 'No enquiries yet', icon: Icons.inbox_outlined)
+          EmptyView(title: l10n.hpNoEnquiriesYet, icon: Icons.inbox_outlined)
         else
           for (final c in d.recentCases)
             CaseTile(medicalCase: c, showHospital: false, onTap: () => context.push(HospitalRoutes.caseDetail(c.id))),

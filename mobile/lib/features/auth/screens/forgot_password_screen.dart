@@ -7,6 +7,7 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../validators.dart';
 import '../widgets/auth_widgets.dart';
 
@@ -66,6 +67,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   Future<void> _reset() async {
     if (!(_resetKey.currentState?.validate() ?? false)) return;
+    final invalidCode = context.l10n.forgotPasswordInvalidCode;
     await _guard(() async {
       try {
         await ref.read(authRepositoryProvider).resetPassword(token: _token.text.trim(), newPassword: _password.text);
@@ -74,7 +76,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           throw ApiException(
             statusCode: e.statusCode,
             code: e.code,
-            message: e.fieldErrors['new_password'] ?? 'This reset code is invalid or has expired. Request a new one.',
+            message: e.fieldErrors['new_password'] ?? invalidCode,
           );
         }
         rethrow;
@@ -85,13 +87,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AuthScaffold(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(_stage == _Stage.reset ? 'Set a new password' : 'Reset password', style: context.text.headlineSmall),
+            Text(
+              _stage == _Stage.reset ? l10n.forgotPasswordSetNewTitle : l10n.forgotPasswordTitle,
+              style: context.text.headlineSmall,
+            ),
             const SizedBox(height: 16),
             if (_error != null) ...[FormErrorBanner(message: _error!), const SizedBox(height: 12)],
             ...switch (_stage) {
@@ -108,7 +114,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   List<Widget> _requestForm(BuildContext context) => [
     Text(
-      "Enter the email you registered with and we'll send you a link to reset your password.",
+      context.l10n.forgotPasswordIntro,
       style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
     ),
     const SizedBox(height: 16),
@@ -121,37 +127,39 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         autocorrect: false,
         validator: AuthValidators.email,
         onFieldSubmitted: (_) => _request(),
-        decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.mail_outline_rounded)),
+        decoration: InputDecoration(
+          labelText: context.l10n.forgotPasswordEmailLabel,
+          prefixIcon: const Icon(Icons.mail_outline_rounded),
+        ),
       ),
     ),
     const SizedBox(height: 16),
-    PrimaryButton(label: 'Send reset link', loading: _loading, onPressed: _request),
+    PrimaryButton(label: context.l10n.forgotPasswordSendLink, loading: _loading, onPressed: _request),
     TextButton(
       onPressed: () => setState(() => _stage = _Stage.reset),
-      child: const Text('I already have a reset code'),
+      child: Text(context.l10n.forgotPasswordHaveCode),
     ),
   ];
 
   List<Widget> _sent(BuildContext context) => [
     const Icon(Icons.mark_email_read_outlined, size: 56, color: AppColors.primary),
     const SizedBox(height: 12),
-    Text('Check your inbox', textAlign: TextAlign.center, style: context.text.titleLarge),
+    Text(context.l10n.forgotPasswordCheckInbox, textAlign: TextAlign.center, style: context.text.titleLarge),
     const SizedBox(height: 6),
     Text(
-      'If an account exists for ${_email.text.trim()}, we have sent a password reset link. '
-      'It may take a few minutes to arrive - check your spam folder too.',
+      context.l10n.forgotPasswordSentBody(_email.text.trim()),
       textAlign: TextAlign.center,
       style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
     ),
     const SizedBox(height: 20),
-    PrimaryButton(label: 'Enter reset code', onPressed: () => setState(() => _stage = _Stage.reset)),
+    PrimaryButton(label: context.l10n.forgotPasswordEnterCode, onPressed: () => setState(() => _stage = _Stage.reset)),
     const SizedBox(height: 8),
-    TextButton(onPressed: () => context.go(Routes.login), child: const Text('Back to log in')),
+    TextButton(onPressed: () => context.go(Routes.login), child: Text(context.l10n.forgotPasswordBackToLogin)),
   ];
 
   List<Widget> _resetForm(BuildContext context) => [
     Text(
-      'Paste the reset code from the email we sent you, then choose a new password.',
+      context.l10n.forgotPasswordResetIntro,
       style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
     ),
     const SizedBox(height: 16),
@@ -163,41 +171,44 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             controller: _token,
             autocorrect: false,
             maxLength: 512,
-            validator: (v) => (v ?? '').trim().length < 10 ? 'Paste the full reset code' : null,
-            decoration: const InputDecoration(
-              labelText: 'Reset code',
-              prefixIcon: Icon(Icons.key_outlined),
+            validator: (v) => (v ?? '').trim().length < 10 ? context.l10n.forgotPasswordPasteFullCode : null,
+            decoration: InputDecoration(
+              labelText: context.l10n.forgotPasswordCodeLabel,
+              prefixIcon: const Icon(Icons.key_outlined),
               counterText: '',
             ),
           ),
           const SizedBox(height: 12),
           PasswordField(
             controller: _password,
-            label: 'New password',
+            label: context.l10n.passwordNew,
             validator: AuthValidators.newPassword,
             autofillHints: const [AutofillHints.newPassword],
             onSubmitted: (_) => _reset(),
-            helperText: 'At least ${AuthValidators.passwordMinLength} characters with a letter and a number',
+            helperText: context.l10n.passwordPolicyHelper(AuthValidators.passwordMinLength),
           ),
         ],
       ),
     ),
     const SizedBox(height: 16),
-    PrimaryButton(label: 'Update password', loading: _loading, onPressed: _reset),
-    TextButton(onPressed: () => setState(() => _stage = _Stage.request), child: const Text('Request a new link')),
+    PrimaryButton(label: context.l10n.passwordUpdateButton, loading: _loading, onPressed: _reset),
+    TextButton(
+      onPressed: () => setState(() => _stage = _Stage.request),
+      child: Text(context.l10n.forgotPasswordRequestNewLink),
+    ),
   ];
 
   List<Widget> _done(BuildContext context) => [
     const Icon(Icons.check_circle_outline_rounded, size: 56, color: AppColors.primary),
     const SizedBox(height: 12),
-    Text('Password updated', textAlign: TextAlign.center, style: context.text.titleLarge),
+    Text(context.l10n.forgotPasswordUpdatedTitle, textAlign: TextAlign.center, style: context.text.titleLarge),
     const SizedBox(height: 6),
     Text(
-      'You can now log in with your new password.',
+      context.l10n.forgotPasswordUpdatedBody,
       textAlign: TextAlign.center,
       style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
     ),
     const SizedBox(height: 20),
-    PrimaryButton(label: 'Log in', onPressed: () => context.go(Routes.login)),
+    PrimaryButton(label: context.l10n.authLogIn, onPressed: () => context.go(Routes.login)),
   ];
 }

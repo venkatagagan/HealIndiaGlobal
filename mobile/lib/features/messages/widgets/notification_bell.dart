@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/repositories/messaging_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 
 /// Bell icon with the unread-notifications badge; opens `/notifications`.
 class NotificationBell extends ConsumerWidget {
@@ -17,7 +18,7 @@ class NotificationBell extends ConsumerWidget {
     final unread = ref.watch(unreadNotificationsCountProvider).value ?? 0;
     return IconButton(
       key: const ValueKey('notification-bell'),
-      tooltip: unread > 0 ? 'Notifications, $unread unread' : 'Notifications',
+      tooltip: unread > 0 ? context.l10n.notificationsBellUnread(unread) : context.l10n.notificationsTitle,
       onPressed: () => context.push(Routes.notifications),
       icon: Badge(
         isLabelVisible: unread > 0,

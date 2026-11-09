@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../models/refs.dart';
 import '../theme/app_theme.dart';
 
@@ -38,7 +39,7 @@ class Avatar extends StatelessWidget {
     final url = imageUrl;
     return Semantics(
       image: true,
-      label: name.isEmpty ? 'Avatar' : name,
+      label: name.isEmpty ? context.l10n.coreAvatarLabel : name,
       child: ClipRRect(
         borderRadius: radius,
         child: SizedBox(

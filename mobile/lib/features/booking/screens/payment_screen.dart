@@ -18,6 +18,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../logic/payment_plan.dart';
 import '../providers/booking_providers.dart';
 import '../services/razorpay_launcher.dart';
@@ -75,7 +76,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final ready = booking != null && !(instAsync?.isLoading ?? false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Payment'), centerTitle: true),
+      appBar: AppBar(title: Text(context.l10n.paymentTitle), centerTitle: true),
       body: AsyncValueView<Booking>(
         value: bookingAsync,
         onRetry: () => ref.invalidate(bookingProvider(widget.bookingId)),
@@ -95,6 +96,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   }
 
   Widget _content(Booking b, PaymentDue due, List<Installment> installments) {
+    final l10n = context.l10n;
     final preferred = ref.watch(preferredCurrencyProvider);
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -109,9 +111,12 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Secure Payment', style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                     Text(
-                      'Encrypted checkout by our payment partner. Card details never reach our servers.',
+                      l10n.paymentSecureTitle,
+                      style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      l10n.paymentSecureBody,
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
                   ],
@@ -122,43 +127,43 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         ),
         const SizedBox(height: 10),
         _BookingSummary(booking: b),
-        const SectionTitle('Payment Method'),
+        SectionTitle(l10n.paymentMethodSection),
         OptionRadioCard(
           key: const ValueKey('method-card'),
-          title: 'Credit/Debit Card',
-          subtitle: Env.razorpaySupported ? 'Visa, MasterCard, Amex, UPI' : 'Available in the Android and iOS app',
+          title: l10n.paymentMethodCard,
+          subtitle: Env.razorpaySupported ? 'Visa, MasterCard, Amex, UPI' : l10n.paymentMethodCardAppOnly,
           enabled: Env.razorpaySupported,
           selected: _gateway == PaymentGateway.razorpay,
           onTap: () => setState(() => _gateway = PaymentGateway.razorpay),
         ),
         OptionRadioCard(
           key: const ValueKey('method-bank'),
-          title: 'Bank Transfer',
-          subtitle: 'SWIFT Details',
+          title: l10n.bankTransferTitle,
+          subtitle: l10n.bankSwiftDetails,
           selected: _gateway == PaymentGateway.bankTransfer,
           onTap: () => setState(() => _gateway = PaymentGateway.bankTransfer),
         ),
         if (!Env.isProduction)
           OptionRadioCard(
             key: const ValueKey('method-mock'),
-            title: 'Test payment',
-            subtitle: 'Development gateway - no real money moves',
+            title: l10n.paymentTestTitle,
+            subtitle: l10n.paymentTestSubtitle,
             selected: _gateway == PaymentGateway.mock,
             onTap: () => setState(() => _gateway = PaymentGateway.mock),
           ),
         OptionRadioCard(
           key: const ValueKey('method-plans'),
-          title: 'Payment Plans',
+          title: l10n.paymentPlansTitle,
           subtitle: b.paymentOption == PaymentOption.installments
-              ? '${b.installmentMonths ?? installments.length} monthly installments on this booking'
-              : '3, 6, 12 months - chosen when booking',
+              ? l10n.paymentPlansOnBooking(b.installmentMonths ?? installments.length)
+              : l10n.paymentPlansChosenWhenBooking,
           selected: false,
           showRadio: false,
           onTap: () => _showPlanSheet(b, installments),
         ),
-        const SectionTitle('Insurance'),
+        SectionTitle(l10n.paymentInsurance),
         AppCard(
-          padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 8, 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -167,32 +172,32 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 controlAffinity: ListTileControlAffinity.trailing,
                 value: b.insuranceClaimRequested,
                 onChanged: null,
-                title: const Text('I want to claim insurance'),
+                title: Text(l10n.bookingInsuranceClaim),
                 subtitle: Text(
                   b.insuranceClaimRequested
-                      ? 'Claim requested. Upload your policy and claim forms so our team can help.'
-                      : 'Chosen when booking. Ask your coordinator if you want to add a claim.',
+                      ? l10n.paymentInsuranceRequestedHelp
+                      : l10n.paymentInsuranceChosenWhenBooking,
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ),
               if (b.insuranceClaimRequested)
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: TextButton.icon(
                     icon: const Icon(Icons.upload_file_rounded, size: 18),
-                    label: const Text('Upload insurance documents'),
+                    label: Text(l10n.paymentUploadInsuranceDocs),
                     onPressed: () => context.push(Routes.documentsFor(caseId: b.caseId, kind: DocumentKind.other)),
                   ),
                 ),
             ],
           ),
         ),
-        const SectionTitle('Price Summary'),
+        SectionTitle(l10n.paymentPriceSummary),
         _PriceSummary(booking: b, due: due),
         const SizedBox(height: 10),
         if (preferred.toUpperCase() != due.currency.toUpperCase())
           Text(
-            'You will be charged in $preferred at the exchange rate locked when the order is created.',
+            l10n.paymentChargedInCurrency(preferred),
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
       ],
@@ -204,63 +209,65 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Payment Plans', style: ctx.text.titleLarge),
-              const SizedBox(height: 8),
-              if (b.paymentOption != PaymentOption.installments)
-                Text(
-                  'This booking uses "${b.paymentOption.label}". Monthly plans over 3, 6 or 12 months are chosen '
-                  'when you book. To switch, ask your coordinator before your first payment.',
-                  style: ctx.text.bodyMedium,
-                )
-              else if (installments.isEmpty)
-                Text('Your installment schedule is being prepared.', style: ctx.text.bodyMedium)
-              else
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.5),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final i in installments)
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: CircleAvatar(
-                            backgroundColor: AppColors.violetSoft,
-                            child: Text('${i.seq}', style: const TextStyle(color: AppColors.violet)),
+      builder: (ctx) {
+        final l10n = ctx.l10n;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.paymentPlansTitle, style: ctx.text.titleLarge),
+                const SizedBox(height: 8),
+                if (b.paymentOption != PaymentOption.installments)
+                  Text(l10n.paymentPlansCurrentOption(b.paymentOption.label), style: ctx.text.bodyMedium)
+                else if (installments.isEmpty)
+                  Text(l10n.paymentScheduleBeingPrepared, style: ctx.text.bodyMedium)
+                else
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.5),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final i in installments)
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: CircleAvatar(
+                              backgroundColor: AppColors.violetSoft,
+                              child: Text('${i.seq}', style: const TextStyle(color: AppColors.violet)),
+                            ),
+                            title: MoneyText(i.amountMinor, i.currency),
+                            subtitle: Text(
+                              i.dueDate == null ? l10n.paymentDueDatePending : l10n.paymentDueOn(Dates.day(i.dueDate)),
+                            ),
+                            trailing: StatusBadge.forEnum(i.status, dense: true),
                           ),
-                          title: MoneyText(i.amountMinor, i.currency),
-                          subtitle: Text(i.dueDate == null ? 'Due date pending' : 'Due ${Dates.day(i.dueDate)}'),
-                          trailing: StatusBadge.forEnum(i.status, dense: true),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Future<void> _pay(Booking booking, PaymentDue due) async {
     if (_busy) return;
     final gateway = _gateway;
+    final l10n = context.l10n;
     if (gateway == PaymentGateway.razorpay && !Env.razorpaySupported) {
-      showInfoSnack(context, 'Card payments are available in the Android and iOS app. Use bank transfer here.');
+      showInfoSnack(context, l10n.paymentCardAppOnlySnack);
       return;
     }
     if (gateway != PaymentGateway.bankTransfer) {
       final ok = await ref
           .read(biometricServiceProvider)
-          .confirm(reason: 'Confirm payment of ${formatMoney(due.amountMinor, due.currency)}');
+          .confirm(reason: l10n.paymentConfirmReason(formatMoney(due.amountMinor, due.currency)));
       if (!ok) {
-        if (mounted) showInfoSnack(context, 'Payment not confirmed.');
+        if (mounted) showInfoSnack(context, l10n.paymentNotConfirmed);
         return;
       }
     }
@@ -297,7 +304,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         case PaymentGateway.mock:
           await _payWithMock(booking, checkout);
         case PaymentGateway.stripe:
-          if (mounted) showInfoSnack(context, 'This payment method is not available in the app.');
+          if (mounted) showInfoSnack(context, l10n.paymentMethodNotAvailable);
       }
     } on ApiException catch (e) {
       if (e.statusCode == 409 || e.code == 'conflict') _resetAttempt();
@@ -310,13 +317,10 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   }
 
   Future<void> _payWithRazorpay(Booking booking, Checkout checkout) async {
+    final l10n = context.l10n;
     final options = checkout.razorpay;
     if (options == null) {
-      throw const ApiException(
-        statusCode: 0,
-        code: 'payment_error',
-        message: 'Card checkout could not be started. Please try again.',
-      );
+      throw ApiException(statusCode: 0, code: 'payment_error', message: l10n.paymentCardCheckoutFailed);
     }
     final outcome = await ref.read(razorpayLauncherProvider).open(options.toRazorpayOptions());
     switch (outcome) {
@@ -344,7 +348,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           PaymentResultKind.pending,
           booking,
           checkout.order,
-          message: 'Complete the payment in $walletName. We will confirm your booking once it is received.',
+          message: l10n.paymentWalletPending(walletName),
         );
     }
   }
@@ -354,11 +358,11 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final success = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Test payment'),
-        content: const Text('Simulate the gateway result for this development order.'),
+        title: Text(ctx.l10n.paymentTestTitle),
+        content: Text(ctx.l10n.paymentTestDialogBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Simulate failure')),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Simulate success')),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(ctx.l10n.paymentSimulateFailure)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(ctx.l10n.paymentSimulateSuccess)),
         ],
       ),
     );
@@ -412,17 +416,20 @@ class _PayButton extends ConsumerWidget {
     if (gateway == PaymentGateway.bankTransfer) {
       return PrimaryButton(
         key: const ValueKey('pay-button'),
-        label: 'Get bank transfer details',
+        label: context.l10n.paymentGetBankDetails,
         icon: Icons.account_balance_rounded,
         tone: ButtonTone.violet,
         loading: busy,
         onPressed: onPressed,
       );
     }
-    final label = ref.watch(payButtonLabelProvider).value ?? 'Pay';
-    final icon = label.contains('Face')
-        ? Icons.face_rounded
-        : (label.contains('fingerprint') ? Icons.fingerprint_rounded : Icons.lock_rounded);
+    final biometric = ref.watch(payButtonBiometricProvider).value;
+    final label = biometric?.label(context.l10n) ?? context.l10n.paymentPayButton;
+    final icon = switch (biometric) {
+      PayBiometric.face => Icons.face_rounded,
+      PayBiometric.fingerprint => Icons.fingerprint_rounded,
+      _ => Icons.lock_rounded,
+    };
     return PrimaryButton(
       key: const ValueKey('pay-button'),
       label: label,
@@ -441,7 +448,7 @@ class _BookingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final what = booking.package?.name ?? booking.procedure?.name ?? 'Treatment';
+    final what = booking.package?.name ?? booking.procedure?.name ?? context.l10n.bookingTreatmentFallback;
     return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -456,7 +463,8 @@ class _BookingSummary extends StatelessWidget {
                 Text(
                   [
                     booking.hospital.name,
-                    if (booking.admissionDate != null) 'Admission ${Dates.day(booking.admissionDate)}',
+                    if (booking.admissionDate != null)
+                      context.l10n.bookingAdmissionDate(Dates.day(booking.admissionDate)),
                   ].join(' · '),
                   style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                 ),
@@ -479,6 +487,7 @@ class _PriceSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final b = booking;
+    final l10n = context.l10n;
     final ccy = b.currency;
     Widget row(String label, int minor, {bool bold = false, bool negative = false, String? currency, Key? key}) =>
         Padding(
@@ -509,20 +518,21 @@ class _PriceSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          row('Subtotal', b.subtotalMinor),
-          if (b.discountMinor > 0) row('Discount', b.discountMinor, negative: true),
-          if (b.serviceFeeMinor > 0) row('Service fee', b.serviceFeeMinor),
-          row('Taxes', b.taxMinor),
+          row(l10n.paymentSubtotal, b.subtotalMinor),
+          if (b.discountMinor > 0) row(l10n.paymentDiscount, b.discountMinor, negative: true),
+          if (b.serviceFeeMinor > 0) row(l10n.paymentServiceFee, b.serviceFeeMinor),
+          row(l10n.paymentTaxes, b.taxMinor),
           const Divider(height: 18),
-          row('Total', b.totalMinor, bold: true),
-          if (b.amountPaidMinor > 0) row('Paid so far', b.amountPaidMinor - b.amountRefundedMinor, negative: true),
-          if (b.amountPaidMinor > 0) row('Balance', b.balanceDueMinor),
+          row(l10n.paymentTotal, b.totalMinor, bold: true),
+          if (b.amountPaidMinor > 0)
+            row(l10n.paymentPaidSoFar, b.amountPaidMinor - b.amountRefundedMinor, negative: true),
+          if (b.amountPaidMinor > 0) row(l10n.paymentBalance, b.balanceDueMinor),
           const Divider(height: 18),
           Row(
             children: [
               Expanded(
                 child: Text(
-                  due.label,
+                  due.label(l10n),
                   style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: AppColors.violet),
                 ),
               ),
@@ -542,7 +552,7 @@ class _PriceSummary extends StatelessWidget {
           ),
           if (due.installment?.dueDate != null)
             Text(
-              'Installment ${due.installment!.seq} due ${Dates.day(due.installment!.dueDate)}',
+              l10n.paymentInstallmentDueOn(due.installment!.seq, Dates.day(due.installment!.dueDate)),
               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
         ],
@@ -559,13 +569,12 @@ class _NothingDue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cancelled = booking.status == BookingStatus.cancelled;
+    final l10n = context.l10n;
     return EmptyView(
       icon: cancelled ? Icons.event_busy_rounded : Icons.verified_rounded,
-      title: cancelled ? 'This booking was cancelled' : 'Nothing to pay right now',
-      message: cancelled
-          ? 'Refunds, if any, are returned to the original payment method.'
-          : 'Booking ${booking.bookingNumber} has no payment due. We will notify you when the next one is due.',
-      actionLabel: 'Go to my trip',
+      title: cancelled ? l10n.paymentBookingCancelledTitle : l10n.paymentNothingDueTitle,
+      message: cancelled ? l10n.paymentRefundOriginalMethod : l10n.paymentNothingDueBody(booking.bookingNumber),
+      actionLabel: l10n.paymentGoToTrip,
       onAction: () => context.go(Routes.trips),
     );
   }

@@ -1,0 +1,9 @@
+# Flutter gen-l10n (https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization).
+# Source of truth: lib/l10n/app_en.arb. Run `flutter gen-l10n` (also runs on `flutter pub get`), then
+# `dart run tool/gen_l10n_overrides.dart` to refresh the admin-override wrapper (a test checks it is current).
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+preferred-supported-locales: [en]

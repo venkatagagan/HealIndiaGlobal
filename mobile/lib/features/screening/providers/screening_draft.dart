@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/repositories/screening_repository.dart';
+import '../../../l10n/l10n.dart';
 
 /// Number of questionnaire steps (PLAN §11).
 const int kScreeningSteps = 4;
@@ -49,7 +50,7 @@ class ScreeningDraft {
     notes: s.notes ?? '',
     reports: [
       for (var i = 0; i < s.reportDocumentIds.length; i++)
-        ScreeningReport(id: s.reportDocumentIds[i], name: 'Medical report ${i + 1}'),
+        ScreeningReport(id: s.reportDocumentIds[i], name: L10n.current.screeningReportNumbered(i + 1)),
     ],
     preferences: s.preferences,
   );
@@ -132,22 +133,26 @@ class ScreeningDraft {
     );
   }
 
-  /// Validation message for [step], or null when the step can be completed.
-  String? validate(int step) => switch (step) {
-    1 => bodyAreas.isEmpty ? 'Tap the body to select at least one area.' : null,
-    2 => positiveSymptoms.isEmpty ? 'Answer "yes" or "maybe" to at least one symptom, or add your own.' : null,
-    3 => (durationValue == null || durationValue! < 1) ? 'Tell us how long you have had this condition.' : null,
-    4 => _validatePreferences(),
-    _ => null,
-  };
+  /// Validation message for [step] in the language of [l] (default: [L10n.current]), or null when
+  /// the step can be completed.
+  String? validate(int step, [AppLocalizations? l]) {
+    final s = l ?? L10n.current;
+    return switch (step) {
+      1 => bodyAreas.isEmpty ? s.screeningValidateBodyArea : null,
+      2 => positiveSymptoms.isEmpty ? s.screeningValidateSymptoms : null,
+      3 => (durationValue == null || durationValue! < 1) ? s.screeningValidateDuration : null,
+      4 => _validatePreferences(s),
+      _ => null,
+    };
+  }
 
-  String? _validatePreferences() {
+  String? _validatePreferences(AppLocalizations s) {
     final p = preferences;
     if (p.budgetMinMinor != null && p.budgetMaxMinor != null && p.budgetMinMinor! > p.budgetMaxMinor!) {
-      return 'The minimum budget must not exceed the maximum.';
+      return s.screeningValidateBudget;
     }
     if (p.travelWindowStart != null && p.travelWindowEnd != null && p.travelWindowStart!.isAfter(p.travelWindowEnd!)) {
-      return 'The travel window must end after it starts.';
+      return s.screeningValidateTravelWindow;
     }
     return null;
   }

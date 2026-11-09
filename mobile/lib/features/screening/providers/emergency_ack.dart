@@ -6,6 +6,7 @@ import '../../../core/models/models.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/repositories/screening_repository.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/emergency_guidance.dart';
 
 /// Preference key holding the ids of screenings whose emergency guidance was acknowledged.
@@ -39,11 +40,8 @@ bool needsEmergencyAck(Screening s, Set<String> acknowledged) =>
     screeningUrgency(s) == Urgency.emergency && !acknowledged.contains(s.id);
 
 /// Shows the full-screen emergency guidance for [s]; returns true when the patient acknowledged it.
-Future<bool> showEmergencyGuidance(
-  BuildContext context,
-  Screening s, {
-  String acknowledgeLabel = 'I understand the risk - continue',
-}) async {
+Future<bool> showEmergencyGuidance(BuildContext context, Screening s, {String? acknowledgeLabel}) async {
+  final label = acknowledgeLabel ?? context.l10n.emergencyAckContinueRisk;
   final container = ProviderScope.containerOf(context, listen: false);
   final ok = await Navigator.of(context, rootNavigator: true).push<bool>(
     MaterialPageRoute(
@@ -53,7 +51,7 @@ Future<bool> showEmergencyGuidance(
           redFlags: s.redFlags.isNotEmpty ? s.redFlags : (s.aiResult?.redFlags ?? const []),
           homeCountry: s.homeCountry,
           advice: s.aiResult?.travelAdvice,
-          acknowledgeLabel: acknowledgeLabel,
+          acknowledgeLabel: label,
           onViewResults: () => Navigator.of(ctx).pop(true),
           onClose: () => Navigator.of(ctx).pop(false),
         ),

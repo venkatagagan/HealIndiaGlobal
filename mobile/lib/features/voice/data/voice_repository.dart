@@ -7,7 +7,8 @@ import '../../../core/models/json.dart';
 import '../../../core/network/api_client.dart';
 import '../models/voice_models.dart';
 
-/// Voice intake endpoints (PLAN §7.2, backend module `voice`). English only: no `language` field is sent.
+/// Voice intake endpoints (PLAN §7.2, backend module `voice`). Sends `language` (the app language, see
+/// [ApiClient.languageCode]) so transcription and the intake summary use the patient's language.
 class VoiceRepository {
   VoiceRepository(this._api);
 
@@ -17,7 +18,7 @@ class VoiceRepository {
   static const int maxBytes = 10 * 1024 * 1024;
   static const Duration maxDuration = Duration(minutes: 3);
 
-  /// `POST /voice/transcriptions` (multipart `audio`) → 202 `queued`.
+  /// `POST /voice/transcriptions` (multipart `audio`, `language`) → 202 `queued`.
   Future<VoiceTranscription> upload({
     required String fileName,
     required String contentType,
@@ -39,7 +40,13 @@ class VoiceRepository {
         filePath: filePath,
         fileField: 'audio',
         contentType: contentType,
-        fields: {'screening_id': screeningId, 'case_id': caseId, 'patient_id': patientId, 'consent_ai': consentAi},
+        fields: {
+          'screening_id': screeningId,
+          'case_id': caseId,
+          'patient_id': patientId,
+          'consent_ai': consentAi,
+          'language': ApiClient.languageCode,
+        },
         onSendProgress: onProgress,
       ),
     ),
@@ -66,9 +73,12 @@ class VoiceRepository {
     await _api.post('/voice/transcriptions/$id/discard');
   }
 
-  /// `POST /voice/intake-extract` `{text, screening_id?}` → `IntakeSuggestion` (read-only).
+  /// `POST /voice/intake-extract` `{text, screening_id?, language}` → `IntakeSuggestion` (read-only).
   Future<IntakeSuggestion> intakeExtract(String text, {String? screeningId}) async => IntakeSuggestion.fromJson(
-    asJsonMap(await _api.post('/voice/intake-extract', data: compactJson({'text': text, 'screening_id': screeningId}))),
+    asJsonMap(await _api.post(
+        '/voice/intake-extract',
+        data: compactJson({'text': text, 'screening_id': screeningId, 'language': ApiClient.languageCode}),
+      )),
   );
 }
 

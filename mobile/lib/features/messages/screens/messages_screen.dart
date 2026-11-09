@@ -9,6 +9,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../trips/services/journey_actions.dart';
 import '../widgets/notification_bell.dart';
 
@@ -20,11 +21,12 @@ class MessagesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final async = ref.watch(conversationsProvider);
     final myId = ref.watch(currentUserProvider)?.id;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text(l10n.messagesTitle),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: const [NotificationBell()],
@@ -34,7 +36,7 @@ class MessagesScreen extends ConsumerWidget {
         backgroundColor: AppColors.violet,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.support_agent_rounded),
-        label: const Text('Contact support'),
+        label: Text(l10n.messagesContactSupport),
         onPressed: () => openCoordinatorChat(context, ref, subject: 'Support request'),
       ),
       body: RefreshIndicator(
@@ -46,13 +48,12 @@ class MessagesScreen extends ConsumerWidget {
             if (list.isEmpty) {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(height: 60),
+                children: [
+                  const SizedBox(height: 60),
                   EmptyView(
                     icon: Icons.forum_outlined,
-                    title: 'No conversations yet',
-                    message: 'When you request a quote, a chat with the hospital and your coordinator opens here. '
-                        'You can also contact our support team any time.',
+                    title: l10n.messagesEmptyTitle,
+                    message: l10n.messagesEmptyMessage,
                   ),
                 ],
               );
@@ -93,10 +94,18 @@ class _ConversationTile extends StatelessWidget {
       ConversationKind.support => (Icons.support_agent_rounded, AppColors.primary),
       ConversationKind.direct => (Icons.person_rounded, AppColors.info),
     };
-    final preview = last == null
-        ? 'No messages yet'
-        : '${last.isMine(myId) ? 'You: ' : (c.participants.length > 2 ? '${last.sender.fullName.split(' ').first}: ' : '')}'
-              '${last.body.isEmpty && last.attachmentDocumentIds.isNotEmpty ? 'Attachment' : last.body}';
+    final l10n = context.l10n;
+    final String preview;
+    if (last == null) {
+      preview = l10n.messagesNoMessagesYet;
+    } else {
+      final text = last.body.isEmpty && last.attachmentDocumentIds.isNotEmpty ? l10n.messagesAttachment : last.body;
+      preview = last.isMine(myId)
+          ? l10n.messagesPreviewMine(text)
+          : (c.participants.length > 2
+                ? l10n.messagesPreviewSender(last.sender.fullName.split(' ').first, text)
+                : text);
+    }
     return AppCard(
       key: ValueKey('conversation-${c.id}'),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),

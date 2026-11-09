@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/l10n.dart';
 
 enum MapPinKind { hospital, stay, itinerary, me }
 
@@ -63,9 +64,7 @@ class _SupportMapState extends State<SupportMap> {
     if (pts.length == 1) {
       _controller.move(pts.first, 14);
     } else {
-      _controller.fitCamera(
-        CameraFit.coordinates(coordinates: pts, padding: const EdgeInsets.all(48), maxZoom: 15),
-      );
+      _controller.fitCamera(CameraFit.coordinates(coordinates: pts, padding: const EdgeInsets.all(48), maxZoom: 15));
     }
   }
 
@@ -84,7 +83,7 @@ class _SupportMapState extends State<SupportMap> {
       if (widget.onMarkLocation != null) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(const SnackBar(content: Text('Long-press the map to mark where you are.')));
+          ..showSnackBar(SnackBar(content: Text(context.l10n.mapLongPressHint)));
       }
     }
   }
@@ -92,6 +91,7 @@ class _SupportMapState extends State<SupportMap> {
   @override
   Widget build(BuildContext context) {
     final pts = _points;
+    final l10n = context.l10n;
     return SizedBox(
       height: widget.height,
       child: ClipRRect(
@@ -147,21 +147,21 @@ class _SupportMapState extends State<SupportMap> {
                   ],
                 ),
                 SimpleAttributionWidget(
-                  source: const Text('OpenStreetMap contributors'),
+                  source: Text(l10n.mapAttribution),
                   onTap: () => launchUrl(Uri.parse('https://www.openstreetmap.org/copyright')),
                 ),
               ],
             ),
-            Positioned(
+            PositionedDirectional(
               top: 10,
-              right: 10,
+              end: 10,
               child: Column(
                 children: [
-                  _MapButton(icon: Icons.add_rounded, tooltip: 'Zoom in', onTap: () => _zoom(1)),
+                  _MapButton(icon: Icons.add_rounded, tooltip: l10n.mapZoomIn, onTap: () => _zoom(1)),
                   const SizedBox(height: 6),
-                  _MapButton(icon: Icons.remove_rounded, tooltip: 'Zoom out', onTap: () => _zoom(-1)),
+                  _MapButton(icon: Icons.remove_rounded, tooltip: l10n.mapZoomOut, onTap: () => _zoom(-1)),
                   const SizedBox(height: 6),
-                  _MapButton(icon: Icons.navigation_outlined, tooltip: 'Show my places', onTap: _locate),
+                  _MapButton(icon: Icons.navigation_outlined, tooltip: l10n.mapShowMyPlaces, onTap: _locate),
                 ],
               ),
             ),

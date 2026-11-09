@@ -44,13 +44,14 @@ enum ReportDocType with JsonEnum {
   insuranceDocument('insurance_document', 'Insurance document'),
   other('other', 'Other');
 
-  const ReportDocType(this.json, this.label);
+  const ReportDocType(this.json, this.englishLabel);
 
   @override
   final String json;
 
+  /// English label; [label] returns it translated (ARB key `enumReportDocType<Value>`).
   @override
-  final String label;
+  final String englishLabel;
 
   static ReportDocType? fromJsonOrNull(Object? raw) => enumFromJsonOrNull(values, raw);
 }

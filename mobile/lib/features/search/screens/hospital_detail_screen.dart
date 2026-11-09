@@ -9,6 +9,7 @@ import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/availability_strip.dart';
 import '../widgets/catalog_cards.dart';
 import '../widgets/detail_sections.dart';
@@ -33,7 +34,7 @@ class HospitalDetailScreen extends ConsumerWidget {
         appBar: AppBar(),
         body: ErrorView(
           error: e,
-          title: e is ApiException && e.isNotFound ? 'Hospital not found' : null,
+          title: e is ApiException && e.isNotFound ? context.l10n.hospitalDetailNotFound : null,
           onRetry: () => ref.invalidate(hospitalDetailProvider(hospitalId)),
         ),
       ),
@@ -52,17 +53,13 @@ class _HospitalDetailView extends ConsumerWidget {
     final h = hospital;
     final specialtySlug = h.doctors.map((d) => d.specialty?.slug).whereType<String>().firstOrNull;
     final cover = h.coverImageUrl;
+    final l10n = context.l10n;
 
     return Scaffold(
       bottomNavigationBar: DetailActionsBar(
         onGetMatched: () => context.push(Routes.screeningStart(specialty: specialtySlug)),
-        onRequestQuote: () => requestQuote(
-          context,
-          ref,
-          hospitalId: h.id,
-          hospitalName: h.name,
-          procedures: h.procedures,
-        ),
+        onRequestQuote: () =>
+            requestQuote(context, ref, hospitalId: h.id, hospitalName: h.name, procedures: h.procedures),
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(hospitalDetailProvider(h.id).future),
@@ -73,9 +70,7 @@ class _HospitalDetailView extends ConsumerWidget {
               expandedHeight: 200,
               foregroundColor: Colors.white,
               backgroundColor: context.colors.surface,
-              actions: [
-                SaveButton(entityType: SavedEntityType.hospital, entityId: h.id, color: Colors.white),
-              ],
+              actions: [SaveButton(entityType: SavedEntityType.hospital, entityId: h.id, color: Colors.white)],
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,
@@ -132,8 +127,8 @@ class _HospitalDetailView extends ConsumerWidget {
                     children: [
                       AccreditationBadges(h.accreditations, dense: false),
                       if (h.internationalDesk)
-                        const StatusBadge(
-                          label: 'International patient desk',
+                        StatusBadge(
+                          label: l10n.catalogInternationalPatientDesk,
                           color: AppColors.violet,
                           icon: Icons.public_rounded,
                         ),
@@ -146,13 +141,19 @@ class _HospitalDetailView extends ConsumerWidget {
                         InfoStat(
                           icon: Icons.history_edu_outlined,
                           value: h.establishedYear?.toString() ?? '-',
-                          label: 'Established',
+                          label: l10n.hospitalDetailEstablished,
                         ),
-                        InfoStat(icon: Icons.bed_outlined, value: h.bedCount?.toString() ?? '-', label: 'Beds'),
+                        InfoStat(
+                          icon: Icons.bed_outlined,
+                          value: h.bedCount?.toString() ?? '-',
+                          label: l10n.hospitalDetailBeds,
+                        ),
                         InfoStat(
                           icon: Icons.flight_land_outlined,
-                          value: h.airportDistanceKm == null ? '-' : '${h.airportDistanceKm!.toStringAsFixed(0)} km',
-                          label: 'From airport',
+                          value: h.airportDistanceKm == null
+                              ? '-'
+                              : l10n.hospitalDetailDistanceKm(h.airportDistanceKm!.toStringAsFixed(0)),
+                          label: l10n.hospitalDetailFromAirport,
                         ),
                       ],
                     ),
@@ -161,7 +162,7 @@ class _HospitalDetailView extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Text('Treatments from ', style: context.text.bodyMedium),
+                        Text(l10n.hospitalDetailTreatmentsFrom, style: context.text.bodyMedium),
                         ApproxPrice(
                           h.startingPriceMinor!,
                           h.currency,
@@ -171,21 +172,24 @@ class _HospitalDetailView extends ConsumerWidget {
                     ),
                   ],
                   if ((h.description ?? '').isNotEmpty)
-                    DetailSection(title: 'About', child: ExpandableText(h.description!)),
+                    DetailSection(title: l10n.catalogAboutSection, child: ExpandableText(h.description!)),
                   if (h.specialties.isNotEmpty)
                     DetailSection(
-                      title: 'Specialties',
+                      title: l10n.hospitalDetailSpecialties,
                       child: PillWrap(h.specialties, icon: Icons.medical_services_outlined),
                     ),
                   if (h.languages.isNotEmpty)
-                    DetailSection(title: 'Languages spoken', child: PillWrap(h.languages, icon: Icons.translate_rounded)),
+                    DetailSection(
+                      title: l10n.catalogLanguagesSpoken,
+                      child: PillWrap(h.languages, icon: Icons.translate_rounded),
+                    ),
                   DetailSection(
-                    title: 'Availability',
+                    title: l10n.availabilitySection,
                     child: AvailabilityPreview(id: h.id, doctor: false),
                   ),
                   if (h.procedures.isNotEmpty)
                     DetailSection(
-                      title: 'Treatments & prices',
+                      title: l10n.catalogTreatmentsPrices,
                       child: Column(
                         children: [
                           for (final p in h.procedures)
@@ -193,16 +197,13 @@ class _HospitalDetailView extends ConsumerWidget {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: HospitalProcedureCard(item: p),
                             ),
-                          Text(
-                            'Prices are indicative. Your final quote comes from the hospital after reviewing your case.',
-                            style: context.text.labelSmall,
-                          ),
+                          Text(l10n.hospitalDetailPricesIndicative, style: context.text.labelSmall),
                         ],
                       ),
                     ),
                   if (h.doctors.isNotEmpty)
                     DetailSection(
-                      title: 'Doctors',
+                      title: l10n.hospitalDetailDoctors,
                       child: Column(
                         children: [
                           for (final d in h.doctors)
@@ -215,15 +216,21 @@ class _HospitalDetailView extends ConsumerWidget {
                     ),
                   if (h.reviews.isNotEmpty)
                     DetailSection(
-                      title: 'Patient reviews',
+                      title: l10n.hospitalDetailPatientReviews,
                       child: Column(
                         children: [
                           for (final r in h.reviews.take(5))
-                            Padding(padding: const EdgeInsets.only(bottom: 10), child: ReviewTile(review: r)),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ReviewTile(review: r),
+                            ),
                         ],
                       ),
                     ),
-                  DetailSection(title: 'Contact', child: _Contact(hospital: h)),
+                  DetailSection(
+                    title: l10n.hospitalDetailContact,
+                    child: _Contact(hospital: h),
+                  ),
                 ],
               ),
             ),
@@ -257,18 +264,26 @@ class _Contact extends StatelessWidget {
               : Uri.https('www.openstreetmap.org', '/search', {'query': '${h.name} ${h.address}'}),
         ),
       if ((h.phone ?? '').isNotEmpty)
-        ContactRow(icon: Icons.call_outlined, label: h.phone!, uri: Uri(scheme: 'tel', path: h.phone)),
+        ContactRow(
+          icon: Icons.call_outlined,
+          label: h.phone!,
+          uri: Uri(scheme: 'tel', path: h.phone),
+        ),
       if ((h.email ?? '').isNotEmpty)
-        ContactRow(icon: Icons.mail_outline_rounded, label: h.email!, uri: Uri(scheme: 'mailto', path: h.email)),
+        ContactRow(
+          icon: Icons.mail_outline_rounded,
+          label: h.email!,
+          uri: Uri(scheme: 'mailto', path: h.email),
+        ),
       if (websiteUri != null) ContactRow(icon: Icons.language_rounded, label: website!, uri: websiteUri),
     ];
     if (rows.isEmpty) {
-      return Text(
-        'Contact the hospital through your Heal India Global coordinator after requesting a quote.',
-        style: context.text.bodySmall,
-      );
+      return Text(context.l10n.hospitalDetailContactViaCoordinator, style: context.text.bodySmall);
     }
-    return AppCard(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: Column(children: rows));
+    return AppCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Column(children: rows),
+    );
   }
 }
 

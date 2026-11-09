@@ -7,6 +7,7 @@ import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../search/widgets/catalog_cards.dart';
 import '../../search/widgets/procedure_sheet.dart';
 import '../../search/widgets/save_button.dart';
@@ -26,9 +27,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final value = ref.watch(savedItemsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved')),
+      appBar: AppBar(title: Text(l10n.savedTitle)),
       body: AsyncValueView<List<SavedItem>>(
         value: value,
         onRetry: () => ref.invalidate(savedItemsProvider),
@@ -36,9 +38,9 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           if (all.isEmpty) {
             return EmptyView(
               icon: Icons.bookmark_border_rounded,
-              title: 'Nothing saved yet',
-              message: 'Tap the bookmark on any hospital, doctor or treatment to keep it here.',
-              actionLabel: 'Explore hospitals',
+              title: l10n.savedEmptyTitle,
+              message: l10n.savedEmptyMessage,
+              actionLabel: l10n.savedExploreHospitals,
               onAction: () => context.go(Routes.search),
             );
           }
@@ -52,14 +54,14 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                   children: [
                     ChipToggle(
-                      label: 'All (${all.length})',
+                      label: l10n.savedFilterAll(all.length),
                       selected: _filter == null,
                       onChanged: (_) => setState(() => _filter = null),
                     ),
                     for (final t in SavedEntityType.values) ...[
                       const SizedBox(width: 8),
                       ChipToggle(
-                        label: '${t.label}s (${all.where((i) => i.entityType == t).length})',
+                        label: l10n.savedFilterType(t.json, all.where((i) => i.entityType == t).length),
                         selected: _filter == t,
                         onChanged: (_) => setState(() => _filter = _filter == t ? null : t),
                       ),
@@ -72,9 +74,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                   onRefresh: () => ref.refresh(savedItemsProvider.future),
                   child: items.isEmpty
                       ? ListView(
-                          children: const [
-                            SizedBox(height: 280, child: EmptyView(title: 'Nothing saved in this category')),
-                          ],
+                          children: [SizedBox(height: 280, child: EmptyView(title: l10n.savedEmptyCategory))],
                         )
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -107,16 +107,13 @@ class _SavedTile extends StatelessWidget {
     if (p != null) return ProcedureListTile(procedure: p, onTap: () => showProcedureSheet(context, p));
     // The saved entity is no longer listed (e.g. hospital suspended): allow removing it.
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 4, 8),
       child: Row(
         children: [
           Icon(Icons.info_outline_rounded, color: context.palette.textSecondary),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              'This ${item.entityType.label.toLowerCase()} is no longer available',
-              style: context.text.bodyMedium,
-            ),
+            child: Text(context.l10n.savedNoLongerAvailable(item.entityType.json), style: context.text.bodyMedium),
           ),
           SaveButton(entityType: item.entityType, entityId: item.entityId),
         ],

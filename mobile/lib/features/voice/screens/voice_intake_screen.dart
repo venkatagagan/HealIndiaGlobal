@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../screening/widgets/emergency_guidance.dart';
 import '../data/voice_recorder.dart';
 import '../data/voice_repository.dart';
@@ -74,16 +75,13 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
     }
     if (!mounted) return;
     if (!allowed) {
-      setState(
-        () => _message =
-            'Microphone access is off. Allow it for Heal India Global in your phone settings, or type instead.',
-      );
+      setState(() => _message = context.l10n.voiceMicOff);
       return;
     }
     try {
       await _recorder.start();
     } catch (e) {
-      if (mounted) setState(() => _message = 'Could not start recording. Please try again or type instead.');
+      if (mounted) setState(() => _message = context.l10n.voiceStartFailed);
       return;
     }
     _levels = _recorder.levels().listen((l) {
@@ -113,7 +111,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
       _level = 0;
       _clip = clip;
       _phase = clip == null ? _Phase.idle : _Phase.recorded;
-      if (clip == null) _message = 'Nothing was recorded. Please try again.';
+      if (clip == null) _message = context.l10n.voiceNothingRecorded;
     });
   }
 
@@ -121,7 +119,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
     final clip = _clip;
     if (clip == null) return;
     if (!_consent) {
-      setState(() => _message = 'Please agree to the processing of your recording first.');
+      setState(() => _message = context.l10n.voiceConsentRequired);
       return;
     }
     setState(() {
@@ -153,7 +151,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
     } else if (t.status == VoiceStatus.failed) {
       setState(() {
         _phase = _Phase.recorded;
-        _message = t.error ?? 'We could not understand the recording. Try again in a quieter place, or type instead.';
+        _message = t.error ?? context.l10n.voiceNotUnderstood;
       });
     } else {
       _openReview(t.intakeSuggestion ?? const IntakeSuggestion(), t.transcript);
@@ -176,7 +174,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
   Future<void> _extract() async {
     final text = _typed.text.trim();
     if (text.length < 3) {
-      setState(() => _message = 'Please describe your problem in a few words.');
+      setState(() => _message = context.l10n.voiceExtractTooShort);
       return;
     }
     setState(() {
@@ -215,7 +213,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
         builder: (ctx) => Scaffold(
           body: EmergencyGuidanceView(
             redFlags: s.redFlags,
-            acknowledgeLabel: 'I understand - continue reviewing my answers',
+            acknowledgeLabel: ctx.l10n.voiceEmergencyAck,
             onViewResults: () => Navigator.of(ctx).pop(),
             onClose: () => Navigator.of(ctx).pop(),
           ),
@@ -269,7 +267,9 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_phase == _Phase.review ? 'Check your answers' : 'Describe it by voice')),
+      appBar: AppBar(
+        title: Text(_phase == _Phase.review ? context.l10n.voiceReviewTitle : context.l10n.voiceIntakeTitle),
+      ),
       body: switch (_phase) {
         _Phase.review => _review(context),
         _Phase.uploading || _Phase.processing || _Phase.extracting => _working(context),
@@ -294,11 +294,12 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
     final recording = _phase == _Phase.recording;
     final recorded = _phase == _Phase.recorded;
     String mmss(Duration d) => '${d.inMinutes}:${(d.inSeconds % 60).toString().padLeft(2, '0')}';
+    final l10n = context.l10n;
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       children: [
         Text(
-          'Tell us in your own words where it hurts, since when, how bad it is and what you have already tried.',
+          l10n.voiceIntro,
           textAlign: TextAlign.center,
           style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
         ),
@@ -306,7 +307,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
         Center(
           child: Semantics(
             button: true,
-            label: recording ? 'Stop recording' : (recorded ? 'Record again' : 'Start recording'),
+            label: recording ? l10n.voiceStopRecording : (recorded ? l10n.voiceRecordAgain : l10n.voiceStartRecording),
             excludeSemantics: true,
             child: GestureDetector(
               key: const ValueKey('voice-mic'),
@@ -338,15 +339,15 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
           recording
               ? '${mmss(_elapsed)} / ${mmss(VoiceRepository.maxDuration)}'
               : recorded
-              ? 'Recorded ${mmss(_clip?.duration ?? _elapsed)} · tap to record again'
-              : 'Tap to start speaking',
+              ? l10n.voiceRecordedStatus(mmss(_clip?.duration ?? _elapsed))
+              : l10n.voiceTapToStart,
           textAlign: TextAlign.center,
           style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         if (recording) ...[
           const SizedBox(height: 10),
           Semantics(
-            label: 'Input level',
+            label: l10n.voiceInputLevel,
             child: LinearProgressIndicator(value: _level, color: AppColors.danger, minHeight: 6),
           ),
         ],
@@ -360,21 +361,16 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
             controlAffinity: ListTileControlAffinity.leading,
             activeColor: AppColors.primary,
             onChanged: (v) => setState(() => _consent = v ?? false),
-            title: Text(
-              'I agree that my recording is transcribed on Heal India Global\'s own servers and that AI turns it '
-              'into answers for my screening. The audio is deleted after transcription. I will check everything '
-              'before it is used.',
-              style: context.text.bodySmall,
-            ),
+            title: Text(l10n.voiceConsentText, style: context.text.bodySmall),
           ),
           const SizedBox(height: 8),
-          PrimaryButton(label: 'Use this recording', icon: Icons.send_rounded, onPressed: _upload),
+          PrimaryButton(label: l10n.voiceUseRecording, icon: Icons.send_rounded, onPressed: _upload),
         ],
         const SizedBox(height: 16),
         TextButton.icon(
           onPressed: recording ? null : () => setState(() => _phase = _Phase.typing),
           icon: const Icon(Icons.keyboard_rounded),
-          label: const Text('Type instead'),
+          label: Text(l10n.voiceTypeInstead),
         ),
       ],
     );
@@ -389,19 +385,16 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
         minLines: 5,
         maxLines: 12,
         maxLength: 4000,
-        decoration: const InputDecoration(
-          hintText: 'Describe your problem in your own words…',
-          alignLabelWithHint: true,
-        ),
+        decoration: InputDecoration(hintText: context.l10n.voiceTypedHint, alignLabelWithHint: true),
       ),
       _messageText(context),
       const SizedBox(height: 12),
-      PrimaryButton(label: 'Fill my answers', icon: Icons.auto_awesome_rounded, onPressed: _extract),
+      PrimaryButton(label: context.l10n.voiceFillAnswers, icon: Icons.auto_awesome_rounded, onPressed: _extract),
       const SizedBox(height: 8),
       TextButton.icon(
         onPressed: () => setState(() => _phase = _clip == null ? _Phase.idle : _Phase.recorded),
         icon: const Icon(Icons.mic_rounded),
-        label: const Text('Speak instead'),
+        label: Text(context.l10n.voiceSpeakInstead),
       ),
     ],
   );
@@ -417,14 +410,14 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
           Semantics(
             liveRegion: true,
             child: Text(switch (_phase) {
-              _Phase.uploading => 'Uploading your recording…',
-              _Phase.extracting => 'Reading your description…',
-              _ => 'Listening to your recording…',
+              _Phase.uploading => context.l10n.voiceUploading,
+              _Phase.extracting => context.l10n.voiceReading,
+              _ => context.l10n.voiceListening,
             }, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
           ),
           const SizedBox(height: 8),
           Text(
-            'You will check every answer before it is used.',
+            context.l10n.voiceCheckEveryAnswer,
             textAlign: TextAlign.center,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
@@ -436,6 +429,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
   Widget _review(BuildContext context) {
     final s = _intake!;
     final t = _transcription;
+    final l10n = context.l10n;
     return Column(
       children: [
         Expanded(
@@ -457,16 +451,16 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'Some of what you described may need urgent care. Please seek local emergency care now.',
+                          l10n.voiceEmergencyBanner,
                           style: context.text.bodySmall?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
-                      TextButton(onPressed: () => _showEmergency(s), child: const Text('Guidance')),
+                      TextButton(onPressed: () => _showEmergency(s), child: Text(l10n.voiceGuidance)),
                     ],
                   ),
                 ),
               Text(
-                'Please check what we understood. Change anything that is wrong, then tap Confirm.',
+                l10n.voiceReviewIntro,
                 style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
               ),
               const SizedBox(height: 16),
@@ -477,7 +471,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
                 minLines: 2,
                 maxLines: 8,
                 decoration: InputDecoration(
-                  labelText: t == null ? 'Your description' : 'What you said',
+                  labelText: t == null ? l10n.voiceYourDescription : l10n.voiceWhatYouSaid,
                   alignLabelWithHint: true,
                 ),
                 onChanged: (v) => _transcript = v,
@@ -485,7 +479,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
               IntakeReviewForm(initial: s, enabled: !_busy, onChanged: (v) => _intake = v),
               const SizedBox(height: 12),
               Text(
-                'AI-generated suggestions — not a diagnosis.',
+                l10n.voiceAiDisclaimer,
                 textAlign: TextAlign.center,
                 style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
               ),
@@ -500,7 +494,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
               children: [
                 Expanded(
                   child: SecondaryButton(
-                    label: 'Discard',
+                    label: l10n.voiceDiscard,
                     onPressed: _busy ? null : _discard,
                     foregroundColor: context.colors.onSurface,
                   ),
@@ -509,7 +503,7 @@ class _VoiceIntakeScreenState extends ConsumerState<VoiceIntakeScreen> {
                 Expanded(
                   flex: 2,
                   child: PrimaryButton(
-                    label: 'Confirm',
+                    label: l10n.commonConfirm,
                     icon: Icons.check_rounded,
                     loading: _busy,
                     onPressed: _busy ? null : _confirm,

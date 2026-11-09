@@ -6,6 +6,10 @@ abstract final class AppTextStyles {
   /// Set to false in tests (no network font fetching) — falls back to the platform font.
   static bool useGoogleFonts = true;
 
+  /// Bundled script fonts (assets/fonts, SIL OFL) used for glyphs Inter lacks: Arabic and Bengali text
+  /// must never render as boxes, whatever fonts the device has.
+  static const List<String> scriptFallback = ['NotoSansArabic', 'NotoSansBengali'];
+
   static TextTheme textTheme(Color primary, Color secondary) {
     final base = TextTheme(
       displayLarge: TextStyle(fontSize: 48, fontWeight: FontWeight.w800, color: primary, height: 1.1),
@@ -24,7 +28,7 @@ abstract final class AppTextStyles {
       labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: secondary, letterSpacing: 0.2),
       labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: secondary, letterSpacing: 0.3),
     );
-    return useGoogleFonts ? GoogleFonts.interTextTheme(base) : base;
+    return (useGoogleFonts ? GoogleFonts.interTextTheme(base) : base).apply(fontFamilyFallback: scriptFallback);
   }
 
   /// Big countdown number on the pre-arrival dashboard ("23 days").
@@ -34,6 +38,7 @@ abstract final class AppTextStyles {
     color: color,
     height: 1,
     fontFamily: useGoogleFonts ? GoogleFonts.inter().fontFamily : null,
+    fontFamilyFallback: scriptFallback,
   );
 
   /// Price emphasis on match cards ("$12,500").
@@ -42,5 +47,6 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w800,
     color: color,
     fontFamily: useGoogleFonts ? GoogleFonts.inter().fontFamily : null,
+    fontFamilyFallback: scriptFallback,
   );
 }

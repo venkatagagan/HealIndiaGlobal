@@ -7,6 +7,7 @@ import '../../../core/repositories/document_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../documents_ai/widgets/report_ai_entry.dart';
 import '../services/file_actions.dart';
 
@@ -36,9 +37,10 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   Widget build(BuildContext context) {
     final docs = ref.watch(documentsProvider(_query));
     final uploading = _progress != null;
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Documents'),
+        title: Text(l10n.documentsTitle),
         centerTitle: true,
         // documents_ai entry point (PLAN §7.1): scan a report + AI readings → /reports/analysis/:id
         actions: [
@@ -51,7 +53,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
         foregroundColor: Colors.white,
         onPressed: uploading ? null : _upload,
         icon: const Icon(Icons.upload_file_rounded),
-        label: const Text('Upload'),
+        label: Text(l10n.commonUpload),
       ),
       body: Column(
         children: [
@@ -62,7 +64,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               children: [
                 ChipToggle(
-                  label: 'All',
+                  label: l10n.caseFilterAll,
                   selected: _kind == null,
                   selectedColor: AppColors.violet,
                   onChanged: (_) => setState(() => _kind = null),
@@ -89,7 +91,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Uploading ${_uploadingName ?? ''}', style: context.text.bodySmall),
+                  Text(l10n.documentsUploading(_uploadingName ?? ''), style: context.text.bodySmall),
                   const SizedBox(height: 4),
                   LinearProgressIndicator(value: _progress == 0 ? null : _progress),
                 ],
@@ -109,11 +111,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         const SizedBox(height: 40),
                         EmptyView(
                           icon: Icons.folder_open_rounded,
-                          title: 'No documents yet',
-                          message:
-                              'Upload your passport, medical reports, scans and prescriptions. '
-                              'PDF, JPG, PNG, WEBP, HEIC or DICOM up to 20 MB.',
-                          actionLabel: 'Upload a document',
+                          title: l10n.documentsEmptyTitle,
+                          message: l10n.documentsEmptyBody,
+                          actionLabel: l10n.documentsUploadADocument,
                           onAction: uploading ? null : _upload,
                         ),
                       ],
@@ -133,7 +133,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                'Shared only with your care team and the hospital on your case.',
+                                l10n.documentsSharedNote,
                                 style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                               ),
                             ),
@@ -175,7 +175,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
           );
       ref.invalidate(documentsProvider);
       if (widget.caseId != null) ref.invalidate(caseDetailProvider(widget.caseId!));
-      if (mounted) showInfoSnack(context, '${file.name} uploaded');
+      if (mounted) showInfoSnack(context, context.l10n.documentsUploaded(file.name));
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
@@ -192,14 +192,14 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete document?'),
-        content: Text('${d.fileName} will be removed for you and your care team.'),
+        title: Text(ctx.l10n.documentsDeleteTitle),
+        content: Text(ctx.l10n.documentsDeleteBody(d.fileName)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Keep')),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(ctx.l10n.documentsKeep)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.dangerStrong, foregroundColor: Colors.white),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
+            child: Text(ctx.l10n.commonDelete),
           ),
         ],
       ),
@@ -245,17 +245,17 @@ class _DocumentTile extends ConsumerWidget {
           children: [
             StatusBadge.forEnum(doc.status, dense: true),
             PopupMenuButton<_DocAction>(
-              tooltip: 'Document actions',
+              tooltip: context.l10n.documentsActionsTooltip,
               onSelected: (a) => switch (a) {
                 _DocAction.open => openDocument(context, repo, doc),
                 _DocAction.download => downloadDocument(context, repo, doc),
                 _DocAction.delete => Future.sync(onDelete),
               },
               itemBuilder: (_) => [
-                const PopupMenuItem(value: _DocAction.open, child: Text('Open')),
-                const PopupMenuItem(value: _DocAction.download, child: Text('Download')),
+                PopupMenuItem(value: _DocAction.open, child: Text(context.l10n.commonOpen)),
+                PopupMenuItem(value: _DocAction.download, child: Text(context.l10n.commonDownload)),
                 if (doc.status != DocumentStatus.verified)
-                  const PopupMenuItem(value: _DocAction.delete, child: Text('Delete')),
+                  PopupMenuItem(value: _DocAction.delete, child: Text(context.l10n.commonDelete)),
               ],
             ),
           ],
