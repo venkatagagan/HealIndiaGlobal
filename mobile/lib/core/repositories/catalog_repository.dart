@@ -1,13 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../config/app_preferences.dart';
 import '../models/models.dart';
 import '../network/api_client.dart';
 
 /// Public catalog endpoints (PLAN §8.4). All calls work without a session.
+///
+/// Priced reads pass `?currency=` (the patient's display currency) so the API adds approximate
+/// `display_*` amounts next to the original INR prices.
 class CatalogRepository {
-  CatalogRepository(this._api);
+  CatalogRepository(this._api, {this.currency});
 
   final ApiClient _api;
+
+  /// Display currency for `display_*` amounts (null: the server default).
+  final String? currency;
 
   /// `GET /specialties`
   Future<List<Specialty>> specialties() async => parseList(await _api.get('/specialties'), Specialty.fromJson);
@@ -17,14 +24,24 @@ class CatalogRepository {
       Specialty.fromJson(asJsonMap(await _api.get('/specialties/${Uri.encodeComponent(slug)}')));
 
   /// `GET /procedures?specialty=&q=`
-  Future<List<Procedure>> procedures({String? specialty, String? q}) async =>
-      parseList(await _api.get('/procedures', query: {'specialty': specialty, 'q': q}), Procedure.fromJson);
+  Future<List<Procedure>> procedures({String? specialty, String? q}) async => parseList(
+    await _api.get('/procedures', query: {'specialty': specialty, 'q': q, 'currency': currency}),
+    Procedure.fromJson,
+  );
 
   /// `GET /procedures/{slug}`
-  Future<Procedure> procedure(String slug) async =>
-      Procedure.fromJson(asJsonMap(await _api.get('/procedures/${Uri.encodeComponent(slug)}')));
+  Future<Procedure> procedure(String slug) async => Procedure.fromJson(
+    asJsonMap(await _api.get('/procedures/${Uri.encodeComponent(slug)}', query: {'currency': currency})),
+  );
 
-  /// `GET /hospitals?q=&city=&specialty=&procedure=&accreditation=&language=&sort=rating|price|name&page=`
+  /// `GET /procedures/{slug}/earliest` — hospitals offering it, earliest free admission day first.
+  Future<ProcedureEarliest> procedureEarliest(String slug, {int limit = 20}) async => ProcedureEarliest.fromJson(
+    asJsonMap(
+      await _api.get('/procedures/${Uri.encodeComponent(slug)}/earliest', query: {'limit': limit, 'currency': currency}),
+    ),
+  );
+
+  /// `GET /hospitals?q=&city=&specialty=&procedure=&accreditation=&language=&sort=rating|price|name|soonest&page=`
   Future<Paged<HospitalCard>> hospitals({
     String? q,
     String? city,
@@ -48,16 +65,27 @@ class CatalogRepository {
         'sort': sort,
         'page': page,
         'page_size': pageSize,
+        'currency': currency,
       },
     ),
     HospitalCard.fromJson,
   );
 
   /// `GET /hospitals/{slug_or_id}`
-  Future<HospitalDetail> hospital(String slugOrId) async =>
-      HospitalDetail.fromJson(asJsonMap(await _api.get('/hospitals/${Uri.encodeComponent(slugOrId)}')));
+  Future<HospitalDetail> hospital(String slugOrId) async => HospitalDetail.fromJson(
+    asJsonMap(await _api.get('/hospitals/${Uri.encodeComponent(slugOrId)}', query: {'currency': currency})),
+  );
 
-  /// `GET /doctors?q=&specialty=&hospital_id=&language=&gender=&procedure=&page=`
+  /// `GET /hospitals/{slug_or_id}/reviews?page=` — published reviews, newest first.
+  Future<Paged<Review>> hospitalReviews(String slugOrId, {int page = 1, int pageSize = 20}) async => Paged.fromJson(
+    await _api.get(
+      '/hospitals/${Uri.encodeComponent(slugOrId)}/reviews',
+      query: {'page': page, 'page_size': pageSize},
+    ),
+    Review.fromJson,
+  );
+
+  /// `GET /doctors?q=&specialty=&hospital_id=&language=&gender=&procedure=&sort=soonest|experience&page=`
   Future<Paged<DoctorCard>> doctors({
     String? q,
     String? specialty,
@@ -65,6 +93,7 @@ class CatalogRepository {
     String? language,
     Gender? gender,
     String? procedure,
+    String? sort,
     int page = 1,
     int pageSize = 20,
   }) async => Paged.fromJson(
@@ -77,16 +106,25 @@ class CatalogRepository {
         'language': language,
         'gender': gender?.json,
         'procedure': procedure,
+        'sort': sort,
         'page': page,
         'page_size': pageSize,
+        'currency': currency,
       },
     ),
     DoctorCard.fromJson,
   );
 
   /// `GET /doctors/{id}`
-  Future<DoctorDetail> doctor(String id) async =>
-      DoctorDetail.fromJson(asJsonMap(await _api.get('/doctors/${Uri.encodeComponent(id)}')));
+  Future<DoctorDetail> doctor(String id) async => DoctorDetail.fromJson(
+    asJsonMap(await _api.get('/doctors/${Uri.encodeComponent(id)}', query: {'currency': currency})),
+  );
+
+  /// `GET /doctors/{id}/reviews?page=`
+  Future<Paged<Review>> doctorReviews(String id, {int page = 1, int pageSize = 20}) async => Paged.fromJson(
+    await _api.get('/doctors/${Uri.encodeComponent(id)}/reviews', query: {'page': page, 'page_size': pageSize}),
+    Review.fromJson,
+  );
 
   /// `GET /doctors/{id}/availability?from=&to=`
   Future<List<AvailabilitySlot>> doctorAvailability(String doctorId, {DateTime? from, DateTime? to}) async => parseList(
@@ -105,17 +143,31 @@ class CatalogRepository {
     AvailabilitySlot.fromJson,
   );
 
-  /// `GET /cost-comparison?procedure=<slug>&country=US&currency=USD`
-  Future<CostComparison> costComparison({required String procedure, required String country, String? currency}) async =>
+  /// `GET /cost-comparison?procedure=<slug>&country=US&currency=USD` (country null: detected by the API).
+  Future<CostComparison> costComparison({required String procedure, String? country, String? currency}) async =>
       CostComparison.fromJson(
         asJsonMap(
-          await _api.get('/cost-comparison', query: {'procedure': procedure, 'country': country, 'currency': currency}),
+          await _api.get(
+            '/cost-comparison',
+            query: {'procedure': procedure, 'country': country, 'currency': currency ?? this.currency},
+          ),
+        ),
+      );
+
+  /// `GET /cost-comparison/highlights?country=&currency=&limit=` (country null: detected by the API).
+  Future<CostHighlights> costHighlights({String? country, String? currency, int limit = 6}) async =>
+      CostHighlights.fromJson(
+        asJsonMap(
+          await _api.get(
+            '/cost-comparison/highlights',
+            query: {'country': country, 'currency': currency ?? this.currency, 'limit': limit},
+          ),
         ),
       );
 
   /// `GET /search?q=`
   Future<SearchResults> search(String q) async =>
-      SearchResults.fromJson(asJsonMap(await _api.get('/search', query: {'q': q})));
+      SearchResults.fromJson(asJsonMap(await _api.get('/search', query: {'q': q, 'currency': currency})));
 
   /// `GET /content/cultural-tips`
   Future<List<CulturalTip>> culturalTips() async =>
@@ -147,7 +199,10 @@ class CatalogRepository {
       );
 }
 
-final catalogRepositoryProvider = Provider<CatalogRepository>((ref) => CatalogRepository(ref.watch(apiClientProvider)));
+/// Rebuilt when the display currency changes, so every priced catalog read refreshes its `display_*` amounts.
+final catalogRepositoryProvider = Provider<CatalogRepository>(
+  (ref) => CatalogRepository(ref.watch(apiClientProvider), currency: ref.watch(preferredCurrencyProvider)),
+);
 
 /// All active specialties (home grid). Kept alive for the session.
 final specialtiesProvider = FutureProvider<List<Specialty>>(
@@ -169,6 +224,11 @@ final procedureDetailProvider = FutureProvider.autoDispose.family<Procedure, Str
   (ref, slug) => ref.watch(catalogRepositoryProvider).procedure(slug),
 );
 
+/// Hospitals offering a procedure, earliest date first.
+final procedureEarliestProvider = FutureProvider.autoDispose.family<ProcedureEarliest, String>(
+  (ref, slug) => ref.watch(catalogRepositoryProvider).procedureEarliest(slug),
+);
+
 /// Unified search (debounce in the UI before changing the query).
 final searchResultsProvider = FutureProvider.autoDispose.family<SearchResults, String>((ref, q) {
   if (q.trim().length < 2) return Future.value(const SearchResults());
@@ -176,13 +236,40 @@ final searchResultsProvider = FutureProvider.autoDispose.family<SearchResults, S
 });
 
 /// Arguments of [costComparisonProvider].
-typedef CostComparisonArgs = ({String procedure, String country, String? currency});
+typedef CostComparisonArgs = ({String procedure, String? country, String? currency});
 
 final costComparisonProvider = FutureProvider.autoDispose.family<CostComparison, CostComparisonArgs>(
   (ref, a) => ref
       .watch(catalogRepositoryProvider)
       .costComparison(procedure: a.procedure, country: a.country, currency: a.currency),
 );
+
+/// Home-country override picked on the home screen ("Prices for `country` · change"). Null: let the API
+/// detect the country (profile, account, network).
+final homeCountryProvider = NotifierProvider<HomeCountryController, String?>(HomeCountryController.new);
+
+class HomeCountryController extends Notifier<String?> {
+  static const prefKey = 'hig.home_country';
+
+  @override
+  String? build() => ref.watch(sharedPreferencesProvider).getString(prefKey);
+
+  Future<void> set(String? country) async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    if (country == null) {
+      await prefs.remove(prefKey);
+    } else {
+      await prefs.setString(prefKey, country.toUpperCase());
+    }
+    state = country?.toUpperCase();
+  }
+}
+
+/// "Your country vs India" highlights for the home screen (country override + display currency).
+final costHighlightsProvider = FutureProvider.autoDispose<CostHighlights>((ref) {
+  final country = ref.watch(homeCountryProvider);
+  return ref.watch(catalogRepositoryProvider).costHighlights(country: country);
+});
 
 final culturalTipsProvider = FutureProvider<List<CulturalTip>>(
   (ref) => ref.watch(catalogRepositoryProvider).culturalTips(),

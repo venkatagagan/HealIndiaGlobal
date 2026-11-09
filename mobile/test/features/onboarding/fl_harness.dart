@@ -171,9 +171,40 @@ class FakeCatalogRepository extends CatalogRepository {
     String? language,
     Gender? gender,
     String? procedure,
+    String? sort,
     int page = 1,
     int pageSize = 20,
   }) async => Paged(items: doctorItems, total: doctorItems.length, page: 1, pageSize: pageSize, pages: 1);
+
+  /// Answer of [costHighlights] (empty list by default).
+  CostHighlights highlights = const CostHighlights(
+    country: HomeCountryInfo(countryUsed: 'US'),
+    currency: 'USD',
+  );
+  final List<String?> highlightCountries = [];
+
+  @override
+  Future<CostHighlights> costHighlights({String? country, String? currency, int limit = 6}) async {
+    highlightCountries.add(country);
+    return highlights;
+  }
+
+  /// Answer of [procedureEarliest].
+  ProcedureEarliest? earliest;
+
+  @override
+  Future<ProcedureEarliest> procedureEarliest(String slug, {int limit = 20}) async =>
+      earliest ?? ProcedureEarliest(procedure: EntityRef(id: 'p-$slug', slug: slug, name: slug));
+
+  final List<Review> reviewItems = [];
+
+  @override
+  Future<Paged<Review>> hospitalReviews(String slugOrId, {int page = 1, int pageSize = 20}) async =>
+      Paged(items: reviewItems, total: reviewItems.length, page: 1, pageSize: pageSize, pages: 1);
+
+  @override
+  Future<Paged<Review>> doctorReviews(String id, {int page = 1, int pageSize = 20}) async =>
+      Paged(items: reviewItems, total: reviewItems.length, page: 1, pageSize: pageSize, pages: 1);
 
   @override
   Future<List<Procedure>> procedures({String? specialty, String? q}) async => procedureItems;

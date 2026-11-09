@@ -1,5 +1,8 @@
+import '../../l10n/l10n.dart';
 import 'enums.dart';
+import 'hospital.dart';
 import 'json.dart';
+import 'money.dart';
 import 'package.dart';
 import 'refs.dart';
 
@@ -22,6 +25,10 @@ class DoctorCard {
     this.consultationFeeMinor,
     this.currency = 'INR',
     this.teleconsultAvailable = false,
+    this.displayConsultationFee,
+    this.registrationVerified = false,
+    this.nextAvailableConsultation,
+    this.nextAvailableAdmission,
   });
 
   factory DoctorCard.fromJson(JsonMap j) => DoctorCard(
@@ -41,6 +48,10 @@ class DoctorCard {
     currency: jStr(j, 'currency', 'INR'),
     teleconsultAvailable: jBool(j, 'teleconsult_available'),
     hospital: HospitalRef.fromJson(jMap(j, 'hospital')),
+    displayConsultationFee: DisplayMoney.read(j, 'display_consultation_fee'),
+    registrationVerified: jBool(j, 'registration_verified'),
+    nextAvailableConsultation: jDay(j, 'next_available_consultation'),
+    nextAvailableAdmission: jDay(j, 'next_available_admission'),
   );
 
   final String id;
@@ -60,11 +71,19 @@ class DoctorCard {
   final bool teleconsultAvailable;
   final HospitalRef hospital;
 
+  /// [consultationFeeMinor] in the viewer's currency (approximate).
+  final DisplayMoney? displayConsultationFee;
+
+  /// The medical registration was checked against the NMC / State Medical Council register.
+  final bool registrationVerified;
+  final DateTime? nextAvailableConsultation;
+  final DateTime? nextAvailableAdmission;
+
   /// `Cardiologist | 15 years of experience`
   String get subtitle {
     final parts = <String>[
       if (specialty != null) specialty!.name,
-      if (experienceYears != null) '$experienceYears years of experience',
+      if (experienceYears != null) L10n.current.doctorYearsOfExperience(experienceYears!),
     ];
     return parts.join(' | ');
   }
@@ -86,10 +105,14 @@ class DoctorCard {
     'currency': currency,
     'teleconsult_available': teleconsultAvailable,
     'hospital': hospital.toJson(),
+    'display_consultation_fee': displayConsultationFee?.toJson(),
+    'registration_verified': registrationVerified,
+    'next_available_consultation': nextAvailableConsultation == null ? null : toApiDate(nextAvailableConsultation!),
+    'next_available_admission': nextAvailableAdmission == null ? null : toApiDate(nextAvailableAdmission!),
   };
 }
 
-/// `DoctorDetail = DoctorCard + {bio, sub_specialties[], procedures, next_available_date}`.
+/// `DoctorDetail = DoctorCard + {bio, sub_specialties[], procedures, next_available_date, reviews}`.
 class DoctorDetail extends DoctorCard {
   const DoctorDetail({
     required super.id,
@@ -108,10 +131,16 @@ class DoctorDetail extends DoctorCard {
     super.consultationFeeMinor,
     super.currency,
     super.teleconsultAvailable,
+    super.displayConsultationFee,
+    super.registrationVerified,
+    super.nextAvailableConsultation,
+    super.nextAvailableAdmission,
     this.bio,
     this.subSpecialties = const [],
     this.procedures = const [],
     this.nextAvailableDate,
+    this.registrationCouncilName,
+    this.reviews = const [],
   });
 
   factory DoctorDetail.fromJson(JsonMap j) {
@@ -133,10 +162,16 @@ class DoctorDetail extends DoctorCard {
       consultationFeeMinor: c.consultationFeeMinor,
       currency: c.currency,
       teleconsultAvailable: c.teleconsultAvailable,
+      displayConsultationFee: c.displayConsultationFee,
+      registrationVerified: c.registrationVerified,
+      nextAvailableConsultation: c.nextAvailableConsultation,
+      nextAvailableAdmission: c.nextAvailableAdmission,
       bio: jStrOrNull(j, 'bio'),
       subSpecialties: jStrList(j, 'sub_specialties'),
       procedures: jList(j, 'procedures', HospitalProcedure.fromJson),
       nextAvailableDate: jDay(j, 'next_available_date'),
+      registrationCouncilName: jStrOrNull(j, 'registration_council_name'),
+      reviews: jList(j, 'reviews', Review.fromJson),
     );
   }
 
@@ -145,6 +180,12 @@ class DoctorDetail extends DoctorCard {
   final List<HospitalProcedure> procedures;
   final DateTime? nextAvailableDate;
 
+  /// Council that registered the doctor (shown with the "Registration verified" badge).
+  final String? registrationCouncilName;
+
+  /// Latest published reviews naming this doctor.
+  final List<Review> reviews;
+
   @override
   Map<String, dynamic> toJson() => {
     ...super.toJson(),
@@ -152,5 +193,7 @@ class DoctorDetail extends DoctorCard {
     'sub_specialties': subSpecialties,
     'procedures': procedures.map((p) => p.toJson()).toList(),
     'next_available_date': nextAvailableDate == null ? null : toApiDate(nextAvailableDate!),
+    'registration_council_name': registrationCouncilName,
+    'reviews': reviews.map((r) => r.toJson()).toList(),
   };
 }

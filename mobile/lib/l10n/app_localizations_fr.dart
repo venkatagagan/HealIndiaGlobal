@@ -7579,4 +7579,232 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get agentScreeningRequested => 'Requested';
+
+  @override
+  String doctorYearsOfExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years of experience',
+      one: '$count year of experience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String privacyAccessLine(String who, String role, String action, String record) {
+    return '$who ($role) $action $record';
+  }
+
+  @override
+  String get privacyRoleHospital => 'Hospital';
+
+  @override
+  String get privacyRoleAgent => 'Your agent';
+
+  @override
+  String get privacyRoleSupport => 'Care coordinator';
+
+  @override
+  String get privacyRoleFinance => 'Finance team';
+
+  @override
+  String get privacyRoleStaff => 'Heal India Global staff';
+
+  @override
+  String get privacyRoleSomeone => 'Someone';
+
+  @override
+  String get privacyActionDownloaded => 'downloaded';
+
+  @override
+  String get privacyActionListed => 'saw in a list';
+
+  @override
+  String get privacyActionEmergency => 'opened in an emergency';
+
+  @override
+  String get privacyActionViewed => 'viewed';
+
+  @override
+  String get privacyRecordDocument => 'a document';
+
+  @override
+  String get privacyRecordScreening => 'a screening';
+
+  @override
+  String get privacyRecordReportReading => 'an AI report reading';
+
+  @override
+  String get privacyRecordVoice => 'a voice transcript';
+
+  @override
+  String get privacyRecordHistory => 'your medical history';
+
+  @override
+  String get privacyRecordOther => 'a record';
+
+  @override
+  String get privacyGroupTitle => 'Privacy';
+
+  @override
+  String get privacyDownloadTitle => 'Download my data';
+
+  @override
+  String get privacyDownloadSubtitle => 'A ZIP file with everything we hold about you and your documents';
+
+  @override
+  String get privacyDownloadSaved => 'Your data has been saved';
+
+  @override
+  String get privacyAccessLogTitle => 'Who viewed my records';
+
+  @override
+  String get privacyAccessLogSubtitle => 'Hospitals, agents and staff who opened your health records';
+
+  @override
+  String get privacyAccessLogError => 'We could not load the list.';
+
+  @override
+  String get privacyAccessLogEmpty => 'Nobody else has viewed your records yet.';
+
+  @override
+  String privacyAccessLogReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String priceApproxSemantics(String approx, String original) {
+    return 'About $approx. The hospital charges $original.';
+  }
+
+  @override
+  String priceOriginalAmount(String amount) {
+    return '$amount at the hospital';
+  }
+
+  @override
+  String trustAccreditationVerifiedSemantics(String body) {
+    return '$body accreditation, verified';
+  }
+
+  @override
+  String earliestConsultation(String date) {
+    return 'Earliest consult: $date';
+  }
+
+  @override
+  String earliestAdmission(String date) {
+    return 'Earliest admission: $date';
+  }
+
+  @override
+  String get earliestToday => 'today';
+
+  @override
+  String get earliestTomorrow => 'tomorrow';
+
+  @override
+  String quoteTimeLeft(int days, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days $time left',
+      one: '$days day $time left',
+      zero: '$time left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quoteDueBy(String time) {
+    return 'Quote due by $time';
+  }
+
+  @override
+  String quoteRespondBy(String time) {
+    return 'Respond by $time';
+  }
+
+  @override
+  String get quoteOverduePatient => 'Overdue — we\'re chasing the hospital';
+
+  @override
+  String get quoteOverdueHospital => 'Overdue';
+
+  @override
+  String get guestAiLimitReached => 'You\'ve used today\'s 3 free scans — create a free account to continue.';
+
+  @override
+  String get guestCreateFreeAccount => 'Create a free account';
+
+  @override
+  String get guardianConsentRequiredMessage =>
+      'Because you are under 18, a parent or legal guardian must give consent first.';
+
+  @override
+  String get filtersSortSoonest => 'Soonest available';
+
+  @override
+  String get trustAccreditationsTitle => 'Verified accreditations';
+
+  @override
+  String get trustAccreditationVerified => 'Verified';
+
+  @override
+  String trustAccreditationVerifiedUntil(String date) {
+    return 'Verified · valid until $date';
+  }
+
+  @override
+  String get trustRegistrationVerified => 'Registration verified';
+
+  @override
+  String trustRegistrationVerifiedSemantics(String council) {
+    return 'Medical registration verified $council';
+  }
+
+  @override
+  String reviewStarsSemantics(int rating) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rating,
+      locale: localeName,
+      other: 'Rated $rating stars out of 5',
+      one: 'Rated 1 star out of 5',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewVerifiedPatient => 'Verified patient';
+
+  @override
+  String reviewVerifiedPatientFor(String treatment) {
+    return 'Verified patient · $treatment';
+  }
+
+  @override
+  String reviewByPatient(String name) {
+    return '- $name';
+  }
+
+  @override
+  String get reviewsTitle => 'Patient reviews';
+
+  @override
+  String get reviewsEmptyTitle => 'No reviews yet';
+
+  @override
+  String get reviewsEmptyMessage => 'Reviews appear here after patients complete their treatment.';
+
+  @override
+  String reviewsSeeAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'See all $count reviews',
+      one: 'See the review',
+    );
+    return '$_temp0';
+  }
 }

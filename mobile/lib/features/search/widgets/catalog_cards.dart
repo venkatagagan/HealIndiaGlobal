@@ -1,70 +1,47 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/config/app_preferences.dart';
 import '../../../core/models/models.dart';
-import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import 'save_button.dart';
 
-/// Price in the patient's preferred currency (display-only FX estimate, prefixed with "≈"), falling
-/// back to the original currency when no rate is known.
-class ApproxPrice extends ConsumerWidget {
-  const ApproxPrice(this.minor, this.currency, {super.key, this.maxMinor, this.style, this.prefix = ''});
+/// Price in the patient's currency (server `display_*` amount, "≈"), see [PriceText].
+typedef ApproxPrice = PriceText;
 
-  final int minor;
-  final int? maxMinor;
-  final String currency;
-  final TextStyle? style;
-  final String prefix;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final preferred = ref.watch(preferredCurrencyProvider);
-    final fx = ref.watch(fxRatesProvider).value;
-    final from = currency.toUpperCase();
-    final canConvert =
-        preferred != from &&
-        fx != null &&
-        (from == 'INR' || fx.containsKey(from)) &&
-        (preferred == 'INR' || fx.containsKey(preferred));
-    if (!canConvert) {
-      return MoneyText(minor, from, maxMinor: maxMinor, style: style, prefix: prefix);
-    }
-    final lo = convertMinor(minor, from, preferred, fx);
-    final hi = maxMinor == null ? null : convertMinor(maxMinor!, from, preferred, fx);
-    return Tooltip(
-      message: context.l10n.catalogApproxPriceTooltip(formatMoney(minor, from)),
-      child: MoneyText(lo, preferred, maxMinor: hi, style: style, prefix: '$prefix≈ '),
-    );
-  }
-}
-
-/// JCI / NABH / NABL / ISO pills.
+/// JCI / NABH / NABL / ISO pills. Accreditations a platform admin checked ([verified]) get the verified
+/// tick; self-declared ones are shown plain.
 class AccreditationBadges extends StatelessWidget {
-  const AccreditationBadges(this.accreditations, {super.key, this.dense = true});
+  const AccreditationBadges(this.accreditations, {super.key, this.verified = const [], this.dense = true});
 
   final List<String> accreditations;
+  final List<AccreditationBadge> verified;
   final bool dense;
 
   @override
   Widget build(BuildContext context) {
-    if (accreditations.isEmpty) return const SizedBox.shrink();
+    final verifiedBodies = {for (final v in verified) v.body.toLowerCase()};
+    final declared = accreditations.where((a) => !verifiedBodies.contains(a.toLowerCase()));
+    if (verifiedBodies.isEmpty && declared.isEmpty) return const SizedBox.shrink();
+    final l10n = context.l10n;
     return Wrap(
       spacing: 6,
       runSpacing: 4,
       children: [
-        for (final a in accreditations)
-          StatusBadge(
-            label: a.toUpperCase(),
-            color: a.toLowerCase() == 'jci' ? AppColors.primary : AppColors.info,
-            icon: Icons.verified_outlined,
-            dense: dense,
+        for (final v in verified)
+          Semantics(
+            label: l10n.trustAccreditationVerifiedSemantics(v.body.toUpperCase()),
+            excludeSemantics: true,
+            child: StatusBadge(
+              label: v.body.toUpperCase(),
+              color: v.body.toLowerCase() == 'jci' ? AppColors.primary : AppColors.info,
+              icon: Icons.verified_rounded,
+              dense: dense,
+            ),
           ),
+        for (final a in declared)
+          StatusBadge(label: a.toUpperCase(), color: context.palette.textSecondary, dense: dense),
       ],
     );
   }
@@ -149,13 +126,13 @@ class HospitalListTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   RatingStars(rating: h.ratingAvg!, count: h.ratingCount, size: 14),
                 ],
-                if (h.accreditations.isNotEmpty || h.internationalDesk) ...[
+                if (h.accreditations.isNotEmpty || h.accreditationsVerified.isNotEmpty || h.internationalDesk) ...[
                   const SizedBox(height: 6),
                   Wrap(
                     spacing: 6,
                     runSpacing: 4,
                     children: [
-                      AccreditationBadges(h.accreditations),
+                      AccreditationBadges(h.accreditations, verified: h.accreditationsVerified),
                       if (h.internationalDesk)
                         StatusBadge(
                           label: context.l10n.catalogInternationalDesk,
@@ -166,11 +143,16 @@ class HospitalListTile extends StatelessWidget {
                     ],
                   ),
                 ],
+                if (h.nextAvailableConsultation != null || h.nextAvailableAdmission != null) ...[
+                  const SizedBox(height: 6),
+                  EarliestDates(consultation: h.nextAvailableConsultation, admission: h.nextAvailableAdmission),
+                ],
                 if (h.startingPriceMinor != null) ...[
                   const SizedBox(height: 6),
                   ApproxPrice(
                     h.startingPriceMinor!,
                     h.currency,
+                    display: h.displayStartingPrice,
                     prefix: context.l10n.catalogPriceFromPrefix,
                     style: context.text.labelLarge?.copyWith(color: AppColors.primary),
                   ),
@@ -226,6 +208,13 @@ class DoctorListTile extends StatelessWidget {
                   spacing: 6,
                   runSpacing: 4,
                   children: [
+                    if (d.registrationVerified)
+                      StatusBadge(
+                        label: context.l10n.trustRegistrationVerified,
+                        color: AppColors.primary,
+                        icon: Icons.verified_user_outlined,
+                        dense: true,
+                      ),
                     if (d.successRatePct != null)
                       StatusBadge(
                         label: context.l10n.catalogSuccessBadge(d.successRatePct!.round()),
@@ -243,6 +232,10 @@ class DoctorListTile extends StatelessWidget {
                       StatusBadge(label: l, color: context.palette.textSecondary, dense: true),
                   ],
                 ),
+                if (d.nextAvailableConsultation != null || d.nextAvailableAdmission != null) ...[
+                  const SizedBox(height: 6),
+                  EarliestDates(consultation: d.nextAvailableConsultation, admission: d.nextAvailableAdmission),
+                ],
               ],
             ),
           ),
@@ -296,6 +289,8 @@ class ProcedureListTile extends StatelessWidget {
                     p.indiaPriceMinMinor!,
                     p.currency,
                     maxMinor: p.indiaPriceMaxMinor,
+                    display: p.displayIndiaPriceMin,
+                    displayMax: p.displayIndiaPriceMax,
                     style: context.text.labelLarge?.copyWith(color: AppColors.primary),
                   ),
                 ],

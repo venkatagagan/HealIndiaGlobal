@@ -10667,5 +10667,351 @@
   "agentScreeningRequested": "Requested",
   "@agentScreeningRequested": {
     "description": "Agent screening result: a quote was requested from this hospital."
+  },
+  "doctorYearsOfExperience": "{count, plural, one{{count} year of experience} other{{count} years of experience}}",
+  "@doctorYearsOfExperience": {
+    "description": "Doctor subtitle: years of clinical experience.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "privacyAccessLine": "{who} ({role}) {action} {record}",
+  "@privacyAccessLine": {
+    "description": "Access log line: who (name or role), their role, what they did and to which record. Example: 'Dr Rao (Hospital) downloaded a document'.",
+    "placeholders": {
+      "who": {
+        "type": "String",
+        "example": "Dr Rao"
+      },
+      "role": {
+        "type": "String",
+        "example": "Hospital"
+      },
+      "action": {
+        "type": "String",
+        "example": "downloaded"
+      },
+      "record": {
+        "type": "String",
+        "example": "a document"
+      }
+    }
+  },
+  "privacyRoleHospital": "Hospital",
+  "@privacyRoleHospital": {
+    "description": "Access log: viewer role, a hospital team member."
+  },
+  "privacyRoleAgent": "Your agent",
+  "@privacyRoleAgent": {
+    "description": "Access log: viewer role, the patient's agent / facilitator."
+  },
+  "privacyRoleSupport": "Care coordinator",
+  "@privacyRoleSupport": {
+    "description": "Access log: viewer role, platform care coordinator."
+  },
+  "privacyRoleFinance": "Finance team",
+  "@privacyRoleFinance": {
+    "description": "Access log: viewer role, platform finance team."
+  },
+  "privacyRoleStaff": "Heal India Global staff",
+  "@privacyRoleStaff": {
+    "description": "Access log: viewer role, platform administrators. Keep the brand name in Latin script."
+  },
+  "privacyRoleSomeone": "Someone",
+  "@privacyRoleSomeone": {
+    "description": "Access log: unknown viewer role."
+  },
+  "privacyActionDownloaded": "downloaded",
+  "@privacyActionDownloaded": {
+    "description": "Access log verb: downloaded a record (lowercase, used inside a sentence)."
+  },
+  "privacyActionListed": "saw in a list",
+  "@privacyActionListed": {
+    "description": "Access log verb: saw the record in a list."
+  },
+  "privacyActionEmergency": "opened in an emergency",
+  "@privacyActionEmergency": {
+    "description": "Access log verb: opened the record using emergency access."
+  },
+  "privacyActionViewed": "viewed",
+  "@privacyActionViewed": {
+    "description": "Access log verb: viewed the record."
+  },
+  "privacyRecordDocument": "a document",
+  "@privacyRecordDocument": {
+    "description": "Access log object: a medical document."
+  },
+  "privacyRecordScreening": "a screening",
+  "@privacyRecordScreening": {
+    "description": "Access log object: an AI screening questionnaire."
+  },
+  "privacyRecordReportReading": "an AI report reading",
+  "@privacyRecordReportReading": {
+    "description": "Access log object: an AI reading of a medical report."
+  },
+  "privacyRecordVoice": "a voice transcript",
+  "@privacyRecordVoice": {
+    "description": "Access log object: a voice intake transcript."
+  },
+  "privacyRecordHistory": "your medical history",
+  "@privacyRecordHistory": {
+    "description": "Access log object: the patient's medical history."
+  },
+  "privacyRecordOther": "a record",
+  "@privacyRecordOther": {
+    "description": "Access log object: any other record."
+  },
+  "privacyGroupTitle": "Privacy",
+  "@privacyGroupTitle": {
+    "description": "Profile section heading: privacy and data rights."
+  },
+  "privacyDownloadTitle": "Download my data",
+  "@privacyDownloadTitle": {
+    "description": "Profile row: download a copy of all personal data."
+  },
+  "privacyDownloadSubtitle": "A ZIP file with everything we hold about you and your documents",
+  "@privacyDownloadSubtitle": {
+    "description": "Profile row subtitle for 'Download my data'."
+  },
+  "privacyDownloadSaved": "Your data has been saved",
+  "@privacyDownloadSaved": {
+    "description": "Snack bar after the data export ZIP was saved."
+  },
+  "privacyAccessLogTitle": "Who viewed my records",
+  "@privacyAccessLogTitle": {
+    "description": "Profile row and screen title: list of people who opened the patient's health records."
+  },
+  "privacyAccessLogSubtitle": "Hospitals, agents and staff who opened your health records",
+  "@privacyAccessLogSubtitle": {
+    "description": "Profile row subtitle for 'Who viewed my records'."
+  },
+  "privacyAccessLogError": "We could not load the list.",
+  "@privacyAccessLogError": {
+    "description": "Access log screen: loading failed."
+  },
+  "privacyAccessLogEmpty": "Nobody else has viewed your records yet.",
+  "@privacyAccessLogEmpty": {
+    "description": "Access log screen: empty state."
+  },
+  "privacyAccessLogReason": "Reason: {reason}",
+  "@privacyAccessLogReason": {
+    "description": "Access log entry: the reason given for emergency access.",
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "Patient unconscious"
+      }
+    }
+  },
+  "priceApproxSemantics": "About {approx}. The hospital charges {original}.",
+  "@priceApproxSemantics": {
+    "description": "Screen-reader label of a converted price: approximate amount in the patient's currency and the original amount the hospital charges.",
+    "placeholders": {
+      "approx": {
+        "type": "String",
+        "example": "$3,010"
+      },
+      "original": {
+        "type": "String",
+        "example": "₹2,50,000"
+      }
+    }
+  },
+  "priceOriginalAmount": "{amount} at the hospital",
+  "@priceOriginalAmount": {
+    "description": "Small text under a converted price: the original amount the hospital charges (usually Indian rupees).",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹2,50,000"
+      }
+    }
+  },
+  "trustAccreditationVerifiedSemantics": "{body} accreditation, verified",
+  "@trustAccreditationVerifiedSemantics": {
+    "description": "Screen-reader label of an accreditation badge checked by the platform.",
+    "placeholders": {
+      "body": {
+        "type": "String",
+        "example": "JCI"
+      }
+    }
+  },
+  "earliestConsultation": "Earliest consult: {date}",
+  "@earliestConsultation": {
+    "description": "Chip: earliest day with a free consultation slot.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12 Nov"
+      }
+    }
+  },
+  "earliestAdmission": "Earliest admission: {date}",
+  "@earliestAdmission": {
+    "description": "Chip: earliest day the patient can be admitted for treatment.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "14 Nov"
+      }
+    }
+  },
+  "earliestToday": "today",
+  "@earliestToday": {
+    "description": "Earliest date chip value: today (lowercase, inside a sentence)."
+  },
+  "earliestTomorrow": "tomorrow",
+  "@earliestTomorrow": {
+    "description": "Earliest date chip value: tomorrow (lowercase, inside a sentence)."
+  },
+  "quoteTimeLeft": "{days, plural, =0{{time} left} one{{days} day {time} left} other{{days} days {time} left}}",
+  "@quoteTimeLeft": {
+    "description": "Live countdown until the hospital's quote is due. time is hours:minutes:seconds.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "1"
+      },
+      "time": {
+        "type": "String",
+        "example": "04:12:09"
+      }
+    }
+  },
+  "quoteDueBy": "Quote due by {time}",
+  "@quoteDueBy": {
+    "description": "When the hospital promised to send its quote (date and time).",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "12 Nov 2026, 10:30"
+      }
+    }
+  },
+  "quoteRespondBy": "Respond by {time}",
+  "@quoteRespondBy": {
+    "description": "Hospital portal: when the hospital must send its quote.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "12 Nov 2026, 10:30"
+      }
+    }
+  },
+  "quoteOverduePatient": "Overdue — we're chasing the hospital",
+  "@quoteOverduePatient": {
+    "description": "Patient: the hospital missed its quote time; the platform is following up."
+  },
+  "quoteOverdueHospital": "Overdue",
+  "@quoteOverdueHospital": {
+    "description": "Hospital portal badge: the quote time has passed."
+  },
+  "guestAiLimitReached": "You've used today's 3 free scans — create a free account to continue.",
+  "@guestAiLimitReached": {
+    "description": "Guest reached the daily limit of free AI scans (screening / report reading)."
+  },
+  "guestCreateFreeAccount": "Create a free account",
+  "@guestCreateFreeAccount": {
+    "description": "Button: register a free account (guest upgrade)."
+  },
+  "guardianConsentRequiredMessage": "Because you are under 18, a parent or legal guardian must give consent first.",
+  "@guardianConsentRequiredMessage": {
+    "description": "Shown when a minor tries an AI feature or booking without a verified guardian consent."
+  },
+  "filtersSortSoonest": "Soonest available",
+  "@filtersSortSoonest": {
+    "description": "Sort option: earliest free appointment / admission date first."
+  },
+  "trustAccreditationsTitle": "Verified accreditations",
+  "@trustAccreditationsTitle": {
+    "description": "Hospital detail section: accreditations checked by the platform (certificate seen)."
+  },
+  "trustAccreditationVerified": "Verified",
+  "@trustAccreditationVerified": {
+    "description": "Accreditation row subtitle: checked by the platform, no expiry date known."
+  },
+  "trustAccreditationVerifiedUntil": "Verified · valid until {date}",
+  "@trustAccreditationVerifiedUntil": {
+    "description": "Accreditation row subtitle: checked by the platform and valid until a date.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "31 Dec 2027"
+      }
+    }
+  },
+  "trustRegistrationVerified": "Registration verified",
+  "@trustRegistrationVerified": {
+    "description": "Doctor badge: the doctor's medical registration was checked against the official medical council register."
+  },
+  "trustRegistrationVerifiedSemantics": "Medical registration verified {council}",
+  "@trustRegistrationVerifiedSemantics": {
+    "description": "Screen-reader label of the registration badge; council may be empty.",
+    "placeholders": {
+      "council": {
+        "type": "String",
+        "example": "National Medical Commission"
+      }
+    }
+  },
+  "reviewStarsSemantics": "{rating, plural, one{Rated 1 star out of 5} other{Rated {rating} stars out of 5}}",
+  "@reviewStarsSemantics": {
+    "description": "Screen-reader label of a review's star rating.",
+    "placeholders": {
+      "rating": {
+        "type": "int",
+        "example": "4"
+      }
+    }
+  },
+  "reviewVerifiedPatient": "Verified patient",
+  "@reviewVerifiedPatient": {
+    "description": "Review badge: written by a patient who completed treatment booked through the platform."
+  },
+  "reviewVerifiedPatientFor": "Verified patient · {treatment}",
+  "@reviewVerifiedPatientFor": {
+    "description": "Review badge with the treatment the patient had.",
+    "placeholders": {
+      "treatment": {
+        "type": "String",
+        "example": "Knee replacement"
+      }
+    }
+  },
+  "reviewByPatient": "- {name}",
+  "@reviewByPatient": {
+    "description": "Author line under a review.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Amina Y."
+      }
+    }
+  },
+  "reviewsTitle": "Patient reviews",
+  "@reviewsTitle": {
+    "description": "Screen title: all reviews of a hospital or doctor."
+  },
+  "reviewsEmptyTitle": "No reviews yet",
+  "@reviewsEmptyTitle": {
+    "description": "Reviews list empty state title."
+  },
+  "reviewsEmptyMessage": "Reviews appear here after patients complete their treatment.",
+  "@reviewsEmptyMessage": {
+    "description": "Reviews list empty state message."
+  },
+  "reviewsSeeAll": "{count, plural, one{See the review} other{See all {count} reviews}}",
+  "@reviewsSeeAll": {
+    "description": "Button: open the full list of reviews.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
   }
 }

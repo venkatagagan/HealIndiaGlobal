@@ -8,8 +8,10 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
+import 'reviews_screen.dart';
 import '../widgets/availability_strip.dart';
 import '../widgets/catalog_cards.dart';
 import '../widgets/detail_sections.dart';
@@ -125,7 +127,7 @@ class _HospitalDetailView extends ConsumerWidget {
                     spacing: 6,
                     runSpacing: 6,
                     children: [
-                      AccreditationBadges(h.accreditations, dense: false),
+                      AccreditationBadges(h.accreditations, verified: h.accreditationsVerified, dense: false),
                       if (h.internationalDesk)
                         StatusBadge(
                           label: l10n.catalogInternationalPatientDesk,
@@ -161,16 +163,50 @@ class _HospitalDetailView extends ConsumerWidget {
                   if (h.startingPriceMinor != null) ...[
                     const SizedBox(height: 12),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(l10n.hospitalDetailTreatmentsFrom, style: context.text.bodyMedium),
-                        ApproxPrice(
-                          h.startingPriceMinor!,
-                          h.currency,
-                          style: context.text.titleMedium?.copyWith(color: AppColors.primary),
+                        Flexible(
+                          child: ApproxPrice(
+                            h.startingPriceMinor!,
+                            h.currency,
+                            display: h.displayStartingPrice,
+                            style: context.text.titleMedium?.copyWith(color: AppColors.primary),
+                          ),
                         ),
                       ],
                     ),
                   ],
+                  if (h.nextAvailableConsultation != null || h.nextAvailableAdmission != null) ...[
+                    const SizedBox(height: 10),
+                    EarliestDates(
+                      consultation: h.nextAvailableConsultation,
+                      admission: h.nextAvailableAdmission,
+                      dense: false,
+                    ),
+                  ],
+                  if (h.accreditationsVerified.isNotEmpty)
+                    DetailSection(
+                      title: l10n.trustAccreditationsTitle,
+                      child: AppCard(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: Column(
+                          children: [
+                            for (final a in h.accreditationsVerified)
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: const Icon(Icons.verified_rounded, color: AppColors.primary),
+                                title: Text(a.body.toUpperCase(), style: context.text.titleSmall),
+                                subtitle: Text(
+                                  a.validUntil == null
+                                      ? l10n.trustAccreditationVerified
+                                      : l10n.trustAccreditationVerifiedUntil(Dates.day(a.validUntil)),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
                   if ((h.description ?? '').isNotEmpty)
                     DetailSection(title: l10n.catalogAboutSection, child: ExpandableText(h.description!)),
                   if (h.specialties.isNotEmpty)
@@ -218,12 +254,21 @@ class _HospitalDetailView extends ConsumerWidget {
                     DetailSection(
                       title: l10n.hospitalDetailPatientReviews,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          for (final r in h.reviews.take(5))
+                          for (final r in h.reviews.take(3))
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: ReviewTile(review: r),
                             ),
+                          SecondaryButton(
+                            key: const ValueKey('hospital-all-reviews'),
+                            label: l10n.reviewsSeeAll(h.ratingCount > 0 ? h.ratingCount : h.reviews.length),
+                            icon: Icons.rate_review_outlined,
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(builder: (_) => ReviewsScreen.hospital(id: h.id, title: h.name)),
+                            ),
+                          ),
                         ],
                       ),
                     ),

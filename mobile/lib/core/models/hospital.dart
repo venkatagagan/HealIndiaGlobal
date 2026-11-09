@@ -1,6 +1,21 @@
 import 'doctor.dart';
 import 'json.dart';
+import 'money.dart';
 import 'package.dart';
+
+/// An accreditation a platform admin has checked (`accreditations_verified[]`: `{body, valid_until}`).
+class AccreditationBadge {
+  const AccreditationBadge({required this.body, this.validUntil});
+
+  factory AccreditationBadge.fromJson(JsonMap j) =>
+      AccreditationBadge(body: jStr(j, 'body'), validUntil: jDay(j, 'valid_until'));
+
+  /// Lowercase code: `jci | nabh | nabl | ...`
+  final String body;
+  final DateTime? validUntil;
+
+  Map<String, dynamic> toJson() => {'body': body, 'valid_until': validUntil == null ? null : toApiDate(validUntil!)};
+}
 
 /// `HospitalCard` (PLAN §8.4).
 class HospitalCard {
@@ -20,6 +35,10 @@ class HospitalCard {
     this.internationalDesk = false,
     this.startingPriceMinor,
     this.currency = 'INR',
+    this.displayStartingPrice,
+    this.accreditationsVerified = const [],
+    this.nextAvailableConsultation,
+    this.nextAvailableAdmission,
   });
 
   factory HospitalCard.fromJson(JsonMap j) => HospitalCard(
@@ -38,6 +57,10 @@ class HospitalCard {
     internationalDesk: jBool(j, 'international_desk'),
     startingPriceMinor: jIntOrNull(j, 'starting_price_minor'),
     currency: jStr(j, 'currency', 'INR'),
+    displayStartingPrice: DisplayMoney.read(j, 'display_starting_price'),
+    accreditationsVerified: jList(j, 'accreditations_verified', AccreditationBadge.fromJson),
+    nextAvailableConsultation: jDay(j, 'next_available_consultation'),
+    nextAvailableAdmission: jDay(j, 'next_available_admission'),
   );
 
   final String id;
@@ -46,7 +69,7 @@ class HospitalCard {
   final String? city;
   final String? state;
 
-  /// Lowercase values: `jci|nabh|nabl|iso`.
+  /// Lowercase values: `jci|nabh|nabl|iso` (self-declared; see [accreditationsVerified]).
   final List<String> accreditations;
   final double? ratingAvg;
   final int ratingCount;
@@ -60,11 +83,27 @@ class HospitalCard {
   final int? startingPriceMinor;
   final String currency;
 
+  /// [startingPriceMinor] in the viewer's currency (approximate).
+  final DisplayMoney? displayStartingPrice;
+
+  /// Accreditations checked by the platform (certificate seen, still valid).
+  final List<AccreditationBadge> accreditationsVerified;
+
+  /// Earliest day with a free consultation / admission slot.
+  final DateTime? nextAvailableConsultation;
+  final DateTime? nextAvailableAdmission;
+
   /// `New Delhi, Delhi`
   String get location => [city, state].whereType<String>().where((s) => s.isNotEmpty).join(', ');
 
   bool get isJci => accreditations.contains('jci');
   bool get isNabh => accreditations.contains('nabh');
+
+  /// Self-declared accreditations that are not in [accreditationsVerified].
+  List<String> get unverifiedAccreditations {
+    final verified = {for (final a in accreditationsVerified) a.body.toLowerCase()};
+    return accreditations.where((a) => !verified.contains(a.toLowerCase())).toList();
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -82,10 +121,14 @@ class HospitalCard {
     'international_desk': internationalDesk,
     'starting_price_minor': startingPriceMinor,
     'currency': currency,
+    'display_starting_price': displayStartingPrice?.toJson(),
+    'accreditations_verified': accreditationsVerified.map((a) => a.toJson()).toList(),
+    'next_available_consultation': nextAvailableConsultation == null ? null : toApiDate(nextAvailableConsultation!),
+    'next_available_admission': nextAvailableAdmission == null ? null : toApiDate(nextAvailableAdmission!),
   };
 }
 
-/// `ReviewOut` (published reviews embedded in hospital detail).
+/// `ReviewOut` (published reviews of a hospital / doctor; also the patient's own reviews).
 class Review {
   const Review({
     required this.id,
@@ -95,6 +138,13 @@ class Review {
     this.patientName,
     this.doctorId,
     this.createdAt,
+    this.hospitalId,
+    this.status,
+    this.verifiedPatient = false,
+    this.treatmentName,
+    this.doctorName,
+    this.hospitalName,
+    this.publishedAt,
   });
 
   factory Review.fromJson(JsonMap j) => Review(
@@ -105,6 +155,13 @@ class Review {
     patientName: jStrOrNull(j, 'patient_name'),
     doctorId: jStrOrNull(j, 'doctor_id'),
     createdAt: jDate(j, 'created_at'),
+    hospitalId: jStrOrNull(j, 'hospital_id'),
+    status: jStrOrNull(j, 'status'),
+    verifiedPatient: jBool(j, 'verified_patient'),
+    treatmentName: jStrOrNull(j, 'treatment_name'),
+    doctorName: jStrOrNull(j, 'doctor_name'),
+    hospitalName: jStrOrNull(j, 'hospital_name'),
+    publishedAt: jDate(j, 'published_at'),
   );
 
   final String id;
@@ -114,6 +171,17 @@ class Review {
   final String? patientName;
   final String? doctorId;
   final DateTime? createdAt;
+  final String? hospitalId;
+
+  /// `pending | published | hidden`
+  final String? status;
+
+  /// Written by the patient of a completed booking at this hospital.
+  final bool verifiedPatient;
+  final String? treatmentName;
+  final String? doctorName;
+  final String? hospitalName;
+  final DateTime? publishedAt;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -123,6 +191,13 @@ class Review {
     'patient_name': patientName,
     'doctor_id': doctorId,
     'created_at': createdAt?.toUtc().toIso8601String(),
+    'hospital_id': hospitalId,
+    'status': status,
+    'verified_patient': verifiedPatient,
+    'treatment_name': treatmentName,
+    'doctor_name': doctorName,
+    'hospital_name': hospitalName,
+    'published_at': publishedAt?.toUtc().toIso8601String(),
   };
 }
 
@@ -144,6 +219,10 @@ class HospitalDetail extends HospitalCard {
     super.internationalDesk,
     super.startingPriceMinor,
     super.currency,
+    super.displayStartingPrice,
+    super.accreditationsVerified,
+    super.nextAvailableConsultation,
+    super.nextAvailableAdmission,
     this.description,
     this.address,
     this.lat,
@@ -177,6 +256,10 @@ class HospitalDetail extends HospitalCard {
       internationalDesk: c.internationalDesk,
       startingPriceMinor: c.startingPriceMinor,
       currency: c.currency,
+      displayStartingPrice: c.displayStartingPrice,
+      accreditationsVerified: c.accreditationsVerified,
+      nextAvailableConsultation: c.nextAvailableConsultation,
+      nextAvailableAdmission: c.nextAvailableAdmission,
       description: jStrOrNull(j, 'description'),
       address: jStrOrNull(j, 'address'),
       lat: jDoubleOrNull(j, 'lat'),

@@ -1992,6 +1992,45 @@ class OverridableLocalizations extends AppLocalizations {
     'agentScreeningCompareQuotes' => agentScreeningCompareQuotes,
     'agentScreeningSelectHospitals' => agentScreeningSelectHospitals,
     'agentScreeningRequested' => agentScreeningRequested,
+    'privacyRoleHospital' => privacyRoleHospital,
+    'privacyRoleAgent' => privacyRoleAgent,
+    'privacyRoleSupport' => privacyRoleSupport,
+    'privacyRoleFinance' => privacyRoleFinance,
+    'privacyRoleStaff' => privacyRoleStaff,
+    'privacyRoleSomeone' => privacyRoleSomeone,
+    'privacyActionDownloaded' => privacyActionDownloaded,
+    'privacyActionListed' => privacyActionListed,
+    'privacyActionEmergency' => privacyActionEmergency,
+    'privacyActionViewed' => privacyActionViewed,
+    'privacyRecordDocument' => privacyRecordDocument,
+    'privacyRecordScreening' => privacyRecordScreening,
+    'privacyRecordReportReading' => privacyRecordReportReading,
+    'privacyRecordVoice' => privacyRecordVoice,
+    'privacyRecordHistory' => privacyRecordHistory,
+    'privacyRecordOther' => privacyRecordOther,
+    'privacyGroupTitle' => privacyGroupTitle,
+    'privacyDownloadTitle' => privacyDownloadTitle,
+    'privacyDownloadSubtitle' => privacyDownloadSubtitle,
+    'privacyDownloadSaved' => privacyDownloadSaved,
+    'privacyAccessLogTitle' => privacyAccessLogTitle,
+    'privacyAccessLogSubtitle' => privacyAccessLogSubtitle,
+    'privacyAccessLogError' => privacyAccessLogError,
+    'privacyAccessLogEmpty' => privacyAccessLogEmpty,
+    'earliestToday' => earliestToday,
+    'earliestTomorrow' => earliestTomorrow,
+    'quoteOverduePatient' => quoteOverduePatient,
+    'quoteOverdueHospital' => quoteOverdueHospital,
+    'guestAiLimitReached' => guestAiLimitReached,
+    'guestCreateFreeAccount' => guestCreateFreeAccount,
+    'guardianConsentRequiredMessage' => guardianConsentRequiredMessage,
+    'filtersSortSoonest' => filtersSortSoonest,
+    'trustAccreditationsTitle' => trustAccreditationsTitle,
+    'trustAccreditationVerified' => trustAccreditationVerified,
+    'trustRegistrationVerified' => trustRegistrationVerified,
+    'reviewVerifiedPatient' => reviewVerifiedPatient,
+    'reviewsTitle' => reviewsTitle,
+    'reviewsEmptyTitle' => reviewsEmptyTitle,
+    'reviewsEmptyMessage' => reviewsEmptyMessage,
     _ => null,
   };
 
@@ -8669,6 +8708,174 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get agentScreeningRequested => _t('agentScreeningRequested') ?? base.agentScreeningRequested;
+
+  @override
+  String doctorYearsOfExperience(int count) => _f('doctorYearsOfExperience', {'count': count}) ?? base.doctorYearsOfExperience(count);
+
+  @override
+  String privacyAccessLine(String who, String role, String action, String record) => _f('privacyAccessLine', {'who': who, 'role': role, 'action': action, 'record': record}) ?? base.privacyAccessLine(who, role, action, record);
+
+  @override
+  String get privacyRoleHospital => _t('privacyRoleHospital') ?? base.privacyRoleHospital;
+
+  @override
+  String get privacyRoleAgent => _t('privacyRoleAgent') ?? base.privacyRoleAgent;
+
+  @override
+  String get privacyRoleSupport => _t('privacyRoleSupport') ?? base.privacyRoleSupport;
+
+  @override
+  String get privacyRoleFinance => _t('privacyRoleFinance') ?? base.privacyRoleFinance;
+
+  @override
+  String get privacyRoleStaff => _t('privacyRoleStaff') ?? base.privacyRoleStaff;
+
+  @override
+  String get privacyRoleSomeone => _t('privacyRoleSomeone') ?? base.privacyRoleSomeone;
+
+  @override
+  String get privacyActionDownloaded => _t('privacyActionDownloaded') ?? base.privacyActionDownloaded;
+
+  @override
+  String get privacyActionListed => _t('privacyActionListed') ?? base.privacyActionListed;
+
+  @override
+  String get privacyActionEmergency => _t('privacyActionEmergency') ?? base.privacyActionEmergency;
+
+  @override
+  String get privacyActionViewed => _t('privacyActionViewed') ?? base.privacyActionViewed;
+
+  @override
+  String get privacyRecordDocument => _t('privacyRecordDocument') ?? base.privacyRecordDocument;
+
+  @override
+  String get privacyRecordScreening => _t('privacyRecordScreening') ?? base.privacyRecordScreening;
+
+  @override
+  String get privacyRecordReportReading => _t('privacyRecordReportReading') ?? base.privacyRecordReportReading;
+
+  @override
+  String get privacyRecordVoice => _t('privacyRecordVoice') ?? base.privacyRecordVoice;
+
+  @override
+  String get privacyRecordHistory => _t('privacyRecordHistory') ?? base.privacyRecordHistory;
+
+  @override
+  String get privacyRecordOther => _t('privacyRecordOther') ?? base.privacyRecordOther;
+
+  @override
+  String get privacyGroupTitle => _t('privacyGroupTitle') ?? base.privacyGroupTitle;
+
+  @override
+  String get privacyDownloadTitle => _t('privacyDownloadTitle') ?? base.privacyDownloadTitle;
+
+  @override
+  String get privacyDownloadSubtitle => _t('privacyDownloadSubtitle') ?? base.privacyDownloadSubtitle;
+
+  @override
+  String get privacyDownloadSaved => _t('privacyDownloadSaved') ?? base.privacyDownloadSaved;
+
+  @override
+  String get privacyAccessLogTitle => _t('privacyAccessLogTitle') ?? base.privacyAccessLogTitle;
+
+  @override
+  String get privacyAccessLogSubtitle => _t('privacyAccessLogSubtitle') ?? base.privacyAccessLogSubtitle;
+
+  @override
+  String get privacyAccessLogError => _t('privacyAccessLogError') ?? base.privacyAccessLogError;
+
+  @override
+  String get privacyAccessLogEmpty => _t('privacyAccessLogEmpty') ?? base.privacyAccessLogEmpty;
+
+  @override
+  String privacyAccessLogReason(String reason) => _f('privacyAccessLogReason', {'reason': reason}) ?? base.privacyAccessLogReason(reason);
+
+  @override
+  String priceApproxSemantics(String approx, String original) => _f('priceApproxSemantics', {'approx': approx, 'original': original}) ?? base.priceApproxSemantics(approx, original);
+
+  @override
+  String priceOriginalAmount(String amount) => _f('priceOriginalAmount', {'amount': amount}) ?? base.priceOriginalAmount(amount);
+
+  @override
+  String trustAccreditationVerifiedSemantics(String body) => _f('trustAccreditationVerifiedSemantics', {'body': body}) ?? base.trustAccreditationVerifiedSemantics(body);
+
+  @override
+  String earliestConsultation(String date) => _f('earliestConsultation', {'date': date}) ?? base.earliestConsultation(date);
+
+  @override
+  String earliestAdmission(String date) => _f('earliestAdmission', {'date': date}) ?? base.earliestAdmission(date);
+
+  @override
+  String get earliestToday => _t('earliestToday') ?? base.earliestToday;
+
+  @override
+  String get earliestTomorrow => _t('earliestTomorrow') ?? base.earliestTomorrow;
+
+  @override
+  String quoteTimeLeft(int days, String time) => _f('quoteTimeLeft', {'days': days, 'time': time}) ?? base.quoteTimeLeft(days, time);
+
+  @override
+  String quoteDueBy(String time) => _f('quoteDueBy', {'time': time}) ?? base.quoteDueBy(time);
+
+  @override
+  String quoteRespondBy(String time) => _f('quoteRespondBy', {'time': time}) ?? base.quoteRespondBy(time);
+
+  @override
+  String get quoteOverduePatient => _t('quoteOverduePatient') ?? base.quoteOverduePatient;
+
+  @override
+  String get quoteOverdueHospital => _t('quoteOverdueHospital') ?? base.quoteOverdueHospital;
+
+  @override
+  String get guestAiLimitReached => _t('guestAiLimitReached') ?? base.guestAiLimitReached;
+
+  @override
+  String get guestCreateFreeAccount => _t('guestCreateFreeAccount') ?? base.guestCreateFreeAccount;
+
+  @override
+  String get guardianConsentRequiredMessage => _t('guardianConsentRequiredMessage') ?? base.guardianConsentRequiredMessage;
+
+  @override
+  String get filtersSortSoonest => _t('filtersSortSoonest') ?? base.filtersSortSoonest;
+
+  @override
+  String get trustAccreditationsTitle => _t('trustAccreditationsTitle') ?? base.trustAccreditationsTitle;
+
+  @override
+  String get trustAccreditationVerified => _t('trustAccreditationVerified') ?? base.trustAccreditationVerified;
+
+  @override
+  String trustAccreditationVerifiedUntil(String date) => _f('trustAccreditationVerifiedUntil', {'date': date}) ?? base.trustAccreditationVerifiedUntil(date);
+
+  @override
+  String get trustRegistrationVerified => _t('trustRegistrationVerified') ?? base.trustRegistrationVerified;
+
+  @override
+  String trustRegistrationVerifiedSemantics(String council) => _f('trustRegistrationVerifiedSemantics', {'council': council}) ?? base.trustRegistrationVerifiedSemantics(council);
+
+  @override
+  String reviewStarsSemantics(int rating) => _f('reviewStarsSemantics', {'rating': rating}) ?? base.reviewStarsSemantics(rating);
+
+  @override
+  String get reviewVerifiedPatient => _t('reviewVerifiedPatient') ?? base.reviewVerifiedPatient;
+
+  @override
+  String reviewVerifiedPatientFor(String treatment) => _f('reviewVerifiedPatientFor', {'treatment': treatment}) ?? base.reviewVerifiedPatientFor(treatment);
+
+  @override
+  String reviewByPatient(String name) => _f('reviewByPatient', {'name': name}) ?? base.reviewByPatient(name);
+
+  @override
+  String get reviewsTitle => _t('reviewsTitle') ?? base.reviewsTitle;
+
+  @override
+  String get reviewsEmptyTitle => _t('reviewsEmptyTitle') ?? base.reviewsEmptyTitle;
+
+  @override
+  String get reviewsEmptyMessage => _t('reviewsEmptyMessage') ?? base.reviewsEmptyMessage;
+
+  @override
+  String reviewsSeeAll(int count) => _f('reviewsSeeAll', {'count': count}) ?? base.reviewsSeeAll(count);
 }
 
 /// Every ARB key, in template order.
@@ -10898,4 +11105,60 @@ const List<String> kL10nKeys = [
   'agentScreeningRequestQuotes',
   'agentScreeningEstimate',
   'agentScreeningRequested',
+  'doctorYearsOfExperience',
+  'privacyAccessLine',
+  'privacyRoleHospital',
+  'privacyRoleAgent',
+  'privacyRoleSupport',
+  'privacyRoleFinance',
+  'privacyRoleStaff',
+  'privacyRoleSomeone',
+  'privacyActionDownloaded',
+  'privacyActionListed',
+  'privacyActionEmergency',
+  'privacyActionViewed',
+  'privacyRecordDocument',
+  'privacyRecordScreening',
+  'privacyRecordReportReading',
+  'privacyRecordVoice',
+  'privacyRecordHistory',
+  'privacyRecordOther',
+  'privacyGroupTitle',
+  'privacyDownloadTitle',
+  'privacyDownloadSubtitle',
+  'privacyDownloadSaved',
+  'privacyAccessLogTitle',
+  'privacyAccessLogSubtitle',
+  'privacyAccessLogError',
+  'privacyAccessLogEmpty',
+  'privacyAccessLogReason',
+  'priceApproxSemantics',
+  'priceOriginalAmount',
+  'trustAccreditationVerifiedSemantics',
+  'earliestConsultation',
+  'earliestAdmission',
+  'earliestToday',
+  'earliestTomorrow',
+  'quoteTimeLeft',
+  'quoteDueBy',
+  'quoteRespondBy',
+  'quoteOverduePatient',
+  'quoteOverdueHospital',
+  'guestAiLimitReached',
+  'guestCreateFreeAccount',
+  'guardianConsentRequiredMessage',
+  'filtersSortSoonest',
+  'trustAccreditationsTitle',
+  'trustAccreditationVerified',
+  'trustAccreditationVerifiedUntil',
+  'trustRegistrationVerified',
+  'trustRegistrationVerifiedSemantics',
+  'reviewStarsSemantics',
+  'reviewVerifiedPatient',
+  'reviewVerifiedPatientFor',
+  'reviewByPatient',
+  'reviewsTitle',
+  'reviewsEmptyTitle',
+  'reviewsEmptyMessage',
+  'reviewsSeeAll',
 ];

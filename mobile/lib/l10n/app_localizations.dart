@@ -13450,6 +13450,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Requested'**
   String get agentScreeningRequested;
+
+  /// Doctor subtitle: years of clinical experience.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} year of experience} other{{count} years of experience}}'**
+  String doctorYearsOfExperience(int count);
+
+  /// Access log line: who (name or role), their role, what they did and to which record. Example: 'Dr Rao (Hospital) downloaded a document'.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} ({role}) {action} {record}'**
+  String privacyAccessLine(String who, String role, String action, String record);
+
+  /// Access log: viewer role, a hospital team member.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get privacyRoleHospital;
+
+  /// Access log: viewer role, the patient's agent / facilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent'**
+  String get privacyRoleAgent;
+
+  /// Access log: viewer role, platform care coordinator.
+  ///
+  /// In en, this message translates to:
+  /// **'Care coordinator'**
+  String get privacyRoleSupport;
+
+  /// Access log: viewer role, platform finance team.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance team'**
+  String get privacyRoleFinance;
+
+  /// Access log: viewer role, platform administrators. Keep the brand name in Latin script.
+  ///
+  /// In en, this message translates to:
+  /// **'Heal India Global staff'**
+  String get privacyRoleStaff;
+
+  /// Access log: unknown viewer role.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone'**
+  String get privacyRoleSomeone;
+
+  /// Access log verb: downloaded a record (lowercase, used inside a sentence).
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get privacyActionDownloaded;
+
+  /// Access log verb: saw the record in a list.
+  ///
+  /// In en, this message translates to:
+  /// **'saw in a list'**
+  String get privacyActionListed;
+
+  /// Access log verb: opened the record using emergency access.
+  ///
+  /// In en, this message translates to:
+  /// **'opened in an emergency'**
+  String get privacyActionEmergency;
+
+  /// Access log verb: viewed the record.
+  ///
+  /// In en, this message translates to:
+  /// **'viewed'**
+  String get privacyActionViewed;
+
+  /// Access log object: a medical document.
+  ///
+  /// In en, this message translates to:
+  /// **'a document'**
+  String get privacyRecordDocument;
+
+  /// Access log object: an AI screening questionnaire.
+  ///
+  /// In en, this message translates to:
+  /// **'a screening'**
+  String get privacyRecordScreening;
+
+  /// Access log object: an AI reading of a medical report.
+  ///
+  /// In en, this message translates to:
+  /// **'an AI report reading'**
+  String get privacyRecordReportReading;
+
+  /// Access log object: a voice intake transcript.
+  ///
+  /// In en, this message translates to:
+  /// **'a voice transcript'**
+  String get privacyRecordVoice;
+
+  /// Access log object: the patient's medical history.
+  ///
+  /// In en, this message translates to:
+  /// **'your medical history'**
+  String get privacyRecordHistory;
+
+  /// Access log object: any other record.
+  ///
+  /// In en, this message translates to:
+  /// **'a record'**
+  String get privacyRecordOther;
+
+  /// Profile section heading: privacy and data rights.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacyGroupTitle;
+
+  /// Profile row: download a copy of all personal data.
+  ///
+  /// In en, this message translates to:
+  /// **'Download my data'**
+  String get privacyDownloadTitle;
+
+  /// Profile row subtitle for 'Download my data'.
+  ///
+  /// In en, this message translates to:
+  /// **'A ZIP file with everything we hold about you and your documents'**
+  String get privacyDownloadSubtitle;
+
+  /// Snack bar after the data export ZIP was saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data has been saved'**
+  String get privacyDownloadSaved;
+
+  /// Profile row and screen title: list of people who opened the patient's health records.
+  ///
+  /// In en, this message translates to:
+  /// **'Who viewed my records'**
+  String get privacyAccessLogTitle;
+
+  /// Profile row subtitle for 'Who viewed my records'.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals, agents and staff who opened your health records'**
+  String get privacyAccessLogSubtitle;
+
+  /// Access log screen: loading failed.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the list.'**
+  String get privacyAccessLogError;
+
+  /// Access log screen: empty state.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody else has viewed your records yet.'**
+  String get privacyAccessLogEmpty;
+
+  /// Access log entry: the reason given for emergency access.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String privacyAccessLogReason(String reason);
+
+  /// Screen-reader label of a converted price: approximate amount in the patient's currency and the original amount the hospital charges.
+  ///
+  /// In en, this message translates to:
+  /// **'About {approx}. The hospital charges {original}.'**
+  String priceApproxSemantics(String approx, String original);
+
+  /// Small text under a converted price: the original amount the hospital charges (usually Indian rupees).
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} at the hospital'**
+  String priceOriginalAmount(String amount);
+
+  /// Screen-reader label of an accreditation badge checked by the platform.
+  ///
+  /// In en, this message translates to:
+  /// **'{body} accreditation, verified'**
+  String trustAccreditationVerifiedSemantics(String body);
+
+  /// Chip: earliest day with a free consultation slot.
+  ///
+  /// In en, this message translates to:
+  /// **'Earliest consult: {date}'**
+  String earliestConsultation(String date);
+
+  /// Chip: earliest day the patient can be admitted for treatment.
+  ///
+  /// In en, this message translates to:
+  /// **'Earliest admission: {date}'**
+  String earliestAdmission(String date);
+
+  /// Earliest date chip value: today (lowercase, inside a sentence).
+  ///
+  /// In en, this message translates to:
+  /// **'today'**
+  String get earliestToday;
+
+  /// Earliest date chip value: tomorrow (lowercase, inside a sentence).
+  ///
+  /// In en, this message translates to:
+  /// **'tomorrow'**
+  String get earliestTomorrow;
+
+  /// Live countdown until the hospital's quote is due. time is hours:minutes:seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{{time} left} one{{days} day {time} left} other{{days} days {time} left}}'**
+  String quoteTimeLeft(int days, String time);
+
+  /// When the hospital promised to send its quote (date and time).
+  ///
+  /// In en, this message translates to:
+  /// **'Quote due by {time}'**
+  String quoteDueBy(String time);
+
+  /// Hospital portal: when the hospital must send its quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Respond by {time}'**
+  String quoteRespondBy(String time);
+
+  /// Patient: the hospital missed its quote time; the platform is following up.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue — we\'re chasing the hospital'**
+  String get quoteOverduePatient;
+
+  /// Hospital portal badge: the quote time has passed.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get quoteOverdueHospital;
+
+  /// Guest reached the daily limit of free AI scans (screening / report reading).
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s 3 free scans — create a free account to continue.'**
+  String get guestAiLimitReached;
+
+  /// Button: register a free account (guest upgrade).
+  ///
+  /// In en, this message translates to:
+  /// **'Create a free account'**
+  String get guestCreateFreeAccount;
+
+  /// Shown when a minor tries an AI feature or booking without a verified guardian consent.
+  ///
+  /// In en, this message translates to:
+  /// **'Because you are under 18, a parent or legal guardian must give consent first.'**
+  String get guardianConsentRequiredMessage;
+
+  /// Sort option: earliest free appointment / admission date first.
+  ///
+  /// In en, this message translates to:
+  /// **'Soonest available'**
+  String get filtersSortSoonest;
+
+  /// Hospital detail section: accreditations checked by the platform (certificate seen).
+  ///
+  /// In en, this message translates to:
+  /// **'Verified accreditations'**
+  String get trustAccreditationsTitle;
+
+  /// Accreditation row subtitle: checked by the platform, no expiry date known.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get trustAccreditationVerified;
+
+  /// Accreditation row subtitle: checked by the platform and valid until a date.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified · valid until {date}'**
+  String trustAccreditationVerifiedUntil(String date);
+
+  /// Doctor badge: the doctor's medical registration was checked against the official medical council register.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration verified'**
+  String get trustRegistrationVerified;
+
+  /// Screen-reader label of the registration badge; council may be empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical registration verified {council}'**
+  String trustRegistrationVerifiedSemantics(String council);
+
+  /// Screen-reader label of a review's star rating.
+  ///
+  /// In en, this message translates to:
+  /// **'{rating, plural, one{Rated 1 star out of 5} other{Rated {rating} stars out of 5}}'**
+  String reviewStarsSemantics(int rating);
+
+  /// Review badge: written by a patient who completed treatment booked through the platform.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified patient'**
+  String get reviewVerifiedPatient;
+
+  /// Review badge with the treatment the patient had.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified patient · {treatment}'**
+  String reviewVerifiedPatientFor(String treatment);
+
+  /// Author line under a review.
+  ///
+  /// In en, this message translates to:
+  /// **'- {name}'**
+  String reviewByPatient(String name);
+
+  /// Screen title: all reviews of a hospital or doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient reviews'**
+  String get reviewsTitle;
+
+  /// Reviews list empty state title.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get reviewsEmptyTitle;
+
+  /// Reviews list empty state message.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews appear here after patients complete their treatment.'**
+  String get reviewsEmptyMessage;
+
+  /// Button: open the full list of reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{See the review} other{See all {count} reviews}}'**
+  String reviewsSeeAll(int count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

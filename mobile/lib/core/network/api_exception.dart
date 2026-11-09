@@ -51,11 +51,19 @@ class ApiException implements Exception {
   factory ApiException.fromResponse(int statusCode, Object? data) {
     if (data is Map && data['error'] is Map) {
       final err = data['error'] as Map;
+      final code = (err['code'] ?? _codeForStatus(statusCode)).toString();
+      final details = err['details'];
+      final guestQuota = code == 'rate_limited' && details is Map && details['scope'] == 'guest_ai_daily';
       return ApiException(
         statusCode: statusCode,
-        code: (err['code'] ?? _codeForStatus(statusCode)).toString(),
-        message: (err['message'] ?? _messageForStatus(statusCode)).toString(),
-        details: err['details'],
+        code: code,
+        // Our own wording (in the app's language) for errors the app explains itself.
+        message: guestQuota
+            ? L10n.current.guestAiLimitReached
+            : code == 'guardian_consent_required'
+            ? L10n.current.guardianConsentRequiredMessage
+            : (err['message'] ?? _messageForStatus(statusCode)).toString(),
+        details: details,
         requestId: err['request_id']?.toString(),
       );
     }
@@ -101,6 +109,22 @@ class ApiException implements Exception {
 
   /// Only adults may hold this account type (agent / hospital answered "under 18").
   bool get isAdultRequired => code == 'adult_required';
+
+  /// A guest used today's free AI scans (429 `rate_limited`, `details.scope == guest_ai_daily`).
+  bool get isGuestAiLimit {
+    final d = details;
+    return code == 'rate_limited' && d is Map && d['scope'] == 'guest_ai_daily';
+  }
+
+  /// A patient under 18 needs a verified guardian consent first (403).
+  bool get isGuardianConsentRequired => code == 'guardian_consent_required';
+
+  /// `details.attempts_left` of an `invalid_code` error (guest verification).
+  int? get attemptsLeft {
+    final d = details;
+    final v = d is Map ? d['attempts_left'] : null;
+    return v is num ? v.toInt() : int.tryParse('${v ?? ''}');
+  }
 
   /// Whether retrying the same request may succeed.
   bool get isRetryable => isNetwork || isServerError || isRateLimited;

@@ -88,8 +88,14 @@ class HospitalProcedureCard extends StatelessWidget {
             p.priceMinMinor,
             p.currency,
             maxMinor: p.priceMaxMinor,
+            display: p.displayPriceMin,
+            displayMax: p.displayPriceMax,
             style: context.text.titleMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w800),
           ),
+          if (p.nextAvailableConsultation != null || p.nextAvailableAdmission != null) ...[
+            const SizedBox(height: 6),
+            EarliestDates(consultation: p.nextAvailableConsultation, admission: p.nextAvailableAdmission),
+          ],
           if (p.hospitalStayDays != null)
             Text(context.l10n.catalogDaysInHospital(p.hospitalStayDays!), style: context.text.bodySmall),
           if (p.inclusions.isNotEmpty) ...[
@@ -120,7 +126,13 @@ class HospitalProcedureCard extends StatelessWidget {
                         style: context.text.bodySmall,
                       ),
                     ),
-                    ApproxPrice(pkg.priceMinor, pkg.currency, style: context.text.labelMedium),
+                    ApproxPrice(
+                      pkg.priceMinor,
+                      pkg.currency,
+                      display: pkg.displayPrice,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      style: context.text.labelMedium,
+                    ),
                   ],
                 ),
               ),
@@ -131,34 +143,64 @@ class HospitalProcedureCard extends StatelessWidget {
   }
 }
 
-/// Published review.
+/// Published review: stars, "Verified patient · treatment", text and author.
 class ReviewTile extends StatelessWidget {
-  const ReviewTile({super.key, required this.review});
+  const ReviewTile({super.key, required this.review, this.showHospital = false});
 
   final Review review;
+
+  /// Also show the hospital name (a doctor's reviews, "My reviews").
+  final bool showHospital;
 
   @override
   Widget build(BuildContext context) {
     final r = review;
+    final l10n = context.l10n;
+    final treatment = (r.treatmentName ?? '').isNotEmpty ? r.treatmentName : null;
+    final when = r.publishedAt ?? r.createdAt;
+    final names = [
+      if (showHospital) r.hospitalName,
+      r.doctorName,
+    ].whereType<String>().where((s) => s.isNotEmpty).join(' · ');
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              RatingStars(rating: r.rating.toDouble(), showValue: false, size: 14),
+              Semantics(
+                label: l10n.reviewStarsSemantics(r.rating),
+                excludeSemantics: true,
+                child: RatingStars(rating: r.rating.toDouble(), showValue: false, size: 14),
+              ),
               const Spacer(),
-              if (r.createdAt != null) Text(Dates.relative(r.createdAt), style: context.text.labelSmall),
+              if (when != null) Text(Dates.relative(when), style: context.text.labelSmall),
             ],
           ),
+          if (r.verifiedPatient) ...[
+            const SizedBox(height: 6),
+            StatusBadge(
+              label: treatment == null ? l10n.reviewVerifiedPatient : l10n.reviewVerifiedPatientFor(treatment),
+              color: AppColors.primary,
+              icon: Icons.verified_rounded,
+              dense: true,
+            ),
+          ] else if (treatment != null) ...[
+            const SizedBox(height: 6),
+            Text(treatment, style: context.text.labelSmall),
+          ],
           if ((r.title ?? '').isNotEmpty) ...[
             const SizedBox(height: 6),
             Text(r.title!, style: context.text.titleSmall),
           ],
           if ((r.body ?? '').isNotEmpty) ...[const SizedBox(height: 4), Text(r.body!, style: context.text.bodySmall)],
+          if (names.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(names, style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary)),
+          ],
           if ((r.patientName ?? '').isNotEmpty) ...[
             const SizedBox(height: 6),
-            Text('- ${r.patientName}', style: context.text.labelSmall),
+            Text(l10n.reviewByPatient(r.patientName!), style: context.text.labelSmall),
           ],
         ],
       ),
