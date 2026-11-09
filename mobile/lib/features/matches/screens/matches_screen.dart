@@ -166,7 +166,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
           const SizedBox(height: 12),
         ],
         if (s?.aiResult != null) ...[
-          AiSummaryCard(result: s!.aiResult!, urgency: s.urgency),
+          AiSummaryCard(result: s!.aiResult!, urgency: s.urgency, screeningId: _id),
           const SizedBox(height: 12),
         ],
         if (procedureSlug != null) ...[

@@ -64,6 +64,7 @@ class FakeAuthController extends AuthController {
     required String email,
     required String password,
     required String fullName,
+    required bool isAdult,
     UserRole role = UserRole.patient,
     String? phone,
     String? countryCode,
@@ -80,6 +81,7 @@ class FakeAuthController extends AuthController {
       'email': email,
       'password': password,
       'full_name': fullName,
+      'is_adult': isAdult,
       'role': role.json,
       'referral_code': referralCode,
       'agency_name': agencyName,
@@ -89,8 +91,17 @@ class FakeAuthController extends AuthController {
   );
 
   @override
-  Future<User> upgradeGuest({required String email, required String password, required String fullName}) =>
-      _become(patientUser, 'upgrade', {'email': email, 'password': password, 'full_name': fullName});
+  Future<User> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+    required bool isAdult,
+  }) => _become(patientUser, 'upgrade', {
+    'email': email,
+    'password': password,
+    'full_name': fullName,
+    'is_adult': isAdult,
+  });
 
   @override
   Future<void> deleteAccount({String? password, String? reason, String? otpCode}) async {

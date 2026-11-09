@@ -288,3 +288,147 @@ Future<void> openLegalUrl(BuildContext context, String url) async {
   final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication).catchError((_) => false);
   if (!ok && context.mounted) showInfoSnack(context, 'Could not open $url');
 }
+
+/// Copy for the 18+ attestation (CG-24).
+abstract final class AgeCopy {
+  static const adultConfirm = 'I confirm I am 18 or older.';
+  static const adult = 'I am 18 or older';
+  static const minor = 'I am under 18 and a parent or guardian will give consent for my care';
+  static const required = 'Please confirm your age';
+}
+
+/// The required age question at sign-up (CG-24).
+///
+/// * [adultOnly] (agents, hospital users): one checkbox "I confirm I am 18 or older." — [value] is true
+///   when ticked, null otherwise.
+/// * Patients: two options, one must be chosen — true = 18 or older, false = under 18 with a parent or
+///   guardian giving consent; null = not answered yet.
+class AgeAttestationField extends StatelessWidget {
+  const AgeAttestationField({
+    super.key,
+    required this.adultOnly,
+    required this.value,
+    required this.onChanged,
+    this.showError = false,
+    this.enabled = true,
+  });
+
+  final bool adultOnly;
+  final bool? value;
+  final ValueChanged<bool?> onChanged;
+  final bool showError;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final error = showError
+        ? Padding(
+            padding: EdgeInsets.only(left: adultOnly ? 0 : 12, top: 2),
+            child: Text(
+              AgeCopy.required,
+              key: const Key('age-error'),
+              style: context.text.bodySmall?.copyWith(color: AppColors.danger),
+            ),
+          )
+        : null;
+    if (adultOnly) {
+      return CheckboxListTile(
+        key: const Key('age-adult-confirm'),
+        value: value == true,
+        onChanged: enabled ? (v) => onChanged(v == true ? true : null) : null,
+        controlAffinity: ListTileControlAffinity.leading,
+        contentPadding: EdgeInsets.zero,
+        title: Text(AgeCopy.adultConfirm, style: context.text.bodyMedium),
+        subtitle: error,
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Your age', style: context.text.labelLarge),
+        RadioGroup<bool>(
+          groupValue: value,
+          onChanged: (v) {
+            if (enabled) onChanged(v);
+          },
+          child: Column(
+            children: [
+              RadioListTile<bool>(
+                key: const Key('age-adult'),
+                value: true,
+                enabled: enabled,
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                title: Text(AgeCopy.adult, style: context.text.bodyMedium),
+              ),
+              RadioListTile<bool>(
+                key: const Key('age-minor'),
+                value: false,
+                enabled: enabled,
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                title: Text(AgeCopy.minor, style: context.text.bodyMedium),
+              ),
+            ],
+          ),
+        ),
+        ?error,
+      ],
+    );
+  }
+}
+
+/// Asks the 18+ question when Google / Apple sign-in creates a new account (API 400
+/// `age_attestation_required` / `adult_required`). Returns the answer, or null when cancelled.
+Future<bool?> showAgeAttestationDialog(BuildContext context, {required bool adultOnly}) => showDialog<bool>(
+  context: context,
+  builder: (_) => _AgeAttestationDialog(adultOnly: adultOnly),
+);
+
+class _AgeAttestationDialog extends StatefulWidget {
+  const _AgeAttestationDialog({required this.adultOnly});
+
+  final bool adultOnly;
+
+  @override
+  State<_AgeAttestationDialog> createState() => _AgeAttestationDialogState();
+}
+
+class _AgeAttestationDialogState extends State<_AgeAttestationDialog> {
+  bool? _value;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Confirm your age'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.adultOnly
+                  ? 'This type of account is only for adults.'
+                  : 'We need to know this before we create your account.',
+              style: context.text.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            AgeAttestationField(
+              adultOnly: widget.adultOnly,
+              value: _value,
+              onChanged: (v) => setState(() => _value = v),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        FilledButton(
+          key: const Key('age-continue'),
+          onPressed: _value == null ? null : () => Navigator.pop(context, _value),
+          child: const Text('Continue'),
+        ),
+      ],
+    );
+  }
+}

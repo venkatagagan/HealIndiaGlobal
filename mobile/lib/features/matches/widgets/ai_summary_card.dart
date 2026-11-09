@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
 
 /// Color of an urgency level.
@@ -26,14 +28,18 @@ const String kTriageDisclaimer =
     'A qualified doctor will review your case.';
 
 /// AI (or rules engine) summary of the screening: summary text, urgency chip, suggested
-/// specialties and expandable details, always with the "not a diagnosis" disclaimer.
+/// specialties and expandable details, always with the "not a diagnosis" disclaimer. With a
+/// [screeningId] it also offers "Report this result" (CG-16, `target_type` `screening_result`).
 class AiSummaryCard extends StatelessWidget {
-  const AiSummaryCard({super.key, required this.result, this.urgency});
+  const AiSummaryCard({super.key, required this.result, this.urgency, this.screeningId});
 
   final TriageResult result;
 
   /// Screening-level urgency (falls back to the result's).
   final Urgency? urgency;
+
+  /// Screening the result belongs to; enables the report action.
+  final String? screeningId;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +124,24 @@ class AiSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          if (screeningId != null && screeningId!.isNotEmpty)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const Key('report-screening-result'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                  foregroundColor: context.palette.textSecondary,
+                ),
+                onPressed: () =>
+                    showReportSheet(context, type: ReportTargetType.screeningResult, targetId: screeningId!),
+                icon: const Icon(Icons.flag_outlined, size: 16),
+                label: const Text('Report this result'),
+              ),
+            )
+          else
+            const SizedBox(height: 6),
         ],
       ),
     );

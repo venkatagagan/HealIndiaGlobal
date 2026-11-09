@@ -85,9 +85,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  Future<void> _google() => _social(() => ref.read(authControllerProvider.notifier).signInWithGoogle());
+  /// Asked when Google / Apple sign-in creates a new account (CG-24).
+  Future<bool?> _askAge({required bool adultOnly}) async =>
+      mounted ? showAgeAttestationDialog(context, adultOnly: adultOnly) : null;
 
-  Future<void> _apple() => _social(() => ref.read(authControllerProvider.notifier).signInWithApple());
+  Future<void> _google() => _social(() => ref.read(authControllerProvider.notifier).signInWithGoogle(askAge: _askAge));
+
+  Future<void> _apple() => _social(() => ref.read(authControllerProvider.notifier).signInWithApple(askAge: _askAge));
 
   Future<void> _social(Future<User?> Function() signIn) async {
     if (_googleLoading) return;

@@ -11,6 +11,7 @@ class ChatMessage {
     required this.body,
     this.attachmentDocumentIds = const [],
     this.createdAt,
+    this.hidden = false,
   });
 
   factory ChatMessage.fromJson(JsonMap j) => ChatMessage(
@@ -20,6 +21,7 @@ class ChatMessage {
     body: jStr(j, 'body'),
     attachmentDocumentIds: jStrList(j, 'attachment_document_ids'),
     createdAt: jDate(j, 'created_at'),
+    hidden: j['hidden'] == true,
   );
 
   final String id;
@@ -31,6 +33,10 @@ class ChatMessage {
   final List<String> attachmentDocumentIds;
   final DateTime? createdAt;
 
+  /// Hidden by moderators (CG-16). Only ever true in the sender's own view (and staff views); everyone
+  /// else no longer receives the message.
+  final bool hidden;
+
   bool isMine(String? userId) => userId != null && sender.id == userId;
 
   Map<String, dynamic> toJson() => {
@@ -40,6 +46,7 @@ class ChatMessage {
     'body': body,
     'attachment_document_ids': attachmentDocumentIds,
     'created_at': createdAt?.toUtc().toIso8601String(),
+    if (hidden) 'hidden': true,
   };
 }
 

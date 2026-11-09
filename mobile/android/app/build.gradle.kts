@@ -6,6 +6,13 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Push notifications (CG-15): Firebase config is git-ignored and dropped in by the apps team (see mobile/RELEASE.md).
+// Without android/app/google-services.json the build still works and the app runs with push off (or reads the
+// FIREBASE_* dart-defines instead).
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 // Upload key for Play: android/key.properties (git-ignored, see mobile/RELEASE.md). Without it, release builds use
 // the debug key, which Google Play rejects.
 val keystoreProperties = Properties().apply {

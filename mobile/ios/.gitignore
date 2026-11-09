@@ -32,3 +32,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Firebase config for push notifications (per environment, never committed; see mobile/IOS_BUILD.md)
+Runner/GoogleService-Info.plist

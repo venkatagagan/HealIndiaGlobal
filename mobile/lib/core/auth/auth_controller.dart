@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/enums.dart';
 import '../models/user.dart';
 import '../network/api_client.dart';
+import '../services/push_service.dart';
 import 'apple_sign_in_service.dart';
 import 'auth_repository.dart';
 import 'google_sign_in_service.dart';
@@ -39,6 +40,11 @@ class AuthState {
   @override
   String toString() => 'AuthState($status, ${user?.id})';
 }
+
+/// Asks the 18+ question when Google / Apple sign-in would create a new account (API 400
+/// `age_attestation_required`, CG-24). [adultOnly] is true when only adults may continue (API 400
+/// `adult_required`): the user can only confirm 18+ or cancel. Returns the answer, or null when cancelled.
+typedef AgeAttestationPrompt = Future<bool?> Function({required bool adultOnly});
 
 /// Session controller. Read with `ref.watch(authControllerProvider)` (`AsyncValue<AuthState>`) or the
 /// convenience [authStateProvider].
@@ -103,6 +109,7 @@ class AuthController extends AsyncNotifier<AuthState> {
     required String email,
     required String password,
     required String fullName,
+    required bool isAdult,
     UserRole role = UserRole.patient,
     String? phone,
     String? countryCode,
@@ -115,6 +122,7 @@ class AuthController extends AsyncNotifier<AuthState> {
       email: email,
       password: password,
       fullName: fullName,
+      isAdult: isAdult,
       role: role,
       phone: phone,
       countryCode: countryCode,
@@ -125,36 +133,63 @@ class AuthController extends AsyncNotifier<AuthState> {
     ),
   );
 
-  /// Google flow end-to-end. Returns null when the user cancelled the Google dialog.
-  Future<User?> signInWithGoogle() async {
+  /// Google flow end-to-end. Returns null when the user cancelled the Google dialog (or the 18+
+  /// question, see [AgeAttestationPrompt]).
+  Future<User?> signInWithGoogle({AgeAttestationPrompt? askAge}) async {
     final idToken = await ref.read(googleSignInServiceProvider).signInForIdToken();
     if (idToken == null) return null;
-    return _apply(_repo.google(idToken: idToken));
+    return signInWithGoogleIdToken(idToken, askAge: askAge);
   }
 
   /// Signs in with a Google ID token obtained elsewhere (e.g. the web button).
-  Future<User> signInWithGoogleIdToken(String idToken) => _apply(_repo.google(idToken: idToken));
+  Future<User?> signInWithGoogleIdToken(String idToken, {AgeAttestationPrompt? askAge}) =>
+      _withAgeAttestation((isAdult) => _repo.google(idToken: idToken, isAdult: isAdult), askAge);
 
   /// Sign in with Apple end-to-end (iOS/macOS). Returns null when the user cancelled.
-  Future<User?> signInWithApple() async {
+  Future<User?> signInWithApple({AgeAttestationPrompt? askAge}) async {
     final credential = await ref.read(appleSignInServiceProvider).signIn();
     if (credential == null) return null;
-    return _apply(
-      _repo.apple(
+    return _withAgeAttestation(
+      (isAdult) => _repo.apple(
         identityToken: credential.identityToken,
         nonce: credential.nonce,
         authorizationCode: credential.authorizationCode,
         fullName: credential.fullName,
+        isAdult: isAdult,
       ),
+      askAge,
     );
+  }
+
+  /// Runs a Google / Apple sign-in call; when the API needs the 18+ answer for a new account it asks
+  /// [askAge] and retries the same call with `is_adult` (CG-24). Null when the user cancelled.
+  Future<User?> _withAgeAttestation(
+    Future<AuthSession> Function(bool? isAdult) call,
+    AgeAttestationPrompt? askAge,
+  ) async {
+    bool? isAdult;
+    for (var attempt = 0; ; attempt++) {
+      try {
+        return await _apply(call(isAdult));
+      } on ApiException catch (e) {
+        final needsAnswer = e.isAgeAttestationRequired || e.isAdultRequired;
+        if (!needsAnswer || askAge == null || attempt >= 2) rethrow;
+        isAdult = await askAge(adultOnly: e.isAdultRequired);
+        if (isAdult == null) return null;
+      }
+    }
   }
 
   /// "Browse as Guest" / "Explore as Guest".
   Future<User> continueAsGuest() => _apply(_repo.guest());
 
-  /// Converts the current guest session into a full account.
-  Future<User> upgradeGuest({required String email, required String password, required String fullName}) =>
-      _apply(_repo.upgradeGuest(email: email, password: password, fullName: fullName));
+  /// Converts the current guest session into a full account. [isAdult] is the 18+ answer (CG-24).
+  Future<User> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+    required bool isAdult,
+  }) => _apply(_repo.upgradeGuest(email: email, password: password, fullName: fullName, isAdult: isAdult));
 
   /// Re-fetches `/auth/me` (e.g. after editing the profile).
   Future<void> refreshUser() async {
@@ -166,6 +201,8 @@ class AuthController extends AsyncNotifier<AuthState> {
   void setUser(User user) => state = AsyncData(AuthState.fromUser(user));
 
   Future<void> logout() async {
+    // The push token is removed on the server while the session is still valid (CG-15).
+    await _unregisterPush();
     await _repo.logout();
     await ref.read(googleSignInServiceProvider).signOut();
     state = const AsyncData(AuthState.unauthenticated());
@@ -175,12 +212,21 @@ class AuthController extends AsyncNotifier<AuthState> {
   /// Rethrows [ApiException] (e.g. wrong password) without changing the state.
   Future<void> deleteAccount({String? password, String? reason, String? otpCode}) async {
     await _repo.deleteAccount(password: password, reason: reason, otpCode: otpCode);
+    await _unregisterPush(onServer: false); // the server dropped the account's devices with it
     await ref.read(googleSignInServiceProvider).signOut();
     state = const AsyncData(AuthState.unauthenticated());
   }
 
   /// Asks support to close the account when in-app deletion is blocked (`POST /auth/me/deletion-request`).
   Future<void> requestAccountDeletion({String? reason}) => _repo.requestAccountDeletion(reason: reason);
+
+  Future<void> _unregisterPush({bool onServer = true}) async {
+    try {
+      await ref.read(pushServiceProvider).onSignedOut(unregisterOnServer: onServer);
+    } catch (_) {
+      // Push is best effort; signing out must always work.
+    }
+  }
 
   Future<User> _apply(Future<AuthSession> call) async {
     final session = await call;

@@ -20,6 +20,9 @@ import '../widgets/auth_widgets.dart';
 /// When the current session is a guest, the form is patient-only and upgrades the guest account
 /// (`POST /auth/guest/upgrade`) so screenings and saved items are kept.
 ///
+/// Every sign-up answers the age question (CG-24, `is_adult`): patients pick "18 or older" or "under 18
+/// with a parent or guardian's consent"; agents and hospital users must tick "I confirm I am 18 or older."
+///
 /// Route: `/auth/register?from=&role=` · Owner: fl-onboarding.
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key, this.from, this.initialRole});
@@ -47,6 +50,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String? _country;
   bool _acceptTerms = false;
   bool _showTermsError = false;
+
+  /// 18+ answer: null until answered (see [AgeAttestationField]).
+  bool? _isAdult;
+  bool _showAgeError = false;
   bool _loading = false;
   String? _error;
   Map<String, String> _fieldErrors = const {};
@@ -74,27 +81,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  /// The age answer valid for [role]: agents and hospital users can only be adults.
+  bool? _ageFor(UserRole role) => role == UserRole.patient ? _isAdult : (_isAdult == true ? true : null);
+
   Future<void> _submit({required bool upgrade}) async {
     if (_loading) return;
+    final role = upgrade ? UserRole.patient : _role;
+    final isAdult = _ageFor(role);
     setState(() {
       _error = null;
       _fieldErrors = const {};
       _showTermsError = !_acceptTerms;
+      _showAgeError = isAdult == null;
     });
     final valid = _formKey.currentState?.validate() ?? false;
-    if (!valid || !_acceptTerms) return;
+    if (!valid || !_acceptTerms || isAdult == null) return;
     final onboarding = ref.read(onboardingSeenProvider.notifier);
     final auth = ref.read(authControllerProvider.notifier);
     setState(() => _loading = true);
     try {
       final User user;
       if (upgrade) {
-        user = await auth.upgradeGuest(email: _email.text, password: _password.text, fullName: _name.text);
+        user = await auth.upgradeGuest(
+          email: _email.text,
+          password: _password.text,
+          fullName: _name.text,
+          isAdult: isAdult,
+        );
       } else {
         user = await auth.register(
           email: _email.text,
           password: _password.text,
           fullName: _name.text,
+          isAdult: isAdult,
           role: _role,
           phone: _phone.text.trim(),
           countryCode: _country,
@@ -157,6 +176,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? null
                         : (s) => setState(() {
                             _role = s.first;
+                            _showAgeError = false;
                             _error = null;
                             _fieldErrors = const {};
                           }),
@@ -296,8 +316,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                 ],
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
+                AgeAttestationField(
+                  key: const Key('register-age'),
+                  adultOnly: role != UserRole.patient,
+                  value: _ageFor(role),
+                  enabled: !_loading,
+                  showError: _showAgeError && _ageFor(role) == null,
+                  onChanged: (v) => setState(() {
+                    _isAdult = v;
+                    if (v != null) _showAgeError = false;
+                  }),
+                ),
+                if (_fieldErrors['is_adult'] case final ageError?)
+                  Text(ageError, style: context.text.bodySmall?.copyWith(color: AppColors.danger)),
                 CheckboxListTile(
+                  key: const Key('register-terms'),
                   value: _acceptTerms,
                   onChanged: (v) => setState(() {
                     _acceptTerms = v ?? false;

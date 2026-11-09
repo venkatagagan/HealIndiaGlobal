@@ -16,6 +16,10 @@ import 'package:flutter/foundation.dart';
 /// | `GOOGLE_SERVER_CLIENT_ID`  | empty (Google sign-in hidden when empty on Android)       |
 /// | `GOOGLE_CLIENT_ID`         | empty (iOS / web OAuth client id)                         |
 /// | `RAZORPAY_ENABLED`         | `true` (Android / iOS only; mock gateway elsewhere)       |
+/// | `PUSH_ENABLED`             | `false` (push notifications via Firebase; see RELEASE.md) |
+/// | `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, |
+/// | `FIREBASE_IOS_BUNDLE_ID`   | empty: Firebase reads google-services.json / GoogleService-Info.plist |
+/// | `APP_VERSION`              | empty (sent with the push token registration when set)    |
 abstract final class Env {
   static const String _apiBaseUrlDefine = String.fromEnvironment('API_BASE_URL');
   static const String _wsUrlDefine = String.fromEnvironment('WS_URL');
@@ -32,6 +36,26 @@ abstract final class Env {
   static const bool _razorpayEnabledDefine = bool.fromEnvironment('RAZORPAY_ENABLED', defaultValue: true);
 
   static bool get isProduction => appEnv == 'production';
+
+  /// Push notifications (CG-15). When false nothing Firebase is ever called.
+  static const bool pushEnabled = bool.fromEnvironment('PUSH_ENABLED', defaultValue: false);
+
+  /// Firebase options passed as dart-defines (alternative to the platform config files).
+  static const String firebaseApiKey = String.fromEnvironment('FIREBASE_API_KEY');
+  static const String firebaseAppId = String.fromEnvironment('FIREBASE_APP_ID');
+  static const String firebaseMessagingSenderId = String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID');
+  static const String firebaseProjectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
+  static const String firebaseIosBundleId = String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID');
+
+  /// True when all required FIREBASE_* dart-defines are set.
+  static bool get firebaseOptionsDefined =>
+      firebaseApiKey.isNotEmpty &&
+      firebaseAppId.isNotEmpty &&
+      firebaseMessagingSenderId.isNotEmpty &&
+      firebaseProjectId.isNotEmpty;
+
+  /// App version reported with the push token (`--dart-define=APP_VERSION=1.0.0`); empty = not sent.
+  static const String appVersion = String.fromEnvironment('APP_VERSION');
 
   /// True when Google sign-in is configured for this build.
   static bool get googleSignInConfigured => googleServerClientId.isNotEmpty || googleClientId.isNotEmpty;

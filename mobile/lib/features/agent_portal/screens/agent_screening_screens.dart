@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/repositories/catalog_repository.dart';
+import '../../../core/repositories/report_repository.dart';
 import '../../../core/repositories/screening_repository.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../screening/widgets/ai_consent_sheet.dart';
 import '../../screening/widgets/body_map.dart';
@@ -379,6 +381,22 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                             const SizedBox(width: 6),
                             Expanded(child: Text(f)),
                           ],
+                        ),
+                      ),
+                    if (triage != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          key: const Key('report-screening-result'),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                            foregroundColor: context.palette.textSecondary,
+                          ),
+                          onPressed: () =>
+                              showReportSheet(context, type: ReportTargetType.screeningResult, targetId: s.id),
+                          icon: const Icon(Icons.flag_outlined, size: 16),
+                          label: const Text('Report this result'),
                         ),
                       ),
                   ],

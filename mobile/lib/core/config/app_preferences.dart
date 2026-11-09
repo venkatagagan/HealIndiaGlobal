@@ -14,6 +14,9 @@ abstract final class PrefKeys {
   static const themeMode = 'hig.theme_mode';
   static const preferredCurrency = 'hig.preferred_currency';
   static const lastScreeningId = 'hig.last_screening_id';
+
+  /// When the user last answered "Not now" to the push notification pre-prompt (ISO-8601, UTC).
+  static const pushPromptDeclinedAt = 'hig.push_prompt_declined_at';
 }
 
 /// Whether the first-launch onboarding carousel has been completed.

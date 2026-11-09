@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/auth_controller.dart';
@@ -8,8 +9,10 @@ import '../../../core/models/models.dart';
 import '../../../core/network/realtime_service.dart';
 import '../../../core/repositories/document_repository.dart';
 import '../../../core/repositories/messaging_repository.dart';
+import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
+import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../trips/services/file_actions.dart';
 
@@ -19,7 +22,7 @@ final attachmentDocumentProvider = FutureProvider.autoDispose.family<AppDocument
 );
 
 /// Chat thread with live updates (`message.created` over the realtime socket), paging back,
-/// and document attachments.
+/// and document attachments. Long-press a message from someone else to copy or report it (CG-16).
 ///
 /// Route: `/messages/:id` · Owner: fl-journey.
 class ChatScreen extends ConsumerStatefulWidget {
@@ -158,12 +161,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       final conv = _conversation();
       final doc = await ref
           .read(documentRepositoryProvider)
-          .upload(
-            fileName: file.name,
-            kind: DocumentKind.other,
-            bytes: file.bytes,
-            caseId: conv?.caseId,
-          );
+          .upload(fileName: file.name, kind: DocumentKind.other, bytes: file.bytes, caseId: conv?.caseId);
       if (mounted) setState(() => _attachments.add(doc));
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
@@ -181,11 +179,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         : (_attachments.length == 1 ? 'Shared ${_attachments.first.fileName}' : 'Shared ${_attachments.length} files');
     setState(() => _sending = true);
     try {
-      final msg = await _repo.sendMessage(
-        widget.conversationId,
-        body,
-        attachmentDocumentIds: ids.isEmpty ? null : ids,
-      );
+      final msg = await _repo.sendMessage(widget.conversationId, body, attachmentDocumentIds: ids.isEmpty ? null : ids);
       if (!mounted) return;
       _input.clear();
       setState(() {
@@ -378,51 +372,120 @@ class _Bubble extends ConsumerWidget {
   final bool mine;
   final bool showSender;
 
+  /// Long-press menu on someone else's message: copy the text or report it. Never offered on your own.
+  Future<void> _showActions(BuildContext context) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (message.body.isNotEmpty)
+              ListTile(
+                leading: const Icon(Icons.copy_rounded),
+                title: const Text('Copy text'),
+                onTap: () => Navigator.pop(ctx, 'copy'),
+              ),
+            ListTile(
+              key: const Key('message-action-report'),
+              leading: const Icon(Icons.flag_outlined, color: AppColors.danger),
+              title: const Text('Report message'),
+              onTap: () => Navigator.pop(ctx, 'report'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!context.mounted) return;
+    switch (action) {
+      case 'copy':
+        await Clipboard.setData(ClipboardData(text: message.body));
+        if (context.mounted) showInfoSnack(context, 'Message copied.');
+      case 'report':
+        await showReportSheet(context, type: ReportTargetType.message, targetId: message.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bg = mine ? AppColors.violet : context.palette.surfaceAlt;
     final fg = mine ? Colors.white : context.colors.onSurface;
     const r = Radius.circular(16);
-    return Align(
-      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 3),
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.only(
-              topLeft: r,
-              topRight: r,
-              bottomLeft: mine ? r : const Radius.circular(4),
-              bottomRight: mine ? const Radius.circular(4) : r,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (showSender)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Text(
-                    message.sender.fullName,
-                    style: context.text.labelSmall?.copyWith(color: AppColors.violet, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              if (message.body.isNotEmpty) SelectableText(message.body, style: TextStyle(color: fg, height: 1.35)),
-              for (final id in message.attachmentDocumentIds) _AttachmentChip(documentId: id, foreground: fg),
-              const SizedBox(height: 2),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  Dates.time(message.createdAt),
-                  style: context.text.labelSmall?.copyWith(color: fg.withValues(alpha: 0.7), fontSize: 10),
-                ),
-              ),
-            ],
+    final canReport = !mine && message.id.isNotEmpty;
+    final bubble = ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.only(
+            topLeft: r,
+            topRight: r,
+            bottomLeft: mine ? r : const Radius.circular(4),
+            bottomRight: mine ? const Radius.circular(4) : r,
           ),
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (showSender)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  message.sender.fullName,
+                  style: context.text.labelSmall?.copyWith(color: AppColors.violet, fontWeight: FontWeight.w700),
+                ),
+              ),
+            // Other people's messages use plain text so a long-press opens the copy / report menu.
+            if (message.body.isNotEmpty)
+              mine
+                  ? SelectableText(message.body, style: TextStyle(color: fg, height: 1.35))
+                  : Text(message.body, style: TextStyle(color: fg, height: 1.35)),
+            for (final id in message.attachmentDocumentIds) _AttachmentChip(documentId: id, foreground: fg),
+            const SizedBox(height: 2),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                Dates.time(message.createdAt),
+                style: context.text.labelSmall?.copyWith(color: fg.withValues(alpha: 0.7), fontSize: 10),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    return Align(
+      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          if (canReport)
+            GestureDetector(
+              key: ValueKey('message-${message.id}'),
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () => _showActions(context),
+              child: bubble,
+            )
+          else
+            bubble,
+          if (mine && message.hidden)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4, right: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.visibility_off_outlined, size: 12, color: context.palette.textMuted),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Hidden by moderators',
+                    style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -442,15 +505,10 @@ class _AttachmentChip extends ConsumerWidget {
       padding: const EdgeInsets.only(top: 6),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: doc.value == null
-            ? null
-            : () => openDocument(context, ref.read(documentRepositoryProvider), doc.value!),
+        onTap: doc.value == null ? null : () => openDocument(context, ref.read(documentRepositoryProvider), doc.value!),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: foreground.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
-          ),
+          decoration: BoxDecoration(color: foreground.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -50,7 +50,9 @@ void main() {
     expect(find.text(routeLabel('/home')), findsOneWidget);
   });
 
-  testWidgets('register validates locally, requires terms, then creates the account', (tester) async {
+  testWidgets('register validates locally, requires terms and the age answer, then creates the account', (
+    tester,
+  ) async {
     final auth = FakeAuthController(const AuthState.unauthenticated());
     await pumpScreen(
       tester,
@@ -68,17 +70,31 @@ void main() {
     await tester.pump();
     expect(find.text('Use at least 10 characters'), findsOneWidget);
     expect(find.text('Please accept the Terms and Privacy Policy'), findsOneWidget);
+    expect(find.text('Please confirm your age'), findsOneWidget);
     expect(auth.calls, isEmpty);
 
+    // Terms accepted but age not answered: still blocked.
     await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'healindia2026');
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
+    await tester.ensureVisible(find.byKey(const Key('register-terms')));
+    await tester.tap(find.byKey(const Key('register-terms')));
     await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Create account'));
+    await tester.pumpAndSettle();
+    expect(find.text('Please confirm your age'), findsOneWidget);
+    expect(auth.calls, isEmpty);
+
+    // Patients get two options; the under-18 answer is allowed (guardian consent).
+    expect(find.text('I am 18 or older'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('age-minor')));
+    await tester.tap(find.byKey(const Key('age-minor')));
+    await tester.pump();
+    expect(find.text('Please confirm your age'), findsNothing);
     await tester.tap(find.widgetWithText(FilledButton, 'Create account'));
     await tester.pumpAndSettle();
 
     expect(auth.calls, ['register']);
     expect(auth.lastArgs['email'], 'amina@example.com');
+    expect(auth.lastArgs['is_adult'], isFalse);
     expect(find.text(routeLabel('/hospitals/h1')), findsOneWidget);
   });
 
@@ -91,13 +107,16 @@ void main() {
     await tester.enterText(find.widgetWithText(TextFormField, 'Full name (as on passport)'), 'Guest Person');
     await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'guest@example.com');
     await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'healindia2026');
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
+    await tester.ensureVisible(find.byKey(const Key('age-adult')));
+    await tester.tap(find.byKey(const Key('age-adult')));
+    await tester.ensureVisible(find.byKey(const Key('register-terms')));
+    await tester.tap(find.byKey(const Key('register-terms')));
     await tester.pump();
     await tester.tap(find.text('Create account & keep my progress'));
     await tester.pumpAndSettle();
 
     expect(auth.calls, ['upgrade']);
+    expect(auth.lastArgs['is_adult'], isTrue);
     expect(find.text(routeLabel('/home')), findsOneWidget);
   });
 

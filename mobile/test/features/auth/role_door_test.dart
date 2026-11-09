@@ -116,14 +116,22 @@ void main() {
     await tester.enterText(find.widgetWithText(TextFormField, 'Your full name'), 'Ravi Kumar');
     await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'ravi@agency.example');
     await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'healindia2026');
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
+    await tester.ensureVisible(find.byKey(const Key('register-terms')));
+    await tester.tap(find.byKey(const Key('register-terms')));
     await tester.pump();
+    // Agents get one required checkbox instead of the patient's two options.
+    expect(find.text('I confirm I am 18 or older.'), findsOneWidget);
+    expect(find.byKey(const Key('age-minor')), findsNothing);
     await tester.ensureVisible(find.widgetWithText(FilledButton, 'Create account'));
     await tester.tap(find.widgetWithText(FilledButton, 'Create account'));
     await tester.pump();
     expect(find.text('Enter your agency name'), findsOneWidget);
+    expect(find.text('Please confirm your age'), findsOneWidget);
     expect(auth.calls, isEmpty);
+
+    await tester.ensureVisible(find.byKey(const Key('age-adult-confirm')));
+    await tester.tap(find.byKey(const Key('age-adult-confirm')));
+    await tester.pump();
 
     await tester.enterText(find.byKey(const Key('register-agency')), 'Lagos Care Travel');
     await tester.ensureVisible(find.widgetWithText(FilledButton, 'Create account'));
@@ -132,6 +140,7 @@ void main() {
 
     expect(auth.calls, ['register']);
     expect(auth.lastArgs['role'], 'agent');
+    expect(auth.lastArgs['is_adult'], isTrue);
     expect(auth.lastArgs['agency_name'], 'Lagos Care Travel');
     expect(auth.lastArgs['referral_code'], isNull);
     expect(find.text(routeLabel('/agent')), findsOneWidget);
@@ -151,14 +160,17 @@ void main() {
     await tester.enterText(find.widgetWithText(TextFormField, 'City (optional)'), 'Pune');
     await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'ops@sunrise.example');
     await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'healindia2026');
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
+    await tester.ensureVisible(find.byKey(const Key('age-adult-confirm')));
+    await tester.tap(find.byKey(const Key('age-adult-confirm')));
+    await tester.ensureVisible(find.byKey(const Key('register-terms')));
+    await tester.tap(find.byKey(const Key('register-terms')));
     await tester.pump();
     await tester.ensureVisible(find.widgetWithText(FilledButton, 'Create account'));
     await tester.tap(find.widgetWithText(FilledButton, 'Create account'));
     await tester.pumpAndSettle();
 
     expect(auth.lastArgs['role'], 'hospital');
+    expect(auth.lastArgs['is_adult'], isTrue);
     expect(auth.lastArgs['hospital_name'], 'Sunrise Heart Institute');
     expect(auth.lastArgs['city'], 'Pune');
     expect(find.text(routeLabel('/hospital')), findsOneWidget);
