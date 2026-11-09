@@ -55,6 +55,7 @@ dependencies:
   record: ^7.1.2 # voice: microphone recording, AAC-LC m4a / opus webm (PLAN §7.2)
   flutter_svg: ^2.3.0 # brand: logos, illustrations, specialty icons from design/ (BACKLOG #36)
   sign_in_with_apple: ^8.2.0 # iOS: Sign in with Apple next to Google (App Store 4.8, BACKLOG #16)
+  geolocator: ^14.0.1 # SOS: one GPS reading when the patient sends an alert, never tracking (CG-10)
   flutter_localizations:
     sdk: flutter
 

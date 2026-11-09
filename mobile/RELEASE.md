@@ -81,8 +81,8 @@ SHA-1 of the **app signing key** (Play Console › App integrity) and of the upl
 ## Known open items in the app
 
 - No push notifications yet (users see updates inside the app).
-- Location permission is declared (SOS / support map) but GPS is not read yet; the patient marks the location on
-  the map by hand. Store forms must match whichever is shipped.
+- Location is read once, only when a patient sends an SOS with "Share my current location" ticked; never in the
+  background. Store privacy forms: location collected, optional, for app functionality (`docs/store`).
 - Agents can pay by bank transfer only; hospital profile and price editing is web-only.
 
 ## Help

@@ -75,7 +75,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Record a spoken description of your symptoms so we can fill in your screening answers. You review everything before it is used.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is shown on the in-country support map and shared with our support team when you send an SOS.</string>
+	<string>When you send an SOS, we share your location with our support team so they can reach you, and show it on the support map. It is never used in the background.</string>
 	<key>UISupportsDocumentBrowser</key>
 	<false/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>

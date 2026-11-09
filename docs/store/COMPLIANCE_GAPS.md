@@ -29,7 +29,7 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-07 | Organisation developer accounts, legal entity, D-U-N-S, EU trader status | P0 | Both | Business / legal |
 | CG-08 | Privacy policy: public URL, in-app link, required content | P0 | Both | docs/legal, public-website, fl-onboarding |
 | CG-09 | No iOS privacy manifest; two plugins ship none | P0 | Apple | flutter-foundation |
-| CG-10 | Location permission declared with no location code | P0 | Both | flutter-foundation, fl-journey |
+| CG-10 | Location permission declared with no location code. **DONE 2026-11-09 (option a)** | P0 | Both | flutter-foundation, fl-journey |
 | CG-11 | Placeholder platform config: Flutter default icons, iOS Google client ID, debug release signing, final app IDs | P0 | Both | flutter-foundation, brand-assets, deploy-iac |
 | CG-12 | Store privacy forms must match the shipped binary (Razorpay SDK, future SDKs) | P0 | Both | Release manager, flutter-foundation |
 | CG-13 | AI "possible conditions" shown to patients raises medical-device (SaMD) exposure | P1 | Both | fl-screening, web-patient, be-screening, legal |
@@ -395,6 +395,12 @@ upload. Check that the native Razorpay iOS SDK pulled by `razorpay_flutter` carr
 its APIs.
 
 ### CG-10 · Location permission without implementation
+
+**Status: DONE 2026-11-09 (option a).** `geolocator` reads one position when the patient sends an SOS with "Share my
+current location" ticked (the tick box is the pre-prompt; permission is requested just in time). Up to 8 s for a fix,
+then the last known position, then the place marked on the map; the SOS is sent either way and the patient is told
+whether a location went with it. No streams, no background location. Code: `core/services/location_service.dart`,
+`features/support/widgets/sos_flow.dart`; tests: `test/features/support/sos_flow_test.dart`.
 
 **Evidence.** `AndroidManifest.xml` declares `ACCESS_FINE_LOCATION` and `ACCESS_COARSE_LOCATION`, and `Info.plist`
 has `NSLocationWhenInUseUsageDescription`. But `pubspec.yaml` has no location plugin, so `POST /travel/sos {lat?,

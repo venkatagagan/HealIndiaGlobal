@@ -330,7 +330,7 @@ Rules applied:
 | Device or other IDs | Yes | No | Required | App functionality, Fraud prevention/security/compliance | IP address and user agent kept with sessions, consents and audit; push token once push ships (CG-15); Razorpay SDK device signals (CG-12) |
 
 Footnotes:
-1. Only if SOS location ships (CG-10a). If the permissions are removed (CG-10b), answer **No** for both.
+1. SOS location ships (CG-10a, done 2026-11-09): answer **Yes**, optional, app functionality.
 2. Only if opt-in marketing emails are sent (`ConsentKind.marketing`). Never use health data for marketing.
 3. Collected by the Razorpay SDK inside the app. Confirm against Razorpay's SDK disclosure (CG-12).
 4. Messages go to participants the user writes to, which is user-initiated. They are still named in the privacy
@@ -395,7 +395,7 @@ Interact" and "Shares Info". Regional authorities may differ, so treat this as a
 |---|---|---|---|---|
 | `INTERNET`, `ACCESS_NETWORK_STATE` | normal | API, WebSocket, connectivity checks | Install-time | Declared |
 | `USE_BIOMETRIC` | normal (no dialog) | `local_auth` BiometricPrompt to confirm a payment. Biometric data stays on the device; the app only gets success or failure | Install-time | Declared; `MainActivity` is a `FlutterFragmentActivity` |
-| `ACCESS_FINE_LOCATION` + `ACCESS_COARSE_LOCATION` | dangerous | SOS coordinates; "show my location" on the support map | Just-in-time on tap, never at launch; **foreground only** | Declared **without** a location plugin, so implement or remove (CG-10) |
+| `ACCESS_FINE_LOCATION` + `ACCESS_COARSE_LOCATION` | dangerous | SOS coordinates (one reading per alert, then shown on the support map) | Just-in-time when an SOS is sent with "Share my current location" ticked; never at launch; **foreground only** | Declared and used (`geolocator`, CG-10 done 2026-11-09) |
 | Photos, files, documents | — (none) | Upload reports, prescriptions, passport | — | Use the system picker or Storage Access Framework (`file_picker`). Don't add `READ_MEDIA_*` / `READ_EXTERNAL_STORAGE`; the Photo and Video Permissions policy limits broad access to apps that need it as core functionality |
 | `RECORD_AUDIO` | dangerous | Voice intake: record a spoken (English) description of symptoms on screening steps 1–2, for patients and for agents filling a patient's screening | Just-in-time when the user taps "Describe it by voice", after the pre-prompt below; never at launch | **Declared** (app manifest and `record_android`). Typing must remain a full alternative. No foreground service: recording stops when the app leaves the foreground |
 | `CAMERA` | — (not declared) | Photographing reports (`features/documents_ai`) | — | **Not needed and must stay undeclared**: `image_picker` uses the system camera intent, which needs no permission as long as the app doesn't declare `CAMERA`. Declaring it would force a runtime grant even for the intent |
@@ -404,9 +404,9 @@ Interact" and "Shares Info". Regional authorities may differ, so treat this as a
 | Must **not** be added | — | — | — | `ACCESS_BACKGROUND_LOCATION`, `CALL_PHONE` (helplines use the `tel:` dial intent, already in `<queries>`), `READ_CONTACTS`, SMS or call-log, `QUERY_ALL_PACKAGES`, `MANAGE_EXTERNAL_STORAGE`, `AD_ID`, `CAMERA`, `READ_MEDIA_*`, `FOREGROUND_SERVICE_MICROPHONE` |
 
 **Pre-permission copy** (shown before the system dialog; "Not now" always available):
-- **Location (SOS).** "Share your location with our support team? When you send an SOS we include your current
-  location so we can reach you faster. We only check it when you tap SOS or 'Show my location', never in the
-  background. You can send an SOS without it." Buttons: **Continue** / **Not now**.
+- **Location (SOS).** Built into the SOS confirmation: a ticked box "Share my current location with the support
+  team. Used only for this alert, so we can find you faster. Your phone may ask for permission." Unticking it is
+  "not now"; the SOS is sent either way. The location is read once, never in the background.
 - **Biometric prompt.** No permission dialog on Android. BiometricPrompt reads: title "Confirm payment", subtitle
   "USD 1,666.67 · HIG-P-2026-000123", description "Use your fingerprint or face, or your screen lock." Allowed
   authenticators: strong biometrics or device credential.

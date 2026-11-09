@@ -1,30 +1,61 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/repositories/travel_repository.dart';
+import '../../../core/services/location_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../trips/services/journey_actions.dart';
 
-/// Confirms and sends an SOS (`POST /travel/sos`), optionally with the location the patient marked
-/// on the map, then offers to call local emergency services.
-Future<void> runSosFlow(BuildContext context, WidgetRef ref, {String? caseId, LatLng? location}) async {
+/// Confirms and sends an SOS (`POST /travel/sos`), then offers to call local emergency services.
+///
+/// With "share my location" ticked, the phone's GPS is read once (permission asked just in time, at most
+/// [LocationService.timeLimit] once granted); without a fix the place the patient marked on the map ([location]) is
+/// used. The alert is sent either way. [onLocated] receives the GPS point so the map can show it.
+Future<void> runSosFlow(
+  BuildContext context,
+  WidgetRef ref, {
+  String? caseId,
+  LatLng? location,
+  ValueChanged<LatLng>? onLocated,
+}) async {
   final request = await showDialog<({String message, bool shareLocation})>(
     context: context,
-    builder: (_) => _SosConfirmDialog(hasLocation: location != null),
+    builder: (_) => _SosConfirmDialog(hasMarkedLocation: location != null),
   );
   if (request == null || !context.mounted) return;
+
+  LatLng? point;
+  LocationFailure? gpsFailure;
+  if (request.shareLocation) {
+    final fix = await _withProgress(
+      context,
+      'Getting your location…',
+      ref.read(locationServiceProvider).currentLocation(),
+    );
+    if (fix.point != null) onLocated?.call(fix.point!);
+    point = fix.point ?? location;
+    gpsFailure = fix.failure;
+    if (!context.mounted) return;
+  }
+
   try {
-    await ref
-        .read(travelRepositoryProvider)
-        .sos(
-          lat: request.shareLocation ? location?.latitude : null,
-          lng: request.shareLocation ? location?.longitude : null,
-          message: request.message.isEmpty ? null : request.message,
-          caseId: caseId,
-        );
+    await _withProgress(
+      context,
+      'Sending your alert…',
+      ref
+          .read(travelRepositoryProvider)
+          .sos(
+            lat: point?.latitude,
+            lng: point?.longitude,
+            message: request.message.isEmpty ? null : request.message,
+            caseId: caseId,
+          ),
+    );
   } catch (e) {
     if (context.mounted) {
       showErrorSnack(context, e);
@@ -32,10 +63,56 @@ Future<void> runSosFlow(BuildContext context, WidgetRef ref, {String? caseId, La
     }
     return;
   }
-  if (context.mounted) await _offerEmergencyCall(context, ref, failed: false);
+  if (!context.mounted) return;
+  final String? locationNote;
+  if (!request.shareLocation) {
+    locationNote = null;
+  } else if (gpsFailure == null) {
+    locationNote = 'Your current location was shared with the team.';
+  } else if (point != null) {
+    locationNote = '${gpsFailure.message} The place you marked on the map was shared instead.';
+  } else {
+    locationNote = '${gpsFailure.message} Tell the team where you are when they call.';
+  }
+  await _offerEmergencyCall(context, ref, failed: false, locationNote: locationNote);
 }
 
-Future<void> _offerEmergencyCall(BuildContext context, WidgetRef ref, {required bool failed}) async {
+/// Runs [work] behind a small modal progress dialog that cannot be dismissed.
+Future<T> _withProgress<T>(BuildContext context, String label, Future<T> work) async {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  var open = true;
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          content: Row(
+            children: [
+              const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 3)),
+              const SizedBox(width: 16),
+              Expanded(child: Text(label)),
+            ],
+          ),
+        ),
+      ),
+    ).whenComplete(() => open = false),
+  );
+  try {
+    return await work;
+  } finally {
+    if (open) navigator.pop();
+  }
+}
+
+Future<void> _offerEmergencyCall(
+  BuildContext context,
+  WidgetRef ref, {
+  required bool failed,
+  String? locationNote,
+}) async {
   final emergency = ref.read(helplinesProvider).value?.emergency ?? '112';
   final helpline = ref.read(helplinesProvider).value?.support24x7;
   await showDialog<void>(
@@ -50,8 +127,11 @@ Future<void> _offerEmergencyCall(BuildContext context, WidgetRef ref, {required 
       content: Text(
         failed
             ? 'Please call for help directly.'
-            : 'Your coordinator and our 24/7 support team have been alerted and will call you shortly. '
-                  'If your life is in danger, call emergency services now.',
+            : [
+                'Your coordinator and our 24/7 support team have been alerted and will call you shortly.',
+                ?locationNote,
+                'If your life is in danger, call emergency services now.',
+              ].join('\n\n'),
       ),
       actions: [
         if (helpline != null)
@@ -78,9 +158,9 @@ Future<void> _offerEmergencyCall(BuildContext context, WidgetRef ref, {required 
 }
 
 class _SosConfirmDialog extends StatefulWidget {
-  const _SosConfirmDialog({required this.hasLocation});
+  const _SosConfirmDialog({required this.hasMarkedLocation});
 
-  final bool hasLocation;
+  final bool hasMarkedLocation;
 
   @override
   State<_SosConfirmDialog> createState() => _SosConfirmDialogState();
@@ -88,7 +168,7 @@ class _SosConfirmDialog extends StatefulWidget {
 
 class _SosConfirmDialogState extends State<_SosConfirmDialog> {
   final _message = TextEditingController();
-  late bool _share = widget.hasLocation;
+  bool _share = true;
 
   @override
   void dispose() {
@@ -114,18 +194,19 @@ class _SosConfirmDialogState extends State<_SosConfirmDialog> {
               maxLength: 2000,
               decoration: const InputDecoration(labelText: 'What is happening? (optional)'),
             ),
-            if (widget.hasLocation)
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: _share,
-                onChanged: (v) => setState(() => _share = v ?? false),
-                title: const Text('Share the location I marked on the map'),
-              )
-            else
-              Text(
-                'Tip: long-press the map to mark where you are so we can find you faster.',
-                style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
+            CheckboxListTile(
+              key: const ValueKey('sos-share-location'),
+              contentPadding: EdgeInsets.zero,
+              value: _share,
+              onChanged: (v) => setState(() => _share = v ?? false),
+              title: const Text('Share my current location with the support team'),
+              subtitle: Text(
+                widget.hasMarkedLocation
+                    ? 'Used only for this alert. If your phone cannot find you, the place you marked on the map is '
+                          'shared instead.'
+                    : 'Used only for this alert, so we can find you faster. Your phone may ask for permission.',
               ),
+            ),
           ],
         ),
       ),

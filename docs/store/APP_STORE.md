@@ -300,8 +300,8 @@ Adding any such SDK changes this answer.
 | Sensitive Info | App Functionality | Conservative: free-text history and uploaded reports can reveal pregnancy, disability or genetic information, which are in Apple's Sensitive Info list |
 | Financial Info · Other Financial Info | App Functionality | Bank-transfer reference and proof, insurance provider and policy number |
 | Financial Info · Payment Info | **Not collected** | Card and UPI details are entered in Razorpay's checkout and never reach us (Apple's payment-service note). Re-check if any payment field is ever rendered by our own UI |
-| Location · Precise Location | App Functionality | SOS coordinates (only if CG-10a ships) |
-| Location · Coarse Location | App Functionality | SOS coordinates when the user grants approximate location (only if CG-10a ships) |
+| Location · Precise Location | App Functionality | SOS coordinates (one reading per SOS alert) |
+| Location · Coarse Location | App Functionality | SOS coordinates when the user grants approximate location |
 | User Content · Emails or Text Messages | App Functionality | In-app chat messages |
 | User Content · Photos or Videos | App Functionality | Report photos taken with the camera or picked from the library (`image_picker`, up to 10 pages), passport and visa scans, profile photo. Metadata including GPS is stripped server-side before AI processing (PLAN §7.1) |
 | User Content · Audio Data | App Functionality | Voice descriptions of symptoms, in English, recorded in the app (`record`, AAC/m4a, ≤ 3 min) and uploaded for transcription on our own servers. The audio file is deleted after transcription (`VOICE_RETAIN_AUDIO=false`), but it is stored until the job runs, so it is not "real-time only" and must be declared. The transcript is Health data |
@@ -358,7 +358,7 @@ just-in-time, never at launch.
 | `NSFaceIDUsageDescription` | "Heal India Global uses Face ID to confirm payments and protect your medical information." | **Inaccurate**: no app-lock that protects medical information exists in PLAN | "Confirm it's you with Face ID before a payment starts. Face ID data never leaves your device." Keep the passcode fallback (CG-17) |
 | `NSPhotoLibraryUsageDescription` | "Choose photos of medical reports, prescriptions or your passport to upload securely." | OK. The out-of-process picker needs no permission, so this rarely shows; keep it in case a plugin touches the Photos APIs | Unchanged |
 | `NSCameraUsageDescription` | "Take photos of medical reports, prescriptions or your passport to upload securely." | **Now used**: `image_picker` `ImageSource.camera` in `features/documents_ai` (screening step 3, Trips › Documents; also when an agent adds a patient's report). Accurate, but should mention the optional AI reading | "Take photos of medical reports, prescriptions or your passport to add them to your case. If you choose, our AI provider reads a report to summarise it for you and your doctor." |
-| `NSLocationWhenInUseUsageDescription` | "Your location is shown on the in-country support map and shared with our support team when you send an SOS." | Accurate, **but no location code exists** (CG-10). Request just-in-time; SOS must work without it, with a typed "Where are you?" field | "When you tap SOS, we send your location to our support team so they can reach you. It also shows you on the support map. Never used in the background." |
+| `NSLocationWhenInUseUsageDescription` | "When you send an SOS, we share your location with our support team so they can reach you, and show it on the support map. It is never used in the background." | **Used since 2026-11-09** (CG-10 done): `geolocator` takes one reading when an SOS is sent with "Share my current location" ticked; never at launch, never in the background. SOS works without it (typed message field, map mark) | Done |
 | `NSMicrophoneUsageDescription` | "Record a spoken description of your symptoms so we can fill in your screening answers. You review everything before it is used." | **Now used** by voice intake (`record`, screening steps 1–2, and the agent's screening form). Accurate and specific; request only when the user taps "Describe it by voice". Typing must remain a full alternative (5.1.1(iv)) | "Record a spoken description of your symptoms in English so we can fill in your screening answers. You review everything before it is used." When tele-consults ship (ROADMAP R1), extend: "…and to talk to your doctor during a video consultation." |
 | `NSSpeechRecognitionUsageDescription` | — | **Not needed** today: speech-to-text runs on our servers (Whisper). Add it only if on-device recognition via `SFSpeechRecognizer` is adopted (the API allows it through `POST /voice/intake-extract`) | "Turn your spoken description into text on this device." |
 | Not needed | — | No `NSLocationAlways…`, `NSUserTrackingUsageDescription`, `NSContactsUsageDescription`, background modes (recording stops when the app leaves the foreground; no `audio` background mode) | — |
@@ -501,8 +501,8 @@ account has a confirmed booking, so to see the immediate deletion path please cr
 as Guest) and delete that.
 
 PERMISSIONS: Camera and microphone are requested only when the user taps "Take photo" or "Describe it by voice";
-typing and file upload always work instead. Location is requested only when the user taps SOS or "Show my
-location" (SOS works without it). Face ID is an on-device confirmation before a payment starts; the device passcode
+typing and file upload always work instead. Location is requested only when the user sends an SOS with "Share my current
+location" ticked (SOS works without it). Face ID is an on-device confirmation before a payment starts; the device passcode
 is the fallback. Notifications are optional.
 
 Contact during review: <name>, <phone>, <email>.

@@ -84,7 +84,17 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       icon: const Icon(Icons.arrow_back_rounded),
                       onPressed: () => context.canPop() ? context.pop() : context.go(Routes.trips),
                     ),
-                    trailing: _SosButton(onPressed: () => runSosFlow(context, ref, caseId: caseId, location: _myLocation)),
+                    trailing: _SosButton(
+                      onPressed: () => runSosFlow(
+                        context,
+                        ref,
+                        caseId: caseId,
+                        location: _myLocation,
+                        onLocated: (p) {
+                          if (mounted) setState(() => _myLocation = p);
+                        },
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   SupportMap(
@@ -114,14 +124,16 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   ),
                   _LatestNotifications(onOpen: _openNotification),
                   const SectionTitle('Cultural Tips'),
-                  ref.watch(culturalTipsProvider).when(
-                    loading: () => const SizedBox(height: 120, child: LoadingView()),
-                    error: (e, _) =>
-                        ErrorView(error: e, compact: true, onRetry: () => ref.invalidate(culturalTipsProvider)),
-                    data: (tips) => tips.isEmpty
-                        ? Text('Tips will appear here soon.', style: context.text.bodyMedium)
-                        : CulturalTipsCarousel(tips: tips),
-                  ),
+                  ref
+                      .watch(culturalTipsProvider)
+                      .when(
+                        loading: () => const SizedBox(height: 120, child: LoadingView()),
+                        error: (e, _) =>
+                            ErrorView(error: e, compact: true, onRetry: () => ref.invalidate(culturalTipsProvider)),
+                        data: (tips) => tips.isEmpty
+                            ? Text('Tips will appear here soon.', style: context.text.bodyMedium)
+                            : CulturalTipsCarousel(tips: tips),
+                      ),
                 ],
               ),
             ),
@@ -204,21 +216,17 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   void _openNotification(AppNotification n) {
     if (!n.isRead) {
-      ref.read(messagingRepositoryProvider).markNotificationRead(n.id).then(
-        (_) {
-          ref.invalidate(notificationsProvider);
-          ref.invalidate(unreadNotificationsCountProvider);
-        },
-        onError: (Object _) {},
-      );
+      ref.read(messagingRepositoryProvider).markNotificationRead(n.id).then((_) {
+        ref.invalidate(notificationsProvider);
+        ref.invalidate(unreadNotificationsCountProvider);
+      }, onError: (Object _) {});
     }
     final target = notificationTarget(n);
     if (target != null) context.push(target);
   }
 
   void _showItinerary(List<ItineraryItem> items) {
-    final sorted = [...items]
-      ..sort((a, b) => (a.startsAt ?? DateTime(9999)).compareTo(b.startsAt ?? DateTime(9999)));
+    final sorted = [...items]..sort((a, b) => (a.startsAt ?? DateTime(9999)).compareTo(b.startsAt ?? DateTime(9999)));
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -242,7 +250,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     title: Text(i.title),
                     subtitle: Text(
                       [
-                        if (i.startsAt != null) '${Dates.weekday(i.startsAt)}, ${Dates.timeRange(i.startsAt, i.endsAt)}',
+                        if (i.startsAt != null)
+                          '${Dates.weekday(i.startsAt)}, ${Dates.timeRange(i.startsAt, i.endsAt)}',
                         ?i.location,
                       ].join('\n'),
                     ),
@@ -336,8 +345,7 @@ class _LatestNotifications extends ConsumerWidget {
             style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
           );
         }
-        final sorted = [...list]
-          ..sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+        final sorted = [...list]..sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
         return Column(
           children: [
             for (final n in sorted.take(2))
