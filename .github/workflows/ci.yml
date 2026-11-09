@@ -1,0 +1,217 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # -----------------------------------------------------------------------------------------------------
+  backend:
+    name: Backend (ruff + pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          # CI-only throwaway credentials (the role is a superuser inside the ephemeral container, so the
+          # test suite can create/drop its per-session databases and extensions).
+          POSTGRES_USER: hig_ci
+          POSTGRES_PASSWORD: hig_ci_only_password
+          POSTGRES_DB: hig_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hig_ci -d hig_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      ENV: test
+      DATABASE_URL: postgresql+asyncpg://hig_ci:hig_ci_only_password@127.0.0.1:5432/hig_ci
+      REDIS_URL: ""
+      ANTHROPIC_API_KEY: ""
+      PAYMENT_GATEWAYS_ENABLED: mock,bank_transfer,razorpay,stripe
+      EMAIL_BACKEND: console
+      STORAGE_BACKEND: local
+      STORAGE_LOCAL_DIR: ./storage
+      RUN_WORKER_IN_API: "false"
+      LOG_LEVEL: WARNING
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            backend/pyproject.toml
+            backend/requirements.lock.txt
+
+      - name: Generate ephemeral secrets
+        run: |
+          echo "JWT_SECRET=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "FIELD_ENCRYPTION_KEY=$(python -c 'import base64,os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())')" >> "$GITHUB_ENV"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Ruff
+        run: python -m ruff check app tests
+
+      - name: Alembic migrations apply cleanly
+        run: python -m alembic upgrade head
+
+      - name: Pytest
+        run: python -m pytest -q --cov=app --cov-report=xml --junitxml=junit.xml
+
+      # Patient-safety gate (evals/README.md): the rules triage engine must flag 100% of the benchmark's
+      # red-flag emergencies and return schema-valid results. `testpaths = ["tests"]`, so name it explicitly.
+      # Pure Python - no database, network or Claude calls.
+      - name: Screening rules-engine eval gate
+        run: python -m pytest -q evals/test_rules_engine_gate.py
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: |
+            backend/junit.xml
+            backend/coverage.xml
+          if-no-files-found: ignore
+
+  # -----------------------------------------------------------------------------------------------------
+  web:
+    name: Web (typecheck + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: web/apps/*/dist
+          retention-days: 7
+
+  # -----------------------------------------------------------------------------------------------------
+  mobile:
+    name: Mobile (analyze + test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.x
+          cache: true
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test
+
+  # -----------------------------------------------------------------------------------------------------
+  docker:
+    name: Docker images (build only, no push)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [backend, web]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Validate compose file
+        run: |
+          cp infra/.env.example infra/.env
+          # Fill the required secrets with throwaway values just for `config` validation.
+          sed -i \
+            -e "s/^JWT_SECRET=.*/JWT_SECRET=ci-validate-only-0123456789abcdef0123456789/" \
+            -e "s/^FIELD_ENCRYPTION_KEY=.*/FIELD_ENCRYPTION_KEY=Y2ktdmFsaWRhdGUtb25seS0wMTIzNDU2Nzg5YWJjZGU=/" \
+            infra/.env
+          docker compose -f infra/docker-compose.yml --env-file infra/.env config --quiet
+          docker compose -f infra/docker-compose.yml --env-file infra/.env --profile s3 config --quiet
+          rm infra/.env
+
+      - name: Build API image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/Dockerfile
+          push: false
+          load: false
+          tags: healindia/api:ci-${{ github.sha }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+
+      - name: Build web image
+        uses: docker/build-push-action@v6
+        with:
+          context: web
+          file: web/Dockerfile
+          push: false
+          load: false
+          tags: healindia/web:ci-${{ github.sha }}
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
+
+      - name: Lint edge nginx config
+        run: |
+          mkdir -p /tmp/edge/certs /tmp/edge/conf.d
+          openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj "/CN=localhost" \
+            -keyout /tmp/edge/certs/privkey.pem -out /tmp/edge/certs/fullchain.pem 2>/dev/null
+          docker run --rm \
+            --add-host api:127.0.0.1 --add-host web:127.0.0.1 \
+            -e PATIENT_DOMAIN=localhost -e AGENT_DOMAIN=agent.localhost \
+            -e HOSPITAL_DOMAIN=hospital.localhost -e ADMIN_DOMAIN=admin.localhost \
+            -e NGINX_ENVSUBST_FILTER='_DOMAIN$' \
+            -v "$PWD/infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
+            -v "$PWD/infra/nginx/snippets:/etc/nginx/snippets:ro" \
+            -v "$PWD/infra/nginx/templates:/etc/nginx/templates:ro" \
+            -v /tmp/edge/certs:/etc/nginx/certs:ro \
+            nginx:1.27-alpine sh -c '/docker-entrypoint.sh nginx -t'
