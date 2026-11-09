@@ -98,6 +98,7 @@ class SecurityHeadersMiddleware:
         path: str = scope.get("path", "")
         is_docs = path.startswith("/api/docs") or path == "/api/openapi.json"
         no_store = path.startswith("/api/v1/auth")
+        api = path.startswith("/api/v1/")  # SEC-034: default no-store; public catalog routes set their own
 
         async def send_wrapper(message: Message) -> None:
             if message["type"] == "http.response.start":
@@ -119,6 +120,8 @@ class SecurityHeadersMiddleware:
                 if no_store:
                     headers["Cache-Control"] = "no-store"
                     headers.setdefault("Pragma", "no-cache")
+                elif api:
+                    headers.setdefault("Cache-Control", "no-store")
             await send(message)
 
         await self.app(scope, receive, send_wrapper)

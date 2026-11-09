@@ -17,14 +17,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
 from app.core.config import settings
-from app.core.deps import get_client_ip, get_user_agent
 from app.core.enums import AIRequestStatus, ConsentKind, ScreeningStatus, UserRole
 from app.core.errors import AppError, BadRequest, Conflict, NotFound
 from app.core.events import publish
 from app.core.jobs import enqueue
 from app.core.storage import ObjectNotFound, get_storage, make_key
-from app.models import AIRequestLog, Case, Consent, PatientProfile, Screening, Specialty, User
+from app.models import AIRequestLog, Case, PatientProfile, Screening, Specialty, User
 from app.models.voice import VoiceReviewStatus, VoiceStatus, VoiceTranscription
+from app.modules.auth.service import record_consent
 from app.modules.voice import ai, policies, stt
 from app.modules.voice.ai import IntakeSuggestion
 from app.modules.voice.audio import AudioDecodeError, AudioTooLong, sniff_audio_format
@@ -103,14 +103,10 @@ async def _specialty_slugs(db: AsyncSession) -> list[str]:
     return list(rows.scalars())
 
 
-def _consent(user_id: uuid.UUID, request: Request | None) -> Consent:
-    return Consent(
-        user_id=user_id,
-        kind=ConsentKind.AI_PROCESSING,
-        version=AI_CONSENT_VERSION,
-        granted=True,
-        ip=get_client_ip(request) if request is not None else None,
-        user_agent=get_user_agent(request) if request is not None else None,
+def _record_ai_consent(db: AsyncSession, subject_id: uuid.UUID, actor: User, request: Request | None) -> None:
+    # SEC-060: an agent recording for a patient is stored as the granter, not as the patient's own consent.
+    record_consent(
+        db, subject_id, ConsentKind.AI_PROCESSING, AI_CONSENT_VERSION, request, granted_by_user_id=actor.id
     )
 
 
@@ -178,7 +174,7 @@ async def create_transcription(
     key = make_key(f"voice/{user.id}", audio_format.extension)
     await get_storage().save(key, data, audio_format.content_type)
     transcription.storage_key = key
-    db.add(_consent(patient.user_id if patient is not None else user.id, request))
+    _record_ai_consent(db, patient.user_id if patient is not None else user.id, user, request)
     await enqueue(
         db,
         TRANSCRIBE_TASK,

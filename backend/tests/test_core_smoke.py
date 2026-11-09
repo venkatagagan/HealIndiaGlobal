@@ -227,6 +227,12 @@ async def test_security_headers(client: httpx.AsyncClient) -> None:
     assert "Strict-Transport-Security" not in resp.headers  # not production
     resp = await client.post("/api/v1/auth/__nothing__")
     assert resp.headers["Cache-Control"] == "no-store"
+    # SEC-034: every other API response defaults to no-store (patient data must not sit in caches) ...
+    resp = await client.get("/api/v1/patient/profile")
+    assert resp.status_code == 401 and resp.headers["Cache-Control"] == "no-store"
+    # ... while public catalogue routes keep their own cache policy.
+    resp = await client.get("/api/v1/specialties")
+    assert resp.status_code == 200 and "max-age" in resp.headers["Cache-Control"]
 
 
 async def test_cors_preflight_dev_origin(client: httpx.AsyncClient) -> None:

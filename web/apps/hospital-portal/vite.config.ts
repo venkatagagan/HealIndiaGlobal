@@ -42,7 +42,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // SEC-050: never ship source maps to the browser
     chunkSizeWarningLimit: 1200,
   },
 });

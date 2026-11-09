@@ -197,7 +197,11 @@ async def order_proof_documents(order_id: uuid.UUID, db: DbSession, user: StaffU
     return await documents_service.to_out_many(db, documents)
 
 
-@router.post("/payments/orders/{order_id}/verify", response_model=PaymentOrderOut)
+@router.post(
+    "/payments/orders/{order_id}/verify",
+    response_model=PaymentOrderOut,
+    dependencies=[Depends(rate_limit("payments.verify", 30, 60, key="user"))],  # SEC-047
+)
 async def verify_order(
     order_id: uuid.UUID, body: VerifyIn, request: Request, db: DbSession, user: CurrentUser
 ) -> PaymentOrderOut:

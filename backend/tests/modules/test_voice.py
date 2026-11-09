@@ -238,6 +238,7 @@ async def test_upload_transcribe_extract(
         (await db.execute(select(Consent).where(Consent.user_id == world.patient_user.id))).scalars().all()
     )
     assert [str(c.kind) for c in consents] == ["ai_processing"]
+    assert consents[0].granted_by_user_id is None  # the patient's own consent
     log = (await db.execute(select(AIRequestLog).where(AIRequestLog.purpose == "voice_intake"))).scalar_one()
     assert str(log.status) == "ok"
     notes = (
@@ -511,7 +512,7 @@ async def test_real_local_whisper_end_to_end(
 
 # ------------------------------------------------------------------------------------------- patient_id
 async def test_patient_id_for_agents_only_in_scope(
-    client: Any, auth_headers: Any, run_jobs: Any, world: Any
+    client: Any, db: Any, auth_headers: Any, run_jobs: Any, world: Any
 ) -> None:
     stt.set_provider(FakeSTT(stt_result()))
     agent = auth_headers(world.agent_user)
@@ -520,6 +521,9 @@ async def test_patient_id_for_agents_only_in_scope(
     r = await upload(client, agent, patient_id=str(world.managed.id))
     assert r.status_code == 202, r.text
     assert r.json()["patient_id"] == str(world.managed.id)
+    # SEC-060: stored under the patient, with the agent as the granter (not the patient's own consent).
+    consent = (await db.execute(select(Consent).where(Consent.user_id == world.managed_user.id))).scalar_one()
+    assert consent.granted_by_user_id == world.agent_user.id
     r2 = await client.get(
         f"{API}/voice/transcriptions/{r.json()['id']}", headers=auth_headers(world.managed_user)
     )

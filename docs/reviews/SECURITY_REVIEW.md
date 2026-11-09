@@ -12,6 +12,28 @@
 **Status values:** `Open` · `Fixed (pass 2)` · `Partially fixed (pass 2)` · `New (pass 2)` (combined with one of the others).
 **Severity:** Critical = remotely exploitable with no preconditions, leading to full compromise or theft of funds. High = cross-tenant PHI exposure, account takeover or direct money loss that needs only modest preconditions. Medium = a real abuse path that needs an insider, a race or extra conditions, or a significant control gap. Low = hardening, defence in depth, privacy hygiene.
 
+## 0. Status update 2026-11-09 (re-verified against the code)
+
+The finding entries below keep their original text; this table is the current status where it differs.
+
+| Finding | Now | Evidence |
+|---|---|---|
+| SEC-001 (High) Google/Apple link to unverified accounts | **Fixed** | `auth/service.py` federated sign-in refuses `account_exists_unverified` and audits it |
+| SEC-002 (High) hospital access to all patient documents | **Fixed** | `documents/policies.py`: hospital branch limited to its own hospital and cases; `can_access_patient` is False for hospitals |
+| SEC-013 (Medium) ops admin can grant finance/admin | **Fixed** | `admin/service.py` `_PRIVILEGED_GRANTS`: only a super_admin grants finance or admin (create and update); test in `test_admin.py` |
+| SEC-016 (Medium) pre-created accounts | Partial | Google path fixed by SEC-001; invites still create active users |
+| SEC-034 (Low) PHI responses cacheable | **Fixed** | `core/middleware.py`: every `/api/v1/` response defaults to `Cache-Control: no-store`; public catalogue keeps its own policy |
+| SEC-041 (Low) http meeting links | **Fixed** | `cases/schemas.py` `ConsultationUpdate` accepts https only |
+| SEC-047 (Low) `/verify` without rate limit | **Fixed** | `payments/router.py` 30/min per user |
+| SEC-050 (Low) hospital-portal source maps | **Fixed** | `web/apps/hospital-portal/vite.config.ts` `sourcemap: false` |
+| SEC-051 (Low) Android backups | **Fixed** | `AndroidManifest.xml` `allowBackup=false`, `res/xml/data_extraction_rules.xml` excludes everything |
+| SEC-054 (Low) audit log tampering | Partial | Append-only trigger and REVOKE in migration 0004; AES-GCM AAD not re-checked |
+| SEC-060 follow-up: document AI and voice consent | **Fixed** | `docai/service.py`, `voice/service.py` use `record_consent(..., granted_by_user_id=actor)`; tests check the granter |
+
+Still open after re-verification (Medium): SEC-006 (partial), 007, 008 (partial), 009 (partial), 010 (partial), 011,
+014, 015, 017, 018, 019, 020, 021, 022. Recommended order: 007+009 (money), 014 (suspension), 011 (beneficiary
+account), 015 (former parties' chat access), 008 (FX bounds).
+
 ## 1. Summary
 
 | Severity | Pass 1 | New in pass 2 | Fixed | Partially fixed | Still open |

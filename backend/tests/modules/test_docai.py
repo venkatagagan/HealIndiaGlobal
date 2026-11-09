@@ -235,6 +235,7 @@ async def test_single_page_analysis_completes(
         (await db.execute(select(Consent).where(Consent.user_id == world.patient_user.id))).scalars().all()
     )
     assert [str(c.kind) for c in consents] == ["ai_processing"]
+    assert consents[0].granted_by_user_id is None  # the patient's own consent
     log = (await db.execute(select(AIRequestLog).where(AIRequestLog.purpose == "docai"))).scalar_one()
     assert str(log.status) == "ok" and log.input_tokens == 2000
     notes = (
@@ -321,6 +322,9 @@ async def test_access_control(
     managed_out = await analyse(client, agent, [managed_doc.id], run_jobs)
     assert managed_out["status"] == "completed"
     assert managed_out["patient_id"] == str(world.managed.id)
+    # SEC-060: the agent is recorded as the granter; this is not the patient's own AI consent.
+    consent = (await db.execute(select(Consent).where(Consent.user_id == world.managed_user.id))).scalar_one()
+    assert consent.granted_by_user_id == world.agent_user.id
     r = await client.get(f"{API}/documents/analyses/{aid}", headers=agent)
     assert r.status_code == 404
     r = await request_analysis(client, agent, [doc.id])

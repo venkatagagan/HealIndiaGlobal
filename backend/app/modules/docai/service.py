@@ -21,20 +21,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
 from app.core.config import settings
-from app.core.deps import get_client_ip, get_user_agent
 from app.core.enums import AIRequestStatus, ConsentKind, DocumentKind
 from app.core.errors import BadRequest, Conflict, NotFound
 from app.core.events import publish
 from app.core.jobs import enqueue
 from app.core.pagination import Page, paginate
 from app.core.storage import ObjectNotFound, get_storage
-from app.models import AIRequestLog, Case, Consent, Document, PatientProfile, User
+from app.models import AIRequestLog, Case, Document, PatientProfile, User
 from app.models.docai import (
     AnalysisDocType,
     AnalysisReviewStatus,
     DocumentAnalysis,
     DocumentAnalysisStatus,
 )
+from app.modules.auth.service import record_consent
 from app.modules.docai import ai, policies
 from app.modules.docai.pipeline import PageError, PreparedPage, check_request_size, prepare_page
 from app.modules.docai.schemas import (
@@ -244,15 +244,15 @@ async def create_analysis(
                 raise NotFound("Case not found")
             case_id = None
 
-    db.add(
-        Consent(
-            user_id=profile.user_id,
-            kind=ConsentKind.AI_PROCESSING,
-            version=AI_CONSENT_VERSION,
-            granted=True,
-            ip=get_client_ip(request) if request is not None else None,
-            user_agent=get_user_agent(request) if request is not None else None,
-        )
+    # SEC-060: when an agent, staff or hospital user asks for the reading, they are recorded as the granter,
+    # so the row is not presented as the patient's own consent.
+    record_consent(
+        db,
+        profile.user_id,
+        ConsentKind.AI_PROCESSING,
+        AI_CONSENT_VERSION,
+        request,
+        granted_by_user_id=user.id,
     )
     analysis = DocumentAnalysis(
         document_ids=ids,

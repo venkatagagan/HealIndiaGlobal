@@ -380,6 +380,14 @@ class ConsultationUpdate(_In):
     mode: ConsultationMode | None = None
     notes: str | None = Field(default=None, max_length=5000)
 
+    @field_validator("meeting_url")
+    @classmethod
+    def _https_only(cls, v: AnyHttpUrl | None) -> AnyHttpUrl | None:
+        # SEC-041: a consultation link carries a patient's medical conversation; never plain http.
+        if v is not None and v.scheme != "https":
+            raise ValueError("The meeting link must start with https://")
+        return v
+
 
 class ConsultationOut(_Out):
     id: uuid.UUID

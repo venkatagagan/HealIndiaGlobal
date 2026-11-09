@@ -77,6 +77,8 @@ from app.modules.catalog.service import build_hospital_cards, invalidate_catalog
 from app.modules.documents.schemas import DocumentOut
 
 STAFF_ROLE_VALUES = frozenset(r.value for r in STAFF_ROLES)
+# SEC-013: roles only a super_admin may hand out (money and staff administration).
+_PRIVILEGED_GRANTS = frozenset({UserRole.FINANCE.value, UserRole.ADMIN.value})
 KYC_DOCUMENT_KINDS = (
     DocumentKind.KYC_REGISTRATION,
     DocumentKind.KYC_ACCREDITATION,
@@ -358,6 +360,9 @@ async def update_user(
             "Roles can only be changed between staff roles (admin, finance, support, super_admin)",
             code="invalid_role_change",
         )
+    if role_changes and new_role in _PRIVILEGED_GRANTS and not actor_is_super:
+        # SEC-013: an ops admin must not be able to create a finance user or a peer admin.
+        raise Forbidden("Only a super_admin can grant the finance or admin role", code="super_admin_required")
 
     removes_super_admin = before["role"] == UserRole.SUPER_ADMIN.value and (
         new_role != UserRole.SUPER_ADMIN.value or new_status != UserStatus.ACTIVE.value
@@ -412,6 +417,10 @@ async def create_staff(
         raise BadRequest("Only staff roles can be created here", code="invalid_role")
     if role == UserRole.SUPER_ADMIN.value and ev(actor.role) != UserRole.SUPER_ADMIN.value:
         raise Forbidden("Only a super_admin can create super_admin accounts", code="super_admin_required")
+    if role in _PRIVILEGED_GRANTS and ev(actor.role) != UserRole.SUPER_ADMIN.value:
+        raise Forbidden(
+            "Only a super_admin can create finance or admin accounts", code="super_admin_required"
+        )
     validate_password_strength(body.password)
     email = str(body.email).strip().lower()
     if (await db.execute(select(User.id).where(User.email == email))).first() is not None:

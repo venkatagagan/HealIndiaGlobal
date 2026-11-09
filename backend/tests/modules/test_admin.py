@@ -478,8 +478,27 @@ async def test_admin_cannot_touch_super_admins_or_public_roles(client, make_user
     r = await client.patch(f"{API}/admin/users/{patient.id}", json={"role": "admin"}, headers=h)
     assert r.status_code == 400
     assert r.json()["error"]["code"] == "invalid_role_change"
-    r = await client.patch(f"{API}/admin/users/{support.id}", json={"role": "finance"}, headers=h)
+    # SEC-013: granting finance or admin is a super_admin decision; moving staff down to support is not.
+    for role in ("finance", "admin"):
+        r = await client.patch(f"{API}/admin/users/{support.id}", json={"role": role}, headers=h)
+        assert r.status_code == 403 and r.json()["error"]["code"] == "super_admin_required", role
+    r = await client.post(
+        f"{API}/admin/users",
+        json={
+            "email": "fin@healindia.example.com",
+            "full_name": "Fin Ance",
+            "role": "finance",
+            "password": "Str0ng!Passw0rd#1",
+        },
+        headers=h,
+    )
+    assert r.status_code == 403 and r.json()["error"]["code"] == "super_admin_required"
+    r = await client.patch(
+        f"{API}/admin/users/{support.id}", json={"role": "finance"}, headers=auth_headers(root)
+    )
     assert r.status_code == 200 and r.json()["role"] == "finance"
+    r = await client.patch(f"{API}/admin/users/{support.id}", json={"role": "support"}, headers=h)
+    assert r.status_code == 200 and r.json()["role"] == "support"
     r = await client.patch(f"{API}/admin/users/{admin.id}", json={"status": "suspended"}, headers=h)
     assert r.status_code == 400 and r.json()["error"]["code"] == "self_status_change"
     r = await client.patch(f"{API}/admin/users/{patient.id}", json={}, headers=h)
