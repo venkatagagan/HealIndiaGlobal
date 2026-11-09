@@ -1,14 +1,23 @@
 import 'package:intl/intl.dart';
 
+import '../../l10n/l10n.dart';
+
 /// Date helpers. The API emits ISO-8601 UTC timestamps and `YYYY-MM-DD` dates (PLAN §3); models
 /// convert timestamps to local time when parsing.
+///
+/// Formats follow the app language (`Intl.defaultLocale`, set when the language changes): month and day
+/// names are translated and the time uses the locale's clock (`10:00 AM` in English, `10:00` in French).
 abstract final class Dates {
-  static final DateFormat _day = DateFormat('d MMM yyyy');
-  static final DateFormat _dayShort = DateFormat('d MMM');
-  static final DateFormat _monthYear = DateFormat('MMMM yyyy');
-  static final DateFormat _time = DateFormat('h:mm a');
-  static final DateFormat _dayTime = DateFormat('d MMM yyyy, h:mm a');
-  static final DateFormat _weekday = DateFormat('EEE, d MMM');
+  static final Map<String, DateFormat> _cache = {};
+
+  static DateFormat _fmt(String key, DateFormat Function() create) =>
+      _cache.putIfAbsent('${Intl.getCurrentLocale()}|$key', create);
+
+  static DateFormat get _day => _fmt('day', () => DateFormat('d MMM yyyy'));
+  static DateFormat get _dayShort => _fmt('dayShort', () => DateFormat('d MMM'));
+  static DateFormat get _monthYear => _fmt('monthYear', () => DateFormat('MMMM yyyy'));
+  static DateFormat get _time => _fmt('time', DateFormat.jm);
+  static DateFormat get _weekday => _fmt('weekday', () => DateFormat('EEE, d MMM'));
 
   /// `12 Oct 2026`
   static String day(DateTime? d) => d == null ? '' : _day.format(d);
@@ -30,13 +39,13 @@ abstract final class Dates {
   }
 
   /// `12 Oct 2026, 10:00 AM`
-  static String dayTime(DateTime? d) => d == null ? '' : _dayTime.format(d);
+  static String dayTime(DateTime? d) => d == null ? '' : '${_day.format(d)}, ${_time.format(d)}';
 
   /// `Mon, 12 Oct`
   static String weekday(DateTime? d) => d == null ? '' : _weekday.format(d);
 
   /// `YYYY-MM-DD` (API date format).
-  static String api(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
+  static String api(DateTime d) => DateFormat('yyyy-MM-dd', 'en_US').format(d);
 
   /// Strips the time component.
   static DateTime dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
@@ -61,11 +70,12 @@ abstract final class Dates {
     final n = now ?? DateTime.now();
     final diff = n.difference(d);
     if (diff.isNegative) return dayTime(d);
-    if (diff.inSeconds < 60) return 'just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
-    if (diff.inHours < 24 && isSameDay(d, n)) return '${diff.inHours} h ago';
-    if (isSameDay(d, n.subtract(const Duration(days: 1)))) return 'Yesterday';
-    if (diff.inDays < 7) return '${diff.inDays} days ago';
+    final l10n = L10n.current;
+    if (diff.inSeconds < 60) return l10n.datesJustNow;
+    if (diff.inMinutes < 60) return l10n.datesMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24 && isSameDay(d, n)) return l10n.datesHoursAgo(diff.inHours);
+    if (isSameDay(d, n.subtract(const Duration(days: 1)))) return l10n.datesYesterday;
+    if (diff.inDays < 7) return l10n.datesDaysAgo(diff.inDays);
     return d.year == n.year ? dayShort(d) : day(d);
   }
 
@@ -74,7 +84,7 @@ abstract final class Dates {
     if (d == null) return '';
     final n = now ?? DateTime.now();
     if (isSameDay(d, n)) return time(d);
-    if (n.difference(d).inDays < 7) return DateFormat('EEE').format(d);
+    if (n.difference(d).inDays < 7) return _fmt('weekdayShort', () => DateFormat('EEE')).format(d);
     return dayShort(d);
   }
 }

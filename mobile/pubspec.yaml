@@ -82,10 +82,31 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # gen-l10n: lib/l10n/app_*.arb -> lib/l10n/app_localizations*.dart (config: l10n.yaml).
+  generate: true
+
   assets:
     - assets/brand/
     - assets/illustrations/
     - assets/specialties/
+
+  # Script coverage for Arabic and Bengali so text never renders as boxes (Inter has neither).
+  # Used as fontFamilyFallback in AppTextStyles. Noto Sans, SIL OFL 1.1 (assets/fonts/OFL-*.txt).
+  fonts:
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Regular.ttf
+        - asset: assets/fonts/NotoSansArabic-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSansArabic-Bold.ttf
+          weight: 700
+    - family: NotoSansBengali
+      fonts:
+        - asset: assets/fonts/NotoSansBengali-Regular.ttf
+        - asset: assets/fonts/NotoSansBengali-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSansBengali-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

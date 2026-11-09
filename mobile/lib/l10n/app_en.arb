@@ -1,0 +1,219 @@
+{
+  "@@locale": "en",
+  "appName": "Heal India Global",
+  "@appName": {
+    "description": "Brand name. Keep in Latin script in every language."
+  },
+  "appTagline": "Your Gateway to Indian Medical Excellence",
+  "@appTagline": {
+    "description": "Brand tagline shown under the app name."
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "Generic button: dismiss a dialog or sheet without changes."
+  },
+  "commonOk": "OK",
+  "@commonOk": {
+    "description": "Generic button: acknowledge a message."
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "Generic button: save changes."
+  },
+  "commonRetry": "Retry",
+  "@commonRetry": {
+    "description": "Generic button: retry a failed action."
+  },
+  "commonTryAgain": "Try again",
+  "@commonTryAgain": {
+    "description": "Generic button: try a failed action again."
+  },
+  "commonClose": "Close",
+  "@commonClose": {
+    "description": "Generic button / tooltip: close a sheet, dialog or screen."
+  },
+  "commonContinue": "Continue",
+  "@commonContinue": {
+    "description": "Generic button: go to the next step."
+  },
+  "commonBack": "Back",
+  "@commonBack": {
+    "description": "Generic button / tooltip: go back."
+  },
+  "commonNext": "Next",
+  "@commonNext": {
+    "description": "Generic button: next step."
+  },
+  "commonDone": "Done",
+  "@commonDone": {
+    "description": "Generic button: finish."
+  },
+  "commonEdit": "Edit",
+  "@commonEdit": {
+    "description": "Generic button: edit an item."
+  },
+  "commonDelete": "Delete",
+  "@commonDelete": {
+    "description": "Generic button: delete an item."
+  },
+  "commonRemove": "Remove",
+  "@commonRemove": {
+    "description": "Generic button: remove an item from a list."
+  },
+  "commonSubmit": "Submit",
+  "@commonSubmit": {
+    "description": "Generic button: submit a form."
+  },
+  "commonConfirm": "Confirm",
+  "@commonConfirm": {
+    "description": "Generic button: confirm an action."
+  },
+  "commonYes": "Yes",
+  "@commonYes": {
+    "description": "Generic answer: yes."
+  },
+  "commonNo": "No",
+  "@commonNo": {
+    "description": "Generic answer: no."
+  },
+  "commonSeeAll": "See all",
+  "@commonSeeAll": {
+    "description": "Link to the full list of a section."
+  },
+  "commonApply": "Apply",
+  "@commonApply": {
+    "description": "Generic button: apply filters or settings."
+  },
+  "commonReset": "Reset",
+  "@commonReset": {
+    "description": "Generic button: reset filters or a form."
+  },
+  "commonClear": "Clear",
+  "@commonClear": {
+    "description": "Generic button: clear a field or selection."
+  },
+  "commonSkip": "Skip",
+  "@commonSkip": {
+    "description": "Generic button: skip a step."
+  },
+  "commonSend": "Send",
+  "@commonSend": {
+    "description": "Generic button: send a message or request."
+  },
+  "commonOpen": "Open",
+  "@commonOpen": {
+    "description": "Generic button: open a file or item."
+  },
+  "commonDownload": "Download",
+  "@commonDownload": {
+    "description": "Generic button: download a file."
+  },
+  "commonUpload": "Upload",
+  "@commonUpload": {
+    "description": "Generic button: upload a file."
+  },
+  "commonAdd": "Add",
+  "@commonAdd": {
+    "description": "Generic button: add an item."
+  },
+  "commonOptional": "Optional",
+  "@commonOptional": {
+    "description": "Marks a form field as optional."
+  },
+  "commonLoading": "Loading…",
+  "@commonLoading": {
+    "description": "Shown while content is loading."
+  },
+  "commonSomethingWentWrong": "Something went wrong",
+  "@commonSomethingWentWrong": {
+    "description": "Generic error title."
+  },
+  "commonErrorDisplayingSection": "Something went wrong displaying this section.",
+  "@commonErrorDisplayingSection": {
+    "description": "Shown instead of a screen section that failed to render (release builds)."
+  },
+  "commonLogOut": "Log out",
+  "@commonLogOut": {
+    "description": "Menu item / button: sign out of the app."
+  },
+  "commonDeleteAccount": "Delete account",
+  "@commonDeleteAccount": {
+    "description": "Menu item: permanently delete the user's account."
+  },
+  "commonAccount": "Account",
+  "@commonAccount": {
+    "description": "Tooltip of the account menu button."
+  },
+  "commonListSeparator": " · ",
+  "@commonListSeparator": {
+    "description": "Separator between short facts on one line (e.g. 'Delhi · 4.8 ★'). Usually keep as is."
+  },
+  "languageSettingTitle": "Language",
+  "@languageSettingTitle": {
+    "description": "Settings row title for the app language."
+  },
+  "languagePickerTitle": "App language",
+  "@languagePickerTitle": {
+    "description": "Title of the bottom sheet that lists the languages the user can choose."
+  },
+  "languagePickerHint": "The app, AI summaries and voice intake use this language. Coordinators and hospitals will contact you in it when they can.",
+  "@languagePickerHint": {
+    "description": "Explanation under the language picker title."
+  },
+  "languageChanged": "Language changed to {language}.",
+  "@languageChanged": {
+    "description": "Snack bar after the user picks a language.",
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "Français"
+      }
+    }
+  },
+  "languageProfileSyncFailed": "Language changed on this device. We could not save it to your profile; we will try again later.",
+  "@languageProfileSyncFailed": {
+    "description": "Snack bar when the language change could not be saved to the user's online profile."
+  },
+  "languageButtonTooltip": "Change language",
+  "@languageButtonTooltip": {
+    "description": "Tooltip / accessibility label of the language button on the welcome screen."
+  },
+  "datesJustNow": "just now",
+  "@datesJustNow": {
+    "description": "Relative time: less than a minute ago (lower case, shown next to messages and notifications)."
+  },
+  "datesMinutesAgo": "{minutes} min ago",
+  "@datesMinutesAgo": {
+    "description": "Relative time in minutes (abbreviated).",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "datesHoursAgo": "{hours} h ago",
+  "@datesHoursAgo": {
+    "description": "Relative time in hours (abbreviated).",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "datesYesterday": "Yesterday",
+  "@datesYesterday": {
+    "description": "Relative day: yesterday."
+  },
+  "datesDaysAgo": "{days, plural, one{{days} day ago} other{{days} days ago}}",
+  "@datesDaysAgo": {
+    "description": "Relative time in days (2 to 6).",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  }
+}
