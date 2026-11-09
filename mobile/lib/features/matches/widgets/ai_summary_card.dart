@@ -5,6 +5,7 @@ import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 
 /// Color of an urgency level.
 Color urgencyColor(Urgency u) => switch (u) {
@@ -14,18 +15,16 @@ Color urgencyColor(Urgency u) => switch (u) {
   Urgency.emergency => AppColors.danger,
 };
 
-/// Text of an urgency chip.
-String urgencyLabel(Urgency u) => switch (u) {
-  Urgency.routine => 'Routine',
-  Urgency.soon => 'See a doctor soon',
-  Urgency.urgent => 'Urgent',
-  Urgency.emergency => 'Emergency',
-};
-
-/// Default disclaimer when the triage result has none.
-const String kTriageDisclaimer =
-    'This summary is generated from your answers to help you choose doctors. It is not a medical diagnosis. '
-    'A qualified doctor will review your case.';
+/// Text of an urgency chip (in [l], default the current language).
+String urgencyLabel(Urgency u, [AppLocalizations? l]) {
+  final t = l ?? L10n.current;
+  return switch (u) {
+    Urgency.routine => t.enumUrgencyRoutine,
+    Urgency.soon => t.aiSummaryUrgencySoon,
+    Urgency.urgent => t.enumUrgencyUrgent,
+    Urgency.emergency => t.enumUrgencyEmergency,
+  };
+}
 
 /// AI (or rules engine) summary of the screening: summary text, urgency chip, suggested
 /// specialties and expandable details, always with the "not a diagnosis" disclaimer. With a
@@ -44,6 +43,7 @@ class AiSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = urgency ?? result.urgency;
+    final l10n = context.l10n;
     final isAi = result.engine == TriageEngine.claude;
     final hasDetails =
         result.possibleConditions.isNotEmpty ||
@@ -51,10 +51,10 @@ class AiSummaryCard extends StatelessWidget {
         result.questionsForDoctor.isNotEmpty ||
         (result.travelAdvice?.isNotEmpty ?? false);
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 8),
       gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+        begin: AlignmentDirectional.topStart,
+        end: AlignmentDirectional.bottomEnd,
         colors: context.isDark
             ? const [Color(0xFF2E1065), Color(0xFF161B22)]
             : const [Color(0xFFEDE9FE), Color(0xFFFFFFFF)],
@@ -68,11 +68,11 @@ class AiSummaryCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  isAi ? 'AI Summary' : 'Screening Summary',
+                  isAi ? l10n.aiSummaryTitleAi : l10n.aiSummaryTitleRules,
                   style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                 ),
               ),
-              StatusBadge(label: urgencyLabel(u), color: urgencyColor(u), dense: true),
+              StatusBadge(label: urgencyLabel(u, l10n), color: urgencyColor(u), dense: true),
             ],
           ),
           const SizedBox(height: 10),
@@ -95,17 +95,21 @@ class AiSummaryCard extends StatelessWidget {
                 tilePadding: EdgeInsets.zero,
                 childrenPadding: const EdgeInsets.only(bottom: 8),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                title: Text('More details', style: context.text.labelLarge?.copyWith(color: AppColors.violet)),
+                title: Text(
+                  l10n.aiSummaryMoreDetails,
+                  style: context.text.labelLarge?.copyWith(color: AppColors.violet),
+                ),
                 children: [
                   if (result.possibleConditions.isNotEmpty)
-                    _Section('Possible conditions to discuss', [
+                    _Section(l10n.aiSummaryPossibleConditions, [
                       for (final c in result.possibleConditions)
-                        '${c.name} (${c.likelihood.label.toLowerCase()} likelihood)',
+                        l10n.aiSummaryConditionLikelihood(c.name, c.likelihood.json),
                     ]),
-                  if (result.recommendedTests.isNotEmpty) _Section('Tests that may help', result.recommendedTests),
+                  if (result.recommendedTests.isNotEmpty) _Section(l10n.aiSummaryTests, result.recommendedTests),
                   if (result.questionsForDoctor.isNotEmpty)
-                    _Section('Questions for your doctor', result.questionsForDoctor),
-                  if (result.travelAdvice?.isNotEmpty ?? false) _Section('Travel advice', [result.travelAdvice!]),
+                    _Section(l10n.aiSummaryQuestions, result.questionsForDoctor),
+                  if (result.travelAdvice?.isNotEmpty ?? false)
+                    _Section(l10n.aiSummaryTravelAdvice, [result.travelAdvice!]),
                 ],
               ),
             )
@@ -118,7 +122,7 @@ class AiSummaryCard extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  (result.disclaimer?.trim().isNotEmpty ?? false) ? result.disclaimer! : kTriageDisclaimer,
+                  (result.disclaimer?.trim().isNotEmpty ?? false) ? result.disclaimer! : l10n.aiSummaryDisclaimer,
                   style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
                 ),
               ),
@@ -126,7 +130,7 @@ class AiSummaryCard extends StatelessWidget {
           ),
           if (screeningId != null && screeningId!.isNotEmpty)
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: TextButton.icon(
                 key: const Key('report-screening-result'),
                 style: TextButton.styleFrom(
@@ -137,7 +141,7 @@ class AiSummaryCard extends StatelessWidget {
                 onPressed: () =>
                     showReportSheet(context, type: ReportTargetType.screeningResult, targetId: screeningId!),
                 icon: const Icon(Icons.flag_outlined, size: 16),
-                label: const Text('Report this result'),
+                label: Text(l10n.reportSheetTitleResult),
               ),
             )
           else
@@ -165,7 +169,7 @@ class _Section extends StatelessWidget {
         for (final i in items)
           Padding(
             padding: const EdgeInsets.only(bottom: 2),
-            child: Text('•  $i', style: context.text.bodySmall),
+            child: Text(context.l10n.aiSummaryBullet(i), style: context.text.bodySmall),
           ),
       ],
     ),

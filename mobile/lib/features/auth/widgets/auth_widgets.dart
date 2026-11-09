@@ -299,7 +299,10 @@ class _TermsNoticeState extends State<TermsNotice> {
       }
     }
     flush();
-    return Text.rich(TextSpan(style: base, children: children), textAlign: TextAlign.center);
+    return Text.rich(
+      TextSpan(style: base, children: children),
+      textAlign: TextAlign.center,
+    );
   }
 }
 

@@ -76,9 +76,7 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
       if (!mounted) return;
       setState(() {
         _sending = false;
-        _error = e is ApiException && e.isRateLimited
-            ? context.l10n.reportSheetRateLimited
-            : errorMessage(e);
+        _error = e is ApiException && e.isRateLimited ? context.l10n.reportSheetRateLimited : errorMessage(e);
       });
     }
   }

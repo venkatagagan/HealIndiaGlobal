@@ -166,7 +166,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   SegmentedButton<UserRole>(
                     key: const Key('register-role-tabs'),
                     showSelectedIcon: false,
-                    segments: [for (final r in registrableRoles) ButtonSegment(value: r, label: Text(_roleLabel(l10n, r)))],
+                    segments: [
+                      for (final r in registrableRoles) ButtonSegment(value: r, label: Text(_roleLabel(l10n, r))),
+                    ],
                     selected: {_role},
                     onSelectionChanged: _loading
                         ? null

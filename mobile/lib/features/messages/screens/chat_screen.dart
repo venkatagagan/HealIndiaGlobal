@@ -14,6 +14,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../trips/services/file_actions.dart';
 
 /// Metadata of a message attachment (file name, type) for chips in chat bubbles.
@@ -174,9 +175,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final text = _input.text.trim();
     if ((text.isEmpty && _attachments.isEmpty) || _sending) return;
     final ids = _attachments.map((d) => d.id).toList();
+    final l10n = context.l10n;
     final body = text.isNotEmpty
         ? text
-        : (_attachments.length == 1 ? 'Shared ${_attachments.first.fileName}' : 'Shared ${_attachments.length} files');
+        : (_attachments.length == 1
+              ? l10n.chatSharedFile(_attachments.first.fileName)
+              : l10n.chatSharedFiles(_attachments.length));
     setState(() => _sending = true);
     try {
       final msg = await _repo.sendMessage(widget.conversationId, body, attachmentDocumentIds: ids.isEmpty ? null : ids);
@@ -207,16 +211,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final myId = ref.watch(currentUserProvider)?.id;
     final conv = ref.watch(conversationsProvider).value?.where((c) => c.id == widget.conversationId).firstOrNull;
     final others = conv?.participants.where((p) => p.userId != myId).toList() ?? const [];
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(conv?.titleFor(myId) ?? 'Chat', maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(conv?.titleFor(myId) ?? l10n.chatTitleFallback, maxLines: 1, overflow: TextOverflow.ellipsis),
             if (others.isNotEmpty)
               Text(
-                others.map((p) => p.role == null ? p.fullName : '${p.fullName} (${_roleLabel(p.role!)})').join(', '),
+                others
+                    .map(
+                      (p) => p.role == null
+                          ? p.fullName
+                          : l10n.chatParticipantWithRole(p.fullName, _roleLabel(l10n, p.role!)),
+                    )
+                    .join(', '),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
@@ -233,36 +244,37 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  static String _roleLabel(String role) => switch (role) {
-    'hospital' => 'Hospital',
-    'support' || 'admin' || 'super_admin' => 'Care team',
-    'agent' => 'Agent',
-    'patient' => 'Patient',
+  static String _roleLabel(AppLocalizations l, String role) => switch (role) {
+    'hospital' => l.chatRoleHospital,
+    'support' || 'admin' || 'super_admin' => l.chatRoleCareTeam,
+    'agent' => l.chatRoleAgent,
+    'patient' => l.chatRolePatient,
     _ => role,
   };
 
   Widget _messageList(String? myId, bool group) {
+    final l10n = context.l10n;
     if (_loading) return const LoadingView();
     if (_error != null) return ErrorView(error: _error, onRetry: _load);
     if (_messages.isEmpty) {
-      return const EmptyView(
+      return EmptyView(
         icon: Icons.chat_bubble_outline_rounded,
-        title: 'Say hello',
-        message: 'Your coordinator usually replies within a few hours.',
+        title: l10n.chatEmptyTitle,
+        message: l10n.chatEmptyMessage,
       );
     }
     final reversed = _messages.reversed.toList();
     return ListView.builder(
       controller: _scroll,
       reverse: true,
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      padding: const EdgeInsets.all(12),
       itemCount: reversed.length + (_hasMore ? 1 : 0),
       itemBuilder: (_, i) {
         if (i == reversed.length) {
           return Center(
             child: TextButton(
               onPressed: _loadingMore ? null : _loadEarlier,
-              child: Text(_loadingMore ? 'Loading...' : 'Load earlier messages'),
+              child: Text(_loadingMore ? l10n.chatLoadingMore : l10n.chatLoadEarlier),
             ),
           );
         }
@@ -277,7 +289,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  Dates.isSameDay(m.createdAt, DateTime.now()) ? 'Today' : Dates.weekday(m.createdAt),
+                  Dates.isSameDay(m.createdAt, DateTime.now()) ? l10n.chatToday : Dates.weekday(m.createdAt),
                   style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
                 ),
               ),
@@ -290,10 +302,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Widget _composer() {
     final canSend = (_input.text.trim().isNotEmpty || _attachments.isNotEmpty) && !_sending && !_uploading;
+    final l10n = context.l10n;
     return SafeArea(
       top: false,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: context.colors.surfaceContainer,
           border: Border(top: BorderSide(color: context.palette.border)),
@@ -315,9 +328,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         onDeleted: () => setState(() => _attachments.remove(d)),
                       ),
                     if (_uploading)
-                      const Chip(
-                        avatar: SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
-                        label: Text('Uploading...'),
+                      Chip(
+                        avatar: const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+                        label: Text(l10n.chatUploading),
                       ),
                   ],
                 ),
@@ -326,7 +339,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 IconButton(
-                  tooltip: 'Attach a document',
+                  tooltip: l10n.chatAttachTooltip,
                   onPressed: _uploading ? null : _attach,
                   icon: const Icon(Icons.attach_file_rounded),
                 ),
@@ -338,14 +351,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     maxLines: 5,
                     maxLength: 5000,
                     textCapitalization: TextCapitalization.sentences,
-                    decoration: const InputDecoration(hintText: 'Type a message', counterText: '', isDense: true),
+                    decoration: InputDecoration(hintText: l10n.chatInputHint, counterText: '', isDense: true),
                     onSubmitted: (_) => _send(),
                   ),
                 ),
                 const SizedBox(width: 4),
                 IconButton.filled(
                   key: const ValueKey('chat-send'),
-                  tooltip: 'Send',
+                  tooltip: l10n.chatSendTooltip,
                   style: IconButton.styleFrom(backgroundColor: AppColors.violet, foregroundColor: Colors.white),
                   onPressed: canSend ? _send : null,
                   icon: _sending
@@ -384,13 +397,13 @@ class _Bubble extends ConsumerWidget {
             if (message.body.isNotEmpty)
               ListTile(
                 leading: const Icon(Icons.copy_rounded),
-                title: const Text('Copy text'),
+                title: Text(ctx.l10n.chatCopyText),
                 onTap: () => Navigator.pop(ctx, 'copy'),
               ),
             ListTile(
               key: const Key('message-action-report'),
               leading: const Icon(Icons.flag_outlined, color: AppColors.danger),
-              title: const Text('Report message'),
+              title: Text(ctx.l10n.chatReportMessage),
               onTap: () => Navigator.pop(ctx, 'report'),
             ),
           ],
@@ -401,7 +414,7 @@ class _Bubble extends ConsumerWidget {
     switch (action) {
       case 'copy':
         await Clipboard.setData(ClipboardData(text: message.body));
-        if (context.mounted) showInfoSnack(context, 'Message copied.');
+        if (context.mounted) showInfoSnack(context, context.l10n.chatMessageCopied);
       case 'report':
         await showReportSheet(context, type: ReportTargetType.message, targetId: message.id);
     }
@@ -417,14 +430,14 @@ class _Bubble extends ConsumerWidget {
       constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 3),
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+        padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 6),
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.only(
-            topLeft: r,
-            topRight: r,
-            bottomLeft: mine ? r : const Radius.circular(4),
-            bottomRight: mine ? const Radius.circular(4) : r,
+          borderRadius: BorderRadiusDirectional.only(
+            topStart: r,
+            topEnd: r,
+            bottomStart: mine ? r : const Radius.circular(4),
+            bottomEnd: mine ? const Radius.circular(4) : r,
           ),
         ),
         child: Column(
@@ -446,7 +459,7 @@ class _Bubble extends ConsumerWidget {
             for (final id in message.attachmentDocumentIds) _AttachmentChip(documentId: id, foreground: fg),
             const SizedBox(height: 2),
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: AlignmentDirectional.bottomEnd,
               child: Text(
                 Dates.time(message.createdAt),
                 style: context.text.labelSmall?.copyWith(color: fg.withValues(alpha: 0.7), fontSize: 10),
@@ -457,7 +470,7 @@ class _Bubble extends ConsumerWidget {
       ),
     );
     return Align(
-      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: mine ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
       child: Column(
         crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
@@ -472,14 +485,14 @@ class _Bubble extends ConsumerWidget {
             bubble,
           if (mine && message.hidden)
             Padding(
-              padding: const EdgeInsets.only(bottom: 4, right: 4),
+              padding: const EdgeInsetsDirectional.only(bottom: 4, end: 4),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.visibility_off_outlined, size: 12, color: context.palette.textMuted),
                   const SizedBox(width: 4),
                   Text(
-                    'Hidden by moderators',
+                    context.l10n.chatHiddenByModerators,
                     style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
                   ),
                 ],
@@ -500,7 +513,8 @@ class _AttachmentChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final doc = ref.watch(attachmentDocumentProvider(documentId));
-    final name = doc.value?.fileName ?? (doc.hasError ? 'Attachment unavailable' : 'Attachment');
+    final name =
+        doc.value?.fileName ?? (doc.hasError ? context.l10n.chatAttachmentUnavailable : context.l10n.chatAttachment);
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: InkWell(

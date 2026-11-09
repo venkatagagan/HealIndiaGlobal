@@ -7,6 +7,7 @@ import '../../../core/repositories/screening_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../screening/providers/emergency_ack.dart';
 import '../providers/match_view.dart';
 import '../widgets/ai_summary_card.dart';
@@ -38,7 +39,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
     setState(() {
       if (!_selected.remove(m.id)) {
         if (_selected.length >= kMaxCompare) {
-          showInfoSnack(context, 'You can compare up to $kMaxCompare matches.');
+          showInfoSnack(context, context.l10n.matchesListCompareLimit(kMaxCompare));
           return;
         }
         _selected.add(m.id);
@@ -89,17 +90,16 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
     final matches = ref.watch(screeningMatchesProvider(_id));
     final s = screening.value;
     final all = matches.value ?? const <ScreeningMatch>[];
+    final l10n = context.l10n;
 
     if (s != null && (s.isProcessing || s.isDraft)) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Your Top Matches')),
+        appBar: AppBar(title: Text(l10n.matchesListTitle)),
         body: EmptyView(
           icon: Icons.hourglass_top_rounded,
-          title: s.isDraft ? 'Finish your screening first' : 'Still finding your matches',
-          message: s.isDraft
-              ? 'Complete the questionnaire to see matched doctors.'
-              : 'This usually takes under a minute.',
-          actionLabel: s.isDraft ? 'Continue questionnaire' : 'See progress',
+          title: s.isDraft ? l10n.matchesListFinishFirst : l10n.matchesListStillFinding,
+          message: s.isDraft ? l10n.matchesListCompleteQuestionnaire : l10n.matchesListUsuallyQuick,
+          actionLabel: s.isDraft ? l10n.screeningContinueQuestionnaire : l10n.screeningSeeProgress,
           onAction: () => context.go(s.isDraft ? Routes.screeningStep(_id, 1) : Routes.screeningProcessing(_id)),
         ),
       );
@@ -108,15 +108,15 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Your Top Matches', style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        title: Text(l10n.matchesListTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
         actions: [
           IconButton(
-            tooltip: 'Sort',
+            tooltip: l10n.matchesListSortTooltip,
             icon: const Icon(Icons.sort_rounded),
             onPressed: all.isEmpty ? null : () => _openSheet(all),
           ),
           IconButton(
-            tooltip: 'Filter',
+            tooltip: l10n.matchesListFilterTooltip,
             icon: Badge(
               isLabelVisible: !_filters.isEmpty,
               label: Text('${_filters.count}'),
@@ -129,7 +129,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: matches.when(
-          loading: () => const LoadingView(message: 'Loading your matches...'),
+          loading: () => LoadingView(message: l10n.matchesListLoading),
           error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(screeningMatchesProvider(_id))),
           data: (items) => _list(context, s, items),
         ),
@@ -150,13 +150,14 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
     final urgency = s?.urgency ?? s?.aiResult?.urgency;
     final costMatch = items.where((m) => m.procedure?.slug != null).firstOrNull;
     final procedureSlug = costMatch?.procedure?.slug ?? s?.aiResult?.recommendedProcedures.firstOrNull?.slug;
+    final l10n = context.l10n;
 
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 24),
       children: [
         Text(
-          'Based on your profile, here are your top matches.',
+          l10n.matchesListIntro,
           textAlign: TextAlign.center,
           style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
         ),
@@ -187,8 +188,8 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
                 Expanded(
                   child: Text(
                     costMatch?.savings != null
-                        ? 'Save ${costMatch!.savings!.pctMin}-${costMatch.savings!.pctMax}% vs treatment at home'
-                        : 'Compare costs with your home country',
+                        ? l10n.matchesListSaveVsHome(costMatch!.savings!.pctMin, costMatch.savings!.pctMax)
+                        : l10n.matchesListCompareCosts,
                     style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -203,22 +204,22 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
             padding: const EdgeInsets.only(top: 24),
             child: Column(
               children: [
-                const EmptyView(
+                EmptyView(
                   icon: Icons.person_search_outlined,
-                  title: 'No matches yet',
-                  message: 'We could not find doctors for these answers. Try again or browse hospitals yourself.',
+                  title: l10n.matchesListNoMatches,
+                  message: l10n.matchesListNoMatchesMessage,
                 ),
-                PrimaryButton(label: 'Run matching again', loading: _rerunning, onPressed: _rerun),
+                PrimaryButton(label: l10n.matchesListRunAgain, loading: _rerunning, onPressed: _rerun),
                 const SizedBox(height: 10),
-                SecondaryButton(label: 'Browse hospitals', onPressed: () => context.go(Routes.search)),
+                SecondaryButton(label: l10n.matchesListBrowseHospitals, onPressed: () => context.go(Routes.search)),
               ],
             ),
           )
         else if (visible.isEmpty)
           EmptyView(
             icon: Icons.filter_alt_off_outlined,
-            title: 'No matches for these filters',
-            actionLabel: 'Clear filters',
+            title: l10n.matchesListNoFilterMatches,
+            actionLabel: l10n.matchesListClearFilters,
             onAction: () => setState(() => _filters = const MatchFilters()),
           )
         else
@@ -246,8 +247,8 @@ class _CompareBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-        padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+        margin: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 8),
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
         decoration: BoxDecoration(
           color: context.colors.surfaceContainer,
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -259,7 +260,7 @@ class _CompareBar extends StatelessWidget {
               child: Semantics(
                 liveRegion: true,
                 child: Text(
-                  '$count/$kMaxCompare Selected for Comparison',
+                  context.l10n.matchesListSelectedForComparison(count, kMaxCompare),
                   style: context.text.labelLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
@@ -274,7 +275,7 @@ class _CompareBar extends StatelessWidget {
                 disabledBackgroundColor: AppColors.danger.withValues(alpha: 0.35),
                 disabledForegroundColor: Colors.white70,
               ),
-              child: const Text('Compare'),
+              child: Text(context.l10n.matchesListCompare),
             ),
           ],
         ),
@@ -305,8 +306,7 @@ class _EmergencyBanner extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Your answers suggest you may need urgent care. Please seek local emergency care before planning '
-                  'travel.',
+                  context.l10n.matchesListEmergency,
                   style: context.text.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -314,17 +314,17 @@ class _EmergencyBanner extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: acknowledged
                 ? Text(
-                    'Guidance acknowledged',
+                    context.l10n.matchesListGuidanceAcknowledged,
                     style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
                   )
                 : TextButton.icon(
                     onPressed: () => showEmergencyGuidance(context, screening),
                     style: TextButton.styleFrom(foregroundColor: AppColors.danger),
                     icon: const Icon(Icons.info_outline_rounded, size: 18),
-                    label: const Text('Read the guidance'),
+                    label: Text(context.l10n.matchesListReadGuidance),
                   ),
           ),
         ],
