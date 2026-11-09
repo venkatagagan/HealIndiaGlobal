@@ -122,6 +122,9 @@ class Hospital(UUIDPkMixin, TimestampMixin, Base):
     approved_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     rejection_reason: Mapped[str | None] = mapped_column(Text)
+    # SEC-020: changes of legal identity / claims of an approved hospital wait here for staff review:
+    # {"fields": {name: value (pan encrypted)}, "requested_by": id, "requested_at": iso}
+    pending_profile: Mapped[dict[str, Any]] = json_obj_col()
 
     doctors: Mapped[list[Doctor]] = relationship("Doctor", back_populates="hospital", lazy="raise")
     members: Mapped[list[HospitalMember]] = relationship(

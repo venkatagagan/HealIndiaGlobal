@@ -182,7 +182,7 @@ async def test_razorpay_webhook_signature_and_dedupe(
     raw = json_bytes(event)
     url = "/api/v1/payments/webhooks/razorpay"
 
-    # invalid signature: 400, stored as unverified, nothing processed
+    # invalid signature: 400, nothing stored (SEC-046: no table growth from forged requests) or processed
     r = await client.post(
         url,
         content=raw,
@@ -190,8 +190,7 @@ async def test_razorpay_webhook_signature_and_dedupe(
     )
     assert r.status_code == 400 and r.json()["error"]["code"] == "invalid_signature"
     stored = (await db.execute(select(WebhookEvent))).scalars().all()
-    assert len(stored) == 1 and stored[0].signature_valid is False and stored[0].processed_at is None
-    assert stored[0].event_id != "evt_1"  # a forged delivery never blocks the real event id
+    assert stored == []  # a forged delivery never blocks the real event id either
     assert recorder.of("payment.captured") == []
 
     headers = {

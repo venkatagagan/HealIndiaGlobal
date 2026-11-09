@@ -65,6 +65,13 @@ async def _incr(key: str, window_seconds: int) -> tuple[int, int]:
     return count, max(1, int(expires_at - now + 0.999))
 
 
+async def count(scope: str, identifier: str, window_seconds: int) -> tuple[int, int]:
+    """Count one event in the current fixed window regardless of ``RATE_LIMIT_ENABLED`` (quotas such as the
+    AI budget in ``app.core.ai_quota``). Returns ``(count, seconds_until_reset)``."""
+    window_index = int(time.time() // window_seconds)
+    return await _incr(f"{scope}:{identifier}:{window_index}", window_seconds)
+
+
 def _purge_expired(now: float) -> None:
     for k in [k for k, (_, exp) in _memory.items() if exp <= now]:
         _memory.pop(k, None)

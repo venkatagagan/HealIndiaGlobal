@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
-from sqlalchemy import Boolean, DateTime, Integer, String
+from sqlalchemy import BigInteger, Boolean, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -59,6 +59,8 @@ class User(UUIDPkMixin, TimestampMixin, Base):
         Boolean, nullable=False, default=False, server_default=sa.false()
     )
     mfa_secret: Mapped[str | None] = mapped_column(EncryptedString())
+    # SEC-024: last accepted TOTP time step; a code for this step or an earlier one is refused (no replay).
+    mfa_last_step: Mapped[int | None] = mapped_column(BigInteger)
     failed_login_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

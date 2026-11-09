@@ -33,7 +33,7 @@ async def expire_quotes_job(db: AsyncSession, payload: dict[str, Any]) -> None:
         logger.info("cases.quotes_expired", count=count)
 
 
-@periodic("cases.expire_unpaid_bookings", every_seconds=6 * 3600)
+@periodic("cases.expire_unpaid_bookings", every_seconds=30 * 60)  # SEC-018: release unpaid slots promptly
 async def expire_unpaid_bookings_job(db: AsyncSession, payload: dict[str, Any]) -> None:
     count = await expire_unpaid_bookings(db)
     if count:

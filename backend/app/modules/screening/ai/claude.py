@@ -33,6 +33,21 @@ from app.modules.screening.ai.schema import (
 
 logger = structlog.get_logger(__name__)
 
+
+def _safe_error(exc: Exception) -> str:
+    """SEC-038: describe invalid model output WITHOUT echoing it. ``str(ValidationError)`` contains
+    ``input_value=`` fragments of the model output (PHI), so only field locations and error types are kept."""
+    if isinstance(exc, ValidationError):
+        parts = [
+            f"{'.'.join(str(p) for p in err.get('loc', ())) or '<root>'}: {err.get('type', 'invalid')}"
+            for err in exc.errors(include_input=False, include_url=False, include_context=False)
+        ]
+        return ("; ".join(parts) or "validation error")[:300]
+    if isinstance(exc, json.JSONDecodeError):
+        return f"not valid JSON (line {exc.lineno}, column {exc.colno})"
+    return type(exc).__name__
+
+
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 MAX_TOKENS = 16000
 MAX_ATTACHMENTS = 3
@@ -225,12 +240,13 @@ async def triage_with_claude(
         data.pop("engine", None)
         result = TriageResult.model_validate({**data, "engine": "claude"})
     except (ValueError, ValidationError) as exc:
-        logger.warning("screening_ai_invalid_output", error=str(exc)[:300], stop_reason=response.stop_reason)
+        detail = _safe_error(exc)
+        logger.warning("screening_ai_invalid_output", error=detail, stop_reason=response.stop_reason)
         return ClaudeOutcome(
             False,
             AIRequestStatus.ERROR,
             served_model,
-            error=f"Invalid triage JSON: {str(exc)[:300]}",
+            error=f"Invalid triage JSON: {detail}",
             input_tokens=in_tok,
             output_tokens=out_tok,
             latency_ms=latency,

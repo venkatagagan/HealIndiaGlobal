@@ -209,6 +209,10 @@ class AmountReviewOut(BaseModel):
 
     payment_id: uuid.UUID
     status: Literal["pending", "returning", "accepted", "returned"]
+    #: why it was held: ``amount_mismatch`` or (SEC-007) ``booking_cancelled``, ``overpayment``,
+    #: ``installment_cancelled``, ``installment_already_paid``, ``consultation_cancelled``,
+    #: ``consultation_already_paid`` - those can only be returned
+    reason: str = "amount_mismatch"
     expected_minor: int
     received_minor: int
     currency: str

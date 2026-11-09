@@ -27,6 +27,7 @@ from app.core.enums import (
     UserRole,
     UserStatus,
 )
+from app.core.money import MAX_COMMISSION_BPS
 from app.modules.auth.schemas import UserOut
 from app.modules.catalog.schemas import HospitalCard
 from app.modules.documents.schemas import DocumentOut
@@ -292,6 +293,8 @@ class AdminDoctorOut(BaseModel):
 
 
 class AdminHospitalDetail(HospitalProfileOut):
+    #: SEC-020: requested identity/accreditation changes awaiting review (PAN masked)
+    pending_profile_values: dict[str, Any] = Field(default_factory=dict)
     kyc_documents: list[DocumentOut] = Field(default_factory=list)
     members: list[HospitalMemberOut] = Field(default_factory=list)
     payout_accounts: list[PayoutAccountOut] = Field(default_factory=list)
@@ -312,7 +315,7 @@ class OptionalReasonIn(_In):
 
 
 class AdminHospitalUpdateIn(_In):
-    commission_rate_bps: int | None = Field(default=None, ge=0, le=10_000)
+    commission_rate_bps: int | None = Field(default=None, ge=0, le=MAX_COMMISSION_BPS)
     settlement_cycle_days: int | None = Field(default=None, ge=1, le=365)
     is_featured: bool | None = None
 
@@ -351,7 +354,7 @@ class AdminAgentOut(BaseModel):
 
 
 class AdminAgentUpdateIn(_In):
-    commission_rate_bps: int | None = Field(default=None, ge=0, le=10_000)
+    commission_rate_bps: int | None = Field(default=None, ge=0, le=MAX_COMMISSION_BPS)
     tier: AgentTier | None = None
 
     @model_validator(mode="after")
@@ -749,7 +752,8 @@ class ServiceProviderOut(BaseModel):
 
 class FxRateIn(_In):
     quote_currency: str
-    rate: Decimal = Field(gt=0, max_digits=18, decimal_places=8)
+    # SEC-008: INR per unit; sane absolute bounds (VND ~0.003 ... KWD ~290)
+    rate: Decimal = Field(ge=Decimal("0.0001"), le=Decimal("10000"), max_digits=18, decimal_places=8)
     source: str | None = Field(default=None, max_length=60)
     base_currency: Literal["INR"] = "INR"
 
@@ -766,7 +770,9 @@ class FxRateIn(_In):
 
 
 class FxRatePatch(_In):
-    rate: Decimal | None = Field(default=None, gt=0, max_digits=18, decimal_places=8)
+    rate: Decimal | None = Field(
+        default=None, ge=Decimal("0.0001"), le=Decimal("10000"), max_digits=18, decimal_places=8
+    )
     source: str | None = Field(default=None, max_length=60)
 
 
@@ -778,6 +784,15 @@ class FxRateOut(BaseModel):
     source: str | None = None
     as_of: datetime
     updated_at: datetime | None = None
+    #: SEC-008: a large change awaiting a second finance approver
+    pending_rate: str | None = None
+    pending_requested_by: uuid.UUID | None = None
+    pending_requested_at: datetime | None = None
+
+
+class FxRateDecisionIn(_In):
+    #: the pending rate the checker reviewed (approve only); 409 ``request_changed`` if it differs
+    rate: Decimal | None = Field(default=None, gt=0, max_digits=18, decimal_places=8)
 
 
 # ------------------------------------------------------------------------------------------------- settings
@@ -792,6 +807,16 @@ class PlatformSettingOut(BaseModel):
     #: "finance" (finance|super_admin), "website" (super_admin only) or "general" (admin|super_admin)
     group: str = "general"
     super_admin_only: bool = False
+    #: SEC-011: a change awaiting a second finance approver ({id, value, requested_by, requested_at})
+    pending_change: dict[str, Any] | None = None
+
+
+class SettingChangeApproveIn(_In):
+    request_id: uuid.UUID
+
+
+class SettingChangeRejectIn(_In):
+    reason: str | None = Field(default=None, max_length=500)
 
 
 class PlatformSettingIn(_In):

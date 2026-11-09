@@ -12,7 +12,7 @@ import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
-from sqlalchemy import ColumnElement, and_, func, or_, select, text, true, update
+from sqlalchemy import ColumnElement, and_, delete, func, or_, select, text, true, update
 from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -64,6 +64,21 @@ async def _add_participants(
         .on_conflict_do_nothing(index_elements=["conversation_id", "user_id"])
     )
     await db.execute(stmt)
+
+
+async def _prune_case_participants(db: AsyncSession, conversation_id: uuid.UUID, case: Case) -> None:
+    """SEC-015: drop participants who are no longer parties of the case (a removed hospital member, a
+    re-assigned coordinator, an unlinked agent, a deactivated account). Staff who joined are kept. Runs
+    before every message fan-out, so former parties get no new messages or notifications."""
+    keep = await policies.case_party_user_ids(db, case)
+    staff_ids = select(User.id).where(User.role.in_(_STAFF))
+    stmt = delete(ConversationParticipant).where(
+        ConversationParticipant.conversation_id == conversation_id,
+        ConversationParticipant.user_id.notin_(staff_ids),
+    )
+    if keep:
+        stmt = stmt.where(ConversationParticipant.user_id.notin_(keep))
+    await db.execute(stmt.execution_options(synchronize_session=False))
 
 
 async def _participant_ids(db: AsyncSession, conversation_id: uuid.UUID) -> list[uuid.UUID]:
@@ -232,22 +247,29 @@ async def ensure_case_conversation(db: AsyncSession, case_id: uuid.UUID) -> Conv
         )
     ).scalar_one()
     await _add_participants(db, conversation.id, await policies.case_party_user_ids(db, case))
+    await _prune_case_participants(db, conversation.id, case)
     return conversation
 
 
 # --------------------------------------------------------------------------------------------------- access
 async def get_conversation_for_user(db: AsyncSession, user: User, conversation_id: uuid.UUID) -> Conversation:
     """Return the conversation if ``user`` may access it (404 otherwise). Case parties and staff who are not
-    yet participants are not added here - only when they post or mark read."""
+    yet participants are not added here - only when they post or mark read.
+
+    SEC-015: for a case conversation a participant row is not enough - the user must still be a party of
+    the case (or staff), so former hospital members, coordinators and agents lose access at once."""
     conversation = await db.get(Conversation, conversation_id)
     if conversation is None:
         raise NotFound("Conversation not found")
-    if await policies.is_participant(db, conversation.id, user.id) or is_staff(user):
+    if is_staff(user):
         return conversation
     if conversation.case_id is not None:
         case = await db.get(Case, conversation.case_id)
         if case is not None and await policies.is_case_party(db, user, case):
             return conversation
+        raise NotFound("Conversation not found")
+    if await policies.is_participant(db, conversation.id, user.id):
+        return conversation
     raise NotFound("Conversation not found")
 
 
@@ -267,6 +289,17 @@ async def list_conversations(
 ) -> list[ConversationOut]:
     mine = select(ConversationParticipant.conversation_id).where(ConversationParticipant.user_id == user.id)
     visible: ColumnElement[bool] = Conversation.id.in_(mine)
+    if not is_staff(user):
+        # SEC-015: a case conversation is listed only while the user is still a party of the case.
+        from app.modules.cases.policies import case_condition
+
+        visible = and_(
+            visible,
+            or_(
+                Conversation.case_id.is_(None),
+                Conversation.case_id.in_(select(Case.id).where(case_condition(user))),
+            ),
+        )
     if policies.role_of(user) in (UserRole.SUPPORT.value, UserRole.ADMIN.value, UserRole.SUPER_ADMIN.value):
         # The support desk sees every support conversation, joined or not.
         visible = or_(visible, Conversation.kind == ConversationKind.SUPPORT)
@@ -452,6 +485,10 @@ async def send_message(
         .values(last_read_at=now)
         .execution_options(synchronize_session=False)
     )
+    if conversation.case_id is not None:
+        case = await db.get(Case, conversation.case_id)
+        if case is not None:
+            await _prune_case_participants(db, conversation.id, case)  # SEC-015: no fan-out to ex-parties
     await publish(
         db, "message.created", {"message_id": str(message.id), "conversation_id": str(conversation.id)}
     )

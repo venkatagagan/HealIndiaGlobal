@@ -14,14 +14,16 @@ from typing import Any, cast
 
 from fastapi import Request
 from sqlalchemy import Select, func, select, update
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
-from app.core.crypto import mask
+from app.core.crypto import decrypt_str, mask
 from app.core.deps import STAFF_ROLES, PageQuery, get_client_ip, get_user_agent, has_role
 from app.core.enums import (
     AgentStatus,
     DocumentKind,
+    DocumentStatus,
     HospitalStatus,
     KycStatus,
     UserRole,
@@ -31,7 +33,15 @@ from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.events import publish
 from app.core.pagination import Page, paginate
 from app.core.security import hash_password, validate_password_strength
-from app.core.settings_store import DEFAULTS, FINANCE_KEYS, SUPER_ADMIN_KEYS, set_setting
+from app.core.settings_store import (
+    DEFAULTS,
+    FINANCE_KEYS,
+    SUPER_ADMIN_KEYS,
+    audit_safe_value,
+    clear_settings_cache,
+    set_setting,
+    validate_setting,
+)
 from app.core.site_settings import merged_value
 from app.models import (
     Agent,
@@ -637,6 +647,10 @@ async def get_hospital_detail(db: AsyncSession, hospital_id: uuid.UUID) -> Admin
         doctors=doctors,
         doctors_missing_registration=missing,
         warnings=warnings,
+        pending_profile_values={
+            k: (mask(decrypt_str(v)) if k == "pan" and v else v)
+            for k, v in ((hospital.pending_profile or {}).get("fields") or {}).items()
+        },
     )
 
 
@@ -723,6 +737,7 @@ async def _finish_hospital_change(
     before: dict[str, Any],
     request: Request | None,
     event: tuple[str, dict[str, Any]] | None = None,
+    extra_after: dict[str, Any] | None = None,
 ) -> AdminHospitalDetail:
     hospital_id = hospital.id
     await audit_log(
@@ -732,7 +747,7 @@ async def _finish_hospital_change(
         entity_type="hospital",
         entity_id=hospital_id,
         before=before,
-        after=_hospital_snapshot(hospital),
+        after={**_hospital_snapshot(hospital), **(extra_after or {})},
         request=request,
     )
     if event is not None:
@@ -740,6 +755,57 @@ async def _finish_hospital_change(
     await db.commit()
     await invalidate_catalog_cache()
     return await get_hospital_detail(db, hospital_id)
+
+
+_KYC_KINDS = (
+    DocumentKind.KYC_REGISTRATION,
+    DocumentKind.KYC_ACCREDITATION,
+    DocumentKind.KYC_PAN,
+    DocumentKind.KYC_GST,
+    DocumentKind.KYC_ID_PROOF,
+)
+
+
+async def _verify_kyc_documents(
+    db: AsyncSession,
+    actor: User,
+    *,
+    owner_column: Any,
+    owner_id: uuid.UUID,
+    required: DocumentKind | None,
+) -> list[dict[str, str]]:
+    """SEC-045: approval needs the mandatory KYC document on file (not rejected). The approver attests the
+    KYC documents they reviewed: they are marked verified by the approver and returned for the approval's
+    audit row."""
+    docs = list(
+        (
+            await db.execute(
+                select(Document)
+                .where(
+                    owner_column == owner_id,
+                    Document.kind.in_(_KYC_KINDS),
+                    Document.deleted_at.is_(None),
+                    Document.status != DocumentStatus.REJECTED,
+                )
+                .with_for_update()
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if not docs or (required is not None and not any(d.kind == required for d in docs)):
+        raise Conflict(
+            "The KYC documents needed for approval are missing or were rejected",
+            code="kyc_documents_missing",
+            details={"required": required.value if required is not None else "any kyc document"},
+        )
+    now = utcnow()
+    for doc in docs:
+        if doc.status != DocumentStatus.VERIFIED:
+            doc.status = DocumentStatus.VERIFIED
+            doc.verified_by = actor.id
+            doc.verified_at = now
+    return [{"id": str(d.id), "kind": ev(d.kind)} for d in docs]
 
 
 async def approve_hospital(
@@ -752,6 +818,13 @@ async def approve_hospital(
             code="invalid_status",
             details={"status": ev(hospital.status)},
         )
+    kyc = await _verify_kyc_documents(
+        db,
+        actor,
+        owner_column=Document.hospital_id,
+        owner_id=hospital.id,
+        required=DocumentKind.KYC_REGISTRATION,
+    )
     before = _hospital_snapshot(hospital)
     hospital.status = HospitalStatus.ACTIVE
     hospital.kyc_status = KycStatus.APPROVED
@@ -766,6 +839,7 @@ async def approve_hospital(
         before,
         request,
         ("hospital.approved", {"hospital_id": str(hospital.id)}),
+        extra_after={"kyc_documents_verified": kyc},
     )
 
 
@@ -809,6 +883,25 @@ async def suspend_hospital(
     hospital.is_featured = False
     if reason:
         hospital.rejection_reason = reason
+    # SEC-014: members are signed out at once; core/deps refuses their tokens while every hospital they
+    # belong to is suspended, and settlements hold the hospital's payouts.
+    member_ids = (
+        (await db.execute(select(HospitalMember.user_id).where(HospitalMember.hospital_id == hospital.id)))
+        .scalars()
+        .all()
+    )
+    revoked = 0
+    for member_id in member_ids:
+        revoked += await _revoke_sessions(db, member_id)
+    await audit_log(
+        db,
+        actor=actor,
+        action="hospital.sessions_revoked",
+        entity_type="hospital",
+        entity_id=hospital.id,
+        after={"members": len(member_ids), "sessions_revoked": revoked},
+        request=request,
+    )
     return await _finish_hospital_change(db, actor, hospital, "hospital.suspend", before, request)
 
 
@@ -828,6 +921,40 @@ async def reinstate_hospital(
     hospital.status = HospitalStatus.ACTIVE if was_approved else HospitalStatus.PENDING_REVIEW
     hospital.rejection_reason = None
     return await _finish_hospital_change(db, actor, hospital, "hospital.reinstate", before, request)
+
+
+async def decide_hospital_profile_changes(
+    db: AsyncSession, actor: User, hospital_id: uuid.UUID, *, approve: bool, request: Request | None
+) -> AdminHospitalDetail:
+    """SEC-020: staff apply (or drop) the identity/accreditation changes an approved hospital requested.
+    The applied field names (never the PAN) are audited with the requester."""
+    hospital: Hospital = await _lock(db, Hospital, hospital_id, "Hospital")
+    pending = dict(hospital.pending_profile or {})
+    fields = dict(pending.get("fields") or {})
+    if not fields:
+        raise BadRequest("This hospital has no profile changes waiting for review", code="no_pending_request")
+    before = {k: ("***" if k == "pan" else getattr(hospital, k)) for k in fields}
+    if approve:
+        for key, value in fields.items():
+            setattr(hospital, key, decrypt_str(value) if key == "pan" and value else value)
+    hospital.pending_profile = {}
+    await audit_log(
+        db,
+        actor=actor,
+        action="hospital.profile_change_approved" if approve else "hospital.profile_change_rejected",
+        entity_type="hospital",
+        entity_id=hospital.id,
+        before=before,
+        after={
+            "fields": sorted(fields),
+            "values": {k: v for k, v in fields.items() if k != "pan"},
+            "requested_by": pending.get("requested_by"),
+        },
+        request=request,
+    )
+    await db.commit()
+    await invalidate_catalog_cache()
+    return await get_hospital_detail(db, hospital_id)
 
 
 async def update_hospital(
@@ -956,6 +1083,7 @@ async def _finish_agent_change(
     before: dict[str, Any],
     request: Request | None,
     event: tuple[str, dict[str, Any]] | None = None,
+    extra_after: dict[str, Any] | None = None,
 ) -> AdminAgentOut:
     agent_id = agent.id
     await audit_log(
@@ -965,7 +1093,7 @@ async def _finish_agent_change(
         entity_type="agent",
         entity_id=agent_id,
         before=before,
-        after=_agent_snapshot(agent),
+        after={**_agent_snapshot(agent), **(extra_after or {})},
         request=request,
     )
     if event is not None:
@@ -987,6 +1115,9 @@ async def approve_agent(
 ) -> AdminAgentOut:
     agent: Agent = await _lock(db, Agent, agent_id, "Agent")
     _require_agent_status(agent, (AgentStatus.PENDING,), "approved")
+    kyc = await _verify_kyc_documents(
+        db, actor, owner_column=Document.agent_id, owner_id=agent.id, required=None
+    )
     before = _agent_snapshot(agent)
     agent.status = AgentStatus.ACTIVE
     agent.kyc_status = KycStatus.APPROVED
@@ -994,7 +1125,14 @@ async def approve_agent(
     agent.approved_at = utcnow()
     agent.rejection_reason = None
     return await _finish_agent_change(
-        db, actor, agent, "agent.approve", before, request, ("agent.approved", {"agent_id": str(agent.id)})
+        db,
+        actor,
+        agent,
+        "agent.approve",
+        before,
+        request,
+        ("agent.approved", {"agent_id": str(agent.id)}),
+        extra_after={"kyc_documents_verified": kyc},
     )
 
 
@@ -1027,6 +1165,17 @@ async def suspend_agent(
     agent.status = AgentStatus.SUSPENDED
     if reason:
         agent.rejection_reason = reason
+    # SEC-014: sign the agent out; core/deps refuses its tokens while suspended, settlements hold payouts.
+    revoked = await _revoke_sessions(db, agent.user_id)
+    await audit_log(
+        db,
+        actor=actor,
+        action="user.sessions_revoked",
+        entity_type="user",
+        entity_id=agent.user_id,
+        after={"reason": "agent_suspended", "agent_id": str(agent.id), "sessions_revoked": revoked},
+        request=request,
+    )
     return await _finish_agent_change(db, actor, agent, "agent.suspend", before, request)
 
 
@@ -1067,12 +1216,15 @@ def setting_group(key: str) -> str:
 
 
 async def list_settings(db: AsyncSession) -> list[PlatformSettingOut]:
-    rows = {r.key: r for r in (await db.execute(select(PlatformSetting))).scalars().all()}
+    all_rows = {r.key: r for r in (await db.execute(select(PlatformSetting))).scalars().all()}
+    pending = {k[: -len(PENDING_SUFFIX)]: r.value for k, r in all_rows.items() if k.endswith(PENDING_SUFFIX)}
+    rows = {k: r for k, r in all_rows.items() if not k.endswith(PENDING_SUFFIX)}
     names = await _names_for(db, {r.updated_by for r in rows.values() if r.updated_by})
     keys = list(DEFAULTS) + sorted(k for k in rows if k not in DEFAULTS)
     out: list[PlatformSettingOut] = []
     for key in keys:
         row = rows.get(key)
+        pending_change = pending.get(key) if isinstance(pending.get(key), dict) else None
         out.append(
             PlatformSettingOut(
                 key=key,
@@ -1090,9 +1242,160 @@ async def list_settings(db: AsyncSession) -> list[PlatformSettingOut]:
                 is_finance=is_finance_key(key),
                 group=setting_group(key),
                 super_admin_only=key in SUPER_ADMIN_KEYS,
+                pending_change=pending_change,
             )
         )
     return out
+
+
+# SEC-011: keys whose change needs a second finance approver (maker-checker) and alerts every finance user.
+DUAL_CONTROL_KEYS: frozenset[str] = frozenset({"bank_transfer_details"})
+PENDING_SUFFIX = "__pending"
+
+
+async def _setting_out(db: AsyncSession, key: str) -> PlatformSettingOut:
+    return next(s for s in await list_settings(db) if s.key == key)
+
+
+async def _finance_user_ids(db: AsyncSession, exclude: uuid.UUID | None = None) -> list[uuid.UUID]:
+    stmt = select(User.id).where(
+        User.role.in_([UserRole.FINANCE, UserRole.SUPER_ADMIN]),
+        User.status == UserStatus.ACTIVE,
+        User.deleted_at.is_(None),
+    )
+    if exclude is not None:
+        stmt = stmt.where(User.id != exclude)
+    return list((await db.execute(stmt)).scalars().all())
+
+
+async def _notify_finance(
+    db: AsyncSession, actor: User, key: str, title: str, body: str, *, request_id: str
+) -> None:
+    from app.modules.messaging.notifications import notify_many
+
+    await notify_many(
+        db,
+        await _finance_user_ids(db, exclude=actor.id),
+        "settings.change",
+        title,
+        body,
+        {"key": key, "request_id": request_id, "link": "/settings"},
+        dedupe_key=f"settings.change:{key}:{request_id}:{title}",
+        email=True,
+    )
+
+
+async def _request_setting_change(
+    db: AsyncSession, actor: User, key: str, value: Any, request: Request | None
+) -> PlatformSettingOut:
+    """Maker step: record the change as pending (replacing an earlier pending one); nothing is applied."""
+    value = validate_setting(key, value)
+    pending_key = f"{key}{PENDING_SUFFIX}"
+    previous = await db.get(PlatformSetting, pending_key)
+    request_id = str(uuid.uuid4())
+    data = {
+        "id": request_id,
+        "value": value,
+        "requested_by": str(actor.id),
+        "requested_by_name": actor.full_name,
+        "requested_at": utcnow().isoformat(),
+    }
+    stmt = pg_insert(PlatformSetting).values(key=pending_key, value=data, updated_by=actor.id)
+    stmt = stmt.on_conflict_do_update(
+        index_elements=[PlatformSetting.key],
+        set_={"value": stmt.excluded.value, "updated_by": stmt.excluded.updated_by, "updated_at": func.now()},
+    )
+    await db.execute(stmt)
+    await audit_log(
+        db,
+        actor=actor,
+        action="settings.change_requested",
+        entity_type="platform_setting",
+        entity_id=key,
+        before={"replaced_request_id": previous.value.get("id")} if previous is not None else None,
+        after={"request_id": request_id, "value": audit_safe_value(key, value)},
+        request=request,
+    )
+    await _notify_finance(
+        db,
+        actor,
+        key,
+        "Bank transfer details change needs approval",
+        f"{actor.full_name or 'A finance user'} asked to change the bank account shown to patients. "
+        "A second finance user must review and approve it before it takes effect.",
+        request_id=request_id,
+    )
+    clear_settings_cache()
+    await db.commit()
+    return await _setting_out(db, key)
+
+
+async def _pending_setting(db: AsyncSession, key: str) -> PlatformSetting:
+    if key not in DUAL_CONTROL_KEYS:
+        raise NotFound("Unknown setting")
+    row = await db.get(PlatformSetting, f"{key}{PENDING_SUFFIX}", with_for_update=True)
+    if row is None or not isinstance(row.value, dict):
+        raise BadRequest("There is no pending change for this setting", code="no_pending_request")
+    return row
+
+
+async def approve_setting_change(
+    db: AsyncSession, actor: User, key: str, request_id: uuid.UUID, request: Request | None
+) -> PlatformSettingOut:
+    """Checker step (SEC-011): a finance user other than the requester applies the reviewed request."""
+    row = await _pending_setting(db, key)
+    data = dict(row.value)
+    if str(data.get("requested_by")) == str(actor.id):
+        raise Forbidden(
+            "This change must be approved by a second finance user", code="second_approver_required"
+        )
+    if str(data.get("id")) != str(request_id):
+        raise Conflict(
+            "The pending change was replaced since it was reviewed; review it again", code="request_changed"
+        )
+    await set_setting(db, key, data.get("value"), actor=actor)
+    await db.delete(row)
+    await audit_log(
+        db,
+        actor=actor,
+        action="settings.change_approved",
+        entity_type="platform_setting",
+        entity_id=key,
+        after={"request_id": data.get("id"), "requested_by": data.get("requested_by")},
+        request=request,
+    )
+    await _notify_finance(
+        db,
+        actor,
+        key,
+        "Bank transfer details changed",
+        "The bank account shown to patients for bank transfers has been changed and approved.",
+        request_id=str(data.get("id")),
+    )
+    clear_settings_cache()
+    await db.commit()
+    return await _setting_out(db, key)
+
+
+async def reject_setting_change(
+    db: AsyncSession, actor: User, key: str, reason: str | None, request: Request | None
+) -> PlatformSettingOut:
+    """Reject (or, for the requester, withdraw) the pending change."""
+    row = await _pending_setting(db, key)
+    data = dict(row.value)
+    await db.delete(row)
+    await audit_log(
+        db,
+        actor=actor,
+        action="settings.change_rejected",
+        entity_type="platform_setting",
+        entity_id=key,
+        after={"request_id": data.get("id"), "requested_by": data.get("requested_by"), "reason": reason},
+        request=request,
+    )
+    clear_settings_cache()
+    await db.commit()
+    return await _setting_out(db, key)
 
 
 async def update_setting(
@@ -1112,6 +1415,8 @@ async def update_setting(
         raise Forbidden("Only admins can change this setting", code="admin_required")
     if value is None:
         raise BadRequest(f"Setting '{key}' cannot be null", code="invalid_setting")
+    if key in DUAL_CONTROL_KEYS:
+        return await _request_setting_change(db, actor, key, value, request)
     await set_setting(db, key, value, actor=actor)
     if request is not None:
         # set_setting adds its own audit row (without request metadata): attach the console IP/UA to it.

@@ -118,9 +118,18 @@ async def test_idempotency_key_returns_same_order(db, client, auth_headers):
         ORDERS, json=_deposit_body(w.booking.id, gateway="bank_transfer"), headers=headers
     )
     assert other.status_code == 409 and other.json()["error"]["code"] == "idempotency_key_reused"
-    # without a key every call creates a new order
+    # SEC-007: without a key the same open order for the booking is reused (no second charge)...
     r = await client.post(ORDERS, json=_deposit_body(w.booking.id), headers=auth_headers(w.patient_user))
-    assert r.json()["order"]["id"] != first.json()["order"]["id"]
+    assert r.json()["order"]["id"] == first.json()["order"]["id"]
+    # ...and a different payment method supersedes (cancels) it: one open order per booking
+    r = await client.post(
+        ORDERS,
+        json=_deposit_body(w.booking.id, gateway="bank_transfer"),
+        headers=auth_headers(w.patient_user),
+    )
+    assert r.status_code == 201 and r.json()["order"]["id"] != first.json()["order"]["id"]
+    old = await db.get(PaymentOrder, uuid.UUID(first.json()["order"]["id"]), populate_existing=True)
+    assert old is not None and old.status == OrderStatus.CANCELLED
 
 
 async def test_disabled_gateway_and_mock_refused_in_production(db, client, auth_headers, monkeypatch):

@@ -74,6 +74,8 @@ class HospitalProfileOut(HospitalCard):
     member_role: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
+    #: SEC-020: fields changed by the hospital that wait for staff review before they take effect
+    pending_changes: list[str] = []
 
 
 class HospitalProfileIn(_In):

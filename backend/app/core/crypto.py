@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
+import hmac
 import json
 import os
 import re
@@ -154,6 +156,21 @@ def decrypt_str(token: str) -> str:
             continue
         return plain.decode("utf-8")
     raise CryptoError("ciphertext authentication failed")
+
+
+def keyed_fingerprint(value: str | None, purpose: str = "fingerprint") -> str | None:
+    """Keyed HMAC-SHA256 (hex, 32 chars) of ``value`` for audit rows: lets investigators tell whether two
+    values are the same (e.g. which bank account was shown to patients) without storing the value itself.
+    The key is derived from ``FIELD_ENCRYPTION_KEY`` (falls back to ``JWT_SECRET`` when unset)."""
+    if not value:
+        return None
+    from app.core.config import settings
+
+    raw: Any = settings.FIELD_ENCRYPTION_KEY or settings.JWT_SECRET
+    if hasattr(raw, "get_secret_value"):
+        raw = raw.get_secret_value()
+    key = hashlib.sha256(f"hig-{purpose}:{raw}".encode()).digest()
+    return hmac.new(key, value.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
 
 
 def mask(value: str | None, keep: int = 4, char: str = "*") -> str:

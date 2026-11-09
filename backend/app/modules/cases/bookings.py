@@ -37,6 +37,7 @@ from app.models import (
     HospitalProcedure,
     ItineraryItem,
     PatientProfile,
+    PaymentOrder,
     Procedure,
     Quote,
     Refund,
@@ -281,6 +282,9 @@ async def release_admission(db: AsyncSession, booking: Booking) -> None:
 
 
 # --------------------------------------------------------------------------------------------- create
+MAX_UNPAID_BOOKINGS_PER_PATIENT = 3
+
+
 async def create_booking(
     db: AsyncSession, user: User, body: BookingCreate, request: Request | None = None
 ) -> Booking:
@@ -298,6 +302,19 @@ async def create_booking(
     ).scalar_one_or_none()
     if existing is not None:
         raise Conflict("This case already has an active booking", code="booking_exists")
+    unpaid = (
+        await db.execute(
+            select(func.count())
+            .select_from(Booking)
+            .where(Booking.patient_id == case.patient_id, Booking.status == BookingStatus.PENDING_PAYMENT)
+        )
+    ).scalar_one()
+    if unpaid >= MAX_UNPAID_BOOKINGS_PER_PATIENT:  # SEC-018: no free hoarding of admission slots
+        raise Conflict(
+            "Please pay or cancel your other unpaid bookings before making a new one",
+            code="too_many_unpaid_bookings",
+            details={"limit": MAX_UNPAID_BOOKINGS_PER_PATIENT},
+        )
 
     quote: Quote | None = None
     package: TreatmentPackage | None = None
@@ -727,13 +744,34 @@ async def cancel_booking(
     return booking, refundable, pct
 
 
-async def expire_unpaid_bookings(db: AsyncSession) -> int:
-    """Cancel ``pending_payment`` bookings whose admission date has passed (periodic job)."""
+#: SEC-018: an unpaid booking holds its admission slot this long (longer only while a bank transfer for it is
+#: open, i.e. until that order expires), so nobody can block a hospital's capacity at no cost.
+UNPAID_BOOKING_HOLD = timedelta(hours=24)
+
+
+async def expire_unpaid_bookings(db: AsyncSession, *, now: datetime | None = None) -> int:
+    """Cancel ``pending_payment`` bookings (periodic job) whose admission date has passed, or that are older
+    than :data:`UNPAID_BOOKING_HOLD` with no open, unexpired payment order (a bank transfer in progress keeps
+    the booking until its order expires). The admission slot is released by the cancellation."""
+    now = now or utcnow()
+    open_payment = (
+        select(PaymentOrder.id)
+        .where(
+            PaymentOrder.booking_id == Booking.id,
+            PaymentOrder.status.in_(["created", "pending"]),
+            or_(PaymentOrder.expires_at.is_(None), PaymentOrder.expires_at > now),
+        )
+        .exists()
+    )
     ids = list(
         (
             await db.execute(
                 select(Booking.id).where(
-                    Booking.status == BookingStatus.PENDING_PAYMENT, Booking.admission_date < today_ist()
+                    Booking.status == BookingStatus.PENDING_PAYMENT,
+                    or_(
+                        Booking.admission_date < today_ist(),
+                        and_(Booking.created_at < now - UNPAID_BOOKING_HOLD, ~open_payment),
+                    ),
                 )
             )
         ).scalars()
@@ -753,7 +791,7 @@ async def expire_unpaid_bookings(db: AsyncSession) -> int:
             booking,
             case,
             actor=None,
-            reason="Admission date passed without the deposit being paid",
+            reason="The deposit was not paid in time",
             initiated_by=CancellationInitiator.PLATFORM,
         )
         count += 1
@@ -761,12 +799,24 @@ async def expire_unpaid_bookings(db: AsyncSession) -> int:
 
 
 # --------------------------------------------------------------------------------------------- admit/complete
+ADMIT_WINDOW = timedelta(days=1)
+
+
 async def admit_booking(
     db: AsyncSession, user: User, booking_id: uuid.UUID, body: BookingAdmit, request: Request | None = None
 ) -> Booking:
     booking = await get_booking_for_user(db, booking_id, user, for_update=True)
     await policies.ensure_hospital_actor(db, user, booking.hospital_id)
     ensure_booking_transition(booking.status, BookingStatus.ADMITTED)
+    # SEC-019: admitting ends the patient's right to cancel, so the hospital may admit only from the day
+    # before the admission date. Staff may override (the audit row records it).
+    early = booking.admission_date is not None and booking.admission_date > today_ist() + ADMIT_WINDOW
+    if early and not is_staff(user):
+        raise BadRequest(
+            "The patient can be admitted from one day before the admission date",
+            code="admission_too_early",
+            details={"admission_date": str(booking.admission_date)},
+        )
     booking.status = BookingStatus.ADMITTED
     booking.admitted_at = utcnow()
     case = await _lock_case(db, booking.case_id)
@@ -786,7 +836,7 @@ async def admit_booking(
         entity_type="booking",
         entity_id=booking.id,
         before={"status": BookingStatus.CONFIRMED.value},
-        after={"status": BookingStatus.ADMITTED.value, "note": body.note},
+        after={"status": BookingStatus.ADMITTED.value, "note": body.note, "early_staff_override": early},
         request=request,
     )
     await publish(db, "booking.admitted", {"booking_id": str(booking.id)})

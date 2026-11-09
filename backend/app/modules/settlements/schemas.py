@@ -20,6 +20,7 @@ from app.core.enums import (
     SettlementBatchStatus,
     SettlementItemStatus,
 )
+from app.core.money import MAX_COMMISSION_BPS
 
 Reason = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=500)]
 
@@ -228,7 +229,7 @@ class CommissionRuleIn(_In):
     specialty_id: uuid.UUID | None = None
     procedure_id: uuid.UUID | None = None
     agent_id: uuid.UUID | None = None
-    rate_bps: int = Field(ge=0, le=10_000)
+    rate_bps: int = Field(ge=0, le=MAX_COMMISSION_BPS)
     effective_from: date | None = None
     effective_to: date | None = None
     is_active: bool = True
@@ -262,7 +263,7 @@ class CommissionRuleIn(_In):
 
 
 class CommissionRulePatch(_In):
-    rate_bps: int | None = Field(default=None, ge=0, le=10_000)
+    rate_bps: int | None = Field(default=None, ge=0, le=MAX_COMMISSION_BPS)
     effective_from: date | None = None
     effective_to: date | None = None
     is_active: bool | None = None

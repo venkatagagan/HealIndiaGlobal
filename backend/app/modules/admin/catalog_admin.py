@@ -25,7 +25,8 @@ from sqlalchemy.inspection import inspect as sa_inspect
 from app.core import cache
 from app.core.audit import audit_log
 from app.core.enums import ServiceKind
-from app.core.errors import BadRequest, Conflict, NotFound
+from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
+from app.core.money import DEFAULT_FX_RATES
 from app.models import (
     AccommodationHospitalLink,
     AccommodationProvider,
@@ -849,6 +850,34 @@ def _fx_out(r: FxRate) -> FxRateOut:
         source=r.source,
         as_of=r.as_of,
         updated_at=r.updated_at,
+        pending_rate=format(Decimal(r.pending_rate).normalize(), "f") if r.pending_rate is not None else None,
+        pending_requested_by=r.pending_requested_by,
+        pending_requested_at=r.pending_requested_at,
+    )
+
+
+# SEC-008: an FX change of more than this fraction of the current rate needs a second finance approver; a new
+# rate must stay within FX_CREATE_TOLERANCE of the built-in reference rate (when there is one).
+FX_MAX_STEP = Decimal("0.10")
+FX_CREATE_TOLERANCE = Decimal("0.50")
+
+
+def _deviation(new: Decimal, reference: Decimal) -> Decimal:
+    return abs(Decimal(new) / Decimal(reference) - 1) if reference else Decimal("Infinity")
+
+
+async def _alert_finance_fx(db: AsyncSession, actor: User, rate: FxRate, title: str, body: str) -> None:
+    from app.modules.admin.service import _finance_user_ids
+    from app.modules.messaging.notifications import notify_many
+
+    await notify_many(
+        db,
+        await _finance_user_ids(db, exclude=actor.id),
+        "fx_rate.change",
+        title,
+        body,
+        {"fx_rate_id": str(rate.id), "currency": rate.quote_currency, "link": "/fx-rates"},
+        email=True,
     )
 
 
@@ -870,6 +899,13 @@ async def create_fx_rate(db: AsyncSession, actor: User, body: FxRateIn, request:
     if exists.first() is not None:
         raise Conflict(
             f"A rate for {body.quote_currency} already exists; update it instead", code="duplicate_rate"
+        )
+    reference = DEFAULT_FX_RATES.get(body.quote_currency)
+    if reference is not None and _deviation(body.rate, reference) > FX_CREATE_TOLERANCE:
+        raise BadRequest(
+            f"The rate for {body.quote_currency} is far from the expected range; please check it",
+            code="fx_rate_out_of_range",
+            details={"reference_rate": format(reference, "f")},
         )
     rate = FxRate(
         base_currency=body.base_currency,
@@ -900,6 +936,33 @@ async def update_fx_rate(
     rate: FxRate = await _get(db, FxRate, rate_id, "FX rate")
     data = _patch_data(body, {"rate"})
     before = _snapshot(rate)
+    if "rate" in data and _deviation(data["rate"], rate.rate) > FX_MAX_STEP:
+        # SEC-008: a large move is only recorded; a second finance user approves it (approve_fx_rate).
+        rate.pending_rate = data["rate"]
+        rate.pending_requested_by = actor.id
+        rate.pending_requested_at = datetime.now(UTC)
+        await db.flush()
+        await _alert_finance_fx(
+            db,
+            actor,
+            rate,
+            f"Exchange rate change for {rate.quote_currency} needs approval",
+            f"{actor.full_name or 'A finance user'} asked to change the {rate.quote_currency} rate from "
+            f"{format(Decimal(rate.rate).normalize(), 'f')} to "
+            f"{format(Decimal(data['rate']).normalize(), 'f')} "
+            "INR. A second finance user must approve it before it is used for payments.",
+        )
+        await _commit(
+            db,
+            actor,
+            request,
+            action="fx_rate.change_requested",
+            entity_type="fx_rate",
+            entity_id=rate.id,
+            before=before,
+            after=_snapshot(rate),
+        )
+        return await get_fx_rate(db, rate_id)
     for key, value in data.items():
         setattr(rate, key, value)
     if "rate" in data:
@@ -912,6 +975,51 @@ async def update_fx_rate(
         actor,
         request,
         action="fx_rate.update",
+        entity_type="fx_rate",
+        entity_id=rate.id,
+        before=before,
+        after=_snapshot(rate),
+    )
+    return await get_fx_rate(db, rate_id)
+
+
+async def decide_fx_rate_change(
+    db: AsyncSession,
+    actor: User,
+    rate_id: uuid.UUID,
+    *,
+    approve: bool,
+    reviewed_rate: Decimal | None,
+    request: Request | None,
+) -> FxRateOut:
+    """SEC-008 checker step: a finance user other than the requester applies (``approve``) or drops the
+    pending rate. ``reviewed_rate`` binds the approval to the value that was reviewed."""
+    rate: FxRate = await _get(db, FxRate, rate_id, "FX rate")
+    if rate.pending_rate is None:
+        raise BadRequest("There is no pending change for this rate", code="no_pending_request")
+    before = _snapshot(rate)
+    if approve:
+        if rate.pending_requested_by == actor.id:
+            raise Forbidden(
+                "A large exchange-rate change must be approved by a second finance user",
+                code="second_approver_required",
+            )
+        if reviewed_rate is None or Decimal(reviewed_rate) != Decimal(rate.pending_rate):
+            raise Conflict(
+                "The pending rate changed since it was reviewed; review it again", code="request_changed"
+            )
+        rate.rate = rate.pending_rate
+        rate.as_of = datetime.now(UTC)
+        rate.source = "manual"
+    rate.pending_rate = None
+    rate.pending_requested_by = None
+    rate.pending_requested_at = None
+    await db.flush()
+    await _commit(
+        db,
+        actor,
+        request,
+        action="fx_rate.change_approved" if approve else "fx_rate.change_rejected",
         entity_type="fx_rate",
         entity_id=rate.id,
         before=before,

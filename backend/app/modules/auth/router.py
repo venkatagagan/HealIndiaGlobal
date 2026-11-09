@@ -75,6 +75,11 @@ def _cookie_name_path(portal: AuthPortal) -> tuple[str, str]:
     return service.REFRESH_COOKIE_NAME, service.REFRESH_COOKIE_PATH
 
 
+def _cookie_domain(portal: AuthPortal) -> str | None:
+    """SEC-022: the staff refresh cookie is always host-only (never shared with sibling sub-domains)."""
+    return None if portal == AuthPortal.STAFF else settings.COOKIE_DOMAIN
+
+
 def set_refresh_cookie(response: Response, raw_token: str, portal: AuthPortal = AuthPortal.PUBLIC) -> None:
     name, path = _cookie_name_path(portal)
     response.set_cookie(
@@ -82,7 +87,7 @@ def set_refresh_cookie(response: Response, raw_token: str, portal: AuthPortal = 
         value=raw_token,
         max_age=int(service.refresh_ttl(portal).total_seconds()),
         path=path,
-        domain=settings.COOKIE_DOMAIN,
+        domain=_cookie_domain(portal),
         secure=settings.COOKIE_SECURE,
         httponly=True,
         samesite="strict",
@@ -94,7 +99,7 @@ def clear_refresh_cookie(response: Response, portal: AuthPortal = AuthPortal.PUB
     response.delete_cookie(
         key=name,
         path=path,
-        domain=settings.COOKIE_DOMAIN,
+        domain=_cookie_domain(portal),
         secure=settings.COOKIE_SECURE,
         httponly=True,
         samesite="strict",
@@ -458,6 +463,13 @@ async def staff_door_guard(request: Request) -> None:
     if is_mobile_client(request):
         raise Unauthorized(service.GENERIC_LOGIN_ERROR, code="invalid_credentials")
     ensure_staff_ip_allowed(request)
+    expected = (settings.STAFF_CONSOLE_ORIGIN or "").strip().rstrip("/").lower()
+    if expected:
+        # SEC-022: with a separate console origin, a script on the public site or a portal (same site,
+        # another origin) cannot drive the staff door, even though the browser would attach the cookie.
+        origin = request.headers.get("origin", "").strip().rstrip("/").lower()
+        if origin != expected:
+            raise Forbidden("This request is not allowed from here", code="staff_origin_mismatch")
 
 
 @router.post(

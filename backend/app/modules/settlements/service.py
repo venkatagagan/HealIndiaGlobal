@@ -39,7 +39,9 @@ from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.crypto import mask
 from app.core.enums import (
+    AgentStatus,
     CommissionScope,
+    HospitalStatus,
     PayeeType,
     PayoutAccountStatus,
     PayoutMethod,
@@ -734,6 +736,26 @@ async def _payee_exists(db: AsyncSession, payee_type: PayeeType, payee_id: uuid.
     )
 
 
+PAYEE_SUSPENDED_REASON = "payee is suspended"
+
+
+async def payee_suspended(db: AsyncSession, payee_type: PayeeType | str, payee_id: uuid.UUID) -> bool:
+    """SEC-014: a suspended hospital or agent receives no payouts; its items stay ``eligible`` (on hold)
+    until it is reinstated."""
+    ptype = _v(payee_type)
+    if ptype == PayeeType.HOSPITAL.value:
+        status = (
+            await db.execute(select(Hospital.status).where(Hospital.id == payee_id))
+        ).scalar_one_or_none()
+        return status is not None and _v(status) == HospitalStatus.SUSPENDED.value
+    if ptype == PayeeType.AGENT.value:
+        agent_status = (
+            await db.execute(select(Agent.status).where(Agent.id == payee_id))
+        ).scalar_one_or_none()
+        return agent_status is not None and _v(agent_status) == AgentStatus.SUSPENDED.value
+    return False
+
+
 async def generate_batch(
     db: AsyncSession,
     *,
@@ -769,6 +791,9 @@ async def generate_batch(
     grouped: dict[uuid.UUID, list[SettlementItem]] = defaultdict(list)
     for item in items:
         grouped[item.payee_id].append(item)
+    for pid in list(grouped):
+        if await payee_suspended(db, ptype, pid):  # SEC-014: suspended payees are held back
+            del grouped[pid]
     selected = [i for group in grouped.values() if sum(int(x.net_minor) for x in group) > 0 for i in group]
     if not selected:
         raise BadRequest(
@@ -1096,6 +1121,8 @@ async def process_batch(
         created.append(payout)
         if amount <= 0:
             await _fail_payout(db, payout, "payee balance in this batch is not positive")
+        elif await payee_suspended(db, ptype, pid):
+            await _fail_payout(db, payout, PAYEE_SUSPENDED_REASON)
         elif _account_changed(batch, pid, account):
             await _fail_payout(db, payout, ACCOUNT_CHANGED_REASON)
         elif provider.requires_account and account is None:
@@ -1259,8 +1286,8 @@ async def execute_payout(db: AsyncSession, payout_id: uuid.UUID) -> None:
     if payout.status not in (PayoutStatus.QUEUED, PayoutStatus.PROCESSING):
         return  # done, failed, or parked for reconciliation: never re-sent automatically
     if payout.gateway_payout_id:
-        await _complete_payout(db, payout)
-        await _refresh_payout_batch(db, payout)
+        # SEC-043: a transfer exists already - confirm its state with the provider, never assume success.
+        await confirm_transfer(db, payout)
         return
     account = await db.get(PayoutAccount, payout.payout_account_id) if payout.payout_account_id else None
     provider = get_provider(payout.method)
@@ -1271,6 +1298,10 @@ async def execute_payout(db: AsyncSession, payout_id: uuid.UUID) -> None:
         or account_fingerprint(account) != payout.account_fingerprint
     ):
         await _fail_payout(db, payout, "payout account changed or is no longer verified and active")
+        await _refresh_payout_batch(db, payout)
+        return
+    if payout.gateway_attempted_at is None and await payee_suspended(db, payout.payee_type, payout.payee_id):
+        await _fail_payout(db, payout, PAYEE_SUSPENDED_REASON)
         await _refresh_payout_batch(db, payout)
         return
     if payout.gateway_attempted_at is not None:
@@ -1296,6 +1327,65 @@ async def execute_payout(db: AsyncSession, payout_id: uuid.UUID) -> None:
         return
     await apply_payout_result(db, payout, result)
     await _refresh_payout_batch(db, payout)
+
+
+async def confirm_transfer(db: AsyncSession, payout: Payout) -> None:
+    """SEC-043: look up a provider transfer that was created but not yet confirmed (``processing`` with a
+    gateway id) and complete or fail the payout when the provider reports a final state. Providers without a
+    lookup keep the previous behaviour (the transfer id is the confirmation). Job-completed payouts are
+    audited (system actor)."""
+    provider = get_provider(payout.method)
+    fetch = getattr(provider, "fetch", None)
+    if fetch is None or not payout.gateway_payout_id:
+        result = PayoutResult(PayoutStatus.PROCESSED, gateway_payout_id=payout.gateway_payout_id)
+    else:
+        try:
+            result = await fetch(payout.gateway_payout_id)
+        except PayoutTransientError as exc:
+            logger.warning("payout.confirm.transient", payout_id=str(payout.id), error=str(exc))
+            return
+    if result.status is PayoutStatus.PROCESSING:
+        return
+    await apply_payout_result(db, payout, result)
+    await audit_log(
+        db,
+        actor=None,
+        action="payout.confirmed",
+        entity_type="payout",
+        entity_id=payout.id,
+        after={"status": _v(payout.status), "gateway_payout_id": payout.gateway_payout_id},
+    )
+    await _refresh_payout_batch(db, payout)
+
+
+async def reconcile_processing_transfers(db: AsyncSession, *, limit: int = 200) -> int:
+    """Periodic: confirm Razorpay transfers that were ``created``/``pending`` when sent (SEC-043). Commits
+    per payout. Returns how many payouts reached a final state."""
+    ids = list(
+        (
+            await db.execute(
+                select(Payout.id)
+                .where(
+                    Payout.status == PayoutStatus.PROCESSING,
+                    Payout.gateway_payout_id.is_not(None),
+                    Payout.method == PayoutMethod.RAZORPAY_ROUTE,
+                )
+                .order_by(Payout.created_at)
+                .limit(limit)
+            )
+        ).scalars()
+    )
+    done = 0
+    for payout_id in ids:
+        payout = await get_payout_locked(db, payout_id)
+        if payout.status != PayoutStatus.PROCESSING:
+            await db.rollback()
+            continue
+        await confirm_transfer(db, payout)
+        if payout.status != PayoutStatus.PROCESSING:
+            done += 1
+        await db.commit()
+    return done
 
 
 async def _park_payout(db: AsyncSession, payout: Payout, reason: str) -> None:

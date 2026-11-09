@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.core.enums import PaymentGateway, SettlementItemStatus
 from app.core.jobs import enqueue
 from app.core.money import apply_bps
+from app.models.identity import AuditLog
 from app.models.ledger import LedgerTransaction
 from app.models.settlements import PayoutAccount
 from app.modules.ledger import postings
@@ -779,6 +780,38 @@ async def test_razorpay_route_payout_via_job(
     assert r.json()["status"] == "completed"
     assert r.json()["payouts"][0]["gateway_payout_id"] == "trf_TEST123"
     assert await balance(db, hospital_payable(world.hospital.id)) == 0 and net > 0
+
+
+async def test_razorpay_created_transfer_is_confirmed_before_paid(
+    client: Any, db: Any, make_user: Any, auth_headers: Any, run_jobs: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """SEC-043: a transfer that Razorpay reports as ``created``/``pending`` is not money paid yet."""
+    import httpx
+    import respx
+
+    world, batch_id, fin, _ = await _route_world(client, db, make_user, auth_headers, monkeypatch)
+    net = await balance(db, hospital_payable(world.hospital.id))
+    with respx.mock() as router:
+        router.post("https://api.razorpay.com/v1/transfers").mock(
+            return_value=httpx.Response(200, json={"id": "trf_PEND1", "status": "created"})
+        )
+        lookup = router.get("https://api.razorpay.com/v1/transfers/trf_PEND1").mock(
+            return_value=httpx.Response(200, json={"id": "trf_PEND1", "status": "pending"})
+        )
+        await client.post(f"{API}/finance/settlements/batches/{batch_id}/process", json={}, headers=fin)
+        await run_jobs()
+        r = await client.get(f"{API}/finance/settlements/batches/{batch_id}", headers=fin)
+        assert r.json()["payouts"][0]["status"] == "processing"
+        assert await balance(db, hospital_payable(world.hospital.id)) == net  # nothing paid out yet
+        assert await service.reconcile_processing_transfers(db) == 0  # still pending
+        lookup.mock(return_value=httpx.Response(200, json={"id": "trf_PEND1", "status": "processed"}))
+        assert await service.reconcile_processing_transfers(db) == 1
+    r = await client.get(f"{API}/finance/settlements/batches/{batch_id}", headers=fin)
+    assert r.json()["status"] == "completed" and r.json()["payouts"][0]["status"] == "processed"
+    assert await balance(db, hospital_payable(world.hospital.id)) == 0
+    assert (
+        await db.execute(select(AuditLog).where(AuditLog.action == "payout.confirmed"))
+    ).scalars().first() is not None
 
 
 async def test_razorpay_rejection_marks_payout_failed(

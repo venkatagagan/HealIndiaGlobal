@@ -157,6 +157,19 @@ async def test_staff_allowed_ips(client, make_user, auth_headers, monkeypatch) -
     assert (await client.get(f"{API}/auth/me", headers=spoofed)).status_code == 403
 
 
+async def test_staff_console_origin(client, make_user, monkeypatch) -> None:
+    """SEC-022: with a separate console origin the staff door refuses any other origin."""
+    await make_user(role="admin", email="origin.admin@example.test", password=PASSWORD)
+    monkeypatch.setattr(settings, "STAFF_CONSOLE_ORIGIN", "https://ops.example.test")
+    body = {"email": "origin.admin@example.test", "password": PASSWORD}
+    for origin in (None, "https://example.test", "https://app.example.test"):
+        headers = {"Origin": origin} if origin else {}
+        r = await client.post(f"{API}{STAFF}/login", json=body, headers=headers)
+        assert r.status_code == 403 and r.json()["error"]["code"] == "staff_origin_mismatch", origin
+    r = await client.post(f"{API}{STAFF}/login", json=body, headers={"Origin": "https://ops.example.test/"})
+    assert r.status_code != 403
+
+
 # ------------------------------------------------------------------------------------- staff MFA (#23)
 async def test_staff_mfa_enrolment_requires_super_admin_token(client, db, make_user, monkeypatch) -> None:
     monkeypatch.setattr(settings, "ADMIN_MFA_REQUIRED", True)
@@ -244,7 +257,17 @@ def test_settings_validation_production_and_jwt(monkeypatch) -> None:
         "FIELD_ENCRYPTION_KEY": "k" * 44,
         "COOKIE_SECURE": True,
         "PAYMENT_GATEWAYS_ENABLED": "razorpay",
+        "STAFF_ALLOWED_IPS": "203.0.113.0/24",
     }
+    # SEC-022: production must restrict the staff door (network allow-list and/or a separate console origin)
+    with pytest.raises(ValueError, match="STAFF_ALLOWED_IPS"):
+        Settings(_env_file=None, **{**base, "STAFF_ALLOWED_IPS": ""}, ADMIN_MFA_REQUIRED=True)
+    assert Settings(
+        _env_file=None,
+        **{**base, "STAFF_ALLOWED_IPS": ""},
+        ADMIN_MFA_REQUIRED=True,
+        STAFF_CONSOLE_ORIGIN="https://ops.example.com",
+    ).STAFF_CONSOLE_ORIGIN
     with pytest.raises(ValueError, match="ADMIN_MFA_REQUIRED"):
         Settings(_env_file=None, **base, ADMIN_MFA_REQUIRED=False)
     assert Settings(_env_file=None, **base, ADMIN_MFA_REQUIRED=True).ADMIN_MFA_REQUIRED

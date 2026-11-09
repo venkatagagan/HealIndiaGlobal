@@ -41,6 +41,14 @@ async def recognize_cancellation_retention(db: AsyncSession, payload: dict[str, 
         logger.info("settlements.cancellation_retention.done", bookings=len(booking_ids))
 
 
+@periodic("settlements.reconcile_transfers", every_seconds=900, timeout_seconds=600)
+async def reconcile_transfers(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Every 15 min: confirm Razorpay transfers that were still ``created``/``pending`` (SEC-043)."""
+    done = await service.reconcile_processing_transfers(db)
+    if done:
+        logger.info("settlements.reconcile_transfers.done", payouts=done)
+
+
 @task("settlements.execute_payout", timeout_seconds=120)
 async def execute_payout(db: AsyncSession, payload: dict[str, Any]) -> None:
     try:

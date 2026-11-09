@@ -459,7 +459,7 @@ variable "apple_key_id" {
 }
 
 variable "staff_allowed_cidrs" {
-  description = "STAFF_ALLOWED_IPS: CIDRs allowed to use the staff door (/auth/staff/*) and staff APIs (office / VPN egress). Empty = any address (MFA still required)."
+  description = "STAFF_ALLOWED_IPS: CIDRs allowed to use the staff door (/auth/staff/*) and staff APIs (office / VPN egress). SEC-022: with ENV=production the API refuses to start when this is empty and STAFF_CONSOLE_ORIGIN is not set."
   type        = list(string)
   default     = []
 

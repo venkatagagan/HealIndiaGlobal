@@ -126,6 +126,10 @@ class Settings(BaseSettings):
     TRUSTED_HOSTS: StrList = Field(default_factory=lambda: ["*"])
     # Staff door (PLAN 3.1): optional comma-separated CIDRs allowed to use /auth/staff/* and any staff API.
     STAFF_ALLOWED_IPS: StrList = Field(default_factory=list)
+    # SEC-022: origin of a separately hosted staff console (e.g. "https://ops.example.com"). When set, the
+    # staff door (/auth/staff/*) only accepts browser requests whose Origin is exactly this. Production needs
+    # this or STAFF_ALLOWED_IPS (the console otherwise shares the origin of pages with third-party scripts).
+    STAFF_CONSOLE_ORIGIN: str | None = None
     # AWS: CloudFront always overwrites CloudFront-Viewer-Address; enable ONLY when the API is reachable
     # solely through CloudFront (otherwise a client could send the header itself).
     TRUST_CLOUDFRONT_VIEWER_ADDRESS: bool = False
@@ -148,6 +152,13 @@ class Settings(BaseSettings):
     AI_EFFORT: str = "medium"
     AI_ENABLED: bool = True
     AI_TIMEOUT_SECONDS: float = Field(default=90, gt=0)
+    # SEC-021 (denial of wallet): AI-backed requests per user per day (UTC) and for the whole platform;
+    # 0 turns a limit off. Over the global budget, screenings fall back to the rules engine and
+    # document AI / voice intake answer 429.
+    AI_USER_DAILY_LIMIT_SCREENING: int = Field(default=10, ge=0)
+    AI_USER_DAILY_LIMIT_DOCAI: int = Field(default=30, ge=0)
+    AI_USER_DAILY_LIMIT_VOICE: int = Field(default=30, ge=0)
+    AI_GLOBAL_DAILY_LIMIT: int = Field(default=2000, ge=0)
     # document intelligence (module docai, PLAN §7.1)
     DOCAI_ENABLED: bool = True
     DOCAI_EFFORT: str = "medium"
@@ -289,6 +300,8 @@ class Settings(BaseSettings):
                 problems.append("the 'mock' payment gateway must not be enabled")
             if not self.ADMIN_MFA_REQUIRED:
                 problems.append("ADMIN_MFA_REQUIRED must be true")
+            if not self.STAFF_ALLOWED_IPS and not self.STAFF_CONSOLE_ORIGIN:
+                problems.append("set STAFF_ALLOWED_IPS and/or STAFF_CONSOLE_ORIGIN to protect the staff door")
             # Store listings promise on-device speech-to-text and no retained voice recordings.
             if self.STT_PROVIDER != "local_whisper":
                 problems.append("STT_PROVIDER must be local_whisper")

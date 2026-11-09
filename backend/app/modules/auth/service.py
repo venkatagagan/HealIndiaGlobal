@@ -23,10 +23,11 @@ from typing import Any
 
 import structlog
 from fastapi import Request
-from sqlalchemy import func, select, update
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.attributes import set_committed_value
 
 from app.core.audit import audit_log
 from app.core.config import settings
@@ -53,6 +54,7 @@ from app.core.security import (
     create_access_token,
     hash_password,
     hash_token,
+    match_totp_step,
     needs_rehash,
     new_opaque_token,
     new_refresh_token,
@@ -656,14 +658,73 @@ async def _register_failure(db: AsyncSession, user: User, request: Request, reas
             after={"locked_until": locked},
             request=request,
         )
+        if user.email:
+            # SEC-017: the sign-in answer does not reveal the lock, so tell the owner by email.
+            await enqueue(
+                db,
+                "email.send",
+                {
+                    "to": user.email,
+                    "subject": f"Sign-in to your {settings.APP_NAME} account was paused",
+                    "template": "generic_notification.html",
+                    "context": {
+                        "title": "Sign-in paused for 15 minutes",
+                        "name": user.full_name or "there",
+                        "body": (
+                            "We noticed several unsuccessful attempts to sign in to your account, so new "
+                            f"sign-ins are paused for {LOCKOUT_MINUTES} minutes. You stay signed in on your "
+                            "devices.\n\nIf this was not you, we recommend changing your password and "
+                            "turning on two-factor authentication."
+                        ),
+                    },
+                },
+                dedupe_key=f"account-locked:{user.id}:{int(locked.timestamp()) // 60}",
+            )
     await db.commit()
     return locked
+
+
+async def _password_or_fail(db: AsyncSession, user: User, password: str, request: Request) -> None:
+    """Password check with the failed-sign-in lock (SEC-017). While the account is locked a wrong password
+    gets the same 401 as an unknown email (no account-existence oracle) and is not counted again; only
+    someone who knows the password learns about the lock. Reaching the threshold also answers 401 (the
+    owner is emailed instead)."""
+    password_ok = verify_password(password, user.password_hash)
+    locked = _locked_until(user)
+    if locked is not None:
+        if password_ok:
+            _raise_locked(locked)
+        raise _generic_login_failure()
+    if not password_ok:
+        await _register_failure(db, user, request, "invalid_password")
+        raise _generic_login_failure()
+
+
+async def _consume_totp(db: AsyncSession, user: User, secret: str | None, code: str | None) -> bool:
+    """Verify a TOTP code and burn its time step (SEC-024): the same code, or an older one, is refused even
+    while it is still inside the +/-1 step window. Atomic, so two parallel requests cannot both use it."""
+    step = match_totp_step(secret, code)
+    if step is None:
+        return False
+    burned = (
+        await db.execute(
+            update(User)
+            .where(User.id == user.id, or_(User.mfa_last_step.is_(None), User.mfa_last_step < step))
+            .values(mfa_last_step=step)
+            .returning(User.id)
+            .execution_options(synchronize_session=False)
+        )
+    ).scalar_one_or_none()
+    if burned is None:
+        return False
+    set_committed_value(user, "mfa_last_step", step)
+    return True
 
 
 async def _verify_otp_or_fail(
     db: AsyncSession, user: User, secret: str | None, otp_code: str, request: Request
 ) -> None:
-    if not verify_totp(secret, otp_code):
+    if not await _consume_totp(db, user, secret, otp_code):
         locked = await _register_failure(db, user, request, "invalid_otp")
         if locked is not None:
             _raise_locked(locked)
@@ -729,14 +790,7 @@ async def login(
         if user is not None:
             await _audit_door_rejection(db, user, AuthPortal.PUBLIC, request)
         raise _generic_login_failure()
-    locked = _locked_until(user)
-    if locked is not None:
-        _raise_locked(locked)
-    if not verify_password(password, user.password_hash):
-        locked = await _register_failure(db, user, request, "invalid_password")
-        if locked is not None:
-            _raise_locked(locked)
-        raise _generic_login_failure()
+    await _password_or_fail(db, user, password, request)
     _ensure_can_sign_in(user)
     await _check_mfa(db, user, otp_code, request)
     if user.password_hash and needs_rehash(user.password_hash):
@@ -1081,9 +1135,8 @@ async def refresh(
             await revoke_family(db, row.family_id)
             await db.commit()
         raise Unauthorized("Your session has expired, please sign in again", code="invalid_refresh_token")
-    locked = _locked_until(user)
-    if locked is not None:
-        _raise_locked(locked)
+    # SEC-017: a failed-sign-in lock does not end live sessions (refresh keeps working); only new
+    # password sign-ins wait for the lock to expire.
     _ensure_can_sign_in(user)
     # A refresh is not activity: the new token inherits the session's last API use (staff idle timeout).
     issued, new_row = await issue_session(
@@ -1310,7 +1363,8 @@ async def mfa_enable(db: AsyncSession, user: User, code: str, request: Request) 
         raise Conflict("Two-factor authentication is already enabled", code="mfa_already_enabled")
     if not user.mfa_secret:
         raise BadRequest("Start two-factor setup first", code="mfa_not_setup")
-    if not verify_totp(user.mfa_secret, code):
+    if not await _consume_totp(db, user, user.mfa_secret, code):
+        await _register_failure(db, user, request, "invalid_otp_mfa_enable")  # SEC-024: counts to lockout
         raise BadRequest("The authentication code is not valid", code="invalid_otp")
     user.mfa_enabled = True
     await audit_log(
@@ -1324,7 +1378,8 @@ async def mfa_disable(db: AsyncSession, user: User, code: str, request: Request)
         raise BadRequest("Two-factor authentication is not enabled", code="mfa_not_enabled")
     if settings.ADMIN_MFA_REQUIRED and user.is_staff:
         raise Forbidden("Staff accounts must keep two-factor authentication", code="mfa_required_for_staff")
-    if not verify_totp(user.mfa_secret, code):
+    if not await _consume_totp(db, user, user.mfa_secret, code):
+        await _register_failure(db, user, request, "invalid_otp_mfa_disable")  # SEC-024: counts to lockout
         raise BadRequest("The authentication code is not valid", code="invalid_otp")
     user.mfa_enabled = False
     user.mfa_secret = None
@@ -1648,14 +1703,7 @@ async def staff_login(
         )
         await db.commit()
         raise _generic_login_failure()
-    locked = _locked_until(user)
-    if locked is not None:
-        _raise_locked(locked)
-    if not verify_password(password, user.password_hash):
-        locked = await _register_failure(db, user, request, "invalid_password")
-        if locked is not None:
-            _raise_locked(locked)
-        raise _generic_login_failure()
+    await _password_or_fail(db, user, password, request)
     _ensure_can_sign_in(user)
     if user.mfa_enabled:
         await _check_mfa(db, user, otp_code, request)
