@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.ai_quota import take_global_budget
 from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.deps import PageQuery
@@ -662,15 +663,23 @@ async def process_screening(db: AsyncSession, screening_id: uuid.UUID) -> bool:
         intake["confirmed_reports"] = confirmed_reports
     covered = {uuid.UUID(d) for r in confirmed_reports for d in r["document_ids"]}
     wants_ai = bool((screening.preferences or {}).get("use_ai", True)) and screening.consent_ai
+    # SEC-021: free guest accounts and an exhausted platform AI budget use the rules engine.
+    ai_block: str | None = None
+    if wants_ai and settings.ai_available:
+        patient_user = await db.get(User, profile.user_id) if profile is not None else None
+        if patient_user is not None and patient_user.is_guest:
+            ai_block = "Guest accounts use the standard rules"
+        elif not await take_global_budget():
+            ai_block = "The daily AI budget is used up"
 
     attachments: list[claude.Attachment] = []
-    if wants_ai and settings.ai_available and profile is not None:
+    if wants_ai and settings.ai_available and ai_block is None and profile is not None:
         attachments = await _load_attachments(db, screening, profile, exclude=covered)
     await db.commit()  # do not hold a transaction open during the external call
 
     result: TriageResult | None = None
     model: str | None = None
-    if wants_ai and settings.ai_available:
+    if wants_ai and settings.ai_available and ai_block is None:
         outcome = await claude.triage_with_claude(intake, catalog, attachments)
         db.add(
             _log_row(
@@ -690,7 +699,12 @@ async def process_screening(db: AsyncSession, screening_id: uuid.UUID) -> bool:
         await db.commit()
     elif wants_ai:
         db.add(
-            _log_row(screening_id, AIRequestStatus.FALLBACK, settings.AI_MODEL, error="AI is not configured")
+            _log_row(
+                screening_id,
+                AIRequestStatus.FALLBACK,
+                settings.AI_MODEL,
+                error=ai_block or "AI is not configured",
+            )
         )
         await db.commit()
 

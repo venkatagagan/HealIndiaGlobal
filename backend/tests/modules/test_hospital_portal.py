@@ -135,7 +135,7 @@ async def test_ids_of_other_hospital_are_404(client, db, auth_headers, setup):
 
 
 # ----------------------------------------------------------------------------- profile
-async def test_profile_update_with_encrypted_pan(client, db, auth_headers, setup):
+async def test_profile_update_with_encrypted_pan(client, db, auth_headers, make_user, setup):
     h = auth_headers(setup["owner"])
     hospital_id = setup["hospital"].id
     r = await client.put(
@@ -153,11 +153,30 @@ async def test_profile_update_with_encrypted_pan(client, db, auth_headers, setup
     )
     assert r.status_code == 200, r.text
     body = r.json()
+    assert body["airport_distance_km"] == 12.3
+    # SEC-020: an approved hospital's identity and accreditation claims wait for staff review
+    # (the factory hospital already claims jci + nabh, so the accreditations do not change)
+    assert body["pending_changes"] == ["gstin", "pan", "website"]
+    assert body["gstin"] != "33AABCS1234A1Z5" and body["website"] != "https://sunrise.example"
+    pending_pan = (
+        await db.execute(
+            text("SELECT pending_profile->'fields'->>'pan' FROM hospitals WHERE id = :id"),
+            {"id": hospital_id},
+        )
+    ).scalar_one()
+    assert pending_pan.startswith("v1:") and "AABCS1234A" not in pending_pan  # PAN encrypted while pending
+    admin = await make_user(role="admin")
+    r = await client.post(
+        f"/api/v1/admin/hospitals/{hospital_id}/profile-changes/approve", headers=auth_headers(admin)
+    )
+    assert r.status_code == 200, r.text
+    assert r.json()["pending_profile_values"] == {}
+    body = (await client.get(f"{API}/profile", headers=h)).json()
+    assert body["pending_changes"] == []
     assert body["gstin"] == "33AABCS1234A1Z5"
     assert body["pan_last4"] == "234A" and body["pan_masked"] == "******234A"
     assert "pan" not in body
     assert body["accreditations"] == ["jci", "nabh"]
-    assert body["airport_distance_km"] == 12.3
     db.expire_all()
     hospital = await db.get(Hospital, hospital_id)
     assert hospital.pan == "AABCS1234A"
@@ -168,7 +187,11 @@ async def test_profile_update_with_encrypted_pan(client, db, auth_headers, setup
     log = (
         await db.execute(select(AuditLog).where(AuditLog.action == "hospital.profile_update"))
     ).scalar_one()
-    assert "pan" in log.after["changed"] and "pan" not in log.after["values"]
+    assert "pan" not in log.after["values"]
+    requested = (
+        await db.execute(select(AuditLog).where(AuditLog.action == "hospital.profile_change_requested"))
+    ).scalar_one()
+    assert "pan" in requested.after["fields"] and "pan" not in requested.after["values"]
 
     for bad in (
         {"gstin": "123"},
@@ -247,9 +270,11 @@ async def test_active_hospital_cannot_resubmit_and_suspended_is_read_only(client
     assert r.status_code == 409 and r.json()["error"]["code"] == "invalid_status"
     setup["hospital"].status = "suspended"
     await db.commit()
+    # SEC-014: members of a suspended hospital lose access to every module (reads included)
     r = await client.put(f"{API}/profile", headers=h, json={"description": "x"})
-    assert r.status_code == 403 and r.json()["error"]["code"] == "hospital_suspended"
-    assert (await client.get(f"{API}/doctors", headers=h)).status_code == 200
+    assert r.status_code == 403 and r.json()["error"]["code"] == "organisation_suspended"
+    r = await client.get(f"{API}/doctors", headers=h)
+    assert r.status_code == 403 and r.json()["error"]["code"] == "organisation_suspended"
 
 
 async def test_set_specialties(client, db, auth_headers, setup):

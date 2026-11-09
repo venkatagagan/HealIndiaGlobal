@@ -105,11 +105,15 @@ class Payment(UUIDPkMixin, TimestampMixin, Base):
             name="amounts_nonneg",
         ),
         sa.CheckConstraint("amount_refunded_minor <= amount_minor", name="refund_le_amount"),
+        # SEC-009: one bank reference (UTR / SWIFT reference) can settle only one order.
+        sa.UniqueConstraint("gateway", "bank_reference", name="uq_payments_gateway_bank_reference"),
     )
 
     order_id: Mapped[uuid.UUID] = fk("payment_orders.id", ondelete="RESTRICT")
     gateway: Mapped[PaymentGateway] = mapped_column(sa_enum(PaymentGateway), nullable=False)
     gateway_payment_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    # Normalised bank reference of a reconciled bank transfer (upper case, no spaces); NULL otherwise.
+    bank_reference: Mapped[str | None] = mapped_column(String(100))
     method: Mapped[PaymentMethod | None] = mapped_column(sa_enum(PaymentMethod))
     status: Mapped[PaymentStatus] = mapped_column(
         sa_enum(PaymentStatus),

@@ -53,6 +53,7 @@ from app.modules.admin.schemas import (
     CulturalTipOut,
     CulturalTipPatch,
     ExportType,
+    FxRateDecisionIn,
     FxRateIn,
     FxRateOut,
     FxRatePatch,
@@ -68,6 +69,8 @@ from app.modules.admin.schemas import (
     ServiceProviderIn,
     ServiceProviderOut,
     ServiceProviderPatch,
+    SettingChangeApproveIn,
+    SettingChangeRejectIn,
     SpecialtyIn,
     SpecialtyPatch,
     StaffCreateIn,
@@ -80,6 +83,7 @@ router = APIRouter(tags=["admin"])
 StaffUser = Annotated[User, Depends(require_roles(*STAFF_ROLES))]
 AdminUser = Annotated[User, Depends(require_roles(*ADMIN_ROLES))]
 AdminOrFinanceUser = Annotated[User, Depends(require_roles(*(ADMIN_ROLES | FINANCE_ROLES)))]
+FinanceUser = Annotated[User, Depends(require_roles(*FINANCE_ROLES))]
 DateFrom = Annotated[date | None, Query(alias="from")]
 DateTo = Annotated[date | None, Query(alias="to")]
 SearchQ = Annotated[str | None, Query(max_length=100)]
@@ -266,6 +270,25 @@ async def reinstate_hospital(
     hospital_id: uuid.UUID, request: Request, db: DbSession, actor: AdminUser
 ) -> AdminHospitalDetail:
     return await service.reinstate_hospital(db, actor, hospital_id, request)
+
+
+@router.post("/admin/hospitals/{hospital_id}/profile-changes/approve", response_model=AdminHospitalDetail)
+async def approve_hospital_profile_changes(
+    hospital_id: uuid.UUID, request: Request, db: DbSession, actor: AdminUser
+) -> AdminHospitalDetail:
+    """SEC-020: apply the name / legal identity / accreditation changes an approved hospital asked for."""
+    return await service.decide_hospital_profile_changes(
+        db, actor, hospital_id, approve=True, request=request
+    )
+
+
+@router.post("/admin/hospitals/{hospital_id}/profile-changes/reject", response_model=AdminHospitalDetail)
+async def reject_hospital_profile_changes(
+    hospital_id: uuid.UUID, request: Request, db: DbSession, actor: AdminUser
+) -> AdminHospitalDetail:
+    return await service.decide_hospital_profile_changes(
+        db, actor, hospital_id, approve=False, request=request
+    )
 
 
 @router.patch("/admin/hospitals/{hospital_id}", response_model=AdminHospitalDetail)
@@ -622,20 +645,40 @@ async def get_fx_rate(item_id: uuid.UUID, db: DbSession, _: StaffUser) -> FxRate
     return await catalog_admin.get_fx_rate(db, item_id)
 
 
+# SEC-008: FX rates price real payments, so writes are finance-only (finance | super_admin); a change of more
+# than 10% is recorded as pending and needs a second finance approver.
 @router.post("/admin/fx-rates", response_model=FxRateOut, status_code=201)
-async def create_fx_rate(body: FxRateIn, request: Request, db: DbSession, actor: AdminUser) -> FxRateOut:
+async def create_fx_rate(body: FxRateIn, request: Request, db: DbSession, actor: FinanceUser) -> FxRateOut:
     return await catalog_admin.create_fx_rate(db, actor, body, request)
 
 
 @router.patch("/admin/fx-rates/{item_id}", response_model=FxRateOut)
 async def update_fx_rate(
-    item_id: uuid.UUID, body: FxRatePatch, request: Request, db: DbSession, actor: AdminUser
+    item_id: uuid.UUID, body: FxRatePatch, request: Request, db: DbSession, actor: FinanceUser
 ) -> FxRateOut:
     return await catalog_admin.update_fx_rate(db, actor, item_id, body, request)
 
 
+@router.post("/admin/fx-rates/{item_id}/approve", response_model=FxRateOut)
+async def approve_fx_rate_change(
+    item_id: uuid.UUID, body: FxRateDecisionIn, request: Request, db: DbSession, actor: FinanceUser
+) -> FxRateOut:
+    return await catalog_admin.decide_fx_rate_change(
+        db, actor, item_id, approve=True, reviewed_rate=body.rate, request=request
+    )
+
+
+@router.post("/admin/fx-rates/{item_id}/reject", response_model=FxRateOut)
+async def reject_fx_rate_change(
+    item_id: uuid.UUID, request: Request, db: DbSession, actor: FinanceUser
+) -> FxRateOut:
+    return await catalog_admin.decide_fx_rate_change(
+        db, actor, item_id, approve=False, reviewed_rate=None, request=request
+    )
+
+
 @router.delete("/admin/fx-rates/{item_id}", status_code=204)
-async def delete_fx_rate(item_id: uuid.UUID, request: Request, db: DbSession, actor: AdminUser) -> Response:
+async def delete_fx_rate(item_id: uuid.UUID, request: Request, db: DbSession, actor: FinanceUser) -> Response:
     await catalog_admin.delete_fx_rate(db, actor, item_id, request)
     return Response(status_code=204)
 
@@ -651,6 +694,24 @@ async def update_setting(
     key: str, body: PlatformSettingIn, request: Request, db: DbSession, actor: AdminOrFinanceUser
 ) -> PlatformSettingOut:
     return await service.update_setting(db, actor, key, body.value, request)
+
+
+@router.post("/admin/settings/{key}/approve", response_model=PlatformSettingOut)
+async def approve_setting_change(
+    key: str, body: SettingChangeApproveIn, request: Request, db: DbSession, actor: FinanceUser
+) -> PlatformSettingOut:
+    """SEC-011: a second finance user applies a pending change of a dual-control key
+    (``bank_transfer_details``). 403 ``second_approver_required`` for the requester; 409
+    ``request_changed`` when the pending request is not the reviewed one."""
+    return await service.approve_setting_change(db, actor, key, body.request_id, request)
+
+
+@router.post("/admin/settings/{key}/reject", response_model=PlatformSettingOut)
+async def reject_setting_change(
+    key: str, body: SettingChangeRejectIn, request: Request, db: DbSession, actor: FinanceUser
+) -> PlatformSettingOut:
+    """Reject (or withdraw) the pending change of a dual-control key."""
+    return await service.reject_setting_change(db, actor, key, body.reason, request)
 
 
 # ---------------------------------------------------------------------------------------------------- audit

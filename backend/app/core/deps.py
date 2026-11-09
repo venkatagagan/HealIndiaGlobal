@@ -21,12 +21,12 @@ import ipaddress
 import uuid
 from collections.abc import Awaitable, Callable, Iterable
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Annotated, Any
 
 from fastapi import Depends, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -74,6 +74,73 @@ def ensure_portal_matches(user: User, payload: dict[str, Any] | None) -> None:
         raise Unauthorized("This session is not valid here, please sign in again", code="wrong_portal")
 
 
+async def ensure_session_live(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """SEC-031: an access token bound to a session (``sid`` = refresh-token family) dies with the session:
+    after logout, a password reset, an admin revocation or refresh-token reuse detection, the family has no
+    live refresh token left and the access token is refused before it expires."""
+    sid = payload.get("sid")
+    if not sid:
+        return
+    from app.models.identity import RefreshToken
+
+    try:
+        family_id = uuid.UUID(str(sid))
+    except ValueError as exc:
+        raise Unauthorized("Invalid access token", code="invalid_token") from exc
+    live = (
+        await db.execute(
+            select(RefreshToken.id)
+            .where(RefreshToken.family_id == family_id, RefreshToken.revoked_at.is_(None))
+            .limit(1)
+        )
+    ).first()
+    if live is None:
+        raise Unauthorized("Your session has ended, please sign in again", code="session_revoked")
+
+
+# Paths a member of a suspended organisation may still call (to see why, and to sign out).
+_SUSPENDED_ORG_ALLOWED_PREFIXES = ("/api/v1/auth/",)
+
+
+async def ensure_organisation_active(db: AsyncSession, user: User, request: Request | None) -> None:
+    """SEC-014: members of a suspended hospital, and suspended agents, lose access to every module (cases,
+    documents, chats, payments...) until staff reinstate the organisation. A hospital user who also belongs
+    to another, non-suspended hospital keeps access (the scope helpers drop the suspended hospital)."""
+    role = _role_value(user.role)
+    if role not in (UserRole.HOSPITAL.value, UserRole.AGENT.value):
+        return
+    if request is not None and request.url.path.startswith(_SUSPENDED_ORG_ALLOWED_PREFIXES):
+        return
+    from app.core.enums import AgentStatus, HospitalStatus
+    from app.models.agents import Agent
+    from app.models.hospitals import Hospital, HospitalMember
+
+    if role == UserRole.HOSPITAL.value:
+        statuses = (
+            (
+                await db.execute(
+                    select(Hospital.status)
+                    .join(HospitalMember, HospitalMember.hospital_id == Hospital.id)
+                    .where(HospitalMember.user_id == user.id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        if statuses and all(_role_value(s) == HospitalStatus.SUSPENDED.value for s in statuses):
+            raise Forbidden(
+                "Your hospital's account is suspended. Please contact support.", code="organisation_suspended"
+            )
+        return
+    agent_status = (
+        await db.execute(select(Agent.status).where(Agent.user_id == user.id))
+    ).scalar_one_or_none()
+    if agent_status is not None and _role_value(agent_status) == AgentStatus.SUSPENDED.value:
+        raise Forbidden(
+            "Your agency account is suspended. Please contact support.", code="organisation_suspended"
+        )
+
+
 async def _user_from_token(db: AsyncSession, token: str, request: Request | None) -> User:
     payload = decode_access_token(token)
     user = await db.get(User, uuid.UUID(str(payload["sub"])))
@@ -85,9 +152,10 @@ async def _user_from_token(db: AsyncSession, token: str, request: Request | None
         raise Forbidden("This account has been deleted", code="account_deleted")
     if status == UserStatus.SUSPENDED.value:
         raise Forbidden("This account is suspended", code="account_suspended")
-    locked_until = getattr(user, "locked_until", None)
-    if locked_until is not None and locked_until > datetime.now(UTC):
-        raise Forbidden("This account is temporarily locked", code="account_locked")
+    # SEC-017: a failed-sign-in lock only blocks NEW sign-ins (auth service); it must not end the owner's
+    # live sessions, otherwise anyone who knows the email could keep the owner signed out.
+    await ensure_session_live(db, payload)
+    await ensure_organisation_active(db, user, request)
     if request is not None:
         if is_staff(user):
             # The staff door is web-only (PLAN 3.1): staff sessions are never valid from the mobile app.

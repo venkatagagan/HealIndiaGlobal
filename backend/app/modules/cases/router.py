@@ -15,6 +15,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response, status
 from app.core.deps import STAFF_ROLES, CurrentUser, DbSession, PageParams, require_full_account, require_roles
 from app.core.enums import BookingStatus, CaseStatus, ConsultationStatus, Urgency, UserRole
 from app.core.pagination import Page, paginate
+from app.core.rate_limit import rate_limit
 from app.models import Consultation, User
 from app.modules.cases import bookings as booking_service
 from app.modules.cases import consultations as consultation_service
@@ -65,7 +66,8 @@ Staff = Annotated[User, Depends(require_roles(*STAFF_ROLES))]
     "/cases",
     status_code=status.HTTP_201_CREATED,
     response_model=CaseOut,
-    dependencies=[Depends(require_full_account)],
+    # SEC-018: each new case notifies the hospital's members
+    dependencies=[Depends(require_full_account), Depends(rate_limit("cases.create", 10, 3600, key="user"))],
 )
 async def create_case(body: CaseCreate, request: Request, db: DbSession, user: PatientSide) -> CaseOut:
     case = await case_service.create_case(db, user, body, request)
@@ -232,7 +234,11 @@ async def reject_quote(
     "/bookings",
     status_code=status.HTTP_201_CREATED,
     response_model=BookingOut,
-    dependencies=[Depends(require_full_account)],
+    # SEC-018: per-user limit (and at most MAX_UNPAID_BOOKINGS_PER_PATIENT unpaid bookings)
+    dependencies=[
+        Depends(require_full_account),
+        Depends(rate_limit("bookings.create", 10, 3600, key="user")),
+    ],
 )
 async def create_booking(
     body: BookingCreate, request: Request, db: DbSession, user: PatientSide
@@ -414,7 +420,12 @@ async def delete_itinerary_item(
 
 
 # --------------------------------------------------------------------------------------------- consultations
-@router.post("/consultations", status_code=status.HTTP_201_CREATED, response_model=ConsultationOut)
+@router.post(
+    "/consultations",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ConsultationOut,
+    dependencies=[Depends(rate_limit("consultations.create", 10, 3600, key="user"))],  # SEC-018
+)
 async def create_consultation(
     body: ConsultationCreate, request: Request, db: DbSession, user: PatientSide
 ) -> ConsultationOut:

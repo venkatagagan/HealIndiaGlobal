@@ -133,12 +133,41 @@ class RazorpayRouteProvider:
         transfer_id = str(data.get("id") or "") if isinstance(data, dict) else ""
         if not transfer_id:
             raise PayoutOutcomeUnknown("razorpay transfer response has no id")
-        status = str(data.get("status") or "").lower()
-        if status in {"failed", "reversed"}:
-            return PayoutResult(
-                PayoutStatus.FAILED, gateway_payout_id=transfer_id, failure_reason=f"transfer {status}"
-            )
+        return _transfer_result(transfer_id, data)
+
+    async def fetch(self, transfer_id: str) -> PayoutResult:
+        """SEC-043: the current state of a transfer (``GET /transfers/{id}``). Transport errors raise
+        :class:`PayoutTransientError` (reading is always safe to retry)."""
+        auth = (settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+        url = f"{RAZORPAY_API_BASE}/transfers/{transfer_id}"
+        try:
+            if self._client is not None:
+                response = await self._client.get(url, auth=auth)
+            else:
+                async with httpx.AsyncClient(timeout=RAZORPAY_TIMEOUT) as client:
+                    response = await client.get(url, auth=auth)
+        except httpx.HTTPError as exc:
+            raise PayoutTransientError(f"razorpay transfer lookup failed: {type(exc).__name__}") from exc
+        if response.status_code >= 400:
+            raise PayoutTransientError(f"razorpay transfer lookup returned HTTP {response.status_code}")
+        try:
+            data = response.json()
+        except ValueError as exc:
+            raise PayoutTransientError("razorpay transfer lookup returned no JSON") from exc
+        return _transfer_result(transfer_id, data if isinstance(data, dict) else {})
+
+
+def _transfer_result(transfer_id: str, data: dict[str, object]) -> PayoutResult:
+    """Map a Razorpay transfer to a payout result. Only ``processed`` is money that arrived (SEC-043):
+    ``created`` / ``pending`` stay ``processing`` until a later lookup confirms them."""
+    status = str(data.get("status") or "").lower()
+    if status in {"failed", "reversed"}:
+        return PayoutResult(
+            PayoutStatus.FAILED, gateway_payout_id=transfer_id, failure_reason=f"transfer {status}"
+        )
+    if status == "processed":
         return PayoutResult(PayoutStatus.PROCESSED, gateway_payout_id=transfer_id)
+    return PayoutResult(PayoutStatus.PROCESSING, gateway_payout_id=transfer_id)
 
 
 _PROVIDERS: dict[PayoutMethod, PayoutProvider] = {

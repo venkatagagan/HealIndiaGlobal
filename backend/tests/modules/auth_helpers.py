@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import struct
 import zlib
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -62,8 +63,22 @@ def bearer(token_out: dict[str, Any]) -> dict[str, str]:
     return {"Authorization": f"Bearer {token_out['access_token']}"}
 
 
+_totp_next_step: dict[str, int] = {}
+
+
 def totp_now(secret: str) -> str:
-    return pyotp.TOTP(secret).now()
+    """A valid code that was not used before for ``secret``. The server burns each time step (SEC-024), so
+    successive calls walk through the +/-1 step window: previous, current, next step."""
+    totp = pyotp.TOTP(secret)
+    current = totp.timecode(datetime.now(UTC))
+    step = max(_totp_next_step.get(secret, current - 1), current - 1)
+    _totp_next_step[secret] = step + 1
+    return totp.generate_otp(step)
+
+
+def totp_replay(secret: str) -> str:
+    """The code most recently returned by :func:`totp_now` (to test replay protection)."""
+    return pyotp.TOTP(secret).generate_otp(_totp_next_step[secret] - 1)
 
 
 # --- file fixtures ---------------------------------------------------------------------------------------

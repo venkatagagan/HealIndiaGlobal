@@ -70,6 +70,7 @@ from app.core.money import (
     get_fx_rate,
     normalize_currency,
 )
+from app.core.rate_limit import count as count_hits
 from app.core.settings_store import get_setting
 from app.models import (
     Booking,
@@ -121,13 +122,6 @@ logger = structlog.get_logger(__name__)
 ORDER_TTL = timedelta(minutes=30)
 BANK_TRANSFER_TTL = timedelta(days=7)
 OPEN_ORDER_STATUSES = (OrderStatus.CREATED, OrderStatus.PENDING)
-CAPTURABLE_ORDER_STATUSES = (
-    OrderStatus.CREATED,
-    OrderStatus.PENDING,
-    OrderStatus.EXPIRED,
-    OrderStatus.FAILED,
-    OrderStatus.CANCELLED,
-)
 PAID_ORDER_STATUSES = (OrderStatus.PAID, OrderStatus.PARTIALLY_REFUNDED, OrderStatus.REFUNDED)
 SETTLED_PAYMENT_STATUSES = (PaymentStatus.CAPTURED, PaymentStatus.PARTIALLY_REFUNDED, PaymentStatus.REFUNDED)
 REFUNDABLE_PAYMENT_STATUSES = (PaymentStatus.CAPTURED, PaymentStatus.PARTIALLY_REFUNDED)
@@ -140,7 +134,7 @@ COMMITTED_REFUND_STATUSES = (
 CANCELLATION_REFUND_PREFIX = "Booking cancelled"
 # Platform settings (``platform_settings``; unknown keys are accepted by the settings store)
 FX_MAX_AGE_SETTING = "fx_rate_max_age_hours"
-DEFAULT_FX_MAX_AGE_HOURS = 72  # 0 disables the staleness check
+DEFAULT_FX_MAX_AGE_HOURS = 72  # SEC-008: the check cannot be switched off (0 or less = this default)
 REFUND_DUAL_APPROVAL_SETTING = "refund_dual_approval_threshold_minor"
 DEFAULT_REFUND_DUAL_APPROVAL_MINOR = 5_000_000  # INR 50,000 (base currency minor units); 0 = every refund
 REVIEW_PENDING_KEY = "amount_review_pending"
@@ -211,14 +205,16 @@ async def ensure_fx_rates(db: AsyncSession, *currencies: str) -> None:
         )
     ).all()
     as_of = {str(code): ts for code, ts in rows}
-    max_age_hours = await _int_setting(db, FX_MAX_AGE_SETTING, DEFAULT_FX_MAX_AGE_HOURS)
+    max_age_hours = (
+        await _int_setting(db, FX_MAX_AGE_SETTING, DEFAULT_FX_MAX_AGE_HOURS) or DEFAULT_FX_MAX_AGE_HOURS
+    )
     now = _now()
     problems: dict[str, str] = {}
     for code in sorted(codes):
         ts = as_of.get(code)
         if ts is None:
             problems[code] = "missing"
-        elif max_age_hours and now - ts > timedelta(hours=max_age_hours):
+        elif now - ts > timedelta(hours=max_age_hours):
             problems[code] = "stale"
     if not problems:
         return
@@ -257,6 +253,67 @@ async def _lock(db: AsyncSession, model: Any, obj_id: uuid.UUID) -> Any:
             .execution_options(populate_existing=True)
         )
     ).scalar_one_or_none()
+
+
+async def _lock_order_with_target(db: AsyncSession, order_id: uuid.UUID) -> PaymentOrder:
+    """Lock the order's booking (when it has one) and then the order: the same booking -> order lock order
+    as order creation and booking cancellation, so a capture and a cancel are serialised (SEC-007)."""
+    booking_id = (
+        await db.execute(select(PaymentOrder.booking_id).where(PaymentOrder.id == order_id))
+    ).scalar_one_or_none()
+    if booking_id is not None:
+        await _lock(db, Booking, booking_id)
+    return await _lock_order(db, order_id)
+
+
+_BOOKING_PURPOSES = (
+    PaymentPurpose.BOOKING_DEPOSIT,
+    PaymentPurpose.BOOKING_BALANCE,
+    PaymentPurpose.BOOKING_FULL,
+    PaymentPurpose.INSTALLMENT,
+)
+
+
+async def _capture_block_reason(db: AsyncSession, order: PaymentOrder, booking_amount: int) -> str | None:
+    """SEC-007: why money captured for ``order`` must NOT be applied to its target (it is held for finance
+    instead): the booking is cancelled or would be over-paid, the installment is already settled or
+    cancelled, or the consultation is cancelled or already paid by another order. ``booking_amount`` is the
+    amount that would be applied, in the booking (source) currency."""
+    if order.booking_id is not None:
+        booking = await _lock(db, Booking, order.booking_id)
+        if booking is not None:
+            if booking.status == BookingStatus.CANCELLED:
+                return "booking_cancelled"
+            _, booking_ccy = order_booking_amount(order, booking.currency)
+            if order.purpose in _BOOKING_PURPOSES and booking_ccy == booking.currency:
+                net_paid = int(booking.amount_paid_minor) - int(booking.amount_refunded_minor)
+                if net_paid + booking_amount > int(booking.total_minor):
+                    return "overpayment"
+    if order.installment_id is not None:
+        installment = await _lock(db, Installment, order.installment_id)
+        if installment is not None:
+            if installment.status == InstallmentStatus.CANCELLED:
+                return "installment_cancelled"
+            if installment.status == InstallmentStatus.PAID and installment.order_id != order.id:
+                return "installment_already_paid"
+    if order.consultation_id is not None:
+        consultation = await _lock(db, Consultation, order.consultation_id)
+        if consultation is not None and consultation.status == ConsultationStatus.CANCELLED:
+            return "consultation_cancelled"
+        other_paid = (
+            await db.execute(
+                select(func.count())
+                .select_from(PaymentOrder)
+                .where(
+                    PaymentOrder.consultation_id == order.consultation_id,
+                    PaymentOrder.id != order.id,
+                    PaymentOrder.status.in_([OrderStatus.PAID, OrderStatus.PARTIALLY_REFUNDED]),
+                )
+            )
+        ).scalar_one()
+        if other_paid:
+            return "consultation_already_paid"
+    return None
 
 
 async def get_order_for_user(db: AsyncSession, user: User, order_id: uuid.UUID) -> PaymentOrder:
@@ -325,6 +382,11 @@ async def derive_amount(db: AsyncSession, user: User, body: OrderCreate) -> Deri
         await _authorize_payer(
             db, user, patient_id=booking.patient_id, case_id=booking.case_id, what="Installment"
         )
+        # SEC-007: serialise order creation per booking (the booking row is the lock for all its orders)
+        booking = await _lock(db, Booking, booking.id)
+        installment = await _lock(db, Installment, installment.id)
+        if installment is None or booking is None:  # pragma: no cover - deleted concurrently
+            raise NotFound("Installment not found")
         if body.booking_id is not None and body.booking_id != booking.id:
             raise BadRequest("Installment does not belong to this booking", code="installment_mismatch")
         if booking.status == BookingStatus.CANCELLED:
@@ -349,6 +411,9 @@ async def derive_amount(db: AsyncSession, user: User, body: OrderCreate) -> Deri
         await _authorize_payer(
             db, user, patient_id=consultation.patient_id, case_id=consultation.case_id, what="Consultation"
         )
+        consultation = await _lock(db, Consultation, consultation.id)  # SEC-007: one order at a time
+        if consultation is None:  # pragma: no cover - deleted concurrently
+            raise NotFound("Consultation not found")
         if consultation.status in (ConsultationStatus.CANCELLED, ConsultationStatus.COMPLETED):
             raise BadRequest("This consultation can no longer be paid", code="consultation_not_payable")
         already_paid = (
@@ -386,6 +451,9 @@ async def derive_amount(db: AsyncSession, user: User, body: OrderCreate) -> Deri
     if booking is None:
         raise NotFound("Booking not found")
     await _authorize_payer(db, user, patient_id=booking.patient_id, case_id=booking.case_id, what="Booking")
+    booking = await _lock(db, Booking, booking.id)  # SEC-007: one order at a time per booking
+    if booking is None:  # pragma: no cover - deleted concurrently
+        raise NotFound("Booking not found")
     if booking.status == BookingStatus.CANCELLED:
         raise BadRequest("This booking is cancelled", code="booking_not_payable")
     net_paid = int(booking.amount_paid_minor) - int(booking.amount_refunded_minor)
@@ -473,6 +541,98 @@ async def _find_idempotent(db: AsyncSession, user: User, key: str) -> PaymentOrd
     ).scalar_one_or_none()
 
 
+def _payment_in_progress(order: PaymentOrder, now: datetime) -> bool:
+    """An open order the payer may already have paid: a bank transfer with a proof or a pending mark-paid
+    request, a payment held for review, or a gateway order still being authorised (``pending``)."""
+    meta = order.meta or {}
+    if meta.get(REVIEW_PENDING_KEY):
+        return True
+    request = meta.get("mark_paid_request")
+    if isinstance(request, dict) and request.get("status") == "pending":
+        return True
+    if order.gateway == PaymentGateway.BANK_TRANSFER and meta.get("bank_transfer_proof"):
+        return True
+    return order.status == OrderStatus.PENDING and (order.expires_at is None or order.expires_at > now)
+
+
+async def _settle_open_orders(
+    db: AsyncSession,
+    user: User,
+    body: OrderCreate,
+    derived: DerivedAmount,
+    gateway: PaymentGateway,
+    currency: str,
+    *,
+    request: Request | None = None,
+) -> PaymentOrder | None:
+    """SEC-007: at most one open order per booking (or consultation). The caller holds the row lock on the
+    target (see :func:`derive_amount`).
+
+    * An identical, unexpired open order of the same payer is returned for reuse (no second gateway order).
+    * An open order that may already be paid blocks a new one (409 ``payment_in_progress``).
+    * Any other open order is cancelled (``superseded``); a late capture on it is checked against the
+      target by :func:`capture_order` and held for finance if it would over-pay."""
+    if derived.consultation is not None:
+        target = PaymentOrder.consultation_id == derived.consultation.id
+    elif derived.booking is not None:
+        target = PaymentOrder.booking_id == derived.booking.id
+    else:  # pragma: no cover - every purpose has a target
+        return None
+    open_orders = (
+        (
+            await db.execute(
+                select(PaymentOrder)
+                .where(target, PaymentOrder.status.in_(OPEN_ORDER_STATUSES))
+                .order_by(PaymentOrder.created_at.desc())
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    now = _now()
+    installment_id = derived.installment.id if derived.installment is not None else None
+    consultation_id = derived.consultation.id if derived.consultation is not None else None
+    reusable: PaymentOrder | None = None
+    for existing in open_orders:
+        same = (
+            reusable is None
+            and existing.payer_user_id == user.id
+            and existing.purpose == body.purpose
+            and existing.gateway == gateway
+            and existing.currency == currency
+            and existing.installment_id == installment_id
+            and existing.consultation_id == consultation_id
+            and int((existing.meta or {}).get("booking_amount_minor", -1)) == derived.amount_minor
+            and (existing.expires_at is None or existing.expires_at > now)
+            and not (existing.meta or {}).get(REVIEW_PENDING_KEY)
+        )
+        if same:
+            reusable = existing
+            continue
+        if _payment_in_progress(existing, now):
+            raise Conflict(
+                "A payment for this is already being processed. Please wait for it to finish.",
+                code="payment_in_progress",
+                details={"order_id": str(existing.id), "order_number": existing.order_number},
+            )
+        existing.status = OrderStatus.CANCELLED
+        existing.meta = {**(existing.meta or {}), "cancelled_reason": "superseded"}
+        await audit_log(
+            db,
+            actor=user,
+            action="payment_order.superseded",
+            entity_type="payment_order",
+            entity_id=existing.id,
+            before={"status": "open"},
+            after={"status": OrderStatus.CANCELLED.value},
+            request=request,
+        )
+    await db.flush()
+    return reusable
+
+
 async def create_order(
     db: AsyncSession,
     user: User,
@@ -518,6 +678,10 @@ async def create_order(
     if order_ccy != source_ccy and order_ccy not in supported:
         raise BadRequest(f"Currency {order_ccy} is not supported", code="unsupported_currency")
     await ensure_fx_rates(db, source_ccy, order_ccy)
+    reusable = await _settle_open_orders(db, user, body, derived, gateway_name, order_ccy, request=request)
+    if reusable is not None:
+        await db.commit()
+        return await build_checkout(db, reusable)
 
     try:
         amount_order, _ = await convert(db, derived.amount_minor, source_ccy, order_ccy)
@@ -638,13 +802,16 @@ async def _hold_for_review(
     source: str,
     actor: User | None,
     request: Request | None,
+    reason: str = "amount_mismatch",
 ) -> Payment:
     """Record a payment whose captured amount differs from the order amount WITHOUT applying it (backlog #24):
     status ``authorized`` (money is at the gateway but not in the books), no invoice, no events. Finance
-    decides with :func:`review_amount_difference`."""
+    decides with :func:`review_amount_difference`. ``reason`` is ``amount_mismatch`` or a SEC-007 block
+    reason (see :func:`_capture_block_reason`)."""
     now = _now()
     review = {
         "status": "pending",
+        "reason": reason,
         "expected_minor": int(order.amount_minor),
         "received_minor": amount,
         "currency": currency,
@@ -712,13 +879,18 @@ async def capture_order(
     actor: User | None = None,
     request: Request | None = None,
     accept_amount_difference: bool = False,
+    bank_reference: str | None = None,
 ) -> Payment:
     """THE single internal capture path. Idempotent on ``(gateway, gateway_payment_id)``. Does not commit.
 
     A captured amount different from the order amount is held for finance review (payment ``authorized``,
     nothing published) unless ``accept_amount_difference`` (finance accepted it), in which case the booking is
-    credited pro rata."""
-    order = await _lock_order(db, order_id)
+    credited pro rata.
+
+    SEC-007: a capture that the target can no longer take (cancelled booking, over-payment, installment
+    already settled, consultation cancelled or already paid) is held for finance review too, whatever the
+    order status; finance can only return it (``accept`` is refused with 409 ``target_not_payable``)."""
+    order = await _lock_order_with_target(db, order_id)
     if not info.gateway_payment_id:
         raise PaymentError("Missing gateway payment id", code="invalid_payment")
     existing = (
@@ -739,12 +911,46 @@ async def capture_order(
     if currency != order.currency:
         raise PaymentError("Payment currency does not match the order", code="currency_mismatch")
 
+    if info.amount_minor <= 0 and not accept_amount_difference:
+        # SEC-006: an unknown captured amount is never assumed to be the full order amount.
+        return await _hold_for_review(
+            db,
+            order,
+            existing,
+            info,
+            0,
+            currency,
+            source=source,
+            actor=actor,
+            request=request,
+            reason="amount_unknown",
+        )
     amount = int(info.amount_minor) if info.amount_minor > 0 else int(order.amount_minor)
+    booking_amount, booking_ccy = order_booking_amount(order)
+    block = await _capture_block_reason(db, order, _ratio(booking_amount, amount, order.amount_minor))
+    if block is not None:
+        if accept_amount_difference:
+            raise Conflict(
+                "This payment cannot be applied any more; return it to the payer instead",
+                code="target_not_payable",
+                details={"reason": block},
+            )
+        return await _hold_for_review(
+            db,
+            order,
+            existing,
+            info,
+            amount,
+            currency,
+            source=source,
+            actor=actor,
+            request=request,
+            reason=block,
+        )
     if amount != order.amount_minor and not accept_amount_difference:
         return await _hold_for_review(
             db, order, existing, info, amount, currency, source=source, actor=actor, request=request
         )
-    booking_amount, booking_ccy = order_booking_amount(order)
     if amount == order.amount_minor:
         base_amount = int(order.base_amount_minor)
         applied_booking_amount = booking_amount
@@ -776,6 +982,7 @@ async def capture_order(
             tax_on_fee_minor=max(int(info.tax_minor), 0),
             captured_at=now,
             raw=raw,
+            bank_reference=bank_reference,
         )
         db.add(payment)
     else:
@@ -789,6 +996,8 @@ async def capture_order(
         payment.error_description = None
         payment.captured_at = now
         payment.raw = raw
+        if bank_reference is not None:
+            payment.bank_reference = bank_reference
     await db.flush()
 
     if order.status not in PAID_ORDER_STATUSES:
@@ -1048,8 +1257,9 @@ async def mark_bank_transfer_paid(
     """Finance reconciliation of a received bank transfer, step 1 of 2 (maker): records a pending mark-paid
     request in ``order.meta.mark_paid_request``; a different finance user must approve it
     (:func:`approve_bank_transfer_paid`) before the capture is applied. A new request replaces a pending one.
-    Commits."""
-    order = await _lock_order(db, order_id)
+    SEC-009: the bank reference (UTR) must not have settled, or be pending for, any other order, and the
+    order's booking/consultation must still be payable. Commits."""
+    order = await _lock_order_with_target(db, order_id)
     _check_mark_paid_allowed(order)
     if body.amount_minor != order.amount_minor:
         raise BadRequest(
@@ -1057,11 +1267,15 @@ async def mark_bank_transfer_paid(
             code="amount_mismatch",
             details={"expected_minor": order.amount_minor, "currency": order.currency},
         )
+    reference = normalize_bank_reference(body.reference)
+    await _check_bank_reference_unused(db, order, reference)
+    await _check_target_payable(db, order)
     previous = (order.meta or {}).get("mark_paid_request")
     request_data = {
         "id": str(uuid.uuid4()),  # SEC-063: the checker binds the approval to this request
         "status": "pending",
         "reference": body.reference,
+        "reference_normalized": reference,
         "amount_minor": body.amount_minor,
         "requested_by": str(user.id),
         "requested_at": _now().isoformat(),
@@ -1081,13 +1295,61 @@ async def mark_bank_transfer_paid(
     return order
 
 
+MARK_PAID_ORDER_STATUSES = (*OPEN_ORDER_STATUSES, OrderStatus.EXPIRED)
+
+
+def normalize_bank_reference(reference: str) -> str:
+    """UTR / SWIFT references are compared without case or whitespace (``utr 123`` == ``UTR123``)."""
+    return "".join(str(reference).split()).upper()[:100]
+
+
 def _check_mark_paid_allowed(order: PaymentOrder) -> None:
+    """SEC-009: open orders, and late wires for expired orders; never cancelled or failed orders."""
     if order.gateway != PaymentGateway.BANK_TRANSFER:
         raise BadRequest("Only bank-transfer orders can be marked as paid", code="not_bank_transfer")
     if order.status in PAID_ORDER_STATUSES:
         raise Conflict("This order is already paid", code="already_paid")
-    if order.status not in CAPTURABLE_ORDER_STATUSES:
+    if order.status not in MARK_PAID_ORDER_STATUSES:
         raise BadRequest("This order cannot be marked as paid", code="order_not_open")
+
+
+async def _check_bank_reference_unused(db: AsyncSession, order: PaymentOrder, reference: str) -> None:
+    """SEC-009: one bank reference settles one order (backed by a unique constraint on ``payments``)."""
+    if not reference:
+        raise BadRequest("A bank reference is required", code="reference_required")
+    used = (
+        await db.execute(
+            select(Payment.order_id).where(
+                Payment.gateway == PaymentGateway.BANK_TRANSFER, Payment.bank_reference == reference
+            )
+        )
+    ).first()
+    pending_elsewhere = (
+        await db.execute(
+            select(PaymentOrder.id).where(
+                PaymentOrder.id != order.id,
+                PaymentOrder.gateway == PaymentGateway.BANK_TRANSFER,
+                PaymentOrder.meta["mark_paid_request"]["status"].astext == "pending",
+                PaymentOrder.meta["mark_paid_request"]["reference_normalized"].astext == reference,
+            )
+        )
+    ).first()
+    if used is not None or pending_elsewhere is not None:
+        raise Conflict(
+            "This bank reference has already been used for another payment", code="reference_already_used"
+        )
+
+
+async def _check_target_payable(db: AsyncSession, order: PaymentOrder) -> None:
+    """SEC-009: refuse to reconcile a wire against a cancelled or already settled booking/consultation."""
+    booking_amount, _ = order_booking_amount(order)
+    reason = await _capture_block_reason(db, order, booking_amount)
+    if reason is not None:
+        raise Conflict(
+            "The booking or consultation for this order can no longer take this payment",
+            code="target_not_payable",
+            details={"reason": reason},
+        )
 
 
 def _pending_mark_paid(order: PaymentOrder) -> dict[str, Any]:
@@ -1107,7 +1369,7 @@ async def approve_bank_transfer_paid(
     """Step 2 (checker): a finance user other than the requester applies the pending mark-paid through the
     §3.3 capture path. ``body`` names the request the checker reviewed (SEC-063): if the maker replaced it
     since (another reference/amount, or another request id), 409 ``mark_paid_request_changed``. Commits."""
-    order = await _lock_order(db, order_id)
+    order = await _lock_order_with_target(db, order_id)
     if order.gateway != PaymentGateway.BANK_TRANSFER:
         raise BadRequest("Only bank-transfer orders can be marked as paid", code="not_bank_transfer")
     pending = _pending_mark_paid(order)
@@ -1128,6 +1390,9 @@ async def approve_bank_transfer_paid(
     amount = int(pending.get("amount_minor") or 0)
     if amount != order.amount_minor:  # defensive: the order amount never changes after creation
         raise BadRequest("The requested amount no longer matches the order", code="amount_mismatch")
+    reference = normalize_bank_reference(str(pending.get("reference") or ""))
+    await _check_bank_reference_unused(db, order, reference)
+    await _check_target_payable(db, order)
     info = GatewayPaymentInfo(
         gateway_payment_id=f"bank:{order.order_number}",
         status=GatewayPaymentStatus.CAPTURED,
@@ -1140,7 +1405,15 @@ async def approve_bank_transfer_paid(
             "approved_by": str(user.id),
         },
     )
-    await capture_order(db, order.id, info, source="bank_reconciliation", actor=user, request=request)
+    await capture_order(
+        db,
+        order.id,
+        info,
+        source="bank_reconciliation",
+        actor=user,
+        request=request,
+        bank_reference=reference,
+    )
     order.meta = {
         **(order.meta or {}),
         "mark_paid_request": {
@@ -1194,8 +1467,10 @@ async def review_amount_difference(
       ``payment.captured``). Over-payments can then be partially refunded through the normal refund flow.
     * ``return``: refund the full received amount at the gateway (idempotent on ``rev-<payment_id>``); the
       payment becomes ``failed`` (``amount_mismatch_returned``) and nothing is posted to the ledger. An open
-      order becomes ``failed`` so the payer can start a new one."""
-    order = await _lock_order(db, order_id)
+      order becomes ``failed`` so the payer can start a new one.
+
+    SEC-007: a payment held because its booking/consultation can no longer take it can only be returned."""
+    order = await _lock_order_with_target(db, order_id)
     payment = await _lock(db, Payment, body.payment_id)
     if payment is None or payment.order_id != order.id:
         raise NotFound("Payment not found")
@@ -1324,12 +1599,14 @@ async def _find_order_for_event(
         if order is not None:
             return order
     if ev.our_order_id:
+        # SEC-006: ``our_order_id`` comes from payment notes, which the payer controls. It may only find an
+        # order that was never created at the gateway; an order with a gateway order id must match by it.
         try:
             oid = uuid.UUID(ev.our_order_id)
         except ValueError:
             return None
         order = await db.get(PaymentOrder, oid)
-        if order is not None and order.gateway == gateway:
+        if order is not None and order.gateway == gateway and order.gateway_order_id is None:
             return order
     return None
 
@@ -1446,19 +1723,17 @@ async def handle_webhook(
         raise BadRequest("Webhook body too large", code="payload_too_large")
 
     if not adapter.verify_webhook(raw_body, headers):
-        # Never key the record on the (unverified) event id: a forged event must not block the real one.
-        db.add(
-            WebhookEvent(
-                gateway=gateway_name,
-                event_id=f"invalid:{uuid7().hex}",
-                event_type="unverified",
-                signature_valid=False,
-                payload={"sha256": hashlib.sha256(raw_body).hexdigest(), "size": len(raw_body)},
-                processing_error="invalid signature",
-            )
+        # SEC-046: unverified requests are never written to the database (anyone can send them, so storing
+        # them grows the table without bound); they are counted and logged, with an alert on bursts.
+        failures, _ = await count_hits("payments.webhook_invalid", gateway_name.value, 3600)
+        log = logger.error if failures in (50, 500, 5000) else logger.warning
+        log(
+            "payments.webhook_invalid_signature",
+            gateway=gateway_name.value,
+            sha256=hashlib.sha256(raw_body).hexdigest(),
+            size=len(raw_body),
+            failures_this_hour=failures,
         )
-        await db.commit()
-        logger.warning("payments.webhook_invalid_signature", gateway=gateway_name.value)
         raise BadRequest("Invalid webhook signature", code="invalid_signature")
 
     try:

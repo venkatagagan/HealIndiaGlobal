@@ -318,3 +318,18 @@ only the pod that received the POST (the website's revalidation rate limiter is 
   `TRUST_CLOUDFRONT_VIEWER_ADDRESS=true` and the backend reads `CloudFront-Viewer-Address` (forwarded by the
   origin request policy) for rate limiting, audit IPs and `STAFF_ALLOWED_IPS`. Keep it `false` anywhere the API
   can be reached without passing through CloudFront.
+- **Staff console origin (SEC-022).** On the single-domain setup the staff console (`/gahi/`) shares its origin
+  with the website and the portals, which load third-party scripts (Razorpay, Stripe, Google sign-in). What
+  the code already does:
+  - the edge serves `/gahi/` with a strict CSP that allows no third-party scripts
+    (`infra/nginx/snippets/csp-staff.conf`);
+  - the staff refresh cookie is always host-only (never `COOKIE_DOMAIN`);
+  - `ENV=production` refuses to start unless `STAFF_ALLOWED_IPS` and/or `STAFF_CONSOLE_ORIGIN` is set.
+
+  Deployment step (recommended before go-live): serve the console from its own host, for example
+  `ops.<domain>`, with its own server block (or CloudFront distribution / Ingress host) that routes `/` to the
+  admin SPA, `/api/` to the API and includes `csp-staff.conf`; build the admin SPA with base `/`; set
+  `STAFF_CONSOLE_ORIGIN=https://ops.<domain>` (the staff door then refuses every other origin) and
+  `STAFF_ALLOWED_IPS` to the office / VPN ranges; then remove the `/gahi/` locations from
+  `app-locations.conf`. The k8s Ingress and `terraform/aws/cloudfront.tf` mirror the SPA CSP and need the same
+  staff CSP on the console host.

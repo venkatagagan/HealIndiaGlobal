@@ -125,6 +125,10 @@ class FxRate(UUIDPkMixin, TimestampMixin, Base):
     as_of: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    # SEC-008: a change larger than the allowed step waits here for a second finance approver.
+    pending_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    pending_requested_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    pending_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class PlatformSetting(Base):

@@ -161,7 +161,15 @@ async def test_full_lifecycle(db, client, auth_headers, run_jobs, event_log: Eve
     assert r.status_code == 200 and len(r.json()) == 7
     assert r.json()[0]["key"] == "treatment_booked"
 
-    # 8. admit and complete
+    # 8. admit and complete; SEC-019: not more than a day before the admission date
+    r = await client.post(f"{API}/bookings/{booking['id']}/admit", json={"note": "Admitted"}, headers=h_h)
+    assert r.status_code == 400 and r.json()["error"]["code"] == "admission_too_early"
+    await db.execute(
+        Booking.__table__.update()
+        .where(Booking.id == booking["id"])
+        .values(admission_date=today_ist() + timedelta(days=1))
+    )
+    await db.commit()
     r = await client.post(f"{API}/bookings/{booking['id']}/admit", json={"note": "Admitted"}, headers=h_h)
     assert r.status_code == 200, r.text
     assert r.json()["status"] == "admitted"

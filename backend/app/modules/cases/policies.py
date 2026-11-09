@@ -18,9 +18,9 @@ from sqlalchemy import ColumnElement, Select, false, or_, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import STAFF_ROLES, has_role, is_staff
-from app.core.enums import AgentStatus, HospitalMemberRole, UserRole
+from app.core.enums import AgentStatus, HospitalMemberRole, HospitalStatus, UserRole
 from app.core.errors import Forbidden, NotFound
-from app.models import Agent, Case, HospitalMember, PatientProfile, User
+from app.models import Agent, Case, Hospital, HospitalMember, PatientProfile, User
 
 # Hospital member roles allowed to act on cases (send quotes, admit, ...). ``finance`` is read-only here.
 HOSPITAL_WRITE_ROLES: frozenset[HospitalMemberRole] = frozenset(
@@ -74,7 +74,13 @@ def _patient_ids_for_agent(user: User) -> Select[Any]:
 
 
 def _member_hospital_ids(user: User) -> Select[Any]:
-    return select(HospitalMember.hospital_id).where(HospitalMember.user_id == user.id)
+    """Hospitals the user is a member of, minus suspended ones (SEC-014: a suspended hospital's members
+    lose case access; members of several hospitals keep the others)."""
+    return (
+        select(HospitalMember.hospital_id)
+        .join(Hospital, Hospital.id == HospitalMember.hospital_id)
+        .where(HospitalMember.user_id == user.id, Hospital.status != HospitalStatus.SUSPENDED)
+    )
 
 
 def case_condition(user: User) -> ColumnElement[bool]:
@@ -174,8 +180,12 @@ async def hospital_member_role(
         return None
     return (
         await db.execute(
-            select(HospitalMember.member_role).where(
-                HospitalMember.hospital_id == hospital_id, HospitalMember.user_id == user.id
+            select(HospitalMember.member_role)
+            .join(Hospital, Hospital.id == HospitalMember.hospital_id)
+            .where(
+                HospitalMember.hospital_id == hospital_id,
+                HospitalMember.user_id == user.id,
+                Hospital.status != HospitalStatus.SUSPENDED,  # SEC-014: no write powers while suspended
             )
         )
     ).scalar_one_or_none()

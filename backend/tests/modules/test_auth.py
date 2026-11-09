@@ -38,6 +38,7 @@ from tests.modules.auth_helpers import (
     register,
     register_payload,
     totp_now,
+    totp_replay,
 )
 
 NEW_PASSWORD = "Monsoon2027season"
@@ -194,16 +195,21 @@ async def test_login_success_and_failures(client, make_user) -> None:
 async def test_login_lockout_after_five_failures(client, db, make_user) -> None:
     user = await make_user(role="patient", email="lock.me@example.test", password=PASSWORD)
     user_id = user.id
-    for _ in range(4):
+    # SEC-017: a session opened before the lock survives it
+    session = (await login(client, "lock.me@example.test")).json()
+    live_headers = {"Authorization": f"Bearer {session['access_token']}"}
+    for _ in range(5):
         r = await login(client, "lock.me@example.test", "WrongPassword1")
-        assert r.status_code == 401
+        # the lock is not revealed to someone who does not know the password (no existence oracle)
+        assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
     r = await login(client, "lock.me@example.test", "WrongPassword1")
-    assert r.status_code == 403 and r.json()["error"]["code"] == "account_locked"
-    assert int(r.headers["retry-after"]) > 0
+    assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
 
-    # Even the right password is refused while locked.
+    # The right password is refused while locked, and only then is the lock shown.
     r = await login(client, "lock.me@example.test")
     assert r.status_code == 403 and r.json()["error"]["code"] == "account_locked"
+    assert int(r.headers["retry-after"]) > 0
+    assert (await client.get(f"{API}/auth/me", headers=live_headers)).status_code == 200
 
     db.expire_all()
     locked = await db.get(User, user_id)
@@ -257,6 +263,15 @@ async def test_mfa_setup_enable_login_disable(client, db, make_user, auth_header
     r = await login(client, "mfa@example.test", otp_code=totp_now(secret))
     assert r.status_code == 200, r.text
     assert r.json()["user"]["mfa_enabled"] is True
+    # SEC-024: the same code cannot be used twice, even inside its validity window
+    r = await login(client, "mfa@example.test", otp_code=totp_replay(secret))
+    assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_otp"
+    # SEC-024: wrong codes on disable count toward the lockout
+    r = await client.post(f"{API}/auth/mfa/disable", json={"code": "000000"}, headers=headers)
+    assert r.status_code == 400
+    db.expire_all()
+    counted = await db.get(User, user_id)
+    assert counted is not None and counted.failed_login_count >= 1
 
     r = await client.post(f"{API}/auth/mfa/disable", json={"code": totp_now(secret)}, headers=headers)
     assert r.status_code == 204, r.text
@@ -353,6 +368,9 @@ async def test_logout_mobile_revokes_family(client, db) -> None:
     r = await client.post(f"{API}/auth/refresh", json={"refresh_token": token["refresh_token"]})
     assert r.status_code == 401
     assert (await db.execute(select(AuditLog).where(AuditLog.action == "auth.logout"))).scalars().first()
+    # SEC-031: the access token of the ended session is refused at once (not only after it expires)
+    r = await client.get(f"{API}/auth/me", headers={**MOBILE, **bearer(token)})
+    assert r.status_code == 401 and r.json()["error"]["code"] == "session_revoked"
 
     r = await client.post(f"{API}/auth/logout")
     assert r.status_code == 401

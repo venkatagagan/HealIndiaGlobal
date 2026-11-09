@@ -18,6 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from app.core.errors import BadRequest
+from app.core.money import MAX_COMMISSION_BPS
 from app.core.site_settings import WEBSITE_DEFAULTS, WEBSITE_KEYS, validate_website_setting
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ DEFAULTS: dict[str, Any] = {
     "settlement_hold_days": 3,
     "settlement_cycle_days": 7,
     "patient_service_fee_bps": 0,
-    "fx_rate_max_age_hours": 72,  # 0 disables the staleness check
+    "fx_rate_max_age_hours": 72,  # 1..168; the staleness check cannot be disabled (SEC-008)
     "refund_dual_approval_threshold_minor": 5_000_000,  # INR 50,000; 0 = every refund needs a second approver
     # be-finance (docs/PAYMENTS.md 7.3, 9.2, 10.2; implementation keys, not in PLAN 6.3)
     "cancellation_retention_hospital_share_bps": 10_000,  # hospital agreement Schedule A Option A
@@ -104,15 +105,15 @@ FINANCE_KEYS: frozenset[str] = frozenset(
 )
 
 _INT_RANGES: dict[str, tuple[int, int]] = {
-    "default_commission_bps": (0, 10_000),
-    "default_agent_commission_bps": (0, 10_000),
+    "default_commission_bps": (0, MAX_COMMISSION_BPS),
+    "default_agent_commission_bps": (0, MAX_COMMISSION_BPS),
     "gst_rate_bps": (0, 10_000),
     "tds_194o_rate_bps": (0, 10_000),
     "deposit_pct": (0, 100),
     "settlement_hold_days": (0, 365),
     "settlement_cycle_days": (1, 365),
     "patient_service_fee_bps": (0, 10_000),
-    "fx_rate_max_age_hours": (0, 24 * 30),
+    "fx_rate_max_age_hours": (1, 24 * 7),  # SEC-008: staleness check cannot be disabled
     "refund_dual_approval_threshold_minor": (0, 10**12),
     "cancellation_retention_hospital_share_bps": (0, 10_000),
     "agent_tds_rate_bps": (0, 10_000),
@@ -188,8 +189,8 @@ def validate_setting(key: str, value: Any) -> Any:
         if not isinstance(value, list) or not all(isinstance(c, str) and len(c) == 3 for c in value):
             raise BadRequest("supported_currencies must be a list of ISO-4217 codes", code="invalid_setting")
         value = [c.upper() for c in value]
-    elif key == "bank_transfer_details" and not isinstance(value, dict):
-        raise BadRequest(f"Setting '{key}' must be an object", code="invalid_setting")
+    elif key == "bank_transfer_details":
+        value = validate_bank_transfer_details(value)
     elif key == "platform_gstin" and value is not None:
         if not isinstance(value, str):
             raise BadRequest("platform_gstin must be a string", code="invalid_setting")
@@ -201,6 +202,74 @@ def validate_setting(key: str, value: Any) -> Any:
             raise BadRequest("platform_gst_state must be a state name (<= 100 chars)", code="invalid_setting")
         value = value.strip()
     return value
+
+
+_BANK_FIELDS = ("beneficiary_name", "bank_name", "account_number", "ifsc", "swift", "iban")
+_ACCOUNT_RE = re.compile(r"^[A-Z0-9]{6,34}$")
+_IFSC_RE = re.compile(r"^[A-Z]{4}0[A-Z0-9]{6}$")
+_SWIFT_RE = re.compile(r"^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$")
+_IBAN_RE = re.compile(r"^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$")
+
+
+def validate_bank_transfer_details(value: Any) -> dict[str, Any]:
+    """SEC-011: strict schema for the account patients wire money to (names, account number, IFSC, SWIFT,
+    IBAN formats; no unknown keys)."""
+    if not isinstance(value, dict):
+        raise BadRequest("bank_transfer_details must be an object", code="invalid_setting")
+    unknown = sorted(set(value) - set(_BANK_FIELDS))
+    if unknown:
+        raise BadRequest(
+            "bank_transfer_details has unknown fields", code="invalid_setting", details={"fields": unknown}
+        )
+
+    def text(field: str, *, required: bool, max_len: int = 140) -> str | None:
+        raw = value.get(field)
+        if raw is None or (isinstance(raw, str) and not raw.strip()):
+            if required:
+                raise BadRequest(f"bank_transfer_details.{field} is required", code="invalid_setting")
+            return None
+        if not isinstance(raw, str) or len(raw.strip()) > max_len:
+            raise BadRequest(f"bank_transfer_details.{field} is not valid", code="invalid_setting")
+        return raw.strip()
+
+    def code(field: str, pattern: re.Pattern[str], *, required: bool) -> str | None:
+        raw = text(field, required=required, max_len=40)
+        if raw is None:
+            return None
+        normalized = "".join(raw.split()).upper()
+        if not pattern.match(normalized):
+            raise BadRequest(f"bank_transfer_details.{field} has an invalid format", code="invalid_setting")
+        return normalized
+
+    out = {
+        "beneficiary_name": text("beneficiary_name", required=True),
+        "bank_name": text("bank_name", required=True),
+        "account_number": code("account_number", _ACCOUNT_RE, required=True),
+        "ifsc": code("ifsc", _IFSC_RE, required=False),
+        "swift": code("swift", _SWIFT_RE, required=False),
+        "iban": code("iban", _IBAN_RE, required=False),
+    }
+    if not (out["ifsc"] or out["swift"] or out["iban"]):
+        raise BadRequest("bank_transfer_details needs an IFSC, SWIFT or IBAN code", code="invalid_setting")
+    return out
+
+
+def audit_safe_value(key: str, value: Any) -> Any:
+    """Value written to the audit log for ``key``. For ``bank_transfer_details`` the account number would be
+    redacted entirely by the log filter, so investigators could not tell which account patients were shown
+    (SEC-011): store the last 4 digits and a keyed fingerprint instead."""
+    if key != "bank_transfer_details" or not isinstance(value, dict):
+        return value
+    from app.core.crypto import keyed_fingerprint
+
+    account = str(value.get("account_number") or "")
+    iban = str(value.get("iban") or "")
+    summary = {k: v for k, v in value.items() if k not in ("account_number", "iban")}
+    summary["account_last4"] = account[-4:] if account else None
+    summary["account_fingerprint"] = keyed_fingerprint(account, "bank-account")
+    summary["iban_last4"] = iban[-4:] if iban else None
+    summary["iban_fingerprint"] = keyed_fingerprint(iban, "bank-account")
+    return summary
 
 
 async def set_setting(db: AsyncSession, key: str, value: Any, actor: User | None) -> Any:
@@ -224,8 +293,8 @@ async def set_setting(db: AsyncSession, key: str, value: Any, actor: User | None
         action="settings.update",
         entity_type="platform_setting",
         entity_id=key,
-        before={"value": before},
-        after={"value": value},
+        before={"value": audit_safe_value(key, before)},
+        after={"value": audit_safe_value(key, value)},
     )
     clear_settings_cache()
     return value

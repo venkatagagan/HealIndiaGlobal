@@ -10,6 +10,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
 
+from app.core.ai_quota import ai_daily_quota
 from app.core.deps import CurrentUser, DbSession, PageParams
 from app.core.pagination import Page
 from app.core.rate_limit import rate_limit
@@ -20,10 +21,14 @@ from app.modules.docai.schemas import AnalysisConfirm, AnalysisCreate, AnalysisP
 router = APIRouter(tags=["docai"])
 
 _limit = Depends(rate_limit("docai.request", 10, 60, key="user"))
+_ai_quota = Depends(ai_daily_quota("docai"))  # SEC-021: per-user daily quota + platform budget
 
 
 @router.post(
-    "/documents/analyses", status_code=202, response_model=DocumentAnalysisOut, dependencies=[_limit]
+    "/documents/analyses",
+    status_code=202,
+    response_model=DocumentAnalysisOut,
+    dependencies=[_limit, _ai_quota],
 )
 async def create_analysis(
     body: AnalysisCreate, db: DbSession, user: CurrentUser, request: Request
@@ -79,7 +84,7 @@ async def reject_analysis(
     "/documents/analyses/{analysis_id}/retry",
     status_code=202,
     response_model=DocumentAnalysisOut,
-    dependencies=[_limit],
+    dependencies=[_limit, _ai_quota],
 )
 async def retry_analysis(
     analysis_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request

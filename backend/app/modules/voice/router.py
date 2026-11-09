@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 
+from app.core.ai_quota import ai_daily_quota
 from app.core.deps import CurrentUser, DbSession
 from app.core.errors import AppError
 from app.core.rate_limit import rate_limit
@@ -17,6 +18,7 @@ from app.modules.voice.schemas import ConfirmIn, ConfirmOut, IntakeExtractIn, Vo
 router = APIRouter(tags=["voice"])
 
 _limit = Depends(rate_limit("voice.intake", 10, 60, key="user"))
+_ai_quota = Depends(ai_daily_quota("voice"))  # SEC-021: per-user daily quota + platform budget
 _CHUNK = 256 * 1024
 
 
@@ -33,7 +35,10 @@ async def _read_audio(file: UploadFile) -> bytes:
 
 
 @router.post(
-    "/voice/transcriptions", status_code=202, response_model=VoiceTranscriptionOut, dependencies=[_limit]
+    "/voice/transcriptions",
+    status_code=202,
+    response_model=VoiceTranscriptionOut,
+    dependencies=[_limit, _ai_quota],
 )
 async def create_transcription(
     db: DbSession,
@@ -83,7 +88,7 @@ async def discard_transcription(
     return await service.discard_transcription(db, user, transcription_id, request)
 
 
-@router.post("/voice/intake-extract", response_model=IntakeSuggestion, dependencies=[_limit])
+@router.post("/voice/intake-extract", response_model=IntakeSuggestion, dependencies=[_limit, _ai_quota])
 async def intake_extract(body: IntakeExtractIn, db: DbSession, user: CurrentUser) -> IntakeSuggestion:
     """Typed or on-device text -> IntakeSuggestion. Read-only: save via ``PATCH /screenings/{id}``."""
     return await service.extract_text(db, user, body)

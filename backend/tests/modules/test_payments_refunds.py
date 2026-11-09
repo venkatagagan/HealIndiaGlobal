@@ -11,9 +11,9 @@ from sqlalchemy import select
 from app.core import settings_store
 from app.core.enums import OrderStatus, PaymentStatus, RefundStatus
 from app.core.events import publish
-from app.models import Payment, PaymentOrder, PlatformSetting, Refund
+from app.models import Booking, Payment, PaymentOrder, PlatformSetting, Refund
 from app.modules.payments import service
-from tests.factories import create_user
+from tests.factories import create_payment_order, create_user
 from tests.modules.payments_helpers import (
     DEPOSIT_INR,
     RAZORPAY_KEY_SECRET,
@@ -228,22 +228,24 @@ async def test_cancellation_cancels_open_orders_and_spreads_over_payments(db, cl
     w = await make_world(db)
     booking_id = w.booking.id
     first = await _paid_mock_order(client, auth_headers, w, currency="INR")  # 80,000 INR
-    # two balance orders: one is paid, the other stays open
-    orders = []
-    for _ in range(2):
-        r = await client.post(
-            ORDERS,
-            json={
-                "booking_id": str(booking_id),
-                "purpose": "booking_balance",
-                "gateway": "mock",
-                "currency": "INR",
-            },
-            headers=auth_headers(w.patient_user),
-        )
-        assert r.status_code == 201, r.text
-        orders.append(r.json()["order"])
-    balance_order, open_order = orders
+    # a paid balance order, and (created outside the API, which allows one open order per booking since
+    # SEC-007) a stale open order that the cancellation must cancel
+    r = await client.post(
+        ORDERS,
+        json={
+            "booking_id": str(booking_id),
+            "purpose": "booking_balance",
+            "gateway": "mock",
+            "currency": "INR",
+        },
+        headers=auth_headers(w.patient_user),
+    )
+    assert r.status_code == 201, r.text
+    balance_order = r.json()["order"]
+    booking_row = await db.get(Booking, booking_id)
+    assert booking_row is not None
+    stale = await create_payment_order(db, booking_row, purpose="booking_balance", amount_minor=1_000_00)
+    open_order = {"id": str(stale.id)}
     r = await client.post(
         f"/api/v1/payments/mock/{balance_order['id']}/complete",
         json={"outcome": "success"},

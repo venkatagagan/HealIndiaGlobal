@@ -198,6 +198,11 @@ def to_base(amount_minor: int, ccy: str, rate_inr_per_unit: Decimal | str | int)
     return convert_minor(amount_minor, ccy, BASE_CURRENCY, rate_inr_per_unit, Decimal("1"))
 
 
+#: SEC-044: business cap for any commission rate (hospital, agent, rule or default). Above roughly 8,470 bps
+#: the hospital net (after commission, GST on commission and TDS) turns negative and breaks the postings.
+MAX_COMMISSION_BPS = 3000
+
+
 def apply_bps(amount_minor: int, bps: int) -> int:
     """``amount * bps / 10000`` rounded half-up (1500 bps = 15%)."""
     return round_half_up(Decimal(int(amount_minor)) * Decimal(int(bps)) / Decimal(10_000))

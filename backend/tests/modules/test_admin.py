@@ -13,7 +13,7 @@ from app.core.enums import AgentStatus, HospitalStatus, KycStatus, UserRole, Use
 from app.core.money import get_fx_rate
 from app.core.security import hash_token
 from app.core.settings_store import get_setting
-from app.models import Agent, AuditLog, Doctor, Hospital, RefreshToken, User
+from app.models import Agent, AuditLog, Doctor, Document, Hospital, RefreshToken, User
 from app.modules.admin import service as admin_service
 from tests.factories import (
     create_agent,
@@ -39,6 +39,24 @@ def published(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, dict[str, Any]
 
     monkeypatch.setattr(admin_service, "publish", spy)
     return calls
+
+
+async def _kyc_document(db: Any, owner: Any, *, hospital: Any = None, agent: Any = None) -> Document:
+    """SEC-045: approvals need the KYC document on file."""
+    doc = Document(
+        owner_user_id=owner.id,
+        hospital_id=hospital.id if hospital is not None else None,
+        agent_id=agent.id if agent is not None else None,
+        kind="kyc_registration" if hospital is not None else "kyc_id_proof",
+        file_name="kyc.pdf",
+        content_type="application/pdf",
+        size_bytes=10,
+        storage_key=f"documents/kyc-{uuid.uuid4().hex}.pdf",
+        sha256="0" * 64,
+    )
+    db.add(doc)
+    await db.commit()
+    return doc
 
 
 async def _audit_actions(db: Any, entity_id: Any) -> list[str]:
@@ -283,6 +301,12 @@ async def test_hospital_approval_publishes_event_and_activates(
     assert r.status_code == 200
     assert [x["id"] for x in r.json()["items"]] == [str(hospital.id)]
 
+    # SEC-045: no approval without the KYC registration document
+    r = await client.post(f"{API}/admin/hospitals/{hospital.id}/approve", headers=h)
+    assert r.status_code == 409 and r.json()["error"]["code"] == "kyc_documents_missing"
+    kyc = await _kyc_document(db, owner, hospital=hospital)
+    kyc_id = kyc.id
+
     # approval warns (does not block) about active doctors without a medical registration
     r = await client.post(f"{API}/admin/hospitals/{hospital.id}/approve", headers=h)
     assert r.status_code == 200, r.text
@@ -302,6 +326,13 @@ async def test_hospital_approval_publishes_event_and_activates(
     fresh = await db.get(Hospital, hospital_id)
     assert fresh is not None and fresh.status == HospitalStatus.ACTIVE
     assert "hospital.approve" in await _audit_actions(db, hospital_id)
+    verified = await db.get(Document, kyc_id)
+    assert verified is not None and verified.status == "verified"
+    assert str(verified.verified_by) == body["approved_by"]
+    approve_log = (
+        await db.execute(select(AuditLog).where(AuditLog.action == "hospital.approve"))
+    ).scalar_one()
+    assert approve_log.after["kyc_documents_verified"][0]["id"] == str(kyc_id)
     hospital = fresh
 
     # approving again is a state error
@@ -397,6 +428,10 @@ async def test_agent_approval_and_rejection(client, db, make_user, auth_headers,
     assert items[0]["patients_count"] == 1 and items[0]["email"]
 
     r = await client.post(f"{API}/admin/agents/{pending.id}/approve", headers=h)
+    assert r.status_code == 409 and r.json()["error"]["code"] == "kyc_documents_missing"  # SEC-045
+    agent_user = await db.get(User, pending.user_id)
+    await _kyc_document(db, agent_user, agent=pending)
+    r = await client.post(f"{API}/admin/agents/{pending.id}/approve", headers=h)
     assert r.status_code == 200, r.text
     assert r.json()["status"] == "active" and r.json()["kyc_status"] == "approved"
     assert ("agent.approved", {"agent_id": str(pending.id)}) in published
@@ -427,7 +462,8 @@ async def test_agent_approval_and_rejection(client, db, make_user, auth_headers,
     assert r.status_code == 422
 
     r = await client.get(f"{API}/admin/agents/{pending.id}", headers=h)
-    assert r.status_code == 200 and r.json()["kyc_documents"] == []
+    assert r.status_code == 200
+    assert [(d["kind"], d["status"]) for d in r.json()["kyc_documents"]] == [("kyc_id_proof", "verified")]
     actions = await _audit_actions(db, pending.id)
     assert actions == ["agent.approve", "agent.suspend", "agent.reinstate", "agent.update"]
     other_id = other.id
@@ -846,7 +882,20 @@ async def test_content_and_provider_crud(client, db, make_user, auth_headers):
 
 async def test_fx_rate_crud_updates_conversion(client, db, make_user, auth_headers):
     admin = await make_user(role="admin")
-    h = auth_headers(admin)
+    # SEC-008: rates price real payments - an ops admin cannot write them
+    r = await client.post(
+        f"{API}/admin/fx-rates", json={"quote_currency": "usd", "rate": "88.25"}, headers=auth_headers(admin)
+    )
+    assert r.status_code == 403
+    finance = await make_user(role="finance")
+    h = auth_headers(finance)
+    for absurd in ("0.00000001", "1000000"):
+        r = await client.post(
+            f"{API}/admin/fx-rates", json={"quote_currency": "usd", "rate": absurd}, headers=h
+        )
+        assert r.status_code == 422, absurd
+    r = await client.post(f"{API}/admin/fx-rates", json={"quote_currency": "usd", "rate": "8.8"}, headers=h)
+    assert r.status_code == 400 and r.json()["error"]["code"] == "fx_rate_out_of_range"
     r = await client.post(f"{API}/admin/fx-rates", json={"quote_currency": "usd", "rate": "88.25"}, headers=h)
     assert r.status_code == 201, r.text
     rate = r.json()
@@ -865,6 +914,28 @@ async def test_fx_rate_crud_updates_conversion(client, db, make_user, auth_heade
     assert r.status_code == 200 and r.json()["rate"] == "90.5" and r.json()["source"] == "manual"
     db.expire_all()
     assert await get_fx_rate(db, "USD") == pytest.approx(90.5)
+    # SEC-008: a move of more than 10% waits for a second finance user
+    r = await client.patch(f"{API}/admin/fx-rates/{rate['id']}", json={"rate": "45"}, headers=h)
+    assert r.status_code == 200 and r.json()["rate"] == "90.5" and r.json()["pending_rate"] == "45"
+    db.expire_all()
+    assert await get_fx_rate(db, "USD") == pytest.approx(90.5)
+    approve = f"{API}/admin/fx-rates/{rate['id']}/approve"
+    r = await client.post(approve, json={"rate": "45"}, headers=h)
+    assert r.status_code == 403 and r.json()["error"]["code"] == "second_approver_required"
+    checker = auth_headers(await make_user(role="finance"))
+    r = await client.post(approve, json={"rate": "46"}, headers=checker)
+    assert r.status_code == 409 and r.json()["error"]["code"] == "request_changed"
+    r = await client.post(approve, json={"rate": "45"}, headers=checker)
+    assert r.status_code == 200 and r.json()["rate"] == "45" and r.json()["pending_rate"] is None
+    actions = set(
+        (await db.execute(select(AuditLog.action).where(AuditLog.entity_type == "fx_rate"))).scalars()
+    )
+    assert {
+        "fx_rate.create",
+        "fx_rate.update",
+        "fx_rate.change_requested",
+        "fx_rate.change_approved",
+    } <= actions
     r = await client.get(f"{API}/admin/fx-rates", headers=h)
     assert [x["quote_currency"] for x in r.json()] == ["USD"]
     assert (await client.delete(f"{API}/admin/fx-rates/{rate['id']}", headers=h)).status_code == 204
@@ -878,6 +949,7 @@ async def test_audit_log_filters(client, db, make_user, auth_headers):
     await client.post(f"{API}/admin/specialties", json={"slug": "derma", "name": "Dermatology"}, headers=h)
     await client.post(f"{API}/admin/cultural-tips", json={"title": "Food", "body": "Spicy food"}, headers=h)
     hospital = await create_hospital(db, status="pending_review")
+    await _kyc_document(db, admin, hospital=hospital)
     await client.post(f"{API}/admin/hospitals/{hospital.id}/approve", headers=h)
 
     hs = auth_headers(support)

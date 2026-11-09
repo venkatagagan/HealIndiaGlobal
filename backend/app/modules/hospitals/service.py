@@ -23,7 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
 from app.core.config import settings
-from app.core.crypto import mask
+from app.core.crypto import encrypt_str, mask
 from app.core.enums import (
     DocumentKind,
     DocumentStatus,
@@ -144,11 +144,18 @@ async def profile_out(
         member_role=str(member_role) if member_role is not None else None,
         created_at=hospital.created_at,
         updated_at=hospital.updated_at,
+        pending_changes=sorted(((hospital.pending_profile or {}).get("fields") or {}).keys()),
     )
 
 
 async def get_profile(db: AsyncSession, ctx: PortalContext) -> HospitalProfileOut:
     return await profile_out(db, ctx.hospital, ctx.member_role)
+
+
+#: SEC-020: fields an ACTIVE hospital cannot change on its own (legal identity, contact identity, claims).
+REVIEWED_PROFILE_FIELDS = frozenset(
+    {"name", "legal_name", "gstin", "pan", "email", "website", "accreditations"}
+)
 
 
 async def update_profile(
@@ -161,23 +168,53 @@ async def update_profile(
         if required in data and data[required] is None:
             raise BadRequest(f"'{required}' cannot be empty", code="invalid_profile")
     changed: dict[str, Any] = {}
+    held: dict[str, Any] = {}
+    reviewed = hospital.status == HospitalStatus.ACTIVE
     for key, value in data.items():
         if key == "airport_distance_km" and value is not None:
             value = Decimal(str(value)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
         current = getattr(hospital, key)
         if current != value:
+            if reviewed and key in REVIEWED_PROFILE_FIELDS:
+                # SEC-020: an approved hospital's identity and accreditation claims change only after review
+                held[key] = encrypt_str(value) if key == "pan" and value else value
+                continue
             changed[key] = "***" if key == "pan" else value
             setattr(hospital, key, value)
-    if changed:
+    if held:
+        pending = dict((hospital.pending_profile or {}).get("fields") or {})
+        pending.update(held)
+        hospital.pending_profile = {
+            "fields": pending,
+            "requested_by": str(ctx.user.id),
+            "requested_at": datetime.now(UTC).isoformat(),
+        }
         await audit_log(
             db,
             actor=ctx.user,
-            action="hospital.profile_update",
+            action="hospital.profile_change_requested",
             entity_type="hospital",
             entity_id=hospital.id,
-            after={"changed": sorted(changed), "values": {k: v for k, v in changed.items() if k != "pan"}},
+            after={
+                "fields": sorted(held),
+                "values": {k: v for k, v in held.items() if k != "pan"},
+            },
             request=request,
         )
+    if changed or held:
+        if changed:
+            await audit_log(
+                db,
+                actor=ctx.user,
+                action="hospital.profile_update",
+                entity_type="hospital",
+                entity_id=hospital.id,
+                after={
+                    "changed": sorted(changed),
+                    "values": {k: v for k, v in changed.items() if k != "pan"},
+                },
+                request=request,
+            )
         await _commit_and_invalidate(db)
         await db.refresh(hospital)
     return await profile_out(db, hospital, ctx.member_role)

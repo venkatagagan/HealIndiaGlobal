@@ -28,7 +28,9 @@ from app.core.deps import (
     CurrentUser,
     DbSession,
     PageParams,
+    ensure_organisation_active,
     ensure_portal_matches,
+    ensure_session_live,
     is_staff,
     staff_ip_allowed,
 )
@@ -168,14 +170,14 @@ async def _authenticate_ws(token: str | None, websocket: WebSocket) -> tuple[uui
             return None
         try:
             ensure_portal_matches(user, payload)
+            # SEC-031 / SEC-014: a revoked session or a suspended organisation cannot open a socket
+            await ensure_session_live(db, payload)
+            await ensure_organisation_active(db, user, None)
         except AppError:
             return None
         # the helpers read only ``.client`` / ``.headers``, which a WebSocket (HTTPConnection) has too
         if is_staff(user) and not staff_ip_allowed(cast(Request, websocket)):
             return None
-        locked_until = user.locked_until
-    if locked_until is not None and locked_until.timestamp() > time.time():
-        return None
     return user_id, float(payload.get("exp", 0))
 
 

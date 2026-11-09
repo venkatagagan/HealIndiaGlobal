@@ -223,3 +223,22 @@ def verify_totp(secret: str | None, code: str | None, valid_window: int = 1) -> 
         return bool(pyotp.TOTP(secret).verify(normalized, valid_window=valid_window))
     except Exception:
         return False
+
+
+def match_totp_step(secret: str | None, code: str | None, valid_window: int = 1) -> int | None:
+    """The TOTP time step (counter) ``code`` is valid for (within ``valid_window`` steps of now), else None.
+    Callers store the step and refuse steps at or below it (SEC-024: no replay inside the window)."""
+    if not secret or not code:
+        return None
+    normalized = code.strip().replace(" ", "")
+    if not normalized.isdigit() or len(normalized) != 6:
+        return None
+    try:
+        totp = pyotp.TOTP(secret)
+        current = totp.timecode(datetime.now(UTC))
+        for step in range(current - valid_window, current + valid_window + 1):
+            if hmac.compare_digest(totp.generate_otp(step), normalized):
+                return step
+    except Exception:
+        return None
+    return None
