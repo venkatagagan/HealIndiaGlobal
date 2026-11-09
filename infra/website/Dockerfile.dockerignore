@@ -1,0 +1,13 @@
+# Build-context filter for infra/website/Dockerfile (BuildKit picks up <Dockerfile>.dockerignore).
+**/node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
+.git/
+.idea/
+.vscode/

@@ -1,0 +1,21 @@
+# cert-manager certificate shared by every Ingress in this namespace (secret hig-tls). The Ingresses do NOT
+# carry cert-manager annotations, so ingress-shim never creates competing Certificates for the same secret.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hig-tls
+spec:
+  secretName: hig-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  dnsNames:
+    - healindia.example
+    - agent.healindia.example
+    - hospital.healindia.example
+    - admin.healindia.example
+    - api.healindia.example
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always

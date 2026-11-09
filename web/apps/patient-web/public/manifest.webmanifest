@@ -1,0 +1,14 @@
+{
+  "name": "Heal India Global",
+  "short_name": "Heal India",
+  "description": "Your Gateway to Indian Medical Excellence",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
+  "icons": [
+    { "src": "brand/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "brand/maskable-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

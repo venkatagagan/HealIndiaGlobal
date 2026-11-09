@@ -1,0 +1,322 @@
+[
+  {
+    "slug": "faq",
+    "title": "Frequently asked questions",
+    "category": "faq",
+    "locale": "en",
+    "path": "en/faq.md",
+    "summary": "Answers to common questions about how Heal India Global works: quotes, payments and refunds, visas, travel, translators, privacy, AI screening and follow-up care."
+  },
+  {
+    "slug": "in-country-guide",
+    "title": "In-country guide",
+    "category": "guide",
+    "locale": "en",
+    "path": "en/in-country-guide.md",
+    "summary": "Emergency numbers, hospital etiquette, translators, food and water safety, getting around, personal safety and cultural norms for your time in India."
+  },
+  {
+    "slug": "post-treatment-care",
+    "title": "Post-treatment care",
+    "category": "guide",
+    "locale": "en",
+    "path": "en/post-treatment-care.md",
+    "summary": "How to leave hospital with the right documents, recover safely in India, fly home when you are fit to, and set up follow-up care with your local doctor."
+  },
+  {
+    "slug": "pre-arrival-guide",
+    "title": "Pre-arrival guide",
+    "category": "guide",
+    "locale": "en",
+    "path": "en/pre-arrival-guide.md",
+    "summary": "A checklist and timeline from 8 weeks before travel to arrival day: medical records, e-Medical visas, insurance, packing, money, SIM cards, airport pickup and accommodation."
+  },
+  {
+    "slug": "visa-overview",
+    "title": "e-Medical visa overview",
+    "category": "guide",
+    "locale": "en",
+    "path": "en/visa-overview.md",
+    "summary": "A high-level overview of India's e-Medical and e-Medical Attendant visas, the documents usually needed and how we help. Always verify current rules on the official e-Visa website."
+  },
+  {
+    "slug": "payments-and-refunds",
+    "title": "Payments and refunds",
+    "category": "policy",
+    "locale": "en",
+    "path": "en/payments-and-refunds.md",
+    "summary": "How quotes, deposits, payment methods, instalment plans, receipts and the default cancellation and refund tiers work. The terms in your hospital booking prevail."
+  },
+  {
+    "slug": "privacy-in-plain-language",
+    "title": "Privacy in plain language",
+    "category": "policy",
+    "locale": "en",
+    "path": "en/privacy-in-plain-language.md",
+    "summary": "What information we collect and why, who sees it (only the hospitals you choose), how we protect it, and the choices you have about consent."
+  },
+  {
+    "slug": "ahmedabad",
+    "title": "Ahmedabad city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/ahmedabad.md",
+    "summary": "Practical notes on Ahmedabad for patients and companions: the airport, very hot summers, festivals, local rules, gentle outings and largely vegetarian food."
+  },
+  {
+    "slug": "bengaluru",
+    "title": "Bengaluru city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/bengaluru.md",
+    "summary": "Practical notes on Bengaluru for patients and companions: the airport transfer, a mild climate, heavy traffic, gentle outings and food."
+  },
+  {
+    "slug": "chandigarh",
+    "title": "Chandigarh city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/chandigarh.md",
+    "summary": "Practical notes on Chandigarh, Mohali and Panchkula for patients and companions: getting there, seasons and air quality, getting around, outings and food."
+  },
+  {
+    "slug": "chennai",
+    "title": "Chennai city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/chennai.md",
+    "summary": "Practical notes on Chennai for patients and companions: the airport, heat and the northeast monsoon, getting around, gentle outings and food."
+  },
+  {
+    "slug": "delhi-ncr",
+    "title": "Delhi NCR city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/delhi-ncr.md",
+    "summary": "Practical notes on Delhi NCR for patients and companions: the airport, seasons and air quality, getting around, gentle outings and food."
+  },
+  {
+    "slug": "hyderabad",
+    "title": "Hyderabad city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/hyderabad.md",
+    "summary": "Practical notes on Hyderabad for patients and companions: the airport, hot summers and the monsoon, getting around, gentle outings and food."
+  },
+  {
+    "slug": "jaipur",
+    "title": "Jaipur city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/jaipur.md",
+    "summary": "Practical notes on Jaipur for patients and companions: the airport, very hot summers and cold winter nights, getting around, gentle outings and food."
+  },
+  {
+    "slug": "kochi",
+    "title": "Kochi city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/kochi.md",
+    "summary": "Practical notes on Kochi for patients and companions: the airport, heavy monsoons and humidity, metro and ferries, gentle outings, Ayurveda cautions and food."
+  },
+  {
+    "slug": "kolkata",
+    "title": "Kolkata city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/kolkata.md",
+    "summary": "Practical notes on Kolkata for patients and companions: the airport, humid summers, the monsoon and Durga Puja, getting around, outings and food."
+  },
+  {
+    "slug": "mumbai",
+    "title": "Mumbai city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/mumbai.md",
+    "summary": "Practical notes on Mumbai for patients and companions: the airports, the monsoon, getting around a crowded city, gentle outings and food."
+  },
+  {
+    "slug": "pune",
+    "title": "Pune city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/pune.md",
+    "summary": "Practical notes on Pune for patients and companions: flying in directly or via Mumbai, a milder climate, getting around, gentle outings and food."
+  },
+  {
+    "slug": "vijayawada",
+    "title": "Vijayawada city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/vijayawada.md",
+    "summary": "Practical notes on Vijayawada for patients and companions: the airport, the hot summers and monsoon, getting around, gentle outings and Andhra food."
+  },
+  {
+    "slug": "visakhapatnam",
+    "title": "Visakhapatnam city guide",
+    "category": "city",
+    "locale": "en",
+    "path": "en/cities/visakhapatnam.md",
+    "summary": "Practical notes on Visakhapatnam (Vizag) for patients and companions: the airport, the coastal climate and cyclone season, getting around, gentle seaside outings and food."
+  },
+  {
+    "slug": "acl-reconstruction",
+    "title": "ACL reconstruction",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/acl-reconstruction.md",
+    "summary": "What anterior cruciate ligament (ACL) reconstruction involves, the usual tests, typical time in India, rehabilitation and flying home."
+  },
+  {
+    "slug": "angioplasty",
+    "title": "Coronary angioplasty and stenting",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/angioplasty.md",
+    "summary": "What coronary angioplasty with stenting involves, the usual tests, typical time in hospital and in India, recovery, and flying home safely."
+  },
+  {
+    "slug": "bone-marrow-transplant",
+    "title": "Bone marrow transplant (stem cell transplant)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/bone-marrow-transplant.md",
+    "summary": "What a bone marrow (stem cell) transplant involves, donor types and tests, typical time in hospital and in India, infection precautions, carers and travel."
+  },
+  {
+    "slug": "cabg",
+    "title": "Coronary artery bypass grafting (CABG)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/cabg.md",
+    "summary": "What heart bypass surgery involves, the usual tests, typical time in hospital and in India, recovery, and what to consider before flying home."
+  },
+  {
+    "slug": "cataract-surgery",
+    "title": "Cataract surgery",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/cataract-surgery.md",
+    "summary": "What cataract surgery involves, lens choices to discuss, the eye tests needed, typical time in India for one or both eyes, recovery and flying home."
+  },
+  {
+    "slug": "chemotherapy",
+    "title": "Chemotherapy",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/chemotherapy.md",
+    "summary": "How chemotherapy is planned and given in cycles, records to bring, typical time in India, coping with side effects, infection risk and travelling home."
+  },
+  {
+    "slug": "dental-implants",
+    "title": "Dental implants",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/dental-implants.md",
+    "summary": "How dental implants work, the scans needed, why treatment often takes two visits to India, recovery, and flying after implant surgery."
+  },
+  {
+    "slug": "hair-transplant",
+    "title": "Hair transplant",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/hair-transplant.md",
+    "summary": "How FUE and FUT hair transplants work, who may be suitable, checks before the procedure, typical time in India, aftercare and realistic growth timelines."
+  },
+  {
+    "slug": "heart-valve-replacement",
+    "title": "Heart valve replacement and repair",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/heart-valve-replacement.md",
+    "summary": "How heart valve repair and replacement work, including open surgery and TAVI, the usual tests, typical time in India, recovery and flying home."
+  },
+  {
+    "slug": "ivf",
+    "title": "In vitro fertilisation (IVF)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/ivf.md",
+    "summary": "How an IVF cycle works, tests for both partners, typical time in India, the legal rules to check first, and what to consider before flying home."
+  },
+  {
+    "slug": "kidney-transplant",
+    "title": "Kidney transplant (living donor)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/kidney-transplant.md",
+    "summary": "How a living-donor kidney transplant works, the legal approvals and documents, tests for donor and recipient, typical time in India and life after."
+  },
+  {
+    "slug": "lasik",
+    "title": "LASIK laser eye surgery",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/lasik.md",
+    "summary": "What LASIK is, who may be suitable, the eye tests involved, typical time in India, recovery, dry eyes and flying home."
+  },
+  {
+    "slug": "liver-transplant",
+    "title": "Liver transplant (living donor)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/liver-transplant.md",
+    "summary": "How a living-donor liver transplant works, the legal approvals, tests for donor and recipient, typical time in India and life after transplant."
+  },
+  {
+    "slug": "radiation-therapy",
+    "title": "Radiation therapy (radiotherapy)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/radiation-therapy.md",
+    "summary": "How radiotherapy is planned and delivered, records to bring, typical time in India for planning and a course, skin care, tiredness and travelling home."
+  },
+  {
+    "slug": "rhinoplasty",
+    "title": "Rhinoplasty (nose surgery)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/rhinoplasty.md",
+    "summary": "What rhinoplasty involves, cosmetic and breathing reasons for it, tests before surgery, typical time in India, swelling and recovery, and flying home."
+  },
+  {
+    "slug": "robotic-prostatectomy",
+    "title": "Robotic prostatectomy (prostate cancer surgery)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/robotic-prostatectomy.md",
+    "summary": "What robot-assisted radical prostatectomy is, staging tests, typical time in hospital and India, the urinary catheter, recovery and flying home."
+  },
+  {
+    "slug": "sleeve-gastrectomy",
+    "title": "Sleeve gastrectomy (weight-loss surgery)",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/sleeve-gastrectomy.md",
+    "summary": "How sleeve gastrectomy works, the usual tests, typical time in hospital and in India, the staged diet and recovery, and flying home."
+  },
+  {
+    "slug": "spinal-fusion",
+    "title": "Spinal fusion surgery",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/spinal-fusion.md",
+    "summary": "What spinal fusion involves, the usual tests, typical time in hospital and in India, recovery, and what to consider before flying home."
+  },
+  {
+    "slug": "total-hip-replacement",
+    "title": "Total hip replacement",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/total-hip-replacement.md",
+    "summary": "What hip replacement surgery involves, the usual tests, typical time in hospital and in India, hip precautions, recovery and flying home."
+  },
+  {
+    "slug": "total-knee-replacement",
+    "title": "Total knee replacement",
+    "category": "procedure",
+    "locale": "en",
+    "path": "en/procedures/total-knee-replacement.md",
+    "summary": "What knee replacement surgery involves, the usual tests, typical time in hospital and in India, physiotherapy, recovery and flying home."
+  }
+]

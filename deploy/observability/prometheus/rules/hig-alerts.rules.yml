@@ -1,0 +1,325 @@
+# Heal India Global alert rules.
+#
+# Sources:
+#   API          prometheus-fastapi-instrumentator metrics (exported by the app today) + recording rules
+#   jobs, payments, settlements, ledger, DB connections
+#                sql_exporter queries in deploy/observability/exporters/hig.collector.yml (the app does not
+#                export these yet). Each such alert names the app-native metric we recommend adding in the
+#                `recommended_app_metric` annotation; once it exists, switch the expression to it.
+#   Redis        redis_exporter          Availability / TLS   blackbox_exporter
+#
+# Severity: critical = page on-call (money or the whole site affected); warning = ticket / business hours.
+groups:
+  # =================================================================================================
+  - name: hig-api.alerts
+    rules:
+      - alert: HigApiAllTargetsDown
+        expr: sum by (job) (up{job="hig-api"}) == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "All API targets are down"
+          description: "Prometheus cannot scrape any hig-api instance for 2 minutes."
+
+      - alert: HigApiMetricsAbsent
+        expr: absent(up{job="hig-api"})
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No hig-api targets discovered"
+          description: "Service discovery returns no API targets (deployment scaled to 0, or SD/permissions broken)."
+
+      - alert: HigApiTargetDown
+        expr: up{job="hig-api"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API instance {{ $labels.instance }} is down"
+          description: "One API instance has not been scrapeable for 5 minutes."
+
+      - alert: HigApiHigh5xxRatio
+        expr: |
+          job:hig_http_5xx_ratio:rate5m{job="hig-api"} > 0.02
+          and on (job)
+          job:hig_http_requests:rate5m{job="hig-api"} > 0.2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API 5xx ratio above 2%"
+          description: "{{ $value | humanizePercentage }} of API requests failed with 5xx over the last 5 minutes."
+
+      - alert: HigApiHigh5xxRatioCritical
+        expr: |
+          job:hig_http_5xx_ratio:rate5m{job="hig-api"} > 0.05
+          and on (job)
+          job:hig_http_requests:rate5m{job="hig-api"} > 0.2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API 5xx ratio above 5%"
+          description: "{{ $value | humanizePercentage }} of API requests failed with 5xx over the last 5 minutes."
+
+      - alert: HigApiHighLatencyP95
+        expr: job:hig_http_request_duration_seconds:p95_5m{job="hig-api"} > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 latency above 2 s"
+          description: "p95 request latency is {{ $value | humanizeDuration }} (10 minutes)."
+
+      - alert: HigApiHighLatencyP95Critical
+        expr: job:hig_http_request_duration_seconds:p95_5m{job="hig-api"} > 4
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API p95 latency above 4 s"
+          description: "p95 request latency is {{ $value | humanizeDuration }} (5 minutes)."
+
+  # =================================================================================================
+  - name: hig-jobs.alerts
+    rules:
+      - alert: HigJobQueueBacklog
+        expr: max(hig_jobs_queued_total) > 200
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Background job backlog: {{ $value }} due jobs"
+          description: "More than 200 queued jobs are due. Scale workers or look for a slow task."
+          recommended_app_metric: "hig_jobs_queue_depth (gauge, by task_name, sampled by the worker)"
+
+      - alert: HigJobQueueStalled
+        expr: max(hig_jobs_oldest_queued_age_seconds) > 600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Oldest due job has waited {{ $value | humanizeDuration }}"
+          description: "Jobs are not being consumed (worker down, stuck or crash-looping). AI screening results, notifications, payments and settlements are delayed."
+          recommended_app_metric: "hig_jobs_oldest_queued_age_seconds (gauge)"
+
+      - alert: HigDeadJobs
+        expr: sum by (task_name) (hig_jobs_dead_recent) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dead background jobs: {{ $labels.task_name }}"
+          description: "{{ $value }} job(s) of {{ $labels.task_name }} exhausted their retries in the last hour (see background_jobs.last_error)."
+          recommended_app_metric: "hig_jobs_completed_total{task_name, status=\"dead\"} (counter)"
+
+      - alert: HigDeadJobsMoneyPath
+        expr: sum by (task_name) (hig_jobs_dead_recent{task_name=~"(payments|ledger|settlements)\\..*"}) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Dead money-path job: {{ $labels.task_name }}"
+          description: "A payments/ledger/settlements job died in the last hour; reconcile before re-queuing."
+          recommended_app_metric: "hig_jobs_completed_total{task_name, status=\"dead\"} (counter)"
+
+      - alert: HigJobsFailedPermanently
+        expr: sum by (task_name) (hig_jobs_failed_recent) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Permanently failed jobs: {{ $labels.task_name }}"
+          description: "{{ $value }} job(s) raised PermanentJobError in the last hour."
+          recommended_app_metric: "hig_jobs_completed_total{task_name, status=\"failed\"} (counter)"
+
+      - alert: HigJobsStuckRunning
+        expr: max(hig_jobs_running_stale_total) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} job(s) locked for more than 20 minutes"
+          description: "Jobs exceeded the 15-minute task timeout; the worker re-queues locks older than 30 minutes."
+          recommended_app_metric: "hig_job_duration_seconds (histogram, by task_name)"
+
+  # =================================================================================================
+  - name: hig-payments.alerts
+    rules:
+      - alert: HigWebhookProcessingFailing
+        expr: sum by (gateway) (hig_webhook_events_failing) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.gateway }} webhooks failing to process"
+          description: "{{ $value }} stored webhook event(s) have a processing_error and are not processed: captured payments may not be applied to bookings."
+          recommended_app_metric: "hig_webhook_events_total{gateway, outcome=\"processed|duplicate|invalid_signature|error\"} (counter)"
+
+      - alert: HigWebhookBacklog
+        expr: sum by (gateway) (hig_webhook_events_unprocessed) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.gateway }} webhooks waiting more than 10 minutes"
+          description: "{{ $value }} valid webhook event(s) are stored but not processed yet."
+          recommended_app_metric: "hig_webhook_processing_lag_seconds (gauge)"
+
+      - alert: HigWebhookInvalidSignatureSpike
+        expr: sum by (gateway) (hig_webhook_events_invalid_signature_recent) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.gateway }} webhook signature failures"
+          description: "{{ $value }} webhook(s) with invalid signatures in the last hour: wrong *_WEBHOOK_SECRET after rotation, or forged requests."
+          recommended_app_metric: "hig_webhook_events_total{gateway, outcome=\"invalid_signature\"} (counter)"
+
+  # =================================================================================================
+  - name: hig-settlements.alerts
+    rules:
+      - alert: HigSettlementBatchPartiallyFailed
+        expr: max(hig_settlement_batches_failed_recent_total) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Settlement batch partially failed"
+          description: "{{ $value }} settlement batch(es) ended partially_failed in the last 24 hours: some hospitals/agents were not paid."
+          recommended_app_metric: "hig_settlement_batches_total{status=\"completed|partially_failed|cancelled\"} (counter)"
+
+      - alert: HigPayoutsFailed
+        expr: sum by (method) (hig_payouts_failed_recent) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Failed payouts ({{ $labels.method }})"
+          description: "{{ $value }} payout(s) failed in the last 24 hours."
+          recommended_app_metric: "hig_payouts_total{method, status=\"processed|failed|reversed\"} (counter)"
+
+      - alert: HigSettlementBatchStuckProcessing
+        expr: max(hig_settlement_batches_stuck_total) > 0
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Settlement batch stuck in processing"
+          description: "{{ $value }} batch(es) have been processing for more than 2 hours (provider outage or lost callback)."
+          recommended_app_metric: "hig_settlement_batch_processing_age_seconds (gauge)"
+
+      - alert: HigLedgerImbalance
+        expr: max(abs(hig_ledger_imbalance_minor)) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ledger does not balance"
+          description: "Sum of debits minus credits is {{ $value }} minor units (must be 0). Stop settlements and investigate."
+          recommended_app_metric: "hig_ledger_trial_balance_minor (gauge, computed by a periodic job)"
+
+  # =================================================================================================
+  - name: hig-database.alerts
+    rules:
+      - alert: HigDbConnectionsHigh
+        expr: sum(hig_db_connections) / max(hig_db_max_connections) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections at {{ $value | humanizePercentage }} of max_connections"
+          description: "Check DB_POOL_SIZE/DB_MAX_OVERFLOW x WEB_CONCURRENCY x replicas, leaks, or add PgBouncer/RDS Proxy."
+          recommended_app_metric: "hig_db_pool_connections{state=\"checked_out|idle|overflow\"} (gauge from the SQLAlchemy pool)"
+
+      - alert: HigDbConnectionsCritical
+        expr: sum(hig_db_connections) / max(hig_db_max_connections) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL connections at {{ $value | humanizePercentage }} of max_connections"
+          description: "New connections will soon be refused (too many clients)."
+          recommended_app_metric: "hig_db_pool_connections{state} (gauge)"
+
+      - alert: HigDbIdleInTransaction
+        expr: sum(hig_db_connections{state="idle in transaction"}) > 5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} sessions idle in transaction"
+          description: "Sessions hold locks without doing work (idle_in_transaction_session_timeout is 60 s on RDS)."
+
+      - alert: HigDbLongTransaction
+        expr: max(hig_db_longest_transaction_seconds) > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Transaction running for {{ $value | humanizeDuration }}"
+          description: "A long transaction blocks vacuum and may hold locks (check pg_stat_activity)."
+
+      - alert: HigSqlExporterDown
+        expr: up{job="hig-sql-exporter"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "sql_exporter is down"
+          description: "Job queue, webhook, settlement and DB-connection alerts are blind."
+
+  # =================================================================================================
+  - name: hig-redis.alerts
+    rules:
+      - alert: HigRedisDown
+        expr: redis_up{job="hig-redis-exporter"} == 0 or up{job="hig-redis-exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis unreachable"
+          description: "The API degrades to per-process rate limits and loses cross-instance WebSocket fan-out; /health/ready fails."
+
+      - alert: HigRedisMemoryHigh
+        expr: |
+          redis_memory_used_bytes{job="hig-redis-exporter"} / redis_memory_max_bytes{job="hig-redis-exporter"} > 0.85
+          and redis_memory_max_bytes{job="hig-redis-exporter"} > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory at {{ $value | humanizePercentage }}"
+          description: "allkeys-lru will evict cache and rate-limit keys; consider a larger node type."
+
+  # =================================================================================================
+  - name: hig-ai.alerts
+    rules:
+      - alert: HigAiFallbackRateHigh
+        expr: |
+          sum(hig_ai_requests_recent{status=~"error|fallback|refusal"}) / sum(hig_ai_requests_recent) > 0.5
+          and sum(hig_ai_requests_recent) >= 5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI screening falling back for {{ $value | humanizePercentage }} of requests"
+          description: "Most screenings use the rules engine (Claude API errors, timeouts or missing ANTHROPIC_API_KEY)."
+          recommended_app_metric: "hig_ai_requests_total{engine, status} (counter) and hig_ai_request_duration_seconds (histogram)"
+
+  # =================================================================================================
+  - name: hig-availability.alerts
+    rules:
+      - alert: HigEndpointDown
+        expr: probe_success{job="hig-blackbox"} == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is down"
+          description: "External HTTPS probe failing for 3 minutes (DNS, CloudFront/ingress, TLS or the app)."
+
+      - alert: HigCertificateExpiringSoon
+        expr: (probe_ssl_earliest_cert_expiry{job="hig-blackbox"} - time()) / 86400 < 14
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "TLS certificate for {{ $labels.instance }} expires in {{ $value | humanize }} days"
+          description: "ACM / cert-manager renewal did not happen (DNS validation records removed?)."

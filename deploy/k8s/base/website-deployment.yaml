@@ -1,0 +1,234 @@
+# Public website + public login door (Next.js standalone server, image built from infra/website/Dockerfile).
+# Settings: ConfigMap hig-website-config (website.env, merged per overlay); the only secret is
+# REVALIDATE_SECRET (same key of hig-secrets that the api/worker read: they POST changed catalogue tags to
+# http://hig-website:3000/api/revalidate after catalogue writes).
+#
+# ONE replica by default: the ISR / data cache lives in .next/cache (emptyDir here), which is per pod. To run
+# several replicas, give the website a shared cache first - a Next.js cacheHandler backed by Redis (preferred)
+# or one ReadWriteMany volume - otherwise pods serve different page versions and on-demand revalidation only
+# reaches the pod that received the POST. See deploy/README.md "CDN and caching".
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hig-website
+  labels:
+    app.kubernetes.io/name: hig-website
+    app.kubernetes.io/component: website
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hig-website
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hig-website
+        app.kubernetes.io/component: website
+    spec:
+      serviceAccountName: hig-website
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 20
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000 # `node` in the node:22 image
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: website
+          image: hig-website
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: hig-website-config
+          env:
+            - name: REVALIDATE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: hig-secrets
+                  key: REVALIDATE_SECRET
+                  optional: true # empty/missing = on-demand revalidation off (ISR period still applies)
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 768Mi
+          readinessProbe:
+            httpGet:
+              path: /robots.txt
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /robots.txt
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: next-cache
+              mountPath: /app/.next/cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: next-cache
+          emptyDir:
+            sizeLimit: 1Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hig-website
+  labels:
+    app.kubernetes.io/name: hig-website
+    app.kubernetes.io/component: website
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: hig-website
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hig-website
+  labels:
+    app.kubernetes.io/name: hig-website
+    app.kubernetes.io/component: website
+automountServiceAccountToken: false
+---
+# Website: HTTP from the ingress controller (visitors) and from the worker (POST /api/revalidate).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-website-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-website
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: hig-worker
+      ports:
+        - protocol: TCP
+          port: 3000
+---
+# Website egress: the API (server-side catalogue fetches) and HTTPS (remote images for the image optimiser).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-website-egress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-website
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: hig-api
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+# API accepts the website's server-side fetches (WEBSITE_SERVER_IPS gives them their own rate-limit budget).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-api-from-website
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-api
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: hig-website
+      ports:
+        - protocol: TCP
+          port: 8000
+---
+# Worker -> website on-demand revalidation (separate policy so overlay patches of hig-app-egress keep their
+# indexes).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-worker-to-website
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-worker
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: hig-website
+      ports:
+        - protocol: TCP
+          port: 3000
+---
+# X-Robots-Tag for every portal Ingress (custom-headers annotation; the controller must allow the header via
+# `global-allowed-response-headers`, see ../ingress-nginx/controller-config.example.yaml).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hig-noindex-headers
+  labels:
+    app.kubernetes.io/component: web
+data:
+  X-Robots-Tag: "noindex, nofollow"

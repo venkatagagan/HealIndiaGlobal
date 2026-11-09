@@ -1,0 +1,1539 @@
+<!doctype html>
+<!--
+  Heal India Global — home page, MAIN theme ("best of all three concepts", one brand)
+  Idea: warm, calm and persuasive. A cinematic golden-hour family photograph and A's light/bold display type open the
+  page, with B's free AI-assessment card front and centre and an immediate trust line; C's five-stop journey is the
+  thread that runs through the page (rail under the hero → stop tags on each section → the "How it works" rows → the
+  illustrative itinerary). B's navy savings band, drawn to scale, is the one dark "wow" moment; A's destination atlas
+  and full-bleed Kerala close complete it. One primary action throughout: "Get a free AI assessment".
+
+  Photography: Unsplash License / Pexels License (free commercial use, no attribution required). Every URL checked
+  200 image/jpeg on 2026-10-27. Source page — photographer:
+   1. Hero, family on a Gujarat beach at golden hour (Pexels) https://www.pexels.com/photo/a-family-holding-hands-at-the-beach-11538583/ — Radhika Studio
+   2. Treatments menu, doctors with a tablet ..... https://unsplash.com/photos/two-doctors-looking-at-a-tablet-together-2kopEHjST-g — Vitaly Gariev
+   3. Hospitals menu, room with a city view ...... https://unsplash.com/photos/hospital-room-with-empty-beds-DfNC2lnZWBE — César Vermorel Forest
+   4. Doctors menu, doctor portrait ............. https://unsplash.com/photos/man-in-white-dress-shirt-wearing-black-framed-eyeglasses-pTrhfmj2jDA — Usman Yousaf
+   5. Plan your trip menu, Lotus Temple ......... https://unsplash.com/photos/lotus-temple-architecture-in-new-delhi-4XhzsZA5U_g — Shaurya Kaushal
+   6. Partners menu, clinicians reviewing scans . https://unsplash.com/photos/medical-professionals-reviewing-digital-imaging-MFSEP2g4YS0 — Accuray
+   7. Specialties, doctor portrait .............. https://unsplash.com/photos/3HIroMoyre8 — vaibhav vivian
+   8. Delhi NCR, Humayun's Tomb ................. https://unsplash.com/photos/people-walking-towards-humayuns-tomb-in-delhi-lhYeTJwgKrU — Zoshua Colah
+   9. Chennai, temple gopuram at night .......... https://unsplash.com/photos/hindu-temple-tower-under-starry-sky-QXIBCvvA_jc — SIBY
+  10. Mumbai, Gateway of India waterfront ....... https://unsplash.com/photos/taj-mahal-palace-hotel-gateway-of-india-and-mumbai-skyline-ewzRd5E4SHg — Uday Sankar Yerramilli
+  11. Bengaluru, Vidhana Soudha ................. https://unsplash.com/photos/Y7UIBtbVywA — zablanca_clicks
+  12. Hyderabad, Charminar ...................... https://unsplash.com/photos/LDYbI5R6vaM — Sunny
+  13. Vijayawada, bridge over the Krishna ....... https://www.pexels.com/photo/modern-steel-bridge-at-sunrise-15877640/ — Prasad Dulam
+  14. Visakhapatnam, coastline .................. https://unsplash.com/photos/a-beach-with-a-town-by-the-ocean-gSZK-gG2iik — John Vimal Velpula
+  15. Assess, video call from home .............. https://www.pexels.com/photo/woman-waving-hand-while-holding-a-tablet-8837744/ — Yan Krukau
+  16. Choose, doctors reviewing an X-ray ........ https://www.pexels.com/photo/two-doctors-examining-an-x-ray-image-8770713/ — Gustavo Fring
+  17. Travel, mother and daughter at an airport . https://www.pexels.com/photo/positive-mother-and-daughter-with-suitcase-in-airport-corridor-4173213/ — Gustavo Fring
+  18. Treat, doctor examining a senior patient .. https://www.pexels.com/photo/young-female-doctor-examining-a-senior-patient-18870282/ — World Sikh Organization of Canada
+  19. Recover, older couple in a Delhi park ..... https://www.pexels.com/photo/elderly-couple-in-traditional-attire-in-delhi-park-37956311/ — Frank van Dijk
+  20. Coordinator portrait ...................... https://www.pexels.com/photo/woman-in-blue-blazer-smiling-7580837/ — RDNE Stock project
+  21. Coordinator with headset .................. https://www.pexels.com/photo/woman-wearing-headset-sitting-in-front-of-a-computer-8866740/ — Yan Krukau
+  22. Story, couple by the sea .................. https://www.pexels.com/photo/back-view-of-a-couple-by-the-sea-23480445/ — Aakash Goel
+  23. Partners, care team in a corridor ......... https://unsplash.com/photos/group-of-doctors-walking-on-hospital-hallway-Pd4lRfKo16U — Luis Melendez
+  24. Closing, Kerala backwaters houseboat ...... https://unsplash.com/photos/ii0oWs5abCo — Abhishek Prasad
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heal India Global</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Medical travel to India: accredited hospitals, itemised quotes, visa, travel and in-country care for international patients.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://images.pexels.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@200;300;400;500;600;700;800&display=swap">
+<style>
+/* Layout: one 12-column measure (1312px). White and cloud canvas in a calm alternating rhythm, one navy band (the
+   savings scale), golden-hour photography full bleed at the opening and the close. The five-stop journey rail is the thread: it opens under the hero, tags each
+   section with its stop, and expands into the navy "How it works" band.
+   Single light brand world on purpose: every colour is set explicitly. */
+:root{
+  color-scheme: light;
+  --navy:#102A43; --navy-2:#173A5C; --navy-deep:#0B1F33;
+  --teal:#0F766E; --teal-ink:#0B5F58; --teal-wash:#EEF6F5; --teal-glow:#5FC9BD;
+  --cloud:#F5F8FA; --white:#FFFFFF;
+  --champagne:#B08D57; --champagne-ink:#7E6137; --champagne-on-dark:#D8BF91; --rule:rgba(176,141,87,.5);
+  --text:#334155; --muted:#475569; --line:#E2E8F0; --line-strong:#CBD5E1;
+  --on-navy:#C5D2DE; --line-navy:rgba(255,255,255,.14);
+  --alert:#B42318; --wa:#0E7A6C;
+  --f-display:"Manrope", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --f-body:"Inter", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --max:1312px; --g:clamp(16px, 4vw, 56px);
+  --section:clamp(80px, 9vw, 128px);
+  --r-sm:8px; --r-md:12px; --r-lg:20px; --r-xl:28px;
+  --shadow-float:0 1px 2px rgba(16,42,67,.06), 0 18px 40px -14px rgba(16,42,67,.28);
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--white);color:var(--text);font:400 18px/1.7 var(--f-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--white)}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--teal);text-decoration-thickness:1px;text-underline-offset:4px}
+a:hover{color:var(--teal-ink)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+.on-dark :focus-visible{outline-color:var(--white)}
+h1,h2,h3,h4{font-family:var(--f-display);color:var(--navy);margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+figure{margin:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:calc(var(--max) + 2 * var(--g));margin-inline:auto;padding-left:max(var(--g), env(safe-area-inset-left,0px));padding-right:max(var(--g), env(safe-area-inset-right,0px))}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* Type */
+.eyebrow{display:flex;align-items:center;gap:14px;font:600 13px/1.4 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.eyebrow::before{content:"";width:36px;height:1px;background:var(--champagne)}
+.h2{font-size:clamp(34px,4.2vw,60px);line-height:1.06;letter-spacing:-.03em;font-weight:600}
+.h2 em,.thin{font-style:normal;font-weight:200;letter-spacing:-.025em}
+.lede{font-size:clamp(17px,1.35vw,19px);line-height:1.7;color:var(--text);max-width:52ch;text-wrap:pretty}
+
+/* Stop tag: the journey rail in miniature, used as the eyebrow of each section that belongs to a stop */
+.stop{display:inline-flex;align-items:center;gap:14px}
+.stop .dots{display:inline-flex;align-items:center;position:relative;gap:10px}
+.stop .dots::before{content:"";position:absolute;left:3px;right:3px;top:50%;height:1px;background:var(--champagne);opacity:.7}
+.stop .dots i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--white);border:1px solid var(--champagne)}
+.stop .dots i.done{background:var(--teal);border-color:var(--teal)}
+.stop .dots i.here{width:11px;height:11px;background:var(--white);border:3px solid var(--teal)}
+.stop .label{font:600 13px/1.2 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stop .label b{color:var(--navy);font-weight:700}
+.on-dark .stop .label{color:var(--on-navy)}
+.on-dark .stop .label b{color:#fff}
+.on-dark .stop .dots i{background:var(--navy)}
+.on-dark .stop .dots i.done{background:var(--teal-glow);border-color:var(--teal-glow)}
+.on-dark .stop .dots i.here{background:var(--navy);border-color:var(--teal-glow)}
+
+/* Buttons and links */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:10px;font:600 16px/1 var(--f-body);text-decoration:none;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.btn .ico{width:18px;height:18px;transition:transform .2s}
+.btn:hover .ico{transform:translateX(3px)}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-ink);color:#fff}
+.btn-ghost{background:var(--white);color:var(--navy);border-color:var(--line-strong)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.btn-light{color:#fff;border-color:rgba(255,255,255,.75);background:transparent}
+.btn-light:hover{background:#fff;color:var(--navy)}
+.btn-white{background:#fff;color:var(--navy)}
+.btn-white:hover{background:var(--teal-wash);color:var(--navy)}
+.btn-sm{min-height:44px;padding:0 20px;font-size:15px}
+.link-arrow{font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.link-arrow span{transition:transform .15s}
+.link-arrow:hover{text-decoration:underline}
+.link-arrow:hover span{transform:translateX(3px)}
+
+/* ---------- Utility bar + header ---------- */
+.utility{background:var(--cloud);border-bottom:1px solid var(--line);font-size:13px;line-height:1}
+.utility .wrap{display:flex;justify-content:space-between;align-items:center;min-height:40px;gap:16px}
+.u-left{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.u-right{display:flex;align-items:center;gap:20px}
+.u-right a{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none}
+.u-right a:hover{color:var(--navy)}
+.u-right .ico{width:15px;height:15px;color:var(--teal)}
+.u-right strong{color:var(--navy);font-weight:600;font-variant-numeric:tabular-nums}
+.u-right .sep{width:1px;height:14px;background:var(--line-strong)}
+
+.site-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--white);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:40px;height:80px}
+.logo{display:flex;align-items:center;flex:none;text-decoration:none}
+.logo svg{height:34px;width:auto}
+.nav{display:flex;align-self:stretch;gap:2px;margin-right:auto}
+.nav > button{position:relative;display:inline-flex;align-items:center;gap:6px;padding:0 14px;background:none;border:0;font:500 16px/1 var(--f-body);color:var(--navy);cursor:pointer;transition:color .15s}
+.nav > button:hover,.nav > button[aria-expanded="true"]{color:var(--teal)}
+.nav > button::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;background:var(--champagne);transform:scaleX(0);transform-origin:left;transition:transform .2s ease-out}
+.nav > button[aria-expanded="true"]::after{transform:none}
+.nav > button:focus-visible{outline-offset:-6px}
+.nav > button .ico{width:14px;height:14px;transition:transform .2s}
+.nav > button[aria-expanded="true"] .ico{transform:rotate(180deg)}
+.actions{display:flex;align-items:center;gap:8px}
+.actions .login{font:500 16px/1 var(--f-body);color:var(--navy);text-decoration:none;padding:12px 14px;border-radius:8px}
+.actions .login:hover{background:var(--cloud)}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--white);align-items:center;justify-content:center;cursor:pointer;color:var(--navy)}
+
+/* Mega menus: 70% of the viewport, centred. Intro row (display line + champagne hairline), two link groups and one
+   photo tile, then a light strip for secondary links. */
+.mega{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--line);border-top:0;box-shadow:0 28px 48px -28px rgba(16,42,67,.38),0 2px 6px rgba(16,42,67,.05)}
+.mega:not([hidden]){animation:megaIn .16s ease-out both}
+@keyframes megaIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.mega-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.08fr);gap:26px 40px;padding:28px 40px 30px}
+.mega-intro{grid-column:1 / -1;display:flex;align-items:flex-end;justify-content:space-between;gap:12px 32px;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.mega-kicker{display:flex;align-items:center;gap:12px;margin-bottom:10px;font:600 12px/1.4 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+.mega-kicker::before{content:"";width:24px;height:1px;background:var(--champagne)}
+.mega-lead{font:300 clamp(22px,1.6vw,27px)/1.25 var(--f-display);letter-spacing:-.02em;color:var(--navy);white-space:nowrap}
+.mega-lead b{font-weight:600}
+.mega-intro .link-arrow{font-size:15px;padding-bottom:4px}
+.mega-col h4{font:600 12px/1.4 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;margin-bottom:6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.mega-col a{display:block;padding:6px 0;color:var(--navy);font:500 16px/1.45 var(--f-body);text-decoration:none;white-space:nowrap}
+.mega-col a:hover{color:var(--teal);text-decoration:underline}
+.mega-feature{display:grid;gap:12px;align-content:start;text-decoration:none;color:inherit}
+.mega-feature .ph{border-radius:var(--r-md);overflow:hidden;aspect-ratio:16/9;background:#DCE3EA}
+.mega-feature img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.mega-feature:hover img{transform:scale(1.03)}
+.mf-body{display:grid;gap:2px}
+.mf-body .mf-num{font:200 40px/1 var(--f-display);letter-spacing:-.045em;color:var(--navy);font-variant-numeric:tabular-nums;margin-bottom:4px}
+.mf-body strong{font:700 16px/1.35 var(--f-display);color:var(--navy)}
+.mf-body span{font-size:14px;line-height:1.5;color:var(--muted)}
+.mf-body .go{font:600 14px/1.5 var(--f-body);color:var(--teal);margin-top:2px}
+.mega-feature:hover .go{text-decoration:underline}
+.mega-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 24px;min-height:50px;padding:8px 40px;background:var(--cloud);border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.mega-foot > span:first-child{font-weight:500}
+.mf-links{display:flex;flex-wrap:wrap;gap:4px 24px}
+.mf-links a{font-weight:600;text-decoration:none;white-space:nowrap}
+.mf-links a:hover{text-decoration:underline}
+
+/* Mobile drawer */
+.drawer{position:fixed;inset:0;z-index:70;background:var(--white);padding-top:env(safe-area-inset-top,0px);overflow:auto}
+.drawer > .wrap{display:flex;flex-direction:column;min-height:100%}
+.drawer-top{display:flex;align-items:center;justify-content:space-between;height:68px;border-bottom:1px solid var(--line)}
+.drawer nav{padding-block:8px 24px}
+.drawer details{border-bottom:1px solid var(--line)}
+.drawer summary{display:flex;justify-content:space-between;align-items:center;padding:18px 0;font:500 22px/1.2 var(--f-display);color:var(--navy);list-style:none;cursor:pointer;letter-spacing:-.01em}
+.drawer summary::-webkit-details-marker{display:none}
+.drawer summary .ico{transition:transform .2s}
+.drawer details[open] summary .ico{transform:rotate(180deg)}
+.drawer .d-lead{font:300 18px/1.4 var(--f-display);color:var(--navy);margin:0 0 8px}
+.drawer details ul{margin:0 0 18px}
+.drawer details a{display:block;padding:8px 0;color:var(--text);font-size:17px;text-decoration:none}
+.drawer details a.more{display:inline-flex;gap:8px;margin:4px 0 22px;color:var(--teal);font-weight:600}
+.drawer .d-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 20px;margin-bottom:8px}
+.drawer .d-cols ul{margin:0 0 12px}
+.drawer .d-h{font:600 11.5px/1.4 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.drawer .d-cols a{font-size:16px;padding:7px 0;line-height:1.35}
+.drawer-cta{display:grid;gap:12px;margin-top:auto;padding-block:24px max(24px, env(safe-area-inset-bottom,0px))}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;background:var(--navy);color:#fff;min-height:clamp(640px, calc(100svh - 121px), 820px);display:flex}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 62%}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  linear-gradient(90deg, rgba(11,31,51,.82) 0%, rgba(11,31,51,.68) 32%, rgba(11,31,51,.28) 54%, rgba(11,31,51,0) 74%),
+  linear-gradient(0deg, rgba(11,31,51,.45) 0%, rgba(11,31,51,0) 30%)}
+.hero-inner{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:end;padding-block:48px 72px}
+.hero-copy{grid-column:1 / span 7;display:grid;gap:24px;justify-items:start}
+.hero .eyebrow{color:#fff}
+.hero .eyebrow::before{background:var(--champagne-on-dark)}
+.hero h1{color:#fff;font-weight:500;font-size:clamp(44px,5.4vw,84px);line-height:.99;letter-spacing:-.035em}
+.hero h1 .thin{font-weight:200}
+.hero .sub{font-size:clamp(17px,1.4vw,20px);line-height:1.6;color:rgba(255,255,255,.92);max-width:54ch}
+
+.assess{position:relative;width:100%;max-width:600px;background:var(--white);border-radius:var(--r-lg);box-shadow:0 30px 60px -24px rgba(0,0,0,.45);padding:18px;display:grid;gap:12px;color:var(--text)}
+.assess-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-inline:4px}
+.assess-head label{font:700 16px/1.3 var(--f-display);color:var(--navy);display:flex;align-items:center;gap:10px}
+.assess-head label .ico{color:var(--teal);width:22px;height:22px}
+.assess-head .tag{font:600 12px/1 var(--f-body);color:var(--teal-ink);background:var(--teal-wash);padding:6px 10px;border-radius:999px}
+.assess-row{display:flex;gap:10px;align-items:stretch;border:1px solid var(--line-strong);border-radius:12px;padding:6px 6px 6px 16px;background:var(--white);transition:border-color .15s,box-shadow .15s}
+.assess-row:focus-within{border-color:var(--teal);box-shadow:0 0 0 4px rgba(15,118,110,.12)}
+.assess-row > .ico{align-self:center;color:#64748B}
+.assess-row input{flex:1;min-width:0;border:0;outline:0;font:400 17px/1.4 var(--f-body);color:var(--navy);background:transparent;padding:8px 0}
+.assess-row input::placeholder{color:#64748B}
+.assess-foot{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font-size:14px;color:var(--muted);line-height:1.4;padding-inline:4px}
+.chip{font:500 14px/1 var(--f-body);color:var(--navy);background:var(--cloud);border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.suggest{position:absolute;left:18px;right:18px;top:calc(100% - 10px);background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-float);padding:6px;z-index:5}
+.suggest a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--navy);font-size:15px}
+.suggest a:hover{background:var(--cloud)}
+.suggest small{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.suggest mark{background:none;color:var(--teal);font-weight:600}
+.assess-note{display:flex;align-items:center;gap:8px;padding:10px 4px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.assess-note .ico{width:17px;height:17px;color:var(--teal)}
+.hero-trust{display:flex;flex-wrap:wrap;gap:12px 28px;padding-top:4px}
+.hero-trust li{display:inline-flex;align-items:center;gap:10px;font:600 15px/1.3 var(--f-body);color:#fff}
+.hero-trust .ico{width:20px;height:20px;color:var(--teal-glow)}
+.hero-trust .face{width:28px;height:28px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.9);flex:none;position:relative}
+.hero-trust .face img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+
+
+/* ---------- Journey rail (signature thread) ---------- */
+.railband{background:var(--cloud);border-bottom:1px solid var(--line)}
+.rail-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:36px}
+.rail-head .eyebrow{color:var(--muted)}
+.rail-head .link-arrow{font-size:15px}
+.rail{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0 24px;padding-block:58px 44px}
+.rail::before{content:"";position:absolute;left:0;right:0;top:36px;height:1px;background:var(--champagne);opacity:.55}
+.rail::after{content:"";position:absolute;left:0;right:0;top:36px;height:2px;margin-top:-.5px;background:var(--teal);transform-origin:left;transform:scaleX(.31)}
+.rail li{position:relative;min-width:0}
+.rail a{display:block;text-decoration:none;color:inherit}
+.rail .node{position:absolute;top:-30px;left:0;width:17px;height:17px;border-radius:50%;background:var(--cloud);border:1.5px solid var(--champagne);z-index:1}
+.rail li.done .node{background:var(--teal);border-color:var(--teal)}
+.rail li.here .node{background:var(--white);border:5px solid var(--teal);box-shadow:0 0 0 6px rgba(15,118,110,.12)}
+.rail .num{font:700 13px/1 var(--f-display);color:var(--champagne-ink);letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.rail .name{display:block;font:700 22px/1.2 var(--f-display);color:var(--navy);margin:8px 0 6px;letter-spacing:-.01em;transition:color .15s}
+.rail a:hover .name{color:var(--teal)}
+.rail .desc{display:block;font-size:15px;line-height:1.55;color:var(--muted);max-width:28ch}
+.rail-box{position:relative}
+.plane-fly{position:absolute;top:26px;left:calc(31% - 14px);width:22px;height:22px;color:var(--teal);fill:currentColor;background:var(--cloud);padding:0 3px;box-sizing:content-box;z-index:2}
+@media (prefers-reduced-motion:no-preference){
+  .rail::after{animation:railIn 1.6s .4s cubic-bezier(.2,.7,.2,1) both}
+  .plane-fly{animation:planeIn 1.6s .4s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes railIn{from{transform:scaleX(0)}}
+  @keyframes planeIn{from{left:-12px;opacity:0}20%{opacity:1}}
+}
+
+/* Trust strip */
+.trust{border-bottom:1px solid var(--line)}
+.trust-row{display:grid;grid-template-columns:1.3fr repeat(3,1fr)}
+.trust-cell{padding:36px 32px;display:grid;gap:8px;align-content:center;min-width:0}
+.trust-cell + .trust-cell{border-left:1px solid var(--rule)}
+.trust-cell:first-child{padding-left:0}
+.badges{display:flex;gap:10px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--champagne);border-radius:4px;font:700 14px/1 var(--f-display);letter-spacing:.14em;color:var(--navy)}
+.badge .ico{width:16px;height:16px;color:var(--teal)}
+.trust .num{font:200 clamp(44px,4.2vw,60px)/1 var(--f-display);letter-spacing:-.04em;color:var(--navy);font-variant-numeric:tabular-nums}
+.trust .num sup{font:600 14px/1 var(--f-body);color:var(--muted);vertical-align:top;margin-left:4px;letter-spacing:0}
+.trust .lbl{font:500 14.5px/1.45 var(--f-body);color:var(--muted)}
+.footnote{font-size:13px;line-height:1.5;color:var(--muted);padding-top:12px}
+
+/* Section heads */
+.sec{padding-block:var(--section)}
+.sec-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px 32px;align-items:end;margin-bottom:56px}
+.sec-head .t{grid-column:1 / span 7;display:grid;gap:22px}
+.sec-head .d{grid-column:9 / span 4}
+
+/* ---------- Specialties ---------- */
+.spec-wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px}
+.spec-photo{grid-column:1 / span 4;align-self:start}
+.spec-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:var(--r-lg)}
+.spec-photo figcaption{margin-top:12px;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.spec-right{grid-column:5 / span 8;min-width:0}
+.spec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--navy)}
+.spec{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:20px;align-items:center;padding:30px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.spec:nth-child(odd){padding-right:28px;border-right:1px solid var(--line)}
+.spec:nth-child(even){padding-left:28px}
+.spec .sico{width:36px;height:36px;fill:none;stroke:var(--teal);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.spec h3{font:500 clamp(20px,1.7vw,24px)/1.2 var(--f-display);letter-spacing:-.015em;transition:color .15s}
+.spec p{font-size:15px;line-height:1.5;color:var(--muted);margin-top:4px}
+.spec .go{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--teal);transition:background .2s,border-color .2s,color .2s}
+.spec .go .ico{width:15px;height:15px}
+.spec:hover h3{color:var(--teal)}
+.spec:hover .go{background:var(--teal);border-color:var(--teal);color:#fff}
+.spec-more{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-top:28px;font-size:15px;color:var(--muted)}
+
+/* ---------- Savings band (navy) ---------- */
+.band{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.band::before{content:"";position:absolute;right:-160px;top:-200px;width:640px;height:640px;border-radius:50%;border:1px solid rgba(176,141,87,.35)}
+.band::after{content:"";position:absolute;right:-60px;top:-100px;width:440px;height:440px;border-radius:50%;border:1px solid rgba(176,141,87,.22)}
+.band h2,.band h3{color:#fff}
+.cost-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.cost-copy{grid-column:1 / span 5;display:grid;gap:24px;padding-right:24px}
+.cost-copy p{font-size:18px}
+.cost-copy .link-arrow{color:#fff}
+.itemised{margin-top:24px;padding-top:24px;border-top:1px solid var(--line-navy);display:grid;gap:14px}
+.itemised p{font:600 12.5px/1.4 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--champagne-on-dark)}
+.itemised ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;font-size:15.5px;color:#fff}
+.itemised li{display:flex;gap:10px;align-items:baseline}
+.itemised li::before{content:"";width:12px;height:1px;background:var(--champagne-on-dark);flex:none;transform:translateY(-4px)}
+.cost-ctas{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:8px}
+.cost-panel{grid-column:7 / span 6;display:grid;gap:32px}
+.cp-proc{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line-navy)}
+.cp-proc strong{font:700 18px/1.3 var(--f-display);color:#fff}
+.cp-proc span{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--on-navy)}
+.keep{display:grid;gap:6px}
+.keep .k-lbl{font-size:15px;color:var(--on-navy)}
+.keep .k-val{font:300 clamp(52px,6.4vw,96px)/.95 var(--f-display);letter-spacing:-.05em;color:#fff;font-variant-numeric:tabular-nums}
+.keep .k-val small{font-size:.42em;letter-spacing:-.02em;color:var(--on-navy);font-weight:400}
+.keep .k-sub{font-size:15px;color:var(--on-navy)}
+.keep .k-sub b{color:var(--teal-glow);font-weight:600}
+.chart{display:grid;gap:18px}
+.c-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:center}
+.c-row .who{font-size:14px;line-height:1.35;color:var(--on-navy);white-space:nowrap}
+.c-row .who b{display:block;color:#fff;font:700 15px/1.3 var(--f-display)}
+.track{position:relative;height:12px;border-radius:6px;background:rgba(255,255,255,.06);border:1px solid var(--line-navy)}
+.track .bar-us{position:absolute;top:-1px;bottom:-1px;left:35%;right:0;border-radius:6px;background:rgba(255,255,255,.22)}
+.track .bar-in{position:absolute;top:-1px;bottom:-1px;left:2%;width:1.7%;min-width:5px;border-radius:6px;background:var(--teal-glow)}
+.track .pin{position:absolute;top:50%;width:3px;height:26px;margin-top:-13px;border-radius:2px;background:#fff;transform:translateX(-50%);box-shadow:0 0 0 3px var(--navy)}
+.track .pin-lbl{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font:600 12px/1 var(--f-body);color:#fff;white-space:nowrap}
+.c-axis{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px}
+.c-axis .ticks{position:relative;height:18px;font-size:12px;color:var(--on-navy);font-variant-numeric:tabular-nums}
+.c-axis .ticks span{position:absolute;top:0;transform:translateX(-50%)}
+.c-axis .ticks span:first-child{transform:none}
+.c-axis .ticks span:last-child{transform:translateX(-100%)}
+.slider{display:grid;gap:12px;padding:20px 22px;border:1px solid var(--line-navy);border-radius:var(--r-md);background:rgba(255,255,255,.03)}
+.slider label{display:flex;justify-content:space-between;gap:12px;font-size:15px;color:#fff;font-weight:500}
+.slider output{font:600 15px/1 var(--f-body);color:#fff;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,var(--teal-glow) var(--fill,38%),rgba(255,255,255,.2) var(--fill,38%))}
+input[type=range]::-moz-range-track{height:2px;background:rgba(255,255,255,.2)}
+input[type=range]::-moz-range-progress{height:2px;background:var(--teal-glow)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:6px solid var(--teal);margin-top:-11px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:6px solid var(--teal)}
+input[type=range]:focus-visible{outline:2px solid var(--teal-glow);outline-offset:4px}
+.s-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--on-navy);font-variant-numeric:tabular-nums}
+.cost-note{font-size:13px;line-height:1.55;color:var(--on-navy)}
+
+/* ---------- Destination atlas ---------- */
+.atlas{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:stretch}
+.city-list{grid-column:1 / span 5;border-top:1px solid var(--navy)}
+.city-list li{border-bottom:1px solid var(--line)}
+.city{position:relative;width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:4px 16px;padding:16px 0 17px;background:none;border:0;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.city::before{content:"";position:absolute;left:0;bottom:-1px;width:100%;height:1px;background:var(--champagne);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.city .nm{font:300 clamp(26px,2.4vw,36px)/1.1 var(--f-display);letter-spacing:-.03em;color:var(--muted);transition:color .25s}
+.city .code{font:600 12.5px/1 var(--f-body);letter-spacing:.18em;color:var(--muted);padding:6px 8px;border:1px solid var(--line);border-radius:6px;transition:color .25s,border-color .25s,background .25s}
+.city .ln{grid-column:1 / -1;font-size:15px;line-height:1.5;color:var(--muted);transition:color .25s}
+.city[aria-pressed="true"] .nm,.city:hover .nm{color:var(--navy);font-weight:500}
+.city[aria-pressed="true"]::before{transform:none}
+.city[aria-pressed="true"] .code{color:#fff;background:var(--teal);border-color:var(--teal)}
+.city:hover .code{border-color:var(--teal);color:var(--teal)}
+.city[aria-pressed="true"]:hover .code{color:#fff;background:var(--teal-ink);border-color:var(--teal-ink)}
+.city[aria-pressed="true"] .ln{color:var(--text)}
+.city:focus-visible{outline-offset:2px}
+.city .thumb{display:none}
+.atlas-nav{display:none}
+.frame{grid-column:6 / span 7;position:relative;min-height:560px;overflow:hidden;background:var(--navy);border-radius:var(--r-lg)}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.03);transition:opacity .7s ease,transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.frame img.on{opacity:1;transform:none}
+.frame::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,31,51,.85),rgba(11,31,51,0) 50%);pointer-events:none}
+.frame-cap{position:absolute;z-index:1;left:40px;right:40px;bottom:36px;color:#fff;display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.frame-cap h3{color:#fff;font:500 clamp(30px,2.8vw,40px)/1.1 var(--f-display);letter-spacing:-.02em;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.frame-cap h3 .iata{font:600 13px/1 var(--f-body);letter-spacing:.16em;padding:7px 9px;border:1px solid rgba(255,255,255,.6);border-radius:6px}
+.frame-cap .idx{font:200 64px/.9 var(--f-display);color:var(--champagne-on-dark);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.frame-cap .idx small{font-size:18px;font-weight:400;color:rgba(255,255,255,.8)}
+
+/* ---------- How it works: a calm cloud band, one row per stop (C's rows, lightened) ---------- */
+.journey{background:var(--cloud);border-block:1px solid var(--line)}
+.j-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:32px 72px;align-items:end;padding-bottom:48px;margin-bottom:88px;border-bottom:1px solid var(--rule)}
+.j-head h2{margin-top:22px;max-width:14ch}
+.j-intro{display:grid;gap:20px;padding-bottom:6px}
+.j-intro p{font-size:18px;line-height:1.7;max-width:44ch}
+.j-meta{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--muted)}
+.j-meta .ico{color:var(--teal)}
+.j-meta b{color:var(--navy);font-weight:600}
+.steps{display:grid;gap:96px}
+.step{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);gap:0 56px;position:relative;scroll-margin-top:120px}
+.step::before{content:"";position:absolute;left:15px;top:22px;bottom:-22px;width:1px;background:repeating-linear-gradient(180deg,var(--champagne) 0 6px,transparent 6px 12px);opacity:.8}
+.step::after{content:"";position:absolute;left:15px;top:22px;bottom:-22px;width:1px;background:var(--teal);transform-origin:top;transform:scaleY(0)}
+.step:not(:last-child)::before,.step:not(:last-child)::after{bottom:-118px}
+.step:last-child::before,.step:last-child::after{bottom:40px}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion:no-preference){
+    .step::after{animation:routeDraw linear both;animation-timeline:view();animation-range:cover 20% cover 75%}
+    @keyframes routeDraw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  }
+}
+.step-mark{position:sticky;top:132px;align-self:start;padding-left:56px;display:grid;gap:10px;align-content:start}
+.step-mark::before{content:"";position:absolute;left:6px;top:12px;width:19px;height:19px;border-radius:50%;background:var(--white);border:2px solid var(--teal);box-shadow:0 0 0 8px var(--cloud)}
+.step-mark .no{font:800 clamp(64px,6vw,96px)/.86 var(--f-display);letter-spacing:-.045em;color:transparent;-webkit-text-stroke:1.5px var(--champagne);font-variant-numeric:tabular-nums}
+.step-mark .nm{font:700 26px/1.15 var(--f-display);color:var(--navy);margin-top:8px}
+.step-mark .when{font-size:14.5px;line-height:1.5;color:var(--muted)}
+.step-mark .when::before{content:"";display:block;width:28px;height:1px;background:var(--champagne);margin-bottom:12px}
+.step-comp{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;min-width:0;padding-bottom:40px}
+.step-photo{grid-row:1;border-radius:var(--r-xl);overflow:hidden;background:var(--line);aspect-ratio:16/10}
+.step-photo img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.step:hover .step-photo img{transform:scale(1.025)}
+.step-body .facts li:first-child{background:var(--teal-wash);border-color:rgba(15,118,110,.18);color:var(--teal-ink)}
+.step-body{grid-row:1;position:relative;z-index:2;margin-bottom:-40px;background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:0 1px 2px rgba(16,42,67,.04),0 24px 48px -28px rgba(16,42,67,.28);padding:30px 32px;display:grid;gap:14px;min-width:0}
+.step-body h3{font-size:clamp(22px,2vw,30px);line-height:1.15;font-weight:600}
+.step-body p{font-size:17px;line-height:1.65}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.facts li{font:500 13px/1 var(--f-body);color:var(--navy);background:var(--cloud);padding:8px 12px;border-radius:999px;border:1px solid var(--line)}
+.step.l .step-photo{grid-column:1 / 10}
+.step.l .step-body{grid-column:7 / 13}
+.step.r .step-photo{grid-column:4 / 13}
+.step.r .step-body{grid-column:1 / 7}
+/* Travel row: photo, the example boarding pass and the text card */
+.step.travel .step-comp{align-items:start}
+.step.travel .step-photo{grid-column:1 / 7;aspect-ratio:4/5}
+.step.travel .pass{grid-column:6 / 13;grid-row:1;margin-top:40px;position:relative;z-index:3}
+.step.travel .step-body{grid-column:6 / 13;grid-row:1;align-self:end;margin-bottom:-40px}
+.pass{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:0 30px 60px -28px rgba(16,42,67,.35);padding:20px 22px 18px;color:var(--navy);max-width:420px;justify-self:end;width:100%}
+.pass-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:600 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pass-top span:last-child{color:var(--champagne-ink)}
+.pass-route{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;margin:14px 0 4px}
+.pass-route .code{font:800 34px/1 var(--f-display);letter-spacing:-.01em;color:var(--navy)}
+.pass-route .line{position:relative;height:1px;background:repeating-linear-gradient(90deg,var(--champagne) 0 6px,transparent 6px 11px)}
+.pass-route .line .ico{position:absolute;left:50%;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);background:var(--white);padding:0 2px;box-sizing:content-box;color:var(--teal);fill:currentColor;stroke:none}
+.pass-cities{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);line-height:1.3}
+.pass-perf{position:relative;margin:16px -22px 14px;border-top:1px dashed var(--line-strong)}
+.pass-perf::before,.pass-perf::after{content:"";position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--cloud);border:1px solid var(--line)}
+.pass-perf::before{left:-9px}.pass-perf::after{right:-9px}
+.pass-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+.pass-meta dt{font:600 10.5px/1.2 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pass-meta dd{margin:4px 0 0;font:700 14px/1.3 var(--f-display);color:var(--navy)}
+.j-end{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px 32px;margin-top:96px;padding:28px 32px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--white);font:500 18px/1.5 var(--f-display);color:var(--navy)}
+
+/* ---------- Concierge ---------- */
+.support{background:var(--white)}
+.support-grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:96px;align-items:center}
+.portrait{position:relative;padding:0 12% 10% 0}
+.portrait .p-main{border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5;background:var(--line)}
+.portrait .p-main img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.portrait .p-sub{position:absolute;right:0;bottom:0;width:44%;aspect-ratio:1/1;border-radius:var(--r-lg);overflow:hidden;border:8px solid var(--white);background:var(--line)}
+.portrait .p-sub img{width:100%;height:100%;object-fit:cover;object-position:70% 40%}
+.wa-bubble{position:absolute;left:-5%;top:10%;max-width:290px;background:var(--white);border-radius:18px 18px 18px 4px;box-shadow:var(--shadow-float);padding:14px 16px 12px;font-size:14.5px;line-height:1.5;color:var(--navy)}
+.wa-bubble .who{display:flex;align-items:center;gap:8px;font:600 12px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.wa-bubble .who .ico{width:16px;height:16px;color:#128C4A;fill:currentColor;stroke:none}
+.wa-bubble time{display:block;text-align:right;font-size:12px;color:var(--muted);margin-top:4px}
+.p-caption{font-size:13px;color:var(--muted);margin-top:16px}
+.support-copy{display:grid;gap:28px;min-width:0}
+.svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px;border-top:1px solid var(--line-strong)}
+.svc li{display:grid;grid-template-columns:auto 1fr;align-content:start;gap:4px 16px;padding:22px 0;border-bottom:1px solid var(--line-strong)}
+.svc .ico{grid-row:span 2;width:24px;height:24px;color:var(--teal);margin-top:2px}
+.svc strong{font:700 17px/1.3 var(--f-display);color:var(--navy)}
+.svc span{font-size:15px;line-height:1.5;color:var(--muted)}
+.emergency{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border:1px solid #F1C9C5;border-radius:var(--r-md);background:#FEF6F5;font-size:15px;line-height:1.55;color:var(--text)}
+.emergency .ico{width:22px;height:22px;color:var(--alert);margin-top:1px}
+.emergency strong{color:var(--alert)}
+
+/* ---------- Story (illustrative) ---------- */
+.story{background:var(--cloud);border-block:1px solid var(--line)}
+.story-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:88px;align-items:center}
+.story-photo{position:relative}
+.story-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 60%;border-radius:var(--r-xl)}
+.story-photo figcaption{position:absolute;left:16px;top:16px}
+.tag-illus{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--white);border:1px solid var(--champagne);font:600 12px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+.story blockquote{margin:28px 0 0;font:500 clamp(26px,2.7vw,40px)/1.28 var(--f-display);color:var(--navy);letter-spacing:-.02em;text-wrap:pretty;position:relative}
+.story blockquote::before{content:"\201C";position:absolute;left:-.55em;top:-.18em;color:var(--champagne);font-size:1.6em}
+.story .attr{font-size:15px;color:var(--muted);margin-top:20px}
+.itin{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 12px;margin-top:48px;padding-top:28px}
+.itin::before{content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--champagne);opacity:.6}
+.itin li{position:relative;min-width:0}
+.itin li::before{content:"";position:absolute;top:-28px;left:0;width:15px;height:15px;border-radius:50%;background:var(--white);border:1.5px solid var(--champagne)}
+.itin li.k::before{background:var(--teal);border-color:var(--teal)}
+.itin .d{display:block;font:800 14px/1 var(--f-display);color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.itin .e{display:block;font-size:14px;line-height:1.4;color:var(--muted);margin-top:6px}
+
+/* ---------- Partners ---------- */
+.partners{background:var(--white)}
+.partner-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.pcard{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:grid;background:var(--white);box-shadow:0 24px 48px -32px rgba(16,42,67,.25)}
+.pcard.hosp{grid-column:1 / span 7;grid-template-columns:1fr 1fr}
+.pcard.agents{grid-column:8 / span 5}
+.pcard .ph{background:#DCE3EA;min-height:100%}
+.pcard{transition:box-shadow .3s,border-color .3s}
+.pcard:hover{border-color:var(--line-strong);box-shadow:0 30px 56px -30px rgba(16,42,67,.34)}
+.pcard .ph{overflow:hidden}
+.pcard .ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.pcard:hover .ph img{transform:scale(1.03)}
+.pcard .pb{padding:36px;display:grid;gap:16px;align-content:start}
+.pcard .k{font:600 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pcard h3{font-size:26px;font-weight:600;line-height:1.2;letter-spacing:-.025em}
+.pcard p{font-size:16px}
+.pcard ul{display:grid;gap:8px;font-size:15px;color:var(--muted)}
+.pcard li{display:flex;gap:10px;align-items:baseline}
+.pcard li::before{content:"";width:12px;height:1px;background:var(--champagne);flex:none;transform:translateY(-4px)}
+.pcard .pa{margin-top:8px}
+.agent-stat{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:40px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.agent-stat div{display:grid;gap:6px}
+.agent-stat .num{font:200 48px/1 var(--f-display);letter-spacing:-.04em;color:var(--navy);font-variant-numeric:tabular-nums}
+.agent-stat span{font-size:13px;color:var(--muted)}
+
+/* ---------- Closing CTA ---------- */
+.finale{position:relative;color:#fff;overflow:hidden;background:var(--navy)}
+.finale > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.finale::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,31,51,.9) 0%,rgba(11,31,51,.74) 38%,rgba(11,31,51,.22) 72%,rgba(11,31,51,.05) 100%)}
+.finale-inner{position:relative;z-index:1;padding-block:clamp(96px,11vw,168px)}
+.final-rail{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font:600 12.5px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.final-rail i{width:24px;height:1px;background:var(--champagne-on-dark)}
+.final-rail b{color:var(--teal-glow)}
+.finale h2{color:#fff;font-weight:500;font-size:clamp(40px,5.6vw,88px);line-height:1;letter-spacing:-.035em;margin:28px 0;max-width:14ch}
+.finale h2 .thin{font-weight:200}
+.finale .sub{max-width:46ch;color:rgba(255,255,255,.92);font-size:clamp(17px,1.4vw,20px)}
+.finale-ctas{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-top:40px}
+.finale-ctas .note{flex-basis:100%;display:flex;align-items:center;gap:10px;font:500 14px/1.4 var(--f-body);color:rgba(255,255,255,.9)}
+.finale-ctas .note::before{content:"";width:24px;height:1px;background:var(--champagne-on-dark)}
+
+/* ---------- Footer ---------- */
+.site-footer{background:var(--navy);color:rgba(255,255,255,.82);font-size:15px;line-height:1.65}
+.site-footer{border-top:1px solid var(--champagne)}
+.foot-grid{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:48px;padding-block:88px 64px}
+.foot-brand svg{height:36px;width:auto}
+.foot-brand .disc-h{display:block;margin-top:28px;font:600 12px/1.4 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--champagne-on-dark)}
+.foot-brand p{margin-top:8px;max-width:40ch;font-size:14.5px;color:rgba(255,255,255,.8)}
+.foot-brand .contact{display:grid;gap:4px;margin-top:20px;font-size:14px}
+.foot-brand .contact b{display:inline-block;min-width:64px;color:var(--champagne-on-dark);font:600 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase}
+.foot-brand .contact a{color:#fff}
+.site-footer h3{font:600 12.5px/1.4 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--champagne-on-dark);padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(216,191,145,.35)}
+.site-footer ul{display:grid;gap:10px}
+.site-footer a{color:rgba(255,255,255,.88);text-decoration:none}
+.site-footer a:hover{color:#fff;text-decoration:underline;text-decoration-color:var(--champagne-on-dark)}
+.credits details{border-top:1px solid rgba(255,255,255,.12);padding-block:24px}
+.credits summary{display:inline-flex;align-items:center;gap:10px;list-style:none;cursor:pointer;font:600 12.5px/1.4 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.82);width:max-content;max-width:100%}
+.credits summary::-webkit-details-marker{display:none}
+.credits summary::before{content:"+";font:400 18px/1 var(--f-body);color:var(--champagne-on-dark);width:12px}
+.credits details[open] summary::before{content:"2"}
+.credits summary:hover{color:#fff}
+.credits ol{list-style:decimal;margin:16px 0 0;padding-left:20px;columns:3;column-gap:48px;font-size:13px;color:rgba(255,255,255,.78)}
+.credits li{break-inside:avoid;margin-bottom:4px}
+.credits p{margin-top:12px;font-size:13px;color:rgba(255,255,255,.78)}
+.copybar{background:var(--navy-deep);font-size:13.5px;color:rgba(255,255,255,.8)}
+.copybar .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 32px;padding-block:22px max(22px, env(safe-area-inset-bottom,0px))}
+.copybar nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+.copybar a{color:rgba(255,255,255,.9);text-decoration:none}
+.copybar a:hover{text-decoration:underline}
+.copybar .dev a{color:#fff;font-weight:600}
+
+/* Floating actions: bottom right (the theme switcher owns bottom left) */
+.fab{position:fixed;z-index:45;right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.fab a{position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;box-shadow:0 20px 40px -12px rgba(16,42,67,.45),0 2px 6px rgba(16,42,67,.18)}
+.fab .wa{background:var(--wa)}
+.fab .call{background:var(--navy)}
+.fab .ico{width:24px;height:24px}
+.fab .wa .ico{fill:currentColor;stroke:none;width:26px;height:26px}
+.fab a span{position:absolute;right:68px;top:50%;transform:translate(8px,-50%);opacity:0;pointer-events:none;white-space:nowrap;background:var(--navy);color:#fff;font:600 13px/1 var(--f-body);padding:10px 12px;border-radius:6px;transition:opacity .2s,transform .2s}
+.fab a:hover span,.fab a:focus-visible span{opacity:1;transform:translate(0,-50%)}
+
+/* Motion: one orchestrated entrance, then quiet */
+@media (prefers-reduced-motion:no-preference){
+  .hero-img{animation:settle 2.2s cubic-bezier(.2,.7,.2,1) both}
+  .hero-copy > *{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+  .hero-copy > *:nth-child(2){animation-delay:.06s}
+  .hero-copy > *:nth-child(3){animation-delay:.12s}
+  .hero-copy > *:nth-child(4){animation-delay:.18s}
+  .hero-copy > *:nth-child(5){animation-delay:.24s}
+}
+@keyframes settle{from{transform:scale(1.05)}to{transform:none}}
+@keyframes rise{from{opacity:.001;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width:1024px){
+  .site-header .mega{left:15%;right:15%;border-radius:0 0 16px 16px;overflow:hidden}
+}
+@media (min-width:1024px) and (max-height:820px){
+  .hero h1{font-size:clamp(44px,4.9vw,72px)}
+  .hero-inner{padding-block:48px 40px}
+  .hero-copy{gap:20px}
+}
+@media (min-width:1024px) and (max-height:760px){
+  .hero{min-height:0}
+  .hero h1{font-size:clamp(44px,4.4vw,60px)}
+  .hero .sub{font-size:17px}
+  .hero-inner{padding-block:36px 32px}
+  .hero-copy{gap:16px}
+  .assess{padding:14px;gap:10px}
+}
+@media (max-width:1439px){
+  .hero-copy{grid-column:1 / span 7}
+}
+@media (max-width:1279px){
+  .bar{gap:24px}
+  .nav > button{padding:0 11px;font-size:15.5px}
+  .nav > button::after{left:11px;right:11px}
+  .mega-inner{padding-inline:32px}
+  .mega-foot{padding-inline:32px}
+}
+@media (max-width:1180px){
+  .site-header .mega-feature{display:none}
+  .mega-inner{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-copy{grid-column:1 / span 7}
+}
+@media (max-width:1023px){
+  .nav,.actions .login,.actions .btn{display:none}
+  .burger{display:inline-flex}
+  .bar{height:68px;justify-content:space-between}
+  .u-left{display:none}
+  .utility .wrap{justify-content:flex-end}
+  .mega{display:none!important}
+
+  .hero{min-height:0}
+  .hero::after{background:linear-gradient(180deg,rgba(11,31,51,.55) 0%,rgba(11,31,51,.78) 40%,rgba(11,31,51,.92) 100%)}
+  .hero-inner{grid-template-columns:1fr;padding-block:96px 40px}
+  .hero-copy{grid-column:1 / -1}
+  .hero-inner{grid-template-columns:minmax(0,1fr)}
+
+  .rail-head{padding-top:28px}
+  .rail{gap:0 10px;padding-block:58px 32px}
+  .rail .desc{display:none}
+  .rail .name{font-size:16px;margin:6px 0 0}
+
+  .trust-row{grid-template-columns:repeat(3,1fr)}
+  .trust-cell:first-child{grid-column:1 / -1;padding:28px 0;border-bottom:1px solid var(--rule)}
+  .trust-cell:nth-child(2){border-left:0;padding-left:0}
+
+  .sec-head{grid-template-columns:1fr;margin-bottom:40px}
+  .sec-head .t,.sec-head .d{grid-column:1 / -1}
+  .spec-wrap,.cost-grid,.atlas,.partner-grid{grid-template-columns:1fr}
+  .spec-photo,.spec-right,.cost-copy,.cost-panel,.pcard.hosp,.pcard.agents{grid-column:1 / -1}
+  .spec-photo img{aspect-ratio:16/9;object-position:50% 25%}
+  .cost-copy{padding-right:0}
+
+  .atlas{display:block}
+  .frame{display:none}
+  /* Destinations below 1024px: a swipeable row of photo cards, every card with its airport code and line */
+  .city-list{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;border-top:0;margin-inline:calc(-1 * var(--g));padding:4px var(--g) 8px;scroll-padding-inline:var(--g)}
+  .city-list::-webkit-scrollbar{display:none}
+  .city-list li{border:0;flex:0 0 min(78%,340px);scroll-snap-align:start}
+  .city{display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:6px;aspect-ratio:4/5;padding:22px 20px;border-radius:var(--r-lg);overflow:hidden;background:var(--navy)}
+  .city::before{display:none}
+  .city .thumb{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .city::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,31,51,.25) 0%,rgba(11,31,51,0) 28%,rgba(11,31,51,.2) 48%,rgba(11,31,51,.9) 100%)}
+  .city .nm,.city[aria-pressed="true"] .nm,.city:hover .nm{position:relative;z-index:1;color:#fff;font:600 26px/1.1 var(--f-display);letter-spacing:-.02em}
+  .city .ln,.city[aria-pressed="true"] .ln{position:relative;z-index:1;color:rgba(255,255,255,.92);font-size:15px;line-height:1.45;max-width:30ch}
+  .city .code,.city[aria-pressed="true"] .code,.city:hover .code{position:absolute;z-index:1;left:20px;top:20px;color:#fff;background:rgba(11,31,51,.5);border-color:rgba(255,255,255,.7);font-size:12px;letter-spacing:.16em}
+  .atlas-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px}
+  .atlas-count{font:600 14px/1 var(--f-body);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+  .atlas-count b{color:var(--navy);font-weight:700}
+  .atlas-track{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden;border-radius:2px}
+  .atlas-track i{position:absolute;left:0;top:0;bottom:0;width:calc(100% / 7);background:var(--teal);transition:transform .3s ease}
+  .atlas-btns{display:flex;gap:8px}
+  .atlas-btns button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:var(--white);color:var(--navy);display:grid;place-items:center;cursor:pointer;transition:border-color .15s,color .15s,opacity .15s}
+  .atlas-btns button:hover{border-color:var(--teal);color:var(--teal)}
+  .atlas-btns button:disabled{opacity:.4;cursor:default}
+  .atlas-btns .prev .ico{transform:rotate(180deg)}
+
+  .j-head{grid-template-columns:1fr;margin-bottom:56px}
+  .steps{gap:72px}
+  .step{grid-template-columns:1fr;gap:28px}
+  .step::before,.step::after{display:none}
+  .step-mark{position:static;padding-left:0;grid-template-columns:auto 1fr;align-items:end;column-gap:20px}
+  .step-mark::before,.step-mark .when::before{display:none}
+  .step-mark .no{grid-row:span 2}
+  .step-mark .nm{margin-top:0}
+  .step-comp{grid-template-columns:1fr;padding-bottom:0}
+  .step .step-photo,.step .step-body,.step .pass{grid-column:1!important;grid-row:auto!important;margin:0!important;align-self:auto!important}
+  .step .step-body{margin:-48px 12px 0!important}
+  .step.travel .step-photo{aspect-ratio:4/3}
+  .step.travel .pass{margin:-56px 12px 0!important;max-width:none;justify-self:stretch;width:auto}
+  .step.travel .step-body{margin:16px 0 0!important}
+  .j-end{margin-top:72px}
+
+  .support-grid,.story-grid{grid-template-columns:1fr;gap:56px}
+  .portrait{max-width:560px}
+  .pcard.hosp{grid-template-columns:1fr}
+  .pcard.hosp .ph{height:260px;min-height:0}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:40px 32px}
+  .foot-brand{grid-column:1 / -1}
+  .credits ol{columns:2}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .logo svg{height:28px}
+  .u-right{gap:14px}
+  .u-right .hide-sm{display:none}
+
+  .hero-inner{padding-block:84px 32px;gap:20px}
+  .hero-copy{gap:18px}
+  .hero{display:block}
+  .hero-img{position:relative;inset:auto;height:300px;object-position:64% 50%}
+  .hero::after{background:linear-gradient(180deg,rgba(16,42,67,0) 0,rgba(16,42,67,0) 150px,rgba(16,42,67,1) 300px)}
+  .hero-inner{margin-top:-64px;padding-block:0 36px}
+  .hero h1{font-size:42px;line-height:1.02}
+  .hero-trust{flex-direction:column;gap:10px}
+  .hero h1 br{display:none}
+  .assess{padding:14px}
+  .assess-row{flex-wrap:wrap;padding:6px}
+  .assess-row > .ico{display:none}
+  .assess-row input{padding:10px;flex-basis:100%}
+  .assess-row .btn{width:100%}
+  .assess-head .tag{display:none}
+  .chip-x{display:none}
+  .suggest{left:14px;right:14px;top:auto;bottom:calc(100% - 6px)}
+
+  .rail-head .eyebrow{font-size:12px;letter-spacing:.1em}
+  .rail-head .eyebrow::before{width:20px}
+  .rail-head .link-arrow{display:none}
+  .rail{grid-template-columns:repeat(5,minmax(0,1fr));gap:0 4px}
+  .rail .name{font-size:13px}
+  .rail .num{font-size:11px}
+
+  .trust-row{grid-template-columns:1fr 1fr}
+  .trust-cell{padding:22px 16px}
+  .trust-cell:nth-child(2){padding-left:0}
+  .trust-cell:nth-child(4){grid-column:1 / -1;border-left:0;border-top:1px solid var(--rule);padding-left:0}
+  .trust .num{font-size:44px}
+
+  .spec-photo img{aspect-ratio:4/3}
+  .spec-grid{grid-template-columns:1fr}
+  .spec,.spec:nth-child(odd),.spec:nth-child(even){padding:20px 0;border-right:0;grid-template-columns:32px minmax(0,1fr) auto;gap:16px}
+  .spec .sico{width:30px;height:30px}
+
+  .keep .k-val{font-size:48px}
+  .c-row,.c-axis{grid-template-columns:1fr;gap:10px}
+  .c-axis .pad{display:none}
+  .band::before,.band::after{opacity:.5}
+
+  .city .nm,.city[aria-pressed="true"] .nm,.city:hover .nm{font-size:24px}
+
+  .step-mark .no{font-size:56px}
+  .step-mark .nm{font-size:22px}
+  .step .step-body{padding:24px 22px}
+  .pass-route .code{font-size:28px}
+  .pass-top{font-size:10px;letter-spacing:.1em}
+  .pass-meta{gap:8px}
+  .pass-meta dd{font-size:13px}
+  .j-end{padding:24px 20px}
+
+  .wa-bubble{left:auto;right:4%;top:auto;bottom:-2%;max-width:250px;font-size:14px}
+  .portrait{padding:0 0 18% 0}
+  .portrait .p-sub{display:none}
+  .svc{grid-template-columns:1fr}
+  .itin{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 12px}
+  .itin::before{display:none}
+  .itin li::before{position:static;display:block;margin-bottom:10px}
+  .story blockquote::before{position:static;display:block;height:.5em;line-height:1}
+  .pcard .pb{padding:26px 20px}
+  .finale::after{background:linear-gradient(180deg,rgba(11,31,51,.6) 0%,rgba(11,31,51,.88) 100%)}
+  .finale-ctas .btn{width:100%}
+  .foot-grid{padding-block:64px 40px}
+  .credits ol{columns:1}
+  .copybar .wrap{flex-direction:column;align-items:flex-start;padding-bottom:max(96px, env(safe-area-inset-bottom,0px))}
+  .fab{right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .fab a{width:52px;height:52px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hig-g" x1="20" y1="114" x2="108" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22C55E"/><stop offset=".3" stop-color="#10B981"/><stop offset=".62" stop-color="#3B82F6"/><stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <symbol id="lotus" viewBox="5 11 118 107"><path fill="url(#hig-g)" fill-rule="evenodd" d="M64 12C66 21 71 29 77 37C83 45 85 54 85 65C85 85 75 99 64 108C53 99 43 85 43 65C43 54 45 45 51 37C57 29 62 21 64 12ZM62 54H66Q68 54 68 56V62H74Q76 62 76 64V68Q76 70 74 70H68V76Q68 78 66 78H62Q60 78 60 76V70H54Q52 70 52 68V64Q52 62 54 62H60V56Q60 54 62 54ZM68 112C92 114 114 92 116 44C102 52 91 62 90 76C89 92 80 104 68 112ZM60 112C36 114 14 92 12 44C26 52 37 62 38 76C39 92 48 104 60 112ZM74 116C96 119 114 108 122 86C112 89 105 95 100 101C94 108 85 113 74 116ZM54 116C32 119 14 108 6 86C16 89 23 95 28 101C34 108 43 113 54 116Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.3 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.6-.3z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3.5h3.2l1.6 4.2-2 1.3a11 11 0 0 0 7.2 7.2l1.3-2 4.2 1.6V19a1.8 1.8 0 0 1-1.9 1.8A16.4 16.4 0 0 1 3.2 5.4 1.8 1.8 0 0 1 5 3.5z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-3 8-7 9.5-4-1.5-7-5.1-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M21.5 15.2v-1.9l-8-5V3.6a1.5 1.5 0 0 0-3 0v4.7l-8 5v1.9l8-2.5v4.9l-2 1.5v1.5l3.5-1 3.5 1v-1.5l-2-1.5v-4.9z" transform="rotate(90 12 12)"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4zM4 16v2.5h3V16M17 16v2.5h3V16M4 12h16"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h11v8H9l-3 3v-3H4zM15 9h5v8h-2v3l-3-3h-5v-4"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.01"/></symbol>
+  </defs>
+</svg>
+
+<div class="utility">
+  <div class="wrap">
+    <div class="u-left"><span class="dot-live" aria-hidden="true"></span>International patient desk, open 24 hours</div>
+    <div class="u-right">
+      <a href="#support" class="hide-sm">Patient support</a>
+      <span class="sep hide-sm" aria-hidden="true"></span>
+      <a href="https://wa.me/919000000000" target="_blank" rel="noopener"><svg class="ico" style="fill:currentColor;stroke:none" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="tel:+919000000000"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><strong>+91 90000 00000</strong></a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="top">
+  <div class="wrap bar">
+    <a class="logo" href="#top" aria-label="Heal India Global, home">
+      <svg viewBox="5 11 583 107" aria-hidden="true"><use href="#lotus" x="5" y="11" width="118" height="107"/><text x="150" y="85" fill="#102A43" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" font-size="54" font-weight="700" textLength="436" lengthAdjust="spacingAndGlyphs">Heal India Global</text></svg>
+    </a>
+    <nav class="nav" aria-label="Main" id="nav"></nav>
+    <div class="actions">
+      <a class="login" href="#">Log in</a>
+      <a class="btn btn-primary btn-sm" href="#start">Get started</a>
+      <button class="burger" type="button" id="menu-open" aria-expanded="false" aria-controls="drawer" aria-label="Open menu"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+  <div id="megas"></div>
+</header>
+
+<div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="wrap">
+    <div class="drawer-top">
+      <a class="logo" href="#top" aria-label="Heal India Global, home"><svg viewBox="5 11 583 107" style="height:28px;width:auto" aria-hidden="true"><use href="#lotus" x="5" y="11" width="118" height="107"/><text x="150" y="85" fill="#102A43" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" font-size="54" font-weight="700" textLength="436" lengthAdjust="spacingAndGlyphs">Heal India Global</text></svg></a>
+      <button class="burger" type="button" id="menu-close" aria-label="Close menu" style="display:inline-flex"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <nav aria-label="Mobile" id="drawer-nav"></nav>
+    <div class="drawer-cta">
+      <a class="btn btn-primary" href="#start">Get a free AI assessment</a>
+      <a class="btn btn-ghost" href="#">Log in</a>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- HERO: A's cinematic photograph and type, B's assessment card and proof cards -->
+  <section class="hero on-dark" aria-labelledby="hero-title">
+    <img class="hero-img"
+      src="https://images.pexels.com/photos/11538583/pexels-photo-11538583.jpeg?auto=compress&cs=tinysrgb&w=1920"
+      srcset="https://images.pexels.com/photos/11538583/pexels-photo-11538583.jpeg?auto=compress&cs=tinysrgb&w=1000 1000w,
+              https://images.pexels.com/photos/11538583/pexels-photo-11538583.jpeg?auto=compress&cs=tinysrgb&w=1920 1920w,
+              https://images.pexels.com/photos/11538583/pexels-photo-11538583.jpeg?auto=compress&cs=tinysrgb&w=2600 2600w"
+      sizes="100vw" alt="A family walking hand in hand along an Indian beach at golden hour" fetchpriority="high" width="1920" height="1280">
+        <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Medical travel to India</p>
+        <h1 id="hero-title">Exceptional care<br> in India, <span class="thin">arranged<br> around&nbsp;you.</span></h1>
+        <p class="sub">Accredited hospitals, itemised quotes and one coordinator, from your first report to your flight home.</p>
+
+        <form class="assess" id="assess" autocomplete="off">
+          <div class="assess-head">
+            <label for="need"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Free AI assessment</label>
+            <span class="tag">About 5 minutes</span>
+          </div>
+          <div class="assess-row">
+            <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="need" name="need" type="text" placeholder="e.g. knee replacement" role="combobox" aria-expanded="false" aria-controls="suggest" aria-autocomplete="list">
+            <button class="btn btn-primary" type="submit">Start assessment</button>
+          </div>
+          <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+          <div class="assess-foot">
+            <span>Popular:</span>
+            <button type="button" class="chip" data-q="Heart bypass">Heart bypass</button>
+            <button type="button" class="chip" data-q="Knee replacement">Knee replacement</button>
+            <button type="button" class="chip" data-q="IVF">IVF</button>
+            <button type="button" class="chip chip-x" data-q="Kidney transplant">Kidney transplant</button>
+          </div>
+          <p class="assess-note"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg>Not a diagnosis. A doctor reviews every case.</p>
+        </form>
+
+        <ul class="hero-trust" aria-label="Why patients trust us">
+          <li><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg>JCI &amp; NABH accredited</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Itemised quotes in 48 hours</li>
+          <li><span class="face"><img src="https://images.pexels.com/photos/7580837/pexels-photo-7580837.jpeg?auto=compress&cs=tinysrgb&w=96&h=96&fit=crop" alt="" width="96" height="96"></span>24-hour patient desk</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- JOURNEY RAIL: C's five stops, the thread of the page -->
+  <section class="railband" aria-labelledby="rail-title">
+    <div class="wrap">
+      <div class="rail-head">
+        <p class="eyebrow" id="rail-title">Your journey, in five stops</p>
+        <a class="link-arrow" href="#journey">See the whole journey <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="rail-box">
+      <ol class="rail">
+        <li class="done"><a href="#step-1"><i class="node" aria-hidden="true"></i><span class="num">01</span><span class="name">Assess</span><span class="desc">Share reports from home. A free AI assessment, reviewed by a doctor.</span></a></li>
+        <li class="here"><a href="#step-2"><i class="node" aria-hidden="true"></i><span class="num">02</span><span class="name">Choose</span><span class="desc">Compare matched hospitals and itemised quotes.</span></a></li>
+        <li><a href="#step-3"><i class="node" aria-hidden="true"></i><span class="num">03</span><span class="name">Travel</span><span class="desc">e-Medical visa, flights, airport pickup and a stay nearby.</span></a></li>
+        <li><a href="#step-4"><i class="node" aria-hidden="true"></i><span class="num">04</span><span class="name">Treat</span><span class="desc">Your coordinator and a translator at every appointment.</span></a></li>
+        <li><a href="#step-5"><i class="node" aria-hidden="true"></i><span class="num">05</span><span class="name">Recover</span><span class="desc">Fly home with a plan, then video follow-ups with your doctor.</span></a></li>
+      </ol>
+      <svg class="plane-fly" aria-hidden="true"><use href="#i-plane"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust" aria-label="Accreditation and track record">
+    <div class="wrap">
+      <div class="trust-row">
+        <div class="trust-cell">
+          <div class="badges"><span class="badge"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>JCI</span><span class="badge"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>NABH</span></div>
+          <span class="lbl">Every partner hospital holds Joint Commission International or NABH accreditation</span>
+        </div>
+        <div class="trust-cell"><span class="num">14</span><span class="lbl">Accredited partner hospitals</span></div>
+        <div class="trust-cell"><span class="num">7</span><span class="lbl">Cities with international airports</span></div>
+        <div class="trust-cell"><span class="num">5,000+<sup>*</sup></span><span class="lbl">International patients guided</span></div>
+      </div>
+      <p class="footnote">* Indicative figure across our partner network.</p>
+    </div>
+  </section>
+
+  <!-- SPECIALTIES: B's calm hairline grid with A's display names and portrait -->
+  <section class="sec" id="specialties" aria-labelledby="spec-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t">
+          <div class="stop"><span class="dots" aria-hidden="true"><i class="here"></i><i></i><i></i><i></i><i></i></span><span class="label">Stop 1 of 5 · <b>Assess</b></span></div>
+          <h2 class="h2" id="spec-title">Eight specialties, <em>chosen for depth.</em></h2>
+        </div>
+        <p class="d lede">We focus where India's accredited hospitals have the most experience with international patients.</p>
+      </div>
+      <div class="spec-wrap">
+      <figure class="spec-photo">
+        <img src="https://images.unsplash.com/photo-1637059824899-a441006a6875?auto=format&fit=crop&w=800&h=1000&q=80" alt="A doctor with a stethoscope, arms crossed" loading="lazy" decoding="async" width="800" height="1000">
+        <figcaption>Specialists are named on every quote, with their training and experience.</figcaption>
+      </figure>
+      <div class="spec-right">
+        <div class="spec-grid">
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 27s-10-6.2-10-13.3A5.7 5.7 0 0 1 16 10a5.7 5.7 0 0 1 10 3.7C26 20.8 16 27 16 27Z"/><path d="M9 16h4l2-3 2.5 6 1.5-3h4"/></svg><div><h3>Cardiac sciences</h3><p>Bypass, valve repair, angioplasty</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><path d="M11.5 20.5l9-9"/><path d="M11.5 20.5a3 3 0 1 0-3.4 3.4 3 3 0 1 0 3.4-3.4Z"/><path d="M20.5 11.5a3 3 0 1 0 3.4-3.4 3 3 0 1 0-3.4 3.4Z"/></svg><div><h3>Orthopaedics</h3><p>Knee, hip and shoulder replacement</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="5"/><circle cx="16" cy="16" r="11" stroke-dasharray="2 3"/><path d="M16 5v3M16 24v3M5 16h3M24 16h3"/></svg><div><h3>Oncology</h3><p>Surgery, radiation and chemotherapy</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 7c-4 0-7 3.8-7 9s2.6 9 6.5 9c2.6 0 3.5-2 3.5-4.5 0-2-1.5-3-1.5-4.5S16 13.8 16 12c0-3-1-5-3-5Z"/><path d="M19 7c4 0 7 3.8 7 9s-2.6 9-6.5 9"/><path d="M16 15h5"/></svg><div><h3>Organ transplant</h3><p>Kidney, liver and bone marrow</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 6.5c-1.6-1.6-5-1.6-6.3.6-2.6.2-4 2.7-3.2 5-1.6 1.4-1.6 4.3.2 5.6-.6 2.6 1.2 4.8 3.6 4.8 1 2.2 4 2.7 5.7 1V6.5Z"/><path d="M16 6.5c1.6-1.6 5-1.6 6.3.6 2.6.2 4 2.7 3.2 5 1.6 1.4 1.6 4.3-.2 5.6.6 2.6-1.2 4.8-3.6 4.8-1 2.2-4 2.7-5.7 1"/><path d="M16 23.5V27"/></svg><div><h3>Neurosciences</h3><p>Brain and spine surgery, stroke care</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="4"/><circle cx="9.5" cy="11" r="1"/><circle cx="22.5" cy="20.5" r="1"/><circle cx="21" cy="10" r=".8"/></svg><div><h3>Fertility and IVF</h3><p>IVF, ICSI and egg freezing</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="8" width="20" height="18" rx="4"/><path d="M11 13a7 7 0 0 1 10 0"/><path d="m16 13 1.5 3"/></svg><div><h3>Weight-loss surgery</h3><p>Sleeve gastrectomy, gastric bypass</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="spec" href="#"><svg class="sico" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 16c3.5-5.5 7.5-8 12-8s8.5 2.5 12 8c-3.5 5.5-7.5 8-12 8s-8.5-2.5-12-8Z"/><circle cx="16" cy="16" r="4.5"/></svg><div><h3>Eye care</h3><p>Cataract, LASIK and retina surgery</p></div><span class="go"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        </div>
+        <div class="spec-more">
+          <p>Looking for something else? We cover more than 40 treatments.</p>
+          <a class="link-arrow" href="#">Browse all treatments <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVINGS: B's navy band, CABG drawn to scale -->
+  <section class="sec band on-dark" id="cost" aria-labelledby="cost-title">
+    <div class="wrap cost-grid">
+      <div class="cost-copy">
+        <div class="stop"><span class="dots" aria-hidden="true"><i class="done"></i><i class="here"></i><i></i><i></i><i></i></span><span class="label">Stop 2 of 5 · <b>Choose</b></span></div>
+        <h2 class="h2" id="cost-title">The same operation, <em>at a fraction of the price.</em></h2>
+        <p>Move the slider to the price you were quoted at home. Your own quote from India is itemised line by line.</p>
+        <div class="cost-ctas">
+          <a class="btn btn-primary" href="#start">Get a free AI assessment <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="link-arrow" href="#">How quotes work <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="itemised">
+          <p>Every quote is itemised</p>
+          <ul><li>Surgeon and theatre</li><li>Room and ICU stay</li><li>Implants and medicines</li><li>Tests and follow-up</li></ul>
+        </div>
+      </div>
+      <div class="cost-panel">
+        <div class="cp-proc"><strong>Coronary artery bypass graft (CABG)</strong><span>Indicative · USD</span></div>
+        <div class="keep" aria-live="polite">
+          <span class="k-lbl">Difference against your quote</span>
+          <span class="k-val" id="k-val">$112,600<small> – $116,000</small></span>
+          <span class="k-sub">India costs at least <b id="k-pct">93%</b> less than a <span id="k-q">$120,000</span> quote.</span>
+        </div>
+        <div class="chart" role="img" aria-label="To-scale comparison on a 0 to 200,000 dollar axis. United States 70,000 to 200,000 dollars. India 4,000 to 7,400 dollars.">
+          <div class="c-row">
+            <div class="who"><b>United States</b>$70,000 – $200,000</div>
+            <div class="track"><span class="bar-us"></span><span class="pin" id="pin" style="left:60%"><span class="pin-lbl">Your quote</span></span></div>
+          </div>
+          <div class="c-row">
+            <div class="who"><b style="color:var(--teal-glow)">India</b>$4,000 – $7,400</div>
+            <div class="track"><span class="bar-in"></span></div>
+          </div>
+          <div class="c-axis" aria-hidden="true">
+            <span class="pad"></span>
+            <div class="ticks"><span style="left:0">$0</span><span style="left:25%">50k</span><span style="left:50%">100k</span><span style="left:75%">150k</span><span style="left:100%">200k</span></div>
+          </div>
+        </div>
+        <div class="slider">
+          <label for="quote">Your US quote <output id="q-out" for="quote">$120,000</output></label>
+          <input type="range" id="quote" min="70000" max="200000" step="1000" value="120000">
+          <div class="s-ends"><span>$70,000</span><span>$200,000</span></div>
+        </div>
+        <p class="cost-note">Indicative hospital charges only. Flights, stay and follow-up care are extra. Your quote depends on your reports and the hospital you choose.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTINATIONS: A's atlas (hover a city), C's photo tiles on mobile -->
+  <section class="sec" id="destinations" aria-labelledby="dest-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t">
+          <div class="stop"><span class="dots" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="here"></i><i></i><i></i></span><span class="label">Stop 3 of 5 · <b>Travel</b></span></div>
+          <h2 class="h2" id="dest-title">Seven cities, <em>one standard of care.</em></h2>
+        </div>
+        <p class="d lede">Choose a city for its hospital, its flights or simply the place you would like to recover in.</p>
+      </div>
+      <div class="atlas">
+        <ul class="city-list" id="cities"></ul>
+        <div class="frame" id="frame" aria-live="polite">
+          <div class="frame-cap"><h3><span id="frame-name">Delhi NCR</span><span class="iata" id="frame-code">DEL</span></h3><span class="idx" id="frame-idx">01<small>/07</small></span></div>
+        </div>
+      </div>
+      <div class="atlas-nav">
+        <span class="atlas-count" aria-live="polite"><b id="atlas-n">01</b> / 07</span>
+        <span class="atlas-track" aria-hidden="true"><i id="atlas-bar"></i></span>
+        <span class="atlas-btns"><button type="button" class="prev" aria-label="Previous city"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button><button type="button" class="next" aria-label="Next city"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS: C's journey rows, on a calm cloud band -->
+  <section class="sec journey" id="journey" aria-labelledby="j-title">
+    <div class="wrap">
+      <div class="j-head">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2 class="h2" id="j-title">Five stops. One coordinator. <em>Door to door.</em></h2>
+        </div>
+        <div class="j-intro">
+          <p>From the first upload to the last video follow-up, every stop is planned before you pack, and one person sees it through.</p>
+          <p class="j-meta"><svg class="ico" style="fill:currentColor;stroke:none" aria-hidden="true"><use href="#i-plane"/></svg><span>Typical time from first upload to arrival: <b>2 to 4 weeks</b></span></p>
+        </div>
+      </div>
+
+      <div class="steps">
+        <article class="step l" id="step-1" aria-labelledby="st1">
+          <div class="step-mark"><span class="no" aria-hidden="true">01</span><span class="nm">Assess</span><span class="when">From home, in about 2 working days</span></div>
+          <div class="step-comp">
+            <figure class="step-photo"><img src="https://images.pexels.com/photos/8837744/pexels-photo-8837744.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="A woman waves at a tablet during a video call from her home office" width="1100" height="733" loading="lazy" decoding="async"></figure>
+            <div class="step-body">
+              <h3 id="st1">Tell us what is wrong, in your own words.</h3>
+              <p>Upload reports or answer a short guided questionnaire. Our AI organises your history, and a doctor on our medical team reviews it.</p>
+              <ul class="facts"><li>Free</li><li>Doctor-reviewed</li><li>Not a diagnosis</li></ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="step r" id="step-2" aria-labelledby="st2">
+          <div class="step-mark"><span class="no" aria-hidden="true">02</span><span class="nm">Choose</span><span class="when">Matched options within a week</span></div>
+          <div class="step-comp">
+            <figure class="step-photo"><img src="https://images.pexels.com/photos/8770713/pexels-photo-8770713.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="Two doctors in lab coats reviewing an X-ray together" width="1100" height="733" loading="lazy" decoding="async" style="object-position:40% 40%"></figure>
+            <div class="step-body">
+              <h3 id="st2">Compare matched hospitals, line by line.</h3>
+              <p>See two or three accredited options with the surgeon, room, ICU, implants and medicines priced separately. No surprises at discharge.</p>
+              <ul class="facts"><li>Itemised quotes</li><li>Doctor profiles</li></ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="step travel" id="step-3" aria-labelledby="st3">
+          <div class="step-mark"><span class="no" aria-hidden="true">03</span><span class="nm">Travel</span><span class="when">Visa, flights, pickup and stay</span></div>
+          <div class="step-comp">
+            <figure class="step-photo"><img src="https://images.pexels.com/photos/4173213/pexels-photo-4173213.jpeg?auto=compress&cs=tinysrgb&w=900" alt="A mother and her daughter walking through an airport corridor with a suitcase" width="900" height="600" loading="lazy" decoding="async" style="object-position:30% 50%"></figure>
+            <div class="pass" role="group" aria-label="Example itinerary">
+              <div class="pass-top"><span>Example itinerary</span><span>Knee replacement</span></div>
+              <div class="pass-route"><span class="code">LOS</span><span class="line"><svg class="ico" aria-hidden="true"><use href="#i-plane"/></svg></span><span class="code">MAA</span></div>
+              <div class="pass-cities"><span>Lagos</span><span>Chennai</span></div>
+              <div class="pass-perf" aria-hidden="true"></div>
+              <dl class="pass-meta">
+                <div><dt>In India</dt><dd class="tnum">18 days</dd></div>
+                <div><dt>Hospital</dt><dd>JCI accredited</dd></div>
+                <div><dt>Coordinator</dt><dd>On WhatsApp</dd></div>
+              </dl>
+            </div>
+            <div class="step-body">
+              <h3 id="st3">Visa, flights and a room near the hospital.</h3>
+              <p>We prepare your e-Medical visa letter, meet you at arrivals and settle you and one companion into a stay a short drive from your hospital.</p>
+              <ul class="facts"><li>e-Medical visa</li><li>Airport pickup</li><li>Companion stay</li></ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="step r" id="step-4" aria-labelledby="st4">
+          <div class="step-mark"><span class="no" aria-hidden="true">04</span><span class="nm">Treat</span><span class="when">In India, with someone beside you</span></div>
+          <div class="step-comp">
+            <figure class="step-photo"><img src="https://images.pexels.com/photos/18870282/pexels-photo-18870282.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="A doctor listening to an older patient's chest with a stethoscope" width="1100" height="619" loading="lazy" decoding="async" style="object-position:50% 35%"></figure>
+            <div class="step-body">
+              <h3 id="st4">Someone beside you at every appointment.</h3>
+              <p>Your coordinator and a translator join consultations, surgery day and discharge, and your family at home gets updates if you want them to.</p>
+              <ul class="facts"><li>Translator on site</li><li>WhatsApp, 24/7</li></ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="step l" id="step-5" aria-labelledby="st5">
+          <div class="step-mark"><span class="no" aria-hidden="true">05</span><span class="nm">Recover</span><span class="when">Fly home, then follow-ups from home</span></div>
+          <div class="step-comp">
+            <figure class="step-photo"><img src="https://images.pexels.com/photos/37956311/pexels-photo-37956311.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="An older couple standing together in a Delhi park" width="1100" height="733" loading="lazy" decoding="async" style="object-position:45% 40%"></figure>
+            <div class="step-body">
+              <h3 id="st5">A plan for home, and a doctor who stays in touch.</h3>
+              <p>You fly home with discharge notes, medicines and video follow-ups booked with your surgeon. Your coordinator checks in until you are back on your feet.</p>
+              <ul class="facts"><li>Discharge plan</li><li>Video follow-ups</li></ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="j-end">
+        <span>Ready for the first stop? A free assessment takes about ten minutes.</span>
+        <a class="btn btn-primary" href="#start">Get a free AI assessment <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCIERGE: C's coordinator portrait and in-country support -->
+  <section class="sec support" id="support" aria-labelledby="sp-title">
+    <div class="wrap support-grid">
+      <div>
+        <div class="portrait">
+          <div class="p-main"><img src="https://images.pexels.com/photos/7580837/pexels-photo-7580837.jpeg?auto=compress&cs=tinysrgb&w=900" alt="A patient coordinator in a navy blazer, smiling, arms folded" width="900" height="1350" loading="lazy" decoding="async"></div>
+          <div class="p-sub"><img src="https://images.pexels.com/photos/8866740/pexels-photo-8866740.jpeg?auto=compress&cs=tinysrgb&w=600" alt="A support coordinator wearing a headset at her desk" width="600" height="400" loading="lazy" decoding="async"></div>
+          <div class="wa-bubble" role="note" aria-label="Example WhatsApp message from a coordinator">
+            <span class="who"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg>Your coordinator</span>
+            Your pickup is confirmed for 06:40 at Terminal 2. I will be at the arrivals gate with your name.
+            <time class="tnum">05:12</time>
+          </div>
+        </div>
+        <p class="p-caption">Illustrative example. You meet your named coordinator on your first call.</p>
+      </div>
+      <div class="support-copy">
+        <div class="stop"><span class="dots" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="here"></i><i></i></span><span class="label">Stop 4 of 5 · <b>Treat</b></span></div>
+        <h2 class="h2" id="sp-title">One person who knows your case, <em>day and night.</em></h2>
+        <p class="lede">Your coordinator books every appointment, translates when you need it and answers at 3 am.</p>
+        <ul class="svc">
+          <li><svg class="ico" style="fill:currentColor;stroke:none" aria-hidden="true"><use href="#i-wa"/></svg><strong>WhatsApp, 24/7</strong><span>Messages answered around the clock</span></li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-sos"/></svg><strong>SOS line</strong><span>A direct line while you are in India</span></li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-car"/></svg><strong>Airport to bedside</strong><span>Pickup, transfers and admission</span></li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><strong>Translators</strong><span>Arabic, French, Bengali, Swahili and more</span></li>
+        </ul>
+        <p class="emergency" role="note"><svg class="ico" aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Emergency — seek local care now.</strong> If you feel unwell before you travel, call your local emergency number first. We are not an emergency service.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY: illustrative, with C's day-by-day itinerary -->
+  <section class="sec story" aria-labelledby="st-title">
+    <div class="wrap story-grid">
+      <figure class="story-photo">
+        <img src="https://images.pexels.com/photos/23480445/pexels-photo-23480445.jpeg?auto=compress&cs=tinysrgb&w=900" alt="An older couple seen from behind, sitting together on a seafront wall at sunset" width="900" height="1350" loading="lazy" decoding="async">
+        <figcaption><span class="tag-illus">Illustrative story</span></figcaption>
+      </figure>
+      <div>
+        <div class="stop"><span class="dots" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="here"></i></span><span class="label">Stop 5 of 5 · <b>Recover</b></span></div>
+        <h2 id="st-title" class="sr-only">An illustrative patient journey</h2>
+        <blockquote>We came for my husband's bypass. We went home with a doctor we trust, and a coordinator who still checks in every month.</blockquote>
+        <p class="attr">Illustrative: a composite of typical journeys, not a real patient or quote.</p>
+        <ol class="itin" aria-label="Illustrative timeline">
+          <li class="k"><span class="d">DAY 0</span><span class="e">Reports uploaded</span></li>
+          <li><span class="d">DAY 6</span><span class="e">Quote accepted</span></li>
+          <li><span class="d">DAY 15</span><span class="e">Lands in Chennai</span></li>
+          <li><span class="d">DAY 17</span><span class="e">Bypass surgery</span></li>
+          <li><span class="d">DAY 33</span><span class="e">Flies home</span></li>
+          <li class="k"><span class="d">WEEK 8</span><span class="e">Video follow-up</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="sec partners" id="partners" aria-labelledby="pt-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t">
+          <p class="eyebrow">For partners</p>
+          <h2 class="h2" id="pt-title">Grow with a network <em>built on transparency.</em></h2>
+        </div>
+        <p class="d lede">We work with accredited hospitals and with the agents and facilitators who refer patients to them.</p>
+      </div>
+      <div class="partner-grid">
+        <article class="pcard hosp">
+          <div class="ph"><img src="https://images.unsplash.com/photo-1516841273335-e39b37888115?auto=format&fit=crop&w=800&h=900&q=80" alt="Doctors and nurses walking down a bright hospital corridor" width="800" height="900" loading="lazy" decoding="async"></div>
+          <div class="pb">
+            <span class="k">For hospitals</span>
+            <h3>Receive screened international referrals</h3>
+            <p>Complete reports arrive before the first call, and you quote from one portal.</p>
+            <ul><li>JCI or NABH accreditation required</li><li>Structured, itemised quote requests</li><li>Coordinated arrivals</li></ul>
+            <div class="pa"><a class="btn btn-ghost btn-sm" href="#">Become a partner hospital</a></div>
+          </div>
+        </article>
+        <article class="pcard agents">
+          <div class="pb">
+            <span class="k">For agents and facilitators</span>
+            <div class="agent-stat">
+              <div><span class="num">1</span><span>portal for every case</span></div>
+              <div><span class="num">48 h</span><span>to hospital quotes</span></div>
+            </div>
+            <h3>Refer patients and follow every case</h3>
+            <p>See each case's status in real time and your commission on every booking.</p>
+            <div class="pa"><a class="btn btn-ghost btn-sm" href="#">Join as an agent</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING: A's full-bleed Kerala backwaters -->
+  <section class="finale on-dark" id="start" aria-labelledby="final-title">
+    <img src="https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=2000&h=1100&q=80" alt="A traditional houseboat on the palm-lined backwaters of Kerala" loading="lazy" decoding="async" width="2000" height="1100">
+    <div class="wrap finale-inner">
+      <p class="final-rail" aria-label="Your first stop: Assess"><b>01 Assess</b><i></i>Choose<i></i>Travel<i></i>Treat<i></i>Recover</p>
+      <h2 id="final-title">Begin with a free <span class="thin">AI&nbsp;assessment.</span></h2>
+      <p class="sub">Share your reports and receive matched hospitals with itemised quotes. Free, and without obligation.</p>
+      <div class="finale-ctas">
+        <a class="btn btn-primary" href="#">Get a free AI assessment <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-light" href="#support">Talk to a coordinator</a>
+        <span class="note">AI-assisted screening. Not a diagnosis.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer on-dark">
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <svg viewBox="5 11 583 107" role="img" aria-label="Heal India Global"><use href="#lotus" x="5" y="11" width="118" height="107"/><text x="150" y="85" fill="#FFFFFF" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" font-size="54" font-weight="700" textLength="436" lengthAdjust="spacingAndGlyphs">Heal India Global</text></svg>
+      <span class="disc-h">Disclaimer</span>
+      <p>Heal India Global is a medical travel facilitator, not a hospital or a doctor. Information on this site is general and does not replace advice from a qualified doctor. AI-assisted screening is not a diagnosis. All costs shown are indicative.</p>
+      <div class="contact"><span><b>Call</b><a href="tel:+919000000000">+91 90000 00000</a></span><span><b>Email</b><a href="mailto:care@healindiaglobal.example">care@healindiaglobal.example</a></span></div>
+    </div>
+    <div><h3>Patients</h3><ul><li><a href="#start">Free AI assessment</a></li><li><a href="#journey">How it works</a></li><li><a href="#cost">Indicative costs</a></li><li><a href="#specialties">Treatments</a></li><li><a href="#">FAQs</a></li></ul></div>
+    <div><h3>Plan your trip</h3><ul><li><a href="#">e-Medical visa</a></li><li><a href="#">Travel and stay</a></li><li><a href="#destinations">Destinations</a></li><li><a href="#support">In-country support</a></li></ul></div>
+    <div><h3>Partners</h3><ul><li><a href="#partners">Hospitals</a></li><li><a href="#partners">Agents and facilitators</a></li><li><a href="#">Partner log in</a></li></ul></div>
+    <div><h3>Company</h3><ul><li><a href="#">About us</a></li><li><a href="#">How we verify hospitals</a></li><li><a href="#">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+  </div>
+  <div class="wrap credits">
+    <details>
+      <summary>Photo credits</summary>
+      <ol>
+        <li>Family on a Gujarat beach, Radhika Studio (Pexels)</li>
+        <li>Doctors with a tablet, Vitaly Gariev</li>
+        <li>Hospital room with city view, César Vermorel Forest</li>
+        <li>Doctor portrait (menu), Usman Yousaf</li>
+        <li>Lotus Temple, New Delhi, Shaurya Kaushal</li>
+        <li>Clinicians reviewing scans, Accuray</li>
+        <li>Doctor portrait, vaibhav vivian</li>
+        <li>Humayun's Tomb, Delhi, Zoshua Colah</li>
+        <li>Temple, Chennai, SIBY</li>
+        <li>Gateway of India, Mumbai, Uday Sankar Yerramilli</li>
+        <li>Vidhana Soudha, Bengaluru, zablanca_clicks</li>
+        <li>Charminar, Hyderabad, Sunny</li>
+        <li>Bridge over the Krishna, Vijayawada, Prasad Dulam (Pexels)</li>
+        <li>Coastline, Visakhapatnam, John Vimal Velpula</li>
+        <li>Video call from home, Yan Krukau (Pexels)</li>
+        <li>Doctors reviewing an X-ray, Gustavo Fring (Pexels)</li>
+        <li>Mother and daughter at an airport, Gustavo Fring (Pexels)</li>
+        <li>Doctor with a senior patient, World Sikh Organization of Canada (Pexels)</li>
+        <li>Couple in a Delhi park, Frank van Dijk (Pexels)</li>
+        <li>Coordinator portrait, RDNE Stock project (Pexels)</li>
+        <li>Coordinator with headset, Yan Krukau (Pexels)</li>
+        <li>Couple by the sea, Aakash Goel (Pexels)</li>
+        <li>Care team in a corridor, Luis Melendez</li>
+        <li>Kerala backwaters, Abhishek Prasad</li>
+      </ol>
+      <p>Photographs from Unsplash (Unsplash License) and Pexels (Pexels License). Source links are in this file's header comment.</p>
+    </details>
+  </div>
+  <div class="copybar">
+    <div class="wrap">
+      <nav aria-label="Legal"><span>© 2026 Heal India Global</span><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="#">Accessibility</a></nav>
+      <span class="dev">Developed by <a href="https://dvsoft.in" target="_blank" rel="noopener">DV Soft</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="fab">
+  <a class="wa" href="https://wa.me/919000000000" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp us</span></a>
+  <a class="call" href="tel:+919000000000" aria-label="Call the international patient desk"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><span>Call us</span></a>
+</div>
+
+<script>
+(function(){
+  /* ---------- Mega menus: one data source for the header and the mobile drawer ---------- */
+  var UI = function(id, w, h, extra){ return 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop' + (extra || '') + '&w=' + w + '&h=' + h + '&q=80'; };
+  var MENUS = [
+    {key:'treatments', name:'Treatments', lead:'Care led by <b>senior specialists</b>, quoted line by line.', cta:['All treatments','#specialties'],
+     cols:[['Surgery',['Heart bypass (CABG)','Knee replacement','Hip replacement','Spine surgery','Weight-loss surgery']],
+           ['Specialist care',['Cancer care','Organ transplant','Neurosciences','Fertility and IVF','Eye care']]],
+     f:{img:UI('1758691463203-cce9d415b2b5',720,405), alt:'Two doctors reviewing a case on a tablet', t:'Not sure which treatment you need?', s:'A doctor reviews every free AI assessment.', go:'Start an assessment'},
+     foot:['Before you decide',['Second opinion','Indicative costs','How quotes work']]},
+    {key:'hospitals', name:'Hospitals', lead:'Accredited hospitals, <b>compared on the same terms.</b>', cta:['All hospitals','#destinations'],
+     cols:[['By city',['Delhi NCR','Chennai','Mumbai','Bengaluru','Hyderabad','Vijayawada','Visakhapatnam']],
+           ['Choosing well',['JCI and NABH explained','How we verify','Compare hospitals','International desks','What a quote includes']]],
+     f:{img:UI('1791092893254-09427ef98d62',720,405), alt:'A bright hospital room with a city view', num:'14', t:'accredited partner hospitals', s:'In seven cities with international airports.'},
+     foot:['Every quote names the hospital, the surgeon and each line of cost.',['How quotes work']]},
+    {key:'doctors', name:'Doctors', lead:'<b>Know your surgeon</b> before you fly.', cta:['All doctors','#specialties'],
+     cols:[['By specialty',['Cardiac surgeons','Orthopaedic surgeons','Oncologists','Transplant surgeons','Neurosurgeons','Fertility specialists']],
+           ['Talk to a doctor',['Video consultation','Second opinion','Find a doctor by name','How we vet doctors']]],
+     f:{img:UI('1612349317150-e413f6a5b16d',720,405,'&crop=top'), alt:'A doctor in a white coat with a stethoscope', t:'Speak to a specialist from home', s:'Video consultation with the surgeon on your quote.', go:'Book a consultation'},
+     foot:['Every profile lists qualifications and hospital affiliation.',['How we vet doctors']]},
+    {key:'trip', name:'Plan your trip', lead:'From your quote to <b>your flight home.</b>', cta:['Trip planning guide','#journey'],
+     cols:[['Before you fly',['e-Medical visa','Flights and airport pickup','Costs and payment','What to bring']],
+           ['While in India',['Where you will stay','Your coordinator','Translators','WhatsApp and SOS line']]],
+     f:{img:UI('1786779724444-687f92e336a3',720,405), alt:'The Lotus Temple in New Delhi', num:'~72 h', t:'e-Medical visa decision', s:'Typical time after you apply. Indicative.'},
+     foot:['Destinations',['Delhi NCR','Chennai','Mumbai','Bengaluru','All seven cities']]},
+    {key:'partners', name:'Partners', lead:'Work with a <b>transparent network.</b>', cta:['Partner programme','#partners'],
+     cols:[['Hospitals',['Become a partner','Requirements','How referrals work','Hospital log in']],
+           ['Agents and facilitators',['Join as an agent','Commission and payouts','Marketing resources','Agent log in']]],
+     f:{img:UI('1666214280391-8ff5bd3c0bf0',720,405), alt:'Two clinicians reviewing scans together on monitors', t:'Screened referrals, complete reports', s:'Cases arrive with records attached.', go:'Talk to our partnerships team'},
+     foot:['Company',['About us','Partnerships team','Contact']]}
+  ];
+  var nav = document.getElementById('nav'), megas = document.getElementById('megas'), dnav = document.getElementById('drawer-nav');
+  var links = function(arr){ return arr.map(function(l){ return '<li><a href="#">' + l + '</a></li>'; }).join(''); };
+  MENUS.forEach(function(m){
+    var b = document.createElement('button');
+    b.type = 'button'; b.dataset.menu = m.key; b.setAttribute('aria-expanded','false'); b.setAttribute('aria-controls','mega-' + m.key);
+    b.innerHTML = m.name + ' <svg class="ico" aria-hidden="true"><use href="#i-down"/></svg>';
+    nav.appendChild(b);
+
+    var d = document.createElement('div');
+    d.className = 'mega'; d.id = 'mega-' + m.key; d.hidden = true; d.setAttribute('role','region'); d.setAttribute('aria-label', m.name + ' menu');
+    d.innerHTML =
+      '<div class="mega-inner">' +
+        '<div class="mega-intro"><div><p class="mega-kicker">' + m.name + '</p><p class="mega-lead">' + m.lead + '</p></div>' +
+        '<a class="link-arrow" href="' + m.cta[1] + '">' + m.cta[0] + ' <span aria-hidden="true">→</span></a></div>' +
+        m.cols.map(function(c){ return '<div class="mega-col"><h4>' + c[0] + '</h4><ul>' + links(c[1]) + '</ul></div>'; }).join('') +
+        '<a class="mega-feature" href="#"><div class="ph"><img src="' + m.f.img + '" alt="' + m.f.alt + '" loading="lazy" decoding="async" width="720" height="405"></div>' +
+        '<div class="mf-body">' + (m.f.num ? '<span class="mf-num">' + m.f.num + '</span>' : '') + '<strong>' + m.f.t + '</strong><span>' + m.f.s + '</span>' +
+        (m.f.go ? '<span class="go">' + m.f.go + ' →</span>' : '') + '</div></a>' +
+      '</div>' +
+      '<div class="mega-foot"><span>' + m.foot[0] + '</span><span class="mf-links">' + m.foot[1].map(function(l){ return '<a href="#">' + l + '</a>'; }).join('') + '</span></div>';
+    megas.appendChild(d);
+
+    var det = document.createElement('details'); det.setAttribute('name','drawer-menu');
+    det.innerHTML = '<summary>' + m.name + ' <svg class="ico" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="d-lead">' + m.lead.replace(/<\/?b>/g,'') + '</p>' +
+      '<div class="d-cols">' + m.cols.map(function(c){ return '<div><p class="d-h">' + c[0] + '</p><ul>' + links(c[1]) + '</ul></div>'; }).join('') + '</div>' +
+      '<a class="more" href="' + m.cta[1] + '">' + m.cta[0] + ' <span aria-hidden="true">→</span></a>';
+    dnav.appendChild(det);
+  });
+
+  var header = document.querySelector('.site-header'), btns = [].slice.call(nav.querySelectorAll('button')), current = null, closeT, openedAt = 0;
+  var fine = window.matchMedia('(hover:hover) and (pointer:fine)');
+  function panel(b){ return document.getElementById(b.getAttribute('aria-controls')); }
+  function openMenu(b){
+    clearTimeout(closeT);
+    btns.forEach(function(x){ var on = x === b; x.setAttribute('aria-expanded', String(on)); panel(x).hidden = !on; });
+    if(current !== b) openedAt = Date.now();
+    current = b;
+  }
+  function closeMenu(){ btns.forEach(function(x){ x.setAttribute('aria-expanded','false'); panel(x).hidden = true; }); current = null; }
+  function later(){ clearTimeout(closeT); closeT = setTimeout(closeMenu, 180); }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){ (current === b && Date.now() - openedAt > 400) ? closeMenu() : openMenu(b); }); /* a hover-open followed by a click keeps the panel open */
+    b.addEventListener('mouseenter', function(){ if(fine.matches) openMenu(b); });
+    b.addEventListener('mouseleave', function(){ if(fine.matches) later(); });
+    var p = panel(b);
+    p.addEventListener('mouseenter', function(){ if(fine.matches) clearTimeout(closeT); });
+    p.addEventListener('mouseleave', function(){ if(fine.matches) later(); });
+    p.addEventListener('focusout', function(e){ if(current && !header.contains(e.relatedTarget)) closeMenu(); });
+  });
+  document.addEventListener('click', function(e){ if(!header.contains(e.target)) closeMenu(); });
+
+  /* ---------- Drawer ---------- */
+  var drawer = document.getElementById('drawer'), openB = document.getElementById('menu-open'), closeB = document.getElementById('menu-close');
+  function closeDrawer(){ drawer.hidden = true; openB.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; openB.focus(); }
+  openB.addEventListener('click', function(){ drawer.hidden = false; openB.setAttribute('aria-expanded','true'); document.body.style.overflow = 'hidden'; closeB.focus(); });
+  closeB.addEventListener('click', closeDrawer);
+  drawer.addEventListener('click', function(e){ if(e.target.closest('a')) closeDrawer(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    if(current){ var b = current; closeMenu(); b.focus(); }
+    if(!drawer.hidden) closeDrawer();
+  });
+
+  if (!document.getElementById('assess')) return; // inner pages (treatments, hospitals, guides): the rest is home-page only
+  /* ---------- Assessment suggestions ---------- */
+  var T=[['Heart bypass (CABG)','Cardiac'],['Heart valve repair','Cardiac'],['Angioplasty','Cardiac'],['Knee replacement','Orthopaedics'],['Hip replacement','Orthopaedics'],['Shoulder replacement','Orthopaedics'],['Spine surgery','Neurosciences'],['Brain tumour surgery','Neurosciences'],['Kidney transplant','Transplant'],['Liver transplant','Transplant'],['Bone marrow transplant','Transplant'],['Breast cancer treatment','Oncology'],['Radiation therapy','Oncology'],['IVF','Fertility'],['Egg freezing','Fertility'],['Gastric sleeve','Weight loss'],['Gastric bypass','Weight loss'],['Cataract surgery','Eye care'],['LASIK','Eye care']];
+  var input = document.getElementById('need'), list = document.getElementById('suggest');
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function render(){
+    var q = input.value.trim().toLowerCase();
+    if(q.length < 2){ list.hidden = true; input.setAttribute('aria-expanded','false'); return; }
+    var m = T.filter(function(t){ return t[0].toLowerCase().indexOf(q) > -1 || t[1].toLowerCase().indexOf(q) > -1; }).slice(0,5);
+    list.innerHTML = m.length ? m.map(function(t){
+      var i = t[0].toLowerCase().indexOf(q);
+      var n = i > -1 ? esc(t[0].slice(0,i)) + '<mark>' + esc(t[0].slice(i,i+q.length)) + '</mark>' + esc(t[0].slice(i+q.length)) : esc(t[0]);
+      return '<li role="option"><a href="#">' + n + '<small>' + t[1] + '</small></a></li>';
+    }).join('') : '<li role="option"><a href="#">Assess “' + esc(input.value.trim()) + '” <small>Free</small></a></li>';
+    list.hidden = false; input.setAttribute('aria-expanded','true');
+  }
+  input.addEventListener('input', render);
+  input.addEventListener('focus', render);
+  document.addEventListener('click', function(e){ if(!e.target.closest('#assess')){ list.hidden = true; input.setAttribute('aria-expanded','false'); } });
+  document.querySelectorAll('.chip[data-q]').forEach(function(c){ c.addEventListener('click', function(){ input.value = c.dataset.q; input.focus(); render(); }); });
+  document.getElementById('assess').addEventListener('submit', function(e){ e.preventDefault(); input.focus(); });
+
+  /* ---------- Savings slider (indicative CABG ranges, axis 0–200k) ---------- */
+  var r = document.getElementById('quote'), out = document.getElementById('q-out'), kv = document.getElementById('k-val'), kp = document.getElementById('k-pct'), kq = document.getElementById('k-q'), pin = document.getElementById('pin');
+  var IN_LO = 4000, IN_HI = 7400, MAX = 200000;
+  function usd(n){ return '$' + n.toLocaleString('en-US'); }
+  function upd(){
+    var q = +r.value;
+    out.textContent = usd(q); kq.textContent = usd(q);
+    kv.innerHTML = usd(q - IN_HI) + '<small> – ' + usd(q - IN_LO) + '</small>';
+    kp.textContent = Math.floor((1 - IN_HI / q) * 100) + '%';
+    pin.style.left = (q / MAX * 100) + '%';
+    r.style.setProperty('--fill', ((q - 70000) / (MAX - 70000) * 100) + '%');
+  }
+  r.addEventListener('input', upd); upd();
+
+  /* ---------- Destination atlas ---------- */
+  var U = function(id, w, h){
+    if(/^px:/.test(id)){ var n = id.slice(3); return 'https://images.pexels.com/photos/' + n + '/pexels-photo-' + n + '.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=' + w + '&h=' + h; }
+    return UI(id, w, h);
+  };
+  var cities = [
+    {n:'Delhi NCR', c:'DEL', id:'1765024540871-16f5e5dbcd4b', alt:"Visitors walking towards Humayun's Tomb in Delhi", l:'The capital region, with Delhi and Gurugram hospitals'},
+    {n:'Chennai', c:'MAA', id:'1582510003544-4d00b7f74220', alt:'A temple gopuram lit at night under a starry sky', l:'A long-standing hub for international patients'},
+    {n:'Mumbai', c:'BOM', id:'1785768569545-a0b75d68006f', alt:'The Gateway of India and the Mumbai waterfront skyline', l:'The coastal financial capital'},
+    {n:'Bengaluru', c:'BLR', id:'1698332137428-3c4296198e8f', alt:'The Vidhana Soudha in Bengaluru under a blue sky', l:'Mild climate all year round'},
+    {n:'Hyderabad', c:'HYD', id:'1741545979534-02f59c742730', alt:'The Charminar in Hyderabad', l:'Major multi-specialty centres'},
+    {n:'Vijayawada', c:'VGA', id:'px:15877640', alt:'The bridge over the Krishna river in Vijayawada at sunrise', l:'On the banks of the Krishna'},
+    {n:'Visakhapatnam', c:'VTZ', id:'1655979521437-ae1875109d79', alt:'The Visakhapatnam coastline with green hills and beach', l:'Hills meet the Bay of Bengal'}
+  ];
+  var cl = document.getElementById('cities'), frame = document.getElementById('frame');
+  var fname = document.getElementById('frame-name'), fcode = document.getElementById('frame-code'), fidx = document.getElementById('frame-idx');
+  var imgs = [], cbtns = [];
+  var desk = window.matchMedia('(min-width:1024px)');
+  cities.forEach(function(c, i){
+    var img = new Image(); img.src = U(c.id, 1400, 1050); img.alt = c.alt; img.loading = 'lazy'; img.decoding = 'async'; img.width = 1400; img.height = 1050;
+    frame.insertBefore(img, frame.firstChild); imgs.push(img);
+    var li = document.createElement('li');
+    li.innerHTML = '<button class="city" type="button" aria-pressed="false">' +
+      '<img class="thumb" src="' + U(c.id, 720, 900) + '" alt="" loading="lazy" decoding="async" width="720" height="900">' +
+      '<span class="nm">' + c.n + '</span><span class="code">' + c.c + '</span><span class="ln">' + c.l + '</span></button>';
+    var b = li.firstChild; cbtns.push(b);
+    b.addEventListener('mouseenter', function(){ if(desk.matches) select(i); });
+    ['focus','click'].forEach(function(ev){ b.addEventListener(ev, function(){ select(i); }); });
+    cl.appendChild(li);
+  });
+  function select(i){
+    cbtns.forEach(function(b, k){ b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+    imgs.forEach(function(im, k){ im.classList.toggle('on', k === i); });
+    fname.textContent = cities[i].n; fcode.textContent = cities[i].c;
+    fidx.innerHTML = String(i + 1).padStart(2, '0') + '<small>/07</small>';
+  }
+  /* Below 1024px the list is a swipeable row: counter, progress and arrows follow the scroll */
+  var an = document.getElementById('atlas-n'), abar = document.getElementById('atlas-bar');
+  var aprev = document.querySelector('.atlas-btns .prev'), anext = document.querySelector('.atlas-btns .next');
+  function step(){ var li = cl.children; return li.length > 1 ? li[1].offsetLeft - li[0].offsetLeft : cl.clientWidth; }
+  function onScroll(){
+    var max = cl.scrollWidth - cl.clientWidth, k = max > 0 ? Math.round(cl.scrollLeft / step()) : 0;
+    if(max > 0 && cl.scrollLeft >= max - 4) k = cities.length - 1;
+    k = Math.max(0, Math.min(cities.length - 1, k));
+    an.textContent = String(k + 1).padStart(2, '0');
+    abar.style.transform = 'translateX(' + (k * 100) + '%)';
+    aprev.disabled = cl.scrollLeft <= 4; anext.disabled = max <= 0 || cl.scrollLeft >= max - 4;
+  }
+  cl.addEventListener('scroll', function(){ requestAnimationFrame(onScroll); }, {passive:true});
+  aprev.addEventListener('click', function(){ cl.scrollBy({left:-step(), behavior:'smooth'}); });
+  anext.addEventListener('click', function(){ cl.scrollBy({left:step(), behavior:'smooth'}); });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+  select(0);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- theme-switcher -->
+<div class="ts" data-ts>
+  <button type="button" class="ts-btn" aria-label="Switch design theme" aria-expanded="false" aria-controls="ts-menu" title="Switch design theme">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-1.8a1.7 1.7 0 0 0-1.2 2.9 1.7 1.7 0 0 1-1.2 2.9Z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/></svg>
+  </button>
+  <div class="ts-menu" id="ts-menu" role="menu" hidden><p class="ts-label">Design theme</p><a href="/concept-main/" data-theme-link data-theme="concept-main" role="menuitem" class="ts-item is-current" aria-current="page"><span class="ts-letter">M</span>Main (best of all)</a><a href="/concept-a-editorial/" data-theme-link data-theme="concept-a-editorial" role="menuitem" class="ts-item"><span class="ts-letter">A</span>Editorial luxury</a><a href="/concept-b-clinical/" data-theme-link data-theme="concept-b-clinical" role="menuitem" class="ts-item"><span class="ts-letter">B</span>Clinical clarity</a><a href="/concept-c-journey/" data-theme-link data-theme="concept-c-journey" role="menuitem" class="ts-item"><span class="ts-letter">C</span>Warm journey</a></div>
+</div>
+<style>
+.ts{position:fixed;left:16px;bottom:16px;z-index:2147483000;font:500 14px/1.2 Inter,system-ui,sans-serif}
+.ts-btn{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid #E2E8F0;background:#fff;color:#102A43;cursor:pointer;box-shadow:0 8px 24px -10px rgba(16,42,67,.45);opacity:.85;transition:opacity .15s,transform .15s}
+.ts-btn:hover,.ts-btn[aria-expanded="true"]{opacity:1;transform:translateY(-1px)}
+.ts-btn:focus-visible,.ts-item:focus-visible{outline:2px solid #0F766E;outline-offset:2px}
+.ts-menu{position:absolute;left:0;bottom:50px;min-width:230px;padding:8px;background:#fff;border:1px solid #E2E8F0;border-radius:14px;box-shadow:0 18px 40px -16px rgba(16,42,67,.4)}
+.ts-label{margin:4px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#475569}
+.ts-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;color:#102A43;text-decoration:none;white-space:nowrap}
+.ts-item:hover{background:#F5F8FA}
+.ts-letter{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1px solid #CBD5E1;font-weight:700;font-size:12px}
+.ts-item.is-current{background:#102A43;color:#fff}
+.ts-item.is-current .ts-letter{background:#B08D57;border-color:#B08D57;color:#102A43}
+@media print{.ts{display:none}}
+/* Phones: the switcher and the floating WhatsApp/Call buttons wait until the visitor scrolls past the first screen,
+   so they never cover the hero text or the assessment card. */
+@media (max-width:767px){
+  .ts-btn{width:36px;height:36px}
+  html:not(.ts-scrolled) .ts,html:not(.ts-scrolled) .fab{opacity:0;visibility:hidden;pointer-events:none}
+  .ts,.fab{transition:opacity .25s,visibility 0s}
+}
+</style>
+<script>
+(function(){
+  var root=document.querySelector('[data-ts]'),btn=root.querySelector('.ts-btn'),menu=root.querySelector('.ts-menu');
+  function setOpen(o){menu.hidden=!o;btn.setAttribute('aria-expanded',String(o));if(o){var c=menu.querySelector('.is-current')||menu.querySelector('a');c&&c.focus();}}
+  btn.addEventListener('click',function(){setOpen(menu.hidden);});
+  document.addEventListener('click',function(e){if(!root.contains(e.target))setOpen(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidden){setOpen(false);btn.focus();}});
+  function onScroll(){document.documentElement.classList.toggle('ts-scrolled',scrollY>innerHeight*0.6);}
+  addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+  var y=new URLSearchParams(location.search).get('y');
+  if(y)addEventListener('load',function(){scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*parseFloat(y));});
+  menu.querySelectorAll('[data-theme-link]').forEach(function(a){a.addEventListener('click',function(){var m=document.documentElement.scrollHeight-innerHeight;a.href='/'+a.getAttribute('data-theme')+location.pathname.replace(/^\/concept-[^/]+/,'')+'?y='+(m>0?(scrollY/m).toFixed(3):0);});});
+})();
+</script>
+<script src="/nav-links.js?v=9" defer></script>
+<!-- /theme-switcher -->
+</body>
+</html>

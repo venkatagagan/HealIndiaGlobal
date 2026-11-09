@@ -1,0 +1,36 @@
+{
+  "_readme": "Marketing claims shown on the public website (content/README.md section 8). Defaults reproduce the brand design copy and are NOT verified platform statistics. Before launch: replace each value with a sourced figure and fill in 'source', or set 'show' to false; then set claims_verified to true.",
+  "claims_verified": false,
+  "max_savings_pct": {
+    "value": 70,
+    "source": "",
+    "show": true
+  },
+  "stats": [
+    {
+      "id": "patientsTreated",
+      "value": "5,000+",
+      "source": "",
+      "show": true
+    }
+  ],
+  "india_wait": "Usually 1–2 weeks once your quote is accepted",
+  "show_testimonials": true,
+  "testimonials": [
+    {
+      "quote": "Saved $45,000 on my cardiac surgery with better care than home.",
+      "name": "Illustrative patient",
+      "detail": "Cardiac surgery · from the United States"
+    },
+    {
+      "quote": "My coordinator arranged the visa letter, airport pickup and an Arabic interpreter. I only had to focus on recovery.",
+      "name": "Illustrative patient",
+      "detail": "Knee replacement · from Oman"
+    },
+    {
+      "quote": "I compared three hospitals side by side and got itemised quotes within days.",
+      "name": "Illustrative patient",
+      "detail": "IVF · from Nigeria"
+    }
+  ]
+}

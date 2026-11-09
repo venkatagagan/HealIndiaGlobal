@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>No results found</title>
+  <defs>
+    <linearGradient id="nr-lens" x1="164" y1="98" x2="228" y2="166" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EDE9FE"/>
+      <stop offset="1" stop-color="#C4B5FD"/>
+    </linearGradient>
+    <linearGradient id="nr-ring" x1="160" y1="96" x2="232" y2="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="120" r="100" fill="#7C3AED" fill-opacity=".07"/>
+  <circle cx="160" cy="120" r="76" fill="#7C3AED" fill-opacity=".11"/>
+  <ellipse cx="160" cy="196" rx="76" ry="6" fill="#0F172A" fill-opacity=".1"/>
+  <rect x="78" y="58" width="122" height="78" rx="12" fill="#E2E8F0" transform="rotate(-8 139 97)"/>
+  <rect x="86" y="80" width="130" height="86" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <circle cx="111" cy="106" r="11" fill="#E2E8F0"/>
+  <rect x="130" y="98" width="58" height="7" rx="3.5" fill="#CBD5E1"/>
+  <rect x="130" y="110" width="38" height="6" rx="3" fill="#E2E8F0"/>
+  <rect x="100" y="132" width="92" height="7" rx="3.5" fill="#E2E8F0"/>
+  <rect x="100" y="146" width="62" height="7" rx="3.5" fill="#DDD6FE"/>
+  <path d="M220 158l26 26" stroke="#6D28D9" stroke-width="14" stroke-linecap="round"/>
+  <path d="M218 156l8 8" stroke="#A78BFA" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="196" cy="132" r="34" fill="url(#nr-lens)" fill-opacity=".92"/>
+  <circle cx="196" cy="132" r="34" fill="none" stroke="url(#nr-ring)" stroke-width="9"/>
+  <path d="M175 118a23 23 0 0 1 13-11" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-opacity=".9"/>
+  <path d="M187 125a9.2 9.2 0 1 1 13.4 8.2c-2.8 1.4-4.4 3.3-4.4 6.4v1.4" fill="none" stroke="#6D28D9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="196" cy="150" r="4" fill="#6D28D9"/>
+  <circle cx="64" cy="70" r="5" fill="#22C55E"/>
+  <circle cx="262" cy="84" r="4" fill="#06B6D4"/>
+  <circle cx="58" cy="168" r="3.5" fill="#F59E0B"/>
+  <path d="M256 40c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9z" fill="#F59E0B"/>
+  <path d="M84 196c.7 4 2 5.3 6 6-4 .7-5.3 2-6 6-.7-4-2-5.3-6-6 4-.7 5.3-2 6-6z" fill="#7C3AED"/>
+</svg>

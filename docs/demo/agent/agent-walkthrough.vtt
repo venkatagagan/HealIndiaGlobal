@@ -1,0 +1,178 @@
+WEBVTT
+
+00:00:00.075 --> 00:00:12.547
+Welcome to Heal India Global for facilitators. In this first part, we follow an agent in Lagos as they register a new patient, screen her condition, and collect quotes from Indian hospitals.
+
+00:00:16.192 --> 00:00:25.280
+Agents sign in through the main website, the single door for every role. We're signing in as Chinedu Okafor of Lagos MedConnect Travel.
+
+00:00:28.533 --> 00:00:39.541
+The dashboard is the agent's daily cockpit: patients, active cases, confirmed bookings, conversion rate and commission at a glance, with a six-month activity trend.
+
+00:00:39.861 --> 00:00:49.429
+The sidebar groups everything into sections that open like an accordion: patients and cases, the hospital network, earnings, messages, and account.
+
+00:00:52.233 --> 00:00:58.873
+The patients list shows everyone the agency manages, with consent status tabs across the top.
+
+00:00:59.189 --> 00:01:11.829
+One click filters by consent: still awaiting the patient's own confirmation, or confirmed. Search, nationality, case and date filters narrow it further, and the list can be exported.
+
+00:01:12.446 --> 00:01:18.918
+Let's add a new patient: Zainab Bello, a fifty-three-year-old from Lagos who needs a knee replacement.
+
+00:01:24.994 --> 00:01:32.402
+Contact details, preferred currency, blood group and medical history help hospitals prepare accurate quotes.
+
+00:01:41.540 --> 00:01:55.212
+Before saving, the agent attests that Zainab agreed to the terms and privacy policy, and to sharing her records with hospitals. The attestation is logged with the agent's name, the time, and how consent was obtained.
+
+00:01:59.114 --> 00:02:09.330
+Zainab's profile is ready. The consent card shows exactly what was attested, and that it now waits for Zainab to confirm it herself when she first signs in.
+
+00:02:10.138 --> 00:02:19.610
+On the documents tab, the agent uploads files on the patient's behalf. Here, Zainab's knee X-ray report goes up as a medical report.
+
+00:02:19.925 --> 00:02:29.061
+Reports can also be read by AI. The extracted results are checked and confirmed with the patient before anything is shared with hospitals.
+
+00:02:30.420 --> 00:02:39.460
+Next, a new screening on Zainab's behalf. The agent picks the specialty, marks where the problem is, and sets the pain level.
+
+00:02:39.781 --> 00:02:49.829
+Symptoms are answered yes, maybe or no, and the history section captures how long it's been going on, the impact on daily life, and earlier treatments.
+
+00:02:58.390 --> 00:03:04.406
+Notes for the medical team, languages, budget and travel window complete the picture.
+
+00:03:11.198 --> 00:03:17.238
+After confirming the patient's consent, we ask the platform to find matching hospitals.
+
+00:03:17.602 --> 00:03:29.810
+The result opens with a triage summary: suggested specialty, urgency, recommended procedures, and questions to ask the doctor. It's decision support, not a diagnosis.
+
+00:03:30.416 --> 00:03:39.408
+Below are ranked hospital and doctor matches, with the reasons for each match, price ranges, and the savings compared with treatment at home.
+
+00:03:39.901 --> 00:03:44.189
+Select up to three matches to compare them side by side.
+
+00:03:45.194 --> 00:03:53.538
+Then request quotes. Each hospital receives its own case, with the agent's message and the patient's consent to share.
+
+00:03:56.620 --> 00:04:01.700
+Both enquiries are on their way, and each one has its own case number.
+
+00:04:05.820 --> 00:04:14.644
+The screenings list keeps every screening for all your patients, with status, specialty and urgency, so a draft is never lost.
+
+00:04:16.839 --> 00:04:25.663
+Cases and quotes lists every enquiry. Status tabs show at a glance which cases are waiting, quoted, accepted or booked.
+
+00:04:25.973 --> 00:04:32.013
+Searching for Bello brings up Zainab's two new cases, both waiting for a hospital reply.
+
+00:04:35.760 --> 00:04:45.064
+A case page shows the hospital, the treatment, shared documents, and a timeline of every step. Right now, it's awaiting a quote.
+
+00:04:45.409 --> 00:04:57.473
+Hospitals reply with itemised quotes, usually within forty-eight hours. The quote appears right on the case: surgery, implant, stay, tests and medicines, line by line.
+
+00:04:59.316 --> 00:05:07.924
+With both quotes in, the comparison view lines them up side by side, highlights the lowest total, and shows how much the patient saves.
+
+00:05:08.509 --> 00:05:14.717
+The agent accepts the better-value quote, and closes the other open enquiry in the same step.
+
+00:05:15.326 --> 00:05:22.134
+The case is now accepted, and the agent goes straight on to booking: the accepted quote is already filled in.
+
+00:05:22.795 --> 00:05:31.499
+For patients who already know what they need, New enquiry skips the screening: pick the patient and the treatment, then choose hospitals directly.
+
+00:05:32.177 --> 00:05:42.609
+That's part one. In part two, we book Zainab's treatment, pay the deposit, and tour the hospital network, earnings, messages and account settings.
+
+00:05:44.169 --> 00:05:52.465
+Welcome back. In part two, we book Zainab's treatment, pay the deposit, and explore the rest of the agent portal.
+
+00:05:56.550 --> 00:05:59.806
+We sign in again through the website door.
+
+00:06:18.096 --> 00:06:26.224
+From the accepted case, Book treatment shows the accepted quote, the hospital's admission availability, and the payment options.
+
+00:06:26.951 --> 00:06:35.127
+We pick an admission date and choose to pay a deposit now, with the balance due before admission. Then we create the booking.
+
+00:06:35.449 --> 00:06:45.233
+The payment page lets the agent pay on the patient's behalf. Choose what to pay and the payment method; in this demo environment, we use the test gateway.
+
+00:06:45.916 --> 00:06:52.460
+The deposit is received, the booking is confirmed, and every payment is listed in the payment history.
+
+00:06:54.747 --> 00:07:05.035
+The bookings list tracks every booked treatment, with admission dates, payment progress and balances due, filterable by status, hospital and payment state.
+
+00:07:05.589 --> 00:07:13.165
+Opening a booking shows the full case with its booking card: dates, amount paid, balance, and the refund policy.
+
+00:07:17.686 --> 00:07:25.622
+Back on the dashboard, the confirmed booking is reflected in the numbers, and Zainab's case sits at the top of recent cases.
+
+00:07:29.941 --> 00:07:38.573
+The hospital network lets agents browse every partner hospital, with filters for specialty, city, language and accreditation.
+
+00:07:39.340 --> 00:07:46.652
+A hospital page covers the facilities, doctors, procedures with package prices, and patient reviews.
+
+00:07:50.295 --> 00:07:56.767
+And an enquiry for any patient can be sent straight from here. We'll cancel this one.
+
+00:07:59.124 --> 00:08:05.188
+The doctors directory works the same way, filtered by specialty, language and gender.
+
+00:08:05.864 --> 00:08:13.512
+Each doctor's profile shows their experience, the procedures they perform, and availability for the next sixty days.
+
+00:08:17.246 --> 00:08:23.550
+Earnings starts with commissions: every commission item and its status, from pending through to paid.
+
+00:08:24.187 --> 00:08:30.827
+The payouts tab lists the transfers to your bank, and the statement tab gives a running ledger you can export.
+
+00:08:33.249 --> 00:08:41.329
+The payout account holds the bank details commissions are paid to. The agency's account is already verified and set as primary.
+
+00:08:41.379 --> 00:08:47.179
+Further accounts can be added at any time, and each one is verified before it's used.
+
+00:08:49.640 --> 00:08:57.072
+Messages keep everyone in the loop. Each case has its own conversation with the hospital team and the patient.
+
+00:08:57.452 --> 00:09:03.492
+The agent tells the hospital the deposit is paid, and asks for the pre-admission checklist.
+
+00:09:06.660 --> 00:09:10.228
+The hospital's reply arrives in real time.
+
+00:09:12.756 --> 00:09:21.508
+Notifications collect every update: new quotes, payments, screening results and messages, with a quick filter for unread items.
+
+00:09:28.072 --> 00:09:37.424
+Under account, the profile and KYC page shows the account status, agency details, verification documents, and sign-in security.
+
+00:09:37.741 --> 00:09:48.653
+At the bottom, an agent can permanently delete their account. The platform explains what must be kept by law before asking for confirmation. We'll cancel.
+
+00:09:52.489 --> 00:09:58.097
+The referral program gives every agent a unique code and link to invite patients.
+
+00:09:58.687 --> 00:10:05.111
+The sidebar collapses to icons for more working space, and expands again with a single click.
+
+00:10:09.083 --> 00:10:14.163
+And dark mode is one tap away, for those long evenings of case work.
+
+00:10:15.657 --> 00:10:23.569
+That's the agent portal: from first contact to confirmed treatment, with quotes, payments and earnings all in one place.

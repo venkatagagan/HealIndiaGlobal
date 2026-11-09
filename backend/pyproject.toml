@@ -1,0 +1,99 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heal-india-backend"
+version = "0.1.0"
+description = "Heal India Global - medical travel platform API (FastAPI modular monolith)"
+readme = { text = "Heal India Global backend API.", content-type = "text/plain" }
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]",
+    "sqlalchemy[asyncio]>=2.0.40",
+    "asyncpg",
+    "alembic",
+    "pydantic>=2.11",
+    "pydantic-settings",
+    "email-validator",
+    "pyjwt",
+    "pwdlib[argon2]",
+    "pyotp",
+    "cryptography",
+    "google-auth",
+    "requests",
+    "anthropic",
+    "httpx",
+    "redis>=5",
+    "structlog",
+    "orjson",
+    "python-multipart",
+    "filetype",
+    "aiosmtplib",
+    "jinja2",
+    "fpdf2",
+    "python-dateutil",
+    "prometheus-fastapi-instrumentator",
+    "boto3",
+    "tenacity",
+    "pillow-heif",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "respx",
+    "time-machine",
+    "ruff",
+    "mypy",
+]
+# voice intake (PLAN §7.2): local open-source Whisper speech-to-text (STT_PROVIDER=local_whisper)
+voice = [
+    "faster-whisper",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["templates/**/*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py313"
+extend-exclude = [".venv", "storage"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "ASYNC", "S"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S311"]
+"alembic/**" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "tests"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "fastapi.Depends", "fastapi.Query", "fastapi.Path", "fastapi.Body", "fastapi.Header",
+    "fastapi.Cookie", "fastapi.File", "fastapi.Form", "fastapi.Security",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["slow: real local-model tests (e.g. Whisper); run explicitly with -m slow"]
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+strict_optional = true

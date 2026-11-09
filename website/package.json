@@ -1,0 +1,47 @@
+{
+  "name": "heal-india-global-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Heal India Global - SEO-first public marketing website and public login door (Next.js App Router)",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "sync": "node scripts/prebuild.mjs",
+    "sync:seed": "node scripts/prebuild.mjs --seed",
+    "predev": "node scripts/prebuild.mjs",
+    "dev": "next dev",
+    "prebuild": "node scripts/prebuild.mjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "audit:seo": "node scripts/audit-seo.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "github-slugger": "^2.0.0",
+    "lucide-react": "^1.61.0",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "^10.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "chrome-launcher": "^1.2.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.4.2",
+    "lighthouse": "^13.5.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3"
+  }
+}

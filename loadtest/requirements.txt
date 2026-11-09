@@ -1,0 +1,7 @@
+# Heal India Global - load-test tooling ONLY.
+# Install into a SEPARATE virtual environment (e.g. loadtest\.venv) - never into backend\.venv.
+# Locust 2.32+ is the first line with Python 3.13 support (gevent wheels for 3.13).
+locust>=2.32,<3
+
+# Optional: WebSocket listeners for MessagingUser (HIG_LT_WS=1). Pure Python, gevent-friendly.
+websocket-client>=1.8,<2

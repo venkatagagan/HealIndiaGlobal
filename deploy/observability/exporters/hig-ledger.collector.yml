@@ -1,0 +1,14 @@
+# Ledger integrity check (full scan of ledger_entries) - cached for 15 minutes.
+# The database already enforces balance per transaction with a deferred constraint trigger; this is the
+# independent "trial balance nets to zero" guard from docs/DEPLOYMENT.md.
+collector_name: hig_ledger
+min_interval: 15m
+
+metrics:
+  - metric_name: hig_ledger_imbalance_minor
+    type: gauge
+    help: "Sum of debits minus credits across all ledger entries, in minor units (INR paise). Must be 0."
+    values: [imbalance]
+    query: |
+      SELECT COALESCE(sum(CASE WHEN direction = 'debit' THEN amount_minor ELSE -amount_minor END), 0)::float8 AS imbalance
+      FROM ledger_entries

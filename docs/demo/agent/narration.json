@@ -1,0 +1,306 @@
+{
+  "voice": "en-US-JennyNeural (edge-tts, +4%)",
+  "videos": {
+    "part1": "agent-walkthrough-part1.mp4",
+    "part2": "agent-walkthrough-part2.mp4"
+  },
+  "part1": [
+    {
+      "start": 0.08,
+      "end": 12.55,
+      "text": "Welcome to Heal India Global for facilitators. In this first part, we follow an agent in Lagos as they register a new patient, screen her condition, and collect quotes from Indian hospitals."
+    },
+    {
+      "start": 16.19,
+      "end": 25.28,
+      "text": "Agents sign in through the main website, the single door for every role. We're signing in as Chinedu Okafor of Lagos MedConnect Travel."
+    },
+    {
+      "start": 28.53,
+      "end": 39.54,
+      "text": "The dashboard is the agent's daily cockpit: patients, active cases, confirmed bookings, conversion rate and commission at a glance, with a six-month activity trend."
+    },
+    {
+      "start": 39.86,
+      "end": 49.43,
+      "text": "The sidebar groups everything into sections that open like an accordion: patients and cases, the hospital network, earnings, messages, and account."
+    },
+    {
+      "start": 52.23,
+      "end": 58.87,
+      "text": "The patients list shows everyone the agency manages, with consent status tabs across the top."
+    },
+    {
+      "start": 59.19,
+      "end": 71.83,
+      "text": "One click filters by consent: still awaiting the patient's own confirmation, or confirmed. Search, nationality, case and date filters narrow it further, and the list can be exported."
+    },
+    {
+      "start": 72.45,
+      "end": 78.92,
+      "text": "Let's add a new patient: Zainab Bello, a fifty-three-year-old from Lagos who needs a knee replacement."
+    },
+    {
+      "start": 84.99,
+      "end": 92.4,
+      "text": "Contact details, preferred currency, blood group and medical history help hospitals prepare accurate quotes."
+    },
+    {
+      "start": 101.54,
+      "end": 115.21,
+      "text": "Before saving, the agent attests that Zainab agreed to the terms and privacy policy, and to sharing her records with hospitals. The attestation is logged with the agent's name, the time, and how consent was obtained."
+    },
+    {
+      "start": 119.11,
+      "end": 129.33,
+      "text": "Zainab's profile is ready. The consent card shows exactly what was attested, and that it now waits for Zainab to confirm it herself when she first signs in."
+    },
+    {
+      "start": 130.14,
+      "end": 139.61,
+      "text": "On the documents tab, the agent uploads files on the patient's behalf. Here, Zainab's knee X-ray report goes up as a medical report."
+    },
+    {
+      "start": 139.93,
+      "end": 149.06,
+      "text": "Reports can also be read by AI. The extracted results are checked and confirmed with the patient before anything is shared with hospitals."
+    },
+    {
+      "start": 150.42,
+      "end": 159.46,
+      "text": "Next, a new screening on Zainab's behalf. The agent picks the specialty, marks where the problem is, and sets the pain level."
+    },
+    {
+      "start": 159.78,
+      "end": 169.83,
+      "text": "Symptoms are answered yes, maybe or no, and the history section captures how long it's been going on, the impact on daily life, and earlier treatments."
+    },
+    {
+      "start": 178.39,
+      "end": 184.41,
+      "text": "Notes for the medical team, languages, budget and travel window complete the picture."
+    },
+    {
+      "start": 191.2,
+      "end": 197.24,
+      "text": "After confirming the patient's consent, we ask the platform to find matching hospitals."
+    },
+    {
+      "start": 197.6,
+      "end": 209.81,
+      "text": "The result opens with a triage summary: suggested specialty, urgency, recommended procedures, and questions to ask the doctor. It's decision support, not a diagnosis."
+    },
+    {
+      "start": 210.42,
+      "end": 219.41,
+      "text": "Below are ranked hospital and doctor matches, with the reasons for each match, price ranges, and the savings compared with treatment at home."
+    },
+    {
+      "start": 219.9,
+      "end": 224.19,
+      "text": "Select up to three matches to compare them side by side."
+    },
+    {
+      "start": 225.19,
+      "end": 233.54,
+      "text": "Then request quotes. Each hospital receives its own case, with the agent's message and the patient's consent to share."
+    },
+    {
+      "start": 236.62,
+      "end": 241.7,
+      "text": "Both enquiries are on their way, and each one has its own case number."
+    },
+    {
+      "start": 245.82,
+      "end": 254.64,
+      "text": "The screenings list keeps every screening for all your patients, with status, specialty and urgency, so a draft is never lost."
+    },
+    {
+      "start": 256.84,
+      "end": 265.66,
+      "text": "Cases and quotes lists every enquiry. Status tabs show at a glance which cases are waiting, quoted, accepted or booked."
+    },
+    {
+      "start": 265.97,
+      "end": 272.01,
+      "text": "Searching for Bello brings up Zainab's two new cases, both waiting for a hospital reply."
+    },
+    {
+      "start": 275.76,
+      "end": 285.06,
+      "text": "A case page shows the hospital, the treatment, shared documents, and a timeline of every step. Right now, it's awaiting a quote."
+    },
+    {
+      "start": 285.41,
+      "end": 297.47,
+      "text": "Hospitals reply with itemised quotes, usually within forty-eight hours. The quote appears right on the case: surgery, implant, stay, tests and medicines, line by line."
+    },
+    {
+      "start": 299.32,
+      "end": 307.92,
+      "text": "With both quotes in, the comparison view lines them up side by side, highlights the lowest total, and shows how much the patient saves."
+    },
+    {
+      "start": 308.51,
+      "end": 314.72,
+      "text": "The agent accepts the better-value quote, and closes the other open enquiry in the same step."
+    },
+    {
+      "start": 315.33,
+      "end": 322.13,
+      "text": "The case is now accepted, and the agent goes straight on to booking: the accepted quote is already filled in."
+    },
+    {
+      "start": 322.8,
+      "end": 331.5,
+      "text": "For patients who already know what they need, New enquiry skips the screening: pick the patient and the treatment, then choose hospitals directly."
+    },
+    {
+      "start": 332.18,
+      "end": 342.61,
+      "text": "That's part one. In part two, we book Zainab's treatment, pay the deposit, and tour the hospital network, earnings, messages and account settings."
+    }
+  ],
+  "part2": [
+    {
+      "start": 0.07,
+      "end": 8.37,
+      "text": "Welcome back. In part two, we book Zainab's treatment, pay the deposit, and explore the rest of the agent portal."
+    },
+    {
+      "start": 12.45,
+      "end": 15.71,
+      "text": "We sign in again through the website door."
+    },
+    {
+      "start": 34,
+      "end": 42.12,
+      "text": "From the accepted case, Book treatment shows the accepted quote, the hospital's admission availability, and the payment options."
+    },
+    {
+      "start": 42.85,
+      "end": 51.03,
+      "text": "We pick an admission date and choose to pay a deposit now, with the balance due before admission. Then we create the booking."
+    },
+    {
+      "start": 51.35,
+      "end": 61.13,
+      "text": "The payment page lets the agent pay on the patient's behalf. Choose what to pay and the payment method; in this demo environment, we use the test gateway."
+    },
+    {
+      "start": 61.82,
+      "end": 68.36,
+      "text": "The deposit is received, the booking is confirmed, and every payment is listed in the payment history."
+    },
+    {
+      "start": 70.65,
+      "end": 80.94,
+      "text": "The bookings list tracks every booked treatment, with admission dates, payment progress and balances due, filterable by status, hospital and payment state."
+    },
+    {
+      "start": 81.49,
+      "end": 89.07,
+      "text": "Opening a booking shows the full case with its booking card: dates, amount paid, balance, and the refund policy."
+    },
+    {
+      "start": 93.59,
+      "end": 101.52,
+      "text": "Back on the dashboard, the confirmed booking is reflected in the numbers, and Zainab's case sits at the top of recent cases."
+    },
+    {
+      "start": 105.84,
+      "end": 114.47,
+      "text": "The hospital network lets agents browse every partner hospital, with filters for specialty, city, language and accreditation."
+    },
+    {
+      "start": 115.24,
+      "end": 122.55,
+      "text": "A hospital page covers the facilities, doctors, procedures with package prices, and patient reviews."
+    },
+    {
+      "start": 126.2,
+      "end": 132.67,
+      "text": "And an enquiry for any patient can be sent straight from here. We'll cancel this one."
+    },
+    {
+      "start": 135.02,
+      "end": 141.09,
+      "text": "The doctors directory works the same way, filtered by specialty, language and gender."
+    },
+    {
+      "start": 141.76,
+      "end": 149.41,
+      "text": "Each doctor's profile shows their experience, the procedures they perform, and availability for the next sixty days."
+    },
+    {
+      "start": 153.15,
+      "end": 159.45,
+      "text": "Earnings starts with commissions: every commission item and its status, from pending through to paid."
+    },
+    {
+      "start": 160.09,
+      "end": 166.73,
+      "text": "The payouts tab lists the transfers to your bank, and the statement tab gives a running ledger you can export."
+    },
+    {
+      "start": 169.15,
+      "end": 177.23,
+      "text": "The payout account holds the bank details commissions are paid to. The agency's account is already verified and set as primary."
+    },
+    {
+      "start": 177.28,
+      "end": 183.08,
+      "text": "Further accounts can be added at any time, and each one is verified before it's used."
+    },
+    {
+      "start": 185.54,
+      "end": 192.97,
+      "text": "Messages keep everyone in the loop. Each case has its own conversation with the hospital team and the patient."
+    },
+    {
+      "start": 193.35,
+      "end": 199.39,
+      "text": "The agent tells the hospital the deposit is paid, and asks for the pre-admission checklist."
+    },
+    {
+      "start": 202.56,
+      "end": 206.13,
+      "text": "The hospital's reply arrives in real time."
+    },
+    {
+      "start": 208.66,
+      "end": 217.41,
+      "text": "Notifications collect every update: new quotes, payments, screening results and messages, with a quick filter for unread items."
+    },
+    {
+      "start": 223.97,
+      "end": 233.32,
+      "text": "Under account, the profile and KYC page shows the account status, agency details, verification documents, and sign-in security."
+    },
+    {
+      "start": 233.64,
+      "end": 244.55,
+      "text": "At the bottom, an agent can permanently delete their account. The platform explains what must be kept by law before asking for confirmation. We'll cancel."
+    },
+    {
+      "start": 248.39,
+      "end": 254,
+      "text": "The referral program gives every agent a unique code and link to invite patients."
+    },
+    {
+      "start": 254.59,
+      "end": 261.01,
+      "text": "The sidebar collapses to icons for more working space, and expands again with a single click."
+    },
+    {
+      "start": 264.98,
+      "end": 270.06,
+      "text": "And dark mode is one tap away, for those long evenings of case work."
+    },
+    {
+      "start": 271.56,
+      "end": 279.47,
+      "text": "That's the agent portal: from first contact to confirmed treatment, with quotes, payments and earnings all in one place."
+    }
+  ]
+}

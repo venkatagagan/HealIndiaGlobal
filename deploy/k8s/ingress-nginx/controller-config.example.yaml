@@ -1,0 +1,48 @@
+# EXAMPLE controller-level settings for ingress-nginx (cluster-wide; normally set through the Helm chart's
+# `controller.config`). Not part of the kustomizations.
+#
+# Client IPs: per-IP rate limits and the API's audit/rate-limit logic need the real client address.
+#   * AWS NLB in front of the controller: enable proxy protocol v2 on the NLB target group and
+#     `use-proxy-protocol: "true"` below, or use externalTrafficPolicy: Local with client IP preservation.
+#   * Keep `use-forwarded-headers: "false"` unless a trusted L7 proxy/CDN sits in front - otherwise clients
+#     could spoof X-Forwarded-For. With it false the controller overwrites X-Forwarded-For with the real IP.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+  use-proxy-protocol: "true"
+  use-forwarded-headers: "false"
+  compute-full-forwarded-for: "false"
+  server-tokens: "false"
+  ssl-protocols: "TLSv1.2 TLSv1.3"
+  hsts: "true"
+  hsts-max-age: "63072000"
+  hsts-include-subdomains: "true"
+  hsts-preload: "false"
+  allow-snippet-annotations: "false"
+  # Response headers that Ingresses may add with the custom-headers annotation (ingress-nginx >= 1.11):
+  # the portals send X-Robots-Tag: noindex, nofollow (ConfigMap hig-noindex-headers).
+  global-allowed-response-headers: "X-Robots-Tag"
+  # Upstream keep-alive shorter than gunicorn's GUNICORN_KEEPALIVE (75 s) to avoid races on reused sockets.
+  upstream-keepalive-timeout: "60"
+  proxy-body-size: "20m"
+  # JSON access log without query strings (WebSocket ?token= must never be logged).
+  log-format-escape-json: "true"
+  log-format-upstream: '{"time":"$time_iso8601","request_id":"$req_id","remote_addr":"$remote_addr","host":"$host","method":"$request_method","uri":"$uri","status":$status,"bytes":$body_bytes_sent,"request_time":$request_time,"upstream_time":"$upstream_response_time","user_agent":"$http_user_agent"}'
+  # Response headers for every host (security headers for the SPAs; harmless on API responses).
+  add-headers: ingress-nginx/hig-response-headers
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hig-response-headers
+  namespace: ingress-nginx
+data:
+  X-Content-Type-Options: "nosniff"
+  X-Frame-Options: "DENY"
+  Referrer-Policy: "strict-origin-when-cross-origin"
+  Permissions-Policy: 'camera=(), microphone=(), geolocation=(self), payment=(self "https://checkout.razorpay.com" "https://js.stripe.com")'
+  Cross-Origin-Opener-Policy: "same-origin-allow-popups"
+  Content-Security-Policy: "default-src 'self'; script-src 'self' https://checkout.razorpay.com https://js.stripe.com https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' wss: https://api.razorpay.com https://lumberjack.razorpay.com https://api.stripe.com https://accounts.google.com/gsi/; frame-src https://api.razorpay.com https://checkout.razorpay.com https://js.stripe.com https://hooks.stripe.com https://accounts.google.com/gsi/; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.razorpay.com; frame-ancestors 'none'; upgrade-insecure-requests"

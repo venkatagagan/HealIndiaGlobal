@@ -1,0 +1,21 @@
+# burningalchemist/sql_exporter (https://github.com/burningalchemist/sql_exporter), listens on :9399.
+# Computes queue / webhook / settlement / ledger / connection metrics straight from PostgreSQL until the app
+# exports them natively (see deploy/observability/README.md).
+#
+# The DSN contains a password: mount this file from a Kubernetes Secret / secret store, never commit a real
+# one. The role is read-only and column-scoped (monitor-role.sql). Run:
+#   sql_exporter -config.file=/etc/sql_exporter/sql_exporter.yml
+global:
+  scrape_timeout: 15s
+  scrape_timeout_offset: 500ms
+  min_interval: 0s
+  max_connections: 2
+  max_idle_connections: 1
+  max_connection_lifetime: 10m
+
+target:
+  data_source_name: "postgres://hig_monitor:REPLACE_ME@REPLACE_DB_HOST:5432/healindia?sslmode=require&application_name=hig-sql-exporter"
+  collectors: [hig_app, hig_ledger]
+
+collector_files:
+  - "*.collector.yml"

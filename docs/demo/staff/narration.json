@@ -1,0 +1,482 @@
+[
+  {
+    "start": 0.06,
+    "end": 8.09,
+    "text": "Welcome to the Heal India Global staff console, where the operations and finance teams run everything behind each patient journey."
+  },
+  {
+    "start": 8.71,
+    "end": 15.9,
+    "text": "In part one, we follow the operations team, from new enquiries to partner approvals and platform settings."
+  },
+  {
+    "start": 18.34,
+    "end": 26.45,
+    "text": "Patients, agents and hospitals sign in here, on the public website. Staff accounts cannot use this page."
+  },
+  {
+    "start": 35.27,
+    "end": 45.68,
+    "text": "Staff have their own door at a separate address, with a separate session and two-step verification in production. Meera, our super admin, signs in."
+  },
+  {
+    "start": 47.09,
+    "end": 58.17,
+    "text": "The dashboard opens with Needs your attention. Each card is a live work queue, such as unassigned enquiries or agents to approve, with how long the oldest item has waited."
+  },
+  {
+    "start": 59.88,
+    "end": 68.32,
+    "text": "Performance compares this period with the previous one. Switch between seven, thirty or ninety days, or this month."
+  },
+  {
+    "start": 70,
+    "end": 79.68,
+    "text": "The chart shows GMV, bookings or enquiries per day, and the case funnel shows how enquiries turn into quotes, bookings and completed treatments."
+  },
+  {
+    "start": 80.42,
+    "end": 87.49,
+    "text": "Further down are cases by specialty, top hospitals by value, and the patients due for admission this week."
+  },
+  {
+    "start": 87.94,
+    "end": 95.93,
+    "text": "Recent activity is a live feed of actions across cases, quotes and payments, next to a snapshot of the whole platform."
+  },
+  {
+    "start": 105.91,
+    "end": 114.66,
+    "text": "Cases is the heart of patient operations. Status tabs show how many cases sit at each stage, from enquiry to completed."
+  },
+  {
+    "start": 115.33,
+    "end": 123.96,
+    "text": "Pill filters narrow the list. I filter by hospital, and each active filter appears as a chip that removes it with one click."
+  },
+  {
+    "start": 125.94,
+    "end": 133.47,
+    "text": "Export downloads the current view as a spreadsheet, and the view options switch row density and show or hide columns."
+  },
+  {
+    "start": 134.62,
+    "end": 139.82,
+    "text": "Let me search for a new enquiry from Grace Otieno, a patient from Kenya."
+  },
+  {
+    "start": 140.13,
+    "end": 151.57,
+    "text": "The case page shows a stepper from enquiry to completion, the key facts on the right, and the next best action at the top. This case is flagged urgent, and nobody owns it yet."
+  },
+  {
+    "start": 152.14,
+    "end": 160.99,
+    "text": "The Screening tab shows what Grace reported: the affected area, pain level, symptoms and previous treatment, plus the triage result."
+  },
+  {
+    "start": 161.56,
+    "end": 169.76,
+    "text": "So let me assign a coordinator. I pick Fatima from the support team, and she becomes Grace's single point of contact."
+  },
+  {
+    "start": 171.41,
+    "end": 179.85,
+    "text": "Here is Olivia Bennett from the UK, now in treatment for a hip replacement. The stepper shows each stage she has completed."
+  },
+  {
+    "start": 181.15,
+    "end": 187.57,
+    "text": "Quotes lists every quote from the hospital, with its treatment plan, price breakdown and status."
+  },
+  {
+    "start": 188.15,
+    "end": 193.83,
+    "text": "Booking and payments shows the admission dates, what has been paid, and what is still due."
+  },
+  {
+    "start": 194.47,
+    "end": 200.94,
+    "text": "The Travel tab brings together her medical visa, flights, airport pickup and hotel stay."
+  },
+  {
+    "start": 201.46,
+    "end": 207.76,
+    "text": "Documents holds the medical reports and invoices, and Activity is the case's own audit trail."
+  },
+  {
+    "start": 210.26,
+    "end": 218.73,
+    "text": "Bookings lists every confirmed treatment, with payment progress, admissions and discharges, and the same tabs and filters."
+  },
+  {
+    "start": 221.98,
+    "end": 229.46,
+    "text": "Opening a booking shows its progress, the payment breakdown and the pre-arrival checklist, with actions like mark admitted."
+  },
+  {
+    "start": 235.83,
+    "end": 246.31,
+    "text": "The travel desk opens on SOS alerts. Grace has just raised one from her hotel, so the team acknowledges it right away, and resolves it once she is safe."
+  },
+  {
+    "start": 246.61,
+    "end": 252.92,
+    "text": "The Visa tab tracks each medical visa, from documents and invitation letters to approval."
+  },
+  {
+    "start": 253.54,
+    "end": 258.04,
+    "text": "Flights and transfers covers air tickets and airport pickups."
+  },
+  {
+    "start": 258.59,
+    "end": 266.67,
+    "text": "Accommodation tracks hotel stays near the hospital, and Translators and services handles in-country help like interpreters."
+  },
+  {
+    "start": 269.32,
+    "end": 279,
+    "text": "The support inbox collects conversations with patients, agents and hospitals. Grace asks about a wheelchair at the airport, so let me reply."
+  },
+  {
+    "start": 284.85,
+    "end": 294.95,
+    "text": "Partners covers hospitals and agents. The hospitals list shows status, KYC and commission, and the approval queue holds new registrations."
+  },
+  {
+    "start": 295.44,
+    "end": 304.96,
+    "text": "Kaveri Coast Orthopaedic Hospital has just registered. The approval checklist shows what is done, and what is still missing before it can go live."
+  },
+  {
+    "start": 305.6,
+    "end": 314.45,
+    "text": "On KYC and documents, staff open each document and verify or reject it. I verify the registration certificate."
+  },
+  {
+    "start": 315.15,
+    "end": 325.92,
+    "text": "Doctors lists each doctor with their medical registration. After checking it with the medical council, staff click Verify, and patients then see a verified badge."
+  },
+  {
+    "start": 326.7,
+    "end": 336.15,
+    "text": "When everything checks out, Approve hospital asks for confirmation. I cancel for now, because a verified payout account is still missing."
+  },
+  {
+    "start": 336.46,
+    "end": 345.14,
+    "text": "For an active partner like Yamuna Valley, the Team tab shows who has portal access, and Cases lists every case the hospital handles."
+  },
+  {
+    "start": 348.58,
+    "end": 356.3,
+    "text": "Agents and facilitators works the same way, with an approval queue, KYC status, tier and commission."
+  },
+  {
+    "start": 356.83,
+    "end": 366.71,
+    "text": "Savannah Health Journeys from Nairobi is waiting. The drawer shows contact details, the KYC documents to verify, and tier and commission."
+  },
+  {
+    "start": 367.2,
+    "end": 374.54,
+    "text": "I verify the ID proof, then look at the approval dialog, and cancel until the second document is checked."
+  },
+  {
+    "start": 379.43,
+    "end": 389.02,
+    "text": "Catalog and content manage reference data: specialties, procedures with India prices, and home-country cost benchmarks for the savings calculator."
+  },
+  {
+    "start": 391.63,
+    "end": 399.56,
+    "text": "Content holds cultural tips for patients, partner hotels and service providers, and the currency rates used at checkout."
+  },
+  {
+    "start": 403.54,
+    "end": 414.09,
+    "text": "Users lists every account on the platform, with role tabs and filters. The user drawer shows security status, with actions like suspend or change role."
+  },
+  {
+    "start": 417.12,
+    "end": 426.67,
+    "text": "Staff is for admins only. It lists console users by role, and New staff user creates an account with exactly the access it needs."
+  },
+  {
+    "start": 430.34,
+    "end": 442.38,
+    "text": "Settings holds platform-wide values like commission, deposit and tax rates. Finance settings are marked, only finance or a super admin can change them, and every change is audited."
+  },
+  {
+    "start": 445.2,
+    "end": 453.01,
+    "text": "The audit log is an append-only record of every sensitive action, filtered by action, entity, actor or date."
+  },
+  {
+    "start": 454.6,
+    "end": 459.54,
+    "text": "The console also has a dark mode, one click away in the top bar."
+  },
+  {
+    "start": 459.99,
+    "end": 469.22,
+    "text": "The sidebar collapses to icons for more room, and expands again. Its groups work like an accordion, so only one is open at a time."
+  },
+  {
+    "start": 469.8,
+    "end": 480.42,
+    "text": "The Payments, Settlements and Accounting groups hold the finance screens: orders, refunds, reconciliation, settlements, payouts, the ledger and reports."
+  },
+  {
+    "start": 481.1,
+    "end": 485.77,
+    "text": "Next, let's see how the finance team works in the same console."
+  },
+  {
+    "start": 486.78,
+    "end": 500.07,
+    "text": "The finance team works in the same staff console. In this part, Kavita Iyer signs in as the finance maker, and later Sandeep Bhatia approves her work as the checker, because every money movement needs two people."
+  },
+  {
+    "start": 501.47,
+    "end": 507.68,
+    "text": "Finance staff sign in at the same staff door, with their own account and finance permissions."
+  },
+  {
+    "start": 508.58,
+    "end": 519.83,
+    "text": "For finance, the dashboard leads with money queues: payout accounts to verify, refunds, settlement batches, payouts and ledger adjustments, each waiting for a second approver."
+  },
+  {
+    "start": 520.35,
+    "end": 527.26,
+    "text": "Performance starts with GMV and revenue, then bookings and conversion, for the period you choose."
+  },
+  {
+    "start": 528.66,
+    "end": 535.63,
+    "text": "The sidebar groups finance work into three sections: Payments, Settlements, and Accounting and reports."
+  },
+  {
+    "start": 537.03,
+    "end": 546.26,
+    "text": "Finance overview is the platform's money position, straight from the double-entry ledger: patient escrow, gateway receivable, bank and GMV."
+  },
+  {
+    "start": 546.79,
+    "end": 556.58,
+    "text": "Revenue, taxes and payables follow. Awaiting finance review counts every queue that needs a second pair of eyes, and each row opens it."
+  },
+  {
+    "start": 557.98,
+    "end": 564.54,
+    "text": "Payment orders lists every checkout, with status tabs and a separate queue for orders that need review."
+  },
+  {
+    "start": 565.18,
+    "end": 572.06,
+    "text": "Filters narrow the list by gateway, amount or date. Here, only bank transfers."
+  },
+  {
+    "start": 573.19,
+    "end": 579.93,
+    "text": "Search finds an order by number, booking or patient. Let's open Liam O'Connor's payment."
+  },
+  {
+    "start": 580.84,
+    "end": 588.49,
+    "text": "An order shows the amount in the patient's currency and in rupees, the captured payments, and every refund against them."
+  },
+  {
+    "start": 589,
+    "end": 595.52,
+    "text": "Create refund asks for the payment, the amount and a reason. We'll cancel this one."
+  },
+  {
+    "start": 596.92,
+    "end": 607.97,
+    "text": "Bank reconciliation matches transfers to the bank statement. Its queues separate proofs submitted, requests awaiting a second approval, and transfers still waiting for proof."
+  },
+  {
+    "start": 608.53,
+    "end": 616.64,
+    "text": "Opening a row shows the booking and the receipt the patient uploaded. Elena Petrova has sent the deposit for a knee replacement."
+  },
+  {
+    "start": 617.12,
+    "end": 623.52,
+    "text": "The receipt opens in a new tab, so Kavita can compare the reference and amount with the bank statement."
+  },
+  {
+    "start": 624.01,
+    "end": 632.74,
+    "text": "The credit is in the bank, so Kavita records the reference and the amount received. If the amount differed, the dialog would stop her."
+  },
+  {
+    "start": 633.25,
+    "end": 641.37,
+    "text": "The order is not captured yet. It now waits for a second finance user, and Kavita can't approve her own request."
+  },
+  {
+    "start": 642.77,
+    "end": 655.53,
+    "text": "Refunds has its own queues. Liam's twelve-hundred-dollar refund is above the fifty-thousand-rupee threshold, so it waits for a second approver. Smaller refunds can be approved by the requester."
+  },
+  {
+    "start": 656.93,
+    "end": 669.84,
+    "text": "Settlements start with items: each hospital's net share and each agent's commission for a completed stay, after commission, GST and TDS. Items become eligible after the hold period."
+  },
+  {
+    "start": 670.41,
+    "end": 678.56,
+    "text": "Items can be put on hold when something needs checking. This one was waiting for an itemised implant bill from Deccan Crest."
+  },
+  {
+    "start": 679.37,
+    "end": 685.65,
+    "text": "The bill has arrived, so Kavita releases the hold with a note, and the item becomes eligible."
+  },
+  {
+    "start": 686.56,
+    "end": 693.73,
+    "text": "Generate batch collects eligible items into a settlement batch. Kavita is recorded as the maker."
+  },
+  {
+    "start": 694.26,
+    "end": 706.06,
+    "text": "The new batch waits for approval. As its maker, Kavita can't approve it. Its payout destinations are frozen now, so a bank account changed later can't redirect the money."
+  },
+  {
+    "start": 707.46,
+    "end": 717.36,
+    "text": "Batches lists every settlement run. The Auto tab shows batches created by the daily job; they still need a finance approver before anything is paid."
+  },
+  {
+    "start": 718.76,
+    "end": 727.03,
+    "text": "A processed batch shows its totals, the maker and the checker, the frozen payout destinations, and each payout with its UTR."
+  },
+  {
+    "start": 728.78,
+    "end": 737.44,
+    "text": "Payouts has queues for exceptions. Needs reconciliation collects payouts whose bank result is unknown, and today it is empty."
+  },
+  {
+    "start": 737.91,
+    "end": 749.78,
+    "text": "A manual bank transfer stays open until one finance user records the UTR and a different one confirms it. And when a bank returns a payout, the reversal needs a second approver too."
+  },
+  {
+    "start": 751.18,
+    "end": 760.51,
+    "text": "Every completed payout issues documents: tax invoices for our commission, credit notes when a refund reverses commission, and statements for agents."
+  },
+  {
+    "start": 761.18,
+    "end": 770.39,
+    "text": "This tax invoice is for a Mumbai hospital, in the same state as the platform, so GST is split into CGST and SGST."
+  },
+  {
+    "start": 770.98,
+    "end": 777.28,
+    "text": "Download PDF gives the formal invoice, with both GSTINs, ready to send to the hospital."
+  },
+  {
+    "start": 778.68,
+    "end": 788.37,
+    "text": "Payout accounts holds every hospital and agent bank account. New or changed details stay unverified until a different finance user verifies them."
+  },
+  {
+    "start": 789.16,
+    "end": 795.3,
+    "text": "Verify shows the full details to check against the bank proof. We'll cancel."
+  },
+  {
+    "start": 796.7,
+    "end": 805.11,
+    "text": "Commission rules set the platform rate for a hospital, specialty or procedure, with effective dates, overriding the default rate."
+  },
+  {
+    "start": 806.51,
+    "end": 812.22,
+    "text": "Accounting starts with the ledger: every account with its type, owner and balance."
+  },
+  {
+    "start": 812.75,
+    "end": 817.23,
+    "text": "Opening an account lists its entries, with a running balance."
+  },
+  {
+    "start": 818.63,
+    "end": 824.81,
+    "text": "The journal shows every transaction, each one balanced, with its debit and credit lines."
+  },
+  {
+    "start": 826.21,
+    "end": 834.41,
+    "text": "Manual adjustments, such as FX differences or bank charges, are posted only after a second finance user approves them."
+  },
+  {
+    "start": 835.81,
+    "end": 840.85,
+    "text": "The trial balance proves that debits equal credits across the whole ledger."
+  },
+  {
+    "start": 842.25,
+    "end": 851.45,
+    "text": "Reports break down bookings, GMV, revenue, commission and refunds by month, hospital or specialty, with CSV export."
+  },
+  {
+    "start": 852.85,
+    "end": 860.65,
+    "text": "Under System, Settings marks the keys only finance may change, such as commission, deposit and tax rates."
+  },
+  {
+    "start": 861.12,
+    "end": 869.88,
+    "text": "Further down are the settlement hold period, the refund dual-approval threshold, and the platform GSTIN printed on every tax invoice."
+  },
+  {
+    "start": 870.37,
+    "end": 876.02,
+    "text": "The sidebar collapses to icons for more room, and expands again with one click."
+  },
+  {
+    "start": 877.42,
+    "end": 884.37,
+    "text": "Now the second person. Sandeep Bhatia signs in from his own browser session, as the checker."
+  },
+  {
+    "start": 885.77,
+    "end": 891.6,
+    "text": "His Awaiting second approval queue shows Kavita's request for Elena Petrova's deposit."
+  },
+  {
+    "start": 893,
+    "end": 899.69,
+    "text": "He sees who recorded the request, the reference and the amount, and checks them against the bank statement."
+  },
+  {
+    "start": 900.26,
+    "end": 906.47,
+    "text": "He approves. Only now is the payment captured, and the booking is confirmed."
+  },
+  {
+    "start": 907.87,
+    "end": 914.6,
+    "text": "He also approves Kavita's settlement batch. Payouts can be processed only after this approval."
+  },
+  {
+    "start": 915.15,
+    "end": 922.46,
+    "text": "That completes the finance tour: every rupee is traceable in the ledger, and every money movement takes two people."
+  },
+  {
+    "start": 924.03,
+    "end": 932.01,
+    "text": "That's the staff console: operations and finance working together in one secure place. Thank you for watching."
+  }
+]

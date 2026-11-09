@@ -1,0 +1,110 @@
+# Heal India Global - Prometheus configuration.
+#
+# Jobs (the alert rules and the Grafana dashboard rely on these job names):
+#   hig-api             FastAPI /metrics (prometheus-fastapi-instrumentator: http_requests_total,
+#                       http_request_duration_highr_seconds, http_request_duration_seconds, ...)
+#   hig-sql-exporter    queue / webhook / settlement / ledger / DB-connection metrics computed in PostgreSQL
+#                       (exporters/hig.collector.yml) - the app does not export these itself yet
+#   hig-redis-exporter  oliver006/redis_exporter against ElastiCache (TLS + AUTH)
+#   hig-blackbox        external HTTPS probes of /health/ready and the four web apps (+ certificate expiry)
+#
+# /metrics answers 404 to public clients in production; scrape it from inside the cluster / VPC only.
+
+global:
+  scrape_interval: 30s
+  scrape_timeout: 10s
+  evaluation_interval: 30s
+  external_labels:
+    project: heal-india-global
+    environment: production # set per environment
+
+rule_files:
+  - rules/hig-recording.rules.yml
+  - rules/hig-alerts.rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  # -------------------------------------------------------------------------------------------------
+  # API on Kubernetes (deploy/k8s): pods labelled app.kubernetes.io/name=hig-api, container port "http".
+  # -------------------------------------------------------------------------------------------------
+  - job_name: hig-api
+    metrics_path: /metrics
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names: ["hig-production", "hig-staging"]
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+        regex: hig-api
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_container_port_name]
+        regex: http
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_phase]
+        regex: Running
+        action: keep
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        target_label: node
+
+  # On ECS (deploy/terraform/aws) replace the kubernetes_sd_configs block above with Cloud Map DNS discovery
+  # (terraform output metrics_scrape_dns_name) and allow the scraper's CIDR via `metrics_scrape_cidrs`:
+  #
+  #   - job_name: hig-api
+  #     metrics_path: /metrics
+  #     dns_sd_configs:
+  #       - names: ["api.production.hig.internal"]
+  #         type: A
+  #         port: 8000
+  #         refresh_interval: 30s
+  #
+  # Amazon Managed Service for Prometheus: run the same job in an ADOT collector inside the VPC and
+  # remote_write to the AMP workspace.
+
+  # -------------------------------------------------------------------------------------------------
+  # Business metrics computed from PostgreSQL (burningalchemist/sql_exporter, port 9399).
+  # -------------------------------------------------------------------------------------------------
+  - job_name: hig-sql-exporter
+    scrape_interval: 60s
+    scrape_timeout: 20s
+    static_configs:
+      - targets: ["hig-sql-exporter:9399"]
+
+  # -------------------------------------------------------------------------------------------------
+  # Redis (oliver006/redis_exporter, port 9121; REDIS_ADDR=rediss://<primary endpoint>:6379, REDIS_PASSWORD
+  # from the secret store). ElastiCache disables CONFIG, so maxmemory comes from INFO.
+  # -------------------------------------------------------------------------------------------------
+  - job_name: hig-redis-exporter
+    static_configs:
+      - targets: ["hig-redis-exporter:9121"]
+
+  # -------------------------------------------------------------------------------------------------
+  # External probes through the public edge (blackbox_exporter, module http_2xx in exporters/blackbox.yml).
+  # Run the prober outside the VPC (or at least through the public DNS names) so CloudFront/WAF/ALB/TLS are
+  # all exercised.
+  # -------------------------------------------------------------------------------------------------
+  - job_name: hig-blackbox
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://api.healindia.example/health/ready
+          - https://healindia.example/
+          - https://agent.healindia.example/
+          - https://hospital.healindia.example/
+          - https://admin.healindia.example/
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

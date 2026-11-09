@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+@import '@hig/shared/theme.css';
+@source '../../../packages/shared/src';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Colours, surfaces and dark mode come from the shared theme (@hig/shared/theme.css); no token overrides here. */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.hero-gradient {
+  background-image: linear-gradient(135deg, var(--color-hero-from) 0%, var(--color-hero-via) 50%, var(--color-hero-to) 100%);
+}
+
+@keyframes hig-pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: hig-pulse-ring 1.6s ease-out infinite;
+}
+
+input[type='range'] {
+  accent-color: var(--color-primary);
+}

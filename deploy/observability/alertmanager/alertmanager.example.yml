@@ -1,0 +1,55 @@
+# EXAMPLE Alertmanager routing for the rules in prometheus/rules/hig-alerts.rules.yml.
+# critical -> paging receiver; warning -> chat/e-mail during business hours (IST). Replace every placeholder;
+# keep real webhook URLs / passwords in the secret store (Alertmanager supports *_file fields).
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: "email-smtp.ap-south-1.amazonaws.com:587"
+  smtp_from: "alerts@healindia.example"
+  smtp_auth_username: "REPLACE_ME"
+  smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password
+  smtp_require_tls: true
+
+route:
+  receiver: platform-email
+  group_by: [alertname, job, gateway, task_name]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    # Money-path alerts also go to finance ops (continue: true -> still evaluated by the routes below).
+    - matchers: ['alertname=~"HigSettlement.*|HigPayouts.*|HigLedger.*|HigWebhook.*|HigDeadJobsMoneyPath"']
+      receiver: finance-and-platform
+      continue: true
+    - matchers: ['severity="critical"']
+      receiver: oncall-pager
+      repeat_interval: 1h
+    - matchers: ['severity="warning"']
+      receiver: platform-email
+
+inhibit_rules:
+  # Whole API down -> silence the per-instance and latency/error-ratio noise.
+  - source_matchers: ['alertname="HigApiAllTargetsDown"']
+    target_matchers: ['alertname=~"HigApiTargetDown|HigApiHigh.*"']
+    equal: [job]
+  - source_matchers: ['alertname="HigSqlExporterDown"']
+    target_matchers: ['alertname=~"HigJob.*|HigWebhook.*|HigSettlement.*|HigPayouts.*|HigDb.*|HigLedger.*|HigAi.*"']
+
+receivers:
+  - name: platform-email
+    email_configs:
+      - to: "platform@healindia.example"
+        send_resolved: true
+
+  - name: oncall-pager
+    webhook_configs:
+      # PagerDuty / Opsgenie / incident tool webhook; the URL is a secret.
+      - url_file: /etc/alertmanager/secrets/pager_webhook_url
+        send_resolved: true
+    email_configs:
+      - to: "oncall@healindia.example"
+        send_resolved: true
+
+  - name: finance-and-platform
+    email_configs:
+      - to: "finance-ops@healindia.example"
+        send_resolved: true

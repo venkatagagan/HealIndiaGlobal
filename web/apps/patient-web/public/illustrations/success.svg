@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>Success</title>
+  <defs>
+    <linearGradient id="ok-badge" x1="118" y1="76" x2="204" y2="166" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4ADE80"/>
+      <stop offset="1" stop-color="#16A34A"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="120" r="100" fill="#22C55E" fill-opacity=".08"/>
+  <circle cx="160" cy="120" r="76" fill="#22C55E" fill-opacity=".14"/>
+  <ellipse cx="160" cy="180" rx="38" ry="5" fill="#0F172A" fill-opacity=".12"/>
+  <circle cx="160" cy="118" r="52" fill="url(#ok-badge)"/>
+  <path d="M126 96a42 42 0 0 1 26-19" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="5" stroke-linecap="round"/>
+  <path d="M136 119l16 16 32-33" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <g>
+    <rect x="70" y="60" width="13" height="6" rx="3" fill="#7C3AED" transform="rotate(-32 76.5 63)"/>
+    <rect x="234" y="66" width="13" height="6" rx="3" fill="#06B6D4" transform="rotate(28 240.5 69)"/>
+    <rect x="92" y="182" width="12" height="6" rx="3" fill="#06B6D4" transform="rotate(40 98 185)"/>
+    <rect x="222" y="184" width="12" height="6" rx="3" fill="#F59E0B" transform="rotate(-24 228 187)"/>
+    <rect x="200" y="30" width="11" height="5" rx="2.5" fill="#A78BFA" transform="rotate(62 205.5 32.5)"/>
+    <rect x="262" y="102" width="12" height="6" rx="3" fill="#22C55E" transform="rotate(-48 268 105)"/>
+    <rect x="186" y="208" width="11" height="5" rx="2.5" fill="#22C55E" transform="rotate(16 191.5 210.5)"/>
+    <rect x="44" y="140" width="11" height="5" rx="2.5" fill="#F59E0B" transform="rotate(-70 49.5 142.5)"/>
+    <circle cx="60" cy="122" r="4.5" fill="#F59E0B"/>
+    <circle cx="262" cy="140" r="4.5" fill="#7C3AED"/>
+    <circle cx="114" cy="40" r="3.5" fill="#22C55E"/>
+    <circle cx="48" cy="92" r="3" fill="#06B6D4"/>
+    <circle cx="146" cy="212" r="3.5" fill="#7C3AED"/>
+    <circle cx="280" cy="78" r="3" fill="#F59E0B"/>
+  </g>
+  <path d="M250 42c1.2 7 3.5 9.3 10.5 10.5-7 1.2-9.3 3.5-10.5 10.5-1.2-7-3.5-9.3-10.5-10.5 7-1.2 9.3-3.5 10.5-10.5z" fill="#F59E0B"/>
+  <path d="M74 164c.9 5 2.5 6.6 7.5 7.5-5 .9-6.6 2.5-7.5 7.5-.9-5-2.5-6.6-7.5-7.5 5-.9 6.6-2.5 7.5-7.5z" fill="#7C3AED"/>
+  <path d="M100 74c.6 3.6 1.8 4.8 5.4 5.4-3.6.6-4.8 1.8-5.4 5.4-.6-3.6-1.8-4.8-5.4-5.4 3.6-.6 4.8-1.8 5.4-5.4z" fill="#06B6D4"/>
+</svg>

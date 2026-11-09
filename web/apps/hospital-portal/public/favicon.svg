@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Heal India Global</title>
+  <!-- Simplified 3-petal mark with wider gaps and a larger plus so it survives 16-32 px. -->
+  <defs>
+    <linearGradient id="hig-fav-bg" x1="0" y1="64" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset=".3" stop-color="#10B981"/>
+      <stop offset=".65" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#hig-fav-bg)"/>
+  <path transform="translate(3.2 3) scale(.45)" fill="#FFFFFF" fill-rule="evenodd" d="M64 14C66 23 71 31 77 39C83 47 86 56 86 67C86 87 76 101 64 110C52 101 42 87 42 67C42 56 45 47 51 39C57 31 62 23 64 14ZM61.5 54H66.5Q69 54 69 56.5V63H75.5Q78 63 78 65.5V70.5Q78 73 75.5 73H69V79.5Q69 82 66.5 82H61.5Q59 82 59 79.5V73H52.5Q50 73 50 70.5V65.5Q50 63 52.5 63H59V56.5Q59 54 61.5 54ZM72 116C96 116 118 92 120 46C106 54 96 64 95 78C94 94 86 106 72 116ZM56 116C32 116 10 92 8 46C22 54 32 64 33 78C34 94 42 106 56 116Z"/>
+</svg>

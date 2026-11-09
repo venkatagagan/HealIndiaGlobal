@@ -1,0 +1,262 @@
+{
+  "file": "hospital/hospital-walkthrough.mp4",
+  "duration": 342.82,
+  "durationText": "5:43",
+  "size": 20917094,
+  "chapters": [
+    {
+      "t": 0.1,
+      "title": "Intro",
+      "shot": null
+    },
+    {
+      "t": 10.9,
+      "title": "Sign in (website door)",
+      "shot": "screenshots/01-login.png"
+    },
+    {
+      "t": 19.6,
+      "title": "Dashboard - hero",
+      "shot": "screenshots/02-dashboard.png"
+    },
+    {
+      "t": 26.9,
+      "title": "Dashboard - stats & charts",
+      "shot": null
+    },
+    {
+      "t": 35.6,
+      "title": "Dashboard - recent enquiries",
+      "shot": "screenshots/03-dashboard-recent.png"
+    },
+    {
+      "t": 40.8,
+      "title": "Enquiries & cases - list with status tabs",
+      "shot": "screenshots/04-cases-list.png"
+    },
+    {
+      "t": 49.3,
+      "title": "Enquiries & cases - filters (New)",
+      "shot": "screenshots/05-cases-filter-new.png"
+    },
+    {
+      "t": 58,
+      "title": "Case detail - patient",
+      "shot": null
+    },
+    {
+      "t": 63.7,
+      "title": "Case detail - AI screening summary",
+      "shot": "screenshots/06-case-detail.png"
+    },
+    {
+      "t": 75.2,
+      "title": "Case detail - confirmed AI report readings",
+      "shot": "screenshots/07-case-report-readings.png"
+    },
+    {
+      "t": 86.7,
+      "title": "Case detail - medical documents",
+      "shot": "screenshots/08-case-documents.png"
+    },
+    {
+      "t": 92.3,
+      "title": "Decline enquiry dialog (cancelled)",
+      "shot": "screenshots/09-case-decline-dialog.png"
+    },
+    {
+      "t": 100.9,
+      "title": "Quote builder - itemised quote",
+      "shot": "screenshots/10-quote-builder.png"
+    },
+    {
+      "t": 122.7,
+      "title": "Quote sent - case moves to Quoted",
+      "shot": "screenshots/12-case-quoted.png"
+    },
+    {
+      "t": 129.8,
+      "title": "Bookings - list with status tabs",
+      "shot": "screenshots/13-bookings-list.png"
+    },
+    {
+      "t": 137.5,
+      "title": "Bookings - search",
+      "shot": "screenshots/14-bookings-search.png"
+    },
+    {
+      "t": 141,
+      "title": "Bookings - admissions calendar",
+      "shot": "screenshots/15-bookings-calendar.png"
+    },
+    {
+      "t": 146.9,
+      "title": "Booking detail - treatment & payment",
+      "shot": "screenshots/16-booking-detail.png"
+    },
+    {
+      "t": 156.2,
+      "title": "Booking detail - admit dialog (cancelled); discharge action",
+      "shot": "screenshots/17-booking-admit-dialog.png"
+    },
+    {
+      "t": 166.1,
+      "title": "Booking detail - itinerary",
+      "shot": "screenshots/19-booking-itinerary.png"
+    },
+    {
+      "t": 173.3,
+      "title": "Booking detail - visa invitation letter & transfers",
+      "shot": "screenshots/20-booking-visa.png"
+    },
+    {
+      "t": 181,
+      "title": "Booking detail - completed (discharged) booking",
+      "shot": "screenshots/21-booking-completed.png"
+    },
+    {
+      "t": 187.9,
+      "title": "Doctors - list with registration badges",
+      "shot": "screenshots/22-doctors.png"
+    },
+    {
+      "t": 199.1,
+      "title": "Doctor form (cancelled)",
+      "shot": "screenshots/23-doctor-form.png"
+    },
+    {
+      "t": 208,
+      "title": "Doctor availability calendar",
+      "shot": "screenshots/24-doctor-availability.png"
+    },
+    {
+      "t": 215.1,
+      "title": "Procedures & pricing",
+      "shot": "screenshots/25-procedures.png"
+    },
+    {
+      "t": 223.4,
+      "title": "Procedure drawer with packages",
+      "shot": "screenshots/26-procedure-packages.png"
+    },
+    {
+      "t": 229.2,
+      "title": "Hospital profile - profile & contact",
+      "shot": "screenshots/27-hospital-profile.png"
+    },
+    {
+      "t": 239.4,
+      "title": "Hospital profile - accreditations",
+      "shot": "screenshots/28-hospital-accreditations.png"
+    },
+    {
+      "t": 245.9,
+      "title": "Hospital profile - KYC documents",
+      "shot": "screenshots/29-hospital-kyc.png"
+    },
+    {
+      "t": 253.9,
+      "title": "Team members",
+      "shot": "screenshots/30-team.png"
+    },
+    {
+      "t": 260.1,
+      "title": "Invite team member dialog (cancelled)",
+      "shot": "screenshots/31-team-invite-dialog.png"
+    },
+    {
+      "t": 267,
+      "title": "Reviews",
+      "shot": "screenshots/32-reviews.png"
+    },
+    {
+      "t": 274.5,
+      "title": "Finance - settlement items",
+      "shot": "screenshots/33-finance-settlement-items.png"
+    },
+    {
+      "t": 284.4,
+      "title": "Finance - payouts",
+      "shot": "screenshots/34-finance-payouts.png"
+    },
+    {
+      "t": 288.8,
+      "title": "Finance - statements with totals",
+      "shot": "screenshots/35-finance-statements.png"
+    },
+    {
+      "t": 295.5,
+      "title": "Finance - payout account",
+      "shot": "screenshots/36-finance-payout-account.png"
+    },
+    {
+      "t": 299.2,
+      "title": "Messages - case conversation",
+      "shot": "screenshots/37-messages.png"
+    },
+    {
+      "t": 308.6,
+      "title": "Notifications",
+      "shot": "screenshots/38-notifications.png"
+    },
+    {
+      "t": 314.1,
+      "title": "Top bar - active hospital (switcher appears with 2+ hospitals)",
+      "shot": null
+    },
+    {
+      "t": 322,
+      "title": "Sidebar collapse / expand",
+      "shot": "screenshots/39-sidebar-collapsed.png"
+    },
+    {
+      "t": 327.4,
+      "title": "Dark mode toggle",
+      "shot": "screenshots/40-dark-mode.png"
+    },
+    {
+      "t": 331.1,
+      "title": "Outro",
+      "shot": null
+    }
+  ],
+  "frames": [
+    {
+      "t": 2,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0002.png",
+      "size": 439573,
+      "blank": false
+    },
+    {
+      "t": 10,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0010.png",
+      "size": 383746,
+      "blank": false
+    },
+    {
+      "t": 20,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0020.png",
+      "size": 465936,
+      "blank": false
+    },
+    {
+      "t": 322.8,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0323.png",
+      "size": 509724,
+      "blank": false
+    },
+    {
+      "t": 332.8,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0333.png",
+      "size": 413027,
+      "blank": false
+    },
+    {
+      "t": 340.8,
+      "file": "C:\\NewProjects\\ForHosp\\docs\\demo\\.cache\\frames\\hospital-walkthrough\\t0341.png",
+      "size": 371393,
+      "blank": false
+    }
+  ],
+  "warnings": []
+}

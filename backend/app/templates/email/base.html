@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+</head>
+<body style="margin:0;padding:0;background:#F8FAFC;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;color:#0F172A;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#F8FAFC;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E2E8F0;">
+          <tr>
+            <td style="background:linear-gradient(90deg,#7B2FF7,#2563EB,#06B6D4);background-color:#2563EB;padding:24px 32px;color:#FFFFFF;">
+              <div style="font-size:20px;font-weight:700;">{{ app_name }}</div>
+              <div style="font-size:13px;opacity:.9;">{{ tagline }}</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;font-size:15px;line-height:1.6;">
+              {% block content %}{% endblock %}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 32px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B;">
+              {% block footer %}
+              You are receiving this email because of activity on your {{ app_name }} account.
+              Questions? Write to <a href="mailto:{{ support_email }}" style="color:#2563EB;">{{ support_email }}</a>.
+              {% endblock %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

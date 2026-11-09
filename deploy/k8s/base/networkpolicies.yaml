@@ -1,0 +1,136 @@
+# Default deny, then explicit allows. Requires a CNI that enforces NetworkPolicy (EKS: VPC CNI with network
+# policies enabled, Calico or Cilium).
+#
+# Assumptions (patch in overlays):
+#   * ingress controller in namespace "ingress-nginx", Prometheus in namespace "monitoring"
+#   * PostgreSQL (RDS) and Redis (ElastiCache) live in the VPC: 10.0.0.0/8 here, narrowed per overlay
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-default-deny
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-allow-dns
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# API: HTTP from the ingress controller, /metrics scrapes from Prometheus.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-api-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-api
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 8000
+---
+# Web (SPAs): HTTP from the ingress controller only; no egress beyond DNS.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-web-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hig-web
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8081
+        - protocol: TCP
+          port: 8082
+        - protocol: TCP
+          port: 8083
+        - protocol: TCP
+          port: 8084
+---
+# api, worker and the migration job: database, Redis, and outbound HTTPS/SMTP (Claude API, Razorpay, Stripe,
+# S3, STS/Secrets Manager, SMTP). The instance metadata service is excluded (use IRSA / Pod Identity).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hig-app-egress
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values: ["api", "worker", "migrate"]
+  policyTypes:
+    - Egress
+  egress:
+    # egress[0]: PostgreSQL + Redis inside the VPC (overlays patch the CIDR)
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+    # egress[1]: HTTPS and SMTP submission to anywhere except the instance metadata endpoint
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 587
+        - protocol: TCP
+          port: 465
+    # egress[2]: EKS Pod Identity agent (credentials for S3 when Pod Identity is used instead of IRSA)
+    - to:
+        - ipBlock:
+            cidr: 169.254.170.23/32
+      ports:
+        - protocol: TCP
+          port: 80

@@ -1,0 +1,75 @@
+# One-off database migration (alembic upgrade head) - run BEFORE rolling out new api/worker pods.
+#
+# kubectl (two phases, see deploy/k8s/README.md):
+#   kubectl -n <ns> delete job hig-migrate --ignore-not-found
+#   kubectl apply -k deploy/k8s/overlays/<env> -l hig.io/phase=pre-deploy     # namespace, config, SA, this Job
+#   kubectl -n <ns> wait --for=condition=complete job/hig-migrate --timeout=15m
+#   kubectl apply -k deploy/k8s/overlays/<env>                                # everything else
+# Argo CD: the annotations below run it as a Sync hook after the ConfigMap (wave -1) and before the
+# Deployments (wave 1), recreating it on every sync.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hig-migrate
+  labels:
+    app.kubernetes.io/name: hig-migrate
+    app.kubernetes.io/component: migrate
+    hig.io/phase: pre-deploy
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 1800
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hig-migrate
+        app.kubernetes.io/component: migrate
+    spec:
+      restartPolicy: Never
+      serviceAccountName: hig-migrate
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: hig-api
+          imagePullPolicy: IfNotPresent
+          # `args` keeps the image entrypoint (tini + docker-entrypoint.sh).
+          args: ["alembic", "-c", "/app/alembic.ini", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: hig-config
+            - secretRef:
+                name: hig-secrets
+          env:
+            - name: TMPDIR
+              value: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 128Mi

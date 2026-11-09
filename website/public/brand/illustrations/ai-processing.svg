@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>AI is analysing your condition</title>
+  <defs>
+    <radialGradient id="ai-glow" cx="160" cy="118" r="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity=".34"/>
+      <stop offset=".6" stop-color="#7C3AED" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ai-brain" x1="94" y1="56" x2="226" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#6D28D9" stop-opacity=".3"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="118" r="118" fill="url(#ai-glow)"/>
+  <circle cx="160" cy="118" r="94" fill="none" stroke="#8B5CF6" stroke-opacity=".35" stroke-width="1.5"/>
+  <circle cx="160" cy="118" r="110" fill="none" stroke="#8B5CF6" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="3 6"/>
+  <g transform="translate(73.6 31.6) scale(3.6)" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="url(#ai-brain)" d="M24 9.5C22.5 7.5 20 6.5 17.5 7C14.5 7.5 12.5 9.5 12 12C9 12.5 7 15 7 18C7 19.2 7.3 20.3 7.9 21.2C6.2 22.6 5.5 24.6 6 26.8C6.4 28.6 7.6 30 9.2 30.6C9 33.6 10.8 36.2 13.6 37C15 39.6 18 41 21 40.4C22.2 40.2 23.2 39.6 24 38.8ZM24 9.5C25.5 7.5 28 6.5 30.5 7C33.5 7.5 35.5 9.5 36 12C39 12.5 41 15 41 18C41 19.2 40.7 20.3 40.1 21.2C41.8 22.6 42.5 24.6 42 26.8C41.6 28.6 40.4 30 38.8 30.6C39 33.6 37.2 36.2 34.4 37C33 39.6 30 41 27 40.4C25.8 40.2 24.8 39.6 24 38.8Z"/>
+    <path fill="none" stroke="#8B5CF6" stroke-width=".85" d="M24 9.5C22.5 7.5 20 6.5 17.5 7C14.5 7.5 12.5 9.5 12 12C9 12.5 7 15 7 18C7 19.2 7.3 20.3 7.9 21.2C6.2 22.6 5.5 24.6 6 26.8C6.4 28.6 7.6 30 9.2 30.6C9 33.6 10.8 36.2 13.6 37C15 39.6 18 41 21 40.4C22.2 40.2 23.2 39.6 24 38.8M24 9.5C25.5 7.5 28 6.5 30.5 7C33.5 7.5 35.5 9.5 36 12C39 12.5 41 15 41 18C41 19.2 40.7 20.3 40.1 21.2C41.8 22.6 42.5 24.6 42 26.8C41.6 28.6 40.4 30 38.8 30.6C39 33.6 37.2 36.2 34.4 37C33 39.6 30 41 27 40.4C25.8 40.2 24.8 39.6 24 38.8M24 9.5V38.8"/>
+  </g>
+  <g fill="none" stroke="#A78BFA" stroke-width="1.6" stroke-opacity=".9">
+    <path d="M118 84L142 92L128 118L104 112L118 84M128 118L112 146L138 152L128 118M142 92L178 92M138 152L182 152M202 84L178 92L192 118L216 112L202 84M192 118L208 146L182 152L192 118"/>
+    <path d="M44 96C70 96 84 108 104 112M38 130C64 130 88 140 112 146M216 112C236 108 240 98 252 97M208 146C232 146 240 143 256 142" stroke-dasharray="3 4"/>
+  </g>
+  <path d="M104 112L128 118L160 124L192 118L216 112" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#C4B5FD" stroke="#7C3AED" stroke-width="2">
+    <circle cx="118" cy="84" r="5"/>
+    <circle cx="142" cy="92" r="4.5"/>
+    <circle cx="112" cy="146" r="5"/>
+    <circle cx="138" cy="152" r="4.5"/>
+    <circle cx="202" cy="84" r="5"/>
+    <circle cx="178" cy="92" r="4.5"/>
+    <circle cx="208" cy="146" r="5"/>
+    <circle cx="182" cy="152" r="4.5"/>
+  </g>
+  <g fill="#22C55E" stroke="#FFFFFF" stroke-width="2">
+    <circle cx="104" cy="112" r="6"/>
+    <circle cx="128" cy="118" r="6.5"/>
+    <circle cx="192" cy="118" r="6.5"/>
+    <circle cx="216" cy="112" r="6"/>
+  </g>
+  <circle cx="160" cy="124" r="11" fill="#06B6D4" fill-opacity=".3"/>
+  <circle cx="160" cy="124" r="6.5" fill="#06B6D4" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="44" cy="96" r="5" fill="#8B5CF6"/>
+  <circle cx="38" cy="130" r="5" fill="#06B6D4"/>
+  <rect x="252" y="87" width="46" height="20" rx="10" fill="#22C55E"/>
+  <path d="M262 97l4 4 7-8" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="277" y="94" width="14" height="5" rx="2.5" fill="#FFFFFF" fill-opacity=".85"/>
+  <rect x="256" y="133" width="42" height="18" rx="9" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+  <circle cx="266" cy="142" r="4" fill="#A78BFA"/>
+  <rect x="274" y="139.5" width="16" height="5" rx="2.5" fill="#CBD5E1"/>
+  <path d="M252 46c1.2 7 3.5 9.3 10.5 10.5-7 1.2-9.3 3.5-10.5 10.5-1.2-7-3.5-9.3-10.5-10.5 7-1.2 9.3-3.5 10.5-10.5z" fill="#F59E0B"/>
+  <path d="M72 168c.8 4.6 2.3 6.1 6.9 6.9-4.6.8-6.1 2.3-6.9 6.9-.8-4.6-2.3-6.1-6.9-6.9 4.6-.8 6.1-2.3 6.9-6.9z" fill="#A78BFA"/>
+  <path d="M70 40c.7 4 2 5.3 6 6-4 .7-5.3 2-6 6-.7-4-2-5.3-6-6 4-.7 5.3-2 6-6z" fill="#06B6D4"/>
+  <circle cx="246" cy="196" r="3.5" fill="#22C55E"/>
+</svg>

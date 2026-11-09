@@ -1,0 +1,599 @@
+{
+  "file": "staff/staff-walkthrough.mp4",
+  "duration": 933.33,
+  "durationText": "15:33",
+  "audioDuration": 933.33,
+  "size": 60654430,
+  "parts": [
+    {
+      "base": "01-operations",
+      "label": "Part 1 · Operations",
+      "start": 0,
+      "duration": 486.67
+    },
+    {
+      "base": "02-finance",
+      "label": "Part 2 · Finance",
+      "start": 486.67,
+      "duration": 437.3
+    },
+    {
+      "base": "99-outro",
+      "label": "Outro",
+      "start": 923.97,
+      "duration": 9.37
+    }
+  ],
+  "chapters": [
+    {
+      "t": 0,
+      "title": "Intro",
+      "part": "Part 1 · Operations",
+      "shot": null
+    },
+    {
+      "t": 8.4,
+      "title": "Part 1 · Operations (chapter card)",
+      "part": "Part 1 · Operations",
+      "shot": null
+    },
+    {
+      "t": 16.2,
+      "title": "Public website login (patients, agents, hospitals)",
+      "part": "Part 1 · Operations",
+      "shot": "1-01-public-login.png"
+    },
+    {
+      "t": 27.1,
+      "title": "Staff door: separate sign-in",
+      "part": "Part 1 · Operations",
+      "shot": "1-02-staff-login.png"
+    },
+    {
+      "t": 47.1,
+      "title": "Dashboard: Needs your attention",
+      "part": "Part 1 · Operations",
+      "shot": "1-03-dashboard.png"
+    },
+    {
+      "t": 59.9,
+      "title": "Dashboard: performance period switch",
+      "part": "Part 1 · Operations",
+      "shot": "1-04-dashboard-period.png"
+    },
+    {
+      "t": 70,
+      "title": "Dashboard: charts and case funnel",
+      "part": "Part 1 · Operations",
+      "shot": "1-05-dashboard-charts.png"
+    },
+    {
+      "t": 80.4,
+      "title": "Dashboard: specialties, top hospitals, admissions",
+      "part": "Part 1 · Operations",
+      "shot": null
+    },
+    {
+      "t": 87.9,
+      "title": "Dashboard: recent activity and platform snapshot",
+      "part": "Part 1 · Operations",
+      "shot": "1-06-dashboard-activity.png"
+    },
+    {
+      "t": 96.5,
+      "title": "Cases list with status tabs",
+      "part": "Part 1 · Operations",
+      "shot": "1-07-cases.png"
+    },
+    {
+      "t": 115.3,
+      "title": "Cases: pill filters and chips",
+      "part": "Part 1 · Operations",
+      "shot": "1-08-cases-filter-chip.png"
+    },
+    {
+      "t": 125.9,
+      "title": "Cases: export menu and table view options",
+      "part": "Part 1 · Operations",
+      "shot": null
+    },
+    {
+      "t": 134.6,
+      "title": "Cases: search",
+      "part": "Part 1 · Operations",
+      "shot": null
+    },
+    {
+      "t": 140.1,
+      "title": "Case detail: stepper and overview",
+      "part": "Part 1 · Operations",
+      "shot": "1-09-case-overview.png"
+    },
+    {
+      "t": 152.1,
+      "title": "Case detail: Screening tab",
+      "part": "Part 1 · Operations",
+      "shot": "1-10-case-screening.png"
+    },
+    {
+      "t": 161.6,
+      "title": "Case detail: assign coordinator dialog",
+      "part": "Part 1 · Operations",
+      "shot": "1-11-case-assign.png"
+    },
+    {
+      "t": 171.4,
+      "title": "Case detail: in-treatment case",
+      "part": "Part 1 · Operations",
+      "shot": "1-12-case-in-treatment.png"
+    },
+    {
+      "t": 181.2,
+      "title": "Case detail: Quotes tab",
+      "part": "Part 1 · Operations",
+      "shot": "1-13-case-quotes.png"
+    },
+    {
+      "t": 188.2,
+      "title": "Case detail: Booking & payments tab",
+      "part": "Part 1 · Operations",
+      "shot": "1-14-case-booking.png"
+    },
+    {
+      "t": 194.5,
+      "title": "Case detail: Travel tab",
+      "part": "Part 1 · Operations",
+      "shot": "1-15-case-travel.png"
+    },
+    {
+      "t": 201.5,
+      "title": "Case detail: Documents and Activity tabs",
+      "part": "Part 1 · Operations",
+      "shot": "1-16-case-activity.png"
+    },
+    {
+      "t": 208.3,
+      "title": "Bookings list",
+      "part": "Part 1 · Operations",
+      "shot": "1-17-bookings.png"
+    },
+    {
+      "t": 222,
+      "title": "Booking drawer",
+      "part": "Part 1 · Operations",
+      "shot": "1-18-booking-drawer.png"
+    },
+    {
+      "t": 230.5,
+      "title": "Travel desk: SOS alerts",
+      "part": "Part 1 · Operations",
+      "shot": "1-19-travel-sos.png"
+    },
+    {
+      "t": 246.6,
+      "title": "Travel desk: Visa",
+      "part": "Part 1 · Operations",
+      "shot": "1-20-travel-visa.png"
+    },
+    {
+      "t": 253.5,
+      "title": "Travel desk: Flights & transfers",
+      "part": "Part 1 · Operations",
+      "shot": "1-21-travel-flights.png"
+    },
+    {
+      "t": 258.6,
+      "title": "Travel desk: Accommodation; Translators & services",
+      "part": "Part 1 · Operations",
+      "shot": "1-22-travel-services.png"
+    },
+    {
+      "t": 267.2,
+      "title": "Support inbox: reply to a patient",
+      "part": "Part 1 · Operations",
+      "shot": "1-23-support-inbox.png"
+    },
+    {
+      "t": 280.7,
+      "title": "Hospitals list and approval queue",
+      "part": "Part 1 · Operations",
+      "shot": "1-24-hospitals.png"
+    },
+    {
+      "t": 295.4,
+      "title": "Hospital detail: approval checklist",
+      "part": "Part 1 · Operations",
+      "shot": "1-25-hospital-checklist.png"
+    },
+    {
+      "t": 305.6,
+      "title": "Hospital detail: KYC & documents (verify)",
+      "part": "Part 1 · Operations",
+      "shot": "1-26-hospital-kyc.png"
+    },
+    {
+      "t": 315.2,
+      "title": "Hospital detail: Doctors (Verify registration)",
+      "part": "Part 1 · Operations",
+      "shot": "1-27-hospital-doctors.png"
+    },
+    {
+      "t": 326.7,
+      "title": "Hospital detail: approve dialog (cancelled)",
+      "part": "Part 1 · Operations",
+      "shot": "28-hospital-approve-dialog-open.png"
+    },
+    {
+      "t": 336.5,
+      "title": "Active hospital: Team and Cases tabs",
+      "part": "Part 1 · Operations",
+      "shot": "1-29-hospital-team-cases.png"
+    },
+    {
+      "t": 346.8,
+      "title": "Agents list",
+      "part": "Part 1 · Operations",
+      "shot": "1-30-agents.png"
+    },
+    {
+      "t": 356.8,
+      "title": "Agent drawer with KYC documents",
+      "part": "Part 1 · Operations",
+      "shot": "1-31-agent-drawer.png"
+    },
+    {
+      "t": 367.2,
+      "title": "Agent KYC verify; approve dialog (cancelled)",
+      "part": "Part 1 · Operations",
+      "shot": "1-32-agent-kyc-verified.png"
+    },
+    {
+      "t": 376.6,
+      "title": "Catalog: specialties, procedures, cost benchmarks",
+      "part": "Part 1 · Operations",
+      "shot": "1-33-catalog.png"
+    },
+    {
+      "t": 389.7,
+      "title": "Content: tips, stays, services, FX rates",
+      "part": "Part 1 · Operations",
+      "shot": "1-34-content.png"
+    },
+    {
+      "t": 400.2,
+      "title": "Users list and user drawer",
+      "part": "Part 1 · Operations",
+      "shot": "1-35-user-drawer.png"
+    },
+    {
+      "t": 415.1,
+      "title": "Staff and New staff user dialog (cancelled)",
+      "part": "Part 1 · Operations",
+      "shot": "1-36-staff.png"
+    },
+    {
+      "t": 427.2,
+      "title": "Settings incl. finance settings",
+      "part": "Part 1 · Operations",
+      "shot": "1-37-settings.png"
+    },
+    {
+      "t": 443,
+      "title": "Audit log with filters",
+      "part": "Part 1 · Operations",
+      "shot": "1-38-audit-log.png"
+    },
+    {
+      "t": 454.6,
+      "title": "Dark mode toggle",
+      "part": "Part 1 · Operations",
+      "shot": "39-dark-mode-on.png"
+    },
+    {
+      "t": 460,
+      "title": "Sidebar collapse / expand and accordion",
+      "part": "Part 1 · Operations",
+      "shot": "1-40-sidebar.png"
+    },
+    {
+      "t": 469.8,
+      "title": "Finance groups in the sidebar (covered in part 2)",
+      "part": "Part 1 · Operations",
+      "shot": "1-41-sidebar-finance.png"
+    },
+    {
+      "t": 486.8,
+      "title": "Part 2 · Finance (chapter card)",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 500.4,
+      "title": "Staff door sign-in (finance1, maker)",
+      "part": "Part 2 · Finance",
+      "shot": "2-01-finance-login.png"
+    },
+    {
+      "t": 508.6,
+      "title": "Dashboard (finance queues)",
+      "part": "Part 2 · Finance",
+      "shot": "2-02-finance-dashboard.png"
+    },
+    {
+      "t": 520.4,
+      "title": "Dashboard - performance (GMV / revenue first)",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 528.7,
+      "title": "Sidebar - finance sections",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 536,
+      "title": "Payments › Finance overview",
+      "part": "Part 2 · Finance",
+      "shot": "2-03-finance-overview.png"
+    },
+    {
+      "t": 546.8,
+      "title": "Finance overview - awaiting finance review",
+      "part": "Part 2 · Finance",
+      "shot": "2-04-finance-overview-review.png"
+    },
+    {
+      "t": 557,
+      "title": "Payments › Payment orders",
+      "part": "Part 2 · Finance",
+      "shot": "2-05-payment-orders.png"
+    },
+    {
+      "t": 565.2,
+      "title": "Payment orders - gateway filter (bank transfer)",
+      "part": "Part 2 · Finance",
+      "shot": "2-06-payment-orders-bank-transfer.png"
+    },
+    {
+      "t": 573.2,
+      "title": "Payment orders - search",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 580.9,
+      "title": "Payment order detail (payments + refunds)",
+      "part": "Part 2 · Finance",
+      "shot": "2-07-order-detail.png"
+    },
+    {
+      "t": 589,
+      "title": "Create refund dialog (cancelled)",
+      "part": "Part 2 · Finance",
+      "shot": "2-08-refund-dialog.png"
+    },
+    {
+      "t": 596,
+      "title": "Payments › Bank reconciliation (queues)",
+      "part": "Part 2 · Finance",
+      "shot": "2-09-bank-reconciliation.png"
+    },
+    {
+      "t": 608.6,
+      "title": "Bank reconciliation - proof drawer",
+      "part": "Part 2 · Finance",
+      "shot": "2-10-proof-drawer.png"
+    },
+    {
+      "t": 617.2,
+      "title": "Uploaded transfer receipt (opened in a new tab)",
+      "part": "Part 2 · Finance",
+      "shot": "2-11-proof-receipt.png"
+    },
+    {
+      "t": 624,
+      "title": "Mark paid - maker records the bank reference",
+      "part": "Part 2 · Finance",
+      "shot": "2-12-mark-paid-dialog.png"
+    },
+    {
+      "t": 633.3,
+      "title": "Mark-paid request pending - maker cannot approve",
+      "part": "Part 2 · Finance",
+      "shot": "2-13-mark-paid-pending.png"
+    },
+    {
+      "t": 641.8,
+      "title": "Payments › Refunds (second-approver threshold)",
+      "part": "Part 2 · Finance",
+      "shot": "2-14-refunds.png"
+    },
+    {
+      "t": 656,
+      "title": "Settlements › Settlement items",
+      "part": "Part 2 · Finance",
+      "shot": "2-15-settlement-items.png"
+    },
+    {
+      "t": 670.4,
+      "title": "Settlement items - on hold",
+      "part": "Part 2 · Finance",
+      "shot": "2-16-settlement-items-on-hold.png"
+    },
+    {
+      "t": 679.2,
+      "title": "Release hold (live)",
+      "part": "Part 2 · Finance",
+      "shot": "2-17-release-hold.png"
+    },
+    {
+      "t": 686.6,
+      "title": "Generate settlement batch (maker)",
+      "part": "Part 2 · Finance",
+      "shot": "2-18-generate-batch-dialog.png"
+    },
+    {
+      "t": 694.3,
+      "title": "New batch - pending approval, frozen payout destinations",
+      "part": "Part 2 · Finance",
+      "shot": "2-19-new-batch-detail.png"
+    },
+    {
+      "t": 706.5,
+      "title": "Settlements › Batches (auto · needs approval)",
+      "part": "Part 2 · Finance",
+      "shot": "2-20-batches-auto.png"
+    },
+    {
+      "t": 717.8,
+      "title": "Batch detail (processed, frozen payout destinations)",
+      "part": "Part 2 · Finance",
+      "shot": "2-21-batch-detail.png"
+    },
+    {
+      "t": 727.5,
+      "title": "Settlements › Payouts - needs reconciliation",
+      "part": "Part 2 · Finance",
+      "shot": "2-22-payouts-needs-reconciliation.png"
+    },
+    {
+      "t": 737.9,
+      "title": "Payouts - awaiting confirmation, then reversal pending",
+      "part": "Part 2 · Finance",
+      "shot": "2-24-payouts-reversal-pending.png"
+    },
+    {
+      "t": 750.2,
+      "title": "Settlements › Invoices & credit notes",
+      "part": "Part 2 · Finance",
+      "shot": "2-25-invoices-credit-notes.png"
+    },
+    {
+      "t": 761.2,
+      "title": "Tax invoice detail (CGST + SGST)",
+      "part": "Part 2 · Finance",
+      "shot": "2-26-tax-invoice.png"
+    },
+    {
+      "t": 771,
+      "title": "Tax invoice PDF preview",
+      "part": "Part 2 · Finance",
+      "shot": "2-27-tax-invoice-pdf.png"
+    },
+    {
+      "t": 777.7,
+      "title": "Settlements › Payout accounts (verification)",
+      "part": "Part 2 · Finance",
+      "shot": "2-28-payout-accounts.png"
+    },
+    {
+      "t": 789.2,
+      "title": "Verify payout account dialog (cancelled)",
+      "part": "Part 2 · Finance",
+      "shot": "2-29-verify-payout-account.png"
+    },
+    {
+      "t": 795.7,
+      "title": "Settlements › Commission rules",
+      "part": "Part 2 · Finance",
+      "shot": "2-30-commission-rules.png"
+    },
+    {
+      "t": 805.5,
+      "title": "Accounting › Ledger accounts",
+      "part": "Part 2 · Finance",
+      "shot": "2-31-ledger-accounts.png"
+    },
+    {
+      "t": 812.8,
+      "title": "Ledger account entries (running balance)",
+      "part": "Part 2 · Finance",
+      "shot": "2-32-ledger-account-entries.png"
+    },
+    {
+      "t": 817.7,
+      "title": "Ledger journal",
+      "part": "Part 2 · Finance",
+      "shot": "2-33-ledger-journal.png"
+    },
+    {
+      "t": 825.2,
+      "title": "Ledger adjustments (maker-checker)",
+      "part": "Part 2 · Finance",
+      "shot": "2-34-ledger-adjustments.png"
+    },
+    {
+      "t": 834.8,
+      "title": "Trial balance",
+      "part": "Part 2 · Finance",
+      "shot": "2-35-trial-balance.png"
+    },
+    {
+      "t": 841.3,
+      "title": "Accounting › Reports",
+      "part": "Part 2 · Finance",
+      "shot": "2-36-finance-reports.png"
+    },
+    {
+      "t": 851.9,
+      "title": "System › Settings (finance keys)",
+      "part": "Part 2 · Finance",
+      "shot": "2-37-settings-finance-keys.png"
+    },
+    {
+      "t": 861.2,
+      "title": "Settings - hold period, refund threshold, platform GSTIN",
+      "part": "Part 2 · Finance",
+      "shot": "2-38-settings-threshold-gstin.png"
+    },
+    {
+      "t": 870.4,
+      "title": "Sidebar collapse / expand",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 876.5,
+      "title": "Checker signs in (finance2, separate browser context)",
+      "part": "Part 2 · Finance",
+      "shot": "2-39-checker-login.png"
+    },
+    {
+      "t": 884.8,
+      "title": "Checker - bank reconciliation awaiting 2nd approval",
+      "part": "Part 2 · Finance",
+      "shot": "2-40-checker-awaiting-approval.png"
+    },
+    {
+      "t": 892,
+      "title": "Checker - mark-paid request on the order",
+      "part": "Part 2 · Finance",
+      "shot": "2-41-checker-order-request.png"
+    },
+    {
+      "t": 900.3,
+      "title": "Checker approves - order paid, booking confirmed",
+      "part": "Part 2 · Finance",
+      "shot": "2-42-checker-approved.png"
+    },
+    {
+      "t": 906.9,
+      "title": "Checker approves the maker's settlement batch",
+      "part": "Part 2 · Finance",
+      "shot": "2-43-checker-batch-approved.png"
+    },
+    {
+      "t": 915.1,
+      "title": "Finance wrap-up",
+      "part": "Part 2 · Finance",
+      "shot": null
+    },
+    {
+      "t": 924.1,
+      "title": "Outro",
+      "part": "Outro",
+      "shot": null
+    }
+  ]
+}

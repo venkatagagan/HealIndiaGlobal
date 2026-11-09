@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}You're invited - {{ app_name }}{% endblock %}
+{% block content %}
+<h1 style="font-size:22px;margin:0 0 16px;">You have been invited</h1>
+<p>Hello {{ name | default("there", true) }},</p>
+<p>{{ inviter_name | default("A team member", true) }} invited you to join
+{% if organization_name is defined and organization_name %}<strong>{{ organization_name }}</strong> on {% endif %}{{ app_name }}{% if role is defined and role %} as <strong>{{ role }}</strong>{% endif %}.</p>
+{% with label = "Accept invitation", url = url %}{% include "_button.html" %}{% endwith %}
+<p>This invitation expires in {{ expires_hours | default(72, true) }} hours.</p>
+{% endblock %}

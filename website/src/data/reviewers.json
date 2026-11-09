@@ -1,0 +1,17 @@
+{
+ "_readme": "Medical reviewers credited on health pages (content/README.md section 9). A page names its reviewer with the front matter key reviewedBy (the id below) plus reviewedAt (YYYY-MM-DD). Entries with \"placeholder\": true, or without name, credentials, registration number and council, are never shown publicly. Only add a real person with their written consent and a verifiable medical registration.",
+ "reviewers": [
+  {
+   "id": "medical-reviewer-placeholder",
+   "placeholder": true,
+   "name": "PLACEHOLDER - replace with the medical reviewer's full name",
+   "credentials": "PLACEHOLDER - e.g. degree(s) and specialty",
+   "registration": {
+    "number": "",
+    "council": "PLACEHOLDER - e.g. the State Medical Council or National Medical Commission"
+   },
+   "bio": "PLACEHOLDER - one or two sentences on clinical experience relevant to the pages reviewed.",
+   "photo": null
+  }
+ ]
+}

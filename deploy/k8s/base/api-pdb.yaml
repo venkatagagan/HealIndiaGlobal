@@ -1,0 +1,13 @@
+# maxUnavailable (rather than minAvailable) keeps node drains possible at any replica count.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hig-api
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hig-api

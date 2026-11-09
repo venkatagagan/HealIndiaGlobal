@@ -1,0 +1,6 @@
+# Locust run artefacts and the load-test virtualenv
+.venv/
+results/
+*.csv
+*.html
+__pycache__/

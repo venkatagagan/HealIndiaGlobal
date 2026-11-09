@@ -1,0 +1,497 @@
+# Heal India Global - production-like stack.
+#
+#   cp infra/.env.example infra/.env            # then fill in secrets
+#   docker compose -f infra/docker-compose.yml --env-file infra/.env up -d --build
+#   docker compose -f infra/docker-compose.yml --env-file infra/.env --profile s3 up -d   # + MinIO
+#   docker compose -f infra/docker-compose.yml --env-file infra/.env exec api python -m scripts.seed   # demo data; refuses when ENV=production
+#
+# Topology (PLAN section 3.1 - one domain, path routing, everything same-origin):
+#   edge (nginx, TLS, :80/:443)   /                                -> website (Next.js :3000; site + login door)
+#                                 /app/ /agent/ /hospital/ /gahi/  -> web (nginx, the 4 SPAs on 8081-8084)
+#                                 /api/ (incl. WebSocket /api/v1/ws) -> api (gunicorn + uvicorn :8000)
+#   worker runs background jobs; migrate (one-off) runs `alembic upgrade head` before api/worker start.
+# Only the edge publishes ports. postgres/redis/minio stay on the internal `data` network.
+#
+# Database roles (infra/postgres/init/02-roles.sh): POSTGRES_USER is the bootstrap superuser (operators only),
+# MIGRATOR_DB_USER owns the schema and is used only by `migrate`, APP_DB_USER (DML only) is what api/worker use.
+
+name: ${COMPOSE_PROJECT_NAME:-healindia}
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+
+# Application environment shared by api, worker and migrate (explicit list: infra-only secrets such as
+# MINIO_ROOT_PASSWORD or the superuser password are never passed into the application containers).
+x-backend-env: &backend-env
+  ENV: ${ENV:-production}
+  APP_NAME: ${APP_NAME:-Heal India Global}
+  API_BASE_URL: ${API_BASE_URL:-https://localhost}
+  PATIENT_WEB_URL: ${PATIENT_WEB_URL:-https://localhost}
+  AGENT_PORTAL_URL: ${AGENT_PORTAL_URL:-https://localhost/agent}
+  HOSPITAL_PORTAL_URL: ${HOSPITAL_PORTAL_URL:-https://localhost/hospital}
+  ADMIN_PORTAL_URL: ${ADMIN_PORTAL_URL:-https://localhost/gahi}
+  PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://localhost}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  LOG_JSON: ${LOG_JSON:-true}
+  ENABLE_DOCS: ${ENABLE_DOCS:-false}
+  SENTRY_DSN: ${SENTRY_DSN:-}
+  # Least-privilege application role (DML only), never the bootstrap superuser (INTEGRATION_BACKLOG #21).
+  DATABASE_URL: postgresql+asyncpg://${APP_DB_USER:-healindia_app}:${APP_DB_PASSWORD:?set APP_DB_PASSWORD in infra/.env}@postgres:5432/${POSTGRES_DB:-healindia}
+  DB_POOL_SIZE: ${DB_POOL_SIZE:-10}
+  DB_MAX_OVERFLOW: ${DB_MAX_OVERFLOW:-20}
+  DB_ECHO: ${DB_ECHO:-false}
+  REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in infra/.env}@redis:6379/0
+  JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in infra/.env}
+  JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+  JWT_ISSUER: ${JWT_ISSUER:-heal-india-global}
+  JWT_AUDIENCE: ${JWT_AUDIENCE:-hig-api}
+  ACCESS_TOKEN_TTL_MINUTES: ${ACCESS_TOKEN_TTL_MINUTES:-15}
+  REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
+  FIELD_ENCRYPTION_KEY: ${FIELD_ENCRYPTION_KEY:?set FIELD_ENCRYPTION_KEY in infra/.env}
+  CORS_ORIGINS: ${CORS_ORIGINS:-}
+  CORS_ORIGIN_REGEX: ${CORS_ORIGIN_REGEX:-}
+  COOKIE_SECURE: ${COOKIE_SECURE:-true}
+  COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+  TRUSTED_HOSTS: ${TRUSTED_HOSTS:-*}
+  ADMIN_MFA_REQUIRED: ${ADMIN_MFA_REQUIRED:-true}
+  STAFF_ALLOWED_IPS: ${STAFF_ALLOWED_IPS:-}
+  REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-true}
+  GOOGLE_CLIENT_IDS: ${GOOGLE_CLIENT_IDS:-}
+  APPLE_CLIENT_IDS: ${APPLE_CLIENT_IDS:-}
+  APPLE_TEAM_ID: ${APPLE_TEAM_ID:-}
+  APPLE_KEY_ID: ${APPLE_KEY_ID:-}
+  APPLE_PRIVATE_KEY: ${APPLE_PRIVATE_KEY:-}
+  # Client IP (INTEGRATION_BACKLOG #20): only the edge's fixed address is a trusted proxy.
+  TRUSTED_PROXIES: ${EDGE_IPV4:-172.29.10.10}/32
+  TRUST_CLOUDFRONT_VIEWER_ADDRESS: "false"
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  AI_ENABLED: ${AI_ENABLED:-true}
+  AI_MODEL: ${AI_MODEL:-claude-opus-5-5}
+  AI_EFFORT: ${AI_EFFORT:-medium}
+  AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-90}
+  # Voice intake: production requires local speech-to-text and no retained audio.
+  STT_PROVIDER: ${STT_PROVIDER:-local_whisper}
+  VOICE_RETAIN_AUDIO: ${VOICE_RETAIN_AUDIO:-false}
+  STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
+  STORAGE_LOCAL_DIR: /app/storage
+  MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-15}
+  S3_BUCKET: ${S3_BUCKET:-}
+  S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+  S3_REGION: ${S3_REGION:-}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+  EMAIL_BACKEND: ${EMAIL_BACKEND:-smtp}
+  SMTP_HOST: ${SMTP_HOST:-}
+  SMTP_PORT: ${SMTP_PORT:-587}
+  SMTP_USER: ${SMTP_USER:-}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
+  EMAIL_FROM: ${EMAIL_FROM:-Heal India Global <no-reply@healindia.example>}
+  PAYMENT_GATEWAYS_ENABLED: ${PAYMENT_GATEWAYS_ENABLED:-razorpay,bank_transfer}
+  RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+  RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+  RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+  STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+  BASE_CURRENCY: ${BASE_CURRENCY:-INR}
+  DEFAULT_PATIENT_CURRENCY: ${DEFAULT_PATIENT_CURRENCY:-USD}
+  RUN_WORKER_IN_API: ${RUN_WORKER_IN_API:-false}
+  WORKER_POLL_INTERVAL_SECONDS: ${WORKER_POLL_INTERVAL_SECONDS:-2}
+  RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+  # Public website integration: on-demand ISR revalidation (worker -> website, same secret on both sides) and
+  # the website container's own public-catalogue rate-limit budget (its fixed WEBSITE_IPV4).
+  WEBSITE_REVALIDATE_URL: ${WEBSITE_REVALIDATE_URL:-http://website:3000/api/revalidate}
+  REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+  WEBSITE_SERVER_IPS: ${WEBSITE_IPV4:-172.29.10.11}/32
+  CATALOG_RATE_LIMIT_PUBLIC: ${CATALOG_RATE_LIMIT_PUBLIC:-300}
+  CATALOG_RATE_LIMIT_WEBSITE: ${CATALOG_RATE_LIMIT_WEBSITE:-6000}
+
+services:
+  # ---------------------------------------------------------------------------------------------------
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    shm_size: 256mb
+    environment:
+      # Bootstrap superuser: used only by the init scripts and by operators, never by the application.
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/.env}
+      POSTGRES_DB: ${POSTGRES_DB:-healindia}
+      POSTGRES_INITDB_ARGS: --encoding=UTF8 --data-checksums
+      # Consumed by init/02-roles.sh: schema-owner role for migrations + DML-only application role.
+      MIGRATOR_DB_USER: ${MIGRATOR_DB_USER:-healindia_migrator}
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:?set MIGRATOR_DB_PASSWORD in infra/.env}
+      APP_DB_USER: ${APP_DB_USER:-healindia_app}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?set APP_DB_PASSWORD in infra/.env}
+      TZ: UTC
+    command:
+      - postgres
+      # Slow-query diagnostics (INTEGRATION_BACKLOG #34); init/01-extensions.sql creates the extension.
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.track=top
+      - -c
+      - pg_stat_statements.max=5000
+      - -c
+      - track_io_timing=on
+      - -c
+      - max_connections=200
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - effective_cache_size=768MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - wal_level=replica
+      - -c
+      - max_wal_size=2GB
+      - -c
+      - log_min_duration_statement=500
+      - -c
+      - idle_in_transaction_session_timeout=60s
+      - -c
+      - timezone=UTC
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\" -h 127.0.0.1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks: [data]
+    logging: *default-logging
+    # Uncomment to reach the database from the host (loopback only). Never publish on 5432/5433: those host
+    # ports belong to the local development clusters.
+    # ports: ["127.0.0.1:55432:5432"]
+
+  # ---------------------------------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?set REDIS_PASSWORD in infra/.env}
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in infra/.env}
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-256mb}
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - "300 100"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [data]
+    logging: *default-logging
+
+  # ---------------------------------------------------------------------------------------------------
+  # S3-compatible object storage (optional): docker compose --profile s3 up -d
+  minio:
+    image: ${MINIO_IMAGE:-minio/minio:latest}
+    profiles: [s3]
+    restart: unless-stopped
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-healindia-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-change-me-hex-password}
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [data]
+    logging: *default-logging
+    # Console for operators (loopback only):
+    # ports: ["127.0.0.1:9001:9001"]
+
+  minio-init:
+    image: ${MINIO_MC_IMAGE:-minio/mc:latest}
+    profiles: [s3]
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-healindia-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-change-me-hex-password}
+      S3_BUCKET: ${S3_BUCKET:-healindia-documents}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+        mc mb --ignore-existing "local/$$S3_BUCKET"
+        mc anonymous set none "local/$$S3_BUCKET"
+        mc version enable "local/$$S3_BUCKET" || true
+        echo "bucket $$S3_BUCKET ready (private, versioned)"
+    networks: [data]
+    restart: "no"
+
+  # ---------------------------------------------------------------------------------------------------
+  # One-off schema migration as the schema-owner role; api and worker start only after it exits 0.
+  # Re-run by hand after deploying a new image:  docker compose ... run --rm migrate
+  migrate:
+    image: ${API_IMAGE:-healindia/api}:${IMAGE_TAG:-local}   # same image as api (built there)
+    restart: "no"
+    command: ["alembic", "-c", "/app/alembic.ini", "upgrade", "head"]
+    environment:
+      <<: *backend-env
+      RUN_MIGRATIONS: "0"
+      DATABASE_URL: postgresql+asyncpg://${MIGRATOR_DB_USER:-healindia_migrator}:${MIGRATOR_DB_PASSWORD:?set MIGRATOR_DB_PASSWORD in infra/.env}@postgres:5432/${POSTGRES_DB:-healindia}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+    networks: [data]
+    logging: *default-logging
+
+  # ---------------------------------------------------------------------------------------------------
+  api:
+    image: ${API_IMAGE:-healindia/api}:${IMAGE_TAG:-local}
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+      RUN_MIGRATIONS: "0"              # schema changes run in `migrate` (owner role); the app role cannot do DDL
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-3}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
+      # Trust X-Forwarded-For / -Proto ONLY from the edge proxy's fixed address - never "*" (INTEGRATION_BACKLOG
+      # #20). uvicorn then sets request.client to the address the edge saw, which rate limits and audit logs use;
+      # the edge overwrites X-Forwarded-For with that address, so clients cannot inject extra hops.
+      FORWARDED_ALLOW_IPS: ${EDGE_IPV4:-172.29.10.10}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    volumes:
+      - storage:/app/storage
+    expose: ["8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=4).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks: [data, app]
+    logging: *default-logging
+    stop_grace_period: 30s
+
+  # ---------------------------------------------------------------------------------------------------
+  worker:
+    image: ${API_IMAGE:-healindia/api}:${IMAGE_TAG:-local}
+    restart: unless-stopped
+    command: ["python", "-m", "app.worker"]
+    environment:
+      <<: *backend-env
+      RUN_MIGRATIONS: "0"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    volumes:
+      - storage:/app/storage
+    healthcheck:
+      disable: true
+    networks: [data, app]
+    logging: *default-logging
+    stop_grace_period: 60s
+
+  # ---------------------------------------------------------------------------------------------------
+  # The four SPAs. Each is built with its Vite `base` (/app/, /agent/, /hospital/, /gahi/) and served from the
+  # container root on its own port; the edge strips the path prefix (infra/nginx/snippets/app-locations.conf).
+  web:
+    image: ${WEB_IMAGE:-healindia/web}:${IMAGE_TAG:-local}
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+      # Public values only. Args that web/Dockerfile does not declare are ignored (Docker prints a warning).
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+        VITE_PATIENT_WEB_URL: ${VITE_PATIENT_WEB_URL:-https://localhost}
+        VITE_PATIENT_APP_URL: ${VITE_PATIENT_APP_URL:-https://localhost/app/}
+        VITE_AGENT_PORTAL_URL: ${VITE_AGENT_PORTAL_URL:-https://localhost/agent/}
+        VITE_HOSPITAL_PORTAL_URL: ${VITE_HOSPITAL_PORTAL_URL:-https://localhost/hospital/}
+        VITE_ADMIN_PORTAL_URL: ${VITE_ADMIN_PORTAL_URL:-https://localhost/gahi/}
+        VITE_PUBLIC_SITE_URL: ${VITE_PUBLIC_SITE_URL:-https://localhost}
+        VITE_WEBSITE_URL: ${VITE_WEBSITE_URL:-https://localhost}
+        VITE_PUBLIC_LOGIN_URL: ${VITE_PUBLIC_LOGIN_URL:-https://localhost/login}
+        VITE_PUBLIC_REGISTER_URL: ${VITE_PUBLIC_REGISTER_URL:-https://localhost/register}
+        VITE_PUBLIC_FORGOT_PASSWORD_URL: ${VITE_PUBLIC_FORGOT_PASSWORD_URL:-https://localhost/forgot-password}
+    restart: unless-stopped
+    expose: ["8081", "8082", "8083", "8084"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8081/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+    networks: [app]
+    logging: *default-logging
+
+  # ---------------------------------------------------------------------------------------------------
+  # Public website + login door (Next.js standalone server, INTEGRATION_BACKLOG #4). Built from website/ with
+  # the Dockerfile kept in infra/website/ (its Dockerfile.dockerignore keeps node_modules/.next out of the context).
+  website:
+    image: ${WEBSITE_IMAGE:-healindia/website}:${IMAGE_TAG:-local}
+    build:
+      context: ../website
+      dockerfile: ../infra/website/Dockerfile
+      args:
+        # Baked into the bundle at build time (public values only).
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://localhost}
+        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-/api/v1}
+        NEXT_PUBLIC_PATIENT_APP_URL: ${NEXT_PUBLIC_PATIENT_APP_URL:-https://localhost/app/}
+        NEXT_PUBLIC_AGENT_PORTAL_URL: ${NEXT_PUBLIC_AGENT_PORTAL_URL:-https://localhost/agent/}
+        NEXT_PUBLIC_HOSPITAL_PORTAL_URL: ${NEXT_PUBLIC_HOSPITAL_PORTAL_URL:-https://localhost/hospital/}
+        NEXT_PUBLIC_STAFF_URL: ${NEXT_PUBLIC_STAFF_URL:-https://localhost/gahi/}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
+        NEXT_PUBLIC_CONTACT_ENDPOINT: ${NEXT_PUBLIC_CONTACT_ENDPOINT:-}
+        NEXT_PUBLIC_ANALYTICS_PROVIDER: ${NEXT_PUBLIC_ANALYTICS_PROVIDER:-}
+        NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN:-}
+        NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL: ${NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL:-}
+        NEXT_PUBLIC_GA4_MEASUREMENT_ID: ${NEXT_PUBLIC_GA4_MEASUREMENT_ID:-}
+        # Non-secret page values prerendered at build time (also passed at runtime below).
+        CONTENT_INCLUDE_DRAFTS: ${CONTENT_INCLUDE_DRAFTS:-false}
+        GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
+        BING_SITE_VERIFICATION: ${BING_SITE_VERIFICATION:-}
+    restart: unless-stopped
+    environment:
+      # Server-side catalogue fetches go straight to the API container (not through the edge).
+      API_BASE_URL: http://api:8000/api/v1
+      DATA_FALLBACK: ${WEBSITE_DATA_FALLBACK:-build}   # runtime API errors keep serving the last good ISR page
+      REVALIDATE_SECONDS: ${WEBSITE_REVALIDATE_SECONDS:-300}
+      IMAGE_REMOTE_ORIGINS: ${WEBSITE_IMAGE_REMOTE_ORIGINS:-}
+      SITE_NOINDEX: ${WEBSITE_NOINDEX:-false}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://localhost}
+      SITE_REQUIRE_LIVE_DATA: ${SITE_REQUIRE_LIVE_DATA:-true}
+      CONTENT_INCLUDE_DRAFTS: ${CONTENT_INCLUDE_DRAFTS:-false}
+      GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
+      BING_SITE_VERIFICATION: ${BING_SITE_VERIFICATION:-}
+      # Same value as api/worker (x-backend-env): checked by POST /api/revalidate. Runtime only, never a build arg.
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+    expose: ["3000"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      # ISR / image-optimiser cache (the rest of the root fs is read-only). ONE website container per volume:
+      # to run several, share the cache through a Next.js cacheHandler (e.g. Redis) - deploy/README.md "CDN".
+      - website-cache:/app/.next/cache
+    networks:
+      app:
+        # Fixed address: the api's WEBSITE_SERVER_IPS (generous catalogue rate limit for SSR/ISR fetches).
+        ipv4_address: ${WEBSITE_IPV4:-172.29.10.11}
+    logging: *default-logging
+
+  # ---------------------------------------------------------------------------------------------------
+  # Generates a self-signed certificate ONLY when infra/nginx/certs/{fullchain,privkey}.pem are missing,
+  # so the stack starts out of the box. Replace with real certificates for any public deployment.
+  certs-init:
+    image: alpine:3.20
+    restart: "no"
+    environment:
+      SELF_SIGNED_CN: ${SELF_SIGNED_CN:-localhost}
+      SAN: DNS:${SITE_DOMAIN:-localhost}
+    volumes:
+      - ./nginx/certs:/certs
+    networks: [app]     # needs egress once, for `apk add openssl`
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        if [ -s /certs/fullchain.pem ] && [ -s /certs/privkey.pem ]; then
+          echo "certificates present - nothing to do"; exit 0
+        fi
+        apk add --no-cache openssl >/dev/null
+        openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
+          -keyout /certs/privkey.pem -out /certs/fullchain.pem \
+          -subj "/CN=$$SELF_SIGNED_CN" -addext "subjectAltName=$$SAN"
+        chmod 600 /certs/privkey.pem
+        echo "generated a SELF-SIGNED certificate for $$SAN (development only)"
+
+  # ---------------------------------------------------------------------------------------------------
+  edge:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      certs-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+      website:
+        condition: service_healthy
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-localhost}
+      NGINX_ENVSUBST_FILTER: _DOMAIN$$
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - certbot-webroot:/var/www/certbot:ro
+      - edge-cache:/var/cache/nginx
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/nginx-health"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+    networks:
+      app:
+        # Fixed address: the api trusts proxy headers from this IP only (FORWARDED_ALLOW_IPS above).
+        ipv4_address: ${EDGE_IPV4:-172.29.10.10}
+    logging: *default-logging
+
+networks:
+  data:
+    internal: true      # postgres/redis/minio: no route to or from the outside world
+  app:                  # edge, website, web, api, worker (api/worker need egress: Claude, gateways, SMTP)
+    ipam:
+      config:
+        - subnet: ${APP_SUBNET:-172.29.10.0/24}   # must contain EDGE_IPV4; change both if it clashes locally
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+  storage:
+  certbot-webroot:
+  edge-cache:
+  website-cache:

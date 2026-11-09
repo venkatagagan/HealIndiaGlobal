@@ -1,0 +1,207 @@
+# Application metrics derived from PostgreSQL (tables from docs/PLAN.md section 4). Results are cached for
+# min_interval, so frequent scrapes do not add database load. Status values are the lowercase enum values
+# stored as VARCHAR (JobStatus, SettlementBatchStatus, PayoutStatus, ...).
+collector_name: hig_app
+min_interval: 30s
+
+metrics:
+  # ---------------------------------------------------------------------------------------------------
+  # Background jobs (background_jobs, transactional outbox)
+  # ---------------------------------------------------------------------------------------------------
+  - metric_name: hig_jobs_queued
+    type: gauge
+    help: "Due jobs waiting to run (status=queued, run_at <= now()), by task."
+    key_labels: [task_name]
+    values: [jobs]
+    query: |
+      SELECT task_name, count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'queued' AND run_at <= now()
+      GROUP BY task_name
+
+  - metric_name: hig_jobs_queued_total
+    type: gauge
+    help: "All due queued jobs (always reported; 0 when the queue is empty)."
+    values: [jobs]
+    query: |
+      SELECT count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'queued' AND run_at <= now()
+
+  - metric_name: hig_jobs_retrying_total
+    type: gauge
+    help: "Queued jobs that already failed at least once (waiting for their backoff)."
+    values: [jobs]
+    query: |
+      SELECT count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'queued' AND attempts > 0
+
+  - metric_name: hig_jobs_oldest_queued_age_seconds
+    type: gauge
+    help: "Age of the oldest due queued job in seconds (0 when none)."
+    values: [age]
+    query: |
+      SELECT COALESCE(EXTRACT(EPOCH FROM (now() - min(run_at))), 0)::float8 AS age
+      FROM background_jobs
+      WHERE status = 'queued' AND run_at <= now()
+
+  - metric_name: hig_jobs_running_stale_total
+    type: gauge
+    help: "Jobs locked by a worker for more than 20 minutes (task timeout is 15 minutes)."
+    values: [jobs]
+    query: |
+      SELECT count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'running' AND locked_at < now() - interval '20 minutes'
+
+  - metric_name: hig_jobs_dead_recent
+    type: gauge
+    help: "Jobs that became dead (retries exhausted) in the last hour, by task."
+    key_labels: [task_name]
+    values: [jobs]
+    query: |
+      SELECT task_name, count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'dead' AND finished_at > now() - interval '1 hour'
+      GROUP BY task_name
+
+  - metric_name: hig_jobs_failed_recent
+    type: gauge
+    help: "Jobs that failed permanently (PermanentJobError) in the last hour, by task."
+    key_labels: [task_name]
+    values: [jobs]
+    query: |
+      SELECT task_name, count(*)::float8 AS jobs
+      FROM background_jobs
+      WHERE status = 'failed' AND finished_at > now() - interval '1 hour'
+      GROUP BY task_name
+
+  # ---------------------------------------------------------------------------------------------------
+  # Payment webhooks (webhook_events)
+  # ---------------------------------------------------------------------------------------------------
+  - metric_name: hig_webhook_events_failing
+    type: gauge
+    help: "Stored webhook events with a processing error that are still unprocessed (last 7 days), by gateway."
+    key_labels: [gateway]
+    values: [events]
+    query: |
+      SELECT gateway, count(*)::float8 AS events
+      FROM webhook_events
+      WHERE processed_at IS NULL
+        AND processing_error IS NOT NULL
+        AND received_at > now() - interval '7 days'
+      GROUP BY gateway
+
+  - metric_name: hig_webhook_events_unprocessed
+    type: gauge
+    help: "Valid webhook events waiting more than 10 minutes for processing (last 7 days), by gateway."
+    key_labels: [gateway]
+    values: [events]
+    query: |
+      SELECT gateway, count(*)::float8 AS events
+      FROM webhook_events
+      WHERE processed_at IS NULL
+        AND processing_error IS NULL
+        AND signature_valid
+        AND received_at < now() - interval '10 minutes'
+        AND received_at > now() - interval '7 days'
+      GROUP BY gateway
+
+  - metric_name: hig_webhook_events_invalid_signature_recent
+    type: gauge
+    help: "Webhook events with an invalid signature received in the last hour, by gateway."
+    key_labels: [gateway]
+    values: [events]
+    query: |
+      SELECT gateway, count(*)::float8 AS events
+      FROM webhook_events
+      WHERE NOT signature_valid AND received_at > now() - interval '1 hour'
+      GROUP BY gateway
+
+  # ---------------------------------------------------------------------------------------------------
+  # Settlements and payouts
+  # ---------------------------------------------------------------------------------------------------
+  - metric_name: hig_settlement_batches_failed_recent_total
+    type: gauge
+    help: "Settlement batches that ended partially_failed in the last 24 hours."
+    values: [batches]
+    query: |
+      SELECT count(*)::float8 AS batches
+      FROM settlement_batches
+      WHERE status = 'partially_failed' AND updated_at > now() - interval '24 hours'
+
+  - metric_name: hig_settlement_batches_stuck_total
+    type: gauge
+    help: "Settlement batches in status processing for more than 2 hours."
+    values: [batches]
+    query: |
+      SELECT count(*)::float8 AS batches
+      FROM settlement_batches
+      WHERE status = 'processing' AND updated_at < now() - interval '2 hours'
+
+  - metric_name: hig_settlement_batches_pending_approval_total
+    type: gauge
+    help: "Settlement batches waiting for maker-checker approval."
+    values: [batches]
+    query: |
+      SELECT count(*)::float8 AS batches
+      FROM settlement_batches
+      WHERE status = 'pending_approval'
+
+  - metric_name: hig_payouts_failed_recent
+    type: gauge
+    help: "Payouts that failed in the last 24 hours, by method."
+    key_labels: [method]
+    values: [payouts]
+    query: |
+      SELECT method, count(*)::float8 AS payouts
+      FROM payouts
+      WHERE status = 'failed' AND updated_at > now() - interval '24 hours'
+      GROUP BY method
+
+  # ---------------------------------------------------------------------------------------------------
+  # AI screening (ai_request_logs)
+  # ---------------------------------------------------------------------------------------------------
+  - metric_name: hig_ai_requests_recent
+    type: gauge
+    help: "AI requests in the last 15 minutes by status (ok, error, refusal, fallback)."
+    key_labels: [status]
+    values: [requests]
+    query: |
+      SELECT status, count(*)::float8 AS requests
+      FROM ai_request_logs
+      WHERE created_at > now() - interval '15 minutes'
+      GROUP BY status
+
+  # ---------------------------------------------------------------------------------------------------
+  # Database connections (pg_stat_activity, server-wide; needs pg_monitor)
+  # ---------------------------------------------------------------------------------------------------
+  - metric_name: hig_db_connections
+    type: gauge
+    help: "Client backend connections by state (active, idle, idle in transaction, ...)."
+    key_labels: [state]
+    values: [connections]
+    query: |
+      SELECT COALESCE(state, 'unknown') AS state, count(*)::float8 AS connections
+      FROM pg_stat_activity
+      WHERE backend_type = 'client backend'
+      GROUP BY 1
+
+  - metric_name: hig_db_max_connections
+    type: gauge
+    help: "PostgreSQL max_connections."
+    values: [max_connections]
+    query: |
+      SELECT setting::float8 AS max_connections
+      FROM pg_settings
+      WHERE name = 'max_connections'
+
+  - metric_name: hig_db_longest_transaction_seconds
+    type: gauge
+    help: "Age of the oldest open transaction of a non-idle client backend in seconds."
+    values: [seconds]
+    query: |
+      SELECT COALESCE(max(EXTRACT(EPOCH FROM (now() - xact_start))), 0)::float8 AS seconds
+      FROM pg_stat_activity
+      WHERE backend_type = 'client backend' AND xact_start IS NOT NULL AND state <> 'idle'

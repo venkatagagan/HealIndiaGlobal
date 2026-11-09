@@ -1,0 +1,127 @@
+# ---------------------------------------------------------------------------
+# Heal India Global - repository ignore rules
+# ---------------------------------------------------------------------------
+
+# --- Secrets / environment -------------------------------------------------
+.env
+.env.*
+*.env
+!.env.example
+!**/.env.example
+!*.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+infra/nginx/certs/*
+!infra/nginx/certs/.gitkeep
+
+# --- Python ----------------------------------------------------------------
+.venv/
+venv/
+/env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+junit*.xml
+
+# --- Backend runtime data --------------------------------------------------
+backend/storage/
+backend/uploads/
+backend/*.sqlite3
+backend/*.db
+
+# --- Node / web ------------------------------------------------------------
+node_modules/
+web/**/dist/
+web/**/dist-ssr/
+web/**/.vite/
+web/**/coverage/
+*.tsbuildinfo
+.eslintcache
+.npm/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Flutter / Dart --------------------------------------------------------
+mobile/.dart_tool/
+mobile/.packages
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.pub-cache/
+mobile/.pub/
+mobile/build/
+mobile/coverage/
+mobile/**/*.iml
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/app/upload-keystore.jks
+mobile/android/**/GeneratedPluginRegistrant.java
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/ephemeral/
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Runner/GeneratedPluginRegistrant.*
+mobile/**/ephemeral/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# --- IDE / OS --------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+*.code-workspace
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs / temp -----------------------------------------------------------
+*.log
+/logs/
+backend/logs/
+/tmp/
+/.tmp/
+*.pid
+
+# --- Docker / infra local state -------------------------------------------
+infra/data/
+infra/backups/
+
+# Portable per-project tools (nginx etc.)
+.devtools/
+
+# --- Demo walkthrough videos (large; re-record with node docs/demo/scripts/record-<role>.mjs) ---
+docs/demo/**/*.mp4
+docs/demo/**/*.webm
+docs/demo/.cache/
+
+# --- Loose reference images from chat (not project files) ---
+/WhatsApp Image *

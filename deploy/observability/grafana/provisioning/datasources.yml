@@ -1,0 +1,13 @@
+# Grafana datasource provisioning (/etc/grafana/provisioning/datasources/). The dashboard uses the
+# `datasource` template variable, so any Prometheus-compatible source (Prometheus, Amazon Managed Service for
+# Prometheus via SigV4, Grafana Cloud) works.
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    jsonData:
+      timeInterval: 30s

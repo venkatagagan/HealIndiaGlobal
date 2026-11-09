@@ -1,0 +1,66 @@
+# Production overlay.
+#   kubectl kustomize deploy/k8s/overlays/production            # render
+#   (deploy flow with the migration phase: deploy/k8s/README.md)
+# CI pins the release: kustomize edit set image hig-api=<registry>/hig/production/api:<git sha>
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hig-production
+
+resources:
+  - namespace.yaml
+  - ../../base
+  - ingress.yaml
+  - certificate.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/instance: hig-production
+    includeSelectors: false
+
+configMapGenerator:
+  - name: hig-config
+    behavior: merge
+    envs:
+      - config.env
+  - name: hig-website-config
+    behavior: merge
+    envs:
+      - website.env
+
+images:
+  - name: hig-api
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/api
+    newTag: "REPLACE_WITH_GIT_SHA"
+  - name: hig-web
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/web
+    newTag: "REPLACE_WITH_GIT_SHA"
+  - name: hig-website
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/website
+    newTag: "REPLACE_WITH_GIT_SHA"
+
+patches:
+  # IRSA: IAM roles with the documents-bucket policy from deploy/terraform/aws/iam.tf (task_app), trusted by
+  # the cluster's OIDC provider for these service accounts.
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: hig-api
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/hig-production-api-irsa
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: hig-worker
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/hig-production-worker-irsa
+  # PostgreSQL / Redis live in the VPC CIDR.
+  - target:
+      kind: NetworkPolicy
+      name: hig-app-egress
+    patch: |-
+      - op: replace
+        path: /spec/egress/0/to/0/ipBlock/cidr
+        value: 10.40.0.0/16

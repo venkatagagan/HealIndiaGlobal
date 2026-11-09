@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>Accredited modern hospital</title>
+  <defs>
+    <linearGradient id="tr-sky" x1="160" y1="16" x2="160" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity=".1"/>
+    </linearGradient>
+    <linearGradient id="tr-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7DD3FC"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="tr-door" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#0891B2"/>
+    </linearGradient>
+    <linearGradient id="tr-medal" x1="244" y1="44" x2="282" y2="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FCD34D"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="288" height="208" rx="26" fill="url(#tr-sky)"/>
+  <g fill="#FFFFFF" fill-opacity=".85">
+    <circle cx="58" cy="58" r="9"/><circle cx="71" cy="51" r="12"/><circle cx="84" cy="58" r="8"/>
+    <rect x="50" y="56" width="42" height="11" rx="5.5"/>
+    <circle cx="196" cy="44" r="7"/><circle cx="206" cy="38" r="9.5"/><circle cx="216" cy="44" r="6.5"/>
+    <rect x="190" y="42" width="32" height="9" rx="4.5"/>
+  </g>
+  <path d="M16 188h288v10a26 26 0 0 1-26 26H42a26 26 0 0 1-26-26z" fill="#22C55E" fill-opacity=".24"/>
+  <path d="M160 196h36l12 28h-60z" fill="#94A3B8" fill-opacity=".45"/>
+  <rect x="74" y="60" width="52" height="136" rx="3" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+  <rect x="81" y="70" width="38" height="120" rx="2" fill="url(#tr-glass)"/>
+  <path d="M90.5 70v120M100 70v120M109.5 70v120M81 90h38M81 110h38M81 130h38M81 150h38M81 170h38" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.4"/>
+  <path d="M84 72l14 0-12 40h-2z" fill="#FFFFFF" fill-opacity=".22"/>
+  <rect x="96" y="54" width="8" height="8" fill="#CBD5E1"/>
+  <rect x="86" y="30" width="28" height="28" rx="7" fill="#22C55E" stroke="#FFFFFF" stroke-width="2"/>
+  <rect x="97" y="35.5" width="6" height="17" rx="2" fill="#FFFFFF"/>
+  <rect x="91.5" y="41" width="17" height="6" rx="2" fill="#FFFFFF"/>
+  <rect x="122" y="98" width="116" height="98" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+  <rect x="118" y="90" width="124" height="10" rx="3" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="1.5"/>
+  <g fill="url(#tr-glass)">
+    <rect x="132" y="108" width="18" height="12" rx="2"/><rect x="157" y="108" width="18" height="12" rx="2"/>
+    <rect x="182" y="108" width="18" height="12" rx="2"/><rect x="207" y="108" width="18" height="12" rx="2"/>
+    <rect x="132" y="128" width="18" height="12" rx="2"/><rect x="157" y="128" width="18" height="12" rx="2"/>
+    <rect x="182" y="128" width="18" height="12" rx="2"/><rect x="207" y="128" width="18" height="12" rx="2"/>
+    <rect x="132" y="148" width="18" height="12" rx="2"/><rect x="207" y="148" width="18" height="12" rx="2"/>
+  </g>
+  <rect x="236" y="128" width="42" height="68" rx="2" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+  <rect x="233" y="121" width="48" height="9" rx="3" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="1.5"/>
+  <g fill="url(#tr-glass)">
+    <rect x="244" y="140" width="11" height="13" rx="2"/><rect x="261" y="140" width="11" height="13" rx="2"/>
+    <rect x="244" y="162" width="11" height="13" rx="2"/><rect x="261" y="162" width="11" height="13" rx="2"/>
+  </g>
+  <rect x="160" y="166" width="36" height="30" rx="2" fill="url(#tr-door)"/>
+  <path d="M178 166v30" stroke="#FFFFFF" stroke-width="1.5"/>
+  <rect x="150" y="160" width="56" height="7" rx="3.5" fill="#7C3AED"/>
+  <rect x="152" y="194" width="52" height="4" rx="2" fill="#CBD5E1"/>
+  <g fill="#16A34A">
+    <ellipse cx="141" cy="194" rx="11" ry="6"/><ellipse cx="220" cy="194" rx="12" ry="6"/>
+    <ellipse cx="258" cy="195" rx="14" ry="6"/>
+  </g>
+  <rect x="49" y="172" width="5" height="24" rx="2" fill="#64748B"/>
+  <circle cx="51.5" cy="164" r="16" fill="#22C55E"/>
+  <path d="M51.5 148a16 16 0 0 1 0 32z" fill="#16A34A" fill-opacity=".55"/>
+  <rect x="284" y="178" width="4" height="18" rx="2" fill="#64748B"/>
+  <circle cx="286" cy="172" r="12" fill="#22C55E"/>
+  <path d="M286 160a12 12 0 0 1 0 24z" fill="#16A34A" fill-opacity=".55"/>
+  <path d="M252 80l-6 18 9-4 5 8 4-20zM272 80l6 18-9-4-5 8-4-20z" fill="#7C3AED"/>
+  <circle cx="262" cy="64" r="21" fill="url(#tr-medal)" stroke="#FFFFFF" stroke-width="2.5"/>
+  <circle cx="262" cy="64" r="14" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <path d="M254.5 64.5l5 5 9.5-10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M38 98c.8 4.6 2.3 6.1 6.9 6.9-4.6.8-6.1 2.3-6.9 6.9-.8-4.6-2.3-6.1-6.9-6.9 4.6-.8 6.1-2.3 6.9-6.9z" fill="#F59E0B"/>
+  <path d="M146 40c.6 3.6 1.8 4.8 5.4 5.4-3.6.6-4.8 1.8-5.4 5.4-.6-3.6-1.8-4.8-5.4-5.4 3.6-.6 4.8-1.8 5.4-5.4z" fill="#7C3AED"/>
+</svg>

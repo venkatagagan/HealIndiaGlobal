@@ -1,0 +1,15 @@
+# Remote state: S3 (versioned, KMS-encrypted) + DynamoDB lock table, both created by ./bootstrap.
+#
+#   cp backend.tf.example backend.tf
+#   cp backend.hcl.example backend-production.hcl     # one file per environment (different `key`)
+#   terraform init -backend-config=backend-production.hcl
+#
+# The state contains generated secrets (DATABASE_URL, REDIS_URL, JWT_SECRET, FIELD_ENCRYPTION_KEY, the
+# CloudFront origin header): restrict s3:GetObject on the state bucket to the deployment role(s).
+#
+# Terraform >= 1.10 can lock with an S3 lock file instead of DynamoDB (`use_lockfile = true`); DynamoDB
+# locking still works and is what ./bootstrap provisions.
+
+terraform {
+  backend "s3" {}
+}

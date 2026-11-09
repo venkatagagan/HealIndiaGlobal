@@ -1,0 +1,43 @@
+{
+  "name": "heal-india-global-web",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Heal India Global web apps (patient, agent, hospital, admin) and the shared @hig/shared package",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:patient": "npm run dev -w apps/patient-web",
+    "dev:agent": "npm run dev -w apps/agent-portal",
+    "dev:hospital": "npm run dev -w apps/hospital-portal",
+    "dev:admin": "npm run dev -w apps/admin-portal",
+    "build": "npm run build -w apps/patient-web -w apps/agent-portal -w apps/hospital-portal -w apps/admin-portal",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:e2e": "node e2e/pw.mjs test",
+    "test:e2e:install": "node e2e/pw.mjs install chromium",
+    "test:e2e:report": "node e2e/pw.mjs show-report e2e/playwright-report"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vite": "^8.3.5"
+  }
+}

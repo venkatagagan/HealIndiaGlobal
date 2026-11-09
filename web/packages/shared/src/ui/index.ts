@@ -1,0 +1,178 @@
+/**
+ * `@hig/shared/ui` - accessible, dark-mode aware Tailwind components.
+ * Requires the shared theme in the app CSS: `@import '@hig/shared/theme.css'` and
+ * `@source '../../../packages/shared/src'` (see packages/shared/README.md).
+ */
+export { Button, LinkButton, buttonClasses, type ButtonProps, type ButtonSize, type ButtonVariant, type LinkButtonProps } from './Button';
+export {
+  Checkbox,
+  FormField,
+  Input,
+  Label,
+  SearchInput,
+  Select,
+  Switch,
+  Textarea,
+  type CheckboxProps,
+  type FormFieldProps,
+  type InputProps,
+  type SearchInputProps,
+  type SelectOption,
+  type SelectProps,
+  type SwitchProps,
+  type TextareaProps,
+} from './form';
+export {
+  Card,
+  CardBody,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  type CardHeaderProps,
+  type CardProps,
+} from './Card';
+export {
+  Badge,
+  Chip,
+  STATUS_TONES,
+  StatusBadge,
+  statusLabel,
+  statusTone,
+  type BadgeProps,
+  type BadgeTone,
+  type ChipProps,
+  type StatusBadgeProps,
+  type StatusKind,
+} from './Badge';
+export {
+  DataTable,
+  Pagination,
+  TBody,
+  TFoot,
+  THead,
+  Table,
+  Td,
+  Th,
+  Tr,
+  sortRows,
+  type Column,
+  type DataTableColumn,
+  type DataTablePagination,
+  type DataTableProps,
+  type MobileRole,
+  type PaginationProps,
+  type SortDirection,
+  type SortState,
+  type SortValue,
+  type TableDensity,
+  type TableProps,
+} from './Table';
+// list-page toolkit (see ./TABLES.md); URL state hooks live in @hig/shared/lib (useTableState, filterParam)
+export {
+  AmountRangeFilter,
+  DEFAULT_DATE_PRESETS,
+  DateRangeFilter,
+  FilterBar,
+  FilterSearch,
+  MultiSelectFilter,
+  QuickFilters,
+  SelectFilter,
+  ToggleFilter,
+  describeDateRange,
+  useActiveFilterChip,
+  type AmountRange,
+  type AmountRangeFilterProps,
+  type DatePreset,
+  type DateRange,
+  type DateRangeFilterProps,
+  type FilterBarProps,
+  type FilterOption,
+  type FilterSearchProps,
+  type MultiSelectFilterProps,
+  type QuickFilterItem,
+  type QuickFiltersProps,
+  type SelectFilterProps,
+  type ToggleFilterProps,
+} from './filters';
+export { Popover, usePopover, type PopoverProps } from './Popover';
+export { ExportButton, exportCsv, toCsv, type CsvColumn, type ExportButtonProps } from './export';
+export {
+  DateCell,
+  IdCell,
+  MoneyCell,
+  PersonCell,
+  StatusBadgeCell,
+  TextCell,
+  type DateCellProps,
+  type IdCellProps,
+  type MoneyCellProps,
+  type PersonCellProps,
+  type StatusBadgeCellProps,
+} from './cells';
+export {
+  ConfirmDialog,
+  Drawer,
+  Modal,
+  type ConfirmDialogProps,
+  type DrawerProps,
+  type DrawerSize,
+  type ModalProps,
+  type ModalSize,
+} from './overlay';
+export { TabPanel, Tabs, type TabItem, type TabPanelProps, type TabsProps } from './Tabs';
+export { Spinner, type SpinnerProps, type SpinnerSize } from './Spinner';
+export {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  ProgressBar,
+  Skeleton,
+  Toaster,
+  toast,
+  type EmptyStateProps,
+  type ErrorStateProps,
+  type LoadingStateProps,
+  type ProgressBarProps,
+  type SkeletonProps,
+  type ToasterProps,
+} from './feedback';
+export {
+  Avatar,
+  DateText,
+  MoneyText,
+  PageHeader,
+  StatCard,
+  Stepper,
+  initials,
+  type AvatarProps,
+  type AvatarSize,
+  type Breadcrumb,
+  type DateTextFormat,
+  type DateTextProps,
+  type MoneyTextProps,
+  type PageHeaderProps,
+  type StatCardProps,
+  type StepItem,
+  type StepperProps,
+} from './display';
+export {
+  DEFAULT_MAX_UPLOAD_MB,
+  FileUpload,
+  UPLOAD_ACCEPT,
+  formatFileSize,
+  type FileRejection,
+  type FileUploadProps,
+} from './FileUpload';
+export { normalizeTone, type SemanticTone, type Tone, type ToneAlias } from './tone';
+export {
+  EmergencyAckPanel,
+  PatientUpgradeRequiredNotice,
+  isEmergencyAckError,
+  isGuestUpgradeError,
+  needsEmergencyAck,
+  useAcknowledgeEmergency,
+  type CareGateAudience,
+  type EmergencyAckPanelProps,
+} from './CareGates';

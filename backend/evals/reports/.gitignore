@@ -1,0 +1,3 @@
+# Generated eval reports (JSON + Markdown) - regenerate with `python -m evals.run_screening_eval`.
+*
+!.gitignore

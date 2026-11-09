@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+@import '@hig/shared/theme.css';
+@source '../../../packages/shared/src';
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

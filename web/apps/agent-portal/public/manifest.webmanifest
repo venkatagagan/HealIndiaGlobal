@@ -1,0 +1,14 @@
+{
+  "name": "HIG Agent Portal",
+  "short_name": "HIG Agent",
+  "description": "Your Gateway to Indian Medical Excellence",
+  "start_url": "/agent/",
+  "scope": "/agent/",
+  "display": "standalone",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
+  "icons": [
+    { "src": "brand/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "brand/maskable-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

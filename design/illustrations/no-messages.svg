@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>No messages yet</title>
+  <defs>
+    <linearGradient id="nm-bubble" x1="74" y1="56" x2="206" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="120" r="100" fill="#3B82F6" fill-opacity=".07"/>
+  <circle cx="160" cy="120" r="76" fill="#3B82F6" fill-opacity=".11"/>
+  <ellipse cx="164" cy="200" rx="70" ry="6" fill="#0F172A" fill-opacity=".1"/>
+  <path d="M100 56h96c12.2 0 22 9.8 22 22v42c0 12.2-9.8 22-22 22h-62l-26 20c-2.6 2-6.4.1-6.4-3.2V142h-1.6c-12.2 0-22-9.8-22-22V78c0-12.2 9.8-22 22-22z" fill="url(#nm-bubble)"/>
+  <rect x="100" y="84" width="76" height="9" rx="4.5" fill="#FFFFFF" fill-opacity=".9"/>
+  <rect x="100" y="104" width="50" height="9" rx="4.5" fill="#FFFFFF" fill-opacity=".55"/>
+  <path d="M170 116h70c11 0 20 9 20 20v28c0 11-9 20-20 20h-2v13.6c0 3.2-3.7 5-6.3 3.1L213 184h-43c-11 0-20-9-20-20v-28c0-11 9-20 20-20z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <circle cx="184" cy="150" r="6" fill="#CBD5E1"/>
+  <circle cx="205" cy="150" r="6" fill="#A78BFA"/>
+  <circle cx="226" cy="150" r="6" fill="#CBD5E1"/>
+  <circle cx="262" cy="74" r="14" fill="#22C55E"/>
+  <path d="M255 74.5l5 5 9-10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="58" cy="94" r="4.5" fill="#06B6D4"/>
+  <circle cx="72" cy="174" r="3.5" fill="#F59E0B"/>
+  <circle cx="276" cy="190" r="4" fill="#7C3AED"/>
+  <path d="M60 44c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9z" fill="#F59E0B"/>
+  <path d="M282 122c.7 4 2 5.3 6 6-4 .7-5.3 2-6 6-.7-4-2-5.3-6-6 4-.7 5.3-2 6-6z" fill="#06B6D4"/>
+</svg>

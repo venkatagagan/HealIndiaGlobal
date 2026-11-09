@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img">
+  <title>Heal India Global</title>
+  <!-- PWA maskable icon: full-bleed, opaque. Safe zone = circle r 204.8 (40%) around (256,256);
+       the mark stays within r ~182. Use with "purpose": "maskable" in the web manifest. -->
+  <defs>
+    <linearGradient id="hig-mi-bg" x1="0" y1="512" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset=".3" stop-color="#10B981"/>
+      <stop offset=".65" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <radialGradient id="hig-mi-hl" cx="150" cy="90" r="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#hig-mi-bg)"/>
+  <rect width="512" height="512" fill="url(#hig-mi-hl)"/>
+  <path transform="translate(70.4 71.7) scale(2.9)" fill="#FFFFFF" fill-rule="evenodd" d="M64 12C66 21 71 29 77 37C83 45 85 54 85 65C85 85 75 99 64 108C53 99 43 85 43 65C43 54 45 45 51 37C57 29 62 21 64 12ZM62 54H66Q68 54 68 56V62H74Q76 62 76 64V68Q76 70 74 70H68V76Q68 78 66 78H62Q60 78 60 76V70H54Q52 70 52 68V64Q52 62 54 62H60V56Q60 54 62 54ZM68 112C92 114 114 92 116 44C102 52 91 62 90 76C89 92 80 104 68 112ZM60 112C36 114 14 92 12 44C26 52 37 62 38 76C39 92 48 104 60 112ZM74 116C96 119 114 108 122 86C112 89 105 95 100 101C94 108 85 113 74 116ZM54 116C32 119 14 108 6 86C16 89 23 95 28 101C34 108 43 113 54 116Z"/>
+</svg>

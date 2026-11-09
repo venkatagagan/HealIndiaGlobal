@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hig-tls
+spec:
+  secretName: hig-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  dnsNames:
+    - staging.healindia.example
+    - agent.staging.healindia.example
+    - hospital.staging.healindia.example
+    - admin.staging.healindia.example
+    - api.staging.healindia.example
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always

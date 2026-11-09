@@ -1,0 +1,44 @@
+{
+  "name": "@hig/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared API client, types, auth, UI kit, layouts and utilities for Heal India Global web apps (consumed as TypeScript source)",
+  "sideEffects": [
+    "*.css",
+    "./src/lib/i18n.ts"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./api": "./src/api/index.ts",
+    "./api/types": "./src/api/types.ts",
+    "./auth": "./src/auth/index.ts",
+    "./ui": "./src/ui/index.ts",
+    "./layout": "./src/layout/index.ts",
+    "./lib": "./src/lib/index.ts",
+    "./docai": "./src/docai/index.ts",
+    "./voice": "./src/voice/index.ts",
+    "./theme.css": "./src/styles/theme.css"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.2",
+    "@tanstack/react-query": "^5.104.5",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "i18next": "^26.5.3",
+    "lucide-react": "^1.61.0",
+    "react-hook-form": "^7.90.0",
+    "react-i18next": "^17.1.0",
+    "react-router": "^7.18.4",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

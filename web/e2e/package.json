@@ -1,0 +1,25 @@
+{
+  "name": "@hig/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright end-to-end tests for the Heal India Global web portals (patient-web, agent-portal, hospital-portal, admin-portal)",
+  "scripts": {
+    "test": "node pw.mjs test",
+    "test:headed": "node pw.mjs test --headed",
+    "test:ui": "node pw.mjs test --ui",
+    "test:smoke": "node pw.mjs test --grep-invert @slow",
+    "test:patient": "node pw.mjs test --project=patient-web",
+    "test:agent": "node pw.mjs test --project=agent-portal",
+    "test:hospital": "node pw.mjs test --project=hospital-portal",
+    "test:admin": "node pw.mjs test --project=admin-portal",
+    "test:security": "node pw.mjs test --project=security",
+    "report": "node pw.mjs show-report",
+    "install:browsers": "node pw.mjs install chromium",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^22.20.5",
+    "typescript": "~5.9.3"
+  }
+}

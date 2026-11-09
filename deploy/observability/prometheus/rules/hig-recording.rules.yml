@@ -1,0 +1,35 @@
+# Recording rules for the API (metrics from prometheus-fastapi-instrumentator, registered in app/main.py with
+# should_group_status_codes=True, so `status` is "2xx" / "3xx" / "4xx" / "5xx"; /metrics and /health/* are
+# excluded; WebSocket connections are not counted).
+groups:
+  - name: hig-api.recording
+    interval: 30s
+    rules:
+      - record: job:hig_http_requests:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="hig-api"}[5m]))
+
+      - record: job:hig_http_requests_5xx:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="hig-api", status="5xx"}[5m]))
+
+      - record: job:hig_http_5xx_ratio:rate5m
+        expr: |
+          job:hig_http_requests_5xx:rate5m
+            / on (job)
+          job:hig_http_requests:rate5m
+
+      # Fine-grained (highr) histogram without labels: the accurate source for overall latency quantiles.
+      - record: job:hig_http_request_duration_seconds:p50_5m
+        expr: histogram_quantile(0.50, sum by (job, le) (rate(http_request_duration_highr_seconds_bucket{job="hig-api"}[5m])))
+
+      - record: job:hig_http_request_duration_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (job, le) (rate(http_request_duration_highr_seconds_bucket{job="hig-api"}[5m])))
+
+      - record: job:hig_http_request_duration_seconds:p99_5m
+        expr: histogram_quantile(0.99, sum by (job, le) (rate(http_request_duration_highr_seconds_bucket{job="hig-api"}[5m])))
+
+      # Per-route view (coarse default buckets 0.1 / 0.5 / 1 s: good for spotting slow routes, not for SLOs).
+      - record: handler:hig_http_request_duration_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (job, handler, le) (rate(http_request_duration_seconds_bucket{job="hig-api"}[5m])))
+
+      - record: handler:hig_http_requests:rate5m
+        expr: sum by (job, handler, status) (rate(http_requests_total{job="hig-api"}[5m]))

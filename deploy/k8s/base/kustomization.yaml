@@ -1,0 +1,56 @@
+# Heal India Global - Kubernetes base (alternative to the ECS deployment in deploy/terraform/aws).
+# Render with an overlay: kubectl kustomize deploy/k8s/overlays/production
+#
+# Not included on purpose:
+#   * the Secret `hig-secrets` (create it from secret.template.yaml or sync it with
+#     external-secret.example.yaml - never commit real values)
+#   * Ingress + Certificate (hostnames are environment specific -> overlays)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: heal-india-global
+      app.kubernetes.io/managed-by: kustomize
+    includeSelectors: false
+
+resources:
+  - serviceaccounts.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - api-hpa.yaml
+  - api-pdb.yaml
+  - worker-deployment.yaml
+  - worker-pdb.yaml
+  - web-deployment.yaml
+  - web-service.yaml
+  - web-pdb.yaml
+  - website-deployment.yaml
+  - migrate-job.yaml
+  - networkpolicies.yaml
+
+# Non-secret settings. The name gets a content hash, so changing a value rolls the Deployments.
+configMapGenerator:
+  - name: hig-config
+    envs:
+      - config.env
+    options:
+      labels:
+        hig.io/phase: pre-deploy
+      annotations:
+        argocd.argoproj.io/sync-wave: "-1"
+  - name: hig-website-config
+    envs:
+      - website.env
+
+# Placeholder image names; overlays set the registry and the immutable tag (git SHA).
+images:
+  - name: hig-api
+    newName: registry.example.com/hig/api
+    newTag: "0.0.0"
+  - name: hig-web
+    newName: registry.example.com/hig/web
+    newTag: "0.0.0"
+  - name: hig-website
+    newName: registry.example.com/hig/website
+    newTag: "0.0.0"

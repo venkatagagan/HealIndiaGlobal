@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heal India Global – Brand assets</title>
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<style>
+  :root { --ink:#0B0F14; --muted:#475569; --line:#E2E8F0; --dark:#0B0F14; --card:#161B22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 Inter, "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); background: #F8FAFC; }
+  header { display: flex; align-items: center; gap: 16px; padding: 24px 32px; background: #fff; border-bottom: 1px solid var(--line); }
+  header p { margin: 0; color: var(--muted); }
+  main { padding: 8px 32px 48px; max-width: 1280px; }
+  h2 { margin: 32px 0 12px; font-size: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; padding: 20px; border-radius: 16px; margin-bottom: 12px; }
+  .light { background: #fff; border: 1px solid var(--line); }
+  .dark { background: var(--dark); color: #E2E8F0; }
+  .card { background: var(--card); color: #E2E8F0; }
+  .hero { background: linear-gradient(135deg, #7B2FF7, #2563EB, #06B6D4); color: #fff; }
+  figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; }
+  figcaption { opacity: .75; }
+  .sw { width: 132px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fff; font-size: 12px; }
+  .sw div { height: 56px; }
+  .sw span { display: block; padding: 6px 8px; }
+  .adaptive { position: relative; width: 132px; height: 132px; overflow: hidden; }
+  .adaptive img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .circle { border-radius: 50%; }
+  .squircle { border-radius: 30%; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px; width: 100%; }
+  .spec.dark img { filter: invert(1); }
+  .ill { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; width: 100%; }
+  code { background: #EEF2FF; padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo/logo-horizontal.svg" alt="Heal India Global" height="44">
+  <p>Brand asset catalogue – see <code>README.md</code> for rules and integration notes.</p>
+</header>
+<main>
+  <h2>Colour tokens</h2>
+  <div class="row light">
+    <div class="sw"><div style="background:#22C55E"></div><span>Primary #22C55E</span></div>
+    <div class="sw"><div style="background:#16A34A"></div><span>Primary hover #16A34A</span></div>
+    <div class="sw"><div style="background:#7C3AED"></div><span>Accent #7C3AED</span></div>
+    <div class="sw"><div style="background:#EF4444"></div><span>Danger #EF4444</span></div>
+    <div class="sw"><div style="background:#F59E0B"></div><span>Warning #F59E0B</span></div>
+    <div class="sw"><div style="background:#0B0F14"></div><span>Dark bg #0B0F14</span></div>
+    <div class="sw"><div style="background:#161B22"></div><span>Dark card #161B22</span></div>
+    <div class="sw"><div style="background:#1F2630"></div><span>Dark raised #1F2630</span></div>
+    <div class="sw"><div style="background:#F8FAFC"></div><span>Light bg #F8FAFC</span></div>
+    <div class="sw"><div style="background:linear-gradient(45deg,#22C55E,#10B981 30%,#3B82F6 62%,#7C3AED)"></div><span>Mark gradient</span></div>
+    <div class="sw"><div style="background:linear-gradient(135deg,#7B2FF7,#2563EB,#06B6D4)"></div><span>Hero gradient</span></div>
+  </div>
+
+  <h2>Logos</h2>
+  <div class="row light">
+    <figure><img src="logo/logo-horizontal.svg" alt="" height="56"><figcaption>logo-horizontal</figcaption></figure>
+    <figure><img src="logo/logo-stacked.svg" alt="" height="150"><figcaption>logo-stacked</figcaption></figure>
+    <figure><img src="logo/logo-mark.svg" alt="" height="96"><figcaption>logo-mark</figcaption></figure>
+    <figure><img src="logo/logo-mono-dark.svg" alt="" height="40"><figcaption>logo-mono-dark</figcaption></figure>
+    <figure><img src="logo/logo-mark-mono.svg" alt="" height="56"><figcaption>logo-mark-mono (currentColor)</figcaption></figure>
+  </div>
+  <div class="row dark">
+    <figure><img src="logo/logo-horizontal-on-dark.svg" alt="" height="56"><figcaption>logo-horizontal-on-dark</figcaption></figure>
+    <figure><img src="logo/logo-stacked-on-dark.svg" alt="" height="150"><figcaption>logo-stacked-on-dark</figcaption></figure>
+    <figure><img src="logo/logo-mark.svg" alt="" height="96"><figcaption>logo-mark</figcaption></figure>
+    <figure><img src="logo/logo-mono-white.svg" alt="" height="40"><figcaption>logo-mono-white</figcaption></figure>
+  </div>
+  <div class="row hero">
+    <figure><img src="logo/logo-mono-white.svg" alt="" height="48"><figcaption>mono-white on the hero gradient / photos</figcaption></figure>
+  </div>
+
+  <h2>App &amp; web icons</h2>
+  <div class="row light">
+    <figure><img src="icons/app-icon.svg" alt="" width="132"><figcaption>app-icon</figcaption></figure>
+    <figure><img src="icons/app-icon-ios.svg" alt="" width="132" style="border-radius:30px"><figcaption>app-icon-ios (OS-masked)</figcaption></figure>
+    <figure><div class="adaptive circle"><img src="icons/app-icon-background.svg" alt=""><img src="icons/app-icon-foreground.svg" alt=""></div><figcaption>adaptive · circle</figcaption></figure>
+    <figure><div class="adaptive squircle"><img src="icons/app-icon-background.svg" alt=""><img src="icons/app-icon-foreground.svg" alt=""></div><figcaption>adaptive · squircle</figcaption></figure>
+    <figure><img src="icons/maskable-icon.svg" alt="" width="132" style="border-radius:50%"><figcaption>maskable (circle mask)</figcaption></figure>
+    <figure><img src="icons/favicon.svg" alt="" width="64"><figcaption>favicon 64</figcaption></figure>
+    <figure><img src="icons/favicon.svg" alt="" width="32"><figcaption>32</figcaption></figure>
+    <figure><img src="icons/favicon.svg" alt="" width="16"><figcaption>16</figcaption></figure>
+  </div>
+
+  <h2>Illustrations</h2>
+  <div class="row light"><div class="ill">
+    <figure><img src="illustrations/onboarding-welcome.svg" alt="" width="240"><figcaption>onboarding-welcome</figcaption></figure>
+    <figure><img src="illustrations/onboarding-trust.svg" alt="" width="240"><figcaption>onboarding-trust</figcaption></figure>
+    <figure><img src="illustrations/onboarding-security.svg" alt="" width="240"><figcaption>onboarding-security</figcaption></figure>
+    <figure><img src="illustrations/ai-processing.svg" alt="" width="240"><figcaption>ai-processing</figcaption></figure>
+    <figure><img src="illustrations/no-results.svg" alt="" width="240"><figcaption>no-results</figcaption></figure>
+    <figure><img src="illustrations/no-messages.svg" alt="" width="240"><figcaption>no-messages</figcaption></figure>
+    <figure><img src="illustrations/no-documents.svg" alt="" width="240"><figcaption>no-documents</figcaption></figure>
+    <figure><img src="illustrations/success.svg" alt="" width="240"><figcaption>success</figcaption></figure>
+    <figure><img src="illustrations/error.svg" alt="" width="240"><figcaption>error</figcaption></figure>
+  </div></div>
+  <div class="row dark"><div class="ill">
+    <figure><img src="illustrations/onboarding-welcome.svg" alt="" width="240"><figcaption>onboarding-welcome</figcaption></figure>
+    <figure><img src="illustrations/onboarding-trust.svg" alt="" width="240"><figcaption>onboarding-trust</figcaption></figure>
+    <figure><img src="illustrations/onboarding-security.svg" alt="" width="240"><figcaption>onboarding-security</figcaption></figure>
+    <figure><img src="illustrations/ai-processing.svg" alt="" width="240"><figcaption>ai-processing</figcaption></figure>
+    <figure><img src="illustrations/no-results.svg" alt="" width="240"><figcaption>no-results</figcaption></figure>
+    <figure><img src="illustrations/no-messages.svg" alt="" width="240"><figcaption>no-messages</figcaption></figure>
+    <figure><img src="illustrations/no-documents.svg" alt="" width="240"><figcaption>no-documents</figcaption></figure>
+    <figure><img src="illustrations/success.svg" alt="" width="240"><figcaption>success</figcaption></figure>
+    <figure><img src="illustrations/error.svg" alt="" width="240"><figcaption>error</figcaption></figure>
+  </div></div>
+
+  <h2>Specialty icons (48 × 48, 2 px stroke, currentColor)</h2>
+  <div class="row light spec"><div class="grid">
+    <figure><img src="specialties/cardiology.svg" alt="" width="48"><figcaption>cardiology</figcaption></figure>
+    <figure><img src="specialties/orthopedics.svg" alt="" width="48"><figcaption>orthopedics</figcaption></figure>
+    <figure><img src="specialties/cosmetic.svg" alt="" width="48"><figcaption>cosmetic</figcaption></figure>
+    <figure><img src="specialties/dental.svg" alt="" width="48"><figcaption>dental</figcaption></figure>
+    <figure><img src="specialties/oncology.svg" alt="" width="48"><figcaption>oncology</figcaption></figure>
+    <figure><img src="specialties/neurology.svg" alt="" width="48"><figcaption>neurology</figcaption></figure>
+    <figure><img src="specialties/fertility.svg" alt="" width="48"><figcaption>fertility</figcaption></figure>
+    <figure><img src="specialties/transplant.svg" alt="" width="48"><figcaption>transplant</figcaption></figure>
+    <figure><img src="specialties/bariatric.svg" alt="" width="48"><figcaption>bariatric</figcaption></figure>
+    <figure><img src="specialties/ophthalmology.svg" alt="" width="48"><figcaption>ophthalmology</figcaption></figure>
+    <figure><img src="specialties/spine.svg" alt="" width="48"><figcaption>spine</figcaption></figure>
+    <figure><img src="specialties/urology.svg" alt="" width="48"><figcaption>urology</figcaption></figure>
+    <figure><img src="specialties/gastroenterology.svg" alt="" width="48"><figcaption>gastroenterology</figcaption></figure>
+    <figure><img src="specialties/ent.svg" alt="" width="48"><figcaption>ent</figcaption></figure>
+    <figure><img src="specialties/nephrology.svg" alt="" width="48"><figcaption>nephrology</figcaption></figure>
+    <figure><img src="specialties/wellness.svg" alt="" width="48"><figcaption>wellness</figcaption></figure>
+    <figure><img src="specialties/more.svg" alt="" width="48"><figcaption>more (fallback)</figcaption></figure>
+  </div></div>
+  <div class="row dark spec"><div class="grid">
+    <figure><img src="specialties/cardiology.svg" alt="" width="32"><figcaption>cardiology</figcaption></figure>
+    <figure><img src="specialties/orthopedics.svg" alt="" width="32"><figcaption>orthopedics</figcaption></figure>
+    <figure><img src="specialties/cosmetic.svg" alt="" width="32"><figcaption>cosmetic</figcaption></figure>
+    <figure><img src="specialties/dental.svg" alt="" width="32"><figcaption>dental</figcaption></figure>
+    <figure><img src="specialties/oncology.svg" alt="" width="32"><figcaption>oncology</figcaption></figure>
+    <figure><img src="specialties/neurology.svg" alt="" width="32"><figcaption>neurology</figcaption></figure>
+    <figure><img src="specialties/fertility.svg" alt="" width="32"><figcaption>fertility</figcaption></figure>
+    <figure><img src="specialties/transplant.svg" alt="" width="32"><figcaption>transplant</figcaption></figure>
+    <figure><img src="specialties/bariatric.svg" alt="" width="32"><figcaption>bariatric</figcaption></figure>
+    <figure><img src="specialties/ophthalmology.svg" alt="" width="32"><figcaption>ophthalmology</figcaption></figure>
+    <figure><img src="specialties/spine.svg" alt="" width="32"><figcaption>spine</figcaption></figure>
+    <figure><img src="specialties/urology.svg" alt="" width="32"><figcaption>urology</figcaption></figure>
+    <figure><img src="specialties/gastroenterology.svg" alt="" width="32"><figcaption>gastroenterology</figcaption></figure>
+    <figure><img src="specialties/ent.svg" alt="" width="32"><figcaption>ent</figcaption></figure>
+    <figure><img src="specialties/nephrology.svg" alt="" width="32"><figcaption>nephrology</figcaption></figure>
+    <figure><img src="specialties/wellness.svg" alt="" width="32"><figcaption>wellness</figcaption></figure>
+    <figure><img src="specialties/more.svg" alt="" width="32"><figcaption>more (fallback)</figcaption></figure>
+  </div></div>
+
+  <h2>Body map (viewBox 0 0 200 480)</h2>
+  <div class="row light">
+    <figure><img src="body-map/body-front.svg" alt="" height="320"><figcaption>body-front (patient's left = viewer's right)</figcaption></figure>
+    <figure><img src="body-map/body-back.svg" alt="" height="320"><figcaption>body-back (patient's left = viewer's left)</figcaption></figure>
+  </div>
+  <div class="row card">
+    <figure><img src="body-map/body-front.svg" alt="" height="320"><figcaption>body-front on #161B22</figcaption></figure>
+    <figure><img src="body-map/body-back.svg" alt="" height="320"><figcaption>body-back on #161B22</figcaption></figure>
+  </div>
+</main>
+</body>
+</html>

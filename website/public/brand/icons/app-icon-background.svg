@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Android adaptive icon BACKGROUND layer: full-bleed 108dp canvas (1024 units = 108dp). No content needs a safe zone here. -->
+  <defs>
+    <linearGradient id="hig-aib-bg" x1="0" y1="1024" x2="1024" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset=".3" stop-color="#10B981"/>
+      <stop offset=".65" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <radialGradient id="hig-aib-hl" cx="300" cy="180" r="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#hig-aib-bg)"/>
+  <rect width="1024" height="1024" fill="url(#hig-aib-hl)"/>
+</svg>

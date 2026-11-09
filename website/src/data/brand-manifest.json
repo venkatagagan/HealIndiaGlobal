@@ -1,0 +1,325 @@
+{
+ "generated_at": "2026-11-03T07:35:06.985Z",
+ "files": [
+  {
+   "path": "/brand/body-map/body-back.svg",
+   "bytes": 5816
+  },
+  {
+   "path": "/brand/body-map/body-front.svg",
+   "bytes": 5964
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/desktop-1440-first.png",
+   "bytes": 986839
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/desktop-1920-first.png",
+   "bytes": 1475685
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/menu-doctors-1440.png",
+   "bytes": 784490
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/menu-hospitals-1440.png",
+   "bytes": 761184
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/menu-partners-1440.png",
+   "bytes": 764078
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/menu-treatments-1440.png",
+   "bytes": 779967
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/menu-trip-1440.png",
+   "bytes": 777189
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/mobile-390-first.png",
+   "bytes": 219910
+  },
+  {
+   "path": "/brand/concepts/concept-a-editorial/mobile-390-full.png",
+   "bytes": 2131636
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/desktop-1440-first.png",
+   "bytes": 506478
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/desktop-1920-first.png",
+   "bytes": 687839
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/menu-doctors-1440.png",
+   "bytes": 355759
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/menu-hospitals-1440.png",
+   "bytes": 364422
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/menu-partners-1440.png",
+   "bytes": 378789
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/menu-treatments-1440.png",
+   "bytes": 377338
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/menu-trip-1440.png",
+   "bytes": 405060
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/mobile-390-first.png",
+   "bytes": 164565
+  },
+  {
+   "path": "/brand/concepts/concept-b-clinical/mobile-390-full.png",
+   "bytes": 1868940
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/desktop-1440-first.png",
+   "bytes": 543332
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/desktop-1920-first.png",
+   "bytes": 690349
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/menu-doctors-1440.png",
+   "bytes": 311527
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/menu-hospitals-1440.png",
+   "bytes": 350647
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/menu-partners-1440.png",
+   "bytes": 359824
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/menu-treatments-1440.png",
+   "bytes": 374220
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/menu-trip-1440.png",
+   "bytes": 362515
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/mobile-390-first.png",
+   "bytes": 90194
+  },
+  {
+   "path": "/brand/concepts/concept-c-journey/mobile-390-full.png",
+   "bytes": 2467443
+  },
+  {
+   "path": "/brand/concepts/concept-main/compare-first-screen-1440.png",
+   "bytes": 1762011
+  },
+  {
+   "path": "/brand/concepts/concept-main/compare-first-screen-390.png",
+   "bytes": 698325
+  },
+  {
+   "path": "/brand/concepts/concept-main/desktop-1440-first.png",
+   "bytes": 1216423
+  },
+  {
+   "path": "/brand/concepts/concept-main/desktop-1920-first.png",
+   "bytes": 1753301
+  },
+  {
+   "path": "/brand/concepts/concept-main/menu-doctors-1440.png",
+   "bytes": 853650
+  },
+  {
+   "path": "/brand/concepts/concept-main/menu-hospitals-1440.png",
+   "bytes": 852805
+  },
+  {
+   "path": "/brand/concepts/concept-main/menu-partners-1440.png",
+   "bytes": 897080
+  },
+  {
+   "path": "/brand/concepts/concept-main/menu-treatments-1440.png",
+   "bytes": 897202
+  },
+  {
+   "path": "/brand/concepts/concept-main/menu-trip-1440.png",
+   "bytes": 885907
+  },
+  {
+   "path": "/brand/concepts/concept-main/mobile-390-first.png",
+   "bytes": 200886
+  },
+  {
+   "path": "/brand/concepts/concept-main/mobile-390-full.png",
+   "bytes": 2519584
+  },
+  {
+   "path": "/brand/icons/app-icon-background.svg",
+   "bytes": 927
+  },
+  {
+   "path": "/brand/icons/app-icon-foreground.svg",
+   "bytes": 1094
+  },
+  {
+   "path": "/brand/icons/app-icon-ios.svg",
+   "bytes": 1572
+  },
+  {
+   "path": "/brand/icons/app-icon.svg",
+   "bytes": 1596
+  },
+  {
+   "path": "/brand/icons/favicon.svg",
+   "bytes": 1124
+  },
+  {
+   "path": "/brand/icons/maskable-icon.svg",
+   "bytes": 1638
+  },
+  {
+   "path": "/brand/illustrations/ai-processing.svg",
+   "bytes": 4505
+  },
+  {
+   "path": "/brand/illustrations/error.svg",
+   "bytes": 1564
+  },
+  {
+   "path": "/brand/illustrations/no-documents.svg",
+   "bytes": 1870
+  },
+  {
+   "path": "/brand/illustrations/no-messages.svg",
+   "bytes": 1810
+  },
+  {
+   "path": "/brand/illustrations/no-results.svg",
+   "bytes": 2374
+  },
+  {
+   "path": "/brand/illustrations/onboarding-security.svg",
+   "bytes": 3266
+  },
+  {
+   "path": "/brand/illustrations/onboarding-trust.svg",
+   "bytes": 5127
+  },
+  {
+   "path": "/brand/illustrations/onboarding-welcome.svg",
+   "bytes": 10943
+  },
+  {
+   "path": "/brand/illustrations/success.svg",
+   "bytes": 2462
+  },
+  {
+   "path": "/brand/logo/logo-horizontal-on-dark.svg",
+   "bytes": 1277
+  },
+  {
+   "path": "/brand/logo/logo-horizontal.svg",
+   "bytes": 1275
+  },
+  {
+   "path": "/brand/logo/logo-mark-mono.svg",
+   "bytes": 724
+  },
+  {
+   "path": "/brand/logo/logo-mark.svg",
+   "bytes": 1058
+  },
+  {
+   "path": "/brand/logo/logo-mono-dark.svg",
+   "bytes": 944
+  },
+  {
+   "path": "/brand/logo/logo-mono-white.svg",
+   "bytes": 944
+  },
+  {
+   "path": "/brand/logo/logo-stacked-on-dark.svg",
+   "bytes": 1532
+  },
+  {
+   "path": "/brand/logo/logo-stacked.svg",
+   "bytes": 1530
+  },
+  {
+   "path": "/brand/specialties/bariatric.svg",
+   "bytes": 377
+  },
+  {
+   "path": "/brand/specialties/cardiology.svg",
+   "bytes": 424
+  },
+  {
+   "path": "/brand/specialties/cosmetic.svg",
+   "bytes": 648
+  },
+  {
+   "path": "/brand/specialties/dental.svg",
+   "bytes": 491
+  },
+  {
+   "path": "/brand/specialties/ent.svg",
+   "bytes": 582
+  },
+  {
+   "path": "/brand/specialties/fertility.svg",
+   "bytes": 447
+  },
+  {
+   "path": "/brand/specialties/gastroenterology.svg",
+   "bytes": 588
+  },
+  {
+   "path": "/brand/specialties/more.svg",
+   "bytes": 291
+  },
+  {
+   "path": "/brand/specialties/nephrology.svg",
+   "bytes": 498
+  },
+  {
+   "path": "/brand/specialties/neurology.svg",
+   "bytes": 1119
+  },
+  {
+   "path": "/brand/specialties/oncology.svg",
+   "bytes": 608
+  },
+  {
+   "path": "/brand/specialties/ophthalmology.svg",
+   "bytes": 390
+  },
+  {
+   "path": "/brand/specialties/orthopedics.svg",
+   "bytes": 374
+  },
+  {
+   "path": "/brand/specialties/spine.svg",
+   "bytes": 609
+  },
+  {
+   "path": "/brand/specialties/transplant.svg",
+   "bytes": 646
+  },
+  {
+   "path": "/brand/specialties/urology.svg",
+   "bytes": 836
+  },
+  {
+   "path": "/brand/specialties/wellness.svg",
+   "bytes": 569
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/.next-audit/
+/.lighthouse/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+.next-dev.log
+.next-start*.log
+
+# env files (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# misc
+.DS_Store
+/coverage

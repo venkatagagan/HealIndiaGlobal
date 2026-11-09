@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" role="img">
+  <title>Something went wrong</title>
+  <defs>
+    <linearGradient id="er-badge" x1="118" y1="76" x2="204" y2="166" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F87171"/>
+      <stop offset="1" stop-color="#DC2626"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="120" r="100" fill="#EF4444" fill-opacity=".07"/>
+  <circle cx="160" cy="120" r="76" fill="#EF4444" fill-opacity=".12"/>
+  <ellipse cx="160" cy="180" rx="38" ry="5" fill="#0F172A" fill-opacity=".12"/>
+  <circle cx="160" cy="118" r="52" fill="url(#er-badge)"/>
+  <path d="M126 96a42 42 0 0 1 26-19" fill="none" stroke="#FFFFFF" stroke-opacity=".45" stroke-width="5" stroke-linecap="round"/>
+  <rect x="153" y="88" width="14" height="40" rx="7" fill="#FFFFFF"/>
+  <circle cx="160" cy="145" r="8" fill="#FFFFFF"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+    <path d="M70 70l8 6-6 5 9 7" stroke="#F59E0B"/>
+    <path d="M246 62l-7 7 7 4-8 8" stroke="#F59E0B"/>
+    <path d="M58 150l10-4M64 166l9 3M254 156l10 3M248 172l9-4" stroke="#EF4444" stroke-opacity=".7"/>
+  </g>
+  <g fill="#94A3B8">
+    <circle cx="96" cy="196" r="4"/>
+    <circle cx="226" cy="198" r="3.5"/>
+    <circle cx="110" cy="44" r="3"/>
+    <circle cx="214" cy="34" r="4"/>
+    <rect x="270" y="110" width="9" height="9" rx="2" transform="rotate(20 274.5 114.5)"/>
+    <rect x="42" y="106" width="8" height="8" rx="2" transform="rotate(-18 46 110)"/>
+  </g>
+</svg>

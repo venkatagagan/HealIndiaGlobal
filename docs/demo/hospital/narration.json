@@ -1,0 +1,227 @@
+[
+  {
+    "start": 0.07,
+    "end": 10.57,
+    "text": "Welcome to the Heal India Global hospital portal. Let's follow Sanjeevani Heart Institute as it cares for international patients, from the first enquiry to payout."
+  },
+  {
+    "start": 12.68,
+    "end": 18.98,
+    "text": "Hospital teams sign in on the main website, through the same secure door as patients and agents."
+  },
+  {
+    "start": 21.08,
+    "end": 26.59,
+    "text": "The dashboard opens with quick links to open enquiries and upcoming admissions."
+  },
+  {
+    "start": 26.9,
+    "end": 35.27,
+    "text": "Live counters track enquiries, quotes, admissions, patients in treatment and this month's revenue, with monthly charts below."
+  },
+  {
+    "start": 35.59,
+    "end": 40.23,
+    "text": "Recent enquiries sit at the bottom, so nothing new slips through."
+  },
+  {
+    "start": 42.33,
+    "end": 49,
+    "text": "Enquiries and cases lists every request sent to the hospital, with status tabs across the top."
+  },
+  {
+    "start": 49.35,
+    "end": 57.26,
+    "text": "Tabs, urgency, dates and search narrow the list. Here, only new enquiries still waiting for a reply."
+  },
+  {
+    "start": 58.05,
+    "end": 63.34,
+    "text": "Let's open Hamed Al-Rawahi's enquiry from Oman about heart valve replacement."
+  },
+  {
+    "start": 63.92,
+    "end": 74.84,
+    "text": "The case shows the patient, the requested doctor and his message, then the AI screening summary: symptoms, impact, budget, languages and suggested procedures."
+  },
+  {
+    "start": 75.16,
+    "end": 86.31,
+    "text": "Report readings are findings the AI extracted from his echocardiogram and the patient confirmed. Urgent findings and abnormal labs stand out, and patient edits are marked."
+  },
+  {
+    "start": 86.65,
+    "end": 91.8,
+    "text": "The original documents are right below, ready to download and verify."
+  },
+  {
+    "start": 92.33,
+    "end": 99.48,
+    "text": "Decline closes an enquiry with a reason for the patient. We'll cancel, because we can help him."
+  },
+  {
+    "start": 100.88,
+    "end": 106.37,
+    "text": "Instead, we build an itemised quote, starting from the usual cost lines."
+  },
+  {
+    "start": 107.29,
+    "end": 114.22,
+    "text": "We describe the treatment plan and the expected stay. Quotes are valid for thirty days by default."
+  },
+  {
+    "start": 115.32,
+    "end": 121.6,
+    "text": "Then we price each line and add the valve implant. The total updates as we type."
+  },
+  {
+    "start": 122.71,
+    "end": 129.25,
+    "text": "One click sends it. The patient is notified at once, and the case moves to quoted."
+  },
+  {
+    "start": 131.81,
+    "end": 137.18,
+    "text": "Bookings lists every admission, with tabs from pending payment to discharged."
+  },
+  {
+    "start": 137.5,
+    "end": 140.51,
+    "text": "Search finds a patient instantly."
+  },
+  {
+    "start": 141.04,
+    "end": 146.31,
+    "text": "The calendar view shows admissions by month, so the ward can plan beds ahead."
+  },
+  {
+    "start": 148.41,
+    "end": 155.87,
+    "text": "A booking shows the treatment, doctor, admission date and payment status, including the deposit held in escrow."
+  },
+  {
+    "start": 156.18,
+    "end": 165.39,
+    "text": "Admit patient records the arrival; we'll just peek at the dialog and cancel. Once a patient is admitted, Discharge and complete appears here."
+  },
+  {
+    "start": 166.06,
+    "end": 172.77,
+    "text": "The itinerary plans appointments, admission and follow-ups, and items can be added at any time."
+  },
+  {
+    "start": 173.33,
+    "end": 180.5,
+    "text": "The hospital uploads its e-Medical visa invitation letter right here, next to transfers like the airport pickup."
+  },
+  {
+    "start": 182.59,
+    "end": 187.56,
+    "text": "A completed booking keeps the full record, from admission to discharge."
+  },
+  {
+    "start": 189.65,
+    "end": 198.74,
+    "text": "Doctors lists your specialists with experience, rating, fee and medical registration; the check mark means the registration is verified."
+  },
+  {
+    "start": 199.1,
+    "end": 207.4,
+    "text": "The doctor form holds specialty, qualifications, languages and registration. We'll close it unchanged."
+  },
+  {
+    "start": 209.5,
+    "end": 214.8,
+    "text": "Each doctor has an availability calendar for teleconsults and admissions."
+  },
+  {
+    "start": 216.9,
+    "end": 223.01,
+    "text": "Procedures and pricing is your price list, with price ranges, stay and success rates."
+  },
+  {
+    "start": 223.35,
+    "end": 228.6,
+    "text": "Each procedure has bookable packages, showing exactly what is included."
+  },
+  {
+    "start": 230.7,
+    "end": 238.95,
+    "text": "The hospital profile holds contact details, accreditations, specialties, KYC documents and the payout account."
+  },
+  {
+    "start": 239.43,
+    "end": 245.21,
+    "text": "Accreditations, languages and the international desk are shown to patients."
+  },
+  {
+    "start": 245.89,
+    "end": 253.28,
+    "text": "KYC documents like registration, PAN and GST certificates are uploaded here for verification."
+  },
+  {
+    "start": 255.38,
+    "end": 259.69,
+    "text": "Team shows everyone with portal access, and their role."
+  },
+  {
+    "start": 260.08,
+    "end": 266.44,
+    "text": "Invite member sends a secure invitation with a chosen role. We'll cancel this one."
+  },
+  {
+    "start": 268.54,
+    "end": 274.14,
+    "text": "Reviews collects patient feedback; published reviews appear on your public profile."
+  },
+  {
+    "start": 276.64,
+    "end": 284.1,
+    "text": "Finance shows what is pending, eligible, on hold and paid out, and each settlement item after platform commission."
+  },
+  {
+    "start": 284.45,
+    "end": 288.11,
+    "text": "Payouts tracks bank transfers to the hospital."
+  },
+  {
+    "start": 288.81,
+    "end": 294.92,
+    "text": "Statements give opening and closing balances, earnings and every ledger entry for a period."
+  },
+  {
+    "start": 295.53,
+    "end": 298.59,
+    "text": "And here is the payout bank account."
+  },
+  {
+    "start": 300.69,
+    "end": 307.33,
+    "text": "Messages keeps one secure conversation per case. Let's reply to Mister Al-Rawahi."
+  },
+  {
+    "start": 308.63,
+    "end": 313.78,
+    "text": "Notifications collects every alert, with a filter for unread ones."
+  },
+  {
+    "start": 315.81,
+    "end": 321.66,
+    "text": "The top bar shows the active hospital; owners of several hospitals get a switcher here."
+  },
+  {
+    "start": 321.98,
+    "end": 327.06,
+    "text": "The sidebar collapses to icons, and expands again with one click."
+  },
+  {
+    "start": 327.38,
+    "end": 330.78,
+    "text": "And dark mode is a single toggle away."
+  },
+  {
+    "start": 331.13,
+    "end": 341.3,
+    "text": "That's the hospital portal: enquiries, quotes, admissions, doctors, pricing and payouts, all in one place. Thank you for watching."
+  }
+]

@@ -1,0 +1,51 @@
+# Rendered by the nginx image (envsubst) into /etc/nginx/conf.d/edge.conf at container start.
+# Only variables matching NGINX_ENVSUBST_FILTER (`_DOMAIN$`, i.e. SITE_DOMAIN) are substituted; nginx runtime
+# variables such as $host are left untouched.
+# IPv4 listeners only (Docker hosts often disable IPv6); add `listen [::]:443 ssl;` lines if you serve IPv6.
+
+# ---- Port 80: ACME HTTP-01 challenges + redirect everything else to HTTPS --------------------------
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        default_type text/plain;
+    }
+    location = /nginx-health {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# ---- Port 443: unknown Host / SNI -> refuse the handshake (no certificate leak, no host confusion) --
+server {
+    listen 443 ssl default_server;
+    http2 on;
+    server_name _;
+    ssl_reject_handshake on;
+}
+
+# ---- The one public domain (PLAN section 3.1): website, four SPAs and the API, all same-origin -------
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${SITE_DOMAIN};
+    include /etc/nginx/snippets/ssl.conf;
+    # Relative Location headers (e.g. /gahi -> /gahi/) stay correct when HTTPS_PORT is not 443.
+    absolute_redirect off;
+    include /etc/nginx/snippets/app-locations.conf;
+}
+
+# Optional: redirect a www. alias to the canonical domain (add it to the certificate first).
+# server {
+#     listen 443 ssl;
+#     http2 on;
+#     server_name www.${SITE_DOMAIN};
+#     include /etc/nginx/snippets/ssl.conf;
+#     return 301 https://${SITE_DOMAIN}$request_uri;
+# }

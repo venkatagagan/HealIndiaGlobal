@@ -1,0 +1,89 @@
+# Staging overlay: smaller footprint, ENV=staging (mock gateway allowed, OpenAPI docs on).
+#   kubectl kustomize deploy/k8s/overlays/staging
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hig-staging
+
+resources:
+  - namespace.yaml
+  - ../../base
+  - ingress.yaml
+  - certificate.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/instance: hig-staging
+    includeSelectors: false
+
+configMapGenerator:
+  - name: hig-config
+    behavior: merge
+    envs:
+      - config.env
+  - name: hig-website-config
+    behavior: merge
+    envs:
+      - website.env
+
+images:
+  - name: hig-api
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/staging/api
+    newTag: "REPLACE_WITH_GIT_SHA"
+  - name: hig-web
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/staging/web
+    newTag: "REPLACE_WITH_GIT_SHA"
+  - name: hig-website
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/staging/website
+    newTag: "REPLACE_WITH_GIT_SHA"
+
+replicas:
+  - name: hig-api
+    count: 2
+  - name: hig-worker
+    count: 1
+  - name: hig-web
+    count: 1
+
+patches:
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: hig-api
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 2
+      - op: replace
+        path: /spec/maxReplicas
+        value: 4
+  - target:
+      kind: Deployment
+      name: hig-api
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 100m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 384Mi
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: hig-api
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/hig-staging-api-irsa
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: hig-worker
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/hig-staging-worker-irsa
+  - target:
+      kind: NetworkPolicy
+      name: hig-app-egress
+    patch: |-
+      - op: replace
+        path: /spec/egress/0/to/0/ipBlock/cidr
+        value: 10.41.0.0/16

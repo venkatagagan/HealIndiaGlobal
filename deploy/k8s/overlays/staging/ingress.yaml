@@ -1,0 +1,621 @@
+# ingress-nginx routing for staging (IngressClass "nginx"). Mirrors infra/nginx/snippets/app-locations.conf:
+# every SPA hostname reaches the API same-origin under /api (the refresh cookie is Path=/api/v1/auth,
+# SameSite=Strict) and api.<domain> serves the Flutter app and payment webhooks. ingress-nginx merges all
+# Ingresses of a host into one server block; the longest matching path wins, so the specific Ingresses below
+# override timeouts / limits of the generic /api one. TLS: certificate.yaml (secret hig-tls).
+#
+# Rate limits are per client IP: keep the controller's `use-forwarded-headers: "false"` unless it sits behind
+# a trusted L7 proxy, and preserve client IPs at the load balancer (proxy protocol or
+# externalTrafficPolicy: Local) - see deploy/k8s/ingress-nginx/controller-config.example.yaml.
+#
+# Note: the community ingress-nginx project is retired (best-effort maintenance ended March 2026). The same
+# routing maps 1:1 onto Gateway API HTTPRoutes or the F5 NGINX Ingress Controller if you migrate.
+---
+# API (generic): 20 MB bodies, 60 s timeouts, 20 req/s per IP (burst 60). /health only on the api host.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# Authentication endpoints: strict per-IP budget (login / register / forgot-password brute force).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api-auth
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.ingress.kubernetes.io/limit-rpm: "30"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "1"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# Realtime WebSocket /api/v1/ws: long-lived upgraded connections (ingress-nginx forwards Upgrade headers).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api-ws
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/ws
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/ws
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/ws
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/ws
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/ws
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# Payment webhooks: never rate limited by IP (gateways send bursts from shared ranges); signatures are the control.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api-webhooks
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/payments/webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/payments/webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/payments/webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/payments/webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/payments/webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# Document uploads/downloads: 20 MB bodies, 120 s timeouts, streamed responses.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api-documents
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/limit-rps: "5"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "4"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/documents
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/documents
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/documents
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/documents
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/documents
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# CSV exports stream for a while.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-api-exports
+  labels:
+    app.kubernetes.io/name: hig-api
+    app.kubernetes.io/component: api
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/limit-rps: "2"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+        - admin.staging.healindia.example
+        - api.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: api.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/admin/reports/export
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/admin/reports/export
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/admin/reports/export
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/admin/reports/export
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /api/v1/admin/reports/export
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-api
+                port:
+                  name: http
+---
+# Public website (Next.js, hig-website) at the root of the main domain. Next.js sets its own Cache-Control
+# (ISR pages: s-maxage + stale-while-revalidate) and robots headers; the controller passes them through.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-website
+  labels:
+    app.kubernetes.io/name: hig-website
+    app.kubernetes.io/component: website
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-website
+                port:
+                  name: http
+---
+# Patient portal SPA under /app/ on the main domain (Vite base /app/; the web image serves it from its root, so
+# the prefix is stripped). Never indexed (X-Robots-Tag). Note: use-regex applies to every path of this host;
+# the plain prefixes of the other Ingresses keep working as anchored regexes.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-web-patient
+  labels:
+    app.kubernetes.io/name: hig-web
+    app.kubernetes.io/component: web
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/custom-headers: hig-staging/hig-noindex-headers
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: staging.healindia.example
+      http:
+        paths:
+          - path: /app(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: hig-web
+                port:
+                  name: patient
+---
+# Agent and hospital portal SPAs (optional hig-web Deployment; remove if the SPAs are hosted on S3 + CloudFront).
+# Never indexed: every response carries X-Robots-Tag: noindex, nofollow.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-web
+  labels:
+    app.kubernetes.io/name: hig-web
+    app.kubernetes.io/component: web
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/custom-headers: hig-staging/hig-noindex-headers
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - agent.staging.healindia.example
+        - hospital.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: agent.staging.healindia.example
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-web
+                port:
+                  name: agent
+    - host: hospital.staging.healindia.example
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-web
+                port:
+                  name: hospital
+---
+# Admin portal SPA. Optionally restrict to office/VPN ranges (annotation name: allowlist-source-range on newer controllers, whitelist-source-range on older ones).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hig-web-admin
+  labels:
+    app.kubernetes.io/name: hig-web
+    app.kubernetes.io/component: web
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/custom-headers: hig-staging/hig-noindex-headers
+    # nginx.ingress.kubernetes.io/allowlist-source-range: "203.0.113.0/24"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - admin.staging.healindia.example
+      secretName: hig-tls
+  rules:
+    - host: admin.staging.healindia.example
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hig-web
+                port:
+                  name: admin
