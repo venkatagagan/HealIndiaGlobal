@@ -3,6 +3,8 @@ import { after } from 'next/server';
 import { submitIndexNow } from '@/lib/indexnow';
 import { clearCspCache } from '@/lib/csp';
 import { SITE_TAG } from '@/lib/site-config';
+import { LOCALES, splitLocale } from '@/i18n/config';
+import { I18N_TAG, clearEnabledLocalesCache } from '@/i18n/languages';
 import {
   MAX_BODY_BYTES,
   clientKey,
@@ -57,7 +59,12 @@ export async function POST(request: Request) {
   // (website & contact settings edited in the staff console) expires at once, so the next visit shows the change.
   for (const tag of parsed.plan.tags) revalidateTag(tag, tag === SITE_TAG ? { expire: 0 } : 'max');
   if (parsed.plan.tags.includes(SITE_TAG)) clearCspCache();
-  for (const path of parsed.plan.paths) revalidatePath(path);
+  if (parsed.plan.tags.includes(I18N_TAG)) clearEnabledLocalesCache();
+  // Pages live under the [lang] segment (/hospitals is rendered as /en/hospitals): mark every language's copy stale.
+  for (const path of parsed.plan.paths) {
+    const { path: sitePath } = splitLocale(path);
+    for (const l of LOCALES) revalidatePath(sitePath === '/' ? `/${l}` : `/${l}${sitePath}`);
+  }
   console.info(`[revalidate] ${parsed.plan.tags.length} tag(s), ${parsed.plan.paths.length} path(s) marked stale`);
   // Tell IndexNow engines (Bing, Yandex, ...) about the changed pages, after the response is sent (no-op unless
   // INDEXNOW_KEY is set; see src/lib/indexnow.ts).

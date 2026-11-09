@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { usePathname } from 'next/navigation';
 import {
   ArrowRight,
@@ -94,7 +94,7 @@ function TextAction({ href, children }: { href: string; children: ReactNode }) {
   return (
     <MenuLink href={href} className="group/a inline-flex items-center gap-1.5 text-[0.9375rem] font-semibold whitespace-nowrap text-primary-700 hover:text-primary-800">
       <span className="underline-offset-4 group-hover/a:underline">{children}</span>
-      <ArrowRight className="h-4 w-4 transition-transform group-hover/a:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
+      <ArrowRight className="h-4 w-4 transition-transform group-hover/a:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover/a:-translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
     </MenuLink>
   );
 }
@@ -797,7 +797,7 @@ export function MobileNav({ data, footer }: { data: NavData; footer?: ReactNode 
       aria-modal="true"
       aria-label={l.main}
       className={`fixed inset-0 z-[60] flex flex-col bg-white text-slate-900 transition duration-200 motion-reduce:transition-none lg:hidden ${
-        open ? 'visible translate-x-0 opacity-100' : 'invisible translate-x-4 opacity-0'
+        open ? 'visible translate-x-0 opacity-100' : 'invisible translate-x-4 rtl:-translate-x-4 opacity-0'
       }`}
       onClick={(e) => {
         if ((e.target as Element).closest('a')) close();
@@ -846,7 +846,7 @@ export function MobileNav({ data, footer }: { data: NavData; footer?: ReactNode 
       <div className="shrink-0 space-y-2 border-t border-slate-200 bg-cloud px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <a href={data.links.assessment} className="flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-3 font-semibold text-white hover:bg-primary-700">
           {l.assessment}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
         </a>
         {footer}
       </div>

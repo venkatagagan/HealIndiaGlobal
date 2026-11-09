@@ -5,6 +5,8 @@ import {
   procedureCityLinksForProcedure,
   storyLinks,
 } from '@/lib/growth/links';
+import { getDictionary } from '@/i18n';
+import { fmt } from '@/i18n/format';
 import { RelatedLinks } from './related-links';
 
 /**
@@ -27,18 +29,20 @@ export async function ProcedureRelated({ procedure, name }: { procedure: string;
     safe(() => storyLinks({ procedure }), []),
   ]);
   if (!cities.length && !costs.length && !stories.length) return null;
+  const r = (await getDictionary()).related;
   return (
     <div className="space-y-6">
-      <RelatedLinks id="related-cities" title={`${name} by city`} items={cities} />
-      <RelatedLinks id="related-costs" title="Cost guides by home country" items={costs} />
-      <RelatedLinks id="related-stories" title="Patient stories" items={stories} />
+      <RelatedLinks id="related-cities" title={fmt(r.byCity, { name })} items={cities} />
+      <RelatedLinks id="related-costs" title={r.costGuides} items={costs} />
+      <RelatedLinks id="related-stories" title={r.stories} items={stories} />
     </div>
   );
 }
 
 export async function DestinationRelated({ destination, name }: { destination: string; name: string }) {
   const cities = await safe(() => procedureCityLinksForDestination(destination), []);
-  return <RelatedLinks id="related-procedures" title={`Treatments with published prices in ${name}`} items={cities} />;
+  const r = (await getDictionary()).related;
+  return <RelatedLinks id="related-procedures" title={fmt(r.pricesIn, { name })} items={cities} />;
 }
 
 export async function HospitalRelated({ hospital }: { hospital: string }) {
@@ -47,10 +51,11 @@ export async function HospitalRelated({ hospital }: { hospital: string }) {
     safe(() => storyLinks({ hospital }), []),
   ]);
   if (!cities.length && !stories.length) return null;
+  const r = (await getDictionary()).related;
   return (
     <div className="space-y-6">
-      <RelatedLinks id="related-compare" title="Compare hospitals in this city" items={cities} />
-      <RelatedLinks id="related-stories" title="Patient stories" items={stories} />
+      <RelatedLinks id="related-compare" title={r.compareCity} items={cities} />
+      <RelatedLinks id="related-stories" title={r.stories} items={stories} />
     </div>
   );
 }

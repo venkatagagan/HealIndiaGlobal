@@ -20,8 +20,8 @@ function isoDate(value: string | null | undefined): string {
  * Atom feed of the patient guides and published patient stories (/guides/feed.xml), linked from every page with
  * <link rel="alternate" type="application/atom+xml">. Lists only pages that are published (same rule as the pages).
  */
-export function GET() {
-  const t = getDictionary();
+export async function GET() {
+  const t = await getDictionary('en');
   const entries: { title: string; path: string; summary: string; updated: string }[] = [];
   if (!SITE_NOINDEX) {
     for (const slug of GUIDE_SLUGS) {

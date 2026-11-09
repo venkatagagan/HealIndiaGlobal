@@ -58,7 +58,7 @@ export function PartnerPage({
         <div className="flex flex-wrap gap-3">
           <ButtonLink href={registerHref} size="lg">
             {copy.cta}
-            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            <ArrowRight className="h-5 w-5 rtl:-scale-x-100" aria-hidden="true" />
           </ButtonLink>
           <ButtonLink href={href(routes.login)} variant="secondary" size="lg">
             {t.nav.login}

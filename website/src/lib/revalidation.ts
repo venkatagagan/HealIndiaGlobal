@@ -22,8 +22,11 @@ export const MAX_BODY_BYTES = 16 * 1024;
 /** Shorter secrets are treated as "not configured" (the endpoint then answers 503). */
 export const MIN_SECRET_LENGTH = 32;
 
-/** `site` = website & contact settings (src/lib/site-config.ts): expired immediately, see the route handler. */
-const COLLECTIONS = ['catalog', 'specialties', 'procedures', 'hospitals', 'doctors', 'destinations', 'fx', 'content', 'site'] as const;
+/**
+ * `site` = website & contact settings (src/lib/site-config.ts): expired immediately, see the route handler.
+ * `i18n` = enabled languages and text overrides (src/i18n); `i18n:<lang>` only that language's overrides.
+ */
+const COLLECTIONS = ['catalog', 'specialties', 'procedures', 'hospitals', 'doctors', 'destinations', 'fx', 'content', 'site', 'i18n', 'i18n:en', 'i18n:ar', 'i18n:fr', 'i18n:bn', 'i18n:ru'] as const;
 const ENTITY_KINDS = ['hospital', 'doctor', 'procedure', 'specialty', 'destination'] as const;
 type EntityKind = (typeof ENTITY_KINDS)[number];
 

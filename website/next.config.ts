@@ -52,6 +52,8 @@ const doorPaths = ['login', 'register', 'forgot-password', 'reset-password', 've
  * old `?token=` links still work, so these pages never send a Referer (overrides the site-wide policy above).
  */
 const tokenPaths = ['reset-password', 'verify-email', 'accept-invite'];
+/** Prefixed languages (src/i18n/config.ts LOCALES without English), for the per-path headers above. */
+const LANGS = 'ar|fr|bn|ru';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -84,8 +86,8 @@ const nextConfig: NextConfig = {
     return [
       { source: '/:path*', headers: securityHeaders },
       // Auth door pages are noindex (also set via <meta name="robots">).
-      ...doorPaths.map((p) => ({ source: `/${p}`, headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] })),
-      ...tokenPaths.map((p) => ({ source: `/${p}`, headers: [{ key: 'Referrer-Policy', value: 'no-referrer' }] })),
+      ...doorPaths.flatMap((p) => [`/${p}`, `/:lang(${LANGS})/${p}`]).map((source) => ({ source, headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] })),
+      ...tokenPaths.flatMap((p) => [`/${p}`, `/:lang(${LANGS})/${p}`]).map((source) => ({ source, headers: [{ key: 'Referrer-Policy', value: 'no-referrer' }] })),
       // Operational endpoints are never indexed.
       { source: '/api/health/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
       { source: '/api/revalidate', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
@@ -99,10 +101,8 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // The site is English only and served without a locale prefix. Old /en, /ar and /fr URLs (and anything
-      // below them) redirect permanently to the same path at the root; query strings are kept.
-      { source: '/:locale(en|ar|fr)', destination: '/', permanent: true },
-      { source: '/:locale(en|ar|fr)/:path*', destination: '/:path*', permanent: true },
+      // Languages: English has no prefix; /en/... redirects to the root and /ar, /fr, /bn, /ru are served while
+      // enabled - both handled in src/proxy.ts (the enabled languages are a runtime admin setting).
       // Friendly aliases.
       { source: '/procedures', destination: '/treatments', permanent: true },
       { source: '/specialties', destination: '/treatments', permanent: true },

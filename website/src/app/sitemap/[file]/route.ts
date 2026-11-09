@@ -23,11 +23,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const entries = await sitemapSection(section);
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
     ...entries.map((e) => {
       const lastmod = e.lastModified ? `<lastmod>${xmlEscape(String(e.lastModified instanceof Date ? e.lastModified.toISOString() : e.lastModified))}</lastmod>` : '';
       const priority = e.priority !== undefined ? `<priority>${e.priority}</priority>` : '';
-      return `  <url><loc>${xmlEscape(e.url)}</loc>${lastmod}${priority}</url>`;
+      // Every language version of the page, including itself (hreflang annotations).
+      const alternates = Object.entries(e.alternates?.languages ?? {})
+        .map(([lang, url]) => `<xhtml:link rel="alternate" hreflang="${xmlEscape(lang)}" href="${xmlEscape(String(url))}"/>`)
+        .join('');
+      return `  <url><loc>${xmlEscape(e.url)}</loc>${lastmod}${priority}${alternates}</url>`;
     }),
     '</urlset>',
     '',

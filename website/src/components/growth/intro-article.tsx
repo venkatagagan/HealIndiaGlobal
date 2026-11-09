@@ -9,8 +9,8 @@ import { MedicalReviewByline, SourcesList } from '@/components/medical-review';
  * Hand-written intro for a growth page: draft banner, the shared medical-review byline (real reviewers only), the
  * Markdown body and its sources.
  */
-export function IntroArticle({ intro, shiftHeadings = 1 }: { intro: Intro; shiftHeadings?: number }) {
-  const t = getDictionary();
+export async function IntroArticle({ intro, shiftHeadings = 1 }: { intro: Intro; shiftHeadings?: number }) {
+  const t = await getDictionary();
   return (
     <div className="space-y-5">
       {intro.isDraft ? (

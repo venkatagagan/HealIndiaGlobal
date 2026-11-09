@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/link';
 import { brandMark } from '@/lib/brand';
 
 /** Inline fallback mark (used only when design/logo assets are not available). */

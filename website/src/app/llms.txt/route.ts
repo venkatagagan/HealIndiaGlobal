@@ -17,7 +17,7 @@ const line = (title: string, path: string, note?: string | null) => `- [${title}
  */
 export async function GET() {
   if (SITE_NOINDEX) return new Response('Not found', { status: 404 });
-  const t = getDictionary();
+  const t = await getDictionary('en');
   const [specialties, destinations] = await Promise.all([getSpecialties(), getDestinations()]);
   const out: string[] = [
     `# ${SITE_NAME}`,

@@ -50,6 +50,9 @@ const en = {
       nabl: 'NABL',
       iso: 'ISO',
     },
+    language: 'Language',
+    chooseLanguage: 'Choose a language',
+    englishOnly: 'This content is available in English only for now.',
     accreditationNames: {
       jci: 'Joint Commission International',
       nabh: 'National Accreditation Board for Hospitals & Healthcare Providers',
@@ -645,6 +648,9 @@ const en = {
     privacyNote: 'We use your details only to answer your message.',
     helplinesTitle: 'Helplines',
     helplineEmergency: 'In a medical emergency in India, dial {number}.',
+    phoneLabel: 'Phone',
+    whatsappLabel: 'WhatsApp',
+    callNumber: 'Call {number}',
   },
 
   accountDeletion: {
@@ -688,10 +694,19 @@ const en = {
     helpTitle: 'Cannot sign in?',
     help: 'Email us from the address registered on your account. We will verify your identity and delete the account for you:',
     privacyLink: 'Read the full privacy policy',
+    descriptionExtra: 'Deletion is permanent.',
+    emailSubject: 'Account deletion request',
+    bannerTitle: 'Your account has been deleted',
+    bannerBody: 'You have been signed out on all devices. The records we are required to keep are listed below.',
   },
   legal: {
     deleteAccountNote: 'Want to delete your account? See how account deletion works and what we keep.',
     deleteAccountLink: 'Delete your account',
+    seoTitles: {
+      terms: 'Website and service terms of use',
+      privacy: 'Privacy policy: how we protect your data',
+      refunds: 'Cancellation and refund policy',
+    },
     terms: {
       title: 'Terms of use',
       metaDescription:
@@ -856,6 +871,19 @@ const en = {
     verifyInvalid: 'This verification link is invalid or has expired. Log in to request a new one.',
     verifyMissing: 'This page needs the verification link from your email.',
     secureNote: 'Your connection is encrypted. We never share your password.',
+  },
+  related: {
+    byCity: '{name} by city',
+    costGuides: 'Cost guides by home country',
+    stories: 'Patient stories',
+    pricesIn: 'Treatments with published prices in {name}',
+    compareCity: 'Compare hospitals in this city',
+  },
+  seo: {
+    descriptionTail: [
+      'Plan your treatment in India with Heal India Global.',
+      'Free AI assessment, indicative prices and support from enquiry to recovery.',
+    ],
   },
   review: {
     reviewedBy: 'Medically reviewed by',

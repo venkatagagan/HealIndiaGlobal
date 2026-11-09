@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import type { Dictionary } from '@/i18n';
-import { fmt } from '@/i18n/format';
+import { fmt, formatDate } from '@/i18n/format';
+import { requestLocale } from '@/i18n/request';
 import { resolveContentHref, tableOfContents, type ContentPage } from '@/lib/content';
 import { TocNav } from './toc-nav';
+import { href } from '@/lib/routes';
 import { getReviewers, medicalReview, medicalWebPageLd } from '@/lib/medical-review';
 import { InlineNote } from './data-notice';
 import { JsonLd } from './json-ld';
@@ -14,6 +16,7 @@ export function ContentNotices({ page, t }: { page: ContentPage; t: Dictionary }
   return (
     <div className="space-y-3">
       {page.isDraft ? <InlineNote tone="amber" text={t.common.contentDraft} /> : null}
+      {requestLocale() !== 'en' ? <InlineNote text={t.common.englishOnly} /> : null}
     </div>
   );
 }
@@ -48,7 +51,7 @@ export async function ContentArticle({
   return (
     <div className={items.length > 2 || aside ? 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]' : ''}>
       <div className="min-w-0 space-y-6">
-        {path && review.isHealthPage ? <JsonLd data={medicalWebPageLd(page, path, title, reviewers)} /> : null}
+        {path && review.isHealthPage ? <JsonLd data={medicalWebPageLd(page, href(path), title, reviewers)} /> : null}
         <ContentNotices page={page} t={t} />
         <MedicalReviewByline review={review} t={t} />
         <MarkdownContent
@@ -60,7 +63,7 @@ export async function ContentArticle({
         </MarkdownContent>
         <SourcesList sources={review.sources} t={t} level={shiftHeadings > 0 ? 3 : 2} id={`sources-${page.meta.slug}`} />
         {page.meta.updated ? (
-          <p className="text-sm text-slate-500">{fmt(t.guides.lastUpdated, { date: page.meta.updated })}</p>
+          <p className="text-sm text-slate-500">{fmt(t.guides.lastUpdated, { date: formatDate(page.meta.updated) })}</p>
         ) : null}
       </div>
       {items.length > 2 || aside ? (

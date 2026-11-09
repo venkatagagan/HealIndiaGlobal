@@ -1,7 +1,9 @@
 # Technical SEO - Heal India Global public website
 
-What is implemented, how to audit it, and the measured scores. English only (`<html lang="en">`, `og:locale=en_US`,
-no hreflang). Health (YMYL) rules apply: no thin or generated pages without real data, no ratings without real
+What is implemented, how to audit it, and the measured scores. Multi-language: English at the root, enabled
+languages under `/ar`, `/fr`, `/bn`, `/ru` (`<html lang dir>`, `og:locale` per language, self canonical, hreflang
+alternates for every enabled language plus `x-default` = English, localized sitemap entries with `xhtml:link`
+alternates; see README "Languages"). Health (YMYL) rules apply: no thin or generated pages without real data, no ratings without real
 reviews, every health page reviewed before it is indexed.
 
 ## Run the audit
@@ -23,7 +25,8 @@ Lighthouse JSON per page type (open in https://googlechrome.github.io/lighthouse
 
 The crawler (all internal links from `/`, ~215 pages) checks on every page: title 50-60 characters and unique,
 meta description 120-160 and unique, exactly one `<h1>`, no skipped heading levels, absolute self-canonical,
-`og:title/description/url/image/locale` and `twitter:card`, `lang="en"`, valid JSON-LD with the required
+`og:title/description/url/image/locale` and `twitter:card`, `lang`/`dir` matching the URL's language, hreflang
+`x-default` on indexable pages, valid JSON-LD with the required
 properties per schema.org type, `<img>` alt + width/height, link text (no empty or "click here" links), internal
 links that redirect or 404. Plus: robots.txt, sitemap index + section sitemaps, manifest, icons, llms.txt, feed,
 404 status + noindex, security headers, CSP without `unsafe-eval`, `/x/` and `/X` redirects.
@@ -82,7 +85,9 @@ Lighthouse does not score non-200 documents.
 - [x] Unique meta description per page, 120-160 characters: `fitDescription()` cuts on a word boundary and extends
       short texts with page-specific sentences.
 - [x] Self-referencing absolute canonical (clean path, no query, no trailing slash) on `NEXT_PUBLIC_SITE_URL`.
-- [x] OpenGraph (type, url, title, description, site_name, locale `en_US`, 1200x630 image) and Twitter
+- [x] hreflang: `alternates.languages` for every enabled language + `x-default` (English); English-only pages
+      (cost guides, stories, procedure x city) list English only. Crawlers never get the browser-language redirect.
+- [x] OpenGraph (type, url, title, description, site_name, locale per language + `og:locale:alternate`, 1200x630 image) and Twitter
       `summary_large_image`; dynamic share images for hospital, doctor, specialty, procedure and guide pages.
 - [x] `robots: noindex, follow` for auth pages, search, fallback (sample) data, drafts, thin growth pages;
       `SITE_NOINDEX=true` for staging (robots.txt disallows all, sitemap empty).

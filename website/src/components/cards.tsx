@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/link';
 import { ArrowRight, BadgeCheck, Building2, Clock, Languages, MapPin, Star, Video } from 'lucide-react';
 import type { Dictionary } from '@/i18n';
 import { fmt, plural } from '@/i18n/format';
@@ -82,7 +82,7 @@ export function SpecialtyTile({
           <span className="font-semibold text-slate-800">{plural(t.common.proceduresCount, specialty.procedures_count)}</span>
           {fromPrice ? <span className="hidden sm:inline"> · {fromPrice}</span> : null}
         </span>
-        <ArrowRight className="h-4 w-4 shrink-0 text-primary-600 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+        <ArrowRight className="h-4 w-4 shrink-0 text-primary-600 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
       </div>
     </article>
   );
@@ -208,7 +208,7 @@ export function HospitalCard({
   return (
     <article className="card-hover relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card hover:border-primary-200">
       <div className="relative flex items-center border-b border-slate-200 bg-cloud px-5 py-4">
-        <span aria-hidden="true" className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-champagne/70 via-champagne/20 to-transparent" />
+        <span aria-hidden="true" className="absolute inset-x-5 top-0 h-px bg-gradient-to-r rtl:bg-gradient-to-l from-champagne/70 via-champagne/20 to-transparent" />
         <Initials name={hospital.name} className="h-11 w-11 rounded-xl bg-navy text-base" />
         <span className="ms-3 inline-flex items-center gap-1 text-sm font-medium text-slate-700">
           <MapPin className="h-4 w-4" aria-hidden="true" />

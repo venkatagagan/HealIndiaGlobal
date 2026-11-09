@@ -19,7 +19,7 @@ function Tip({ text }: { text: string }) {
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute end-full me-3 hidden translate-x-1 rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-lg transition group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 sm:block"
+      className="pointer-events-none absolute end-full me-3 hidden translate-x-1 rtl:-translate-x-1 rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-lg transition group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 sm:block"
     >
       {text}
     </span>

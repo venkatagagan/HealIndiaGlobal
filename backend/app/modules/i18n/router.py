@@ -2,9 +2,9 @@
 
 Public (no auth, short shared cache):
 * ``GET /i18n/languages`` - enabled languages in display order.
-* ``GET /i18n/overrides?locale=&app=[&since=]`` - admin overrides of one app's strings in one language, with a
-  ``version`` (epoch ms of the newest change), ``ETag: W/"<app>-<locale>-<version>"`` and 304 on
-  ``If-None-Match`` / ``since >= version``.
+* ``GET /i18n/overrides?locale=&app=`` - the full set of admin overrides of one app's strings in one language,
+  with a ``version`` (epoch ms of the newest change), ``ETag: W/"<app>-<locale>-<version>"`` and 304 on
+  ``If-None-Match``.
 
 Admin (admin / super_admin, every change audited):
 * ``GET /admin/i18n/languages``, ``PATCH /admin/i18n/languages/{code}`` (English cannot be disabled)
@@ -61,14 +61,11 @@ async def list_overrides(
     db: DbSession,
     locale: Annotated[str, Query(min_length=2, max_length=10)],
     app: Annotated[AppName, Query()],
-    since: Annotated[int | None, Query(ge=0)] = None,
 ) -> Response:
     out = await service.public_overrides(db, locale, app)
     etag = f'W/"{out.app}-{out.locale}-{out.version}"'
     headers = {"ETag": etag, "Cache-Control": PUBLIC_CACHE}
-    if _etag_matches(request.headers.get("if-none-match"), etag) or (
-        since is not None and since >= out.version
-    ):
+    if _etag_matches(request.headers.get("if-none-match"), etag):
         return Response(status_code=304, headers=headers)
     return JSONResponse(out.model_dump(mode="json"), headers=headers)
 

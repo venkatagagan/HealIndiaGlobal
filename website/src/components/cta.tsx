@@ -30,7 +30,7 @@ export function AssessmentCta({
           <div className="mt-6 flex flex-wrap gap-3">
             <ButtonLink href={assessmentUrl(specialty)} variant="primary" size="lg">
               {button}
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              <ArrowRight className="h-5 w-5 rtl:-scale-x-100" aria-hidden="true" />
             </ButtonLink>
             {secondary ? (
               <ButtonLink href={secondary.href} variant="outline" size="lg">

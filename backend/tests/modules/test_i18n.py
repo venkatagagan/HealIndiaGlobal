@@ -225,7 +225,7 @@ async def test_english_cannot_be_disabled_and_permissions(
     assert rows["ru"]["enabled"] is False
 
 
-async def test_public_overrides_shape_etag_and_since(
+async def test_public_overrides_shape_and_etag(
     client: Any, db: Any, auth_headers: Any, admin: Any, catalogs: Path
 ) -> None:
     r = await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web")
@@ -249,10 +249,6 @@ async def test_public_overrides_shape_etag_and_since(
     r = await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web", headers={"If-None-Match": etag})
     assert r.status_code == 304 and r.headers["etag"] == etag
     v = body["version"]
-    assert (await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web&since={v}")).status_code == 304
-    assert (
-        await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web&since={v - 1}")
-    ).status_code == 200
     # other apps/locales are separate
     other = (await client.get(f"{API}/i18n/overrides?locale=fr&app=patient_web")).json()
     assert other["strings"] == {} and other["version"] == 0
@@ -270,10 +266,9 @@ async def test_public_overrides_shape_etag_and_since(
     assert r.status_code == 204
     after = (await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web")).json()
     assert after["strings"] == {} and after["version"] >= v
-    assert (await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web&since={v}")).status_code in (
-        200,
-        304,
-    )
+    # the tombstone moves the version, so a client holding the old ETag gets the new (empty) set
+    r = await client.get(f"{API}/i18n/overrides?locale=ar&app=patient_web", headers={"If-None-Match": etag})
+    assert r.status_code == 200 and r.json()["strings"] == {}
 
 
 # ------------------------------------------------------------------------------------------- admin strings

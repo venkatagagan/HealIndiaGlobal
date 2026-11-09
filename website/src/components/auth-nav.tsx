@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { useEffect, useState } from 'react';
 import { LayoutDashboard } from 'lucide-react';
 import { checkSession, portalUrl } from '@/lib/auth-client';
