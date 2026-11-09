@@ -4,6 +4,7 @@ import { cn } from '../lib/cn';
 import { useCommonTranslation } from '../lib/i18n';
 import { BRAND, BrandLogo } from './Brand';
 import { ThemeToggle } from './controls';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export interface PublicLayoutProps {
   /** header slot; omit for the default (logo + theme), `null` for none */
@@ -24,6 +25,7 @@ export function DefaultPublicHeader({ actions }: { actions?: ReactNode }) {
         <BrandLogo to="/" />
         <div className="flex items-center gap-2">
           {actions}
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </div>

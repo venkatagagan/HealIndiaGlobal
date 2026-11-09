@@ -6,7 +6,17 @@ import {
   isValid,
   parseISO,
   startOfDay,
+  type Locale,
 } from 'date-fns';
+import { ar, bn, enUS, fr, ru } from 'date-fns/locale';
+import { currentLanguage } from './i18n';
+
+const DATE_LOCALES: Record<string, Locale> = { en: enUS, ar, bn, fr, ru };
+
+/** date-fns locale for the current UI language (month names, "3 minutes ago"). */
+export function dateLocale(): Locale {
+  return DATE_LOCALES[currentLanguage()] ?? enUS;
+}
 
 type DateInput = string | number | Date | null | undefined;
 
@@ -25,25 +35,25 @@ export function toDate(value: DateInput): Date | null {
 /** "21 Oct 2026" */
 export function formatDate(value: DateInput, pattern = 'd MMM yyyy', fallback = '—'): string {
   const d = toDate(value);
-  return d ? format(d, pattern) : fallback;
+  return d ? format(d, pattern, { locale: dateLocale() }) : fallback;
 }
 
 /** "21 Oct 2026, 14:05" */
 export function formatDateTime(value: DateInput, pattern = 'd MMM yyyy, HH:mm', fallback = '—'): string {
   const d = toDate(value);
-  return d ? format(d, pattern) : fallback;
+  return d ? format(d, pattern, { locale: dateLocale() }) : fallback;
 }
 
 /** "14:05" */
 export function formatTime(value: DateInput, pattern = 'HH:mm', fallback = '—'): string {
   const d = toDate(value);
-  return d ? format(d, pattern) : fallback;
+  return d ? format(d, pattern, { locale: dateLocale() }) : fallback;
 }
 
 /** "3 minutes ago" / "in 2 days" */
 export function formatRelative(value: DateInput, fallback = '—'): string {
   const d = toDate(value);
-  return d ? formatDistanceToNowStrict(d, { addSuffix: true }) : fallback;
+  return d ? formatDistanceToNowStrict(d, { addSuffix: true, locale: dateLocale() }) : fallback;
 }
 
 /** Date -> "YYYY-MM-DD" (local calendar date, for API date fields) */
@@ -82,5 +92,5 @@ export function ageFromDob(dob: DateInput): number | null {
 /** "2026-10" -> "Oct 2026" (dashboard monthly series) */
 export function formatMonth(month: string, pattern = 'MMM yyyy'): string {
   const d = toDate(/^\d{4}-\d{2}$/.test(month) ? `${month}-01` : month);
-  return d ? format(d, pattern) : month;
+  return d ? format(d, pattern, { locale: dateLocale() }) : month;
 }

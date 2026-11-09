@@ -1,14 +1,15 @@
-import { isValidElement, useState, type ComponentType, type ReactNode } from 'react';
+import { isValidElement, useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { ChevronDown, ChevronRight, Menu, PanelLeftClose } from 'lucide-react';
 import type { UserRole } from '../api/enums';
 import { useOptionalAuth } from '../auth/AuthProvider';
 import { cn } from '../lib/cn';
-import { useCommonTranslation } from '../lib/i18n';
+import { applyUserLanguage, useCommonTranslation } from '../lib/i18n';
 import { prefs } from '../lib/storage';
 import { Drawer } from '../ui/overlay';
 import { BrandLogo } from './Brand';
 import { ThemeToggle, UserMenu, type UserMenuUser } from './controls';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 /** A lucide icon component (`icon: LayoutDashboard`) or any element (`icon: <MyIcon />`). */
 export type NavIcon = ComponentType<{ className?: string }> | ReactNode;
@@ -469,6 +470,9 @@ export function PortalLayout({
   };
 
   const role = auth?.user?.role ?? null;
+  // the signed-in user's profile language applies unless a language was picked on this device
+  const preferredLanguage = auth?.user?.preferred_language ?? null;
+  useEffect(() => applyUserLanguage(preferredLanguage), [preferredLanguage]);
   const items = visibleItems(nav, role);
   const menuUser: UserMenuUser | null =
     user !== undefined
@@ -575,6 +579,7 @@ export function PortalLayout({
           <div className="min-w-0 flex-1 truncate text-sm font-medium text-fg">{title}</div>
           <div className="flex items-center gap-1 sm:gap-2">
             {topbarExtra}
+            <LanguageSwitcher />
             {showThemeToggle && <ThemeToggle />}
             {userMenu ??
               (menuUser ? (

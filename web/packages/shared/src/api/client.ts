@@ -163,6 +163,17 @@ export function configureApiClient(options: {
   if (options.refreshPath !== undefined) config.refreshPath = options.refreshPath;
 }
 
+let requestLanguage: string | null = null;
+
+/** Language sent as `Accept-Language` on every API call (set by lib/i18n when the UI language changes). */
+export function setRequestLanguage(language: string | null): void {
+  requestLanguage = language;
+}
+
+export function getRequestLanguage(): string | null {
+  return requestLanguage;
+}
+
 export function getApiBaseUrl(): string {
   return config.baseUrl;
 }
@@ -391,6 +402,7 @@ function defaultMessage(status: number): string {
 
 async function send(method: HttpMethod, path: string, options: RequestOptions, isRetry: boolean): Promise<Response> {
   const headers = new Headers({ Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' });
+  if (requestLanguage) headers.set('Accept-Language', requestLanguage);
   let body: BodyInit | undefined;
   const raw = options.body;
   if (raw !== undefined && raw !== null) {

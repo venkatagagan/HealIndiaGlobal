@@ -2,7 +2,10 @@
  * Money helpers. Amounts are integer minor units + ISO-4217 currency (PLAN section 3).
  * Exponents are identical to the backend (`app.core.money.CURRENCY_EXPONENTS`):
  * 0 for JPY/KRW, 3 for KWD/BHD/OMR, otherwise 2.
+ * Formatting follows the UI language (`intlLocale()`) unless a locale is passed.
  */
+import { intlLocale } from './i18n';
+
 export const CURRENCY_EXPONENTS: Readonly<Record<string, number>> = {
   JPY: 0,
   KRW: 0,
@@ -93,7 +96,7 @@ function getFormatter(locale: string | undefined, currency: string, digits: numb
 
 /**
  * formatMoney(250000, 'USD') -> "$2,500.00"; formatMoney(1500, 'KWD') -> "KWD 1.500"; null -> "—".
- * @param locale BCP-47 locale, defaults to the browser locale
+ * @param locale BCP-47 locale, defaults to the UI language (`intlLocale()`)
  */
 export function formatMoney(
   minor: number | null | undefined,
@@ -107,7 +110,7 @@ export function formatMoney(
   const major = minor / 10 ** exp;
   const digits = options.trimZeros && Number.isInteger(major) ? 0 : exp;
   try {
-    return getFormatter(locale, ccy, digits, options).format(major);
+    return getFormatter(locale ?? intlLocale(), ccy, digits, options).format(major);
   } catch {
     // unknown currency code for Intl
     return `${ccy} ${major.toFixed(digits)}`;
@@ -132,8 +135,7 @@ export function formatMoneyRange(
 /** Basis points -> "15%" / "1.5%" */
 export function formatBps(bps: number | null | undefined, fractionDigits = 2): string {
   if (bps === null || bps === undefined) return '—';
-  const pct = bps / 100;
-  return `${Number(pct.toFixed(fractionDigits))}%`;
+  return percentFormat(bps / 10000, fractionDigits);
 }
 
 /** 15 (percent) -> 1500 bps */
@@ -144,13 +146,21 @@ export function pctToBps(pct: number): number {
 /** 0.4567 -> "45.7%" */
 export function formatPercent(ratio: number | null | undefined, fractionDigits = 1): string {
   if (ratio === null || ratio === undefined || Number.isNaN(ratio)) return '—';
-  return `${Number((ratio * 100).toFixed(fractionDigits))}%`;
+  return percentFormat(ratio, fractionDigits);
+}
+
+function percentFormat(ratio: number, fractionDigits: number): string {
+  try {
+    return new Intl.NumberFormat(intlLocale(), { style: 'percent', maximumFractionDigits: fractionDigits }).format(ratio);
+  } catch {
+    return `${Number((ratio * 100).toFixed(fractionDigits))}%`;
+  }
 }
 
 /** Currency symbol for a code in the given locale ("USD" -> "$"). */
 export function currencySymbol(currency: string, locale?: string): string {
   try {
-    const parts = new Intl.NumberFormat(locale, { style: 'currency', currency, currencyDisplay: 'narrowSymbol' }).formatToParts(0);
+    const parts = new Intl.NumberFormat(locale ?? intlLocale(), { style: 'currency', currency, currencyDisplay: 'narrowSymbol' }).formatToParts(0);
     return parts.find((p) => p.type === 'currency')?.value ?? currency;
   } catch {
     return currency;
