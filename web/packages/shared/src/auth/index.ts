@@ -19,6 +19,14 @@ export { RequireAuth, WrongPortal, type RequireAuthProps, type WrongPortalProps 
 export { LoginPage, type LoginPageProps } from './LoginPage';
 export { PASSWORD_POLICY_RE, RegisterForm, isStrongPassword, type RegisterFormProps } from './RegisterForm';
 export {
+  AgeAttestation,
+  isAdultRequired,
+  isAgeAnswerValid,
+  isAgeAttestationRequired,
+  type AgeAnswer,
+  type AgeAttestationProps,
+} from './AgeAttestation';
+export {
   AUTH_DOOR_ENDPOINTS,
   DEV_URLS,
   PROD_PATHS,

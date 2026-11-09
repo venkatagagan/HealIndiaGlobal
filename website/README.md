@@ -33,7 +33,7 @@ redirect permanently (308) to the same path at the root (`next.config.ts`).
 | `/guides`, `/guides/{slug}` | pre-arrival, visa, in-country, payments-and-refunds, post-treatment-care, privacy-in-plain-language |
 | `/faq` | FAQ from the content pack (FAQPage JSON-LD) |
 | `/for-hospitals`, `/for-agents` | Partner pages; CTA goes to `/register?role=hospital|agent` |
-| `/about`, `/contact` | About and contact (mailto: or `NEXT_PUBLIC_CONTACT_ENDPOINT`) |
+| `/about`, `/contact` | About and contact. The form POSTs JSON to `NEXT_PUBLIC_CONTACT_ENDPOINT`, else to `{NEXT_PUBLIC_API_BASE}/site/enquiries` (staff read them in the admin console under Website enquiries); it opens a mailto: link only when neither is set |
 | `/terms`, `/privacy`, `/refund-policy` | Legal drafts from `../docs/legal` with a "draft" banner |
 | `/account/delete` | Public account-deletion page (store requirement): how to delete, what is erased/retained, "Sign in to delete" |
 | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email` | Public auth door (noindex) |

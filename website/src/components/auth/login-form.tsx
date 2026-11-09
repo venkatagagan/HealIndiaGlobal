@@ -13,6 +13,7 @@ import {
   type TokenOut,
 } from '@/lib/auth-client';
 import { assessmentUrl, PORTALS, type PortalRole } from '@/config/site';
+import { ADULT_REQUIRED, AGE_ATTESTATION_REQUIRED, GoogleAgePrompt } from './age-question';
 import { EMAIL_RE, FormAlert, PasswordField, SubmitButton, TextField } from './fields';
 import { GoogleButton, googleEnabled } from './google-button';
 import { authErrorMessage, type AuthLabels } from './shared';
@@ -39,6 +40,9 @@ export function LoginForm({
   const [pending, setPending] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [existing, setExisting] = useState<PortalRole | null>(null);
+  /** Google ID token waiting for the 18+ answer (first Google sign-in creates a patient account) */
+  const [googleToken, setGoogleToken] = useState<string | null>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const otpRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -114,13 +118,32 @@ export function LoginForm({
     setError(authErrorMessage(res, t));
   }
 
-  async function onGoogle(idToken: string) {
+  /**
+   * Google sign-in. When it would create a new account the API asks for the 18+ attestation first
+   * (400 `age_attestation_required`): show the age question and retry the same call with `is_adult`.
+   */
+  async function onGoogle(idToken: string, isAdult?: boolean) {
     setPending(true);
     setError(null);
-    const res = await apiPost<TokenOut>('/auth/google', { id_token: idToken });
+    setGoogleError(null);
+    const res = await apiPost<TokenOut>('/auth/google', {
+      id_token: idToken,
+      ...(isAdult !== undefined ? { is_adult: isAdult } : {}),
+    });
     if (res.ok) return go(res.data);
     setPending(false);
-    setError(res.status === 401 ? t.googleError : authErrorMessage(res, t));
+    if (res.status === 400 && res.code === AGE_ATTESTATION_REQUIRED) {
+      setGoogleToken(idToken);
+      return;
+    }
+    const message =
+      res.status === 400 && res.code === ADULT_REQUIRED
+        ? t.errors.adultRequired
+        : res.status === 401
+          ? t.googleError
+          : authErrorMessage(res, t);
+    if (isAdult !== undefined) setGoogleError(message);
+    else setError(message);
   }
 
   async function onGuest() {
@@ -213,7 +236,21 @@ export function LoginForm({
       {googleEnabled ? (
         <div className="space-y-4">
           <Divider label={orLabel} />
-          <GoogleButton text="signin_with" onCredential={onGoogle} onError={() => setError(t.googleError)} />
+          {googleToken ? (
+            <GoogleAgePrompt
+              t={t}
+              role="patient"
+              pending={pending}
+              error={googleError}
+              onSubmit={(isAdult) => void onGoogle(googleToken, isAdult)}
+              onCancel={() => {
+                setGoogleToken(null);
+                setGoogleError(null);
+              }}
+            />
+          ) : (
+            <GoogleButton text="signin_with" onCredential={(idToken) => void onGoogle(idToken)} onError={() => setError(t.googleError)} />
+          )}
         </div>
       ) : null}
 

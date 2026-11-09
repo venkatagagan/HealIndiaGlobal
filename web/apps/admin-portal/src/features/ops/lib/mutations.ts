@@ -45,4 +45,6 @@ export const opsKeys = {
   settings: ['admin', 'settings'] as const,
   audit: ['admin', 'audit-logs'] as const,
   conversations: ['conversations'] as const,
+  contentReports: ['admin', 'content-reports'] as const,
+  enquiries: ['admin', 'enquiries'] as const,
 };

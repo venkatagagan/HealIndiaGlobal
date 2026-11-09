@@ -29,6 +29,8 @@ export interface OpsPermissions {
   manageTravel: boolean;
   /** S: read audit logs */
   viewAudit: boolean;
+  /** admin|support|super_admin: content reports (moderation queue) and website enquiries */
+  moderateContent: boolean;
 }
 
 const AD: readonly UserRole[] = ['admin', 'super_admin'];
@@ -53,6 +55,7 @@ export function permissionsFor(role: UserRole | null | undefined): OpsPermission
     manageBookings: has(STAFF),
     manageTravel: has(OPS),
     viewAudit: has(STAFF),
+    moderateContent: has(OPS),
   };
 }
 

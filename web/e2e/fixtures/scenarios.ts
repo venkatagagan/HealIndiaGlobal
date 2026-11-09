@@ -303,6 +303,7 @@ export class Scenarios {
       role: 'patient',
       country_code: countryCode,
       accept_terms: true,
+      is_adult: true,
     });
     return { email, password: E2E_PASSWORD, role: 'patient', label: `fresh patient ${email}` };
   }
@@ -339,6 +340,7 @@ export class Scenarios {
       country_code: 'KE',
       agency_name: agencyName,
       accept_terms: true,
+      is_adult: true,
     });
     return { email, fullName, agencyName };
   }
@@ -359,6 +361,7 @@ export class Scenarios {
       hospital_name: hospitalName,
       city: 'Chennai',
       accept_terms: true,
+      is_adult: true,
     });
     const owner = this.deps.anon.withToken(token.access_token);
     const profile = await owner.put<{ id: string }>('/hospital-portal/profile', {

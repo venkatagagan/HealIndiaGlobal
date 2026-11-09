@@ -10,6 +10,7 @@
  * Kept free of `server-only` / React imports: the proxy bundle loads it.
  */
 import { analyticsCspSources, envAnalyticsConfig, resolveAnalytics, type AnalyticsConfig } from '@/config/analytics';
+import { CONTACT_ENDPOINT } from '@/config/site';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -23,7 +24,11 @@ function originOf(value: string | undefined): string | null {
 }
 
 const googleEnabled = Boolean(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim());
-const contactEndpointOrigin = originOf(process.env.NEXT_PUBLIC_CONTACT_ENDPOINT);
+/**
+ * Contact form target (src/config/site.ts): NEXT_PUBLIC_CONTACT_ENDPOINT, else {NEXT_PUBLIC_API_BASE}/site/enquiries.
+ * A relative URL (e.g. "/api/v1/site/enquiries" behind the edge nginx) is covered by 'self' and gives null here.
+ */
+const contactEndpointOrigin = originOf(CONTACT_ENDPOINT);
 /** Optional Web Vitals beacon target (src/components/web-vitals.tsx); a relative URL needs no CSP entry. */
 const webVitalsOrigin = originOf(process.env.NEXT_PUBLIC_WEB_VITALS_URL);
 /** Extra hosts allowed for remote images (hospital logos, doctor photos), e.g. "https://cdn.example.com". */

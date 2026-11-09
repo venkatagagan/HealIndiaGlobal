@@ -56,6 +56,8 @@ export default async function ContactPage() {
               sent: c.sent,
               mailtoOpened: c.mailtoOpened,
               error: c.error,
+              tooMany: c.tooMany,
+              honeypot: c.honeypot,
               required: c.required,
               invalidEmail: c.invalidEmail,
               medicalWarning: c.medicalWarning,

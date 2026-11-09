@@ -17,6 +17,10 @@ export interface ContactLabels {
   sent: string;
   mailtoOpened: string;
   error: string;
+  /** 429 from the enquiries endpoint */
+  tooMany: string;
+  /** label of the hidden anti-spam field (screen readers skip it; bots fill it) */
+  honeypot: string;
   required: string;
   invalidEmail: string;
   medicalWarning: string;
@@ -26,9 +30,12 @@ export interface ContactLabels {
 type Status = { kind: 'idle' | 'sending' | 'sent' | 'mailto' | 'error'; text?: string };
 
 /**
- * Contact form. With NEXT_PUBLIC_CONTACT_ENDPOINT configured it POSTs JSON there and only reports success when the
- * endpoint answers 2xx. Without an endpoint (the default - the backend has none yet) it opens the visitor's email
- * app with the message pre-filled; it never pretends a message was sent.
+ * Contact form. POSTs JSON to `endpoint` (src/config/site.ts CONTACT_ENDPOINT: NEXT_PUBLIC_CONTACT_ENDPOINT, else the
+ * API's public `POST {NEXT_PUBLIC_API_BASE}/site/enquiries`, which answers 202 and is rate limited to 5 messages per
+ * 10 minutes per IP) and only reports success on a 2xx answer; a 429 asks the visitor to try again later. The body is
+ * `{name, email, phone?, country?, topic, message, website}` where `website` is a visually hidden honeypot field that
+ * people leave empty and bots fill (the API accepts such posts with 202 but stores nothing). When no endpoint can be
+ * determined the form opens the visitor's email app with the message pre-filled; it never pretends a message was sent.
  */
 export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels; email: string; endpoint: string }) {
   const id = useId();
@@ -56,12 +63,27 @@ export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels
 
     if (endpoint) {
       setStatus({ kind: 'sending' });
+      const phone = data.phone?.trim() ?? '';
+      const country = data.country?.trim() ?? '';
+      const payload = {
+        name: data.name?.trim() ?? '',
+        email: data.email?.trim() ?? '',
+        ...(phone ? { phone } : {}),
+        ...(country ? { country } : {}),
+        topic: data.topic || 'other',
+        message: data.message?.trim() ?? '',
+        website: data.website ?? '',
+      };
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ ...data, topic: data.topic }),
+          body: JSON.stringify(payload),
         });
+        if (res.status === 429) {
+          setStatus({ kind: 'error', text: labels.tooMany });
+          return;
+        }
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
         setStatus({ kind: 'sent', text: labels.sent });
@@ -109,7 +131,7 @@ export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels
           <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-medium">
             {labels.name}
           </label>
-          <input id={`${id}-name`} name="name" autoComplete="name" required className={field} aria-invalid={!!errors.name} aria-describedby={errors.name ? `${id}-name-err` : undefined} />
+          <input id={`${id}-name`} name="name" autoComplete="name" required maxLength={200} className={field} aria-invalid={!!errors.name} aria-describedby={errors.name ? `${id}-name-err` : undefined} />
           {err('name')}
         </div>
         <div>
@@ -122,6 +144,7 @@ export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels
             type="email"
             autoComplete="email"
             required
+            maxLength={254}
             className={field}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? `${id}-email-err` : undefined}
@@ -132,13 +155,13 @@ export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels
           <label htmlFor={`${id}-phone`} className="mb-1.5 block text-sm font-medium">
             {labels.phone}
           </label>
-          <input id={`${id}-phone`} name="phone" type="tel" autoComplete="tel" className={field} />
+          <input id={`${id}-phone`} name="phone" type="tel" autoComplete="tel" maxLength={32} className={field} />
         </div>
         <div>
           <label htmlFor={`${id}-country`} className="mb-1.5 block text-sm font-medium">
             {labels.country}
           </label>
-          <input id={`${id}-country`} name="country" autoComplete="country-name" className={field} />
+          <input id={`${id}-country`} name="country" autoComplete="country-name" maxLength={100} className={field} />
         </div>
       </div>
       <div>
@@ -168,6 +191,11 @@ export function ContactForm({ labels, email, endpoint }: { labels: ContactLabels
           aria-describedby={errors.message ? `${id}-message-err` : undefined}
         />
         {err('message')}
+      </div>
+      {/* Honeypot: hidden from people and assistive tech; bots that fill every field reveal themselves. */}
+      <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">
+        <label htmlFor={`${id}-website`}>{labels.honeypot}</label>
+        <input id={`${id}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
       </div>
       <div className="flex flex-wrap items-center gap-4">
         <button type="submit" className={buttonClass('primary', 'md')} disabled={status.kind === 'sending'}>

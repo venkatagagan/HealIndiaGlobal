@@ -126,7 +126,11 @@ export type ApiErrorCode =
   | 'payment_error'
   | 'internal_error'
   | 'mfa_required'
-  | 'network_error';
+  | 'network_error'
+  /** 400 from /auth/google|apple when a new account would be created without `is_adult` */
+  | 'age_attestation_required'
+  /** 400 from /auth/google|apple: agent/hospital accounts must be 18+ */
+  | 'adult_required';
 
 /** {id, slug, name} reference used across many shapes. */
 export interface IdSlugName {
@@ -176,6 +180,10 @@ export interface UserOut {
   patient_profile_id?: Uuid | null;
   agent_id?: Uuid | null;
   hospitals?: UserHospitalRef[];
+  /** 18+ attestation given at sign-up; null = signed up before the attestation existed (CG-24) */
+  is_adult?: boolean | null;
+  /** true for a patient who said they are under 18 and has no guardian consent on file yet */
+  guardian_consent_required?: boolean;
 }
 
 export interface TokenOut {
@@ -203,6 +211,11 @@ export interface RegisterIn {
   /** hospital only */
   city?: string;
   accept_terms: true;
+  /**
+   * 18+ attestation (required). Patients may send `false` ("under 18, a parent or guardian will consent");
+   * agents and hospital users must send `true` (422 otherwise).
+   */
+  is_adult: boolean;
 }
 
 export interface LoginIn {
@@ -214,12 +227,19 @@ export interface LoginIn {
 export interface GoogleLoginIn {
   id_token: string;
   role?: RegistrableRole;
+  /**
+   * 18+ attestation. Optional, but when the call would create a new account and it is missing the API answers
+   * 400 `age_attestation_required` (ask the age question and retry); agent/hospital + `false` -> 400 `adult_required`.
+   */
+  is_adult?: boolean;
 }
 
 export interface GuestUpgradeIn {
   email: string;
   password: string;
   full_name: string;
+  /** 18+ attestation (required); `false` = under 18, a parent or guardian will give consent */
+  is_adult: boolean;
 }
 
 /** DELETE /auth/me (-> 204) - re-authentication for password accounts (+ authenticator code when MFA is on). */
@@ -1610,6 +1630,8 @@ export interface MessageOut {
   attachment_document_ids: Uuid[];
   created_at: IsoDateTime;
   edited_at?: IsoDateTime | null;
+  /** hidden by a moderator; only the sender and staff still receive it (CG-16) */
+  hidden?: boolean;
 }
 
 export interface ConversationOut {
@@ -3147,4 +3169,92 @@ export interface StaffMemberOut {
 export interface HealthOut {
   status: 'ok' | 'degraded' | 'error' | (string & {});
   checks?: Record<string, unknown>;
+}
+
+// -----------------------------------------------------------------------------------------------------------
+// Content reports & moderation (CG-16)
+// -----------------------------------------------------------------------------------------------------------
+export type ReportTargetType = 'message' | 'screening_result' | 'document_analysis' | 'review';
+export type ReportReason = 'spam' | 'abusive' | 'inappropriate' | 'inaccurate' | 'privacy' | 'other';
+export type ReportStatus = 'open' | 'actioned' | 'dismissed';
+export type ReportAction = 'dismiss' | 'hide_message' | 'warn' | 'suspend';
+
+/** POST /reports */
+export interface ReportCreateIn {
+  target_type: ReportTargetType;
+  target_id: Uuid;
+  reason: ReportReason;
+  /** max 1000 chars */
+  note?: string;
+}
+
+export interface ReportOut {
+  id: Uuid;
+  target_type: ReportTargetType;
+  target_id: Uuid;
+  reason: ReportReason;
+  note: string | null;
+  status: ReportStatus;
+  created_at: IsoDateTime;
+}
+
+export interface ReportUserRef {
+  id: Uuid;
+  full_name: string;
+  role: UserRole;
+}
+
+/** GET /admin/reports, GET /admin/reports/{id} */
+export interface AdminReportOut extends ReportOut {
+  reporter: ReportUserRef | null;
+  target_user: (ReportUserRef & { status: UserStatus }) | null;
+  /** message text / AI summary excerpt / review text (max 500 chars) */
+  excerpt: string | null;
+  conversation_id: Uuid | null;
+  message_hidden: boolean;
+  /** open reports on the same target */
+  report_count: number;
+  resolved_at: IsoDateTime | null;
+  resolved_by: ReportUserRef | null;
+  action: ReportAction | null;
+  resolution_note: string | null;
+}
+
+export interface AdminReportListParams extends PageParams {
+  status?: ReportStatus;
+  target_type?: ReportTargetType;
+}
+
+/** POST /admin/reports/{id}/resolve */
+export interface ReportResolveIn {
+  action: ReportAction;
+  /** max 1000 chars */
+  note?: string;
+}
+
+// -----------------------------------------------------------------------------------------------------------
+// Website enquiries (public contact form -> admin)
+// -----------------------------------------------------------------------------------------------------------
+export type EnquiryStatus = 'new' | 'in_progress' | 'closed';
+
+export interface EnquiryOut {
+  id: Uuid;
+  name: string;
+  email: string;
+  phone: string | null;
+  country: string | null;
+  topic: string | null;
+  message: string;
+  status: EnquiryStatus;
+  created_at: IsoDateTime;
+  handled_by: ReportUserRef | null;
+  handled_at: IsoDateTime | null;
+}
+
+export interface AdminEnquiryListParams extends PageParams {
+  status?: EnquiryStatus;
+}
+
+export interface EnquiryUpdateIn {
+  status: EnquiryStatus;
 }

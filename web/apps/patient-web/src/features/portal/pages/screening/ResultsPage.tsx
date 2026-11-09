@@ -10,7 +10,7 @@ import { HelplineList } from '../../components/SupportDialogs';
 import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
 import { filterParam, parseSort, toMinor, useDocumentTitle, useTableState } from '../../lib/shared';
-import { AmountRangeFilter, FilterBar, MultiSelectFilter, SelectFilter, ToggleFilter } from '@hig/shared/ui';
+import { AmountRangeFilter, FilterBar, MultiSelectFilter, ReportButton, SelectFilter, ToggleFilter } from '@hig/shared/ui';
 import { ListEmpty, ListSurface, SortMenu, countBy } from '../../components/listing';
 import {
   Alert,
@@ -300,6 +300,9 @@ export function ResultsPage() {
                   {ai.disclaimer ||
                     'This is not a medical diagnosis. It is a triage summary to help you find the right specialists. A qualified doctor will review your case.'}
                 </p>
+                <div className="flex justify-end">
+                  <ReportButton targetType="screening_result" targetId={s.id} label="Report this result" />
+                </div>
               </>
             ) : (
               <p className="text-sm text-muted">No summary is available for this screening.</p>

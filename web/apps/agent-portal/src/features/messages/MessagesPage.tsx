@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
-import { ArrowLeft, Headset, MessageSquare, Plus, Send } from 'lucide-react';
+import { ArrowLeft, EyeOff, Headset, MessageSquare, Plus, Send } from 'lucide-react';
+import { ReportButton } from '@hig/shared/ui';
 import {
   USER_ROLE_LABELS,
   errorMessage,
@@ -294,6 +295,21 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                     )}
                     <p className={cn('mt-1 text-right text-[10px]', mine ? 'text-white/70' : 'text-muted')}>{formatTime(m.created_at)}</p>
                   </div>
+                </div>
+                <div className={cn('flex flex-col', mine ? 'items-end' : 'items-start ps-10')}>
+                  {m.hidden && (
+                    <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted">
+                      <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                    </p>
+                  )}
+                  {!mine && (
+                    <ReportButton
+                      targetType="message"
+                      targetId={m.id}
+                      aria-label={`Report message from ${m.sender.full_name}`}
+                      className="mt-0.5 h-6 px-1.5 text-[11px]"
+                    />
+                  )}
                 </div>
               </div>
             );

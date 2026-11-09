@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
-import { ArrowLeft, LifeBuoy, Paperclip, Send, X } from 'lucide-react';
+import { ArrowLeft, EyeOff, LifeBuoy, Paperclip, Send, X } from 'lucide-react';
 import { documentsApi, errorMessage, type ConversationOut, type DocumentOut, type MessageOut } from '@hig/shared/api';
+import { ReportButton } from '@hig/shared/ui';
 import {
   useConversations,
   useCreateConversation,
@@ -282,7 +283,7 @@ function MessageBubble({ message, mine }: { message: MessageOut; mine: boolean }
     }
   }
   return (
-    <div className={cn('flex', mine ? 'justify-end' : 'justify-start')}>
+    <div className={cn('group flex flex-col', mine ? 'items-end' : 'items-start')}>
       <div
         className={cn(
           'max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm',
@@ -313,6 +314,20 @@ function MessageBubble({ message, mine }: { message: MessageOut; mine: boolean }
         ) : null}
         <p className={cn('mt-0.5 text-right text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>{formatTime(message.created_at)}</p>
       </div>
+      {message.hidden ? (
+        <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-500">
+          <EyeOff className="h-3 w-3" aria-hidden /> Hidden by moderators
+        </p>
+      ) : null}
+      {!mine ? (
+        <ReportButton
+          targetType="message"
+          targetId={message.id}
+          label="Report"
+          aria-label={`Report message from ${message.sender.full_name}`}
+          className="mt-0.5 h-6 px-1.5 text-[11px]"
+        />
+      ) : null}
     </div>
   );
 }

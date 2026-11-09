@@ -8,6 +8,7 @@ import { useCommonTranslation } from '../lib/i18n';
 import { Button } from '../ui/Button';
 import { Checkbox, FormField, Input } from '../ui/form';
 import { Tabs } from '../ui/Tabs';
+import { AgeAttestation, isAgeAnswerValid, type AgeAnswer } from './AgeAttestation';
 import { useAuth } from './AuthProvider';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,9 +29,14 @@ type FieldName =
   | 'agency_name'
   | 'hospital_name'
   | 'city'
-  | 'accept_terms';
+  | 'accept_terms'
+  | 'is_adult';
 
-type Values = Record<Exclude<FieldName, 'accept_terms'>, string> & { accept_terms: boolean };
+type Values = Record<Exclude<FieldName, 'accept_terms' | 'is_adult'>, string> & {
+  accept_terms: boolean;
+  /** CG-24 18+ attestation (null until answered) */
+  is_adult: AgeAnswer;
+};
 
 const EMPTY: Values = {
   full_name: '',
@@ -43,6 +49,7 @@ const EMPTY: Values = {
   hospital_name: '',
   city: '',
   accept_terms: false,
+  is_adult: null,
 };
 
 export interface RegisterFormProps {
@@ -74,7 +81,9 @@ function queryParam(...names: string[]): string | null {
 
 /**
  * Role-aware sign-up form for POST /auth/register (PLAN 8.1): common fields + agency name (agent) or
- * hospital name & city (hospital), referral code, terms acceptance. Uses the AuthProvider session.
+ * hospital name & city (hospital), referral code, terms acceptance and the 18+ attestation (CG-24: patients pick
+ * "18 or older" / "under 18 with guardian consent"; agents and hospital users must confirm they are 18 or older).
+ * Uses the AuthProvider session.
  */
 export function RegisterForm({
   roles = REGISTRABLE_ROLES,
@@ -123,6 +132,7 @@ export function RegisterForm({
       if (!values.hospital_name.trim()) next.hospital_name = t('register.errors.hospitalRequired');
       if (!values.city.trim()) next.city = t('register.errors.cityRequired');
     }
+    if (!isAgeAnswerValid(role, values.is_adult)) next.is_adult = t('register.errors.ageRequired');
     if (!values.accept_terms) next.accept_terms = t('register.errors.termsRequired');
     return next;
   };
@@ -132,13 +142,14 @@ export function RegisterForm({
     const found = validate();
     setErrors(found);
     setFormError(null);
-    if (Object.keys(found).length) return;
+    if (Object.keys(found).length || !isAgeAnswerValid(role, values.is_adult)) return;
     const body: RegisterIn = {
       email: values.email.trim(),
       password: values.password,
       full_name: values.full_name.trim(),
       role,
       accept_terms: true,
+      is_adult: values.is_adult,
     };
     if (values.phone.trim()) body.phone = values.phone.trim();
     if (values.country_code.trim()) body.country_code = values.country_code.trim().toUpperCase();
@@ -184,6 +195,8 @@ export function RegisterForm({
             onChange={(next) => {
               setRole(next);
               setErrors({});
+              // "under 18" is a patient-only answer
+              if (next !== 'patient' && values.is_adult === false) set('is_adult', null);
             }}
           />
           <p className="text-xs text-muted">{t(`register.roleHints.${role}`)}</p>
@@ -247,6 +260,13 @@ export function RegisterForm({
           <Input name="referral_code" value={values.referral_code} onChange={(e) => set('referral_code', e.target.value)} />
         </FormField>
       )}
+
+      <AgeAttestation
+        role={role}
+        value={values.is_adult}
+        onChange={(next) => set('is_adult', next)}
+        error={errors.is_adult}
+      />
 
       <div className="flex flex-col gap-1">
         <Checkbox

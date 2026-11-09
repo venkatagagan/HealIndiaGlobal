@@ -2,6 +2,9 @@ import { api } from '../client';
 import type {
   AccommodationProviderIn,
   AccommodationProviderOut,
+  AdminEnquiryListParams,
+  AdminReportListParams,
+  AdminReportOut,
   AdminAgentListParams,
   AdminAgentOut,
   AdminAgentUpdateIn,
@@ -24,6 +27,8 @@ import type {
   CulturalTipOut,
   DashboardOverview,
   DashboardPeriod,
+  EnquiryOut,
+  EnquiryUpdateIn,
   ExportParams,
   FxRateIn,
   FxRateOut,
@@ -34,6 +39,7 @@ import type {
   ProcedureIn,
   ProcedureOut,
   ReasonIn,
+  ReportResolveIn,
   RevenueReport,
   RevenueReportParams,
   ServiceProviderIn,
@@ -135,4 +141,15 @@ export const adminApi = {
   /** CSV stream download (saves the file) */
   exportCsv: (params: ExportParams) =>
     api.downloadAndSave('/admin/reports/export', `${params.type}-export.csv`, params),
+
+  // moderation queue (CG-16; roles admin, support, super_admin)
+  listContentReports: (params?: AdminReportListParams) => api.get<Page<AdminReportOut>>('/admin/reports', params),
+  getContentReport: (id: Uuid) => api.get<AdminReportOut>(`/admin/reports/${seg(id)}`),
+  /** 400 `invalid_action` (hide_message on a non-message, suspend with no non-staff author); 409 `already_resolved` */
+  resolveContentReport: (id: Uuid, body: ReportResolveIn) =>
+    api.post<AdminReportOut>(`/admin/reports/${seg(id)}/resolve`, body),
+
+  // website enquiries from the public contact form (roles admin, support, super_admin)
+  listEnquiries: (params?: AdminEnquiryListParams) => api.get<Page<EnquiryOut>>('/admin/enquiries', params),
+  updateEnquiry: (id: Uuid, body: EnquiryUpdateIn) => api.patch<EnquiryOut>(`/admin/enquiries/${seg(id)}`, body),
 };
