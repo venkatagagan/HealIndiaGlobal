@@ -420,10 +420,9 @@ the Data safety answers wrong either way.
    `com.googleusercontent.apps.heal-india-global` and no `GIDClientID`, so the Google button will fail on iOS (an
    Apple 2.1 rejection). Create the iOS OAuth client, set `GIDClientID` and the real reversed client ID, and add the
    iOS client ID to the backend's accepted `aud` list for `POST /auth/google`.
-3. **Release builds sign with the debug key.** `android/app/build.gradle.kts` has
-   `signingConfig = signingConfigs.getByName("debug")`, with a comment that CI overrides it. Enrol in Play App
-   Signing, create an upload key, have CI inject `key.properties`, and fail the release build if no upload key is
-   present.
+3. **Release builds sign with the debug key.** PARTLY DONE 2026-11-09: `build.gradle.kts` signs release builds with
+   the upload key from `android/key.properties` when present (steps in mobile/RELEASE.md), else the debug key.
+   Still to do: create the upload key and enrol in Play App Signing (apps team).
 4. **App IDs are permanent after first upload.** DONE 2026-11-09: both the Android `applicationId` and the iOS
    bundle ID are `com.healindiaglobal.app` (register this ID in Play Console and App Store Connect).
 5. `pubspec.yaml` `description: "A new Flutter project."`: replace it (cosmetic).

@@ -76,6 +76,10 @@ mobile/android/.gradle/
 mobile/android/local.properties
 mobile/android/key.properties
 mobile/android/app/upload-keystore.jks
+*.jks
+*.keystore
+*.mobileprovision
+*.p8
 mobile/android/**/GeneratedPluginRegistrant.java
 mobile/ios/Pods/
 mobile/ios/.symlinks/

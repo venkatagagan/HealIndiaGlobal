@@ -46,7 +46,7 @@ dart format lib test                  # page width 120 (analysis_options.yaml)
 Android: debug builds allow cleartext HTTP (`src/debug/AndroidManifest.xml`) for the local API;
 release is HTTPS-only. `minSdk` 24, `MainActivity` is a `FlutterFragmentActivity` (local_auth).
 iOS: minimum iOS 14 (`file_picker` requires it; set in `ios/Podfile` and the Xcode project). Face ID / photos /
-camera / microphone / location usage strings are in `Info.plist`. Building on a Mac: [IOS_BUILD.md](IOS_BUILD.md).
+camera / microphone / location usage strings are in `Info.plist`. Building on a Mac: [IOS_BUILD.md](IOS_BUILD.md). Store releases (signing, upload): [RELEASE.md](RELEASE.md).
 
 ### Sign in with Apple (iOS, App Store guideline 4.8; BACKLOG #16)
 
