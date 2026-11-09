@@ -307,7 +307,12 @@ async def test_free_intro_consultation_once(
     # upgrading keeps the same user: the intro call, screenings etc. stay with the account
     r = await client.post(
         f"{API}/auth/guest/upgrade",
-        json={"email": "amina.bello@example.test", "password": PASSWORD, "full_name": "Amina Bello"},
+        json={
+            "email": "amina.bello@example.test",
+            "password": PASSWORD,
+            "full_name": "Amina Bello",
+            "is_adult": True,
+        },
         headers=h,
     )
     assert r.status_code == 200, r.text
