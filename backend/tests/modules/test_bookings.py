@@ -438,6 +438,9 @@ async def test_expire_unpaid_bookings_job(db, client) -> None:
 
 async def test_bookings_list_filters_sort_and_status_counts(db, client, auth_headers) -> None:
     world = await make_world(db)
+    # Factory names come from a short list; the `q` check below needs a surname no other patient shares.
+    world.agent_patient.last_name = "Quillfeather"
+    await db.commit()
     staff = auth_headers(world.staff_user)
     other = await create_case(db, world.agent_patient, world.hospital, status="booked")
     soon = today_ist() + timedelta(days=3)
