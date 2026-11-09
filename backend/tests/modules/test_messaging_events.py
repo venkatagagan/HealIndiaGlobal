@@ -360,3 +360,32 @@ async def test_sos_created_notifies_coordinator_and_support(db, run_jobs, email_
     await publish(db, "sos.created", {"patient_id": str(world.patient.id), "lat": 1.0, "lng": 2.0})
     await db.commit()
     assert len(await _notes(db, "sos.created")) == 4
+
+
+async def test_sos_updated_tells_the_patient(db):
+    world = await build_case_world(db)
+    responder = await create_user(db, role="support", full_name="Priya Raman")
+    alert = SosAlert(patient_id=world.patient.id, case_id=world.case.id)
+    db.add(alert)
+    await db.commit()
+    base = {
+        "sos_id": str(alert.id),
+        "patient_id": str(world.patient.id),
+        "responder_user_id": str(responder.id),
+    }
+
+    for status in ("acknowledged", "acknowledged", "resolved"):  # repeated event: one notification only
+        await publish(db, "sos.updated", {**base, "status": status})
+        await db.commit()
+
+    notes = await _notes(db, "sos.updated")
+    assert _recipients(notes) == {world.patient.user_id}
+    assert [n.data["status"] for n in notes] == ["acknowledged", "resolved"]
+    assert notes[0].title == "Help is on the way" and "Priya Raman" in (notes[0].body or "")
+    assert notes[1].title == "Your SOS has been closed"
+    assert all(n.data["link"] == "/support" for n in notes)
+
+    # Status changes the patient does not need to hear about are ignored.
+    await publish(db, "sos.updated", {**base, "status": "open"})
+    await db.commit()
+    assert len(await _notes(db, "sos.updated")) == 2

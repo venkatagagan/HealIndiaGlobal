@@ -352,6 +352,8 @@ async def test_sos_flow(db, client, auth_headers, event_log: EventLog, realtime_
     r = await client.patch(url, json={"status": "acknowledged"}, headers=auth_headers(coordinator))
     assert r.status_code == 200 and r.json()["acknowledged_by"]["id"] == str(coordinator.id)
     assert any(uid == str(world.patient_user.id) and kind == "sos.updated" for uid, kind, _ in realtime_calls)
+    updated = event_log.of("sos.updated")
+    assert updated[-1]["status"] == "acknowledged" and updated[-1]["responder_user_id"] == str(coordinator.id)
     r = await client.patch(
         url, json={"status": "resolved", "note": "Ambulance sent"}, headers=auth_headers(coordinator)
     )

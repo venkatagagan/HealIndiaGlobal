@@ -772,6 +772,46 @@ async def on_sos_created(db: AsyncSession, payload: dict[str, Any]) -> None:
     )
 
 
+@subscribe("sos.updated")
+async def on_sos_updated(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Tell the patient that support has picked up their SOS, and when it is closed (USER_JOURNEYS §7)."""
+    sos_id = _uuid(payload, "sos_id")
+    patient_id = _uuid(payload, "patient_id")
+    status = payload.get("status")
+    if sos_id is None or patient_id is None or status not in ("acknowledged", "resolved"):
+        return
+    patient_user = (
+        await db.execute(select(PatientProfile.user_id).where(PatientProfile.id == patient_id))
+    ).scalar_one_or_none()
+    if patient_user is None:
+        return
+    responder_id = _uuid(payload, "responder_user_id")
+    responder = await db.get(User, responder_id) if responder_id else None
+    if status == "acknowledged":
+        who = (
+            f"{responder.full_name} from our support team"
+            if responder and responder.full_name
+            else "Our support team"
+        )
+        title = "Help is on the way"
+        body = f"{who} has seen your SOS and is handling it. Keep your phone with you."
+    else:
+        title = "Your SOS has been closed"
+        body = (
+            "Our support team marked your emergency alert as resolved. "
+            "If you still need help, send a new SOS or call the 24/7 helpline."
+        )
+    await notify(
+        db,
+        patient_user,
+        "sos.updated",
+        title,
+        body,
+        {"sos_id": str(sos_id), "status": status, "link": "/support"},
+        dedupe_key=f"sos.updated:{sos_id}:{status}",
+    )
+
+
 # ------------------------------------------------------------------------------------------------- messages
 @subscribe("message.created")
 async def on_message_created(db: AsyncSession, payload: dict[str, Any]) -> None:

@@ -790,6 +790,16 @@ async def update_sos(
     patient_user = (
         await db.execute(select(PatientProfile.user_id).where(PatientProfile.id == alert.patient_id))
     ).scalar_one_or_none()
+    await publish(
+        db,
+        "sos.updated",
+        {
+            "sos_id": str(alert.id),
+            "patient_id": str(alert.patient_id),
+            "status": body.status.value,
+            "responder_user_id": str(user.id),
+        },
+    )
     await db.commit()
     await db.refresh(alert)
     if patient_user is not None:
