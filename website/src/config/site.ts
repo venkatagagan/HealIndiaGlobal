@@ -44,8 +44,14 @@ export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() |
 export const PHONE_NUMBER = process.env.NEXT_PUBLIC_PHONE_NUMBER?.trim() || '';
 /** Credit link in the footer's bottom bar. */
 export const DEVELOPER = { name: 'DV Soft', url: 'https://dvsoft.in' } as const;
-/** Optional endpoint that accepts contact-form JSON (none exists in the backend yet; mailto: is used). */
-export const CONTACT_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT?.trim() || '';
+/** Public API base for browser calls, e.g. "/api/v1" (same origin behind the edge nginx) or an absolute URL. */
+const PUBLIC_API_BASE = (process.env.NEXT_PUBLIC_API_BASE?.trim() || '').replace(/\/+$/, '');
+/**
+ * Where the contact form POSTs its JSON: NEXT_PUBLIC_CONTACT_ENDPOINT when set, else the API's public
+ * `POST {NEXT_PUBLIC_API_BASE}/site/enquiries`. Empty only when neither is set (the form then opens a mailto: link).
+ */
+export const CONTACT_ENDPOINT =
+  process.env.NEXT_PUBLIC_CONTACT_ENDPOINT?.trim() || (PUBLIC_API_BASE ? `${PUBLIC_API_BASE}/site/enquiries` : '');
 
 /** Public social profiles (footer icons, Organization JSON-LD `sameAs`; comma separated). Fallback, see above. */
 export const SOCIAL_PROFILES = (process.env.NEXT_PUBLIC_SOCIAL_PROFILES || '')

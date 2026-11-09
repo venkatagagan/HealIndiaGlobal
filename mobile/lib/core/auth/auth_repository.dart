@@ -15,10 +15,14 @@ class AuthRepository {
 
   /// `POST /auth/register` for the public-door roles patient / agent / hospital (PLAN §3.1, §8.1).
   /// Agents need [agencyName]; hospital users need [hospitalName] (+ optional [city]). Returns 201 `TokenOut`.
+  ///
+  /// [isAdult] is the 18+ answer (CG-24, required by the API): agents and hospital users must be adults;
+  /// a patient may answer false ("under 18, a parent or guardian will give consent").
   Future<AuthSession> register({
     required String email,
     required String password,
     required String fullName,
+    required bool isAdult,
     UserRole role = UserRole.patient,
     String? phone,
     String? countryCode,
@@ -42,6 +46,7 @@ class AuthRepository {
         'hospital_name': role == UserRole.hospital ? hospitalName?.trim() : null,
         'city': role == UserRole.hospital ? city?.trim() : null,
         'accept_terms': acceptTerms,
+        'is_adult': isAdult,
       }, dropEmptyStrings: true),
       extra: ApiClient.noAuth,
     );
@@ -59,10 +64,13 @@ class AuthRepository {
   }
 
   /// `POST /auth/google` with a Google ID token (see `GoogleSignInService`).
-  Future<AuthSession> google({required String idToken}) async {
+  ///
+  /// [isAdult] is only needed when the call creates a new account: without it the API answers 400
+  /// `age_attestation_required` and the caller asks the 18+ question and retries (CG-24).
+  Future<AuthSession> google({required String idToken, bool? isAdult}) async {
     final data = await _api.post(
       '/auth/google',
-      data: {'id_token': idToken, 'role': UserRole.patient.json},
+      data: compactJson({'id_token': idToken, 'role': UserRole.patient.json, 'is_adult': isAdult}),
       extra: ApiClient.noAuth,
     );
     return _persist(data);
@@ -70,11 +78,13 @@ class AuthRepository {
 
   /// `POST /auth/apple` with a Sign in with Apple identity token (iOS/macOS; App Store guideline 4.8).
   /// [fullName] is only delivered by Apple on the very first authorization, so it is forwarded then.
+  /// [isAdult]: see [google].
   Future<AuthSession> apple({
     required String identityToken,
     required String nonce,
     String? authorizationCode,
     String? fullName,
+    bool? isAdult,
   }) async {
     final data = await _api.post(
       '/auth/apple',
@@ -84,6 +94,7 @@ class AuthRepository {
         'authorization_code': authorizationCode,
         'full_name': fullName,
         'role': UserRole.patient.json,
+        'is_adult': isAdult,
       }, dropEmptyStrings: true),
       extra: ApiClient.noAuth,
     );
@@ -120,10 +131,16 @@ class AuthRepository {
   }
 
   /// `POST /auth/guest/upgrade` — converts the current guest into a full account (keeps screenings).
-  Future<AuthSession> upgradeGuest({required String email, required String password, required String fullName}) async {
+  /// [isAdult] is the 18+ answer (CG-24, required by the API).
+  Future<AuthSession> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+    required bool isAdult,
+  }) async {
     final data = await _api.post(
       '/auth/guest/upgrade',
-      data: {'email': email.trim(), 'password': password, 'full_name': fullName.trim()},
+      data: {'email': email.trim(), 'password': password, 'full_name': fullName.trim(), 'is_adult': isAdult},
     );
     return _persist(data);
   }
@@ -135,7 +152,8 @@ class AuthRepository {
     return _tokens.cachedUser;
   }
 
-  /// `POST /auth/logout`, then clears local tokens even if the call fails.
+  /// `POST /auth/logout`, then clears local tokens even if the call fails. Unregister the push token
+  /// (`PushService.onSignedOut`) before calling this: it needs the session.
   Future<void> logout() async {
     try {
       await _tokens.load();
@@ -199,9 +217,24 @@ class AuthRepository {
   /// `POST /auth/resend-verification`.
   Future<void> resendVerification() => _api.post('/auth/resend-verification');
 
-  /// `POST /auth/devices` — register an FCM / APNs push token.
+  /// `POST /auth/devices` — legacy push token registration. New code uses [registerPushDevice].
   Future<void> registerDevice({required DevicePlatform platform, required String token}) =>
       _api.post('/auth/devices', data: {'platform': platform.json, 'token': token});
+
+  /// `POST /notifications/devices {platform, token, app_version?}` -> 204 (CG-15). Idempotent upsert:
+  /// re-registering the same token only refreshes it and moves it to the current user.
+  Future<void> registerPushDevice({required DevicePlatform platform, required String token, String? appVersion}) =>
+      _api.post(
+        '/notifications/devices',
+        data: compactJson({
+          'platform': platform.json,
+          'token': token,
+          'app_version': appVersion,
+        }, dropEmptyStrings: true),
+      );
+
+  /// `DELETE /notifications/devices?token=` -> 204. Call on sign-out while the session is still valid.
+  Future<void> unregisterPushDevice(String token) => _api.delete('/notifications/devices', query: {'token': token});
 
   /// `GET /auth/consents`.
   Future<List<Consent>> consents() async => parseList(await _api.get('/auth/consents'), Consent.fromJson);

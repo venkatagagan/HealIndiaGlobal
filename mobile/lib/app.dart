@@ -7,19 +7,24 @@ import 'core/network/realtime_service.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/brand_header.dart';
+import 'features/messages/logic/push_coordinator.dart';
 
 /// Root widget: theme, localization and go_router.
 class HealIndiaApp extends ConsumerWidget {
   const HealIndiaApp({super.key, this.enableRealtime = true});
 
-  /// Keeps the realtime WebSocket alive while a session exists (disabled in widget tests).
+  /// Keeps the realtime WebSocket alive while a session exists and connects push notifications
+  /// (disabled in widget tests).
   final bool enableRealtime;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
-    if (enableRealtime) ref.watch(realtimeServiceProvider);
+    if (enableRealtime) {
+      ref.watch(realtimeServiceProvider);
+      ref.watch(pushCoordinatorProvider); // no-op unless built with PUSH_ENABLED=true
+    }
 
     return MaterialApp.router(
       title: Brand.name,

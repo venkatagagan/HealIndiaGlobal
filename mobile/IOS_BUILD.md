@@ -10,7 +10,7 @@ This page is for whoever runs the iOS build from the `mobile` folder.
 | macOS + Xcode | Xcode 26 or newer (App Store uploads need the iOS 26 SDK) | `xcodebuild -version` |
 | Flutter | **3.44.0 stable** (the same version the app is built and tested with) | `flutter --version` |
 | CocoaPods | 1.16 or newer (Razorpay is still a CocoaPods plugin) | `pod --version` |
-| An iPhone simulator, or an iPhone with Developer Mode on | iOS 14 or newer | Xcode › Settings › Platforms |
+| An iPhone simulator, or an iPhone with Developer Mode on | iOS 15 or newer (Firebase needs 15) | Xcode › Settings › Platforms |
 
 Install Flutter 3.44.0 from https://docs.flutter.dev/install/archive, then run `flutter doctor` until the
 Xcode and CocoaPods lines are green.
@@ -51,6 +51,7 @@ Demo accounts (development database only, never production): `patient.us@healind
 | Sign in with Apple capability | Xcode › Signing & Capabilities › + Sign in with Apple; then build without `APPLE_SIGN_IN_ENABLED=false` |
 | Google sign-in on iOS | Create an iOS OAuth client; pass `--dart-define=GOOGLE_CLIENT_ID=…`; put the reversed client id in `ios/Runner/Info.plist` › `CFBundleURLSchemes` (replace the placeholder) |
 | Production API | `--dart-define=API_BASE_URL=https://<api-domain>/api/v1 --dart-define=APP_ENV=production` |
+| Push notifications (optional) | See "Push notifications (Firebase)" below; build with `--dart-define=PUSH_ENABLED=true` |
 | Store checklist | `docs/store/APP_STORE.md` and `docs/store/COMPLIANCE_GAPS.md` |
 
 Release build and upload:
@@ -63,11 +64,53 @@ flutter build ipa --release \
 # then upload build/ios/ipa/*.ipa with Xcode Organizer or the Transporter app
 ```
 
+## Push notifications (Firebase)
+
+Push is off unless the build has `--dart-define=PUSH_ENABLED=true`; without it nothing below is needed and the
+app never asks for the notification permission. The Firebase project, Android app and backend settings are in
+[RELEASE.md](RELEASE.md) "Push notifications (Firebase)". For iOS:
+
+1. **Firebase iOS app.** Firebase console › Project settings › Add app › iOS, bundle ID
+   `com.healindiaglobal.app`. Download `GoogleService-Info.plist`, copy it to `mobile/ios/Runner/`, then in
+   Xcode drag it into the Runner group with "Add to targets: Runner" ticked. The file is git-ignored; never
+   commit it. (Alternative: pass `FIREBASE_API_KEY`, `FIREBASE_APP_ID` (the iOS app ID),
+   `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID` and `FIREBASE_IOS_BUNDLE_ID=com.healindiaglobal.app`
+   as dart-defines.)
+2. **APNs auth key.** Apple Developer › Certificates, Identifiers & Profiles › Keys › + › tick **Apple Push
+   Notifications service (APNs)** › download the `.p8` file (it can be downloaded only once; keep it in the
+   password manager) and note the Key ID and your Team ID. In Firebase console › Project settings › Cloud
+   Messaging › Apple app configuration, upload the `.p8` with the Key ID and Team ID.
+3. **App ID.** In Identifiers › `com.healindiaglobal.app`, enable **Push Notifications**.
+4. **Xcode capabilities** (Runner target › Signing & Capabilities):
+   - **+ Push Notifications** (Xcode creates `Runner.entitlements` with `aps-environment`; the repo has no
+     entitlements file yet);
+   - **+ Background Modes** › tick **Remote notifications**.
+
+   Commit the resulting `Runner.entitlements`, `Info.plist` and `project.pbxproj` changes.
+5. `cd ios && pod install --repo-update`, then build:
+
+   ```bash
+   flutter build ipa --release \
+     --dart-define=APP_ENV=production \
+     --dart-define=API_BASE_URL=https://<api-domain>/api/v1 \
+     --dart-define=GOOGLE_CLIENT_ID=<ios-client-id>.apps.googleusercontent.com \
+     --dart-define=PUSH_ENABLED=true
+   ```
+
+6. Test on a **real iPhone**: sign in, tap **Turn on**, accept the system dialog, then trigger a chat message
+   with the app in the background and tap the notification.
+7. **App Store Connect › App Privacy:** add **Device ID** (app functionality, linked to the user, not used for
+   tracking) once a push-enabled build is submitted. Notification texts are generic and never contain health
+   details.
+
+`Info.plist` sets `FirebaseMessagingAutoInitEnabled` to false, so no push token is created before the user
+signs in and turns notifications on.
+
 ## 5. If the build fails
 
 | Message | Fix |
 |---|---|
-| `requires a higher minimum iOS deployment version` | The app targets iOS 14 (`ios/Podfile` and the Xcode project). Run `cd ios && pod install --repo-update`, then build again. |
+| `requires a higher minimum iOS deployment version` | The app targets iOS 15 (`ios/Podfile` and the Xcode project; Firebase needs 15). Run `cd ios && pod install --repo-update`, then build again. |
 | `CocoaPods not installed` / `pod: command not found` | `brew install cocoapods` (or `sudo gem install cocoapods`). |
 | `Generated.xcconfig must exist` | Run `flutter pub get` in `mobile` first. |
 | Signing errors | Pick a Team in Xcode (step 3). A free Apple ID can run on your own iPhone for 7 days. |

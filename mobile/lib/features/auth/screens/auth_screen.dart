@@ -58,9 +58,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     }
   }
 
-  Future<void> _google() => _run(_Busy.google, () => ref.read(authControllerProvider.notifier).signInWithGoogle());
+  /// Asked when Google / Apple sign-in creates a new account (CG-24).
+  Future<bool?> _askAge({required bool adultOnly}) async =>
+      mounted ? showAgeAttestationDialog(context, adultOnly: adultOnly) : null;
 
-  Future<void> _apple() => _run(_Busy.apple, () => ref.read(authControllerProvider.notifier).signInWithApple());
+  Future<void> _google() =>
+      _run(_Busy.google, () => ref.read(authControllerProvider.notifier).signInWithGoogle(askAge: _askAge));
+
+  Future<void> _apple() =>
+      _run(_Busy.apple, () => ref.read(authControllerProvider.notifier).signInWithApple(askAge: _askAge));
 
   Future<void> _guest() => _run(_Busy.guest, () async {
     final auth = ref.read(authStateProvider);

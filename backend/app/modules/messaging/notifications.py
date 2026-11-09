@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.jobs import enqueue
 from app.models import Notification, User
+from app.modules.messaging import push
 from app.modules.messaging.outbox import queue_realtime
 from app.modules.messaging.policies import is_active_user
 from app.modules.messaging.schemas import NotificationOut
@@ -49,6 +50,21 @@ EMAIL_KINDS: frozenset[str] = frozenset(
         "payout.processed",
         "payout.failed",
         "sos.created",
+        # journey gaps (CG-30)
+        "quote.rejected",
+        "quote.expired",
+        "case.coordinator_assigned",
+        "consultation.scheduled",
+        "consultation.rescheduled",
+        "consultation.cancelled",
+        "travel.status_changed",
+        "installment.due",
+        "installment.overdue",
+        "settlement_batch.pending_approval",
+        "screening.emergency",
+        # moderation / website
+        "moderation.warning",
+        "site_enquiry.created",
     }
 )
 
@@ -59,6 +75,7 @@ def notification_out(n: Notification) -> NotificationOut:
     data = dict(n.data or {})
     data.pop(DEDUPE_FIELD, None)
     data.pop("emailed_at", None)
+    data.pop("pushed_devices", None)
     return NotificationOut(
         id=n.id,
         kind=n.kind,
@@ -123,6 +140,13 @@ async def notify(
             "messaging.send_email",
             {"notification_id": str(notification.id)},
             dedupe_key=f"notif-email:{notification.id}",
+        )
+    if push.push_configured() and kind not in push.PUSH_SKIP_KINDS and await push.has_active_device(db, uid):
+        await enqueue(
+            db,
+            push.PUSH_TASK,
+            {"notification_id": str(notification.id)},
+            dedupe_key=f"notif-push:{notification.id}",
         )
     return notification
 

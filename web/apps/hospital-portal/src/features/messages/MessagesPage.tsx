@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ArrowLeft, MessageSquare, Send, Wifi, WifiOff } from 'lucide-react';
+import { ArrowLeft, EyeOff, MessageSquare, Send, Wifi, WifiOff } from 'lucide-react';
+import { ReportButton } from '@hig/shared/ui';
 import {
   USER_ROLE_LABELS,
   errorMessage,
@@ -210,6 +211,21 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                         {toDate(m.created_at)?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
+                  </div>
+                  <div className={cn('flex flex-col', mine ? 'items-end' : 'items-start')}>
+                    {m.hidden && (
+                      <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-500">
+                        <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                      </p>
+                    )}
+                    {!mine && (
+                      <ReportButton
+                        targetType="message"
+                        targetId={m.id}
+                        aria-label={`Report message from ${m.sender.full_name}`}
+                        className="mt-0.5 h-6 px-1.5 text-[11px]"
+                      />
+                    )}
                   </div>
                 </div>
               );

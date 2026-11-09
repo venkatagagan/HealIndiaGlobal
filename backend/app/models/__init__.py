@@ -29,7 +29,14 @@ from app.models.hospitals import (
 from app.models.identity import AuditLog, Consent, DeviceToken, RefreshToken, User, VerificationToken
 from app.models.jobs import BackgroundJob
 from app.models.ledger import LEDGER_DDL, LEDGER_DROP_DDL, LedgerAccount, LedgerEntry, LedgerTransaction
-from app.models.messaging import Conversation, ConversationParticipant, Message, Notification
+from app.models.messaging import (
+    ContentReport,
+    Conversation,
+    ConversationParticipant,
+    Message,
+    Notification,
+    SiteEnquiry,
+)
 from app.models.patients import PatientCompanion, PatientProfile, SavedItem
 from app.models.payments import Installment, Invoice, Payment, PaymentOrder, Refund, WebhookEvent
 from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
@@ -73,7 +80,9 @@ __all__ = [
     "CommissionRule",
     "Consent",
     "Consultation",
+    "ContentReport",
     "Conversation",
+    "SiteEnquiry",
     "ConversationParticipant",
     "CostBenchmark",
     "CreatedAtMixin",

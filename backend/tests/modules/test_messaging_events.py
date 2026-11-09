@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
+from uuid import uuid4
 
 import pytest
 from sqlalchemy import select
@@ -12,6 +13,10 @@ from app.core import realtime
 from app.core.enums import CaseStatus, UserRole
 from app.core.events import publish
 from app.models import (
+    Consultation,
+    Conversation,
+    ConversationParticipant,
+    Installment,
     Notification,
     Payment,
     Payout,
@@ -23,7 +28,14 @@ from app.models import (
 from app.models.sequences import next_number
 from app.modules.messaging import handlers
 from app.modules.messaging.outbox import drain_background
-from tests.factories import create_booking, create_payment_order, create_quote, create_user
+from tests.factories import (
+    create_booking,
+    create_doctor,
+    create_payment_order,
+    create_quote,
+    create_specialty,
+    create_user,
+)
 from tests.modules.messaging_helpers import build_case_world
 
 
@@ -389,3 +401,255 @@ async def test_sos_updated_tells_the_patient(db):
     await publish(db, "sos.updated", {**base, "status": "open"})
     await db.commit()
     assert len(await _notes(db, "sos.updated")) == 2
+
+
+# ------------------------------------------------------------------------------- journey gaps (CG-30)
+async def test_travel_status_changed_notifies_patient_side_not_actor(db):
+    world = await build_case_world(db)
+    payload = {
+        "case_id": str(world.case.id),
+        "item_type": "visa",
+        "item_id": str(uuid4()),
+        "from_status": "applied",
+        "to_status": "approved",
+        "actor_user_id": str(world.owner.id),
+    }
+    await publish(db, "travel.status_changed", payload)
+    await publish(db, "travel.status_changed", payload)  # idempotent
+    await db.commit()
+    notes = await _notes(db, "travel.status_changed")
+    assert _recipients(notes) == {world.patient_user.id, world.agent_user.id}
+    assert len(notes) == 2
+    assert "Your medical visa has been approved" in (notes[0].body or "")
+
+    # The patient's own change does not notify the patient.
+    pickup_payload = {
+        **payload,
+        "item_type": "travel",
+        "kind": "airport_pickup",
+        "item_id": str(uuid4()),
+        "to_status": "confirmed",
+        "actor_user_id": str(world.patient_user.id),
+    }
+    await publish(db, "travel.status_changed", pickup_payload)
+    await publish(db, "travel.status_changed", {**payload, "to_status": "not_a_status"})  # ignored
+    await db.commit()
+    pickup = [n for n in await _notes(db, "travel.status_changed") if n.data["status"] == "confirmed"]
+    assert _recipients(pickup) == {world.agent_user.id}
+    assert "airport pickup is confirmed" in (pickup[0].body or "")
+
+
+async def _consultation(db, world, **fields):
+    specialty = await create_specialty(db)
+    doctor = await create_doctor(db, world.hospital, specialty)
+    consultation = Consultation(
+        case_id=world.case.id,
+        doctor_id=doctor.id,
+        patient_id=world.patient.id,
+        mode="video",
+        status=fields.pop("status", "scheduled"),
+        scheduled_at=datetime(2026, 12, 1, 10, 0, tzinfo=UTC),
+        meeting_url="https://meet.example.test/abc",
+        **fields,
+    )
+    db.add(consultation)
+    await db.commit()
+    return consultation
+
+
+async def test_consultation_scheduled_notifies_all_parties_except_actor(db):
+    world = await build_case_world(db)
+    consultation = await _consultation(db, world)
+    payload = {"consultation_id": str(consultation.id), "actor_user_id": str(world.coordinator_member.id)}
+    await publish(db, "consultation.scheduled", payload)
+    await publish(db, "consultation.scheduled", payload)
+    await db.commit()
+    notes = await _notes(db, "consultation.scheduled")
+    assert _recipients(notes) == {world.patient_user.id, world.agent_user.id, world.owner.id}
+    assert all("01 Dec 2026, 10:00 UTC" in (n.body or "") for n in notes)
+    assert notes[0].data["consultation_id"] == str(consultation.id)
+
+
+async def test_consultation_rescheduled_notifies_again_per_new_time(db):
+    world = await build_case_world(db)
+    consultation = await _consultation(db, world)
+    await publish(
+        db, "consultation.rescheduled", {"consultation_id": str(consultation.id), "scheduled_at": "a"}
+    )
+    consultation.scheduled_at = datetime(2026, 12, 2, 9, 30, tzinfo=UTC)
+    await db.commit()
+    await publish(
+        db, "consultation.rescheduled", {"consultation_id": str(consultation.id), "scheduled_at": "b"}
+    )
+    await db.commit()
+    notes = await _notes(db, "consultation.rescheduled")
+    # Two changes -> two notifications per party (patient, agent, owner, coordinator member).
+    assert len(notes) == 8
+    assert any("02 Dec 2026, 09:30 UTC" in (n.body or "") for n in notes)
+
+
+async def test_consultation_cancelled_notifies_parties(db):
+    world = await build_case_world(db)
+    consultation = await _consultation(db, world, status="cancelled")
+    await publish(
+        db,
+        "consultation.cancelled",
+        {"consultation_id": str(consultation.id), "actor_user_id": str(world.patient_user.id)},
+    )
+    await publish(db, "consultation.cancelled", {"consultation_id": str(uuid4())})  # unknown: ignored
+    await db.commit()
+    notes = await _notes(db, "consultation.cancelled")
+    assert _recipients(notes) == {world.agent_user.id, world.owner.id, world.coordinator_member.id}
+
+
+async def test_case_coordinator_assigned_tells_patient_side_and_coordinator(db):
+    world = await build_case_world(db)
+    coordinator = await create_user(db, role="support", full_name="Priya Raman")
+    world.case.coordinator_user_id = coordinator.id
+    await db.commit()
+    payload = {"case_id": str(world.case.id), "coordinator_user_id": str(coordinator.id)}
+    await publish(db, "case.coordinator_assigned", payload)
+    await publish(db, "case.coordinator_assigned", payload)
+    await db.commit()
+    notes = await _notes(db, "case.coordinator_assigned")
+    assert _recipients(notes) == {world.patient_user.id, world.agent_user.id, coordinator.id}
+    assert len(notes) == 3
+    patient_note = next(n for n in notes if n.user_id == world.patient_user.id)
+    assert "Priya Raman" in (patient_note.body or "")
+    participants = (
+        (
+            await db.execute(
+                select(ConversationParticipant.user_id)
+                .join(Conversation, Conversation.id == ConversationParticipant.conversation_id)
+                .where(Conversation.case_id == world.case.id)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    assert coordinator.id in participants
+
+
+async def test_quote_rejected_notifies_hospital(db):
+    world = await build_case_world(db)
+    quote = await create_quote(db, world.case, status="rejected")
+    payload = {"quote_id": str(quote.id), "case_id": str(world.case.id), "reason": "Too expensive"}
+    await publish(db, "quote.rejected", payload)
+    await publish(db, "quote.rejected", payload)
+    await db.commit()
+    notes = await _notes(db, "quote.rejected")
+    assert _recipients(notes) == {world.owner.id, world.coordinator_member.id}
+    assert "Too expensive" in (notes[0].body or "")
+
+
+async def test_quote_expired_notifies_hospital_and_patient(db):
+    world = await build_case_world(db)
+    quote = await create_quote(db, world.case, status="expired")
+    await publish(db, "quote.expired", {"quote_id": str(quote.id), "case_id": str(world.case.id)})
+    await db.commit()
+    notes = await _notes(db, "quote.expired")
+    assert _recipients(notes) == {
+        world.owner.id,
+        world.coordinator_member.id,
+        world.patient_user.id,
+        world.agent_user.id,
+    }
+    patient_note = next(n for n in notes if n.user_id == world.patient_user.id)
+    assert world.hospital.name in patient_note.title
+
+
+async def _installment(db, world, **fields):
+    booking = await create_booking(db, world.case)
+    installment = Installment(
+        booking_id=booking.id,
+        seq=2,
+        due_date=fields.pop("due_date", date(2026, 12, 1)),
+        amount_minor=50_000_00,
+        currency="INR",
+        status=fields.pop("status", "due"),
+    )
+    db.add(installment)
+    await db.commit()
+    return booking, installment
+
+
+async def test_installment_due_reminds_patient_and_agent_once_per_day(db):
+    world = await build_case_world(db)
+    booking, installment = await _installment(db, world)
+    base = {"installment_id": str(installment.id), "days_left": 3}
+    for day in ("2026-11-28", "2026-11-28", "2026-11-29"):
+        await publish(db, "installment.due", {**base, "day": day})
+        await db.commit()
+    notes = await _notes(db, "installment.due")
+    assert _recipients(notes) == {world.patient_user.id, world.agent_user.id}
+    assert len(notes) == 4  # two days x two recipients
+    assert "50,000.00" in (notes[0].body or "") and booking.booking_number in (notes[0].body or "")
+    assert notes[0].data["link"] == f"/pay/{booking.id}"
+
+
+async def test_installment_overdue_notifies_and_skips_paid(db):
+    world = await build_case_world(db)
+    _booking, installment = await _installment(db, world, status="overdue")
+    payload = {"installment_id": str(installment.id), "day": "2026-12-02"}
+    await publish(db, "installment.overdue", payload)
+    await publish(db, "installment.overdue", payload)
+    await db.commit()
+    assert len(await _notes(db, "installment.overdue")) == 2
+    installment.status = "paid"
+    await db.commit()
+    await publish(db, "installment.overdue", {**payload, "day": "2026-12-09"})
+    await db.commit()
+    assert len(await _notes(db, "installment.overdue")) == 2
+
+
+async def test_settlement_batch_pending_approval_notifies_other_finance_users(db):
+    world = await build_case_world(db)
+    maker = await create_user(db, role="finance")
+    checker = await create_user(db, role="finance")
+    batch = SettlementBatch(
+        batch_number=await next_number(db, "batch"),
+        payee_type="hospital",
+        payee_id=world.hospital.id,
+        status="pending_approval",
+        items_count=3,
+        total_net_minor=1_00_000_00,
+        created_by=maker.id,
+    )
+    db.add(batch)
+    await db.commit()
+    await publish(db, "settlement_batch.pending_approval", {"batch_id": str(batch.id)})
+    await publish(db, "settlement_batch.pending_approval", {"batch_id": str(batch.id)})
+    await db.commit()
+    notes = await _notes(db, "settlement_batch.pending_approval")
+    assert _recipients(notes) == {checker.id}
+    assert batch.batch_number in notes[0].title and "1,00,000.00" in (notes[0].body or "")
+
+
+async def test_emergency_screening_alerts_support_and_coordinator(db, run_jobs, email_outbox):
+    world = await build_case_world(db)
+    support = await create_user(db, role="support")
+    coordinator = await create_user(db, role="admin")
+    world.case.coordinator_user_id = coordinator.id
+    screening = Screening(
+        patient_id=world.patient.id, status="completed", urgency="emergency", completed_at=datetime.now(UTC)
+    )
+    db.add(screening)
+    await db.commit()
+    payload = {"screening_id": str(screening.id), "patient_id": str(world.patient.id)}
+    await publish(db, "screening.completed", payload)
+    await publish(db, "screening.completed", payload)
+    await db.commit()
+    alerts = await _notes(db, "screening.emergency")
+    assert _recipients(alerts) == {support.id, coordinator.id}
+    assert all(n.title.startswith("Urgent") for n in alerts)
+    assert world.patient_user.id in _recipients(await _notes(db, "screening.completed"))
+    await run_jobs()
+    assert len([m for m in email_outbox if m["subject"].startswith("Urgent: possible emergency")]) == 2
+
+    # Non-emergency screenings do not alert support.
+    calm = Screening(patient_id=world.patient.id, status="completed", urgency="routine")
+    db.add(calm)
+    await db.commit()
+    await publish(db, "screening.completed", {"screening_id": str(calm.id)})
+    await db.commit()
+    assert len(await _notes(db, "screening.emergency")) == 2

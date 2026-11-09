@@ -2125,6 +2125,43 @@ async def mark_overdue_installments(db: AsyncSession, today: date | None = None)
     return int(getattr(result, "rowcount", 0) or 0)
 
 
+OVERDUE_REMINDER_EVERY_DAYS = 7
+
+
+async def publish_installment_reminders(db: AsyncSession, today: date | None = None) -> int:
+    """Periodic (CG-30): ``installment.due`` when an open instalment is due in exactly
+    ``installment_reminder_days`` days or today, and ``installment.overdue`` the day after its due date and
+    then every 7 days while unpaid. Payloads carry ``day`` so subscribers dedupe per instalment per day."""
+    day = today or _now().date()
+    lead = int(await get_setting(db, "installment_reminder_days", 3) or 0)
+    rows = (
+        await db.execute(
+            select(Installment.id, Installment.booking_id, Installment.due_date, Installment.status).where(
+                Installment.status.in_([InstallmentStatus.DUE, InstallmentStatus.OVERDUE])
+            )
+        )
+    ).all()
+    published = 0
+    for installment_id, booking_id, due_date, status in rows:
+        payload = {
+            "installment_id": str(installment_id),
+            "booking_id": str(booking_id),
+            "due_date": due_date.isoformat(),
+            "day": day.isoformat(),
+        }
+        days_left = (due_date - day).days
+        if days_left >= 0:
+            if InstallmentStatus(status) == InstallmentStatus.DUE and (
+                days_left == 0 or (lead > 0 and days_left == lead)
+            ):
+                await publish(db, "installment.due", {**payload, "days_left": days_left})
+                published += 1
+        elif (-days_left - 1) % OVERDUE_REMINDER_EVERY_DAYS == 0:
+            await publish(db, "installment.overdue", {**payload, "days_overdue": -days_left})
+            published += 1
+    return published
+
+
 # ================================================================================================ queries
 def _proof_document_id(order: PaymentOrder) -> uuid.UUID | None:
     proof = (order.meta or {}).get("bank_transfer_proof")

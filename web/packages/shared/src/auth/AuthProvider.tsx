@@ -65,8 +65,11 @@ export interface AuthContextValue {
   hasRole: (...roles: (UserRole | readonly UserRole[])[]) => boolean;
   /** login(email, password, otp?) or login({ email, password, otp_code }); rejects with ApiError ("mfa_required") */
   login: (emailOrBody: string | LoginIn, password?: string, otp?: string) => Promise<UserOut>;
-  /** public door only: POST /auth/google */
-  loginWithGoogle: (idToken: string, role?: RegistrableRole) => Promise<UserOut>;
+  /**
+   * public door only: POST /auth/google. Pass `isAdult` (18+ attestation) when retrying after a 400
+   * `age_attestation_required` (see `isAgeAttestationRequired`).
+   */
+  loginWithGoogle: (idToken: string, role?: RegistrableRole, isAdult?: boolean) => Promise<UserOut>;
   /** public door only: POST /auth/guest (patient guest session) */
   guest: () => Promise<UserOut>;
   /** POST /auth/guest/upgrade */
@@ -256,9 +259,13 @@ export function AuthProvider({
   );
 
   const loginWithGoogle = useCallback(
-    async (idToken: string, role?: RegistrableRole) => {
+    async (idToken: string, role?: RegistrableRole, isAdult?: boolean) => {
       publicOnly(door, 'Google sign-in');
-      const token = await authApi.google(role ? { id_token: idToken, role } : { id_token: idToken });
+      const token = await authApi.google({
+        id_token: idToken,
+        ...(role ? { role } : {}),
+        ...(isAdult !== undefined ? { is_adult: isAdult } : {}),
+      });
       return acceptToken(token);
     },
     [acceptToken, door],

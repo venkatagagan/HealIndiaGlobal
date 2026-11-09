@@ -75,6 +75,10 @@ class User(UUIDPkMixin, TimestampMixin, Base):
     )
     # When the "your inactive account will be erased" notice was sent (cleared on sign-in).
     inactivity_notice_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Age attestation at sign-up (CG-24): True = "I am 18 or older"; False = a patient under 18 whose parent
+    # or guardian must consent (the guardian consent itself belongs to the privacy module); NULL = signed up
+    # before the attestation existed.
+    is_adult: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
     patient_profile: Mapped[PatientProfile | None] = relationship(
         "PatientProfile", back_populates="user", uselist=False, lazy="raise"
@@ -143,7 +147,10 @@ class DeviceToken(UUIDPkMixin, TimestampMixin, Base):
     user_id: Mapped[uuid.UUID] = fk("users.id", ondelete="CASCADE")
     platform: Mapped[DevicePlatform] = mapped_column(sa_enum(DevicePlatform), nullable=False)
     token: Mapped[str] = mapped_column(String(512), nullable=False, unique=True)
+    app_version: Mapped[str | None] = mapped_column(String(32))
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Set when FCM rejects the token as invalid; revoked tokens get no pushes until registered again.
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class AuditLog(UUIDPkMixin, CreatedAtMixin, Base):

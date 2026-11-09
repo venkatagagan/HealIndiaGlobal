@@ -6,6 +6,7 @@ import type { Uuid } from '../api/types';
 import { cn } from '../lib/cn';
 import { Button } from '../ui/Button';
 import { ConfirmDialog } from '../ui/overlay';
+import { ReportButton } from '../ui/ReportContent';
 import { DocumentAnalysisCard } from './DocumentAnalysisCard';
 import {
   isAnalysisPending,
@@ -238,7 +239,12 @@ function ReviewForm({
             <Pill className="bg-neutral-soft text-neutral-ink">{t('pagesAnalyzed', { n: analysis.quality.pages_analyzed })}</Pill>
           ) : null}
         </div>
-        <p className="text-sm text-muted">{t('reviewHint')}</p>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <p className="text-sm text-muted">{t('reviewHint')}</p>
+          {audience === 'patient' && (
+            <ReportButton targetType="document_analysis" targetId={analysis.id} label="Report this result" />
+          )}
+        </div>
       </header>
 
       {redFlags.length > 0 && (

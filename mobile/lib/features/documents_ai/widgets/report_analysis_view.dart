@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
 import '../data/document_analysis_repository.dart';
 import '../models/document_analysis.dart';
@@ -173,6 +175,7 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
               ),
             ),
           ReportAnalysisCard(analysis: a),
+          _ReportResultButton(analysisId: a.id),
         ],
       );
     }
@@ -230,6 +233,7 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
                 textAlign: TextAlign.center,
                 style: context.text.labelSmall?.copyWith(color: context.palette.textMuted),
               ),
+              _ReportResultButton(analysisId: a.id),
             ],
           ),
         ),
@@ -413,4 +417,25 @@ class _Problem extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// "Report this result" for the AI reading (CG-16, `target_type` `document_analysis`).
+class _ReportResultButton extends StatelessWidget {
+  const _ReportResultButton({required this.analysisId});
+
+  final String analysisId;
+
+  @override
+  Widget build(BuildContext context) {
+    if (analysisId.isEmpty) return const SizedBox.shrink();
+    return Center(
+      child: TextButton.icon(
+        key: const Key('report-document-analysis'),
+        style: TextButton.styleFrom(foregroundColor: context.palette.textSecondary),
+        onPressed: () => showReportSheet(context, type: ReportTargetType.documentAnalysis, targetId: analysisId),
+        icon: const Icon(Icons.flag_outlined, size: 16),
+        label: const Text('Report this result'),
+      ),
+    );
+  }
 }

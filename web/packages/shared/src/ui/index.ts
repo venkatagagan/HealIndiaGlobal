@@ -167,6 +167,15 @@ export {
 } from './FileUpload';
 export { normalizeTone, type SemanticTone, type Tone, type ToneAlias } from './tone';
 export {
+  REPORT_SENT_MESSAGE,
+  ReportButton,
+  ReportContentDialog,
+  reportReasonLabel,
+  reportReasonsFor,
+  type ReportButtonProps,
+  type ReportContentDialogProps,
+} from './ReportContent';
+export {
   EmergencyAckPanel,
   PatientUpgradeRequiredNotice,
   isEmergencyAckError,

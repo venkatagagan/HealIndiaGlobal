@@ -32,6 +32,7 @@ export async function completeGuestUpgrade(
   await form.getByLabel(/^email/i).fill(input.email);
   await form.getByLabel(/^password/i).fill(input.password);
   await form.getByLabel(/^confirm password/i).fill(input.password);
+  await form.getByRole('radio', { name: /^i am 18 or older$/i }).check();
   const upgraded = waitForApi(page, 'POST', /\/api\/v1\/auth\/guest\/upgrade$/);
   await form.getByRole('button', { name: /^create account$/i }).click();
   await upgraded;

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { UserPlus } from 'lucide-react';
 import { errorMessage, fieldErrors } from '@hig/shared/api';
+import { AgeAttestation } from '@hig/shared/auth';
 import { useUpgradeGuest } from '../lib/session';
 import { Button, Field, Input, Modal } from '../ui/primitives';
 
@@ -19,29 +20,41 @@ const schema = z
       .regex(/[A-Za-z]/, 'Include at least one letter')
       .regex(/\d/, 'Include at least one number'),
     confirm: z.string(),
+    /** CG-24: 18 or older (true) / under 18 with a parent or guardian's consent (false) */
+    is_adult: z
+      .boolean()
+      .nullable()
+      .refine((v) => v !== null, 'Please confirm your age'),
   })
   .refine((v) => v.password === v.confirm, { path: ['confirm'], message: 'Passwords do not match' });
 
-type FormValues = z.infer<typeof schema>;
+/** form state: `is_adult` starts unanswered (null); the schema only lets a boolean through */
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const upgrade = useUpgradeGuest();
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, unknown, FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { full_name: '', email: '', password: '', confirm: '' },
+    defaultValues: { full_name: '', email: '', password: '', confirm: '', is_adult: null },
   });
   const { errors } = form.formState;
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      await upgrade.mutateAsync({ full_name: values.full_name, email: values.email, password: values.password });
+      await upgrade.mutateAsync({
+        full_name: values.full_name,
+        email: values.email,
+        password: values.password,
+        is_adult: values.is_adult,
+      });
       toast.success('Your account is ready. Everything you did as a guest has been kept.');
       form.reset();
       onClose();
     } catch (err) {
       const fields = fieldErrors(err);
       let mapped = false;
-      for (const key of ['full_name', 'email', 'password'] as const) {
+      for (const key of ['full_name', 'email', 'password', 'is_adult'] as const) {
         if (fields[key]) {
           form.setError(key, { message: fields[key] });
           mapped = true;
@@ -99,6 +112,19 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
             {...form.register('confirm')}
           />
         </Field>
+        <Controller
+          control={form.control}
+          name="is_adult"
+          render={({ field }) => (
+            <AgeAttestation
+              role="patient"
+              name="gu-is-adult"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.is_adult?.message}
+            />
+          )}
+        />
       </form>
     </Modal>
   );

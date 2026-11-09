@@ -599,6 +599,10 @@ async def test_apple_sign_up_sign_in_and_rejections(client, db, make_user, monke
         "role": "agent",
         "agency_name": "Lagos Care Travel",
     }
+    # CG-24: creating the account needs the age answer (the same identity token + nonce are then retried).
+    r = await client.post(f"{API}/auth/apple", json=body, headers=MOBILE)
+    assert r.status_code == 400 and r.json()["error"]["code"] == "age_attestation_required", r.text
+    body["is_adult"] = True
     r = await client.post(f"{API}/auth/apple", json=body, headers=MOBILE)
     assert r.status_code == 201, r.text
     out = r.json()
@@ -675,7 +679,12 @@ async def test_apple_refresh_token_stored_and_revoked_on_deletion(client, db, mo
 
     monkeypatch.setattr(apple_module, "_post_apple", fake_post)
     nonce = "raw-nonce-revoke-1"
-    body = {"identity_token": _apple_token(key, nonce), "nonce": nonce, "authorization_code": "code-1"}
+    body = {
+        "identity_token": _apple_token(key, nonce),
+        "nonce": nonce,
+        "authorization_code": "code-1",
+        "is_adult": True,
+    }
     r = await client.post(f"{API}/auth/apple", json=body, headers=MOBILE)
     assert r.status_code == 201, r.text
     user_id = r.json()["user"]["id"]

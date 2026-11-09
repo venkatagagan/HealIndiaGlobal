@@ -15,7 +15,9 @@ import {
   Briefcase,
   CalendarCheck,
   FileClock,
+  Flag,
   FolderKanban,
+  Inbox,
   Handshake,
   LayoutDashboard,
   Library,
@@ -64,6 +66,8 @@ export const opsRoutes: RouteObject[] = [
   { path: 'audit-logs', lazy: page(() => import('./pages/AuditLogsPage')) },
   { path: 'messages', lazy: page(() => import('./pages/MessagesPage')) },
   { path: 'privacy-requests', lazy: page(() => import('./pages/PrivacyRequestsPage')) },
+  { path: 'moderation', lazy: page(() => import('./pages/ModerationPage')) },
+  { path: 'enquiries', lazy: page(() => import('./pages/EnquiriesPage')) },
 ];
 
 export interface OpsNavItem {
@@ -101,6 +105,8 @@ export const opsNav: OpsNavItem[] = [
   { to: opsPaths.bookings, label: 'Bookings', icon: CalendarCheck, roles: ALL_STAFF, group: 'operations' },
   { to: opsPaths.travel, label: 'Travel desk', icon: Plane, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.messages, label: 'Support inbox', icon: MessagesSquare, roles: OPS_STAFF, group: 'operations' },
+  { to: opsPaths.moderation, label: 'Reports', icon: Flag, roles: OPS_STAFF, group: 'operations' },
+  { to: opsPaths.enquiries, label: 'Website enquiries', icon: Inbox, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.users, label: 'Users', icon: Users, roles: ALL_STAFF, group: 'people' },
   { to: opsPaths.staff, label: 'Staff', icon: ShieldCheck, roles: ADMINS, group: 'people' },
   { to: opsPaths.privacy, label: 'Privacy requests', icon: Scale, roles: OPS_STAFF, group: 'people' },

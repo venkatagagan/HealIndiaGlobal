@@ -6,13 +6,16 @@ import { useMemo, useState, type FormEvent } from 'react';
 import { Building2, BriefcaseMedical, Info, LockKeyhole, UserRound } from 'lucide-react';
 import { apiPost, destinationFor, isPortalRole, rememberSession, type TokenOut } from '@/lib/auth-client';
 import { assessmentUrl, type PortalRole } from '@/config/site';
+import { ADULT_REQUIRED, AGE_ATTESTATION_REQUIRED, AgeQuestion, GoogleAgePrompt, ageAnswerValid, type AgeAnswer } from './age-question';
 import { countryOptions } from './countries';
 import { EMAIL_RE, FormAlert, PasswordField, SelectField, SubmitButton, TextField, passwordOk } from './fields';
 import { GoogleButton, googleEnabled } from './google-button';
 import { Divider } from './login-form';
 import { authErrorMessage, invalidFields, type AuthLabels } from './shared';
 
-type Errors = Partial<Record<'full_name' | 'email' | 'password' | 'country_code' | 'agency_name' | 'hospital_name' | 'city' | 'accept_terms', string>>;
+type Errors = Partial<
+  Record<'full_name' | 'email' | 'password' | 'country_code' | 'agency_name' | 'hospital_name' | 'city' | 'accept_terms' | 'is_adult', string>
+>;
 
 const ROLE_ICONS = { patient: UserRound, agent: BriefcaseMedical, hospital: Building2 } as const;
 
@@ -47,6 +50,10 @@ export function RegisterForm({
     referral_code: (params.get('ref') ?? params.get('referral_code') ?? '').slice(0, 32),
     accept_terms: false,
   });
+  /** CG-24 18+ attestation, sent as `is_adult` */
+  const [isAdult, setIsAdult] = useState<AgeAnswer>(null);
+  /** Google ID token waiting for the age answer (400 `age_attestation_required`) */
+  const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -68,6 +75,7 @@ export function RegisterForm({
       if (!form.hospital_name.trim()) e.hospital_name = t.errors.required;
       if (!form.city.trim()) e.city = t.errors.required;
     }
+    if (!ageAnswerValid(role, isAdult)) e.is_adult = t.errors.age;
     if (!form.accept_terms) e.accept_terms = t.errors.terms;
     return e;
   }
@@ -89,7 +97,7 @@ export function RegisterForm({
     if (pending) return;
     const e = validate();
     setErrors(e);
-    if (Object.keys(e).length) {
+    if (Object.keys(e).length || !ageAnswerValid(role, isAdult)) {
       setError(t.errors.checkFields);
       return;
     }
@@ -101,6 +109,7 @@ export function RegisterForm({
       full_name: form.full_name.trim(),
       role,
       accept_terms: true,
+      is_adult: isAdult,
     };
     if (form.phone.trim()) body.phone = form.phone.trim();
     if (form.country_code) body.country_code = form.country_code;
@@ -118,6 +127,7 @@ export function RegisterForm({
       for (const f of invalidFields(res.details)) {
         if (f === 'password') fe.password = t.errors.password;
         else if (f === 'email') fe.email = t.errors.email;
+        else if (f === 'is_adult') fe.is_adult = role === 'patient' ? t.errors.age : t.errors.adultRequired;
         else if (f in form) fe[f as keyof Errors] = t.errors.required;
       }
       setErrors(fe);
@@ -126,12 +136,27 @@ export function RegisterForm({
     setError(authErrorMessage(res, t));
   }
 
-  async function onGoogle(idToken: string) {
+  /** Google sign-up (patients). Sends the age answer when given; otherwise asks for it if the API needs it. */
+  async function onGoogle(idToken: string, answer: AgeAnswer = isAdult) {
     setPending(true);
     setError(null);
-    const res = await apiPost<TokenOut>('/auth/google', { id_token: idToken, role: 'patient' });
+    const res = await apiPost<TokenOut>('/auth/google', {
+      id_token: idToken,
+      role: 'patient',
+      ...(answer !== null ? { is_adult: answer } : {}),
+    });
     if (res.ok) return go(res.data);
     setPending(false);
+    if (res.status === 400 && res.code === AGE_ATTESTATION_REQUIRED) {
+      setGoogleToken(idToken);
+      return;
+    }
+    if (res.status === 400 && res.code === ADULT_REQUIRED) {
+      setGoogleToken(null);
+      setError(t.errors.adultRequired);
+      return;
+    }
+    setGoogleToken(null);
     setError(res.status === 401 ? t.googleError : authErrorMessage(res, t));
   }
 
@@ -193,6 +218,9 @@ export function RegisterForm({
                     setRole(r);
                     setErrors({});
                     setError(null);
+                    setGoogleToken(null);
+                    // "under 18" is a patient-only answer
+                    if (r !== 'patient' && isAdult === false) setIsAdult(null);
                   }}
                   className="sr-only"
                 />
@@ -207,7 +235,20 @@ export function RegisterForm({
 
       {role === 'patient' && googleEnabled ? (
         <div className="space-y-4">
-          <GoogleButton text="signup_with" onCredential={onGoogle} onError={() => setError(t.googleError)} />
+          {googleToken ? (
+            <GoogleAgePrompt
+              t={t}
+              role="patient"
+              pending={pending}
+              onSubmit={(answer) => {
+                setIsAdult(answer);
+                void onGoogle(googleToken, answer);
+              }}
+              onCancel={() => setGoogleToken(null)}
+            />
+          ) : (
+            <GoogleButton text="signup_with" onCredential={(idToken) => void onGoogle(idToken)} onError={() => setError(t.googleError)} />
+          )}
           <Divider label={orLabel} />
         </div>
       ) : null}
@@ -271,6 +312,16 @@ export function RegisterForm({
             {role === 'agent' ? t.reviewNoteAgent : t.reviewNoteHospital}
           </p>
         ) : null}
+        <AgeQuestion
+          t={t}
+          role={role}
+          value={isAdult}
+          onChange={(v) => {
+            setIsAdult(v);
+            if (errors.is_adult) setErrors((cur) => ({ ...cur, is_adult: undefined }));
+          }}
+          error={errors.is_adult}
+        />
         <div>
           <label className="flex items-start gap-3 text-sm text-slate-800">
             <input

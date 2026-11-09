@@ -5,6 +5,7 @@
 * ``payments.render_invoice``   render + store a receipt PDF
 * ``payments.expire_orders``    periodic (5 min): ``created`` orders past ``expires_at`` -> ``expired``
 * ``payments.mark_overdue``     periodic (hourly): due installments past their date -> ``overdue``
+* ``payments.installment_reminders`` periodic (hourly): ``installment.due`` / ``installment.overdue`` events
 """
 
 from __future__ import annotations
@@ -59,3 +60,11 @@ async def mark_overdue(db: AsyncSession, payload: dict[str, Any]) -> None:
     count = await service.mark_overdue_installments(db)
     if count:
         logger.info("payments.installments_overdue", count=count)
+
+
+@periodic("payments.installment_reminders", every_seconds=3600)
+async def installment_reminders(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Publish ``installment.due`` / ``installment.overdue`` (notifications dedupe per instalment per day)."""
+    count = await service.publish_installment_reminders(db)
+    if count:
+        logger.info("payments.installment_reminders", count=count)

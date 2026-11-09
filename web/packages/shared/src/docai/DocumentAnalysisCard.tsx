@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { CheckCircle2, Clock, FileSearch, Info } from 'lucide-react';
 import { cn } from '../lib/cn';
+import { ReportButton } from '../ui/ReportContent';
 import { useDocaiText } from './i18n';
 import { editMarkers, hasCriticalValues, normalizeEditable } from './model';
 import { Banner, EditedMark, FLAG_CLASSES, Pill, ROW_TINT, SIGNIFICANCE_CLASSES, Section } from './parts';
@@ -13,6 +14,8 @@ export interface DocumentAnalysisCardProps {
   className?: string;
   /** hide the outer card frame (when embedded in another card) */
   bare?: boolean;
+  /** show "Report this result" (CG-16); default: only for the patient audience */
+  reportable?: boolean;
 }
 
 function formatDate(value: string | null | undefined): string | null {
@@ -30,7 +33,13 @@ function formatDate(value: string | null | undefined): string | null {
  * Read-only view of a CONFIRMED analysis (for hospital, agent and admin views and for the patient after confirming).
  * Shows only `confirmed_data`; values the patient changed from the AI output carry an "edited by patient" marker.
  */
-export function DocumentAnalysisCard({ analysis, audience = 'clinical', className, bare = false }: DocumentAnalysisCardProps) {
+export function DocumentAnalysisCard({
+  analysis,
+  audience = 'clinical',
+  className,
+  bare = false,
+  reportable = audience === 'patient',
+}: DocumentAnalysisCardProps) {
   const { t } = useDocaiText();
   const frame = bare ? '' : 'rounded-2xl border border-border bg-surface p-4 shadow-xs sm:p-5';
 
@@ -173,10 +182,13 @@ export function DocumentAnalysisCard({ analysis, audience = 'clinical', classNam
       <TextList title={t('procedures')} items={data.procedures_mentioned} marker={edited('procedures_mentioned')} />
       <TextList title={t('recommendations')} items={data.recommendations} marker={edited('recommendations')} />
 
-      <p className="flex items-center gap-1.5 border-t border-border pt-3 text-xs text-muted">
-        <Info className="size-3.5 shrink-0" aria-hidden />
-        {t('disclaimer')}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
+        <p className="flex items-center gap-1.5 text-xs text-muted">
+          <Info className="size-3.5 shrink-0" aria-hidden />
+          {t('disclaimer')}
+        </p>
+        {reportable && <ReportButton targetType="document_analysis" targetId={analysis.id} label="Report this result" />}
+      </div>
     </article>
   );
 }

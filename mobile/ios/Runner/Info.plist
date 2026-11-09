@@ -88,6 +88,9 @@
 		<string>sms</string>
 		<string>whatsapp</string>
 	</array>
+	<!-- Push (CG-15): no FCM token is created until the user signs in and turns notifications on. -->
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, MessageSquarePlus, Paperclip, Send } from 'lucide-react';
+import { ArrowLeft, EyeOff, MessageSquarePlus, Paperclip, Send } from 'lucide-react';
 import {
   CONVERSATION_KIND_LABELS,
   messagingApi,
@@ -257,6 +257,11 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
                   <p className={cn('mt-0.5 text-right text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>
                     {formatDateTime(m.created_at, 'd MMM, HH:mm')}
                   </p>
+                  {m.hidden && (
+                    <p className={cn('mt-1 flex items-center gap-1 text-[11px]', mine ? 'text-white/90' : 'text-slate-500')}>
+                      <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                    </p>
+                  )}
                 </div>
               </div>
             );

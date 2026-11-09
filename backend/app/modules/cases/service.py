@@ -506,6 +506,7 @@ async def accept_quote(
             before={"status": QuoteStatus.SENT.value},
             after={"status": QuoteStatus.EXPIRED.value},
         )
+        await publish(db, "quote.expired", {"quote_id": str(quote.id), "case_id": str(case.id)})
         quote_valid_until = quote.valid_until
         await db.commit()
         raise BadRequest(
@@ -564,6 +565,11 @@ async def reject_quote(
         request=request,
     )
     await queue_case_push(db, case, "case.updated", {"case_id": str(case.id), "quote_id": str(quote.id)})
+    await publish(
+        db,
+        "quote.rejected",
+        {"quote_id": str(quote.id), "case_id": str(case.id), "reason": reason, "actor_user_id": str(user.id)},
+    )
     await db.commit()
     return quote
 
@@ -574,7 +580,10 @@ async def expire_quotes(db: AsyncSession) -> int:
         update(Quote)
         .where(Quote.status == QuoteStatus.SENT, Quote.valid_until < today_ist())
         .values(status=QuoteStatus.EXPIRED)
-        .returning(Quote.id)
+        .returning(Quote.id, Quote.case_id)
         .execution_options(synchronize_session=False)
     )
-    return len(list(result.scalars()))
+    rows = list(result.all())
+    for quote_id, case_id in rows:
+        await publish(db, "quote.expired", {"quote_id": str(quote_id), "case_id": str(case_id)})
+    return len(rows)

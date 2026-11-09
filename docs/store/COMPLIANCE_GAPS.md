@@ -25,7 +25,7 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-03 | Unsubstantiated or false claims in app UI and designs | P0 | Both | fl-onboarding, fl-screening, fl-journey, web-public, public-website, brand-assets |
 | CG-04 | Third-party AI (Anthropic) disclosure and explicit opt-in not yet specified end to end | P0 | Both | fl-screening, web-patient, be-screening, docs/legal |
 | CG-05 | Medical disclaimers and emergency handling in the app and listing | P0 | Both | fl-screening, web-patient, product-docs (listing) |
-| CG-06 | Reviewer access: dedicated review accounts for patient, agent and hospital (not the seeded demo password) | P0 | Both | seed-data, release manager |
+| CG-06 | Reviewer access: dedicated review accounts for patient, agent and hospital (not the seeded demo password). **BUILT 2026-11-09** (`scripts.seed_review_accounts`); release manager still enters credentials | P0 | Both | seed-data, release manager |
 | CG-07 | Organisation developer accounts, legal entity, D-U-N-S, EU trader status | P0 | Both | Business / legal |
 | CG-08 | Privacy policy: public URL, in-app link, required content | P0 | Both | docs/legal, public-website, fl-onboarding |
 | CG-09 | No iOS privacy manifest; two plugins ship none | P0 | Apple | flutter-foundation |
@@ -34,8 +34,8 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-12 | Store privacy forms must match the shipped binary (Razorpay SDK, future SDKs) | P0 | Both | Release manager, flutter-foundation |
 | CG-13 | AI "possible conditions" shown to patients raises medical-device (SaMD) exposure | P1 | Both | fl-screening, web-patient, be-screening, legal |
 | CG-14 | Agents see patient data without a patient consent record. **Documents: DONE 2026-11-09** (`share_with_agent`); screenings/cases still open | P1 | Both | backend-models, be-auth, be-messaging, be-screening, be-cases, web-agent |
-| CG-15 | Push notifications not implemented; content and opt-in rules needed when they are | P1 | Both | flutter-foundation, be-messaging |
-| CG-16 | No way to report content (chat, AI results, future reviews) | P1 | Both | be-messaging, be-admin, fl-journey, fl-screening, web-patient, web-admin-ops |
+| CG-15 | Push notifications: **BUILT 2026-11-09**, off until the Firebase project, APNs key and FCM service account are supplied | P1 | Both | flutter-foundation, be-messaging |
+| CG-16 | Content reporting: **DONE 2026-11-09** (report chat messages and AI results, admin moderation queue; reviews via API) | P1 | Both | be-messaging, be-admin, fl-journey, fl-screening, web-patient, web-admin-ops |
 | CG-17 | Payment screen copy ("Pay with Face ID", "with Affirm"), biometric fallback, Face ID purpose string | P1 | Both | fl-journey, web-patient, flutter-foundation |
 | CG-18 | Instalments that run past treatment are credit (Financial features declaration) | P1 | Google | be-payments, be-cases, product |
 | CG-19 | Real hospital brands and accreditation or WHO logos in designs and screenshots | P1 | Both | brand-assets, fl-onboarding, store assets |
@@ -43,13 +43,13 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-21 | Personal health information must stay out of iCloud backups | P1 | Apple | flutter-foundation, fl-journey |
 | CG-22 | Device and OS targets: iPad and landscape declared, Android API 36, 16 KB pages | P1 | Both | flutter-foundation |
 | CG-23 | iOS release pipeline: Xcode 26 SDK, macOS CI, export-compliance key | P1 | Apple | deploy-iac, flutter-foundation |
-| CG-24 | Age rating and audience vs Terms (18+); no adult attestation at sign-up | P1 | Both | be-auth, fl-onboarding, legal |
+| CG-24 | Age rating and audience vs Terms (18+); adult attestation at sign-up **DONE 2026-11-09**; age rating choice and guardian consent still open | P1 | Both | be-auth, fl-onboarding, legal |
 | CG-25 | Guest data retention: Terms (12 months) and DEPLOYMENT (90 days) disagree; no purge job. **DONE 2026-11-09** (90 days) | P1 | Both | be-auth, docs/legal |
 | CG-26 | No data export (data subject request) endpoint. **DONE 2026-11-09** | P2 | — (legal) | be-auth + modules |
 | CG-27 | Paid tele-consult fees on Google Play: policy says nothing either way | P2 | Google | Product, be-payments |
 | CG-28 | `google_fonts` fetches fonts from Google at runtime | P2 | Both (privacy) | flutter-foundation |
 | CG-29 | OpenStreetMap tile usage policy and attribution in production | P2 | — (ops) | fl-journey, deploy-iac |
-| CG-30 | Missing domain events, so some journey steps notify nobody | P2 | — (UX) | be-cases, be-messaging, be-payments |
+| CG-30 | Missing domain events, so some journey steps notify nobody. **DONE 2026-11-09** (refund requested still open) | P2 | — (UX) | be-cases, be-messaging, be-payments |
 | CG-31 | Logging hygiene: search queries and free text must not persist | P2 | Both (disclosures) | backend-core, infra |
 | CG-32 | One app, three role sections: listing, review access, privacy forms and deletion must cover agents and hospital users; staff stay web-only | P0 | Both | Release manager, product-docs, flutter (shells), be-auth |
 | CG-33 | Microphone (voice intake) and camera (report photos) now ship: privacy forms, purpose strings, pre-prompts and AI disclosure | P0 | Both | flutter (voice, documents_ai), be-voice, be-docai, docs/legal, release manager |
@@ -304,6 +304,16 @@ remind users to check with a doctor in addition to using the app and before maki
 
 ### CG-06 · Reviewer access (App access / demo account)
 
+**Status: BUILT 2026-11-09.** `python -m scripts.seed_review_accounts` (allowed in production) creates or refreshes the
+three review accounts with passwords from `REVIEW_PATIENT_PASSWORD`, `REVIEW_AGENT_PASSWORD` and
+`REVIEW_HOSPITAL_PASSWORD` (never in code; optional `REVIEW_*_EMAIL` overrides), MFA off, email verified, consents
+recorded, and seeds a `draft` review hospital (left out of every public catalog query), an approved agency with two
+fictional managed patients, a completed screening, a quoted case and a confirmed booking with no payment rows.
+Differences from the recommendation below: isolation uses hospital status `draft` instead of a new flag; no second
+quote, commission or settlement items (they need ledger postings). Remaining: the release manager generates the
+passwords, runs the command against production and enters the credentials in App Store Connect and Play Console
+(APP_STORE.md §9.1). Test: `backend/tests/modules/test_store_compliance.py`.
+
 **Basis.** Apple 2.1(a): include demo account information "if your app includes a login" (demo mode only with
 Apple's prior approval). Google Play App access: give credentials for restricted functionality.
 
@@ -550,6 +560,29 @@ asks for an agent attestation.
 
 ### CG-15 · Push notifications
 
+**Status: BUILT 2026-11-09, switched off until Firebase is supplied.**
+- Backend: `device_tokens` gained `app_version` and `revoked_at`. New routes are `POST /notifications/devices`
+  (`{platform, token, app_version}`) and `DELETE /notifications/devices?token=`; the older `/auth/devices` routes
+  still work.
+- Every in-app notification enqueues `messaging.send_push` when FCM is configured and the user has a device. The job
+  sends through FCM HTTP v1, using a service-account JWT signed with PyJWT and exchanged over httpx. No new
+  dependency.
+- Push text is always generic, e.g. "You have an update on your case." The data payload carries only `kind`,
+  `notification_id` and `link`.
+- Tokens that FCM reports as `UNREGISTERED` are deleted. Invalid tokens are revoked.
+- Settings: `FCM_PROJECT_ID` plus `FCM_SERVICE_ACCOUNT_FILE` or `FCM_SERVICE_ACCOUNT_JSON`. Without them push is
+  disabled cleanly. No per-user notification preferences exist yet, and there are no marketing pushes.
+- App: `firebase_core` and `firebase_messaging` sit behind `--dart-define=PUSH_ENABLED=true` (default false). The
+  google-services Gradle plugin is applied only when `google-services.json` exists.
+- The permission pre-prompt appears after sign-in, never at launch, and "Not now" holds for 30 days. The token is
+  registered on sign-in and deleted on sign-out. The app works fully with push denied.
+- Setup for the apps team: mobile/RELEASE.md and mobile/IOS_BUILD.md.
+- Still to do:
+  - Firebase project, APNs auth key and FCM service account (business/apps team).
+  - Push entitlement in Xcode.
+  - Monochrome Android notification icon.
+  - Data safety "Device or other IDs" and App Privacy "Device ID" answers once a push build ships.
+
 **Evidence.** The backend has `device_tokens` and `POST /auth/devices`, and DEPLOYMENT §12 plans FCM/APNs. The
 pubspec has no `firebase_messaging` or APNs plugin.
 
@@ -564,6 +597,22 @@ pubspec has no `firebase_messaging` or APNs plugin.
 - Update Data safety (Device or other IDs) and App Privacy (Device ID).
 
 ### CG-16 · Content reporting (UGC)
+
+**Status: DONE 2026-11-09.**
+- `POST /reports` takes `{target_type: message|screening_result|document_analysis|review, target_id, reason, note?}`.
+  It returns 404 when the reporter cannot see the target, and an open repeat report returns the existing one.
+- Moderation queue for support and admin: `GET /admin/reports`, `GET /admin/reports/{id}`, and
+  `POST /admin/reports/{id}/resolve` with action `dismiss`, `hide_message`, `warn` or `suspend`. Resolving closes
+  every open report on the same item. Support gets one in-app notification per reported item.
+- A hidden message shows only to its sender and to staff.
+- UI:
+  - App: "Report" from a message's long-press menu, and "Report this result" on the AI summary and document analysis.
+  - Patient web (and the agent and hospital portals): the same actions.
+  - Admin portal: a Reports page and a Website enquiries page.
+- Blocking is not built. Non-staff users cannot start direct conversations; only case and support chats exist, so
+  there is no user-to-user channel to block. Report plus moderation (warn or suspend) covers abuse.
+- Reviews can be reported through the API, but no review UI exists yet. The report control must ship with reviews
+  (ROADMAP R6).
 
 **Basis.** Apple 1.2 requires UGC apps to have filtering, a report mechanism with timely responses, blocking of
 abusive users, and published contact details. Google's UGC policy needs in-app reporting and moderation. Google's
@@ -675,6 +724,18 @@ A grep on 2026-10-21 found no file writes in `mobile/lib`. Keep it that way with
 
 ### CG-24 · Age rating, audience and adult attestation
 
+**Status: attestation DONE 2026-11-09; rating choice and guardian consent open.**
+- `is_adult` is required on `POST /auth/register` and `POST /auth/guest/upgrade`. On `POST /auth/google` and
+  `POST /auth/apple` it is required only when the call creates an account; otherwise the API returns 400
+  `age_attestation_required` and the client asks and retries. It is optional on `/auth/accept-invite`.
+- Agents and hospital users must answer true (422, or 400 `adult_required`).
+- The answer is stored on `users.is_adult` and as an `age_18_plus` consent row (granted true or false).
+- A patient who answers "under 18, a parent or guardian will consent" gets an account flagged
+  `guardian_consent_required` in `UserOut`. The guardian consent flow itself belongs to the privacy work.
+- The app, web and website sign-up forms have the required control: two options for patients, one checkbox for
+  partners.
+- Still open: the age rating choice (business), and the date-of-birth check at booking.
+
 **Recommendation.**
 - Terms §4.1 requires 18+. Apple's calculated rating will likely be **16+** (frequent medical/treatment
   information), so set it to **18+** manually or accept 16+; this is a business decision, see APP_STORE.md §5.
@@ -720,5 +781,23 @@ and make sure guests can delete in the app (Apple requires it).
   or expired, visa and travel status changes, SOS acknowledged, consultation scheduled, instalment due or overdue,
   refund requested, settlement batch awaiting approval. See
   [../product/USER_JOURNEYS.md §7](../product/USER_JOURNEYS.md#7-gaps-found-while-mapping-the-journeys).
+  **Status: DONE 2026-11-09, except "refund requested".**
+  - New events, each with a messaging handler, dedupe keys and email for the important ones:
+    - `travel.status_changed` (visa, flight, airport pickup or drop, hotel, services): to the patient and agent, not
+      the person who made the change.
+    - `consultation.scheduled`, `consultation.rescheduled`, `consultation.cancelled`: to the patient, agent,
+      hospital team and coordinator.
+    - `quote.rejected`: to the hospital and coordinator.
+    - `quote.expired`: to the hospital and patient side. The hourly `cases.expire_quotes` job and the
+      accept-time expiry both publish it.
+    - `installment.due` and `installment.overdue`: from the hourly `payments.installment_reminders` job. A reminder
+      goes `installment_reminder_days` before the due date (platform setting, default 3) and on the day itself.
+      Overdue reminders go the day after and then weekly. Deduped per instalment per day.
+    - `settlement_batch.pending_approval`: to finance users other than the batch's maker.
+  - Existing events gained handlers:
+    - `case.coordinator_assigned`: to the patient, agent and coordinator.
+    - `screening.completed` with emergency urgency: now also alerts support and the patient's coordinators
+      (`screening.emergency`). The patient was already told to seek urgent local care.
+  - SOS acknowledged was already covered by `sos.updated`.
 - **CG-31 · Logging hygiene.** The forms answer "in-app search history: not collected". Keep that true: the API
   must not log `q=` query strings or free-text bodies. The edge already strips query strings (DEPLOYMENT §10).

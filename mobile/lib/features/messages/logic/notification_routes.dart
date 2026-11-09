@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/models/models.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../agent_portal/agent_routes.dart';
+import '../../hospital_portal/hospital_routes.dart';
 
 /// In-app location a notification should open, derived from its `kind` and `data`
 /// (`conversation_id`, `screening_id`, `booking_id`, `case_id`...). Null when it has no target.
@@ -33,6 +35,37 @@ String? notificationTarget(AppNotification n) {
   if (screening != null) return Routes.matches(screening);
   if (booking != null || order != null) return Routes.trips;
   return null;
+}
+
+/// In-app location for a tapped push notification (CG-15). The server sends a portal-style `link`
+/// (`/cases/<id>`, `/messages/<id>`, `/bookings/<id>`, ...); known links map to the matching screen of
+/// the user's role, anything else opens the notifications list (patients) or the role's home.
+String pushLinkRoute(String? link, UserRole role) {
+  final uri = Uri.tryParse(link ?? '');
+  final seg = uri == null ? const <String>[] : uri.pathSegments.where((s) => s.isNotEmpty).toList();
+  String? idAfter(String head) => seg.length >= 2 && seg[0] == head ? seg[1] : null;
+
+  switch (role) {
+    case UserRole.agent:
+      if (idAfter('cases') case final id?) return AgentRoutes.caseDetail(id);
+      if (idAfter('bookings') case final id?) return AgentRoutes.booking(id);
+      if (idAfter('screening') case final id?) return AgentRoutes.screening(id);
+      return AgentRoutes.home;
+    case UserRole.hospital:
+      if (idAfter('cases') case final id?) return HospitalRoutes.caseDetail(id);
+      if (idAfter('bookings') case final id?) return HospitalRoutes.booking(id);
+      return HospitalRoutes.home;
+    default:
+      if (idAfter('cases') case final id?) return Routes.caseDetail(id);
+      if (idAfter('messages') case final id?) return Routes.chat(id);
+      if (idAfter('screening') case final id?) return Routes.matches(id);
+      if (idAfter('pay') case final id?) return Routes.pay(id);
+      if (seg.isNotEmpty && (seg[0] == 'bookings' || seg[0] == 'payments' || seg[0] == 'trips')) return Routes.trips;
+      if (seg.length == 1 && seg[0] == 'cases') return Routes.cases;
+      if (seg.length == 1 && seg[0] == 'messages') return Routes.messages;
+      if (seg.isNotEmpty && seg[0] == 'support') return Routes.support;
+      return Routes.notifications;
+  }
 }
 
 /// Icon and accent for a notification kind.

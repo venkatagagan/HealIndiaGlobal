@@ -452,8 +452,29 @@ same password, `HealIndia@2026`. It is **demo-only**:
 - their `@healindia.example` addresses can't receive mail, so verification, password-reset and deletion e-mails fail.
 
 Use it only on local and staging databases (QA, screenshots 8–10). For store review, create the dedicated review
-accounts above with the proposed review-fixture command (CG-06), which reads the passwords from secrets, never from
-code.
+accounts above with the review-fixture command (CG-06), which reads the passwords from secrets, never from code.
+
+**How to create or refresh them (built 2026-11-09).** From `backend/`, against the production database:
+
+```
+REVIEW_PATIENT_PASSWORD=… REVIEW_AGENT_PASSWORD=… REVIEW_HOSPITAL_PASSWORD=… python -m scripts.seed_review_accounts
+```
+
+- The three passwords come from the secrets manager as environment variables. The script refuses to run without
+  them, checks them against the password policy and never prints them. `REVIEW_PATIENT_EMAIL`,
+  `REVIEW_AGENT_EMAIL` and `REVIEW_HOSPITAL_EMAIL` override the default addresses.
+- It is idempotent: re-running resets the passwords (do this after every review), switches MFA off and unlocks the
+  accounts, and keeps the demo data. Schedule it nightly if you want the "rebuilt nightly" rule above.
+- What it creates today: the three accounts (email verified, Terms/Privacy/18+ consents, plus AI consent for the
+  patient); "Heal India Global App Review Hospital" in status `draft`, which every public catalog and search query
+  leaves out, with the hospital account as its **coordinator**; an approved review agency with two fictional managed
+  patients and a quoted case; for the patient a completed rules-engine screening, a `quoted` case with a quote to
+  accept and a second case with a `confirmed` booking (no payment rows). Not yet seeded: a second quote to compare,
+  pending commission items and a settlement item (those need ledger postings, so they stay out of production).
+- **Where the credentials go:** App Store Connect › App Review Information › Sign-In Information (patient account)
+  and the Notes (agent and hospital accounts); Play Console › App content › App access (one instruction set per role,
+  see [GOOGLE_PLAY.md §5](GOOGLE_PLAY.md#5-app-content-declarations-policy--app-content)). The passwords themselves
+  live only in the password manager and those two consoles, never in this repository.
 
 ### 9.2 Notes for the reviewer (template; fill in the angle brackets)
 

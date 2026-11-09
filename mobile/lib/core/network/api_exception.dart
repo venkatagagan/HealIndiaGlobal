@@ -106,6 +106,12 @@ class ApiException implements Exception {
   bool get isServerError => statusCode >= 500;
   bool get isMfaRequired => code == 'mfa_required';
 
+  /// Google / Apple sign-in would create a new account and the API needs the 18+ answer (CG-24).
+  bool get isAgeAttestationRequired => code == 'age_attestation_required';
+
+  /// Only adults may hold this account type (agent / hospital answered "under 18").
+  bool get isAdultRequired => code == 'adult_required';
+
   /// Whether retrying the same request may succeed.
   bool get isRetryable => isNetwork || isServerError || isRateLimited;
 

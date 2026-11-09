@@ -60,9 +60,15 @@ async def ensure_guardian_consent(db: AsyncSession, patient: PatientProfile | uu
     if patient is None:
         return
     profile = patient if isinstance(patient, PatientProfile) else await db.get(PatientProfile, patient)
-    if not is_minor(profile):
+    if profile is None:
         return
-    assert profile is not None  # noqa: S101 - is_minor(None) is False
+    if not is_minor(profile):
+        # No date of birth on file: fall back to the sign-up age answer (CG-24, ``User.is_adult``).
+        if profile.date_of_birth is not None:
+            return
+        owner = await db.get(User, profile.user_id)
+        if owner is None or owner.is_adult is not False:
+            return
     if await active_guardian_consent(db, profile.id) is not None:
         return
     raise Forbidden(

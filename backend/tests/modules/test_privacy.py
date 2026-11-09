@@ -729,10 +729,36 @@ def test_database_sslmode_connect_args(monkeypatch, value) -> None:
 async def test_registered_patient_export_has_consents(client) -> None:
     _, token = await register(client, "patient")
     data = (await client.get(f"{API}/auth/me/export?format=json", headers=bearer(token))).json()
-    assert {c["kind"] for c in data["consents"]} == {"terms", "privacy"}
+    assert {c["kind"] for c in data["consents"]} == {"terms", "privacy", "age_18_plus"}
 
 
 async def test_unused_factory_import_guard(db) -> None:
     # keeps create_user exercised for the guardian staff path (factories import check)
     user = await create_user(db, role="patient")
     assert user.id
+
+
+async def test_under_18_answer_at_sign_up_gates_without_date_of_birth(
+    client, db, make_user, auth_headers
+) -> None:
+    """CG-24 + guardian consent: a patient who answered "under 18" at sign-up is gated even with no DOB."""
+    user, _profile = await _patient(db, make_user, date_of_birth=None)
+    user.is_adult = False
+    await db.commit()
+    headers = auth_headers(user)
+    screening = await _ok(await client.post(f"{API}/screenings", json={}, headers=headers), 201)
+    await _ok(
+        await client.patch(f"{API}/screenings/{screening['id']}", json={"notes": "Ear pain"}, headers=headers)
+    )
+    r = await client.post(
+        f"{API}/screenings/{screening['id']}/submit", json={"consent_ai": True}, headers=headers
+    )
+    assert r.status_code == 403 and r.json()["error"]["code"] == "guardian_consent_required"
+
+    # an adult answer (or no answer, for accounts older than the attestation) is not gated
+    user.is_adult = None
+    await db.commit()
+    r = await client.post(
+        f"{API}/screenings/{screening['id']}/submit", json={"consent_ai": True}, headers=headers
+    )
+    assert r.status_code != 403, r.text

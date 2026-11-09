@@ -151,6 +151,13 @@ const en = {
     privacy: 'Privacy Policy',
     submit: 'Create account',
     submitting: 'Creating account…',
+    age: {
+      legend: 'Your age',
+      adult: 'I am 18 or older',
+      minor: 'I am under 18 and a parent or guardian will give consent for my care',
+      minorHint: 'We will ask a parent or guardian to give consent before care starts.',
+      confirmAdult: 'I confirm I am 18 or older.',
+    },
     roleHints: {
       patient: 'Find treatment in India and manage your medical trip.',
       agent: 'Refer and manage patients as a facilitator.',
@@ -160,6 +167,8 @@ const en = {
       fullNameRequired: 'Enter your full name',
       passwordWeak: 'Use at least 10 characters with a letter and a number',
       termsRequired: 'You must accept the terms to continue',
+      ageRequired: 'Please confirm your age',
+      adultRequired: 'Agent and hospital accounts are for people aged 18 or older.',
       agencyRequired: 'Enter your agency name',
       hospitalRequired: 'Enter the hospital name',
       cityRequired: 'Enter the city',
