@@ -154,6 +154,10 @@ class ConsentKind(StrEnum):
     # versioned click-through acceptance of the partner agreements (INTEGRATION_BACKLOG #11)
     HOSPITAL_PARTNER_AGREEMENT = "hospital_partner_agreement"
     AGENT_AGREEMENT = "agent_agreement"
+    # the patient lets their referring/managing agent see their documents (CG-14, least privilege)
+    SHARE_WITH_AGENT = "share_with_agent"
+    # verifiable consent of a parent/lawful guardian for a patient under 18 (DPDP s.9, Rule 10)
+    GUARDIAN_CONSENT = "guardian_consent"
 
 
 class SavedEntityType(StrEnum):

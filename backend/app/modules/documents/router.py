@@ -60,8 +60,19 @@ async def upload_document(
         await file.close()
 
 
+BreakGlassReason = Annotated[
+    str | None,
+    Header(
+        alias="X-Break-Glass-Reason",
+        max_length=500,
+        description="Support staff only: reason for emergency access outside their cases (audited)",
+    ),
+]
+
+
 @router.get("/documents", response_model=list[DocumentOut])
 async def list_documents(
+    request: Request,
     db: DbSession,
     user: CurrentUser,
     case_id: Annotated[uuid.UUID | None, Query()] = None,
@@ -80,12 +91,22 @@ async def list_documents(
         hospital_id=hospital_id,
         status=status_,
         limit=limit,
+        request=request,
     )
 
 
 @router.get("/documents/{document_id}", response_model=DocumentOut)
-async def get_document(document_id: uuid.UUID, db: DbSession, user: CurrentUser) -> DocumentOut:
-    document, _ = await service.get_visible(db, user, document_id)
+async def get_document(
+    document_id: uuid.UUID,
+    request: Request,
+    db: DbSession,
+    user: CurrentUser,
+    break_glass_reason: BreakGlassReason = None,
+) -> DocumentOut:
+    document, _ = await service.get_visible(
+        db, user, document_id, break_glass_reason=break_glass_reason, request=request
+    )
+    await service.audit_reads(db, user, [document], action="phi.view", request=request)
     return await service.to_out(db, document)
 
 
@@ -94,8 +115,16 @@ async def get_document(document_id: uuid.UUID, db: DbSession, user: CurrentUser)
     response_class=Response,
     responses={200: {"content": {"application/octet-stream": {}}, "description": "The file"}},
 )
-async def download_document(document_id: uuid.UUID, db: DbSession, user: CurrentUser) -> Response:
-    document, data = await service.read_content(db, user, document_id)
+async def download_document(
+    document_id: uuid.UUID,
+    request: Request,
+    db: DbSession,
+    user: CurrentUser,
+    break_glass_reason: BreakGlassReason = None,
+) -> Response:
+    document, data = await service.read_content(
+        db, user, document_id, break_glass_reason=break_glass_reason, request=request
+    )
     return Response(
         content=data,
         media_type=document.content_type,

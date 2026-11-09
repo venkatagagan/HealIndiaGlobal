@@ -21,4 +21,5 @@ export const opsPaths = {
   website: `${OPS_BASE}/settings/website`,
   audit: `${OPS_BASE}/audit-logs`,
   messages: `${OPS_BASE}/messages`,
+  privacy: `${OPS_BASE}/privacy-requests`,
 } as const;

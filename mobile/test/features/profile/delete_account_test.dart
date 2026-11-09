@@ -22,7 +22,8 @@ Future<FakeAuthController> _open(WidgetTester tester, {User user = patientUser})
     ],
   );
   await tester.pumpAndSettle();
-  await tester.ensureVisible(find.byKey(const Key('profile-delete-account')));
+  // the profile list is lazily built: scroll until the button exists (Privacy group sits above it)
+  await tester.scrollUntilVisible(find.byKey(const Key('profile-delete-account')), 300);
   await tester.tap(find.byKey(const Key('profile-delete-account')));
   await tester.pumpAndSettle();
   return auth;

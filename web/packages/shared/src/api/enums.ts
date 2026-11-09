@@ -285,7 +285,15 @@ export const DOCUMENT_STATUSES = ['uploaded', 'verified', 'rejected'] as const;
 export type DocumentStatus = (typeof DOCUMENT_STATUSES)[number];
 export const DOCUMENT_STATUS_LABELS = labelsFor(DOCUMENT_STATUSES);
 
-export const CONSENT_KINDS = ['terms', 'privacy', 'ai_processing', 'share_with_hospitals', 'marketing'] as const;
+export const CONSENT_KINDS = [
+  'terms',
+  'privacy',
+  'ai_processing',
+  'share_with_hospitals',
+  'marketing',
+  'share_with_agent',
+  'guardian_consent',
+] as const;
 export type ConsentKind = (typeof CONSENT_KINDS)[number];
 export const CONSENT_KIND_LABELS = labelsFor(CONSENT_KINDS, {
   terms: 'Terms of service',
@@ -293,6 +301,8 @@ export const CONSENT_KIND_LABELS = labelsFor(CONSENT_KINDS, {
   ai_processing: 'AI processing of my health information',
   share_with_hospitals: 'Share my case with partner hospitals',
   marketing: 'Marketing communications',
+  share_with_agent: 'Share my documents with my agent',
+  guardian_consent: 'Parent or guardian consent',
 });
 
 export const PAYMENT_GATEWAYS = ['razorpay', 'stripe', 'bank_transfer', 'mock'] as const;

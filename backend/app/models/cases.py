@@ -10,6 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy import Boolean, Date, DateTime, Double, Integer, SmallInteger, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.crypto import EncryptedText
 from app.core.enums import (
     BookingStatus,
     CaseStatus,
@@ -65,10 +66,20 @@ class Case(UUIDPkMixin, TimestampMixin, Base):
     status: Mapped[CaseStatus] = mapped_column(
         sa_enum(CaseStatus), nullable=False, default=CaseStatus.ENQUIRY, server_default="enquiry", index=True
     )
-    patient_notes: Mapped[str | None] = mapped_column(Text)
-    medical_summary: Mapped[str | None] = mapped_column(Text)
+    # health free text: encrypted at rest (app/core/crypto.py)
+    patient_notes: Mapped[str | None] = mapped_column(EncryptedText())
+    medical_summary: Mapped[str | None] = mapped_column(EncryptedText())
     created_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Legal hold on the case: blocks erasure of the patient's account and retention purges of its files.
+    legal_hold: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=sa.false()
+    )
+    legal_hold_reason: Mapped[str | None] = mapped_column(String(500))
+    legal_hold_set_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    legal_hold_set_by: Mapped[uuid.UUID | None] = fk(
+        "users.id", ondelete="SET NULL", nullable=True, index=False
+    )
     emergency_acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     """When the patient (or their agent) acknowledged the emergency guidance of an ``emergency`` screening;
     the booking flow is blocked until then (INTEGRATION_BACKLOG #13)."""

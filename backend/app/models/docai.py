@@ -19,9 +19,9 @@ from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import Date, DateTime, Numeric, String, Text
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.crypto import EncryptedJSON, EncryptedText
 from app.core.enums import AIEngine, sa_enum
 from app.models.base import (
     Base,
@@ -124,8 +124,9 @@ class DocumentAnalysis(UUIDPkMixin, TimestampMixin, Base):
     language: Mapped[str | None] = mapped_column(String(16))  # ISO 639-1 of the document itself
     report_date: Mapped[date | None] = mapped_column(Date)
     facility_name: Mapped[str | None] = mapped_column(String(300))
-    summary_patient: Mapped[str | None] = mapped_column(Text)
-    summary_clinical: Mapped[str | None] = mapped_column(Text)
+    # AI-analysis text and JSON: encrypted at rest
+    summary_patient: Mapped[str | None] = mapped_column(EncryptedText())
+    summary_clinical: Mapped[str | None] = mapped_column(EncryptedText())
     key_findings: Mapped[list[dict[str, Any]]] = json_list_col()
     lab_values: Mapped[list[dict[str, Any]]] = json_list_col()
     diagnoses_mentioned: Mapped[list[str]] = text_array_col()
@@ -138,10 +139,10 @@ class DocumentAnalysis(UUIDPkMixin, TimestampMixin, Base):
     confidence: Mapped[Decimal | None] = mapped_column(Numeric(3, 2))
 
     # --- review -> edit -> confirm -------------------------------------------------------------------------
-    ai_output: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    ai_output: Mapped[dict[str, Any] | None] = mapped_column(EncryptedJSON())
     review_status: Mapped[AnalysisReviewStatus | None] = mapped_column(
         sa_enum(AnalysisReviewStatus), index=True
     )
-    confirmed_data: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    confirmed_data: Mapped[dict[str, Any] | None] = mapped_column(EncryptedJSON())
     confirmed_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

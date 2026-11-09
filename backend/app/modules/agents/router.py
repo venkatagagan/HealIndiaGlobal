@@ -9,6 +9,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
 
+from app.core.audit import audit_phi_access
 from app.core.deps import DbSession, PageParams, require_roles
 from app.core.enums import SettlementItemStatus, UserRole
 from app.core.pagination import Page
@@ -83,6 +84,7 @@ PatientFilters = Annotated[service.PatientListFilters, Depends(patient_list_filt
 
 @router.get("/agent-portal/patients", response_model=Page[AgentPatientOut])
 async def list_patients(
+    request: Request,
     db: DbSession,
     user: AgentUser,
     params: PageParams,
@@ -95,7 +97,17 @@ async def list_patients(
         ),
     ] = None,
 ) -> Page[AgentPatientOut]:
-    return await service.list_patients(db, user, params, filters, sort)
+    page = await service.list_patients(db, user, params, filters, sort)
+    # the patient records include medical history: PHI read audit (one row per listed patient)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=[p.id for p in page.items],
+        resource_type="patient_profile",
+        action="phi.list",
+        request=request,
+    )
+    return page
 
 
 @router.get("/agent-portal/patients/counts", response_model=AgentPatientCounts)
@@ -113,8 +125,19 @@ async def create_patient(
 
 
 @router.get("/agent-portal/patients/{patient_id}", response_model=AgentPatientOut)
-async def get_patient(patient_id: uuid.UUID, db: DbSession, user: AgentUser) -> AgentPatientOut:
-    return await service.get_patient(db, user, patient_id)
+async def get_patient(
+    patient_id: uuid.UUID, request: Request, db: DbSession, user: AgentUser
+) -> AgentPatientOut:
+    out = await service.get_patient(db, user, patient_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=out.id,
+        resource_type="patient_profile",
+        resource_id=out.id,
+        request=request,
+    )
+    return out
 
 
 @router.patch("/agent-portal/patients/{patient_id}", response_model=AgentPatientOut)

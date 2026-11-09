@@ -610,7 +610,9 @@ enum ConsentKind with JsonEnum {
   privacy('privacy'),
   aiProcessing('ai_processing'),
   shareWithHospitals('share_with_hospitals'),
-  marketing('marketing');
+  marketing('marketing'),
+  shareWithAgent('share_with_agent'),
+  guardianConsent('guardian_consent');
 
   const ConsentKind(this.json);
 

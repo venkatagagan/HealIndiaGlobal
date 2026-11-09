@@ -28,6 +28,7 @@ class World:
     hospital_1: dict[str, str]
     hospital_2: dict[str, str]
     support: dict[str, str]
+    admin: dict[str, str]
     profile_a_id: str
     case_a_id: str
     hospital_1_id: str
@@ -51,6 +52,7 @@ async def _world(db, make_user, auth_headers) -> World:
     hospital_2 = await create_hospital(db, owner=hospital_2_user)
     case_a = await create_case(db, profile_a, hospital_1)
     support = await make_user(role="support")
+    admin = await make_user(role="admin")
     return World(
         patient_a=auth_headers(patient_a_user),
         patient_b=auth_headers(patient_b_user),
@@ -59,6 +61,7 @@ async def _world(db, make_user, auth_headers) -> World:
         hospital_1=auth_headers(hospital_1_user),
         hospital_2=auth_headers(hospital_2_user),
         support=auth_headers(support),
+        admin=auth_headers(admin),
         profile_a_id=str(profile_a.id),
         case_a_id=str(case_a.id),
         hospital_1_id=str(hospital_1.id),
@@ -181,6 +184,16 @@ async def test_access_policy_and_idor(client, db, make_user, auth_headers) -> No
     by_agent = await _ok(await upload(client, w.agent_a, kind="lab_result", patient_id=w.profile_a_id))
     assert by_agent["patient_id"] == w.profile_a_id and by_agent["agent_id"] is None
 
+    # CG-14: the managing agent sees the patient's own documents only with the patient's consent.
+    agent_before = {d["id"] for d in (await client.get(f"{API}/documents", headers=w.agent_a)).json()}
+    assert agent_before == {by_agent["id"]}
+    r = await client.post(
+        f"{API}/auth/consents",
+        json={"kind": "share_with_agent", "version": "1", "granted": True},
+        headers=w.patient_a,
+    )
+    assert r.status_code == 201, r.text
+
     visibility = {
         "patient_a": (w.patient_a, {case_doc["id"], passport["id"], by_agent["id"]}),
         "agent_a": (w.agent_a, {case_doc["id"], passport["id"], by_agent["id"]}),
@@ -198,9 +211,12 @@ async def test_access_policy_and_idor(client, db, make_user, auth_headers) -> No
             for suffix in ("", "/download"):
                 r = await client.get(f"{API}/documents/{doc_id}{suffix}", headers=headers)
                 assert r.status_code == (200 if doc_id in expected else 404), (label, doc_id, suffix, r.text)
-    staff_listed = {d["id"] for d in (await client.get(f"{API}/documents", headers=w.support)).json()}
+    staff_listed = {d["id"] for d in (await client.get(f"{API}/documents", headers=w.admin)).json()}
     assert staff_listed == all_ids
-    assert (await client.get(f"{API}/documents/{RANDOM_ID}", headers=w.support)).status_code == 404
+    assert (await client.get(f"{API}/documents/{RANDOM_ID}", headers=w.admin)).status_code == 404
+    # least privilege: support sees partner KYC documents but not patients' documents outside their cases
+    support_listed = {d["id"] for d in (await client.get(f"{API}/documents", headers=w.support)).json()}
+    assert support_listed == {kyc_h2["id"], kyc_h2_default["id"], kyc_agent_b["id"]}
 
     # List filters.
     r = await client.get(f"{API}/documents", params={"case_id": w.case_a_id}, headers=w.patient_a)
@@ -247,7 +263,7 @@ async def test_delete_is_owner_only_and_soft(client, db, make_user, auth_headers
     assert r.status_code == 403
     assert (await client.delete(f"{API}/documents/{doc['id']}", headers=w.patient_a)).status_code == 204
 
-    for headers in (w.patient_a, w.hospital_1, w.support):
+    for headers in (w.patient_a, w.hospital_1, w.admin):
         assert (await client.get(f"{API}/documents/{doc['id']}", headers=headers)).status_code == 404
         assert doc["id"] not in str((await client.get(f"{API}/documents", headers=headers)).json())
     row = await db.get(Document, doc["id"])
@@ -261,6 +277,13 @@ async def test_verify_permissions(client, db, make_user, auth_headers) -> None:
     case_doc = await _ok(await upload(client, w.patient_a, case_id=w.case_a_id))
     kyc = await _ok(await upload(client, w.hospital_2, kind="kyc_registration"))
     url = f"{API}/documents/{case_doc['id']}/verify"
+    # the agent can see the document (patient consent, CG-14) but still cannot verify it
+    r = await client.post(
+        f"{API}/auth/consents",
+        json={"kind": "share_with_agent", "version": "1", "granted": True},
+        headers=w.patient_a,
+    )
+    assert r.status_code == 201, r.text
 
     assert (await client.post(url, json={"status": "verified"}, headers=w.hospital_2)).status_code == 404
     assert (await client.post(url, json={"status": "verified"}, headers=w.patient_b)).status_code == 404

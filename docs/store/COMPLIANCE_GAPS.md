@@ -33,7 +33,7 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-11 | Placeholder platform config: Flutter default icons, iOS Google client ID, debug release signing, final app IDs | P0 | Both | flutter-foundation, brand-assets, deploy-iac |
 | CG-12 | Store privacy forms must match the shipped binary (Razorpay SDK, future SDKs) | P0 | Both | Release manager, flutter-foundation |
 | CG-13 | AI "possible conditions" shown to patients raises medical-device (SaMD) exposure | P1 | Both | fl-screening, web-patient, be-screening, legal |
-| CG-14 | Agents see patient data without a patient consent record | P1 | Both | backend-models, be-auth, be-messaging, be-screening, be-cases, web-agent |
+| CG-14 | Agents see patient data without a patient consent record. **Documents: DONE 2026-11-09** (`share_with_agent`); screenings/cases still open | P1 | Both | backend-models, be-auth, be-messaging, be-screening, be-cases, web-agent |
 | CG-15 | Push notifications not implemented; content and opt-in rules needed when they are | P1 | Both | flutter-foundation, be-messaging |
 | CG-16 | No way to report content (chat, AI results, future reviews) | P1 | Both | be-messaging, be-admin, fl-journey, fl-screening, web-patient, web-admin-ops |
 | CG-17 | Payment screen copy ("Pay with Face ID", "with Affirm"), biometric fallback, Face ID purpose string | P1 | Both | fl-journey, web-patient, flutter-foundation |
@@ -44,8 +44,8 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-22 | Device and OS targets: iPad and landscape declared, Android API 36, 16 KB pages | P1 | Both | flutter-foundation |
 | CG-23 | iOS release pipeline: Xcode 26 SDK, macOS CI, export-compliance key | P1 | Apple | deploy-iac, flutter-foundation |
 | CG-24 | Age rating and audience vs Terms (18+); no adult attestation at sign-up | P1 | Both | be-auth, fl-onboarding, legal |
-| CG-25 | Guest data retention: Terms (12 months) and DEPLOYMENT (90 days) disagree; no purge job | P1 | Both | be-auth, docs/legal |
-| CG-26 | No data export (data subject request) endpoint | P2 | — (legal) | be-auth + modules |
+| CG-25 | Guest data retention: Terms (12 months) and DEPLOYMENT (90 days) disagree; no purge job. **DONE 2026-11-09** (90 days) | P1 | Both | be-auth, docs/legal |
+| CG-26 | No data export (data subject request) endpoint. **DONE 2026-11-09** | P2 | — (legal) | be-auth + modules |
 | CG-27 | Paid tele-consult fees on Google Play: policy says nothing either way | P2 | Google | Product, be-payments |
 | CG-28 | `google_fonts` fetches fonts from Google at runtime | P2 | Both (privacy) | flutter-foundation |
 | CG-29 | OpenStreetMap tile usage policy and attribution in production | P2 | — (ops) | fl-journey, deploy-iac |
@@ -529,6 +529,11 @@ rules-engine-only screening for users in those regions. In the Play Health apps 
 
 ### CG-14 · Agent access needs patient consent
 
+**Status (2026-11-09).** Partly done. `ConsentKind.share_with_agent` exists; agents see a patient's documents (and
+AI readings of them) only while the patient's **own** latest `share_with_agent` consent is granted (rows recorded by
+an agent never count); withdrawing it removes access at once. Still open: capturing it at referral sign-up with the
+agency name, and gating agent-run AI screening / case creation (`submit`, `POST /cases`) on the patient's consent.
+
 **Evidence.** PLAN §9.1 scopes agents to "cases/patients they manage or **referred**". A patient who signs up with a
 `referral_code` therefore becomes visible to the agent. `POST /agent-portal/patients` creates patients and lets
 agents run screenings and create cases for them. `ConsentKind` has no agent-sharing value. DEPLOYMENT §13 already
@@ -681,6 +686,10 @@ A grep on 2026-10-21 found no file writes in `mobile/lib`. Keep it that way with
 
 ### CG-25 · Guest data retention
 
+**Status (2026-11-09).** Done. 90 days, decided in favour of DEPLOYMENT: `GUEST_RETENTION_DAYS=90`, Terms §4.2 now
+says 90 days, and the daily `privacy.purge_guests` job erases guest accounts unused for that long with the same
+erasure as `DELETE /auth/me` (legal holds excepted).
+
 **Evidence.** Terms §4.2 says (bracketed) "We delete guest data after 12 months without activity". DEPLOYMENT §13
 says 90 days.
 
@@ -691,7 +700,9 @@ and make sure guests can delete in the app (Apple requires it).
 
 ## P2 — soon after launch
 
-- **CG-26 · Data export.** GDPR Art. 15/20 and the DPDP rights need an export of profile, screenings, cases,
+- **CG-26 · Data export. DONE 2026-11-09:** `GET /api/v1/auth/me/export` returns a ZIP (JSON + the user's files) or
+  JSON, rate-limited per user per day; "Download my data" is on the patient web profile and the app's profile.
+  Original note: GDPR Art. 15/20 and the DPDP rights need an export of profile, screenings, cases,
   bookings, documents and messages (SECURITY F12). Proposed: `POST /auth/data-export` starts a job that produces a
   ZIP document, then `GET /documents/{id}/download`.
 - **CG-27 · Paid tele-consults on Android.** Google's Payments policy bans Play Billing for "physical services" but

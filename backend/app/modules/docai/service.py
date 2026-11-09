@@ -51,6 +51,7 @@ from app.modules.documents.policies import (
     load_principal,
     visibility_clause,
 )
+from app.modules.privacy.guards import ensure_guardian_consent
 
 logger = structlog.get_logger(__name__)
 
@@ -232,6 +233,7 @@ async def create_analysis(
     profile = await db.get(PatientProfile, patient_id)
     if profile is None:
         raise NotFound("Patient not found")
+    await ensure_guardian_consent(db, profile)  # DPDP s.9: AI reading of a minor's reports
 
     case_id = body.case_id
     if case_id is None:

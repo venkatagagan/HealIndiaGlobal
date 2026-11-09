@@ -9,9 +9,9 @@ from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import Boolean, DateTime, Integer, Numeric, SmallInteger, String, Text
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.crypto import EncryptedJSON, EncryptedText
 from app.core.enums import AIEngine, AIRequestStatus, DurationUnit, ScreeningStatus, Urgency, sa_enum
 from app.models.base import (
     Base,
@@ -56,14 +56,14 @@ class Screening(UUIDPkMixin, TimestampMixin, Base):
     duration_unit: Mapped[DurationUnit | None] = mapped_column(sa_enum(DurationUnit))
     severity: Mapped[dict[str, Any]] = json_obj_col()
     previous_treatments: Mapped[list[str]] = text_array_col()
-    notes: Mapped[str | None] = mapped_column(Text)
+    notes: Mapped[str | None] = mapped_column(EncryptedText())  # health free text: encrypted at rest
     preferences: Mapped[dict[str, Any]] = json_obj_col()
     report_document_ids: Mapped[list[uuid.UUID]] = uuid_array_col()
     consent_ai: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default=sa.false()
     )
     home_country: Mapped[str | None] = mapped_column(String(2))
-    ai_result: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    ai_result: Mapped[dict[str, Any] | None] = mapped_column(EncryptedJSON())
     ai_engine: Mapped[AIEngine | None] = mapped_column(sa_enum(AIEngine))
     ai_model: Mapped[str | None] = mapped_column(String(100))
     urgency: Mapped[Urgency | None] = mapped_column(sa_enum(Urgency), index=True)

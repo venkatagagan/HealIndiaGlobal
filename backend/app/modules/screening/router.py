@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
 
+from app.core.audit import audit_phi_access
 from app.core.deps import CurrentUser, DbSession, PageParams
 from app.core.enums import ScreeningStatus
 from app.core.pagination import Page
@@ -29,6 +30,7 @@ async def create_screening(
 
 @router.get("/screenings", response_model=Page[ScreeningOut])
 async def list_screenings(
+    request: Request,
     db: DbSession,
     user: CurrentUser,
     params: PageParams,
@@ -36,12 +38,32 @@ async def list_screenings(
     patient_id: Annotated[uuid.UUID | None, Query()] = None,
 ) -> Page[ScreeningOut]:
     """Patients: their own. Agents: their patients. Staff: all."""
-    return await service.list_screenings(db, user, params, status=status, patient_id=patient_id)
+    page = await service.list_screenings(db, user, params, status=status, patient_id=patient_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=[s.patient_id for s in page.items],
+        resource_type="screening",
+        action="phi.list",
+        request=request,
+    )
+    return page
 
 
 @router.get("/screenings/{screening_id}", response_model=ScreeningOut)
-async def get_screening(screening_id: uuid.UUID, db: DbSession, user: CurrentUser) -> ScreeningOut:
-    return await service.get_screening(db, user, screening_id)
+async def get_screening(
+    screening_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request
+) -> ScreeningOut:
+    out = await service.get_screening(db, user, screening_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=out.patient_id,
+        resource_type="screening",
+        resource_id=out.id,
+        request=request,
+    )
+    return out
 
 
 @router.patch("/screenings/{screening_id}", response_model=ScreeningOut)

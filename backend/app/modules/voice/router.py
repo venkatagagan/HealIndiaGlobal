@@ -63,9 +63,20 @@ async def create_transcription(
 
 @router.get("/voice/transcriptions/{transcription_id}", response_model=VoiceTranscriptionOut)
 async def get_transcription(
-    transcription_id: uuid.UUID, db: DbSession, user: CurrentUser
+    transcription_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request
 ) -> VoiceTranscriptionOut:
-    return await service.get_transcription(db, user, transcription_id)
+    from app.core.audit import audit_phi_access
+
+    out = await service.get_transcription(db, user, transcription_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=[out.patient_id],
+        resource_type="voice_transcription",
+        resource_id=out.id,
+        request=request,
+    )
+    return out
 
 
 @router.post("/voice/transcriptions/{transcription_id}/confirm", response_model=ConfirmOut)

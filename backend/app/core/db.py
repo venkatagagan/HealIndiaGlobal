@@ -21,12 +21,22 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from app.core.config import settings
 
 
+def ssl_connect_args(url: str | None = None) -> dict[str, Any]:
+    """asyncpg ``connect_args`` for ``DATABASE_SSLMODE`` (unless the URL already sets ``ssl``/``sslmode``)."""
+    target = url or settings.DATABASE_URL
+    query = target.partition("?")[2].lower()
+    if "ssl=" in query or "sslmode=" in query:
+        return {}
+    return {"ssl": settings.DATABASE_SSLMODE}
+
+
 def create_engine(url: str | None = None, **kwargs: Any) -> AsyncEngine:
     """Create an asyncpg engine with the configured pool settings (``kwargs`` override)."""
     options: dict[str, Any] = {
         "echo": settings.DB_ECHO,
         "pool_pre_ping": True,
         "future": True,
+        "connect_args": ssl_connect_args(url),
     }
     if "poolclass" not in kwargs:
         options.update(

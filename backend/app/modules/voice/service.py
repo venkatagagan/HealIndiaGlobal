@@ -25,6 +25,7 @@ from app.core.storage import ObjectNotFound, get_storage, make_key
 from app.models import AIRequestLog, Case, PatientProfile, Screening, Specialty, User
 from app.models.voice import VoiceReviewStatus, VoiceStatus, VoiceTranscription
 from app.modules.auth.service import record_consent
+from app.modules.privacy.guards import ensure_guardian_consent
 from app.modules.voice import ai, policies, stt
 from app.modules.voice.ai import IntakeSuggestion
 from app.modules.voice.audio import AudioDecodeError, AudioTooLong, sniff_audio_format
@@ -158,6 +159,7 @@ async def create_transcription(
             patient = await db.get(PatientProfile, case.patient_id)
     if patient is None and str(getattr(user.role, "value", user.role)) == UserRole.PATIENT.value:
         patient = await _own_profile(db, user)
+    await ensure_guardian_consent(db, patient)  # DPDP s.9: AI processing of a minor's data
 
     transcription = VoiceTranscription(
         user_id=user.id,
@@ -245,7 +247,10 @@ async def extract_text(db: AsyncSession, user: User, body: IntakeExtractIn) -> I
     """Typed free text or an on-device transcript -> IntakeSuggestion. Read-only: nothing is applied."""
     policies.ensure_can_modify(user)
     if body.screening_id is not None:
-        await policies.screening_for_caller(db, user, body.screening_id)
+        _, patient = await policies.screening_for_caller(db, user, body.screening_id)
+        await ensure_guardian_consent(db, patient)
+    elif str(getattr(user.role, "value", user.role)) == UserRole.PATIENT.value:
+        await ensure_guardian_consent(db, await _own_profile(db, user))
     suggestion, _ = await _extract(db, body.text.strip())
     await db.commit()  # only the ai_request_logs row
     return suggestion

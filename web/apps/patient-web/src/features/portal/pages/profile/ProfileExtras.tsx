@@ -229,11 +229,15 @@ export function CompanionsSection() {
 // Consents
 // ---------------------------------------------------------------------------------------------------------
 export const CONSENT_VERSION = '2026-10';
-const CONSENT_COPY: Record<ConsentKind, string> = {
+// Guardian consent is given through its own form (verified by our staff), so it is not a switch here.
+const CONSENT_COPY: Partial<Record<ConsentKind, string>> = {
   terms: 'Terms of service of Heal India Global.',
   privacy: 'How we collect, store and protect your personal and health data.',
   ai_processing: 'Allow AI to analyse your screening answers and reports to suggest specialists. Not a diagnosis.',
-  share_with_hospitals: 'Allow us to share your case with hospitals you request quotes from.',
+  share_with_hospitals:
+    'Allow us to share your case with hospitals you request quotes from. If you turn this off, hospitals can no longer open your documents.',
+  share_with_agent:
+    'Let the agent who helps you see the documents you upload and those on your cases. Turn it off at any time.',
   marketing: 'Occasional news and offers by email. You can unsubscribe at any time.',
 };
 const REQUIRED: ConsentKind[] = ['terms', 'privacy'];

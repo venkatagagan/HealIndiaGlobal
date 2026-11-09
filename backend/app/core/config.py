@@ -74,6 +74,9 @@ class Settings(BaseSettings):
     DB_POOL_SIZE: int = Field(default=10, ge=1, le=200)
     DB_MAX_OVERFLOW: int = Field(default=20, ge=0, le=500)
     DB_ECHO: bool = False
+    # libpq-style sslmode passed to asyncpg: disable | allow | prefer | require | verify-ca | verify-full.
+    # Production must use ``require`` (or ``verify-full`` with the provider's CA bundle).
+    DATABASE_SSLMODE: Literal["disable", "allow", "prefer", "require", "verify-ca", "verify-full"] = "prefer"
     REDIS_URL: str = ""
 
     # --- auth / security -----------------------------------------------------------------------------------
@@ -83,7 +86,16 @@ class Settings(BaseSettings):
     JWT_AUDIENCE: str = "hig-api"
     ACCESS_TOKEN_TTL_MINUTES: int = Field(default=15, ge=1, le=1440)
     REFRESH_TOKEN_TTL_DAYS: int = Field(default=30, ge=1, le=365)
+    # Staff (admin/finance/support/super_admin) sessions: shorter refresh lifetime and an idle timeout - a
+    # staff refresh token is refused when the session made no API call for this many minutes.
+    STAFF_REFRESH_TOKEN_TTL_HOURS: int = Field(default=12, ge=1, le=24 * 30)
+    STAFF_IDLE_TIMEOUT_MINUTES: int = Field(default=30, ge=1, le=24 * 60)
+    # Field encryption (AES-256-GCM). FIELD_ENCRYPTION_KEY encrypts new values under FIELD_ENCRYPTION_KEY_ID;
+    # FIELD_ENCRYPTION_OLD_KEYS (comma-separated ``<key id>:<base64 key>``) only decrypt, until the
+    # ``privacy.reencrypt_fields`` job has rewritten every value under the current key.
     FIELD_ENCRYPTION_KEY: str = ""
+    FIELD_ENCRYPTION_KEY_ID: str = Field(default="k1", pattern=r"^[A-Za-z0-9_-]{1,16}$")
+    FIELD_ENCRYPTION_OLD_KEYS: StrList = Field(default_factory=list)
     CORS_ORIGINS: StrList = Field(
         default_factory=lambda: [
             "http://localhost:5173",
@@ -182,8 +194,40 @@ class Settings(BaseSettings):
     LOG_JSON: bool = False
     SENTRY_DSN: str = ""
 
+    # --- privacy / data rights (DPDP Act 2023 + Rules 2025, GDPR) ------------------------------------------
+    # Grievance Officer (DPDP s.8(10) / Rule 14) and Data Protection Officer contacts, published on
+    # GET /site-config/privacy-contact and in the privacy policy. Empty values are shown as "not published".
+    GRIEVANCE_OFFICER_NAME: str = ""
+    GRIEVANCE_OFFICER_EMAIL: str = ""
+    GRIEVANCE_OFFICER_PHONE: str = ""
+    DPO_NAME: str = ""
+    DPO_EMAIL: str = ""
+    DPO_PHONE: str = ""
+    PRIVACY_POSTAL_ADDRESS: str = ""
+    # Days to answer a data-rights request or grievance (GDPR: one month; DPDP Rules: at most 90 days).
+    DATA_RIGHTS_SLA_DAYS: int = Field(default=30, ge=1, le=90)
+    # Retention and purge jobs (``app/modules/privacy/tasks.py``). 0 disables a purge.
+    GUEST_RETENTION_DAYS: int = Field(default=90, ge=0)
+    TRAVEL_ID_RETENTION_DAYS_AFTER_TRIP: int = Field(default=90, ge=0)
+    SOFT_DELETED_FILE_RETENTION_DAYS: int = Field(default=30, ge=0)
+    INACTIVE_ACCOUNT_RETENTION_DAYS: int = Field(default=3 * 365, ge=0)
+    INACTIVE_ACCOUNT_NOTICE_DAYS: int = Field(default=30, ge=1)
+    NOTIFICATION_RETENTION_DAYS: int = Field(default=180, ge=0)
+    # Data export (GET /auth/me/export): requests per user per day and the largest export with files.
+    DATA_EXPORT_DAILY_LIMIT: int = Field(default=3, ge=1, le=50)
+    DATA_EXPORT_MAX_FILES_MB: int = Field(default=200, ge=1, le=2000)
+    # Age of majority for guardian consent (DPDP s.9: a "child" is under 18).
+    AGE_OF_MAJORITY: int = Field(default=18, ge=1, le=25)
+
     # ------------------------------------------------------------------------------------------------------
-    @field_validator("CORS_ORIGINS", "GOOGLE_CLIENT_IDS", "APPLE_CLIENT_IDS", "TRUSTED_HOSTS", mode="before")
+    @field_validator(
+        "CORS_ORIGINS",
+        "GOOGLE_CLIENT_IDS",
+        "APPLE_CLIENT_IDS",
+        "TRUSTED_HOSTS",
+        "FIELD_ENCRYPTION_OLD_KEYS",
+        mode="before",
+    )
     @classmethod
     def _parse_list(cls, value: Any) -> Any:
         return _split_list(value)

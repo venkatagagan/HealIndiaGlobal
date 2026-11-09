@@ -235,14 +235,118 @@ async def upload(
 
 
 # --- reads -----------------------------------------------------------------------------------------------
-async def get_visible(db: AsyncSession, user: User, document_id: uuid.UUID) -> tuple[Document, Principal]:
+BREAK_GLASS_MIN_REASON = 10
+
+
+async def get_visible(
+    db: AsyncSession,
+    user: User,
+    document_id: uuid.UUID,
+    *,
+    break_glass_reason: str | None = None,
+    request: Request | None = None,
+) -> tuple[Document, Principal]:
+    """The document if ``user`` may see it, else 404.
+
+    Support staff may read a document outside their scope (break-glass) by stating a reason of at least
+    ``BREAK_GLASS_MIN_REASON`` characters; every such read is audited (``phi.break_glass``) and admins are
+    notified."""
     p = await load_principal(db, user)
     document = (
         await db.execute(select(Document).where(Document.id == document_id, visibility_clause(p)))
     ).scalar_one_or_none()
+    if document is None and break_glass_reason is not None and p.role == UserRole.SUPPORT.value:
+        reason = break_glass_reason.strip()
+        if len(reason) < BREAK_GLASS_MIN_REASON:
+            raise BadRequest(
+                f"Give a reason of at least {BREAK_GLASS_MIN_REASON} characters for emergency access",
+                code="break_glass_reason_required",
+            )
+        document = (
+            await db.execute(
+                select(Document).where(Document.id == document_id, Document.deleted_at.is_(None))
+            )
+        ).scalar_one_or_none()
+        if document is not None:
+            await _record_break_glass(db, user, document, reason[:500], request)
     if document is None:
         raise NotFound("Document not found")
     return document, p
+
+
+async def _record_break_glass(
+    db: AsyncSession, user: User, document: Document, reason: str, request: Request | None
+) -> None:
+    from app.core.audit import audit_phi_access
+    from app.modules.messaging.notifications import notify_many  # lazy: messaging imports documents
+
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=[document.patient_id] if document.patient_id else [str(document.owner_user_id)],
+        resource_type="document",
+        resource_id=document.id,
+        action="phi.break_glass",
+        reason=reason,
+        request=request,
+        commit=False,
+    )
+    admins = (
+        (
+            await db.execute(
+                select(User.id).where(
+                    User.role.in_([UserRole.ADMIN, UserRole.SUPER_ADMIN]), User.deleted_at.is_(None)
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if admins:
+        await notify_many(
+            db,
+            list(admins),
+            "privacy.break_glass",
+            "Emergency document access",
+            f"{user.full_name or 'A support user'} opened a document outside their cases. Reason: {reason}",
+            {"document_id": str(document.id), "actor_user_id": str(user.id)},
+            dedupe_key=f"{document.id}:{user.id}:{datetime.now(UTC):%Y%m%d%H}",
+            email=False,
+        )
+    await db.commit()
+
+
+async def audit_reads(
+    db: AsyncSession, user: User, documents: Sequence[Document], *, action: str, request: Request | None
+) -> None:
+    """PHI read audit for documents about patients (no row for the patient's own reads)."""
+    from app.core.audit import audit_phi_access
+
+    if action == "phi.list":
+        # one row per patient whose documents were listed
+        await audit_phi_access(
+            db,
+            actor=user,
+            patient_ids=[d.patient_id for d in documents],
+            resource_type="document",
+            action=action,
+            request=request,
+        )
+        return
+    for document in documents:
+        if document.patient_id is None:
+            continue
+        await audit_phi_access(
+            db,
+            actor=user,
+            patient_ids=document.patient_id,
+            resource_type="document",
+            resource_id=document.id,
+            action=action,
+            request=request,
+            commit=False,
+        )
+    await db.commit()
 
 
 async def list_documents(
@@ -255,6 +359,7 @@ async def list_documents(
     hospital_id: uuid.UUID | None,
     status: DocumentStatus | None,
     limit: int,
+    request: Request | None = None,
 ) -> list[DocumentOut]:
     p = await load_principal(db, user)
     stmt = select(Document).where(visibility_clause(p))
@@ -270,12 +375,23 @@ async def list_documents(
         stmt = stmt.where(Document.status == status)
     stmt = stmt.order_by(Document.created_at.desc(), Document.id.desc()).limit(min(max(limit, 1), MAX_LIST))
     documents = list((await db.execute(stmt)).scalars().all())
+    await audit_reads(db, user, documents, action="phi.list", request=request)
     names = await _uploader_names(db, documents)
     return [document_out(d, names.get(d.owner_user_id)) for d in documents]
 
 
-async def read_content(db: AsyncSession, user: User, document_id: uuid.UUID) -> tuple[Document, bytes]:
-    document, _ = await get_visible(db, user, document_id)
+async def read_content(
+    db: AsyncSession,
+    user: User,
+    document_id: uuid.UUID,
+    *,
+    break_glass_reason: str | None = None,
+    request: Request | None = None,
+) -> tuple[Document, bytes]:
+    document, _ = await get_visible(
+        db, user, document_id, break_glass_reason=break_glass_reason, request=request
+    )
+    await audit_reads(db, user, [document], action="phi.download", request=request)
     try:
         data = await get_storage().open(document.storage_key)
     except (ObjectNotFound, FileNotFoundError) as exc:

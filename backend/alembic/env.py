@@ -70,10 +70,13 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_migrations_online() -> None:
+    from app.core.db import ssl_connect_args
+
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args=ssl_connect_args(config.get_main_option("sqlalchemy.url")),
     )
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

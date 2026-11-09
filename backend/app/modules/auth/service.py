@@ -23,7 +23,7 @@ from typing import Any
 
 import structlog
 from fastapi import Request
-from sqlalchemy import delete, func, or_, select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -69,14 +69,11 @@ from app.models import (
     Case,
     Consent,
     DeviceToken,
-    Document,
     Hospital,
     HospitalMember,
-    PatientCompanion,
     PatientProfile,
     PaymentOrder,
     RefreshToken,
-    SavedItem,
     User,
     VerificationToken,
 )
@@ -127,14 +124,15 @@ AGREEMENT_KINDS = frozenset({ConsentKind.HOSPITAL_PARTNER_AGREEMENT, ConsentKind
 # What DELETE /auth/me keeps (INTEGRATION_BACKLOG #15; returned to the client and stored in the audit log).
 RETENTION_RULES: tuple[str, ...] = (
     "Payments, invoices, refunds and ledger entries are kept for the statutory period required by tax and "
-    "accounting law.",
-    "Medical records that belong to a case (case details, quotes, bookings, travel records and case "
-    "documents) are kept for the period required by medical-records rules; only the treating hospital and "
-    "our compliance staff can access them.",
+    "accounting law, with your name and contact details removed.",
+    "Cases, quotes and bookings stay as anonymous records (amounts, dates, statuses) as they are part of "
+    "our contracts with hospitals; their notes and medical summaries are erased.",
     "Consent and security audit records are kept as evidence of what was agreed and done.",
-    "Your name, date of birth and nationality stay on those retained records. Contact details, passport and "
-    "insurance numbers, health notes on your profile, companions, saved items, devices and documents that "
-    "are not part of a case are erased, and you are signed out everywhere.",
+    "Everything else is erased: your profile details, health notes, screenings, AI document readings, voice "
+    "transcripts, uploaded documents and their files, messages you sent, notifications, saved items, "
+    "companions, nominee and devices. You are signed out everywhere.",
+    "Hospitals you shared a case with are separate data controllers and keep their own medical records under "
+    "the law that applies to them.",
 )
 _ACTIVE_CASE_STATUSES = (CaseStatus.ACCEPTED, CaseStatus.BOOKED, CaseStatus.IN_TREATMENT)
 _ACTIVE_BOOKING_STATUSES = (BookingStatus.CONFIRMED, BookingStatus.ADMITTED)
@@ -224,6 +222,23 @@ async def build_user_out(db: AsyncSession, user: User) -> UserOut:
 
 
 # --- sessions --------------------------------------------------------------------------------------------
+def refresh_ttl(portal: AuthPortal | str) -> timedelta:
+    """Refresh-token lifetime: staff sessions are short (``STAFF_REFRESH_TOKEN_TTL_HOURS``)."""
+    if _portal_value(portal) == AuthPortal.STAFF.value:
+        return timedelta(hours=settings.STAFF_REFRESH_TOKEN_TTL_HOURS)
+    return timedelta(days=settings.REFRESH_TOKEN_TTL_DAYS)
+
+
+def staff_session_idle(row: RefreshToken, now: datetime | None = None) -> bool:
+    """True when a staff session made no API call for ``STAFF_IDLE_TIMEOUT_MINUTES``."""
+    if _portal_value(row.portal) != AuthPortal.STAFF.value:
+        return False
+    last = row.last_used_at or row.created_at
+    if last is None:
+        return False
+    return (now or utcnow()) - last > timedelta(minutes=settings.STAFF_IDLE_TIMEOUT_MINUTES)
+
+
 async def issue_session(
     db: AsyncSession,
     user: User,
@@ -231,6 +246,7 @@ async def issue_session(
     *,
     family_id: uuid.UUID | None = None,
     portal: AuthPortal = AuthPortal.PUBLIC,
+    last_used_at: datetime | None = None,
 ) -> tuple[IssuedSession, RefreshToken]:
     """Create a refresh token row (new family unless ``family_id``) and an access token bound to it, both
     stamped with the login door ``portal``."""
@@ -240,7 +256,8 @@ async def issue_session(
         user_id=user.id,
         token_hash=token_hash,
         family_id=family,
-        expires_at=utcnow() + timedelta(days=settings.REFRESH_TOKEN_TTL_DAYS),
+        expires_at=utcnow() + refresh_ttl(portal),
+        last_used_at=last_used_at or utcnow(),
         user_agent=get_user_agent(request) if request is not None else None,
         ip=get_client_ip(request) if request is not None else None,
         portal=portal,
@@ -670,6 +687,7 @@ async def _complete_login(
     user.failed_login_count = 0
     user.locked_until = None
     user.last_login_at = utcnow()
+    user.inactivity_notice_at = None
     await audit_log(
         db,
         actor=user,
@@ -1012,6 +1030,23 @@ async def refresh(
         raise Unauthorized("Your session has expired, please sign in again", code="invalid_refresh_token")
     if row.expires_at <= utcnow():
         raise Unauthorized("Your session has expired, please sign in again", code="refresh_token_expired")
+    if staff_session_idle(row):
+        family_id, user_id = row.family_id, row.user_id
+        await revoke_family(db, family_id)
+        await audit_log(
+            db,
+            actor=None,
+            action="auth.session_idle_timeout",
+            entity_type="user",
+            entity_id=user_id,
+            after={"family_id": family_id, "idle_minutes": settings.STAFF_IDLE_TIMEOUT_MINUTES},
+            request=request,
+        )
+        await db.commit()
+        raise Unauthorized(
+            "You were signed out after a period of inactivity, please sign in again",
+            code="session_idle_timeout",
+        )
     user = await db.get(User, row.user_id)
     expected_portal = AuthPortal.STAFF if user is not None and is_staff(user) else AuthPortal.PUBLIC
     if user is None or expected_portal != _portal_value(portal):
@@ -1024,7 +1059,15 @@ async def refresh(
     if locked is not None:
         _raise_locked(locked)
     _ensure_can_sign_in(user)
-    issued, new_row = await issue_session(db, user, request, family_id=row.family_id, portal=portal)
+    # A refresh is not activity: the new token inherits the session's last API use (staff idle timeout).
+    issued, new_row = await issue_session(
+        db,
+        user,
+        request,
+        family_id=row.family_id,
+        portal=portal,
+        last_used_at=row.last_used_at or row.created_at,
+    )
     await db.flush()
     row.revoked_at = utcnow()
     row.replaced_by_id = new_row.id
@@ -1350,6 +1393,12 @@ async def _consent_scope(
         if hospital_id is not None and await db.get(Hospital, hospital_id) is None:
             raise NotFound("Hospital not found")
         return None, hospital_id
+    if kind == ConsentKind.GUARDIAN_CONSENT:
+        raise BadRequest(
+            "Guardian consent is recorded through the guardian consent form", code="consent_not_applicable"
+        )
+    if kind == ConsentKind.SHARE_WITH_AGENT and role != UserRole.PATIENT:
+        raise BadRequest("This consent applies to patient accounts", code="consent_not_applicable")
     if case_id or hospital_id:
         raise BadRequest("This consent cannot be scoped", code="consent_scope_not_allowed")
     return None, None
@@ -1703,6 +1752,9 @@ async def _deletion_blockers(db: AsyncSession, user: User, role: str) -> dict[st
                 Hospital.status != HospitalStatus.DRAFT,
             )
         )
+    from app.modules.privacy.guards import legal_hold_blockers  # lazy: privacy imports auth
+
+    blockers.update(await legal_hold_blockers(db, user))
     return {k: v for k, v in blockers.items() if v}
 
 
@@ -1717,103 +1769,20 @@ async def delete_account(db: AsyncSession, user: User, body: AccountDeleteIn, re
         raise BadRequest("The password is incorrect", code="invalid_current_password")
     if user.mfa_enabled and not verify_totp(user.mfa_secret, body.otp_code):
         raise BadRequest("The authentication code is not valid", code="invalid_otp")
-    apple_revoked: bool | None = None
     role = _role(user)
     blockers = await _deletion_blockers(db, user, role)
     if blockers:
         raise Conflict(
-            "Your account has treatment, bookings or payments in progress. Please finish or cancel them, or "
-            "contact support, before deleting your account.",
+            "Your account has treatment, bookings or payments in progress, or records we must keep for a "
+            "legal matter. Please finish or cancel them, or contact support, before deleting your account.",
             code="account_deletion_blocked",
             details=blockers,
         )
-    now = utcnow()
-    profile_id: uuid.UUID | None = None
-    if role == UserRole.PATIENT:
-        profile = (
-            await db.execute(select(PatientProfile).where(PatientProfile.user_id == user.id))
-        ).scalar_one_or_none()
-        if profile is not None:
-            profile_id = profile.id
-            for field in (
-                "passport_number",
-                "passport_last4",
-                "passport_expiry",
-                "phone",
-                "whatsapp",
-                "address",
-                "emergency_contact",
-                "allergies",
-                "medical_history",
-                "blood_group",
-                "insurance_provider",
-                "insurance_policy_number",
-            ):
-                setattr(profile, field, None)
-            await db.execute(delete(PatientCompanion).where(PatientCompanion.patient_id == profile.id))
-    elif role == UserRole.AGENT:
-        agent = (await db.execute(select(Agent).where(Agent.user_id == user.id))).scalar_one_or_none()
-        if agent is not None:
-            agent.status = AgentStatus.SUSPENDED
-            agent.phone = None
-    elif role == UserRole.HOSPITAL:
-        await db.execute(delete(HospitalMember).where(HospitalMember.user_id == user.id))
+    from app.modules.privacy.erasure import erase_account  # lazy: privacy imports auth
 
-    owner_filter = Document.owner_user_id == user.id
-    if profile_id is not None:
-        owner_filter = or_(owner_filter, Document.patient_id == profile_id)
-    erased_docs = await db.execute(
-        update(Document)
-        .where(owner_filter, Document.case_id.is_(None), Document.deleted_at.is_(None))
-        .values(deleted_at=now)
-        .execution_options(synchronize_session=False)
-    )
-    await db.execute(delete(SavedItem).where(SavedItem.user_id == user.id))
-    await db.execute(delete(DeviceToken).where(DeviceToken.user_id == user.id))
-    await db.execute(
-        update(VerificationToken)
-        .where(VerificationToken.user_id == user.id, VerificationToken.used_at.is_(None))
-        .values(used_at=func.now())
-        .execution_options(synchronize_session=False)
-    )
-    sessions = await revoke_all_sessions(db, user.id)
-    _record_consents(
-        db, user.id, [ConsentKind.MARKETING, ConsentKind.AI_PROCESSING], TERMS_VERSION, request, granted=False
-    )
-
-    user.email = None
-    user.phone = None
-    user.full_name = "Deleted user"
-    user.avatar_url = None
-    if user.apple_refresh_token:
-        apple_revoked = await apple_api.revoke_refresh_token(user.apple_refresh_token)
-    user.apple_refresh_token = None
-    user.google_sub = None
-    user.apple_sub = None
-    user.password_hash = None
-    user.mfa_enabled = False
-    user.mfa_secret = None
-    user.status = UserStatus.DELETED
-    user.deleted_at = now
-    await audit_log(
-        db,
-        actor=user,
-        action="auth.account_deleted",
-        entity_type="user",
-        entity_id=user.id,
-        after={
-            "role": role,
-            "reason": body.reason,
-            "documents_erased": int(getattr(erased_docs, "rowcount", 0) or 0),
-            "sessions_revoked": sessions,
-            "apple_token_revoked": apple_revoked,
-        },
-        request=request,
-    )
-    await db.flush()
-    await publish(db, "user.deleted", {"user_id": str(user.id), "role": role})
+    deleted_at = await erase_account(db, user, actor=user, reason=body.reason, request=request)
     await db.commit()
-    return now
+    return deleted_at
 
 
 async def request_account_deletion(

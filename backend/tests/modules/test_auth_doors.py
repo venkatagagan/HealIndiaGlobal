@@ -507,7 +507,7 @@ async def test_delete_account_patient(client, db, make_user, auth_headers) -> No
     assert user.email is None and user.password_hash is None and user.full_name == "Deleted user"
     profile = await db.get(PatientProfile, profile_id)
     assert profile is not None and profile.passport_number is None and profile.phone is None
-    assert profile.first_name  # retained for medical/financial records
+    assert profile.first_name == "Deleted" and profile.date_of_birth is None  # anonymous shell
     for model in (PatientCompanion, SavedItem, DeviceToken):
         assert (await db.execute(select(func.count()).select_from(model))).scalar_one() == 0
     assert all(t.revoked_at is not None for t in (await db.execute(select(RefreshToken))).scalars())
@@ -527,8 +527,8 @@ async def test_delete_account_guest_documents_and_staff(client, db, make_user, a
     r = await client.request("DELETE", f"{API}/auth/me", headers=guest_headers)
     assert r.status_code == 204, r.text
     db.expire_all()
-    doc = (await db.execute(select(Document))).scalar_one()
-    assert doc.deleted_at is not None
+    # complete erasure: the document row is gone (its file is removed by the privacy.delete_objects job)
+    assert (await db.execute(select(Document))).scalar_one_or_none() is None
 
     admin = await make_user(role="admin")
     r = await client.request(

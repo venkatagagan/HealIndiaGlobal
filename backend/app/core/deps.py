@@ -94,9 +94,49 @@ async def _user_from_token(db: AsyncSession, token: str, request: Request | None
             if request.headers.get("x-client-type", "").strip().lower() == "mobile":
                 raise Unauthorized("This session is not valid here", code="wrong_portal")
             ensure_staff_ip_allowed(request)
+            await touch_staff_session(payload)
         request.state.user = user
         request.state.token_payload = payload
     return user
+
+
+# --- staff idle timeout: remember the session's last API use (throttled, own short transaction) ---------
+_TOUCH_INTERVAL_SECONDS = 60.0
+_last_touch: dict[str, float] = {}
+
+
+async def touch_staff_session(payload: dict[str, Any] | None) -> None:
+    """Stamp ``refresh_tokens.last_used_at`` of the staff session ``sid`` (at most once a minute per process).
+
+    The request's own session never commits on reads, so this uses a separate short transaction."""
+    import time
+
+    from sqlalchemy import func, update
+
+    from app.core import db as db_module
+    from app.models.identity import RefreshToken
+
+    sid = str((payload or {}).get("sid") or "")
+    if not sid:
+        return
+    try:
+        family = uuid.UUID(sid)
+    except ValueError:
+        return
+    now = time.monotonic()
+    if now - _last_touch.get(sid, -_TOUCH_INTERVAL_SECONDS) < _TOUCH_INTERVAL_SECONDS:
+        return
+    _last_touch[sid] = now
+    if len(_last_touch) > 10_000:
+        _last_touch.clear()
+    async with db_module.SessionLocal() as session:
+        await session.execute(
+            update(RefreshToken)
+            .where(RefreshToken.family_id == family, RefreshToken.revoked_at.is_(None))
+            .values(last_used_at=func.now())
+            .execution_options(synchronize_session=False)
+        )
+        await session.commit()
 
 
 async def get_current_user(

@@ -17,6 +17,7 @@ import '../../onboarding/onboarding_content.dart';
 import '../data/countries.dart';
 import '../widgets/change_password_sheet.dart';
 import '../widgets/delete_account_sheet.dart';
+import '../widgets/privacy_group.dart';
 import '../widgets/profile_widgets.dart';
 
 /// Profile tab: header, personal info + masked passport, companions, saved, documents link,
@@ -93,6 +94,7 @@ class ProfileScreen extends ConsumerWidget {
               ],
               const _PreferencesGroup(),
               if (full) _SecurityGroup(user: user),
+              if (auth.hasSession) PrivacyGroup(showAccessLog: full),
               SettingsGroup(
                 title: 'About',
                 children: [

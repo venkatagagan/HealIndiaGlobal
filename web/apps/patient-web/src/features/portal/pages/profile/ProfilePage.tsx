@@ -5,6 +5,7 @@ import { useMe } from '../../lib/session';
 import { useDocumentTitle } from '../../lib/shared';
 import { EmptyState, ErrorState, PageHeader, Skeleton, Tabs } from '../../ui/primitives';
 import { DeleteAccountSection } from './DeleteAccountSection';
+import { AccessLogCard, DownloadMyDataCard, NomineeCard, PrivacyRequestsCard } from './PrivacyDataSection';
 import { CompanionsSection, ConsentsSection, SecuritySection } from './ProfileExtras';
 import { EmergencyForm, PassportForm, PersonalForm, PreferencesForm } from './ProfileForms';
 
@@ -44,7 +45,12 @@ export function ProfilePage() {
       ) : profile.isError ? (
         <div className="space-y-6">
           <ErrorState error={profile.error} onRetry={() => void profile.refetch()} />
-          {tab === 'privacy' ? <DeleteAccountSection /> : null}
+          {tab === 'privacy' ? (
+            <>
+              <DownloadMyDataCard />
+              <DeleteAccountSection />
+            </>
+          ) : null}
         </div>
       ) : (
         <div key={profile.data.updated_at ?? profile.data.id}>
@@ -60,6 +66,10 @@ export function ProfilePage() {
           {tab === 'privacy' ? (
             <div className="space-y-6">
               <ConsentsSection />
+              <DownloadMyDataCard />
+              {isGuest ? null : <NomineeCard />}
+              <AccessLogCard />
+              <PrivacyRequestsCard />
               <DeleteAccountSection />
             </div>
           ) : null}

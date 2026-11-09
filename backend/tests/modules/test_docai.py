@@ -172,6 +172,9 @@ async def world(db: Any) -> SimpleNamespace:
     agent_user = await db.get(type(patient_user), agent.user_id)
     managed_user = await create_user(db, role="patient")
     managed = await create_patient(db, managed_user, managed_by_agent_id=agent.id)
+    # CG-14: the managed patient lets their agent see their documents (their own consent row)
+    db.add(Consent(user_id=managed_user.id, kind="share_with_agent", version="1", granted=True))
+    await db.commit()
     return SimpleNamespace(**locals())
 
 
@@ -323,7 +326,11 @@ async def test_access_control(
     assert managed_out["status"] == "completed"
     assert managed_out["patient_id"] == str(world.managed.id)
     # SEC-060: the agent is recorded as the granter; this is not the patient's own AI consent.
-    consent = (await db.execute(select(Consent).where(Consent.user_id == world.managed_user.id))).scalar_one()
+    consent = (
+        await db.execute(
+            select(Consent).where(Consent.user_id == world.managed_user.id, Consent.kind == "ai_processing")
+        )
+    ).scalar_one()
     assert consent.granted_by_user_id == world.agent_user.id
     r = await client.get(f"{API}/documents/analyses/{aid}", headers=agent)
     assert r.status_code == 404

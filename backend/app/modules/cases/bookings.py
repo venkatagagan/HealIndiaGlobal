@@ -57,6 +57,7 @@ from app.modules.cases.schemas import (
     ItineraryItemUpdate,
 )
 from app.modules.cases.state import ensure_booking_transition, transition_case
+from app.modules.privacy.guards import ensure_guardian_consent
 
 logger = structlog.get_logger(__name__)
 
@@ -289,6 +290,7 @@ async def create_booking(
         await policies.require_active_agent(db, user)
     case = await policies.get_case_for_user(db, body.case_id, user, for_update=True)
     await ensure_emergency_acknowledged(db, case)
+    await ensure_guardian_consent(db, case.patient_id)  # DPDP s.9: a minor's booking needs a guardian
     existing = (
         await db.execute(
             select(Booking.id).where(Booking.case_id == case.id, Booking.status != BookingStatus.CANCELLED)

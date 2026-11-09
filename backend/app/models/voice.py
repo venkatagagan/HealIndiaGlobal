@@ -13,9 +13,9 @@ from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import DateTime, Float, String, Text
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.crypto import EncryptedJSON, EncryptedText
 from app.core.enums import sa_enum
 from app.models.base import Base, TimestampMixin, UUIDPkMixin, fk, json_list_col
 
@@ -63,12 +63,13 @@ class VoiceTranscription(UUIDPkMixin, TimestampMixin, Base):
     )
     provider: Mapped[str | None] = mapped_column(String(40))
     model: Mapped[str | None] = mapped_column(String(100))
-    transcript: Mapped[str | None] = mapped_column(Text)
-    transcript_en: Mapped[str | None] = mapped_column(Text)
+    # transcripts and AI suggestions: encrypted at rest
+    transcript: Mapped[str | None] = mapped_column(EncryptedText())
+    transcript_en: Mapped[str | None] = mapped_column(EncryptedText())
     #: ``[{start, end, text}]`` (seconds)
     segments: Mapped[list[dict[str, Any]]] = json_list_col()
     #: IntakeSuggestion (PLAN 7.2) produced by Claude; NULL when AI extraction is unavailable
-    intake_suggestion: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    intake_suggestion: Mapped[dict[str, Any] | None] = mapped_column(EncryptedJSON())
     #: failure reason (status ``failed``) or, with status ``completed`` and no suggestion, why the AI
     #: extraction is missing (e.g. "AI extraction not configured")
     error: Mapped[str | None] = mapped_column(Text)
@@ -84,5 +85,5 @@ class VoiceTranscription(UUIDPkMixin, TimestampMixin, Base):
     )
     #: the patient-confirmed IntakeSuggestion plus ``transcript`` (the confirmed, possibly edited,
     #: original-language text)
-    confirmed_intake: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    confirmed_intake: Mapped[dict[str, Any] | None] = mapped_column(EncryptedJSON())
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
