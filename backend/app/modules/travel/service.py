@@ -115,6 +115,35 @@ def _value(v: Any) -> str:
     return str(getattr(v, "value", v))
 
 
+async def _publish_status_change(
+    db: AsyncSession,
+    case: Case,
+    item_type: str,
+    item: Any,
+    from_status: str,
+    actor: User,
+    kind: Any = None,
+) -> None:
+    """``travel.status_changed`` (CG-30) for a visa/travel/accommodation/service item whose status moved."""
+    to_status = _value(item.status)
+    if to_status == from_status:
+        return
+    await publish(
+        db,
+        "travel.status_changed",
+        {
+            "case_id": str(case.id),
+            "patient_id": str(case.patient_id),
+            "item_type": item_type,
+            "item_id": str(item.id),
+            "kind": _value(kind) if kind is not None else None,
+            "from_status": from_status,
+            "to_status": to_status,
+            "actor_user_id": str(actor.id),
+        },
+    )
+
+
 async def _case_for_request(db: AsyncSession, user: User, case_id: uuid.UUID) -> Case:
     """Scoped case that may receive new travel requests from the patient side or staff."""
     if not (policies.is_patient(user) or policies.is_agent(user) or policies.is_ops_staff(user)):
@@ -319,6 +348,7 @@ async def update_visa_request(
         "travel.updated",
         {"case_id": str(case.id), "visa_request_id": str(visa.id), "status": _value(visa.status)},
     )
+    await _publish_status_change(db, case, "visa", visa, current.value, user, kind=visa.visa_type)
     await db.commit()
     await db.refresh(visa)
     return visa
@@ -423,6 +453,7 @@ async def update_travel_booking(
         "travel.updated",
         {"case_id": str(case.id), "travel_booking_id": str(item.id), "status": _value(item.status)},
     )
+    await _publish_status_change(db, case, "travel", item, current.value, user, kind=item.kind)
     await db.commit()
     await db.refresh(item)
     return item
@@ -540,6 +571,7 @@ async def update_accommodation_booking(
         "travel.updated",
         {"case_id": str(case.id), "accommodation_booking_id": str(item.id), "status": _value(item.status)},
     )
+    await _publish_status_change(db, case, "accommodation", item, current.value, user)
     await db.commit()
     await db.refresh(item)
     return item
@@ -653,6 +685,7 @@ async def update_service_booking(
         "travel.updated",
         {"case_id": str(case.id), "service_booking_id": str(item.id), "status": _value(item.status)},
     )
+    await _publish_status_change(db, case, "service", item, current.value, user, kind=item.kind)
     await db.commit()
     await db.refresh(item)
     return item

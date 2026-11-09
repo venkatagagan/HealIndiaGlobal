@@ -154,6 +154,9 @@ class ConsentKind(StrEnum):
     # versioned click-through acceptance of the partner agreements (INTEGRATION_BACKLOG #11)
     HOSPITAL_PARTNER_AGREEMENT = "hospital_partner_agreement"
     AGENT_AGREEMENT = "agent_agreement"
+    # sign-up age attestation (CG-24): granted = "I am 18 or older"; granted=False = a patient under 18
+    # (a parent or guardian must consent - see ``User.is_adult``)
+    AGE_18_PLUS = "age_18_plus"
 
 
 class SavedEntityType(StrEnum):
@@ -443,6 +446,42 @@ class ConversationKind(StrEnum):
     CASE = "case"
     SUPPORT = "support"
     DIRECT = "direct"
+
+
+# ------------------------------------------------------------------------------------- moderation (CG-16)
+class ReportTargetType(StrEnum):
+    MESSAGE = "message"
+    SCREENING_RESULT = "screening_result"
+    DOCUMENT_ANALYSIS = "document_analysis"
+    REVIEW = "review"
+
+
+class ReportReason(StrEnum):
+    SPAM = "spam"
+    ABUSIVE = "abusive"
+    INAPPROPRIATE = "inappropriate"
+    INACCURATE = "inaccurate"
+    PRIVACY = "privacy"
+    OTHER = "other"
+
+
+class ReportStatus(StrEnum):
+    OPEN = "open"
+    ACTIONED = "actioned"
+    DISMISSED = "dismissed"
+
+
+class ModerationAction(StrEnum):
+    DISMISS = "dismiss"
+    HIDE_MESSAGE = "hide_message"
+    WARN = "warn"
+    SUSPEND = "suspend"
+
+
+class EnquiryStatus(StrEnum):
+    NEW = "new"
+    IN_PROGRESS = "in_progress"
+    CLOSED = "closed"
 
 
 # -------------------------------------------------------------------------------------------- payments

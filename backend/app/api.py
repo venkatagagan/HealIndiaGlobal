@@ -20,6 +20,7 @@ from app.modules.documents.router import router as documents_router
 from app.modules.hospitals.router import router as hospitals_router
 from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
+from app.modules.moderation.router import router as moderation_router
 from app.modules.patients.router import router as patients_router
 from app.modules.payments.router import router as payments_router
 from app.modules.screening.router import router as screening_router
@@ -46,6 +47,7 @@ for _router in (
     ledger_router,
     settlements_router,
     admin_router,
+    moderation_router,  # after admin_router: /admin/reports/{report_id} vs /admin/reports/revenue
     voice_router,
 ):
     api_router.include_router(_router)

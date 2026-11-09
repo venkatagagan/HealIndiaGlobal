@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.audit import audit_log
 from app.core.enums import CaseStatus, ConsultationMode, ConsultationStatus
 from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
+from app.core.events import publish
 from app.models import Case, Consultation, Doctor, User
 from app.modules.cases import policies
 from app.modules.cases.common import queue_case_push, utcnow
@@ -187,6 +188,36 @@ async def update_consultation(
         "consultation.updated",
         {"consultation_id": str(item.id), "status": ConsultationStatus(item.status).value},
     )
+    event = _consultation_event(current, ConsultationStatus(item.status), before, after)
+    if event is not None:
+        await publish(
+            db,
+            event,
+            {
+                "consultation_id": str(item.id),
+                "case_id": str(case.id),
+                "scheduled_at": item.scheduled_at,
+                "previous_scheduled_at": before["scheduled_at"],
+                "actor_user_id": str(user.id),
+            },
+        )
     await db.commit()
     await db.refresh(item)
     return item
+
+
+def _consultation_event(
+    current: ConsultationStatus, new: ConsultationStatus, before: dict[str, Any], after: dict[str, Any]
+) -> str | None:
+    """Domain event for a consultation update (CG-30), or ``None`` when nobody needs to hear about it."""
+    if new == ConsultationStatus.CANCELLED and current != ConsultationStatus.CANCELLED:
+        return "consultation.cancelled"
+    if new == ConsultationStatus.SCHEDULED and current == ConsultationStatus.REQUESTED:
+        return "consultation.scheduled"
+    if (
+        new == ConsultationStatus.SCHEDULED
+        and current == ConsultationStatus.SCHEDULED
+        and (before["scheduled_at"] != after["scheduled_at"] or before["meeting_url"] != after["meeting_url"])
+    ):
+        return "consultation.rescheduled"
+    return None

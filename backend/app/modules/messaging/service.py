@@ -12,7 +12,7 @@ import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
-from sqlalchemy import ColumnElement, and_, func, or_, select, text, update
+from sqlalchemy import ColumnElement, and_, func, or_, select, text, true, update
 from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -99,7 +99,15 @@ def message_out(message: Message, sender: User | None) -> MessageOut:
         attachment_document_ids=list(message.attachment_document_ids or []),
         created_at=message.created_at,
         edited_at=message.edited_at,
+        hidden=message.hidden_at is not None,
     )
+
+
+def visible_messages(user: User) -> ColumnElement[bool]:
+    """Moderation (CG-16): hidden messages are visible only to their sender and to staff."""
+    if is_staff(user):
+        return true()
+    return or_(Message.hidden_at.is_(None), Message.sender_user_id == user.id)
 
 
 async def _users_by_id(db: AsyncSession, ids: Sequence[uuid.UUID | None]) -> dict[uuid.UUID, User]:
@@ -139,7 +147,7 @@ async def _build_outs(
     last_ids = (
         select(Message.id)
         .ext(distinct_on(Message.conversation_id))
-        .where(Message.conversation_id.in_(conv_ids))
+        .where(Message.conversation_id.in_(conv_ids), visible_messages(user))
         .order_by(Message.conversation_id, Message.created_at.desc(), Message.id.desc())
     )
     last_msgs = (await db.execute(select(Message).where(Message.id.in_(last_ids)))).scalars().all()
@@ -161,6 +169,7 @@ async def _build_outs(
             .where(
                 or_(Message.sender_user_id.is_(None), Message.sender_user_id != user.id),
                 or_(lr.c.last_read_at.is_(None), Message.created_at > lr.c.last_read_at),
+                visible_messages(user),
             )
             .group_by(Message.conversation_id)
         )
@@ -381,7 +390,7 @@ async def list_messages(
 ) -> list[MessageOut]:
     """Up to ``limit`` messages older than ``before`` (message id or timestamp), oldest first."""
     conversation = await get_conversation_for_user(db, user, conversation_id)
-    stmt = select(Message).where(Message.conversation_id == conversation.id)
+    stmt = select(Message).where(Message.conversation_id == conversation.id, visible_messages(user))
     cursor = _parse_before(before)
     if isinstance(cursor, uuid.UUID):
         ref = await db.get(Message, cursor)

@@ -661,7 +661,7 @@ class HigUser(FastHttpUser):
         number = (acct.email or "").split("@")[0].rsplit(".", 1)[-1]
         body = {
             "email": acct.email, "password": acct.password, "full_name": f"Loadtest Patient {number}",
-            "role": "patient", "country_code": country, "accept_terms": True,
+            "role": "patient", "country_code": country, "accept_terms": True, "is_adult": True,
         }
         status, data = self.api(
             "POST", "/auth/register", name="/auth/register [pool]", body=body, auth=False,

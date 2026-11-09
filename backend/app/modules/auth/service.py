@@ -107,6 +107,7 @@ STAFF_REFRESH_COOKIE_NAME = "hig_staff_refresh"
 STAFF_REFRESH_COOKIE_PATH = "/api/v1/auth/staff"
 TERMS_VERSION = "2026-10"
 AGREEMENT_VERSION = "2026-10"
+AGE_ATTESTATION_VERSION = "2026-11"
 LOCKOUT_THRESHOLD = 5
 LOCKOUT_MINUTES = 15
 VERIFY_EMAIL_TTL_HOURS = 48
@@ -220,7 +221,21 @@ async def build_user_out(db: AsyncSession, user: User) -> UserOut:
         agent_id=agent_id,
         hospitals=hospitals,
         pending_consents=pending_consents,
+        is_adult=user.is_adult,
+        guardian_consent_required=guardian_consent_required(user),
     )
+
+
+def guardian_consent_required(user: User) -> bool:
+    """CG-24: a patient who said at sign-up they are under 18 needs a parent's or guardian's consent. The
+    privacy module owns the guardian consent itself and may narrow this once that consent is recorded."""
+    return _role(user) == UserRole.PATIENT and user.is_adult is False
+
+
+def record_age_attestation(db: AsyncSession, user: User, is_adult: bool, request: Request | None) -> None:
+    """Store the sign-up age answer (CG-24) on the user and as an ``age_18_plus`` consent row (no commit)."""
+    user.is_adult = is_adult
+    record_consent(db, user.id, ConsentKind.AGE_18_PLUS, AGE_ATTESTATION_VERSION, request, granted=is_adult)
 
 
 # --- sessions --------------------------------------------------------------------------------------------
@@ -563,6 +578,7 @@ async def register(db: AsyncSession, body: RegisterIn, request: Request) -> Issu
         city=body.city,
     )
     _record_consents(db, user.id, [ConsentKind.TERMS, ConsentKind.PRIVACY], TERMS_VERSION, request)
+    record_age_attestation(db, user, bool(body.is_adult), request)
     if body.accept_agreement:
         _record_agreement_at_signup(db, user, body.role, hospital_id, request)
     await send_verification_email(db, user)
@@ -730,6 +746,7 @@ class FederatedSignUp:
     city: str | None
     referral_code: str | None
     accept_agreement: bool
+    is_adult: bool | None = None
 
 
 async def _federated_sign_in(
@@ -801,6 +818,11 @@ async def _federated_sign_in(
         )
     await _ensure_email_free(db, identity.email)
     role = extra.role or "patient"
+    # CG-24: a new account needs the age answer; the client asks and retries the same call with ``is_adult``.
+    if extra.is_adult is None:
+        raise BadRequest("Please confirm your age to create your account", code="age_attestation_required")
+    if role != UserRole.PATIENT.value and extra.is_adult is not True:
+        raise BadRequest("Agents and hospital users must be 18 or older", code="adult_required")
     name = (identity.name or identity.email.split("@", 1)[0])[:200]
     referred_by = await _resolve_referral(db, extra.referral_code) if role == "patient" else None
     user = User(
@@ -828,6 +850,7 @@ async def _federated_sign_in(
         city=extra.city,
     )
     _record_consents(db, user.id, [ConsentKind.TERMS, ConsentKind.PRIVACY], TERMS_VERSION, request)
+    record_age_attestation(db, user, extra.is_adult, request)
     if extra.accept_agreement:
         _record_agreement_at_signup(db, user, role, hospital_id, request)
     await audit_log(
@@ -865,6 +888,7 @@ async def google_sign_in(db: AsyncSession, body: GoogleIn, request: Request) -> 
         city=body.city,
         referral_code=body.referral_code,
         accept_agreement=body.accept_agreement,
+        is_adult=body.is_adult,
     )
     return await _federated_sign_in(db, identity, extra, request)
 
@@ -890,6 +914,7 @@ async def apple_sign_in(db: AsyncSession, body: AppleIn, request: Request) -> tu
         city=body.city,
         referral_code=body.referral_code,
         accept_agreement=body.accept_agreement,
+        is_adult=body.is_adult,
     )
     issued, created = await _federated_sign_in(db, identity, extra, request)
     if body.authorization_code:
@@ -959,6 +984,7 @@ async def upgrade_guest(
     elif (profile.first_name in ("", "Guest")) and not profile.last_name:
         profile.first_name, profile.last_name = first, last
     _record_consents(db, user.id, [ConsentKind.TERMS, ConsentKind.PRIVACY], TERMS_VERSION, request)
+    record_age_attestation(db, user, body.is_adult, request)
     await send_verification_email(db, user)
     await audit_log(
         db,
@@ -1277,6 +1303,7 @@ async def register_device(db: AsyncSession, user: User, body: DeviceIn) -> Devic
                 "user_id": user.id,
                 "platform": body.platform,
                 "last_seen_at": now,
+                "revoked_at": None,
                 "updated_at": func.now(),
             },
         )
@@ -1644,6 +1671,8 @@ async def accept_invite(db: AsyncSession, body: AcceptInviteIn, request: Request
         raise Conflict(
             "This invitation was already accepted. Please sign in.", code="invite_already_accepted"
         )
+    if body.is_adult is False and _role(user) != UserRole.PATIENT:
+        raise BadRequest("Hospital users must be 18 or older", code="adult_required")
     user.password_hash = hash_password(body.password)
     if body.full_name:
         user.full_name = body.full_name.strip()
@@ -1653,6 +1682,8 @@ async def accept_invite(db: AsyncSession, body: AcceptInviteIn, request: Request
         user.status = UserStatus.ACTIVE
     user.is_guest = False
     _record_consents(db, user.id, [ConsentKind.TERMS, ConsentKind.PRIVACY], TERMS_VERSION, request)
+    if body.is_adult is not None:
+        record_age_attestation(db, user, body.is_adult, request)
     await audit_log(
         db, actor=user, action="auth.invite_accepted", entity_type="user", entity_id=user.id, request=request
     )

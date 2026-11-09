@@ -305,6 +305,7 @@ async def onboard_hospital(
             "hospital_name": name,
             "city": "Chennai",
             "accept_terms": True,
+            "is_adult": True,
         },
     )
     hospitals = dig(token, "user", "hospitals") or []
@@ -684,6 +685,7 @@ async def onboard_agent(j: Journey, staff: Staff, *, tag: str) -> AgentCtx:
             "country_code": "NG",
             "agency_name": f"Lagos MedTravel {tag.upper()}-{uid}",
             "accept_terms": True,
+            "is_adult": True,
         },
     )
     agent_id = dig(token, "user", "agent_id")
@@ -748,6 +750,7 @@ async def register_patient(j: Journey, *, tag: str, referral_code: str | None = 
         "phone": "+1-202-555-0143",
         "country_code": "US",
         "accept_terms": True,
+        "is_adult": True,
     }
     if referral_code:
         payload["referral_code"] = referral_code

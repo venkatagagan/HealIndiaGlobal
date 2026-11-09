@@ -373,6 +373,7 @@ class Smoke:
                     "role": "patient",
                     "country_code": "US",
                     "accept_terms": True,
+                    "is_adult": True,
                 },
             )
             self.ctx["patient_fresh"] = True
@@ -393,6 +394,7 @@ class Smoke:
                     "country_code": "NG",
                     "agency_name": f"Smoke Travel {uid}",
                     "accept_terms": True,
+                    "is_adult": True,
                 },
             )
             agent_id = account.user.get("agent_id") or id_of(
@@ -437,6 +439,7 @@ class Smoke:
                 "hospital_name": f"Smoke Test Hospital {uid}",
                 "city": "Chennai",
                 "accept_terms": True,
+                "is_adult": True,
             },
         )
         profile = await self.call(
@@ -914,6 +917,7 @@ class Smoke:
                 "role": "patient",
                 "country_code": "GB",
                 "accept_terms": True,
+                "is_adult": True,
             },
         )
         for path in (

@@ -8,6 +8,7 @@ the publisher commits) and tolerates missing optional data.
 from __future__ import annotations
 
 import uuid
+from datetime import UTC, datetime
 from typing import Any
 
 import structlog
@@ -21,9 +22,12 @@ from app.models import (
     Agent,
     Booking,
     Case,
+    Consultation,
     Conversation,
     ConversationParticipant,
+    Doctor,
     Hospital,
+    Installment,
     Message,
     Notification,
     PatientProfile,
@@ -33,6 +37,7 @@ from app.models import (
     Quote,
     Refund,
     Screening,
+    SettlementBatch,
     SosAlert,
     User,
 )
@@ -297,6 +302,43 @@ async def on_screening_completed(db: AsyncSession, payload: dict[str, Any]) -> N
             "link": f"/screening/{screening_id}/matches",
         },
         dedupe_key=f"screening.completed:{screening_id}:{status}",
+    )
+    if urgency == "emergency" and status == "completed":
+        await _alert_support_of_emergency(db, screening_id, patient_id)
+
+
+async def _alert_support_of_emergency(
+    db: AsyncSession, screening_id: uuid.UUID, patient_id: uuid.UUID | None
+) -> None:
+    """A screening flagged as a possible emergency: support (and the patient's coordinators) must reach out at
+    once (CG-05/CG-30). The patient is told separately to seek local emergency care."""
+    recipients = await policies.staff_user_ids(db, [UserRole.SUPPORT])
+    if patient_id is not None:
+        coordinators = (
+            await db.execute(
+                select(Case.coordinator_user_id).where(
+                    Case.patient_id == patient_id,
+                    Case.coordinator_user_id.is_not(None),
+                    Case.status.notin_([CaseStatus.COMPLETED, CaseStatus.CANCELLED, CaseStatus.DECLINED]),
+                )
+            )
+        ).scalars()
+        recipients.extend(c for c in coordinators if c)
+    patient_name = await _patient_name(db, patient_id)
+    await notify_many(
+        db,
+        recipients,
+        "screening.emergency",
+        f"Urgent: possible emergency for {patient_name}",
+        f"A screening for {patient_name} was flagged as a possible medical emergency. The patient has been "
+        "told to seek local emergency care. Please contact them now.",
+        {
+            "screening_id": str(screening_id),
+            "patient_id": str(patient_id) if patient_id else None,
+            "link": f"/screenings/{screening_id}",
+        },
+        dedupe_key=f"screening.emergency:{screening_id}",
+        email=True,
     )
 
 
@@ -809,6 +851,329 @@ async def on_sos_updated(db: AsyncSession, payload: dict[str, Any]) -> None:
         body,
         {"sos_id": str(sos_id), "status": status, "link": "/support"},
         dedupe_key=f"sos.updated:{sos_id}:{status}",
+    )
+
+
+# ------------------------------------------------------------------------------- journey gaps (CG-30)
+def _without(ids: list[uuid.UUID], exclude: uuid.UUID | None) -> list[uuid.UUID]:
+    return [i for i in ids if i != exclude]
+
+
+def _when(value: datetime | None) -> str:
+    if value is None:
+        return ""
+    return value.astimezone(UTC).strftime("%d %b %Y, %H:%M UTC")
+
+
+_TRAVEL_ITEM_LABELS: dict[str, str] = {
+    "visa": "Your medical visa",
+    "accommodation": "Your accommodation booking",
+}
+_TRAVEL_KIND_LABELS: dict[str, str] = {
+    "flight": "Your flight booking",
+    "airport_pickup": "Your airport pickup",
+    "airport_drop": "Your airport drop-off",
+    "local_transport": "Your local transport booking",
+    "translator": "Your translator booking",
+    "local_guide": "Your local guide booking",
+    "transport": "Your transport booking",
+    "travel_agent": "Your travel agent booking",
+    "insurance": "Your travel insurance",
+}
+_TRAVEL_STATUS_TEXT: dict[str, str] = {
+    "documents_pending": "needs documents from you",
+    "invitation_issued": "has an invitation letter from the hospital",
+    "applied": "application has been submitted",
+    "approved": "has been approved",
+    "rejected": "was not approved. Your coordinator will help you with next steps",
+    "quoted": "has a price quote ready for you to review",
+    "confirmed": "is confirmed",
+    "completed": "is complete",
+    "cancelled": "has been cancelled",
+}
+
+
+@subscribe("travel.status_changed")
+async def on_travel_status_changed(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Visa, flight, hotel, airport pickup and other travel items: tell the patient (and their agent)."""
+    case_id = _uuid(payload, "case_id")
+    item_id = _uuid(payload, "item_id")
+    case = await db.get(Case, case_id) if case_id else None
+    to_status = str(payload.get("to_status") or "")
+    if case is None or item_id is None or to_status not in _TRAVEL_STATUS_TEXT:
+        return
+    item_type = str(payload.get("item_type") or "")
+    kind = str(payload.get("kind") or "")
+    label = _TRAVEL_ITEM_LABELS.get(item_type) or _TRAVEL_KIND_LABELS.get(kind) or "Your travel arrangement"
+    status_text = _TRAVEL_STATUS_TEXT[to_status]
+    if item_type == "visa" and to_status == "applied":
+        body = f"{label} application has been submitted for case {case.case_number}."
+    else:
+        body = f"{label} {status_text} (case {case.case_number})."
+    await notify_many(
+        db,
+        _without(await _patient_side(db, case), _uuid(payload, "actor_user_id")),
+        "travel.status_changed",
+        f"Travel update for case {case.case_number}",
+        body,
+        {
+            "case_id": str(case.id),
+            "item_type": item_type,
+            "item_id": str(item_id),
+            "status": to_status,
+            "link": f"/cases/{case.id}",
+        },
+        dedupe_key=f"travel.status_changed:{item_id}:{to_status}",
+    )
+
+
+async def _consultation_context(
+    db: AsyncSession, payload: dict[str, Any]
+) -> tuple[Consultation | None, Case | None]:
+    consultation_id = _uuid(payload, "consultation_id")
+    consultation = await db.get(Consultation, consultation_id) if consultation_id else None
+    if consultation is None:
+        return None, None
+    return consultation, await db.get(Case, consultation.case_id)
+
+
+async def _consultation_notify(
+    db: AsyncSession, payload: dict[str, Any], kind: str, title: str, body: str, key_suffix: str
+) -> None:
+    consultation, case = await _consultation_context(db, payload)
+    if consultation is None or case is None:
+        return
+    recipients = await _patient_side(db, case) + await _hospital_side(db, case) + await _coordinator(case)
+    doctor = await db.get(Doctor, consultation.doctor_id)
+    doctor_name = doctor.full_name if doctor is not None and doctor.full_name else "the doctor"
+    when = _when(consultation.scheduled_at)
+    await notify_many(
+        db,
+        _without(recipients, _uuid(payload, "actor_user_id")),
+        kind,
+        title.format(num=case.case_number),
+        body.format(doctor=doctor_name, when=when, num=case.case_number),
+        {
+            "case_id": str(case.id),
+            "consultation_id": str(consultation.id),
+            "scheduled_at": consultation.scheduled_at.isoformat() if consultation.scheduled_at else None,
+            "link": f"/cases/{case.id}",
+        },
+        dedupe_key=f"{kind}:{consultation.id}:{key_suffix}",
+    )
+
+
+@subscribe("consultation.scheduled")
+async def on_consultation_scheduled(db: AsyncSession, payload: dict[str, Any]) -> None:
+    await _consultation_notify(
+        db,
+        payload,
+        "consultation.scheduled",
+        "Consultation scheduled for case {num}",
+        "Your tele-consultation with {doctor} is scheduled for {when}. The joining link is in the case.",
+        str(payload.get("scheduled_at") or ""),
+    )
+
+
+@subscribe("consultation.rescheduled")
+async def on_consultation_rescheduled(db: AsyncSession, payload: dict[str, Any]) -> None:
+    await _consultation_notify(
+        db,
+        payload,
+        "consultation.rescheduled",
+        "Consultation changed for case {num}",
+        "Your tele-consultation with {doctor} has changed. New time: {when}. Check the case for the "
+        "current joining link.",
+        str(payload.get("scheduled_at") or ""),
+    )
+
+
+@subscribe("consultation.cancelled")
+async def on_consultation_cancelled(db: AsyncSession, payload: dict[str, Any]) -> None:
+    await _consultation_notify(
+        db,
+        payload,
+        "consultation.cancelled",
+        "Consultation cancelled for case {num}",
+        "The tele-consultation with {doctor} for case {num} has been cancelled. You can request a new one "
+        "from the case.",
+        "cancelled",
+    )
+
+
+@subscribe("case.coordinator_assigned")
+async def on_case_coordinator_assigned(db: AsyncSession, payload: dict[str, Any]) -> None:
+    case_id = _uuid(payload, "case_id")
+    coordinator_id = _uuid(payload, "coordinator_user_id")
+    case = await db.get(Case, case_id) if case_id else None
+    coordinator = await db.get(User, coordinator_id) if coordinator_id else None
+    if case is None or coordinator is None:
+        return
+    # Add the coordinator to the case conversation.
+    await ensure_case_conversation(db, case.id)
+    data = {"case_id": str(case.id), "coordinator_user_id": str(coordinator.id), "link": f"/cases/{case.id}"}
+    name = coordinator.full_name or "A coordinator"
+    await notify_many(
+        db,
+        await _patient_side(db, case),
+        "case.coordinator_assigned",
+        f"Your coordinator for case {case.case_number}",
+        f"{name} from Heal India Global is now your care coordinator. Message them from the case any time.",
+        data,
+        dedupe_key=f"case.coordinator_assigned:{case.id}:{coordinator.id}",
+    )
+    patient_name = await _patient_name(db, case.patient_id)
+    await notify(
+        db,
+        coordinator.id,
+        "case.coordinator_assigned",
+        f"You are coordinating case {case.case_number}",
+        f"You have been assigned as the coordinator for {patient_name} (case {case.case_number}).",
+        data,
+        dedupe_key=f"case.coordinator_assigned:{case.id}:{coordinator.id}",
+        email=False,
+    )
+
+
+@subscribe("quote.rejected")
+async def on_quote_rejected(db: AsyncSession, payload: dict[str, Any]) -> None:
+    quote_id = _uuid(payload, "quote_id")
+    case_id = _uuid(payload, "case_id")
+    case = await db.get(Case, case_id) if case_id else None
+    if case is None or quote_id is None:
+        return
+    patient_name = await _patient_name(db, case.patient_id)
+    reason = str(payload.get("reason") or "").strip()
+    body = f"{patient_name} declined your quote for case {case.case_number}."
+    if reason:
+        body += f" Reason: {reason}"
+    body += " You can send a revised quote."
+    await notify_many(
+        db,
+        await _hospital_side(db, case) + await _coordinator(case),
+        "quote.rejected",
+        f"Quote declined for {case.case_number}",
+        body,
+        {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        dedupe_key=f"quote.rejected:{quote_id}",
+    )
+
+
+@subscribe("quote.expired")
+async def on_quote_expired(db: AsyncSession, payload: dict[str, Any]) -> None:
+    quote_id = _uuid(payload, "quote_id")
+    case_id = _uuid(payload, "case_id")
+    case = await db.get(Case, case_id) if case_id else None
+    if case is None or quote_id is None:
+        return
+    hospital = await _hospital_name(db, case.hospital_id)
+    data = {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"}
+    await notify_many(
+        db,
+        await _hospital_side(db, case),
+        "quote.expired",
+        f"Quote expired for {case.case_number}",
+        f"Your quote for case {case.case_number} passed its validity date without being accepted. "
+        "Send a new quote if the patient still needs treatment.",
+        data,
+        dedupe_key=f"quote.expired:{quote_id}",
+    )
+    await notify_many(
+        db,
+        await _patient_side(db, case),
+        "quote.expired",
+        f"Your quote from {hospital} has expired",
+        f"The quote for case {case.case_number} is no longer valid. Ask the hospital or your coordinator "
+        "for a new quote.",
+        data,
+        dedupe_key=f"quote.expired:{quote_id}",
+    )
+
+
+async def _installment_context(
+    db: AsyncSession, payload: dict[str, Any]
+) -> tuple[Installment | None, Booking | None, Case | None]:
+    installment_id = _uuid(payload, "installment_id")
+    installment = await db.get(Installment, installment_id) if installment_id else None
+    if installment is None:
+        return None, None, None
+    booking = await db.get(Booking, installment.booking_id)
+    case = await db.get(Case, booking.case_id) if booking is not None else None
+    return installment, booking, case
+
+
+async def _installment_recipients(db: AsyncSession, booking: Booking, case: Case | None) -> list[uuid.UUID]:
+    if case is not None:
+        return await _patient_side(db, case)
+    pu = await policies.patient_user_id(db, booking.patient_id)
+    return [pu] if pu else []
+
+
+@subscribe("installment.due")
+async def on_installment_due(db: AsyncSession, payload: dict[str, Any]) -> None:
+    installment, booking, case = await _installment_context(db, payload)
+    if installment is None or booking is None or _status(installment.status) != "due":
+        return
+    amount = _money(installment.amount_minor, installment.currency)
+    days_left = payload.get("days_left")
+    when = "today" if days_left == 0 else f"on {installment.due_date.isoformat()}"
+    await notify_many(
+        db,
+        await _installment_recipients(db, booking, case),
+        "installment.due",
+        "Payment reminder",
+        f"Instalment {installment.seq} of {amount} for booking {booking.booking_number} is due {when}.",
+        {
+            "installment_id": str(installment.id),
+            "booking_id": str(booking.id),
+            "due_date": installment.due_date.isoformat(),
+            "link": f"/pay/{booking.id}",
+        },
+        dedupe_key=f"installment.due:{installment.id}:{payload.get('day') or ''}",
+    )
+
+
+@subscribe("installment.overdue")
+async def on_installment_overdue(db: AsyncSession, payload: dict[str, Any]) -> None:
+    installment, booking, case = await _installment_context(db, payload)
+    if installment is None or booking is None or _status(installment.status) not in ("due", "overdue"):
+        return
+    amount = _money(installment.amount_minor, installment.currency)
+    await notify_many(
+        db,
+        await _installment_recipients(db, booking, case),
+        "installment.overdue",
+        "Payment overdue",
+        f"Instalment {installment.seq} of {amount} for booking {booking.booking_number} was due on "
+        f"{installment.due_date.isoformat()} and is still unpaid. Please pay it or talk to your coordinator.",
+        {
+            "installment_id": str(installment.id),
+            "booking_id": str(booking.id),
+            "due_date": installment.due_date.isoformat(),
+            "link": f"/pay/{booking.id}",
+        },
+        dedupe_key=f"installment.overdue:{installment.id}:{payload.get('day') or ''}",
+    )
+
+
+@subscribe("settlement_batch.pending_approval")
+async def on_settlement_batch_pending_approval(db: AsyncSession, payload: dict[str, Any]) -> None:
+    batch_id = _uuid(payload, "batch_id")
+    batch = await db.get(SettlementBatch, batch_id) if batch_id else None
+    if batch is None:
+        return
+    # Maker-checker: the user who generated the batch cannot approve it, so they are not asked to.
+    approvers = _without(await policies.staff_user_ids(db, [UserRole.FINANCE]), batch.created_by)
+    await notify_many(
+        db,
+        approvers,
+        "settlement_batch.pending_approval",
+        f"Settlement batch {batch.batch_number} needs approval",
+        f"A {_status(batch.payee_type)} settlement batch of {batch.items_count} items "
+        f"({_money(batch.total_net_minor, batch.currency)} net) is waiting for a second approver.",
+        {"batch_id": str(batch.id), "link": f"/finance/settlements/batches/{batch.id}"},
+        dedupe_key=f"settlement_batch.pending_approval:{batch.id}",
+        email=True,
     )
 
 

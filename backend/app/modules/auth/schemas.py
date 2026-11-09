@@ -110,6 +110,9 @@ class RegisterIn(_In):
     accept_terms: bool
     # agent/hospital sign-up: also accept the current Agent / Hospital Partner Agreement (click-through)
     accept_agreement: bool = False
+    # CG-24 age attestation (required): True = "I am 18 or older"; False = a patient under 18 whose parent or
+    # guardian will consent. Agents and hospital users must be adults.
+    is_adult: bool | None = None
 
     _country = field_validator("country_code")(normalize_country)
     _phone = field_validator("phone")(normalize_phone)
@@ -127,6 +130,10 @@ class RegisterIn(_In):
             raise ValueError("agency_name is required for agent registration")
         if self.role == "hospital" and not (self.hospital_name and self.hospital_name.strip()):
             raise ValueError("hospital_name is required for hospital registration")
+        if self.is_adult is None:
+            raise ValueError("is_adult is required: please confirm your age")
+        if self.role != "patient" and self.is_adult is not True:
+            raise ValueError("agents and hospital users must be 18 or older")
         return self
 
 
@@ -146,6 +153,8 @@ class GoogleIn(_In):
     city: str | None = Field(default=None, max_length=100)
     referral_code: str | None = Field(default=None, max_length=16)
     accept_agreement: bool = False
+    # CG-24: required only when this call creates a new account (400 ``age_attestation_required`` otherwise).
+    is_adult: bool | None = None
 
 
 class AppleNameIn(_In):
@@ -168,6 +177,8 @@ class AppleIn(_In):
     city: str | None = Field(default=None, max_length=100)
     referral_code: str | None = Field(default=None, max_length=16)
     accept_agreement: bool = False
+    # CG-24: required only when this call creates a new account (400 ``age_attestation_required`` otherwise).
+    is_adult: bool | None = None
 
 
 class StaffLoginIn(_In):
@@ -196,6 +207,8 @@ class AcceptInviteIn(_In):
     password: str = Field(min_length=1, max_length=128)
     full_name: str | None = Field(default=None, min_length=1, max_length=200)
     accept_terms: bool
+    # CG-24 (optional here): recorded when sent; hospital members must be adults.
+    is_adult: bool | None = None
 
     @field_validator("accept_terms")
     @classmethod
@@ -217,6 +230,8 @@ class GuestUpgradeIn(_In):
     email: EmailAddress
     password: str = Field(min_length=1, max_length=128)
     full_name: str = Field(min_length=1, max_length=200)
+    # CG-24: True = 18 or older; False = under 18, a parent or guardian will consent.
+    is_adult: bool
 
 
 class RefreshIn(BaseModel):
@@ -304,6 +319,10 @@ class UserOut(BaseModel):
     # consent kinds an agent attested on the patient's behalf that the patient still has to confirm
     # (POST /auth/consents); clients show a confirmation step while non-empty
     pending_consents: list[ConsentKind] = Field(default_factory=list)
+    # CG-24: sign-up age attestation (None = account created before it existed) and whether a patient under 18
+    # still needs a parent's or guardian's consent.
+    is_adult: bool | None = None
+    guardian_consent_required: bool = False
 
 
 class TokenOut(BaseModel):

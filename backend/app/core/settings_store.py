@@ -38,6 +38,7 @@ DEFAULTS: dict[str, Any] = {
     "patient_service_fee_bps": 0,
     "fx_rate_max_age_hours": 72,  # 0 disables the staleness check
     "refund_dual_approval_threshold_minor": 5_000_000,  # INR 50,000; 0 = every refund needs a second approver
+    "installment_reminder_days": 3,  # remind the patient N days before an instalment is due; 0 = off (CG-30)
     # be-finance (docs/PAYMENTS.md 7.3, 9.2, 10.2; implementation keys, not in PLAN 6.3)
     "cancellation_retention_hospital_share_bps": 10_000,  # hospital agreement Schedule A Option A
     "agent_tds_rate_bps": 200,  # TDS on resident agents' commission (s.194H)
@@ -93,6 +94,7 @@ FINANCE_KEYS: frozenset[str] = frozenset(
         "patient_service_fee_bps",
         "fx_rate_max_age_hours",
         "refund_dual_approval_threshold_minor",
+        "installment_reminder_days",
         "cancellation_retention_hospital_share_bps",
         "agent_tds_rate_bps",
         "agent_nonresident_withholding_bps",
@@ -114,6 +116,7 @@ _INT_RANGES: dict[str, tuple[int, int]] = {
     "patient_service_fee_bps": (0, 10_000),
     "fx_rate_max_age_hours": (0, 24 * 30),
     "refund_dual_approval_threshold_minor": (0, 10**12),
+    "installment_reminder_days": (0, 60),
     "cancellation_retention_hospital_share_bps": (0, 10_000),
     "agent_tds_rate_bps": (0, 10_000),
     "agent_nonresident_withholding_bps": (0, 10_000),

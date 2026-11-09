@@ -81,7 +81,7 @@ async def test_register_patient_mobile(client, db, run_jobs, email_outbox, monke
     assert (profile.first_name, profile.last_name) == ("Amara", "Okafor")
     assert profile.nationality == "US" and profile.preferred_currency == "USD"
     kinds = (await db.execute(select(Consent.kind).where(Consent.user_id == profile.user_id))).scalars().all()
-    assert sorted(str(k) for k in kinds) == ["privacy", "terms"]
+    assert sorted(str(k) for k in kinds) == ["age_18_plus", "privacy", "terms"]  # CG-24 attestation
     audit = (await db.execute(select(AuditLog).where(AuditLog.action == "auth.register"))).scalars().all()
     assert len(audit) == 1 and audit[0].entity_id == user["id"]
 
@@ -376,7 +376,12 @@ async def test_guest_create_and_upgrade_keeps_data(client, db) -> None:
 
     r = await client.post(
         f"{API}/auth/guest/upgrade",
-        json={"email": "Upgraded@Example.test", "password": PASSWORD, "full_name": "Leila Haddad"},
+        json={
+            "email": "Upgraded@Example.test",
+            "password": PASSWORD,
+            "full_name": "Leila Haddad",
+            "is_adult": True,
+        },
         headers={**MOBILE, **headers},
     )
     assert r.status_code == 200, r.text
@@ -409,7 +414,7 @@ async def test_guest_create_and_upgrade_keeps_data(client, db) -> None:
 
     r = await client.post(
         f"{API}/auth/guest/upgrade",
-        json={"email": "again@example.test", "password": PASSWORD, "full_name": "X Y"},
+        json={"email": "again@example.test", "password": PASSWORD, "full_name": "X Y", "is_adult": True},
         headers=bearer(upgraded),
     )
     assert r.status_code == 400 and r.json()["error"]["code"] == "not_guest"
@@ -421,7 +426,7 @@ async def test_guest_upgrade_email_taken(client, make_user) -> None:
     guest = r.json()
     r = await client.post(
         f"{API}/auth/guest/upgrade",
-        json={"email": "taken@example.test", "password": PASSWORD, "full_name": "X Y"},
+        json={"email": "taken@example.test", "password": PASSWORD, "full_name": "X Y", "is_adult": True},
         headers=bearer(guest),
     )
     assert r.status_code == 409 and r.json()["error"]["code"] == "email_taken"
@@ -466,13 +471,20 @@ async def test_google_not_configured(client, monkeypatch) -> None:
 
 async def test_google_sign_up_then_sign_in(client, db, monkeypatch) -> None:
     calls = _fake_google(monkeypatch, _claims())
+    # CG-24: a new account needs the age answer; the client asks and retries with is_adult.
     r = await client.post(f"{API}/auth/google", json={"id_token": "id-token-value-1234"}, headers=MOBILE)
+    assert r.status_code == 400 and r.json()["error"]["code"] == "age_attestation_required", r.text
+    r = await client.post(
+        f"{API}/auth/google", json={"id_token": "id-token-value-1234", "is_adult": True}, headers=MOBILE
+    )
     assert r.status_code == 201, r.text
     created = r.json()["user"]
     assert created["role"] == "patient" and created["email_verified"] is True
+    assert created["is_adult"] is True and created["guardian_consent_required"] is False
     assert created["full_name"] == "Grace Mensah" and created["patient_profile_id"]
     assert calls[0][1] == ["web-client.apps.googleusercontent.com", "ios-client"]
 
+    # Signing in to the existing account needs no age answer.
     r = await client.post(f"{API}/auth/google", json={"id_token": "id-token-value-1234"}, headers=MOBILE)
     assert r.status_code == 200, r.text
     assert r.json()["user"]["id"] == created["id"]
@@ -507,10 +519,10 @@ async def test_google_refuses_to_link_unverified_account_sec001(client, db, make
 
 async def test_google_agent_sign_up_and_rejections(client, db, make_user, monkeypatch) -> None:
     _fake_google(monkeypatch, _claims(sub="agent-sub", email="agency@gmail.test"))
-    r = await client.post(
-        f"{API}/auth/google",
-        json={"id_token": "id-token-value-1234", "role": "agent", "agency_name": "Nile Care"},
-    )
+    body = {"id_token": "id-token-value-1234", "role": "agent", "agency_name": "Nile Care"}
+    r = await client.post(f"{API}/auth/google", json={**body, "is_adult": False})
+    assert r.status_code == 400 and r.json()["error"]["code"] == "adult_required", r.text
+    r = await client.post(f"{API}/auth/google", json={**body, "is_adult": True})
     assert r.status_code == 201, r.text
     agent = await db.get(Agent, r.json()["user"]["agent_id"])
     assert agent is not None and agent.agency_name == "Nile Care" and agent.status == AgentStatus.PENDING

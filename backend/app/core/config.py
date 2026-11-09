@@ -103,6 +103,12 @@ class Settings(BaseSettings):
     APPLE_TEAM_ID: str = ""
     APPLE_KEY_ID: str = ""
     APPLE_PRIVATE_KEY: str = ""
+    # Push notifications (CG-15) through Firebase Cloud Messaging HTTP v1. Push is off unless the project id
+    # and a service account (path to the JSON key file, or the JSON itself) are set. The service account
+    # needs the "Firebase Cloud Messaging API Admin" role.
+    FCM_PROJECT_ID: str = ""
+    FCM_SERVICE_ACCOUNT_FILE: str = ""
+    FCM_SERVICE_ACCOUNT_JSON: str = ""
     ADMIN_MFA_REQUIRED: bool = False
     REQUIRE_EMAIL_VERIFICATION: bool = False
     TRUSTED_HOSTS: StrList = Field(default_factory=lambda: ["*"])

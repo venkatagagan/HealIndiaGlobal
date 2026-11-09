@@ -64,6 +64,10 @@ x-backend-env: &backend-env
   APPLE_TEAM_ID: ${APPLE_TEAM_ID:-}
   APPLE_KEY_ID: ${APPLE_KEY_ID:-}
   APPLE_PRIVATE_KEY: ${APPLE_PRIVATE_KEY:-}
+  # Push notifications (CG-15): empty = off
+  FCM_PROJECT_ID: ${FCM_PROJECT_ID:-}
+  FCM_SERVICE_ACCOUNT_FILE: ${FCM_SERVICE_ACCOUNT_FILE:-}
+  FCM_SERVICE_ACCOUNT_JSON: ${FCM_SERVICE_ACCOUNT_JSON:-}
   # Client IP (INTEGRATION_BACKLOG #20): only the edge's fixed address is a trusted proxy.
   TRUSTED_PROXIES: ${EDGE_IPV4:-172.29.10.10}/32
   TRUST_CLOUDFRONT_VIEWER_ADDRESS: "false"

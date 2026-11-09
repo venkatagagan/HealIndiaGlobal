@@ -26,6 +26,7 @@ def register_payload(role: str = "patient", **overrides: Any) -> dict[str, Any]:
         "phone": "+1-202-555-0143",
         "country_code": "US",
         "accept_terms": True,
+        "is_adult": True,
     }
     if role == "agent":
         payload["agency_name"] = f"Lagos MedTravel {rand_suffix(4)}"

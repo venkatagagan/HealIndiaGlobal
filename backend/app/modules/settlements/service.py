@@ -819,6 +819,16 @@ async def generate_batch(
         },
         request=request,
     )
+    await publish(
+        db,
+        "settlement_batch.pending_approval",
+        {
+            "batch_id": str(batch.id),
+            "batch_number": batch.batch_number,
+            "payee_type": ptype.value,
+            "created_by": str(batch.created_by) if batch.created_by else None,
+        },
+    )
     return batch
 
 
