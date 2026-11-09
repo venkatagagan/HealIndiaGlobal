@@ -17,6 +17,7 @@ from app.modules.cases.router import router as cases_router
 from app.modules.catalog.router import router as catalog_router
 from app.modules.docai.router import router as docai_router
 from app.modules.documents.router import router as documents_router
+from app.modules.guests.router import router as guests_router
 from app.modules.hospitals.router import router as hospitals_router
 from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
@@ -47,5 +48,6 @@ for _router in (
     settlements_router,
     admin_router,
     voice_router,
+    guests_router,
 ):
     api_router.include_router(_router)

@@ -249,6 +249,15 @@ RECORDED_EVENTS = (
     "booking.cancelled",
     "sos.created",
     "sos.updated",
+    # phase 1
+    "quote.requested",
+    "quote.reminder_due",
+    "quote.overdue",
+    "consultation.reminder",
+    "aftercare.red_flag",
+    "visa.invitation_issued",
+    "intro_consultation.requested",
+    "intro_consultation.scheduled",
 )
 
 

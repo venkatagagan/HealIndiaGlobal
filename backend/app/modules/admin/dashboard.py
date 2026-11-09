@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.enums import (
     AgentStatus,
     BookingStatus,
@@ -56,7 +57,7 @@ from app.modules.admin.schemas import FunnelStage, TopHospital, TopSpecialty
 DashboardPeriod = Literal["7d", "30d", "90d", "mtd"]
 PERIOD_DAYS = {"7d": 7, "30d": 30, "90d": 90}
 #: hours a new enquiry may wait for the hospital's first quote before it counts as overdue
-QUOTE_SLA_HOURS = 48
+QUOTE_SLA_HOURS = settings.QUOTE_SLA_HOURS
 OPEN_CASE_STATUSES = (CaseStatus.ENQUIRY, CaseStatus.QUOTED, CaseStatus.ACCEPTED)
 UPCOMING_BOOKING_STATUSES = (BookingStatus.PENDING_PAYMENT, BookingStatus.CONFIRMED)
 UPCOMING_DAYS = 7

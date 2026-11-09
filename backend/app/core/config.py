@@ -173,6 +173,26 @@ class Settings(BaseSettings):
     BASE_CURRENCY: str = "INR"
     DEFAULT_PATIENT_CURRENCY: str = "USD"
 
+    # --- quotes / aftercare / video / guests (phase 1) ----------------------------------------------------
+    # A hospital must answer a new case with a quote within QUOTE_SLA_HOURS; a reminder goes out after
+    # QUOTE_REMINDER_HOURS without a quote. A multi-hospital quote request may name up to QUOTE_MAX_HOSPITALS.
+    QUOTE_SLA_HOURS: int = Field(default=48, ge=1, le=24 * 30)
+    QUOTE_REMINDER_HOURS: int = Field(default=24, ge=1, le=24 * 30)
+    QUOTE_MAX_HOSPITALS: int = Field(default=3, ge=1, le=10)
+    # Follow-up video consultations stay possible this many days after discharge; follow-up requests are
+    # created automatically at these days after discharge (comma separated) and check-ins at these days.
+    AFTERCARE_WINDOW_DAYS: int = Field(default=365, ge=1, le=3650)
+    AFTERCARE_FOLLOWUP_DAYS: StrList = Field(default_factory=lambda: ["7", "30", "90"])
+    AFTERCARE_CHECKIN_DAYS: StrList = Field(default_factory=lambda: ["1", "3", "7", "14", "30"])
+    # Video calls: "jitsi" generates https://<JITSI_BASE_URL>/<unguessable room>; zoom/daily come later.
+    VIDEO_PROVIDER: Literal["jitsi"] = "jitsi"
+    JITSI_BASE_URL: str = "https://meet.jit.si"
+    # Guests may run this many AI screenings/report scans per day (per guest account and per IP address).
+    GUEST_AI_DAILY_LIMIT: int = Field(default=3, ge=0, le=100)
+    # One-time codes for guest contact verification. "console" keeps SMS codes in an in-memory outbox (dev
+    # and tests only); "none" means phone codes cannot be sent (guests verify by email instead).
+    SMS_PROVIDER: Literal["console", "none"] = "console"
+
     # --- worker / ops --------------------------------------------------------------------------------------
     RUN_WORKER_IN_API: bool = True
     WORKER_POLL_INTERVAL_SECONDS: float = Field(default=2.0, gt=0)
@@ -187,6 +207,25 @@ class Settings(BaseSettings):
     @classmethod
     def _parse_list(cls, value: Any) -> Any:
         return _split_list(value)
+
+    @field_validator("AFTERCARE_FOLLOWUP_DAYS", "AFTERCARE_CHECKIN_DAYS", mode="before")
+    @classmethod
+    def _parse_days(cls, value: Any) -> Any:
+        parsed = _split_list(value)
+        if isinstance(parsed, list):
+            for item in parsed:
+                if not str(item).strip().isdigit() or not 0 < int(str(item)) <= 3650:
+                    raise ValueError(f"invalid day number: {item!r}")
+            return [str(int(str(v))) for v in parsed]
+        return parsed
+
+    @field_validator("JITSI_BASE_URL", mode="after")
+    @classmethod
+    def _https_video(cls, value: str) -> str:
+        value = value.strip().rstrip("/")
+        if not value.startswith("https://"):
+            raise ValueError("JITSI_BASE_URL must start with https://")
+        return value
 
     @field_validator("STAFF_ALLOWED_IPS", "TRUSTED_PROXIES", mode="before")
     @classmethod
@@ -281,6 +320,14 @@ class Settings(BaseSettings):
     @property
     def max_upload_bytes(self) -> int:
         return self.MAX_UPLOAD_MB * 1024 * 1024
+
+    @property
+    def aftercare_followup_days(self) -> list[int]:
+        return sorted({int(d) for d in self.AFTERCARE_FOLLOWUP_DAYS})
+
+    @property
+    def aftercare_checkin_days(self) -> list[int]:
+        return sorted({int(d) for d in self.AFTERCARE_CHECKIN_DAYS})
 
     @property
     def ai_available(self) -> bool:

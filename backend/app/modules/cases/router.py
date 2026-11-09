@@ -19,8 +19,9 @@ from app.models import Consultation, User
 from app.modules.cases import bookings as booking_service
 from app.modules.cases import consultations as consultation_service
 from app.modules.cases import emergency as emergency_service
-from app.modules.cases import policies, serializers
+from app.modules.cases import policies, quick_quote, serializers
 from app.modules.cases import service as case_service
+from app.modules.cases.aftercare_router import router as aftercare_router
 from app.modules.cases.schemas import (
     AssignCoordinator,
     BookingAdmit,
@@ -44,8 +45,10 @@ from app.modules.cases.schemas import (
     ItineraryItemOut,
     ItineraryItemUpdate,
     QuoteCreate,
+    QuoteGroupOut,
     QuoteOut,
     QuoteReject,
+    QuoteRequestCreate,
 )
 
 router = APIRouter(tags=["cases"])
@@ -70,6 +73,28 @@ Staff = Annotated[User, Depends(require_roles(*STAFF_ROLES))]
 async def create_case(body: CaseCreate, request: Request, db: DbSession, user: PatientSide) -> CaseOut:
     case = await case_service.create_case(db, user, body, request)
     return await serializers.case_out_one(db, case)
+
+
+@router.post(
+    "/cases/quote-request",
+    status_code=status.HTTP_201_CREATED,
+    response_model=QuoteGroupOut,
+    dependencies=[Depends(require_full_account)],
+)
+async def create_quote_request(
+    body: QuoteRequestCreate, request: Request, db: DbSession, user: PatientSide
+) -> QuoteGroupOut:
+    """Ask up to QUOTE_MAX_HOSPITALS hospitals for a quote at once: one enquiry per hospital, grouped by
+    ``quote_group_id``. Shared reports (``document_ids`` + the screening's reports) go to every hospital."""
+    group_id = await quick_quote.create_quote_request(db, user, body, request)
+    return await quick_quote.quote_group_out(db, user, group_id)
+
+
+@router.get("/cases/quote-groups/{group_id}", response_model=QuoteGroupOut)
+async def get_quote_group(group_id: uuid.UUID, db: DbSession, user: CurrentUser) -> QuoteGroupOut:
+    """The hospitals' quotes of one multi-hospital request side by side, totals converted to the patient's
+    preferred currency (INR when no exchange rate is available)."""
+    return await quick_quote.quote_group_out(db, user, group_id)
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,7 +171,10 @@ async def list_cases(
         str | None,
         Query(
             pattern=case_service.CASE_SORT_PATTERN,
-            description="created_at | updated_at | case_number | status; prefix '-' for descending",
+            description=(
+                "created_at | updated_at | case_number | status | quote_due_at (cases still waiting for a "
+                "quote first); prefix '-' for descending"
+            ),
         ),
     ] = None,
 ) -> Page[CaseOut]:
@@ -456,3 +484,7 @@ async def update_consultation(
 ) -> ConsultationOut:
     item = await consultation_service.update_consultation(db, user, consultation_id, body, request)
     return (await serializers.consultation_outs(db, [item]))[0]
+
+
+# --------------------------------------------------------------------------------------------- aftercare
+router.include_router(aftercare_router)

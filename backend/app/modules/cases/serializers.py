@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,6 +17,7 @@ from app.models import (
     Agent,
     Booking,
     Case,
+    CaseDocument,
     CaseStatusHistory,
     Consultation,
     Doctor,
@@ -30,7 +31,9 @@ from app.models import (
     TreatmentPackage,
     User,
 )
+from app.modules.cases.common import utcnow
 from app.modules.cases.emergency import ack_required, screening_urgencies
+from app.modules.cases.quick_quote import quote_clock
 from app.modules.cases.schemas import (
     AgentRef,
     BookingOut,
@@ -328,10 +331,12 @@ async def case_outs(db: AsyncSession, cases: Sequence[Case]) -> list[CaseOut]:
         package_ids=booking_ids["package_ids"],
     )
     out: list[CaseOut] = []
+    now = utcnow()
     for c in cases:
         q = quotes.get(c.id)
         b = bookings.get(c.id)
         urgency = urgencies.get(c.screening_id) if c.screening_id else None
+        overdue, hours_left = quote_clock(c, now)
         out.append(
             CaseOut(
                 id=c.id,
@@ -351,6 +356,11 @@ async def case_outs(db: AsyncSession, cases: Sequence[Case]) -> list[CaseOut]:
                 urgency=urgency,
                 emergency_ack_required=ack_required(c, urgency),
                 emergency_acknowledged_at=c.emergency_acknowledged_at,
+                quote_due_at=c.quote_due_at,
+                first_quote_at=c.first_quote_at,
+                quote_overdue=overdue,
+                hours_left=hours_left,
+                quote_group_id=c.quote_group_id,
                 created_at=c.created_at,
                 updated_at=c.updated_at,
             )
@@ -415,7 +425,15 @@ async def case_detail(db: AsyncSession, case: Case) -> CaseDetail:
         (
             await db.execute(
                 select(Document)
-                .where(Document.case_id == case.id, Document.deleted_at.is_(None))
+                .where(
+                    or_(
+                        Document.case_id == case.id,
+                        Document.id.in_(
+                            select(CaseDocument.document_id).where(CaseDocument.case_id == case.id)
+                        ),
+                    ),
+                    Document.deleted_at.is_(None),
+                )
                 .order_by(Document.created_at.desc(), Document.id)
             )
         ).scalars()
@@ -497,6 +515,9 @@ async def consultation_outs(db: AsyncSession, items: Sequence[Consultation]) -> 
                 mode=c.mode,
                 meeting_url=c.meeting_url,
                 status=c.status,
+                kind=c.kind,
+                due_at=c.due_at,
+                followup_day=c.followup_day,
                 fee_minor=c.fee_minor,
                 currency=c.currency,
                 notes=c.notes,

@@ -16,6 +16,7 @@ from app.core.rate_limit import rate_limit
 from app.models.docai import AnalysisReviewStatus, DocumentAnalysisStatus
 from app.modules.docai import service
 from app.modules.docai.schemas import AnalysisConfirm, AnalysisCreate, AnalysisPatch, DocumentAnalysisOut
+from app.modules.guests.quota import guest_docai_quota
 
 router = APIRouter(tags=["docai"])
 
@@ -23,7 +24,10 @@ _limit = Depends(rate_limit("docai.request", 10, 60, key="user"))
 
 
 @router.post(
-    "/documents/analyses", status_code=202, response_model=DocumentAnalysisOut, dependencies=[_limit]
+    "/documents/analyses",
+    status_code=202,
+    response_model=DocumentAnalysisOut,
+    dependencies=[_limit, Depends(guest_docai_quota)],  # guests: GUEST_AI_DAILY_LIMIT scans a day
 )
 async def create_analysis(
     body: AnalysisCreate, db: DbSession, user: CurrentUser, request: Request

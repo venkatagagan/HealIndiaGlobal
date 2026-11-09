@@ -18,6 +18,7 @@ from app.core.enums import (
     ServiceKind,
     SosStatus,
     TravelKind,
+    VisaRoute,
     VisaStatus,
     VisaType,
     sa_enum,
@@ -41,6 +42,8 @@ __all__ = [
     "ServiceProvider",
     "SosAlert",
     "TravelBooking",
+    "VisaChecklistItem",
+    "VisaCountryRule",
     "VisaRequest",
 ]
 
@@ -77,6 +80,63 @@ class VisaRequest(UUIDPkMixin, TimestampMixin, Base):
     applied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     notes: Mapped[str | None] = mapped_column(Text)
+    # Generated invitation letter awaiting the hospital's approval (a Document visible to the hospital only
+    # until approved; approval links it to the case/patient and sets ``invitation_letter_document_id``).
+    invitation_letter_draft_document_id: Mapped[uuid.UUID | None] = fk(
+        "documents.id", ondelete="SET NULL", nullable=True
+    )
+    invitation_letter_generated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    invitation_letter_approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    invitation_letter_approved_by_user_id: Mapped[uuid.UUID | None] = fk(
+        "users.id", ondelete="SET NULL", nullable=True
+    )
+
+
+class VisaCountryRule(UUIDPkMixin, TimestampMixin, Base):
+    """Visa route for medical travel to India per nationality (admin-editable, seeded from official
+    sources; see ``app/modules/travel/visa_data.py``)."""
+
+    __tablename__ = "visa_country_rules"
+    __table_args__ = (
+        sa.CheckConstraint("max_attendants >= 0 AND max_attendants <= 10", name="max_attendants_range"),
+        sa.CheckConstraint(
+            "typical_processing_days IS NULL OR typical_processing_days >= 0", name="processing_days_nonneg"
+        ),
+    )
+
+    nationality: Mapped[str] = mapped_column(String(2), nullable=False, unique=True)
+    country_name: Mapped[str | None] = mapped_column(String(100))
+    visa_route: Mapped[VisaRoute] = mapped_column(sa_enum(VisaRoute), nullable=False, index=True)
+    max_attendants: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=2, server_default="2")
+    typical_processing_days: Mapped[int | None] = mapped_column(SmallInteger)
+    notes: Mapped[str | None] = mapped_column(Text)
+    official_url: Mapped[str | None] = mapped_column(String(1024))
+    source: Mapped[str | None] = mapped_column(Text)
+    """Where the rule came from and when it was checked (seed provenance or the admin's note)."""
+
+
+class VisaChecklistItem(UUIDPkMixin, TimestampMixin, Base):
+    """A document/step a traveller needs for a visa route; ``nationality`` NULL = applies to every
+    nationality on that route, otherwise an extra item for that nationality only."""
+
+    __tablename__ = "visa_checklist_items"
+    __table_args__ = (
+        sa.Index(
+            "uq_visa_checklist_items_route_nat_key",
+            "visa_route",
+            sa.text("coalesce(nationality, '')"),
+            "item_key",
+            unique=True,
+        ),
+    )
+
+    visa_route: Mapped[VisaRoute] = mapped_column(sa_enum(VisaRoute), nullable=False, index=True)
+    nationality: Mapped[str | None] = mapped_column(String(2))
+    item_key: Mapped[str] = mapped_column(String(60), nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text)
+    required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default=sa.true())
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
 
 
 class AccommodationProvider(UUIDPkMixin, TimestampMixin, Base):

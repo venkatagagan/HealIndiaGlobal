@@ -5,8 +5,10 @@ A user may see a (non-deleted) document when they are:
 * staff (admin|finance|support|super_admin);
 * the patient it is about (``documents.patient_id``);
 * an agent: the document's ``agent_id``, the patient's managing/referring agent, or the case's agent;
-* a hospital member: the document's ``hospital_id`` (explicitly shared to / uploaded by that hospital) or the
-  hospital of its case. A patient's other documents (no case, or another hospital's case) are never visible to
+* a hospital member: the document's ``hospital_id`` (explicitly shared to / uploaded by that hospital), the
+  hospital of its case, or a case of that hospital the patient shared it with (``case_documents``: reports
+  attached when a case or a multi-hospital quote request is created). A patient's other documents (no case,
+  or another hospital's case) are never visible to
   a hospital just because the patient has *some* case there (SEC-002); cases themselves exist only after the
   patient's ``share_with_hospitals`` consent.
 
@@ -24,7 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import is_staff
 from app.core.enums import UserRole
-from app.models import Case, Document, PatientProfile, User
+from app.models import Case, CaseDocument, Document, PatientProfile, User
 from app.modules.auth.scoping import agent_id_for, hospital_ids_for, patient_profile_id_for
 
 
@@ -75,10 +77,12 @@ def visibility_clause(p: Principal) -> ColumnElement[bool]:
         )
     if p.hospital_ids:
         hospital_cases = select(Case.id).where(Case.hospital_id.in_(p.hospital_ids))
+        shared_with_cases = select(CaseDocument.document_id).where(CaseDocument.case_id.in_(hospital_cases))
         conditions.extend(
             [
                 Document.hospital_id.in_(p.hospital_ids),
                 Document.case_id.in_(hospital_cases),
+                Document.id.in_(shared_with_cases),
             ]
         )
     return and_(not_deleted, or_(*conditions))
