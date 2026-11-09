@@ -71,6 +71,20 @@ def _package_out(pkg: TreatmentPackage | None) -> dict[str, Any] | None:
     }
 
 
+def _quote_clock_fields(c: Case) -> dict[str, Any]:
+    """Quick-quote promise fields of ``CaseOut`` (``quote_due_at``, ``quote_overdue``, ``hours_left``...)."""
+    from app.modules.cases.quick_quote import quote_clock
+
+    overdue, hours_left = quote_clock(c)
+    return {
+        "quote_due_at": _iso(c.quote_due_at),
+        "first_quote_at": _iso(c.first_quote_at),
+        "quote_overdue": overdue,
+        "hours_left": hours_left,
+        "quote_group_id": str(c.quote_group_id) if c.quote_group_id else None,
+    }
+
+
 async def build_case_outs(db: AsyncSession, cases: Sequence[Case]) -> list[dict[str, Any]]:
     if not cases:
         return []
@@ -239,6 +253,7 @@ async def build_case_outs(db: AsyncSession, cases: Sequence[Case]) -> list[dict[
                 "patient_notes": c.patient_notes,
                 "latest_quote": quote_out(latest_quote.get(c.id)),
                 "booking": booking_out(booking_by_case.get(c.id)),
+                **_quote_clock_fields(c),
                 "created_at": _iso(c.created_at),
                 "updated_at": _iso(c.updated_at),
             }

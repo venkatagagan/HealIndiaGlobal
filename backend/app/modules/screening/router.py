@@ -13,6 +13,7 @@ from app.core.deps import CurrentUser, DbSession, PageParams
 from app.core.enums import ScreeningStatus
 from app.core.pagination import Page
 from app.core.rate_limit import rate_limit
+from app.modules.guests.quota import guest_screening_quota
 from app.modules.screening import service
 from app.modules.screening.schemas import MatchOut, ScreeningCreate, ScreeningOut, ScreeningUpdate, SubmitIn
 
@@ -21,6 +22,8 @@ router = APIRouter(tags=["screening"])
 _submit_limit = Depends(rate_limit("screening.submit", 5, 60, key="user"))
 # SEC-021: per-user daily AI quota (over the platform budget the job falls back to the rules engine)
 _ai_quota = Depends(ai_daily_quota("screening", global_budget=False))
+# Guests (before registering) may run GUEST_AI_DAILY_LIMIT AI screenings a day (per guest and per IP).
+_guest_quota = Depends(guest_screening_quota())
 
 
 @router.post("/screenings", status_code=201, response_model=ScreeningOut)
@@ -78,7 +81,9 @@ async def update_screening(
 
 
 @router.post(
-    "/screenings/{screening_id}/submit", response_model=ScreeningOut, dependencies=[_submit_limit, _ai_quota]
+    "/screenings/{screening_id}/submit",
+    response_model=ScreeningOut,
+    dependencies=[_submit_limit, _ai_quota, _guest_quota],
 )
 async def submit_screening(
     screening_id: uuid.UUID, body: SubmitIn, db: DbSession, user: CurrentUser, request: Request
@@ -88,7 +93,9 @@ async def submit_screening(
 
 
 @router.post(
-    "/screenings/{screening_id}/rerun", response_model=ScreeningOut, dependencies=[_submit_limit, _ai_quota]
+    "/screenings/{screening_id}/rerun",
+    response_model=ScreeningOut,
+    dependencies=[_submit_limit, _ai_quota, _guest_quota],
 )
 async def rerun_screening(
     screening_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request

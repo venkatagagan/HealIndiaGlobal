@@ -8,14 +8,16 @@ from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import Boolean, Date, DateTime, Double, Integer, SmallInteger, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.crypto import EncryptedText
+from app.core.crypto import EncryptedString, EncryptedText
 from app.core.enums import (
     BookingStatus,
     CaseStatus,
     ChecklistKey,
     ChecklistStatus,
+    ConsultationKind,
     ConsultationMode,
     ConsultationStatus,
     ItineraryKind,
@@ -37,8 +39,10 @@ from app.models.base import (
 )
 
 __all__ = [
+    "AftercareCheckin",
     "Booking",
     "Case",
+    "CaseDocument",
     "CaseStatusHistory",
     "ChecklistItem",
     "Consultation",
@@ -86,6 +90,15 @@ class Case(UUIDPkMixin, TimestampMixin, Base):
     emergency_acknowledged_by_user_id: Mapped[uuid.UUID | None] = fk(
         "users.id", ondelete="SET NULL", nullable=True
     )
+    # Quick-quote promise (phase 1): the hospital should send a quote by ``quote_due_at`` (created +
+    # QUOTE_SLA_HOURS). ``first_quote_at`` is when the first quote was sent. The two ``*_sent_at`` columns
+    # dedupe the reminder (QUOTE_REMINDER_HOURS after creation) and the overdue escalation.
+    quote_due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    first_quote_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    quote_reminder_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    quote_overdue_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    quote_group_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), index=True)
+    """Cases created together by one multi-hospital quote request (``POST /cases/quote-request``)."""
 
     quotes: Mapped[list[Quote]] = relationship(
         "Quote", back_populates="case", lazy="raise", order_by="Quote.created_at", passive_deletes=True
@@ -108,6 +121,19 @@ class Case(UUIDPkMixin, TimestampMixin, Base):
         order_by="CaseStatusHistory.created_at",
         passive_deletes=True,
     )
+
+
+class CaseDocument(UUIDPkMixin, CreatedAtMixin, Base):
+    """A patient document shared with a case's hospital (screening/AI-scan reports attached at case creation
+    or by a multi-hospital quote request). One document can be shared with several cases; the documents
+    policy lets members of the case's hospital read it."""
+
+    __tablename__ = "case_documents"
+    __table_args__ = (sa.UniqueConstraint("case_id", "document_id", name="uq_case_documents_case_document"),)
+
+    case_id: Mapped[uuid.UUID] = fk("cases.id", ondelete="CASCADE")
+    document_id: Mapped[uuid.UUID] = fk("documents.id", ondelete="CASCADE")
+    shared_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
 
 
 class CaseStatusHistory(UUIDPkMixin, CreatedAtMixin, Base):
@@ -276,6 +302,42 @@ class Consultation(UUIDPkMixin, TimestampMixin, Base):
     fee_minor: Mapped[int] = money_col()
     currency: Mapped[str] = currency_col("INR")
     notes: Mapped[str | None] = mapped_column(Text)
+    kind: Mapped[ConsultationKind] = mapped_column(
+        sa_enum(ConsultationKind),
+        nullable=False,
+        default=ConsultationKind.STANDARD,
+        server_default="standard",
+        index=True,
+    )
+    due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    """Follow-ups: roughly when the call should happen (discharge + N days); the hospital picks the time."""
+    followup_day: Mapped[int | None] = mapped_column(SmallInteger)
+    """Automatic aftercare follow-ups: the day after discharge it was planned for (7, 30, 90 ...)."""
+    reminder_24h_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reminder_1h_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AftercareCheckin(UUIDPkMixin, TimestampMixin, Base):
+    """A short recovery questionnaire the patient answers after discharge (phase 1 aftercare).
+
+    ``answers``: ``{pain: 0-10, fever, wound_concerns, breathlessness: bool, medication_adherence:
+    "all"|"some"|"none"}``. Free text is encrypted at rest. ``red_flags`` lists the alarming answers."""
+
+    __tablename__ = "aftercare_checkins"
+    __table_args__ = (
+        sa.UniqueConstraint("case_id", "day", name="uq_aftercare_checkins_case_day"),
+        sa.Index("ix_aftercare_checkins_due_at", "due_at"),
+    )
+
+    case_id: Mapped[uuid.UUID] = fk("cases.id", ondelete="CASCADE")
+    patient_id: Mapped[uuid.UUID] = fk("patient_profiles.id", ondelete="CASCADE")
+    day: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    submitted_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    answers: Mapped[dict[str, Any]] = json_obj_col()
+    free_text: Mapped[str | None] = mapped_column(EncryptedString())
+    red_flags: Mapped[list[str]] = json_list_col()
 
 
 class ChecklistItem(UUIDPkMixin, TimestampMixin, Base):

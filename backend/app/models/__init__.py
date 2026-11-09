@@ -5,8 +5,10 @@ from __future__ import annotations
 from app.models.agents import Agent
 from app.models.base import Base, CreatedAtMixin, TimestampMixin, UUIDPkMixin
 from app.models.cases import (
+    AftercareCheckin,
     Booking,
     Case,
+    CaseDocument,
     CaseStatusHistory,
     ChecklistItem,
     Consultation,
@@ -16,6 +18,7 @@ from app.models.cases import (
 from app.models.catalog import CostBenchmark, CulturalTip, FxRate, PlatformSetting, Procedure, Specialty
 from app.models.docai import DocumentAnalysis
 from app.models.documents import Document
+from app.models.guests import GuestAiUsage, GuestContactVerification, IntroConsultation
 from app.models.hospitals import (
     AvailabilitySlot,
     Doctor,
@@ -52,6 +55,8 @@ from app.models.travel import (
     ServiceProvider,
     SosAlert,
     TravelBooking,
+    VisaChecklistItem,
+    VisaCountryRule,
     VisaRequest,
 )
 from app.models.voice import VoiceTranscription
@@ -60,6 +65,13 @@ from app.models.voice import VoiceTranscription
 REQUIRED_EXTENSIONS: tuple[str, ...] = ("citext", "pg_trgm", "btree_gin", "pgcrypto")
 
 __all__ = [
+    "AftercareCheckin",
+    "CaseDocument",
+    "GuestAiUsage",
+    "GuestContactVerification",
+    "IntroConsultation",
+    "VisaChecklistItem",
+    "VisaCountryRule",
     "LEDGER_DDL",
     "LEDGER_DROP_DDL",
     "NUMBER_SEQUENCES",

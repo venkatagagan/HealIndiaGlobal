@@ -29,6 +29,7 @@ from app.core.enums import (
     UserRole,
     UserStatus,
     VisaStatus,
+    VisaType,
 )
 from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.events import publish
@@ -227,24 +228,30 @@ def scoped_visas(user: User) -> Select[Any]:
 async def create_visa_request(
     db: AsyncSession, user: User, body: VisaRequestCreate, request: Request | None = None
 ) -> VisaRequest:
+    from app.modules.travel.visa import visa_type_for_patient
+
     case = await _case_for_request(db, user, body.case_id)
+    visa_type = await visa_type_for_patient(db, await db.get(PatientProfile, case.patient_id), body.visa_type)
     duplicate = (
         await db.execute(
             select(VisaRequest.id).where(
                 VisaRequest.case_id == case.id,
-                VisaRequest.visa_type == body.visa_type,
+                VisaRequest.visa_type == visa_type,
                 VisaRequest.status != VisaStatus.REJECTED,
             )
         )
     ).scalar_one_or_none()
     if duplicate is not None:
         raise Conflict("A visa request of this type is already open for the case", code="visa_request_exists")
+    no_visa = visa_type == VisaType.NOT_REQUIRED
     visa = VisaRequest(
         case_id=case.id,
         patient_id=case.patient_id,
-        visa_type=body.visa_type,
-        status=VisaStatus.DOCUMENTS_PENDING,
-        notes=body.notes,
+        visa_type=visa_type,
+        # Nepal/Bhutan nationals need no visa: the request only records that (and ticks the checklist).
+        status=VisaStatus.APPROVED if no_visa else VisaStatus.DOCUMENTS_PENDING,
+        decided_at=utcnow() if no_visa else None,
+        notes=body.notes or ("No visa is needed for this nationality." if no_visa else None),
     )
     db.add(visa)
     await db.flush()
@@ -254,7 +261,7 @@ async def create_visa_request(
         action="visa.request",
         entity_type="visa_request",
         entity_id=visa.id,
-        after={"case_id": case.id, "visa_type": body.visa_type.value, "status": visa.status.value},
+        after={"case_id": case.id, "visa_type": visa_type.value, "status": visa.status.value},
         request=request,
     )
     await sync_checklist_key(db, case.id, ChecklistKey.VISA_APPROVED)

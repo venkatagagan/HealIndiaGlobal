@@ -10,7 +10,7 @@ from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
-from app.core.enums import CaseStatus, ConsultationMode, ConsultationStatus
+from app.core.enums import CaseStatus, ConsultationKind, ConsultationMode, ConsultationStatus
 from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.events import publish
 from app.models import Case, Consultation, Doctor, User
@@ -18,6 +18,7 @@ from app.modules.cases import policies
 from app.modules.cases.common import queue_case_push, utcnow
 from app.modules.cases.schemas import ConsultationCreate, ConsultationUpdate
 from app.modules.cases.state import CLOSED_CASE_STATUSES
+from app.modules.cases.video import new_meeting_url
 
 CONSULTATION_TRANSITIONS: dict[ConsultationStatus, frozenset[ConsultationStatus]] = {
     ConsultationStatus.REQUESTED: frozenset({ConsultationStatus.SCHEDULED, ConsultationStatus.CANCELLED}),
@@ -52,26 +53,39 @@ async def create_consultation(
     if policies.is_agent(user):
         await policies.require_active_agent(db, user)
     case = await policies.get_case_for_user(db, body.case_id, user, for_update=True)
-    if case.status in CLOSED_CASE_STATUSES:
+    if body.kind == ConsultationKind.FOLLOWUP:
+        from app.modules.cases.aftercare import ensure_followup_allowed
+
+        await ensure_followup_allowed(db, case)
+    elif case.status in CLOSED_CASE_STATUSES:
         raise BadRequest(
             f"A case in status {CaseStatus(case.status).value} cannot request consultations",
             code="invalid_state",
         )
     doctor_id = body.doctor_id or case.doctor_id
+    if doctor_id is None and body.kind == ConsultationKind.FOLLOWUP:
+        from app.modules.cases.aftercare import treating_doctor_id
+
+        doctor_id = await treating_doctor_id(db, case)
     if doctor_id is None:
         raise BadRequest("Choose a doctor for the consultation", code="doctor_required")
     doctor = await db.get(Doctor, doctor_id)
     if doctor is None or doctor.hospital_id != case.hospital_id or not doctor.is_active:
         raise BadRequest("The doctor does not practise at the case's hospital", code="invalid_doctor")
-    if not doctor.teleconsult_available:
+    if not doctor.teleconsult_available and body.kind != ConsultationKind.FOLLOWUP:
         raise BadRequest("This doctor does not offer tele-consultations", code="teleconsult_unavailable")
+    # Automatic aftercare follow-ups (``followup_day`` set) never block a request the patient makes.
     open_request = (
         await db.execute(
-            select(Consultation.id).where(
+            select(Consultation.id)
+            .where(
                 Consultation.case_id == case.id,
                 Consultation.doctor_id == doctor.id,
+                Consultation.kind == body.kind,
+                Consultation.followup_day.is_(None),
                 Consultation.status.in_([ConsultationStatus.REQUESTED, ConsultationStatus.SCHEDULED]),
             )
+            .limit(1)
         )
     ).scalar_one_or_none()
     if open_request is not None:
@@ -86,7 +100,10 @@ async def create_consultation(
         patient_id=case.patient_id,
         mode=body.mode,
         status=ConsultationStatus.REQUESTED,
-        fee_minor=int(doctor.consultation_fee_minor or 0),
+        kind=body.kind,
+        due_at=body.preferred_at,
+        # Aftercare follow-ups are part of the treatment package: no consultation fee.
+        fee_minor=0 if body.kind == ConsultationKind.FOLLOWUP else int(doctor.consultation_fee_minor or 0),
         currency=doctor.currency,
         notes=notes,
     )
@@ -98,7 +115,12 @@ async def create_consultation(
         action="consultation.request",
         entity_type="consultation",
         entity_id=item.id,
-        after={"case_id": case.id, "doctor_id": doctor.id, "fee_minor": item.fee_minor},
+        after={
+            "case_id": case.id,
+            "doctor_id": doctor.id,
+            "fee_minor": item.fee_minor,
+            "kind": ConsultationKind(item.kind).value,
+        },
         request=request,
     )
     await queue_case_push(
@@ -149,6 +171,10 @@ async def update_consultation(
     if "scheduled_at" in changes:
         if changes["scheduled_at"] is not None and changes["scheduled_at"] <= utcnow():
             raise BadRequest("scheduled_at must be in the future", code="invalid_scheduled_at")
+        if changes["scheduled_at"] != item.scheduled_at:
+            # A new time gets new reminders.
+            item.reminder_24h_sent_at = None
+            item.reminder_1h_sent_at = None
         item.scheduled_at = changes["scheduled_at"]
     if "meeting_url" in changes:
         item.meeting_url = str(changes["meeting_url"]) if changes["meeting_url"] is not None else None
@@ -163,9 +189,8 @@ async def update_consultation(
             if item.scheduled_at is None:
                 raise BadRequest("scheduled_at is required to schedule", code="scheduled_at_required")
             if item.mode == ConsultationMode.VIDEO and not item.meeting_url:
-                raise BadRequest(
-                    "meeting_url is required for video consultations", code="meeting_url_required"
-                )
+                # No link given: create a private video room (VIDEO_PROVIDER, Jitsi by default).
+                item.meeting_url = new_meeting_url()
         item.status = target
     after = {
         "status": ConsultationStatus(item.status).value,

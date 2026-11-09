@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import realtime
 from app.core.jobs import periodic, task
+from app.modules.cases import sla_handlers  # noqa: F401  - registers the phase-1 subscribers/periodic jobs
 from app.modules.cases.bookings import expire_unpaid_bookings
 from app.modules.cases.common import REALTIME_TASK
 from app.modules.cases.service import expire_quotes

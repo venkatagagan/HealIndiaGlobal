@@ -24,7 +24,9 @@ __all__ = [
     "CommissionScope",
     "AuthPortal",
     "ConsentKind",
+    "ConsultationKind",
     "ConsultationMode",
+    "ContactChannel",
     "ConsultationStatus",
     "ConversationKind",
     "DevicePlatform",
@@ -78,6 +80,7 @@ __all__ = [
     "UserStatus",
     "VerificationPurpose",
     "VisaStatus",
+    "VisaRoute",
     "VisaType",
     "ADMIN_PORTAL_ROLES",
     "STAFF_ROLES",
@@ -322,6 +325,17 @@ class ConsultationStatus(StrEnum):
     CANCELLED = "cancelled"
 
 
+class ConsultationKind(StrEnum):
+    STANDARD = "standard"
+    # Aftercare video follow-up, allowed on completed cases within AFTERCARE_WINDOW_DAYS.
+    FOLLOWUP = "followup"
+
+
+class ContactChannel(StrEnum):
+    EMAIL = "email"
+    PHONE = "phone"
+
+
 class ConsultationMode(StrEnum):
     VIDEO = "video"
     PHONE = "phone"
@@ -374,6 +388,18 @@ class VisaStatus(StrEnum):
 class VisaType(StrEnum):
     E_MEDICAL = "e_medical"
     E_MEDICAL_ATTENDANT = "e_medical_attendant"
+    # Regular (paper) Medical visa applied for at an Indian embassy/consulate (nationalities without e-Visa).
+    MEDICAL = "medical"
+    # Nationals of Nepal and Bhutan do not need a visa for India.
+    NOT_REQUIRED = "not_required"
+
+
+class VisaRoute(StrEnum):
+    """How a nationality gets into India for treatment (``visa_country_rules.visa_route``)."""
+
+    E_VISA = "e_visa"
+    REGULAR_VISA = "regular_visa"
+    NOT_REQUIRED = "not_required"
 
 
 class TravelKind(StrEnum):

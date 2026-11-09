@@ -10,9 +10,11 @@ A user may see a (non-deleted) document when they are:
 * an agent: their own organisation documents (``documents.agent_id``), and documents of patients they
   manage/referred or of their cases - but only while the patient's own latest ``share_with_agent`` consent
   is granted (CG-14);
-* a hospital member: the document's ``hospital_id`` (explicitly shared to / uploaded by that hospital) or the
-  hospital of its case, unless the patient's latest ``share_with_hospitals`` decision for that hospital is a
-  withdrawal. A patient's other documents (no case, or another hospital's case) are never visible to a
+* a hospital member: the document's ``hospital_id`` (explicitly shared to / uploaded by that hospital), the
+  hospital of its case, or a case of that hospital the patient shared it with (``case_documents``: reports
+  attached when a case or a multi-hospital quote request is created) - unless the patient's latest
+  ``share_with_hospitals`` decision for that hospital is a withdrawal. A patient's other documents (no case,
+  or another hospital's case) are never visible to a
   hospital just because the patient has *some* case there (SEC-002).
 
 The same rules are expressed once as a SQL predicate (:func:`visibility_clause`) so that the list endpoint,
@@ -31,7 +33,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import is_staff
 from app.core.enums import ConsentKind, DocumentKind, UserRole
-from app.models import Case, Consent, Document, PatientProfile, User
+from app.models import Case, CaseDocument, Consent, Document, PatientProfile, User
 from app.modules.auth.scoping import agent_id_for, hospital_ids_for, patient_profile_id_for
 
 #: payment-related documents finance may read
@@ -165,9 +167,14 @@ def visibility_clause(p: Principal) -> ColumnElement[bool]:
         )
     for hospital_id in p.hospital_ids:
         hospital_cases = select(Case.id).where(Case.hospital_id == hospital_id)
+        shared_with_cases = select(CaseDocument.document_id).where(CaseDocument.case_id.in_(hospital_cases))
         conditions.append(
             and_(
-                or_(Document.hospital_id == hospital_id, Document.case_id.in_(hospital_cases)),
+                or_(
+                    Document.hospital_id == hospital_id,
+                    Document.case_id.in_(hospital_cases),
+                    Document.id.in_(shared_with_cases),
+                ),
                 hospital_sharing_allowed(Document.patient_id, hospital_id),
             )
         )

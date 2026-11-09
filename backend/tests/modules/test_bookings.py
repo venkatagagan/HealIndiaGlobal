@@ -404,7 +404,9 @@ async def test_consultations(db, client, auth_headers) -> None:
     r = await client.patch(url, json={"status": "scheduled", "scheduled_at": when}, headers=p_h)
     assert r.status_code == 403
     r = await client.patch(url, json={"status": "scheduled", "scheduled_at": when}, headers=h_h)
-    assert r.status_code == 400 and r.json()["error"]["code"] == "meeting_url_required"
+    # No link given: a private Jitsi room is generated (phase 1 video).
+    assert r.status_code == 200, r.text
+    assert r.json()["meeting_url"].startswith("https://meet.jit.si/hig-")
     r = await client.patch(  # SEC-041: plain http meeting links are refused
         url,
         json={"status": "scheduled", "scheduled_at": when, "meeting_url": "http://meet.example.test/abc"},

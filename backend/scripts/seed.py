@@ -370,12 +370,31 @@ class Seeder:
                 {"rate": rate, "source": FX_SOURCE, "as_of": self.now},
                 update=False,
             )
+        visa_count = await self.seed_visa_rules()
         settings_count = await self.seed_platform_settings()
+        out(f"  {visa_count} visa country rules (phase 1; source + date in app/modules/travel/visa_data.py)")
         out(
             f"  {len(SPECIALTIES)} specialties, {len(PROCEDURES)} procedures, {len(COST_BENCHMARKS)} cost "
             f"benchmarks, {len(CULTURAL_TIPS)} cultural tips, {len(FX_RATES)} FX rates, "
             f"{settings_count} platform settings"
         )
+
+    async def seed_visa_rules(self) -> int:
+        """Visa rules + checklists per nationality (insert-only: admin edits are never overwritten)."""
+        if not self.has_table("visa_country_rules") or not self.has_table("visa_checklist_items"):
+            self.stats.warn("visa tables missing - run the migrations; the visa guide uses built-in defaults")
+            return 0
+        from app.modules.travel import visa_data
+
+        rules = visa_data.default_rules()
+        for row in rules:
+            values = {k: v for k, v in row.items() if k != "nationality"}
+            await self.upsert("visa_country_rules", {"nationality": row["nationality"]}, values, update=False)
+        for item in visa_data.default_checklist():
+            match = {k: item[k] for k in ("visa_route", "nationality", "item_key")}
+            values = {k: v for k, v in item.items() if k not in match}
+            await self.upsert("visa_checklist_items", match, values, update=False)
+        return len(rules)
 
     async def seed_platform_settings(self) -> int:
         """Materialise the code defaults (PLAN 6.3) as rows; admin-edited values are never overwritten."""
@@ -1269,7 +1288,8 @@ class JourneyRunner:
             hours=9
         )
         requests: list[tuple[str, str, dict[str, Any]]] = [
-            ("visa_requests", "/travel/visa-requests", {"case_id": case_id, "visa_type": "e_medical"}),
+            # visa_type comes from the patient's nationality rule (e_medical, medical or not_required)
+            ("visa_requests", "/travel/visa-requests", {"case_id": case_id}),
             (
                 "accommodation_bookings",
                 "/travel/accommodation-bookings",

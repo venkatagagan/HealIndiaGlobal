@@ -41,6 +41,7 @@ from app.modules.travel.schemas import (
     VisaRequestOut,
     VisaRequestUpdate,
 )
+from app.modules.travel.visa_router import router as visa_router
 
 router = APIRouter(tags=["travel"])
 
@@ -316,3 +317,7 @@ async def _one(db: AsyncSession, stmt: Select[Any], label: str) -> Any:
     if item is None:
         raise NotFound(f"{label} not found")
     return item
+
+
+# Visa guide, admin visa rules and the hospital invitation letter (phase 1).
+router.include_router(visa_router)

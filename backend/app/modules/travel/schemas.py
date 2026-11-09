@@ -51,7 +51,9 @@ class TravelPatientRef(_Out):
 # --------------------------------------------------------------------------------------------- visas
 class VisaRequestCreate(_In):
     case_id: uuid.UUID
-    visa_type: VisaType = VisaType.E_MEDICAL
+    visa_type: VisaType | None = None
+    """Leave empty to use the visa of the patient's nationality (``GET /travel/visa-guide``): ``e_medical``
+    (e-Visa countries), ``medical`` (embassy visa) or ``not_required`` (Nepal, Bhutan)."""
     notes: str | None = Field(default=None, max_length=5000)
 
 
@@ -70,6 +72,9 @@ class VisaRequestOut(_Out):
     visa_type: VisaType
     status: VisaStatus
     invitation_letter_document_id: uuid.UUID | None = None
+    invitation_letter_draft_document_id: uuid.UUID | None = None
+    invitation_letter_generated_at: datetime | None = None
+    invitation_letter_approved_at: datetime | None = None
     application_reference: str | None = None
     applied_at: datetime | None = None
     decided_at: datetime | None = None

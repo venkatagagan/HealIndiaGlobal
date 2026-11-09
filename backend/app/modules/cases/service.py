@@ -73,27 +73,43 @@ async def _has_share_consent(db: AsyncSession, user_id: uuid.UUID, hospital_id: 
     return bool(latest)
 
 
-async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: Request | None = None) -> Case:
+async def resolve_case_patient(
+    db: AsyncSession, user: User, patient_id: uuid.UUID | None
+) -> tuple[PatientProfile, uuid.UUID | None]:
+    """The patient a new case is for and the agent to credit: patients act for themselves, agents for a
+    patient they manage (``patient_id`` required)."""
     policies.ensure_full_account(user)
-    agent_id: uuid.UUID | None
     if policies.is_patient(user):
         patient = await policies.get_patient_profile(db, user)
         if patient is None:
             raise BadRequest("Complete your patient profile first", code="patient_profile_missing")
-        if body.patient_id is not None and body.patient_id != patient.id:
+        if patient_id is not None and patient_id != patient.id:
             raise NotFound("Patient not found")
-        agent_id = patient.managed_by_agent_id or patient.referred_by_agent_id
-    elif policies.is_agent(user):
+        return patient, patient.managed_by_agent_id or patient.referred_by_agent_id
+    if policies.is_agent(user):
         agent = await policies.require_active_agent(db, user)
-        if body.patient_id is None:
+        if patient_id is None:
             raise BadRequest("patient_id is required when an agent creates a case", code="patient_required")
-        found = await db.get(PatientProfile, body.patient_id)
+        found = await db.get(PatientProfile, patient_id)
         if found is None or not await policies.agent_can_manage_patient(db, agent, found.id):
             raise NotFound("Patient not found")
-        patient = found
-        agent_id = agent.id
-    else:
-        raise Forbidden("Only patients and agents can create cases")
+        return found, agent.id
+    raise Forbidden("Only patients and agents can create cases")
+
+
+async def build_case(
+    db: AsyncSession,
+    user: User,
+    patient: PatientProfile,
+    agent_id: uuid.UUID | None,
+    body: CaseCreate,
+    request: Request | None = None,
+    *,
+    quote_group_id: uuid.UUID | None = None,
+) -> Case:
+    """Validate and add one case (status history, consent, shared reports, audit, ``case.created``).
+    Does not commit."""
+    from app.modules.cases.quick_quote import attach_case_documents, quote_due_for, shareable_documents
 
     hospital = await db.get(Hospital, body.hospital_id)
     if hospital is None or hospital.status != HospitalStatus.ACTIVE:
@@ -115,6 +131,7 @@ async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: R
         raise BadRequest("Unknown specialty", code="invalid_specialty")
 
     medical_summary: str | None = None
+    report_ids: list[uuid.UUID] = []
     if body.screening_id is not None:
         screening = await db.get(Screening, body.screening_id)
         if screening is None or screening.patient_id != patient.id:
@@ -123,6 +140,13 @@ async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: R
             summary = screening.ai_result.get("summary")
             medical_summary = str(summary)[:10_000] if summary else None
         specialty_id = specialty_id or screening.specialty_id
+        report_ids = list(screening.report_document_ids or [])
+    # Explicitly listed documents must all be the patient's own medical documents; the screening's reports
+    # (and the reports of the AI scans linked to them) are shared when still available.
+    documents = await shareable_documents(db, patient, list(body.document_ids), strict=True)
+    known = {d.id for d in documents}
+    extra = await shareable_documents(db, patient, [i for i in report_ids if i not in known], strict=False)
+    documents += [d for d in extra if d.id not in known]
 
     # Consent to share the patient's data with the hospital (PLAN 9.9); recorded below, scoped to the case.
     if not body.consent_share and not await _has_share_consent(db, patient.user_id, hospital.id):
@@ -145,18 +169,26 @@ async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: R
         patient_notes=body.patient_notes,
         medical_summary=medical_summary,
         created_by_user_id=user.id,
+        quote_due_at=quote_due_for(utcnow()),
+        quote_group_id=quote_group_id,
     )
     db.add(case)
+    note = "Case created"
+    if documents:
+        count = len(documents)
+        note += f"; {count} report{'s' if count != 1 else ''} shared with the hospital"
     db.add(
         CaseStatusHistory(
             case_id=case.id,
             from_status=None,
             to_status=CaseStatus.ENQUIRY,
             changed_by_user_id=user.id,
-            note="Case created",
+            note=note,
         )
     )
     await db.flush()
+    if documents:
+        await attach_case_documents(db, case, documents, user)
     if body.consent_share:
         # Scoped to this case and hospital. SEC-060: when an agent (or staff) acts for the patient it is
         # recorded as the granter, so the row never counts as the patient's own confirmation.
@@ -176,7 +208,13 @@ async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: R
         action="case.create",
         entity_type="case",
         entity_id=case.id,
-        after={"case_number": case.case_number, "hospital_id": hospital.id, "patient_id": patient.id},
+        after={
+            "case_number": case.case_number,
+            "hospital_id": hospital.id,
+            "patient_id": patient.id,
+            "shared_document_ids": [str(d.id) for d in documents],
+            "quote_group_id": str(quote_group_id) if quote_group_id else None,
+        },
         request=request,
     )
     await publish(
@@ -189,6 +227,12 @@ async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: R
             "agent_id": str(agent_id) if agent_id else None,
         },
     )
+    return case
+
+
+async def create_case(db: AsyncSession, user: User, body: CaseCreate, request: Request | None = None) -> Case:
+    patient, agent_id = await resolve_case_patient(db, user, body.patient_id)
+    case = await build_case(db, user, patient, agent_id, body, request)
     await db.commit()
     return case
 
@@ -199,6 +243,7 @@ CASE_SORT_FIELDS: dict[str, Any] = {
     "updated_at": Case.updated_at,
     "case_number": Case.case_number,
     "status": Case.status,
+    "quote_due_at": Case.quote_due_at,
 }
 """Sortable columns of ``GET /cases`` (``sort=field`` ascending, ``sort=-field`` descending)."""
 
@@ -289,6 +334,11 @@ def list_cases_stmt(user: User, *, sort: str | None = None, **filters: Any) -> S
     sort = sort or "-created_at"
     descending = sort.startswith("-")
     column = CASE_SORT_FIELDS.get(sort.lstrip("-"), Case.created_at)
+    if sort.lstrip("-") == "quote_due_at":
+        # Cases still waiting for a quote first (most urgent first when ascending), answered ones last.
+        waiting = and_(Case.status == CaseStatus.ENQUIRY, Case.first_quote_at.is_(None))
+        order = column.desc().nulls_last() if descending else column.asc().nulls_last()
+        return stmt.order_by(waiting.desc(), order, Case.id.asc())
     if descending:
         return stmt.order_by(column.desc(), Case.id.desc())
     return stmt.order_by(column.asc(), Case.id.asc())
@@ -430,6 +480,8 @@ async def send_quote(
         raise BadRequest("The quote total must be greater than zero", code="invalid_quote_total")
 
     await withdraw_open_quotes(db, case.id)
+    if case.first_quote_at is None:
+        case.first_quote_at = utcnow()
     quote = Quote(
         case_id=case.id,
         hospital_id=case.hospital_id,

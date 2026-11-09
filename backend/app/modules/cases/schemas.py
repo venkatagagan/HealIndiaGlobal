@@ -14,6 +14,7 @@ from app.core.enums import (
     CaseStatus,
     ChecklistKey,
     ChecklistStatus,
+    ConsultationKind,
     ConsultationMode,
     ConsultationStatus,
     DocumentKind,
@@ -230,6 +231,29 @@ class CaseCreate(_In):
     patient_notes: str | None = Field(default=None, max_length=10_000)
     patient_id: uuid.UUID | None = None
     consent_share: bool = False
+    document_ids: list[uuid.UUID] = Field(default_factory=list, max_length=20)
+    """The patient's own medical documents to share with the hospital (the screening's reports are shared
+    automatically)."""
+
+
+class QuoteRequestCreate(_In):
+    """``POST /cases/quote-request``: ask up to ``QUOTE_MAX_HOSPITALS`` hospitals for a quote at once."""
+
+    hospital_ids: list[uuid.UUID] = Field(min_length=1, max_length=10)
+    procedure_id: uuid.UUID | None = None
+    specialty_id: uuid.UUID | None = None
+    screening_id: uuid.UUID | None = None
+    notes: str | None = Field(default=None, max_length=10_000)
+    document_ids: list[uuid.UUID] = Field(default_factory=list, max_length=20)
+    patient_id: uuid.UUID | None = None
+    consent_share: bool = False
+
+    @field_validator("hospital_ids")
+    @classmethod
+    def _distinct(cls, v: list[uuid.UUID]) -> list[uuid.UUID]:
+        if len(set(v)) != len(v):
+            raise ValueError("Each hospital may only be listed once")
+        return v
 
 
 class CaseStatusChange(_In):
@@ -287,8 +311,45 @@ class CaseOut(_Out):
     urgency: Urgency | None = None
     emergency_ack_required: bool = False
     emergency_acknowledged_at: datetime | None = None
+    quote_due_at: datetime | None = None
+    """When the hospital promised a quote by (case created + QUOTE_SLA_HOURS)."""
+    first_quote_at: datetime | None = None
+    quote_overdue: bool = False
+    """True while no quote was sent and ``quote_due_at`` has passed (case still an enquiry)."""
+    hours_left: float | None = None
+    """Hours until ``quote_due_at`` (0 when overdue); null once a quote was sent or the case moved on."""
+    quote_group_id: uuid.UUID | None = None
     created_at: datetime
     updated_at: datetime
+
+
+class QuoteGroupCase(_Out):
+    case_id: uuid.UUID
+    case_number: str
+    status: CaseStatus
+    hospital: HospitalRef
+    doctor: DoctorRef | None = None
+    quote_due_at: datetime | None = None
+    quote_overdue: bool = False
+    hours_left: float | None = None
+    quote: QuoteOut | None = None
+    """The latest quote of the case (null while the hospital has not answered)."""
+    total_in_currency_minor: int | None = None
+    """``quote.total_minor`` converted to ``currency`` (the patient's preferred currency)."""
+
+
+class QuoteGroupOut(_Out):
+    """``POST /cases/quote-request`` / ``GET /cases/quote-groups/{id}``: hospitals' quotes side by side."""
+
+    quote_group_id: uuid.UUID
+    patient: PatientRef
+    procedure: NamedRef | None = None
+    specialty: NamedRef | None = None
+    currency: str
+    """Currency of ``total_in_currency_minor`` (the patient's preferred currency, INR as a fallback)."""
+    created_at: datetime
+    cases: list[QuoteGroupCase] = Field(default_factory=list)
+    cheapest_case_id: uuid.UUID | None = None
 
 
 class CaseDocumentOut(_Out):
@@ -376,6 +437,9 @@ class ItineraryItemOut(_Out):
 # --------------------------------------------------------------------------------------------- consultations
 class ConsultationCreate(_In):
     case_id: uuid.UUID
+    kind: ConsultationKind = ConsultationKind.STANDARD
+    """``followup``: an aftercare video follow-up (also allowed on a completed case within
+    AFTERCARE_WINDOW_DAYS of discharge)."""
     doctor_id: uuid.UUID | None = None
     mode: ConsultationMode = ConsultationMode.VIDEO
     preferred_at: datetime | None = None
@@ -411,6 +475,10 @@ class ConsultationOut(_Out):
     mode: ConsultationMode
     meeting_url: str | None = None
     status: ConsultationStatus
+    kind: ConsultationKind = ConsultationKind.STANDARD
+    due_at: datetime | None = None
+    """Follow-ups: roughly when the call should happen; the hospital confirms the exact time."""
+    followup_day: int | None = None
     fee_minor: int
     currency: str
     notes: str | None = None
