@@ -1,3 +1,4 @@
+import '../../l10n/l10n.dart';
 import 'enums.dart';
 import 'json.dart';
 import 'refs.dart';
@@ -105,7 +106,7 @@ class Conversation {
     final s = subject;
     if (s != null && s.isNotEmpty) return s;
     final others = participants.where((p) => p.userId != myUserId).map((p) => p.fullName).toList();
-    return others.isEmpty ? 'Conversation' : others.join(', ');
+    return others.isEmpty ? L10n.current.conversationFallbackTitle : others.join(', ');
   }
 
   Conversation copyWith({ChatMessage? lastMessage, int? unreadCount, DateTime? lastMessageAt}) => Conversation(

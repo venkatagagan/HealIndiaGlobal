@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../network/api_exception.dart';
 import '../repositories/report_repository.dart';
 import '../theme/app_theme.dart';
 import 'buttons.dart';
 
-/// Snackbar text after a report was sent.
-const kReportThanks = 'Thanks. Our team will review this report.';
-
 /// Opens the "Report" bottom sheet (CG-16) for a chat message or an AI result and, when the report was
 /// sent, shows the thank-you snackbar. Returns true when a report was sent.
 Future<bool> showReportSheet(BuildContext context, {required ReportTargetType type, required String targetId}) async {
   final messenger = ScaffoldMessenger.maybeOf(context);
+  final thanks = context.l10n.reportSheetThanks;
   final sent = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
@@ -22,7 +21,7 @@ Future<bool> showReportSheet(BuildContext context, {required ReportTargetType ty
   if (sent == true) {
     messenger
       ?..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text(kReportThanks)));
+      ..showSnackBar(SnackBar(content: Text(thanks)));
   }
   return sent ?? false;
 }
@@ -44,16 +43,14 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
   bool _sending = false;
   String? _error;
 
-  String get _title => switch (widget.type) {
-    ReportTargetType.message => 'Report this message',
-    ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => 'Report this result',
+  String _title(AppLocalizations l) => switch (widget.type) {
+    ReportTargetType.message => l.reportSheetTitleMessage,
+    ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => l.reportSheetTitleResult,
   };
 
-  String get _intro => switch (widget.type) {
-    ReportTargetType.message =>
-      'Tell us what is wrong with this message. Our team will look at it. The sender is not told who reported it.',
-    ReportTargetType.screeningResult || ReportTargetType.documentAnalysis =>
-      'Tell us what is wrong with this AI result. Our team will look at it and use it to improve the results.',
+  String _intro(AppLocalizations l) => switch (widget.type) {
+    ReportTargetType.message => l.reportSheetIntroMessage,
+    ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => l.reportSheetIntroResult,
   };
 
   @override
@@ -80,7 +77,7 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
       setState(() {
         _sending = false;
         _error = e is ApiException && e.isRateLimited
-            ? 'You have sent a lot of reports. Please try again later.'
+            ? context.l10n.reportSheetRateLimited
             : errorMessage(e);
       });
     }
@@ -88,11 +85,12 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final reasons = ReportReason.forTarget(widget.type);
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,15 +99,15 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
               children: [
                 const Icon(Icons.flag_outlined, color: AppColors.danger),
                 const SizedBox(width: 8),
-                Expanded(child: Text(_title, style: context.text.titleMedium)),
+                Expanded(child: Text(_title(l10n), style: context.text.titleMedium)),
                 IconButton(
-                  tooltip: 'Close',
+                  tooltip: l10n.commonClose,
                   onPressed: _sending ? null : () => Navigator.of(context).pop(false),
                   icon: const Icon(Icons.close_rounded),
                 ),
               ],
             ),
-            Text(_intro, style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary)),
+            Text(_intro(l10n), style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary)),
             const SizedBox(height: 8),
             RadioGroup<ReportReason>(
               groupValue: _reason,
@@ -124,7 +122,7 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                       value: r,
-                      title: Text(r.label),
+                      title: Text(r.labelIn(l10n)),
                     ),
                 ],
               ),
@@ -138,10 +136,7 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
               maxLines: 4,
               maxLength: ReportRepository.maxNoteLength,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'Add a note (optional)',
-                hintText: 'Anything that helps our team understand the problem',
-              ),
+              decoration: InputDecoration(labelText: l10n.reportSheetNoteLabel, hintText: l10n.reportSheetNoteHint),
             ),
             if (_error != null) ...[
               const SizedBox(height: 4),
@@ -150,7 +145,7 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
             const SizedBox(height: 12),
             PrimaryButton(
               key: const Key('report-send'),
-              label: 'Send report',
+              label: l10n.reportSheetSend,
               icon: Icons.flag_rounded,
               loading: _sending,
               onPressed: _reason == null || _sending ? null : _send,

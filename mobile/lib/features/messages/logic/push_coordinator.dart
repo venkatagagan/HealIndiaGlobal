@@ -9,6 +9,7 @@ import '../../../core/config/app_preferences.dart';
 import '../../../core/models/models.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/services/push_service.dart';
+import '../../../l10n/l10n.dart';
 import 'notification_routes.dart';
 
 /// "Not now" on the pre-prompt silences it for this long.
@@ -30,17 +31,18 @@ Future<void> rememberPushPromptDeclined(SharedPreferences prefs, {DateTime? now}
 Future<bool> showPushPrePrompt(BuildContext context) async {
   final result = await showDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      icon: const Icon(Icons.notifications_active_outlined),
-      title: const Text('Turn on notifications?'),
-      content: const Text(
-        'Get updates about your case, messages and payments. We never put health details in notifications.',
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Not now')),
-        FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Turn on')),
-      ],
-    ),
+    builder: (ctx) {
+      final l10n = ctx.l10n;
+      return AlertDialog(
+        icon: const Icon(Icons.notifications_active_outlined),
+        title: Text(l10n.pushPromptTitle),
+        content: Text(l10n.pushPromptBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.pushPromptNotNow)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.pushPromptTurnOn)),
+        ],
+      );
+    },
   );
   return result ?? false;
 }

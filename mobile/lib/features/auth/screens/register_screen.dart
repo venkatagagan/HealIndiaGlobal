@@ -11,6 +11,7 @@ import '../../../core/router/routes.dart';
 import '../return_path.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../profile/data/countries.dart';
 import '../validators.dart';
 import '../widgets/auth_widgets.dart';
@@ -60,13 +61,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   String get _target => returnPathOrHome(widget.from);
 
-  static String _roleLabel(UserRole role) => switch (role) {
-    UserRole.agent => 'Agent',
-    UserRole.hospital => 'Hospital',
-    _ => 'Patient',
+  static String _roleLabel(AppLocalizations l, UserRole role) => switch (role) {
+    UserRole.agent => l.enumUserRoleAgent,
+    UserRole.hospital => l.enumUserRoleHospital,
+    _ => l.enumUserRolePatient,
   };
 
-  String? _required(String? v, String what) => (v == null || v.trim().isEmpty) ? 'Enter $what' : null;
+  String? _required(String? v, String error) => (v == null || v.trim().isEmpty) ? error : null;
 
   @override
   void dispose() {
@@ -129,7 +130,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!mounted) return;
       setState(() {
         _fieldErrors = e.fieldErrors;
-        _error = e.isConflict ? 'An account with this email already exists. Try logging in instead.' : e.message;
+        _error = e.isConflict ? context.l10n.registerConflict : e.message;
       });
     } on Object catch (e) {
       if (mounted) setState(() => _error = errorMessage(e));
@@ -142,35 +143,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final isGuest = ref.watch(authStateProvider).isGuest;
     final role = isGuest ? UserRole.patient : _role;
+    final l10n = context.l10n;
     return AuthScaffold(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 24),
         child: AutofillGroup(
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Create account', style: context.text.headlineSmall),
+                Text(l10n.registerCreateAccount, style: context.text.headlineSmall),
                 const SizedBox(height: 6),
                 Text(switch (role) {
-                  _ when isGuest =>
-                    'Save your screenings and matches, request quotes and book treatment. '
-                        'Everything you did as a guest is kept.',
-                  UserRole.agent =>
-                    'For facilitators and agencies: register patients, compare hospital quotes and track '
-                        'commissions. New agent accounts are verified by our team.',
-                  UserRole.hospital =>
-                    'For hospital teams: receive patient enquiries, send itemised quotes and manage '
-                        'admissions. Your hospital is verified by our team before it is listed.',
-                  _ => 'Get matched with accredited Indian hospitals and track your whole treatment journey.',
+                  _ when isGuest => l10n.registerIntroGuest,
+                  UserRole.agent => l10n.registerIntroAgent,
+                  UserRole.hospital => l10n.registerIntroHospital,
+                  _ => l10n.registerIntroPatient,
                 }, style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary)),
                 const SizedBox(height: 16),
                 if (!isGuest) ...[
                   SegmentedButton<UserRole>(
                     key: const Key('register-role-tabs'),
                     showSelectedIcon: false,
-                    segments: [for (final r in registrableRoles) ButtonSegment(value: r, label: Text(_roleLabel(r)))],
+                    segments: [for (final r in registrableRoles) ButtonSegment(value: r, label: Text(_roleLabel(l10n, r)))],
                     selected: {_role},
                     onSelectionChanged: _loading
                         ? null
@@ -192,7 +188,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   maxLength: 200,
                   validator: AuthValidators.fullName,
                   decoration: InputDecoration(
-                    labelText: role == UserRole.patient ? 'Full name (as on passport)' : 'Your full name',
+                    labelText: role == UserRole.patient ? l10n.registerFullNamePassport : l10n.registerYourFullName,
                     prefixIcon: const Icon(Icons.person_outline_rounded),
                     errorText: _fieldErrors['full_name'],
                     counterText: '',
@@ -207,7 +203,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   autocorrect: false,
                   validator: AuthValidators.email,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: l10n.authEmailLabel,
                     prefixIcon: const Icon(Icons.mail_outline_rounded),
                     errorText: _fieldErrors['email'],
                   ),
@@ -219,7 +215,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   errorText: _fieldErrors['password'],
                   textInputAction: isGuest ? TextInputAction.done : TextInputAction.next,
                   autofillHints: const [AutofillHints.newPassword],
-                  helperText: 'At least ${AuthValidators.passwordMinLength} characters with a letter and a number',
+                  helperText: l10n.registerPasswordHelper(AuthValidators.passwordMinLength),
                 ),
                 if (role == UserRole.agent) ...[
                   const SizedBox(height: 12),
@@ -230,9 +226,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.organizationName],
                     maxLength: 200,
-                    validator: (v) => _required(v, 'your agency name'),
+                    validator: (v) => _required(v, l10n.registerEnterAgencyName),
                     decoration: InputDecoration(
-                      labelText: 'Agency name',
+                      labelText: l10n.registerAgencyName,
                       prefixIcon: const Icon(Icons.business_center_outlined),
                       errorText: _fieldErrors['agency_name'],
                       counterText: '',
@@ -248,9 +244,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.organizationName],
                     maxLength: 200,
-                    validator: (v) => _required(v, 'the hospital name'),
+                    validator: (v) => _required(v, l10n.registerEnterHospitalName),
                     decoration: InputDecoration(
-                      labelText: 'Hospital name',
+                      labelText: l10n.registerHospitalName,
                       prefixIcon: const Icon(Icons.local_hospital_outlined),
                       errorText: _fieldErrors['hospital_name'],
                       counterText: '',
@@ -264,7 +260,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     autofillHints: const [AutofillHints.addressCity],
                     maxLength: 100,
                     decoration: InputDecoration(
-                      labelText: 'City (optional)',
+                      labelText: l10n.registerCityOptional,
                       prefixIcon: const Icon(Icons.location_city_outlined),
                       errorText: _fieldErrors['city'],
                       counterText: '',
@@ -280,7 +276,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     autofillHints: const [AutofillHints.telephoneNumber],
                     validator: AuthValidators.optionalPhone,
                     decoration: InputDecoration(
-                      labelText: 'Phone / WhatsApp (optional)',
+                      labelText: l10n.registerPhoneOptional,
                       hintText: '+1 555 123 4567',
                       prefixIcon: const Icon(Icons.phone_outlined),
                       errorText: _fieldErrors['phone'],
@@ -291,12 +287,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     initialValue: _country,
                     isExpanded: true,
                     decoration: InputDecoration(
-                      labelText: role == UserRole.patient ? 'Country of residence (optional)' : 'Country (optional)',
+                      labelText: role == UserRole.patient
+                          ? l10n.registerCountryOfResidenceOptional
+                          : l10n.registerCountryOptional,
                       prefixIcon: const Icon(Icons.public_rounded),
                       errorText: _fieldErrors['country_code'],
                     ),
                     items: [
-                      for (final e in kCountries.entries)
+                      for (final e in countryOptions(l10n))
                         DropdownMenuItem(value: e.key, child: Text('${countryFlag(e.key)}  ${e.value}')),
                     ],
                     onChanged: (v) => setState(() => _country = v),
@@ -309,7 +307,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     textCapitalization: TextCapitalization.characters,
                     maxLength: 16,
                     decoration: InputDecoration(
-                      labelText: 'Facilitator referral code (optional)',
+                      labelText: l10n.registerReferralCodeOptional,
                       prefixIcon: const Icon(Icons.badge_outlined),
                       errorText: _fieldErrors['referral_code'],
                       counterText: '',
@@ -339,17 +337,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   }),
                   controlAffinity: ListTileControlAffinity.leading,
                   contentPadding: EdgeInsets.zero,
-                  title: const TermsNotice(prefix: 'I agree to the '),
+                  title: const TermsNotice(agree: true),
                   subtitle: _showTermsError
                       ? Text(
-                          'Please accept the Terms and Privacy Policy',
+                          l10n.registerAcceptTermsError,
                           style: context.text.bodySmall?.copyWith(color: AppColors.danger),
                         )
                       : null,
                 ),
                 const SizedBox(height: 8),
                 PrimaryButton(
-                  label: isGuest ? 'Create account & keep my progress' : 'Create account',
+                  label: isGuest ? l10n.registerCreateAccountKeepProgress : l10n.registerCreateAccount,
                   loading: _loading,
                   onPressed: () => _submit(upgrade: isGuest),
                 ),
@@ -357,10 +355,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Already have an account?', style: context.text.bodySmall),
+                    Text(l10n.authAlreadyHaveAccount, style: context.text.bodySmall),
                     TextButton(
                       onPressed: () => context.pushReplacement(Routes.loginFrom(_target)),
-                      child: const Text('Log in'),
+                      child: Text(l10n.authLogIn),
                     ),
                   ],
                 ),

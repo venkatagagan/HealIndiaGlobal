@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../onboarding/onboarding_content.dart';
 
 /// The auth flow uses the light (white) look of the "Registration Decision" design regardless of
@@ -35,7 +36,7 @@ class AuthScaffold extends StatelessWidget {
               automaticallyImplyLeading: false,
               leading: showBack
                   ? IconButton(
-                      tooltip: 'Back',
+                      tooltip: context.l10n.authBackTooltip,
                       icon: const Icon(Icons.chevron_left_rounded, size: 28),
                       onPressed: onBack ?? () => _defaultBack(context),
                     )
@@ -66,16 +67,17 @@ class AuthBrandHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Semantics(
       header: true,
       child: Column(
         children: [
           const Icon(Icons.layers_outlined, size: 44, color: AppColors.info),
           const SizedBox(height: 12),
-          Text(Brand.name, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          Text(l10n.appName, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 4),
           Text(
-            subtitle ?? Brand.tagline,
+            subtitle ?? l10n.appTagline,
             textAlign: TextAlign.center,
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
@@ -153,7 +155,7 @@ class PasswordField extends StatefulWidget {
   const PasswordField({
     super.key,
     required this.controller,
-    this.label = 'Password',
+    this.label,
     this.validator,
     this.errorText,
     this.textInputAction = TextInputAction.done,
@@ -163,7 +165,9 @@ class PasswordField extends StatefulWidget {
   });
 
   final TextEditingController controller;
-  final String label;
+
+  /// Defaults to "Password".
+  final String? label;
   final FormFieldValidator<String>? validator;
   final String? errorText;
   final TextInputAction textInputAction;
@@ -191,14 +195,14 @@ class _PasswordFieldState extends State<PasswordField> {
       validator: widget.validator,
       maxLength: 128,
       decoration: InputDecoration(
-        labelText: widget.label,
+        labelText: widget.label ?? context.l10n.authPasswordLabel,
         errorText: widget.errorText,
         helperText: widget.helperText,
         helperMaxLines: 2,
         counterText: '',
         prefixIcon: const Icon(Icons.lock_outline_rounded),
         suffixIcon: IconButton(
-          tooltip: _obscure ? 'Show password' : 'Hide password',
+          tooltip: _obscure ? context.l10n.authShowPassword : context.l10n.authHidePassword,
           icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
@@ -240,11 +244,13 @@ class FormErrorBanner extends StatelessWidget {
   }
 }
 
-/// "By continuing, you agree to our Terms & Privacy Policy." with tappable links.
+/// "By continuing, you agree to our Terms & Privacy Policy." with tappable links
+/// ([agree]: "I agree to the Terms & Privacy Policy.").
 class TermsNotice extends StatefulWidget {
-  const TermsNotice({super.key, this.prefix = 'By continuing, you agree to our '});
+  const TermsNotice({super.key, this.agree = false});
 
-  final String prefix;
+  /// Sign-up checkbox wording instead of the "By continuing" notice.
+  final bool agree;
 
   @override
   State<TermsNotice> createState() => _TermsNoticeState();
@@ -267,34 +273,48 @@ class _TermsNoticeState extends State<TermsNotice> {
   Widget build(BuildContext context) {
     final base = context.text.labelSmall?.copyWith(color: context.palette.textSecondary);
     final link = base?.copyWith(decoration: TextDecoration.underline, color: context.colors.onSurface);
-    return Text.rich(
-      TextSpan(
-        style: base,
-        children: [
-          TextSpan(text: widget.prefix),
-          TextSpan(text: 'Terms', style: link, recognizer: _terms),
-          const TextSpan(text: ' & '),
-          TextSpan(text: 'Privacy Policy', style: link, recognizer: _privacy),
-          const TextSpan(text: '.'),
-        ],
-      ),
-      textAlign: TextAlign.center,
-    );
+    final l10n = context.l10n;
+    // Translate with marker placeholders, then swap the markers for the tappable links.
+    const termsMark = '\u0001';
+    const privacyMark = '\u0002';
+    final template = widget.agree
+        ? l10n.authTermsAgree(termsMark, privacyMark)
+        : l10n.authTermsContinue(termsMark, privacyMark);
+    final children = <InlineSpan>[];
+    final buffer = StringBuffer();
+    void flush() {
+      if (buffer.isNotEmpty) children.add(TextSpan(text: buffer.toString()));
+      buffer.clear();
+    }
+
+    for (final ch in template.split('')) {
+      if (ch == termsMark) {
+        flush();
+        children.add(TextSpan(text: l10n.authTermsLink, style: link, recognizer: _terms));
+      } else if (ch == privacyMark) {
+        flush();
+        children.add(TextSpan(text: l10n.authPrivacyLink, style: link, recognizer: _privacy));
+      } else {
+        buffer.write(ch);
+      }
+    }
+    flush();
+    return Text.rich(TextSpan(style: base, children: children), textAlign: TextAlign.center);
   }
 }
 
 /// Opens a legal page in the browser; shows a snackbar if it cannot be opened.
 Future<void> openLegalUrl(BuildContext context, String url) async {
   final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication).catchError((_) => false);
-  if (!ok && context.mounted) showInfoSnack(context, 'Could not open $url');
+  if (!ok && context.mounted) showInfoSnack(context, context.l10n.authCouldNotOpen(url));
 }
 
-/// Copy for the 18+ attestation (CG-24).
+/// Copy for the 18+ attestation (CG-24), in the current language.
 abstract final class AgeCopy {
-  static const adultConfirm = 'I confirm I am 18 or older.';
-  static const adult = 'I am 18 or older';
-  static const minor = 'I am under 18 and a parent or guardian will give consent for my care';
-  static const required = 'Please confirm your age';
+  static String get adultConfirm => L10n.current.authAgeAdultConfirm;
+  static String get adult => L10n.current.authAgeAdult;
+  static String get minor => L10n.current.authAgeMinor;
+  static String get required => L10n.current.authAgeRequired;
 }
 
 /// The required age question at sign-up (CG-24).
@@ -321,11 +341,12 @@ class AgeAttestationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final error = showError
         ? Padding(
-            padding: EdgeInsets.only(left: adultOnly ? 0 : 12, top: 2),
+            padding: EdgeInsetsDirectional.only(start: adultOnly ? 0 : 12, top: 2),
             child: Text(
-              AgeCopy.required,
+              l10n.authAgeRequired,
               key: const Key('age-error'),
               style: context.text.bodySmall?.copyWith(color: AppColors.danger),
             ),
@@ -338,14 +359,14 @@ class AgeAttestationField extends StatelessWidget {
         onChanged: enabled ? (v) => onChanged(v == true ? true : null) : null,
         controlAffinity: ListTileControlAffinity.leading,
         contentPadding: EdgeInsets.zero,
-        title: Text(AgeCopy.adultConfirm, style: context.text.bodyMedium),
+        title: Text(l10n.authAgeAdultConfirm, style: context.text.bodyMedium),
         subtitle: error,
       );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Your age', style: context.text.labelLarge),
+        Text(l10n.authAgeQuestion, style: context.text.labelLarge),
         RadioGroup<bool>(
           groupValue: value,
           onChanged: (v) {
@@ -359,7 +380,7 @@ class AgeAttestationField extends StatelessWidget {
                 enabled: enabled,
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                title: Text(AgeCopy.adult, style: context.text.bodyMedium),
+                title: Text(l10n.authAgeAdult, style: context.text.bodyMedium),
               ),
               RadioListTile<bool>(
                 key: const Key('age-minor'),
@@ -367,7 +388,7 @@ class AgeAttestationField extends StatelessWidget {
                 enabled: enabled,
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                title: Text(AgeCopy.minor, style: context.text.bodyMedium),
+                title: Text(l10n.authAgeMinor, style: context.text.bodyMedium),
               ),
             ],
           ),
@@ -399,17 +420,16 @@ class _AgeAttestationDialogState extends State<_AgeAttestationDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
-      title: const Text('Confirm your age'),
+      title: Text(l10n.authAgeDialogTitle),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.adultOnly
-                  ? 'This type of account is only for adults.'
-                  : 'We need to know this before we create your account.',
+              widget.adultOnly ? l10n.authAgeDialogAdultOnly : l10n.authAgeDialogNeeded,
               style: context.text.bodyMedium,
             ),
             const SizedBox(height: 8),
@@ -422,11 +442,11 @@ class _AgeAttestationDialogState extends State<_AgeAttestationDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
         FilledButton(
           key: const Key('age-continue'),
           onPressed: _value == null ? null : () => Navigator.pop(context, _value),
-          child: const Text('Continue'),
+          child: Text(l10n.commonContinue),
         ),
       ],
     );

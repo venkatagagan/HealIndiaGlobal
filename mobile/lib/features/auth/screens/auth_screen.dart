@@ -11,6 +11,7 @@ import '../../../core/router/routes.dart';
 import '../return_path.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../widgets/auth_widgets.dart';
 
 /// Whether the interactive Google sign-in flow can be offered (configured + supported platform).
@@ -90,6 +91,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     final appleAvailable = ref.watch(appleSignInAvailableProvider).value ?? false;
     final isGuest = ref.watch(authStateProvider).isGuest;
     final busy = _busy != _Busy.none;
+    final l10n = context.l10n;
 
     return AuthScaffold(
       onBack: _back,
@@ -107,7 +109,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   const SizedBox(height: 36),
                   if (googleAvailable) ...[
                     AuthChoiceButton(
-                      label: 'Continue with Google',
+                      label: l10n.authContinueWithGoogle,
                       icon: const GoogleMark(),
                       color: AppColors.info,
                       loading: _busy == _Busy.google,
@@ -117,7 +119,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ],
                   if (appleAvailable) ...[
                     AuthChoiceButton(
-                      label: 'Continue with Apple',
+                      label: l10n.authContinueWithApple,
                       icon: Icon(Icons.apple, size: 20, color: context.colors.onSurface),
                       color: context.colors.onSurface,
                       loading: _busy == _Busy.apple,
@@ -126,14 +128,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     const SizedBox(height: 12),
                   ],
                   AuthChoiceButton(
-                    label: isGuest ? 'Create account with Email' : 'Sign up with Email',
+                    label: isGuest ? l10n.authCreateAccountWithEmail : l10n.authSignUpWithEmail,
                     icon: const Icon(Icons.mail_outline_rounded, size: 18, color: AppColors.violet),
                     color: AppColors.violet,
                     onPressed: busy ? null : () => context.push(Routes.registerFrom(_target)),
                   ),
                   const SizedBox(height: 12),
                   AuthChoiceButton(
-                    label: isGuest ? 'Continue browsing as Guest' : 'Browse as Guest',
+                    label: isGuest ? l10n.authContinueBrowsingAsGuest : l10n.authBrowseAsGuest,
                     icon: Icon(Icons.visibility_outlined, size: 18, color: context.palette.textSecondary),
                     color: context.palette.border,
                     loading: _busy == _Busy.guest,
@@ -142,7 +144,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   if (!isGuest) ...[
                     const SizedBox(height: 16),
                     Text(
-                      'Facilitator or hospital team? Sign up with email and choose your role, or log in.',
+                      l10n.authPartnerHint,
                       textAlign: TextAlign.center,
                       style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                     ),
@@ -151,15 +153,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Already have an account?', style: context.text.bodySmall),
+                      Text(l10n.authAlreadyHaveAccount, style: context.text.bodySmall),
                       TextButton(
                         onPressed: busy ? null : () => context.push(Routes.loginFrom(_target)),
-                        child: const Text('Log in'),
+                        child: Text(l10n.authLogIn),
                       ),
                     ],
                   ),
                   const Spacer(),
-                  const Padding(padding: EdgeInsets.fromLTRB(8, 24, 8, 16), child: TermsNotice()),
+                  const Padding(padding: EdgeInsetsDirectional.fromSTEB(8, 24, 8, 16), child: TermsNotice()),
                 ],
               ),
             ),

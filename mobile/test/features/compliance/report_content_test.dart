@@ -115,7 +115,7 @@ void main() {
       'note': 'The values are from another report',
     });
     expect(find.text('Report this result'), findsNothing);
-    expect(find.text(kReportThanks), findsOneWidget);
+    expect(find.text('Thanks. Our team will review this report.'), findsOneWidget);
   });
 
   testWidgets('long-press offers Report on other people\'s messages only; hidden own messages are labelled', (
@@ -165,6 +165,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(adapter.requests.single.data, {'target_type': 'message', 'target_id': 'm-other', 'reason': 'abusive'});
-    expect(find.text(kReportThanks), findsOneWidget);
+    expect(find.text('Thanks. Our team will review this report.'), findsOneWidget);
   });
 }

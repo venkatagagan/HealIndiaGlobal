@@ -29,7 +29,8 @@ class HealIndiaApp extends ConsumerWidget {
     }
 
     return MaterialApp.router(
-      title: Brand.name,
+      title: Brand.name, // read by some platforms before localizations load
+      onGenerateTitle: (context) => context.l10n.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
