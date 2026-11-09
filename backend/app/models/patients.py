@@ -7,11 +7,11 @@ from datetime import date
 from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
-from sqlalchemy import Date, String, Text
+from sqlalchemy import Date, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.crypto import EncryptedString
+from app.core.crypto import EncryptedString, EncryptedText
 from app.core.enums import Gender, SavedEntityType, sa_enum
 from app.models.base import Base, TimestampMixin, UUIDPkMixin, fk
 
@@ -40,8 +40,9 @@ class PatientProfile(UUIDPkMixin, TimestampMixin, Base):
     emergency_contact: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     preferred_language: Mapped[str | None] = mapped_column(String(10))
     blood_group: Mapped[str | None] = mapped_column(String(5))
-    allergies: Mapped[str | None] = mapped_column(Text)
-    medical_history: Mapped[str | None] = mapped_column(Text)
+    # health free text: encrypted at rest
+    allergies: Mapped[str | None] = mapped_column(EncryptedText())
+    medical_history: Mapped[str | None] = mapped_column(EncryptedText())
     insurance_provider: Mapped[str | None] = mapped_column(String(200))
     insurance_policy_number: Mapped[str | None] = mapped_column(EncryptedString())
     referred_by_agent_id: Mapped[uuid.UUID | None] = fk("agents.id", ondelete="SET NULL", nullable=True)

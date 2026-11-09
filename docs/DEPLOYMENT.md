@@ -273,23 +273,37 @@ side.
 
 ### Retention
 
-- [ ] Define and implement a retention schedule, for example:
-      medical documents and screenings - duration of care + period required by Indian medical-records guidance,
-      then delete or anonymise; financial records (payments, invoices, ledger) - 8 years (Indian tax/companies law);
-      audit logs - >= 1 year (longer for finance actions); guest accounts without activity - 90 days; marketing
-      data - until consent withdrawal.
-- [ ] Scheduled purge jobs; deletion also removes objects from storage (and old versions per lifecycle rules) and
-      expires backups within the backup retention window.
+- [ ] Confirm the retention schedule with counsel. Implemented defaults (settings in `backend/.env.example`,
+      daily jobs in `backend/app/modules/privacy/tasks.py`, legal holds suspend them):
+      guest accounts without activity - 90 days (`GUEST_RETENTION_DAYS`, matches Terms §4.2); passport/visa
+      scans - 90 days after the treatment trip (`TRAVEL_ID_RETENTION_DAYS_AFTER_TRIP`); files users deleted -
+      30 days (`SOFT_DELETED_FILE_RETENTION_DAYS`); accounts without sign-in - 3 years with a 30-day notice
+      (`INACTIVE_ACCOUNT_RETENTION_DAYS`, `INACTIVE_ACCOUNT_NOTICE_DAYS`); notifications - 180 days
+      (`NOTIFICATION_RETENTION_DAYS`). Financial records (payments, invoices, ledger) - 8 years (pseudonymised
+      on account erasure); audit logs - >= 1 year (longer for finance actions); marketing data - until consent
+      withdrawal.
+- [x] Scheduled purge jobs; deletion also removes objects from storage (`privacy.delete_objects`). Still to do
+      in infrastructure: S3 lifecycle rules for old object versions and expiring backups within the backup
+      retention window; re-apply erasures after any restore (the `auth.account_deleted` audit rows list them).
+- [ ] Production `DATABASE_SSLMODE=require` (or `verify-full` with the provider CA) and a field-encryption key
+      rotation runbook (`FIELD_ENCRYPTION_KEY_ID`, `FIELD_ENCRYPTION_OLD_KEYS`, job `privacy.reencrypt_fields`).
+      After deploying migration 0009b, enqueue `privacy.reencrypt_fields` once so existing health free text is
+      encrypted (it otherwise runs daily).
 
 ### Data subject / Data Principal rights
 
-- [ ] Access and portability: export of a patient's profile, screenings, cases, bookings, documents and messages
-      in a machine-readable format within 30 days (GDPR) / the DPDP timeline.
-- [ ] Correction, erasure (soft delete -> anonymise personal fields while keeping ledger/financial records as
-      legally required), withdrawal of consent, nomination (DPDP s.14), and grievance redressal.
+- [x] Access and portability: `GET /api/v1/auth/me/export` (ZIP with JSON + files, or JSON; rate-limited by
+      `DATA_EXPORT_DAILY_LIMIT`), "Download my data" in the patient web app and the mobile profile.
+- [x] Correction, erasure (`DELETE /auth/me` erases health data and files; payments/ledger/invoices kept but
+      pseudonymised; legal holds block it), withdrawal of consent (`POST /auth/consents`, enforced for hospital and
+      agent document access), nomination (`/privacy/nominee`, DPDP s.14) and grievance redressal
+      (`POST /privacy/requests`, staff queue in the admin portal under Privacy requests, SLA `DATA_RIGHTS_SLA_DAYS`).
 - [ ] Publish a Grievance Officer / Data Protection Officer contact (DPDP s.8(9)-(10), GDPR Art. 37 where required) and
-      an EU representative if no EU establishment (GDPR Art. 27).
-- [ ] Log every request and its resolution; verify identity before acting.
+      an EU representative if no EU establishment (GDPR Art. 27). Set `GRIEVANCE_OFFICER_*`, `DPO_*` and
+      `PRIVACY_POSTAL_ADDRESS` (served on `GET /api/v1/site-config/privacy-contact`). TODO-BUSINESS.
+- [x] Log every request and its resolution (`data_rights_requests` + audit log); verify identity before acting
+      (staff procedure, see `docs/legal/ROPA.md`).
+- [x] Breach register (`breach_incidents`, `/admin/privacy/breaches`) and runbook `docs/legal/BREACH_RESPONSE.md`.
 
 ### Security obligations
 

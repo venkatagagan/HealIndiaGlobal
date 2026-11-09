@@ -46,6 +46,7 @@ from app.models import (
     User,
 )
 from app.modules.auth.service import record_consent
+from app.modules.privacy.guards import ensure_guardian_consent
 from app.modules.screening import policies
 from app.modules.screening.ai import claude
 from app.modules.screening.ai.prompts import build_intake
@@ -290,6 +291,7 @@ async def submit_screening(
     policies.ensure_can_modify(user)
     screening, profile = await policies.get_screening_scoped(db, user, screening_id, for_update=True)
     _ensure_draft(screening)
+    await ensure_guardian_consent(db, profile)  # DPDP s.9: a minor's screening needs a guardian's consent
     use_ai = bool((screening.preferences or {}).get("use_ai", True))
     if use_ai and not body.consent_ai:
         raise BadRequest(
@@ -337,6 +339,7 @@ async def rerun_screening(
 ) -> ScreeningOut:
     policies.ensure_can_modify(user)
     screening, profile = await policies.get_screening_scoped(db, user, screening_id, for_update=True)
+    await ensure_guardian_consent(db, profile)
     if screening.status not in (ScreeningStatus.COMPLETED, ScreeningStatus.FAILED):
         raise Conflict(
             "Only completed or failed screenings can be re-run",

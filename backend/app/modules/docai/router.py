@@ -10,6 +10,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
 
+from app.core.audit import audit_phi_access
 from app.core.deps import CurrentUser, DbSession, PageParams
 from app.core.pagination import Page
 from app.core.rate_limit import rate_limit
@@ -34,6 +35,7 @@ async def create_analysis(
 
 @router.get("/documents/analyses", response_model=Page[DocumentAnalysisOut])
 async def list_analyses(
+    request: Request,
     db: DbSession,
     user: CurrentUser,
     params: PageParams,
@@ -42,14 +44,34 @@ async def list_analyses(
     status: Annotated[DocumentAnalysisStatus | None, Query()] = None,
     review_status: Annotated[AnalysisReviewStatus | None, Query()] = None,
 ) -> Page[DocumentAnalysisOut]:
-    return await service.list_analyses(
+    page = await service.list_analyses(
         db, user, params, patient_id=patient_id, case_id=case_id, status=status, review_status=review_status
     )
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=[a.patient_id for a in page.items],
+        resource_type="document_analysis",
+        action="phi.list",
+        request=request,
+    )
+    return page
 
 
 @router.get("/documents/analyses/{analysis_id}", response_model=DocumentAnalysisOut)
-async def get_analysis(analysis_id: uuid.UUID, db: DbSession, user: CurrentUser) -> DocumentAnalysisOut:
-    return await service.get_analysis(db, user, analysis_id)
+async def get_analysis(
+    analysis_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request
+) -> DocumentAnalysisOut:
+    out = await service.get_analysis(db, user, analysis_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=out.patient_id,
+        resource_type="document_analysis",
+        resource_id=out.id,
+        request=request,
+    )
+    return out
 
 
 @router.patch("/documents/analyses/{analysis_id}", response_model=DocumentAnalysisOut)
@@ -89,7 +111,16 @@ async def retry_analysis(
 
 @router.get("/documents/{document_id}/analysis", response_model=DocumentAnalysisOut)
 async def get_document_analysis(
-    document_id: uuid.UUID, db: DbSession, user: CurrentUser
+    document_id: uuid.UUID, db: DbSession, user: CurrentUser, request: Request
 ) -> DocumentAnalysisOut:
     """Latest analysis (visible to the caller) containing this page."""
-    return await service.get_for_document(db, user, document_id)
+    out = await service.get_for_document(db, user, document_id)
+    await audit_phi_access(
+        db,
+        actor=user,
+        patient_ids=out.patient_id,
+        resource_type="document_analysis",
+        resource_id=out.id,
+        request=request,
+    )
+    return out

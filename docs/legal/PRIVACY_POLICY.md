@@ -1,7 +1,11 @@
 **DRAFT — for review by qualified Indian legal counsel; not legal advice.**
 
-> Placeholders appear as `[[...]]`. Paragraphs marked **Drafting note** are for counsel and the product team
-> only and must be removed before publication. Open legal questions are collected in [README.md](README.md).
+> Placeholders appear as `[[...]]`. **TODO-BUSINESS** marks facts only the business can supply (legal entity,
+> Grievance Officer, DPO, providers); the app reads the contact details from the `GRIEVANCE_OFFICER_*` and
+> `DPO_*` settings (`GET /api/v1/site-config/privacy-contact`). Paragraphs marked **Drafting note** are for
+> counsel and the product team only and must be removed before publication. Open legal questions are collected
+> in [README.md](README.md). Related records: [ROPA.md](ROPA.md), [DPIA.md](DPIA.md),
+> [BREACH_RESPONSE.md](BREACH_RESPONSE.md).
 
 # Heal India Global — Privacy Policy
 
@@ -9,9 +13,10 @@
 |---|---|
 | Consent record | `consents.kind = privacy`, `consents.version = 2026-10-21-draft.1` |
 | Effective date | [[EFFECTIVE DATE]] |
-| Data Fiduciary / controller | [[LEGAL ENTITY NAME]] (CIN [[CIN]]), [[REGISTERED OFFICE ADDRESS]], India |
-| Privacy contact | [[PRIVACY EMAIL]] |
-| Grievance Officer | [[GRIEVANCE OFFICER NAME]], [[GRIEVANCE OFFICER EMAIL]], [[GRIEVANCE OFFICER PHONE]] |
+| Data Fiduciary / controller | TODO-BUSINESS: [[LEGAL ENTITY NAME]] (CIN [[CIN]]), [[REGISTERED OFFICE ADDRESS]], India |
+| Privacy contact | TODO-BUSINESS: [[PRIVACY EMAIL]] |
+| Grievance Officer | TODO-BUSINESS: [[GRIEVANCE OFFICER NAME]], [[GRIEVANCE OFFICER EMAIL]], [[GRIEVANCE OFFICER PHONE]] |
+| Data Protection Officer | TODO-BUSINESS: [[DPO NAME]], [[DPO EMAIL]] (required if we are notified as a Significant Data Fiduciary; recommended anyway) |
 | EU / UK representative | [[EU REPRESENTATIVE NAME AND ADDRESS]] / [[UK REPRESENTATIVE NAME AND ADDRESS]] |
 
 ## Summary
@@ -24,7 +29,8 @@
 - **Why.** To screen your symptoms and match you with hospitals, share your case with the hospitals you choose,
   handle quotes, bookings and payments, arrange visa letters, travel and support, keep the Platform secure, and
   meet our legal obligations.
-- **AI.** We send your screening answers to our AI provider only if you choose AI screening and agree to it.
+- **AI.** We send your screening answers, the medical reports you ask us to read and the text of your voice
+  descriptions to our AI provider (Anthropic) only if you choose these AI features and agree to them.
   Otherwise we use a rules-based method.
 - **Sharing.** With the hospitals you choose, your agent (if you use one), our payment, AI, hosting and
   communications providers, the travel and local service providers you book, and authorities when the law
@@ -133,9 +139,10 @@ screening answers and suggests relevant specialties, procedures, tests and quest
 symptoms that may need urgent care. The result is not a diagnosis.
 
 5.2 **What we send.** Your screening answers (body areas, pain level, symptoms, duration and severity, treatments
-already tried, your notes), your preferences and home country, and up to three medical reports you choose to
-attach to that screening. We do not send your name, email address, phone number or passport details. Your notes
-and reports may contain personal details themselves, so remove anything you do not want to share.
+already tried, your notes), your preferences and home country, your age and gender and the medical history and
+allergies from your profile, and up to three medical reports you choose to attach to that screening. We do not
+send your name, email address, phone number or passport details. Your notes and reports may contain personal
+details themselves, so remove anything you do not want to share.
 
 5.3 **Who processes it.** Our AI provider is Anthropic, PBC (United States), which provides the Claude model to us
 as our service provider (data processor). Its servers may be outside India, including in the United States. Under
@@ -152,6 +159,19 @@ longer retention. [[Update if we obtain zero-data-retention or a specific proces
 5.4 **What we keep.** The screening record (your answers, the result and whether it came from the AI or the rules
 engine, and which model was used), and a technical log of each AI request (model, time taken, size, success or
 failure) — the log does not contain the content of your screening.
+
+5.6 **Reading your medical reports (document AI).** If you ask us to read a report with AI and agree to it, we
+send the pages you select (images or PDF pages, up to [[10]] pages of one report) to Anthropic. The AI drafts a
+plain-language summary, a clinical summary and the findings, lab values, medicines and recommendations it can
+see. The draft is shown only to you (and your agent or our staff if they asked for it); **hospitals see only the
+version you check and confirm.** We keep the draft, the AI's original output and your confirmed version,
+encrypted in our database. Photos are cleaned of location and camera data before they are sent.
+
+5.7 **Describing your symptoms by voice.** If you record your symptoms, the recording is turned into text on our
+own servers (speech-to-text runs on our servers; the recording is not sent to Anthropic) and the recording is
+deleted straight after transcription. The text of the transcript is then sent to Anthropic to suggest answers
+for your screening form. Nothing is added to your screening until you review and confirm it. We keep the
+transcript and the confirmed suggestions, encrypted in our database, as part of your screening record.
 
 5.5 **Your choices.** AI screening is optional; without it we use our rules-based method and you can still request
 quotes and book. You can withdraw your AI consent at any time (section 13). A doctor at each hospital you choose
@@ -171,10 +191,10 @@ to automated processing.
 | Recipient | What they receive | Why | Where |
 |---|---|---|---|
 | Hospitals you choose, and their authorised staff (international patient desk, coordinators, treating doctors, billing) | Your name, nationality, gender and age; screening answers and results; notes and documents attached to your request; messages in the case conversation; after booking, passport and travel details and companions' details | To assess your case, quote, treat you, issue visa invitation letters and meet their legal duties — **only after your Data Sharing Consent for that hospital** | India |
-| Your agent or facilitator, if you use one (for example if you registered with their referral code or they created your account) | Your profile, screenings, cases, documents, bookings, payments made for you and case messages | To help you with your case | The agent's country |
-| Our staff (care coordinators, support, finance, operations) | What each role needs | To provide and administer the service | India [[and other staff locations]] |
+| Your agent or facilitator, if you use one (for example if you registered with their referral code or they created your account) | Your profile, screenings, cases, bookings, payments made for you and case messages; **your documents only if you allow it** (`share_with_agent`, which you can withdraw at any time) | To help you with your case | The agent's country |
+| Our staff (care coordinators, support, finance, operations) | What each role needs: finance sees only payment documents; support sees the documents of the cases they coordinate, and anything else only in an emergency with a recorded reason; every view of your health records by staff is logged | To provide and administer the service | India [[and other staff locations]] |
 | Payment providers and banks: Razorpay (India); Stripe [[STRIPE CONTRACTING ENTITY]] [[if enabled]]; [[OUR BANK]] | Payer name, email and phone; amount, currency and order reference; payment status | To take payments, make refunds and payouts, and prevent fraud | India; [[USA / EU]] |
-| Our AI provider: Anthropic, PBC | Screening data described in section 5 — **only if you choose AI screening** | To generate the screening summary | United States [[or region arranged]] |
+| Our AI provider: Anthropic, PBC | Screening data, report pages and voice transcripts described in section 5 — **only if you choose the AI feature concerned** | To generate the screening summary, read reports and turn voice descriptions into form answers | United States [[or region arranged]] |
 | Cloud hosting and storage: [[HOSTING PROVIDER]] | All Platform data, stored encrypted in transit and with sensitive fields additionally encrypted | To run the Platform | [[HOSTING REGION]] |
 | Email delivery: [[EMAIL PROVIDER]] | Email address and message content | To send account and booking emails | [[LOCATION]] |
 | Push notifications: Google Firebase Cloud Messaging (and Apple Push Notification service on iPhone) | Device token and notification text | To send app notifications | United States / global |
@@ -216,9 +236,13 @@ When a retention period ends, we delete your data or irreversibly anonymise it. 
 | Data | How long |
 |---|---|
 | Account and profile | While your account is active; deleted or anonymised [[3 years]] after your last activity or account closure, unless needed longer for a reason below |
-| Guest data | [[12 months]] after the last activity |
+| Guest data | 90 days after the last activity (`GUEST_RETENTION_DAYS`) |
 | Screening results, case and health information, documents | While your account is active and for [[3 years]] after your last case is closed — to support follow-up care, answer questions about your treatment and handle complaints or legal claims |
-| Passport numbers and copies, visa documents, companions' passport details | Until [[12 months]] after your last case is closed |
+| Passport and visa scans | 90 days after the end of your treatment trip (all cases closed, at least one completed; `TRAVEL_ID_RETENTION_DAYS_AFTER_TRIP`) |
+| Passport numbers on your profile, companions' passport details | Until [[12 months]] after your last case is closed |
+| Documents you deleted | Destroyed 30 days after you delete them (`SOFT_DELETED_FILE_RETENTION_DAYS`) |
+| In-app notifications | 180 days (`NOTIFICATION_RETENTION_DAYS`) |
+| Accounts nobody signs in to | Erased after 3 years without a sign-in, with a warning 30 days before (`INACTIVE_ACCOUNT_RETENTION_DAYS`, `INACTIVE_ACCOUNT_NOTICE_DAYS`) |
 | Messages | While the case is active and for [[3 years]] after it is closed |
 | Payments, refunds, receipts, invoices, settlement and tax records | [[8 years]] from the end of the financial year of the transaction (Indian company, tax and GST law) |
 | Consent records | As long as your account exists and [[8 years]] afterwards, to show that consent was given |
@@ -230,7 +254,10 @@ When a retention period ends, we delete your data or irreversibly anonymise it. 
 > **Drafting note:** Periods in brackets are proposals. The 8-year figure follows section 128(5) of the
 > Companies Act, 2013 (books of account); GST (section 36 CGST Act) and income-tax record periods are shorter.
 > The 3-year clinical/case period tracks limitation periods for consumer complaints and contract claims; counsel
-> to confirm. The retention jobs to enforce these periods do not exist yet (README, implementation item 14).
+> to confirm. The jobs in `backend/app/modules/privacy/tasks.py` enforce the guest, passport/visa scan, deleted
+> file, inactive account and notification periods (settings in `backend/.env.example`); a legal hold placed by
+> an administrator suspends them for the person or case concerned. When you delete your account we erase
+> immediately what is not under a legal retention duty (see section 12.5).
 
 ## 10. How we protect your data
 
@@ -239,7 +266,9 @@ We use reasonable security practices and procedures, including:
 - **Encryption in transit:** all connections to the Platform use TLS.
 - **Extra encryption for the most sensitive fields:** passport numbers, insurance policy numbers, bank account
   numbers, PAN and two-step-verification secrets are encrypted in our database (AES-256-GCM) and shown only in
-  masked form, such as the last four digits.
+  masked form, such as the last four digits. Your medical history, allergies, screening notes and AI results,
+  case notes, AI readings of your reports and voice transcripts are encrypted the same way. Encryption keys are
+  rotated without downtime.
 - **Passwords:** stored only as Argon2id hashes, never in readable form.
 - **Access control:** role-based permissions plus record-level checks, so patients, agents and hospital staff can
   only open the records they are entitled to; our staff have access on a need-to-know basis, and staff accounts
@@ -248,7 +277,10 @@ We use reasonable security practices and procedures, including:
   through authorised, logged requests.
 - **Payments:** card details are entered on our payment providers' checkout pages and never reach our servers.
 - **Monitoring:** audit logs of sensitive actions (such as sign-ins, role changes, document verification,
-  payments, refunds and payouts), rate limiting and alerting.
+  payments, refunds and payouts), rate limiting and alerting. **Every time someone other than you views or
+  downloads your documents, screenings, AI results or medical history, we log it,** and you can see that
+  list in your profile ("Who viewed my records").
+- **Staff sessions** end after [[12 hours]] and after [[30 minutes]] without activity.
 - **People and suppliers:** confidentiality obligations for staff and contractual security obligations for
   providers, hospitals and agents.
 
@@ -281,11 +313,14 @@ relevant supervisory authority within 72 hours where required.
 (including to direct marketing and to processing based on legitimate interests), rights relating to automated
 decision-making, and the right to complain to a supervisory authority.
 
-12.3 **How to exercise your rights.** Use your profile (personal details, and privacy and consents) or email
-[[PRIVACY EMAIL]]. We may need to verify your identity, and we will ask only for what is necessary. A parent or
+12.3 **How to exercise your rights.** Use your profile (personal details, and privacy and consents), where you
+can also **download a copy of your data** (a ZIP file with a machine-readable JSON file and your documents),
+**nominate** someone, **delete your account** and see **who viewed your records**; send a request from the
+privacy page (also without an account, for example as a nominee); or email [[PRIVACY EMAIL]]. We may need to verify your identity, and we will ask only for what is necessary. A parent or
 guardian, your agent or your nominee can act for you with proof of authority.
 
-12.4 **When we respond.** We acknowledge requests within [[48 hours]] and respond within [[30 days]]. If a request
+12.4 **When we respond.** We acknowledge requests at once (you receive a reference number) and respond within
+30 days (`DATA_RIGHTS_SLA_DAYS`). If a request
 is complex and the GDPR applies, we may extend this by up to two further months and will tell you why. [[Under
 the DPDP Rules, we respond within the period we publish here, which will not exceed 90 days.]]
 
@@ -309,8 +344,10 @@ You can review and withdraw consents in your profile under privacy and consents,
 | Terms (`terms`) | Your agreement to the Terms of Service | At sign-up, and when the Terms change materially | We cannot continue to provide the service; we will close your account (records kept as in section 9) |
 | Privacy (`privacy`) | Processing of your personal data, including health and passport information, for the purposes in section 4 | At sign-up (or before a guest submits a screening), and when this policy changes materially | As above |
 | AI processing (`ai_processing`) | Sending your screening data to our AI provider | Each time you choose AI screening | Future screenings use the rules-based method; past results stay unless you ask us to delete them |
-| Sharing with hospitals (`share_with_hospitals`) | Sharing a case with a hospital you select | Each time you request a quote from a hospital | We stop sharing new information with that hospital; it may keep what it already holds where the law requires; you may not be able to continue with that hospital |
+| Sharing with hospitals (`share_with_hospitals`) | Sharing a case with a hospital you select | Each time you request a quote from a hospital | That hospital immediately loses access to your documents and AI report readings on our Platform; it may keep what it already downloaded where the law requires; you may not be able to continue with that hospital |
 | Marketing (`marketing`) | News and offers by email | Optional, at any time | We stop marketing messages; service messages continue |
+| Sharing documents with your agent (`share_with_agent`) | Your agent can see the documents you upload and those on your cases | Optional, in your profile | Your agent immediately loses access to those documents; what they uploaded themselves stays visible to them |
+| Guardian consent (`guardian_consent`) | A parent or lawful guardian agrees to processing for a patient under 18 | Before screening, AI features or booking for a patient under 18 | Screening, AI features and booking stop until a new consent is given and verified |
 
 > **Drafting note:** When registered Consent Managers become available under the DPDP Rules (Rule 4 applies
 > from 13 November 2026), decide whether to support them and update this section.
@@ -319,7 +356,10 @@ You can review and withdraw consents in your profile under privacy and consents,
 
 Under the DPDP Act, anyone under 18 is a child. An account for a patient under 18 must be created and managed by a
 parent or lawful guardian, who gives consent on the child's behalf, and we take steps to check that the parent or
-guardian is an adult [[describe verification method]]. We do not track or monitor children's behaviour or direct
+guardian is an adult: the guardian gives their name, relationship, contact details and date of birth and how
+their identity can be checked (an identity document, DigiLocker, in person or by video call), and our staff
+verify it before we screen, use AI features or take a booking for the child. [[Counsel to approve the
+verification methods for foreign parents.]] We do not track or monitor children's behaviour or direct
 targeted advertising at them. If we learn that a child has created an account without a parent or guardian, we
 will delete it or obtain verifiable consent.
 
@@ -358,9 +398,10 @@ the `marketing` consent at any time. We do not share your data with others for t
 
 ## 18. Contact, Grievance Officer and complaints
 
-- Privacy questions and requests: [[PRIVACY EMAIL]]
-- Grievance Officer: [[GRIEVANCE OFFICER NAME]], [[DESIGNATION]], [[GRIEVANCE OFFICER EMAIL]],
+- Privacy questions and requests: TODO-BUSINESS [[PRIVACY EMAIL]], or the request form on our privacy page
+- Grievance Officer: TODO-BUSINESS [[GRIEVANCE OFFICER NAME]], [[DESIGNATION]], [[GRIEVANCE OFFICER EMAIL]],
   [[GRIEVANCE OFFICER PHONE]], [[REGISTERED OFFICE ADDRESS]]
+- Data Protection Officer: TODO-BUSINESS [[DPO NAME]], [[DPO EMAIL]]
 - EU representative: [[EU REPRESENTATIVE]] · UK representative: [[UK REPRESENTATIVE]]
 
 We will respond as described in section 12.4. If you are not satisfied after using our grievance process, you may

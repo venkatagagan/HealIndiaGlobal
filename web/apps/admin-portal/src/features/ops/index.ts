@@ -22,6 +22,7 @@ import {
   MessagesSquare,
   Newspaper,
   Plane,
+  Scale,
   Settings,
   Settings2,
   ShieldCheck,
@@ -62,6 +63,7 @@ export const opsRoutes: RouteObject[] = [
   { path: 'settings/website', lazy: page(() => import('./pages/WebsiteSettingsPage')) },
   { path: 'audit-logs', lazy: page(() => import('./pages/AuditLogsPage')) },
   { path: 'messages', lazy: page(() => import('./pages/MessagesPage')) },
+  { path: 'privacy-requests', lazy: page(() => import('./pages/PrivacyRequestsPage')) },
 ];
 
 export interface OpsNavItem {
@@ -101,6 +103,7 @@ export const opsNav: OpsNavItem[] = [
   { to: opsPaths.messages, label: 'Support inbox', icon: MessagesSquare, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.users, label: 'Users', icon: Users, roles: ALL_STAFF, group: 'people' },
   { to: opsPaths.staff, label: 'Staff', icon: ShieldCheck, roles: ADMINS, group: 'people' },
+  { to: opsPaths.privacy, label: 'Privacy requests', icon: Scale, roles: OPS_STAFF, group: 'people' },
   { to: opsPaths.catalog, label: 'Catalog', icon: BookOpen, roles: ALL_STAFF, group: 'catalog' },
   { to: opsPaths.content, label: 'Content', icon: Newspaper, roles: ALL_STAFF, group: 'catalog' },
   { to: opsPaths.settings, label: 'Settings', icon: Settings, roles: ALL_STAFF, group: 'system', end: true },

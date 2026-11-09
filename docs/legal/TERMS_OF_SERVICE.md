@@ -153,7 +153,7 @@ account. If the patient is under 18, a parent or legal guardian must create and 
 consents on the child's behalf and accompany the child for treatment. We may ask for proof of guardianship.
 
 4.2 **Guest use.** You can browse the Platform as a guest. [[Guests may start a screening, but]] you must create
-a full account to request quotes, book or pay. [[We delete guest data after 12 months without activity.]]
+a full account to request quotes, book or pay. We delete guest data after 90 days without activity.
 
 > **Drafting note:** Guest accounts are patients with `is_guest = true` (PLAN §8.1), so the API does not by itself
 > stop a guest from creating a case or paying. Confirm with be-auth/be-cases that sharing with hospitals and payment

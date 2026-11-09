@@ -713,6 +713,18 @@ The finance module is still being extended; Swagger is authoritative for these s
 
 Staff lists of cases, bookings and payments come from §10.8 and §10.12 (staff scope = all).
 
+### 10.14a Privacy and data rights (DPDP Act 2023 + Rules 2025, GDPR)
+
+| Area | Endpoints |
+|---|---|
+| Public | GET `/site-config/privacy-contact` (Grievance Officer, DPO, response days) · POST `/privacy/requests` `{kind, details, requester_name?, requester_email?, requester_phone?, on_behalf_of?, channel?}` (anonymous allowed with name + email; 5/h per IP) |
+| Data principal | GET `/auth/me/export?format=zip\|json` (ZIP = `data.json` + files; `DATA_EXPORT_DAILY_LIMIT` per day) · GET `/privacy/requests` · GET `/privacy/requests/{id}` · GET/PUT/DELETE `/privacy/nominee` · GET `/privacy/access-log` (who viewed my records) |
+| Guardian consent (patient < `AGE_OF_MAJORITY`) | GET `/privacy/guardian-consent?patient_id=` · POST `/privacy/guardian-consent` (P own, A for managed patients, staff = verified at once) · DELETE `/privacy/guardian-consent` (withdraw). Screening submit/rerun, `POST /documents/analyses`, voice uploads/extraction and `POST /bookings` answer 403 `guardian_consent_required` until a verified consent exists |
+| Staff (admin, support) | GET `/admin/privacy/requests?status=&kind=&open=&overdue=&page=` · PATCH `/admin/privacy/requests/{id}` `{status?, assigned_to_user_id?, resolution?, internal_notes?}` (closing needs `resolution`) · GET `/admin/privacy/guardian-consents` · POST `/admin/privacy/guardian-consents/{id}/verify` |
+| Admins only | GET `/admin/privacy/access-log?patient_id=` · GET `/admin/privacy/legal-holds` · PUT `/admin/privacy/legal-holds/users/{id}` and `/cases/{id}` `{legal_hold, reason}` (audited; blocks erasure and purges) · GET/POST `/admin/privacy/breaches` · PATCH `/admin/privacy/breaches/{id}` (72-hour deadline, `notification_overdue`) |
+| Documents | Support may read a document outside their coordinated cases with header `X-Break-Glass-Reason` (>= 10 chars; audited as `phi.break_glass`, admins notified). Finance sees payment documents only. |
+| Sessions | Staff refresh tokens last `STAFF_REFRESH_TOKEN_TTL_HOURS` (12 h) and are refused after `STAFF_IDLE_TIMEOUT_MINUTES` (30) without API use: 401 `session_idle_timeout` |
+
 ### 10.15 System (no `/api/v1` prefix)
 
 | Path | Notes |

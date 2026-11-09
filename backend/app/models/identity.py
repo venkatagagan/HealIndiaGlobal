@@ -63,6 +63,18 @@ class User(UUIDPkMixin, TimestampMixin, Base):
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Legal hold (litigation, regulator or law-enforcement request): blocks erasure and retention purges.
+    # Set/cleared by admins only (POST /admin/privacy/legal-holds), always audited.
+    legal_hold: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=sa.false()
+    )
+    legal_hold_reason: Mapped[str | None] = mapped_column(String(500))
+    legal_hold_set_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    legal_hold_set_by: Mapped[uuid.UUID | None] = fk(
+        "users.id", ondelete="SET NULL", nullable=True, index=False
+    )
+    # When the "your inactive account will be erased" notice was sent (cleared on sign-in).
+    inactivity_notice_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     patient_profile: Mapped[PatientProfile | None] = relationship(
         "PatientProfile", back_populates="user", uselist=False, lazy="raise"
@@ -88,6 +100,8 @@ class RefreshToken(UUIDPkMixin, TimestampMixin, Base):
     portal: Mapped[AuthPortal] = mapped_column(
         sa_enum(AuthPortal), nullable=False, default=AuthPortal.PUBLIC, server_default="public"
     )
+    # Last authenticated API call of the session (staff idle timeout; written at most once a minute).
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class VerificationToken(UUIDPkMixin, TimestampMixin, Base):
@@ -136,7 +150,16 @@ class AuditLog(UUIDPkMixin, CreatedAtMixin, Base):
     """Append-only audit trail. ``entity_id`` is text (accepts UUIDs or keys such as a settings key)."""
 
     __tablename__ = "audit_logs"
-    __table_args__ = (sa.Index("ix_audit_logs_entity", "entity_type", "entity_id"),)
+    __table_args__ = (
+        sa.Index("ix_audit_logs_entity", "entity_type", "entity_id"),
+        # "Who viewed my records": PHI read audit rows carry the data subject in ``after.patient_id``.
+        sa.Index(
+            "ix_audit_logs_phi_patient",
+            sa.text("(after ->> 'patient_id')"),
+            "created_at",
+            postgresql_where=sa.text("action LIKE 'phi.%'"),
+        ),
+    )
 
     actor_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     actor_role: Mapped[str | None] = mapped_column(String(40))

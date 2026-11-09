@@ -17,6 +17,9 @@ counsel has reviewed them and the open questions below have been answered.**
 | [DATA_SHARING_CONSENT.md](DATA_SHARING_CONSENT.md) | In-app consent to share a case with a selected hospital, with variants | Patients, guardians, agents | Before every `POST /cases` (request quote / consultation) | `consents.kind = share_with_hospitals`, one per hospital |
 | [REFUND_CANCELLATION_POLICY.md](REFUND_CANCELLATION_POLICY.md) | Refund tiers (mirrors `refund_policy`), exceptions, gateway fees, timelines, currency/FX | Patients, agents | Checkout; cancel-booking dialog; linked from the Terms | Part of the Terms (`terms`) |
 | [HOSPITAL_PARTNER_AGREEMENT.md](HOSPITAL_PARTNER_AGREEMENT.md) | Listing, KYC, pricing transparency, quotes, care standards, commission + GST + TDS, settlements/holds/clawbacks, data roles, SLAs, liability, termination | Hospitals | Signed before listing approval (hospital portal onboarding) | Signed/e-signed counterpart (no consent kind exists — see item 23) |
+| [ROPA.md](ROPA.md) | Record of processing activities (GDPR Art. 30; DPDP accountability) | Internal, regulators | Kept current by product/engineering | — |
+| [DPIA.md](DPIA.md) | Data protection impact assessment, incl. Anthropic AI processing and cross-border transfer | Internal, regulators | Before launch and on material change | — |
+| [BREACH_RESPONSE.md](BREACH_RESPONSE.md) | Breach runbook (72 h GDPR, DPDP Board, CERT-In 6 h) + the breach register | Internal | On any suspected breach | `breach_incidents` |
 | [AGENT_FACILITATOR_AGREEMENT.md](AGENT_FACILITATOR_AGREEMENT.md) | KYC, conduct, no medical advice, commission and payout, data protection, anti-bribery, termination; patient authorisation template | Agents/facilitators | Agent registration / KYC submission | Click-through acceptance (no consent kind exists — see item 23) |
 
 ## Conventions
@@ -50,7 +53,9 @@ If any of these change (in code or in `platform_settings`), the documents must c
 
 | Fact | Value | Source | Used in |
 |---|---|---|---|
-| Consent kinds | `terms`, `privacy`, `ai_processing`, `share_with_hospitals`, `marketing` | PLAN §5, §9 | All patient documents |
+| Consent kinds | `terms`, `privacy`, `ai_processing`, `share_with_hospitals`, `marketing`, `share_with_agent`, `guardian_consent` (+ partner agreements) | PLAN §5, §9; `app/core/enums.py` | All patient documents |
+| Retention defaults | Guests 90 days; passport/visa scans 90 days after the trip; deleted files 30 days; inactive accounts 3 years (30-day notice); notifications 180 days | `backend/.env.example`, `app/modules/privacy/tasks.py` | Privacy §9; Terms §4.2 |
+| Data-rights SLA | 30 days (`DATA_RIGHTS_SLA_DAYS`) | `app/core/config.py` | Privacy §12.4 |
 | Platform commission | 15% of the hospital amount H (`default_commission_bps = 1500`), most-specific rule wins | PLAN §4.13, §6.3 | Hospital agreement §8, Schedule A |
 | Agent commission | 5% of H (`default_agent_commission_bps = 500`), paid out of platform commission, ≤ platform commission | PLAN §6.3–6.4 | Terms §2.5; agent agreement §5 |
 | GST on commission | 18% (`gst_rate_bps = 1800`) | PLAN §6.3 | Hospital agreement §8.3 |

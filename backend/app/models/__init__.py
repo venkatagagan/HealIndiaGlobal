@@ -32,6 +32,7 @@ from app.models.ledger import LEDGER_DDL, LEDGER_DROP_DDL, LedgerAccount, Ledger
 from app.models.messaging import Conversation, ConversationParticipant, Message, Notification
 from app.models.patients import PatientCompanion, PatientProfile, SavedItem
 from app.models.payments import Installment, Invoice, Payment, PaymentOrder, Refund, WebhookEvent
+from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
 from app.models.screening import AIRequestLog, Screening, ScreeningMatch
 from app.models.sequences import NUMBER_SEQUENCES, next_number
 from app.models.settlements import CommissionRule, Payout, PayoutAccount, SettlementBatch, SettlementItem
@@ -65,6 +66,7 @@ __all__ = [
     "BackgroundJob",
     "Base",
     "Booking",
+    "BreachIncident",
     "Case",
     "CaseStatusHistory",
     "ChecklistItem",
@@ -76,11 +78,14 @@ __all__ = [
     "CostBenchmark",
     "CreatedAtMixin",
     "CulturalTip",
+    "DataNominee",
+    "DataRightsRequest",
     "DeviceToken",
     "Doctor",
     "Document",
     "DocumentAnalysis",
     "FxRate",
+    "GuardianConsent",
     "Hospital",
     "HospitalMember",
     "HospitalProcedure",

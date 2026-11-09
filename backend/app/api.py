@@ -22,6 +22,7 @@ from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
 from app.modules.patients.router import router as patients_router
 from app.modules.payments.router import router as payments_router
+from app.modules.privacy.router import router as privacy_router
 from app.modules.screening.router import router as screening_router
 from app.modules.settlements.router import router as settlements_router
 from app.modules.travel.router import router as travel_router
@@ -47,5 +48,6 @@ for _router in (
     settlements_router,
     admin_router,
     voice_router,
+    privacy_router,
 ):
     api_router.include_router(_router)

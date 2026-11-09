@@ -80,7 +80,7 @@ def set_refresh_cookie(response: Response, raw_token: str, portal: AuthPortal = 
     response.set_cookie(
         key=name,
         value=raw_token,
-        max_age=settings.REFRESH_TOKEN_TTL_DAYS * 86400,
+        max_age=int(service.refresh_ttl(portal).total_seconds()),
         path=path,
         domain=settings.COOKIE_DOMAIN,
         secure=settings.COOKIE_SECURE,

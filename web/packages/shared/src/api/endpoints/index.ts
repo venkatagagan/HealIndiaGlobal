@@ -19,3 +19,4 @@ export { hospitalPortalApi } from './hospitalPortal';
 export { agentPortalApi } from './agentPortal';
 export { adminApi, type CrudEndpoints } from './admin';
 export { systemApi } from './system';
+export * from './privacy';
