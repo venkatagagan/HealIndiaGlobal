@@ -1824,6 +1824,174 @@ class OverridableLocalizations extends AppLocalizations {
     'reportAddProcedure' => reportAddProcedure,
     'reportAddRecommendation' => reportAddRecommendation,
     'reportNone' => reportNone,
+    'authContinueWithGoogle' => authContinueWithGoogle,
+    'authContinueWithApple' => authContinueWithApple,
+    'authCreateAccountWithEmail' => authCreateAccountWithEmail,
+    'authSignUpWithEmail' => authSignUpWithEmail,
+    'authContinueBrowsingAsGuest' => authContinueBrowsingAsGuest,
+    'authBrowseAsGuest' => authBrowseAsGuest,
+    'authPartnerHint' => authPartnerHint,
+    'authAlreadyHaveAccount' => authAlreadyHaveAccount,
+    'authEmailLabel' => authEmailLabel,
+    'authOr' => authOr,
+    'authBackTooltip' => authBackTooltip,
+    'authPasswordLabel' => authPasswordLabel,
+    'authShowPassword' => authShowPassword,
+    'authHidePassword' => authHidePassword,
+    'authTermsLink' => authTermsLink,
+    'authPrivacyLink' => authPrivacyLink,
+    'authAgeAdultConfirm' => authAgeAdultConfirm,
+    'authAgeAdult' => authAgeAdult,
+    'authAgeMinor' => authAgeMinor,
+    'authAgeRequired' => authAgeRequired,
+    'authAgeQuestion' => authAgeQuestion,
+    'authAgeDialogTitle' => authAgeDialogTitle,
+    'authAgeDialogAdultOnly' => authAgeDialogAdultOnly,
+    'authAgeDialogNeeded' => authAgeDialogNeeded,
+    'loginSubtitle' => loginSubtitle,
+    'loginOtpPrompt' => loginOtpPrompt,
+    'loginOtpLabel' => loginOtpLabel,
+    'loginForgotPassword' => loginForgotPassword,
+    'loginVerifyAndLogIn' => loginVerifyAndLogIn,
+    'loginSocialPatientsOnly' => loginSocialPatientsOnly,
+    'loginNoAccount' => loginNoAccount,
+    'loginSignUp' => loginSignUp,
+    'registerConflict' => registerConflict,
+    'registerCreateAccount' => registerCreateAccount,
+    'registerCreateAccountKeepProgress' => registerCreateAccountKeepProgress,
+    'registerIntroGuest' => registerIntroGuest,
+    'registerIntroAgent' => registerIntroAgent,
+    'registerIntroHospital' => registerIntroHospital,
+    'registerIntroPatient' => registerIntroPatient,
+    'registerFullNamePassport' => registerFullNamePassport,
+    'registerYourFullName' => registerYourFullName,
+    'registerAgencyName' => registerAgencyName,
+    'registerEnterAgencyName' => registerEnterAgencyName,
+    'registerHospitalName' => registerHospitalName,
+    'registerEnterHospitalName' => registerEnterHospitalName,
+    'registerCityOptional' => registerCityOptional,
+    'registerPhoneOptional' => registerPhoneOptional,
+    'registerCountryOfResidenceOptional' => registerCountryOfResidenceOptional,
+    'registerCountryOptional' => registerCountryOptional,
+    'registerReferralCodeOptional' => registerReferralCodeOptional,
+    'registerAcceptTermsError' => registerAcceptTermsError,
+    'apiErrorTimeout' => apiErrorTimeout,
+    'apiErrorCancelled' => apiErrorCancelled,
+    'apiErrorNoConnection' => apiErrorNoConnection,
+    'apiErrorSecureConnection' => apiErrorSecureConnection,
+    'apiErrorBadRequest' => apiErrorBadRequest,
+    'apiErrorSignIn' => apiErrorSignIn,
+    'apiErrorPayment' => apiErrorPayment,
+    'apiErrorForbidden' => apiErrorForbidden,
+    'apiErrorNotFound' => apiErrorNotFound,
+    'apiErrorConflict' => apiErrorConflict,
+    'apiErrorValidation' => apiErrorValidation,
+    'apiErrorRateLimited' => apiErrorRateLimited,
+    'apiErrorServer' => apiErrorServer,
+    'apiErrorGeneric' => apiErrorGeneric,
+    'conversationFallbackTitle' => conversationFallbackTitle,
+    'pushPromptTitle' => pushPromptTitle,
+    'pushPromptBody' => pushPromptBody,
+    'pushPromptNotNow' => pushPromptNotNow,
+    'pushPromptTurnOn' => pushPromptTurnOn,
+    'reportSheetThanks' => reportSheetThanks,
+    'reportSheetTitleMessage' => reportSheetTitleMessage,
+    'reportSheetTitleResult' => reportSheetTitleResult,
+    'reportSheetIntroMessage' => reportSheetIntroMessage,
+    'reportSheetIntroResult' => reportSheetIntroResult,
+    'reportSheetRateLimited' => reportSheetRateLimited,
+    'reportSheetNoteLabel' => reportSheetNoteLabel,
+    'reportSheetNoteHint' => reportSheetNoteHint,
+    'reportSheetSend' => reportSheetSend,
+    'reportReasonSpam' => reportReasonSpam,
+    'reportReasonAbusive' => reportReasonAbusive,
+    'reportReasonInappropriate' => reportReasonInappropriate,
+    'reportReasonInaccurate' => reportReasonInaccurate,
+    'reportReasonPrivacy' => reportReasonPrivacy,
+    'reportReasonOther' => reportReasonOther,
+    'chatTitleFallback' => chatTitleFallback,
+    'chatRoleHospital' => chatRoleHospital,
+    'chatRoleCareTeam' => chatRoleCareTeam,
+    'chatRoleAgent' => chatRoleAgent,
+    'chatRolePatient' => chatRolePatient,
+    'chatEmptyTitle' => chatEmptyTitle,
+    'chatEmptyMessage' => chatEmptyMessage,
+    'chatLoadingMore' => chatLoadingMore,
+    'chatLoadEarlier' => chatLoadEarlier,
+    'chatToday' => chatToday,
+    'chatUploading' => chatUploading,
+    'chatAttachTooltip' => chatAttachTooltip,
+    'chatInputHint' => chatInputHint,
+    'chatSendTooltip' => chatSendTooltip,
+    'chatCopyText' => chatCopyText,
+    'chatReportMessage' => chatReportMessage,
+    'chatMessageCopied' => chatMessageCopied,
+    'chatHiddenByModerators' => chatHiddenByModerators,
+    'chatAttachmentUnavailable' => chatAttachmentUnavailable,
+    'chatAttachment' => chatAttachment,
+    'matchesListTitle' => matchesListTitle,
+    'matchesListFinishFirst' => matchesListFinishFirst,
+    'matchesListStillFinding' => matchesListStillFinding,
+    'matchesListCompleteQuestionnaire' => matchesListCompleteQuestionnaire,
+    'matchesListUsuallyQuick' => matchesListUsuallyQuick,
+    'matchesListSortTooltip' => matchesListSortTooltip,
+    'matchesListFilterTooltip' => matchesListFilterTooltip,
+    'matchesListLoading' => matchesListLoading,
+    'matchesListIntro' => matchesListIntro,
+    'matchesListCompareCosts' => matchesListCompareCosts,
+    'matchesListNoMatches' => matchesListNoMatches,
+    'matchesListNoMatchesMessage' => matchesListNoMatchesMessage,
+    'matchesListRunAgain' => matchesListRunAgain,
+    'matchesListBrowseHospitals' => matchesListBrowseHospitals,
+    'matchesListNoFilterMatches' => matchesListNoFilterMatches,
+    'matchesListClearFilters' => matchesListClearFilters,
+    'matchesListCompare' => matchesListCompare,
+    'matchesListEmergency' => matchesListEmergency,
+    'matchesListGuidanceAcknowledged' => matchesListGuidanceAcknowledged,
+    'matchesListReadGuidance' => matchesListReadGuidance,
+    'aiSummaryUrgencySoon' => aiSummaryUrgencySoon,
+    'aiSummaryDisclaimer' => aiSummaryDisclaimer,
+    'aiSummaryTitleAi' => aiSummaryTitleAi,
+    'aiSummaryTitleRules' => aiSummaryTitleRules,
+    'aiSummaryMoreDetails' => aiSummaryMoreDetails,
+    'aiSummaryPossibleConditions' => aiSummaryPossibleConditions,
+    'aiSummaryTests' => aiSummaryTests,
+    'aiSummaryQuestions' => aiSummaryQuestions,
+    'aiSummaryTravelAdvice' => aiSummaryTravelAdvice,
+    'reportViewDiscardTitle' => reportViewDiscardTitle,
+    'reportViewDiscardBody' => reportViewDiscardBody,
+    'reportViewKeepReviewing' => reportViewKeepReviewing,
+    'reportViewDiscard' => reportViewDiscard,
+    'reportViewFailedTitle' => reportViewFailedTitle,
+    'reportViewFailedMessage' => reportViewFailedMessage,
+    'reportViewUnsupportedTitle' => reportViewUnsupportedTitle,
+    'reportViewUnsupportedMessage' => reportViewUnsupportedMessage,
+    'reportViewDiscarded' => reportViewDiscarded,
+    'reportViewCheckIntro' => reportViewCheckIntro,
+    'reportViewQualityHardToRead' => reportViewQualityHardToRead,
+    'reportViewContactDoctor' => reportViewContactDoctor,
+    'reportViewReading' => reportViewReading,
+    'reportViewReadingHint' => reportViewReadingHint,
+    'agentScreeningNew' => agentScreeningNew,
+    'agentScreeningNeedHelp' => agentScreeningNeedHelp,
+    'agentScreeningHowLong' => agentScreeningHowLong,
+    'agentScreeningImpact' => agentScreeningImpact,
+    'agentScreeningPreviousTreatments' => agentScreeningPreviousTreatments,
+    'agentScreeningNotes' => agentScreeningNotes,
+    'agentScreeningSubmit' => agentScreeningSubmit,
+    'agentScreeningResultTitle' => agentScreeningResultTitle,
+    'agentScreeningNotSubmitted' => agentScreeningNotSubmitted,
+    'agentScreeningRunNew' => agentScreeningRunNew,
+    'agentScreeningAnalysing' => agentScreeningAnalysing,
+    'agentScreeningFailed' => agentScreeningFailed,
+    'agentScreeningPleaseTryAgain' => agentScreeningPleaseTryAgain,
+    'agentScreeningAiTriage' => agentScreeningAiTriage,
+    'agentScreeningMatchedHospitals' => agentScreeningMatchedHospitals,
+    'agentScreeningMatchedHospitalsHint' => agentScreeningMatchedHospitalsHint,
+    'agentScreeningNoMatches' => agentScreeningNoMatches,
+    'agentScreeningCompareQuotes' => agentScreeningCompareQuotes,
+    'agentScreeningSelectHospitals' => agentScreeningSelectHospitals,
+    'agentScreeningRequested' => agentScreeningRequested,
     _ => null,
   };
 
@@ -7943,6 +8111,564 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get reportNone => _t('reportNone') ?? base.reportNone;
+
+  @override
+  String get authContinueWithGoogle => _t('authContinueWithGoogle') ?? base.authContinueWithGoogle;
+
+  @override
+  String get authContinueWithApple => _t('authContinueWithApple') ?? base.authContinueWithApple;
+
+  @override
+  String get authCreateAccountWithEmail => _t('authCreateAccountWithEmail') ?? base.authCreateAccountWithEmail;
+
+  @override
+  String get authSignUpWithEmail => _t('authSignUpWithEmail') ?? base.authSignUpWithEmail;
+
+  @override
+  String get authContinueBrowsingAsGuest => _t('authContinueBrowsingAsGuest') ?? base.authContinueBrowsingAsGuest;
+
+  @override
+  String get authBrowseAsGuest => _t('authBrowseAsGuest') ?? base.authBrowseAsGuest;
+
+  @override
+  String get authPartnerHint => _t('authPartnerHint') ?? base.authPartnerHint;
+
+  @override
+  String get authAlreadyHaveAccount => _t('authAlreadyHaveAccount') ?? base.authAlreadyHaveAccount;
+
+  @override
+  String get authEmailLabel => _t('authEmailLabel') ?? base.authEmailLabel;
+
+  @override
+  String get authOr => _t('authOr') ?? base.authOr;
+
+  @override
+  String get authBackTooltip => _t('authBackTooltip') ?? base.authBackTooltip;
+
+  @override
+  String get authPasswordLabel => _t('authPasswordLabel') ?? base.authPasswordLabel;
+
+  @override
+  String get authShowPassword => _t('authShowPassword') ?? base.authShowPassword;
+
+  @override
+  String get authHidePassword => _t('authHidePassword') ?? base.authHidePassword;
+
+  @override
+  String authTermsContinue(String terms, String privacy) => _f('authTermsContinue', {'terms': terms, 'privacy': privacy}) ?? base.authTermsContinue(terms, privacy);
+
+  @override
+  String authTermsAgree(String terms, String privacy) => _f('authTermsAgree', {'terms': terms, 'privacy': privacy}) ?? base.authTermsAgree(terms, privacy);
+
+  @override
+  String get authTermsLink => _t('authTermsLink') ?? base.authTermsLink;
+
+  @override
+  String get authPrivacyLink => _t('authPrivacyLink') ?? base.authPrivacyLink;
+
+  @override
+  String authCouldNotOpen(String url) => _f('authCouldNotOpen', {'url': url}) ?? base.authCouldNotOpen(url);
+
+  @override
+  String get authAgeAdultConfirm => _t('authAgeAdultConfirm') ?? base.authAgeAdultConfirm;
+
+  @override
+  String get authAgeAdult => _t('authAgeAdult') ?? base.authAgeAdult;
+
+  @override
+  String get authAgeMinor => _t('authAgeMinor') ?? base.authAgeMinor;
+
+  @override
+  String get authAgeRequired => _t('authAgeRequired') ?? base.authAgeRequired;
+
+  @override
+  String get authAgeQuestion => _t('authAgeQuestion') ?? base.authAgeQuestion;
+
+  @override
+  String get authAgeDialogTitle => _t('authAgeDialogTitle') ?? base.authAgeDialogTitle;
+
+  @override
+  String get authAgeDialogAdultOnly => _t('authAgeDialogAdultOnly') ?? base.authAgeDialogAdultOnly;
+
+  @override
+  String get authAgeDialogNeeded => _t('authAgeDialogNeeded') ?? base.authAgeDialogNeeded;
+
+  @override
+  String get loginSubtitle => _t('loginSubtitle') ?? base.loginSubtitle;
+
+  @override
+  String get loginOtpPrompt => _t('loginOtpPrompt') ?? base.loginOtpPrompt;
+
+  @override
+  String get loginOtpLabel => _t('loginOtpLabel') ?? base.loginOtpLabel;
+
+  @override
+  String get loginForgotPassword => _t('loginForgotPassword') ?? base.loginForgotPassword;
+
+  @override
+  String get loginVerifyAndLogIn => _t('loginVerifyAndLogIn') ?? base.loginVerifyAndLogIn;
+
+  @override
+  String get loginSocialPatientsOnly => _t('loginSocialPatientsOnly') ?? base.loginSocialPatientsOnly;
+
+  @override
+  String get loginNoAccount => _t('loginNoAccount') ?? base.loginNoAccount;
+
+  @override
+  String get loginSignUp => _t('loginSignUp') ?? base.loginSignUp;
+
+  @override
+  String get registerConflict => _t('registerConflict') ?? base.registerConflict;
+
+  @override
+  String get registerCreateAccount => _t('registerCreateAccount') ?? base.registerCreateAccount;
+
+  @override
+  String get registerCreateAccountKeepProgress => _t('registerCreateAccountKeepProgress') ?? base.registerCreateAccountKeepProgress;
+
+  @override
+  String get registerIntroGuest => _t('registerIntroGuest') ?? base.registerIntroGuest;
+
+  @override
+  String get registerIntroAgent => _t('registerIntroAgent') ?? base.registerIntroAgent;
+
+  @override
+  String get registerIntroHospital => _t('registerIntroHospital') ?? base.registerIntroHospital;
+
+  @override
+  String get registerIntroPatient => _t('registerIntroPatient') ?? base.registerIntroPatient;
+
+  @override
+  String get registerFullNamePassport => _t('registerFullNamePassport') ?? base.registerFullNamePassport;
+
+  @override
+  String get registerYourFullName => _t('registerYourFullName') ?? base.registerYourFullName;
+
+  @override
+  String registerPasswordHelper(int min) => _f('registerPasswordHelper', {'min': min}) ?? base.registerPasswordHelper(min);
+
+  @override
+  String get registerAgencyName => _t('registerAgencyName') ?? base.registerAgencyName;
+
+  @override
+  String get registerEnterAgencyName => _t('registerEnterAgencyName') ?? base.registerEnterAgencyName;
+
+  @override
+  String get registerHospitalName => _t('registerHospitalName') ?? base.registerHospitalName;
+
+  @override
+  String get registerEnterHospitalName => _t('registerEnterHospitalName') ?? base.registerEnterHospitalName;
+
+  @override
+  String get registerCityOptional => _t('registerCityOptional') ?? base.registerCityOptional;
+
+  @override
+  String get registerPhoneOptional => _t('registerPhoneOptional') ?? base.registerPhoneOptional;
+
+  @override
+  String get registerCountryOfResidenceOptional => _t('registerCountryOfResidenceOptional') ?? base.registerCountryOfResidenceOptional;
+
+  @override
+  String get registerCountryOptional => _t('registerCountryOptional') ?? base.registerCountryOptional;
+
+  @override
+  String get registerReferralCodeOptional => _t('registerReferralCodeOptional') ?? base.registerReferralCodeOptional;
+
+  @override
+  String get registerAcceptTermsError => _t('registerAcceptTermsError') ?? base.registerAcceptTermsError;
+
+  @override
+  String get apiErrorTimeout => _t('apiErrorTimeout') ?? base.apiErrorTimeout;
+
+  @override
+  String get apiErrorCancelled => _t('apiErrorCancelled') ?? base.apiErrorCancelled;
+
+  @override
+  String get apiErrorNoConnection => _t('apiErrorNoConnection') ?? base.apiErrorNoConnection;
+
+  @override
+  String get apiErrorSecureConnection => _t('apiErrorSecureConnection') ?? base.apiErrorSecureConnection;
+
+  @override
+  String get apiErrorBadRequest => _t('apiErrorBadRequest') ?? base.apiErrorBadRequest;
+
+  @override
+  String get apiErrorSignIn => _t('apiErrorSignIn') ?? base.apiErrorSignIn;
+
+  @override
+  String get apiErrorPayment => _t('apiErrorPayment') ?? base.apiErrorPayment;
+
+  @override
+  String get apiErrorForbidden => _t('apiErrorForbidden') ?? base.apiErrorForbidden;
+
+  @override
+  String get apiErrorNotFound => _t('apiErrorNotFound') ?? base.apiErrorNotFound;
+
+  @override
+  String get apiErrorConflict => _t('apiErrorConflict') ?? base.apiErrorConflict;
+
+  @override
+  String get apiErrorValidation => _t('apiErrorValidation') ?? base.apiErrorValidation;
+
+  @override
+  String get apiErrorRateLimited => _t('apiErrorRateLimited') ?? base.apiErrorRateLimited;
+
+  @override
+  String get apiErrorServer => _t('apiErrorServer') ?? base.apiErrorServer;
+
+  @override
+  String apiErrorUnexpected(int status) => _f('apiErrorUnexpected', {'status': status}) ?? base.apiErrorUnexpected(status);
+
+  @override
+  String get apiErrorGeneric => _t('apiErrorGeneric') ?? base.apiErrorGeneric;
+
+  @override
+  String get conversationFallbackTitle => _t('conversationFallbackTitle') ?? base.conversationFallbackTitle;
+
+  @override
+  String get pushPromptTitle => _t('pushPromptTitle') ?? base.pushPromptTitle;
+
+  @override
+  String get pushPromptBody => _t('pushPromptBody') ?? base.pushPromptBody;
+
+  @override
+  String get pushPromptNotNow => _t('pushPromptNotNow') ?? base.pushPromptNotNow;
+
+  @override
+  String get pushPromptTurnOn => _t('pushPromptTurnOn') ?? base.pushPromptTurnOn;
+
+  @override
+  String get reportSheetThanks => _t('reportSheetThanks') ?? base.reportSheetThanks;
+
+  @override
+  String get reportSheetTitleMessage => _t('reportSheetTitleMessage') ?? base.reportSheetTitleMessage;
+
+  @override
+  String get reportSheetTitleResult => _t('reportSheetTitleResult') ?? base.reportSheetTitleResult;
+
+  @override
+  String get reportSheetIntroMessage => _t('reportSheetIntroMessage') ?? base.reportSheetIntroMessage;
+
+  @override
+  String get reportSheetIntroResult => _t('reportSheetIntroResult') ?? base.reportSheetIntroResult;
+
+  @override
+  String get reportSheetRateLimited => _t('reportSheetRateLimited') ?? base.reportSheetRateLimited;
+
+  @override
+  String get reportSheetNoteLabel => _t('reportSheetNoteLabel') ?? base.reportSheetNoteLabel;
+
+  @override
+  String get reportSheetNoteHint => _t('reportSheetNoteHint') ?? base.reportSheetNoteHint;
+
+  @override
+  String get reportSheetSend => _t('reportSheetSend') ?? base.reportSheetSend;
+
+  @override
+  String get reportReasonSpam => _t('reportReasonSpam') ?? base.reportReasonSpam;
+
+  @override
+  String get reportReasonAbusive => _t('reportReasonAbusive') ?? base.reportReasonAbusive;
+
+  @override
+  String get reportReasonInappropriate => _t('reportReasonInappropriate') ?? base.reportReasonInappropriate;
+
+  @override
+  String get reportReasonInaccurate => _t('reportReasonInaccurate') ?? base.reportReasonInaccurate;
+
+  @override
+  String get reportReasonPrivacy => _t('reportReasonPrivacy') ?? base.reportReasonPrivacy;
+
+  @override
+  String get reportReasonOther => _t('reportReasonOther') ?? base.reportReasonOther;
+
+  @override
+  String get chatTitleFallback => _t('chatTitleFallback') ?? base.chatTitleFallback;
+
+  @override
+  String chatParticipantWithRole(String name, String role) => _f('chatParticipantWithRole', {'name': name, 'role': role}) ?? base.chatParticipantWithRole(name, role);
+
+  @override
+  String get chatRoleHospital => _t('chatRoleHospital') ?? base.chatRoleHospital;
+
+  @override
+  String get chatRoleCareTeam => _t('chatRoleCareTeam') ?? base.chatRoleCareTeam;
+
+  @override
+  String get chatRoleAgent => _t('chatRoleAgent') ?? base.chatRoleAgent;
+
+  @override
+  String get chatRolePatient => _t('chatRolePatient') ?? base.chatRolePatient;
+
+  @override
+  String get chatEmptyTitle => _t('chatEmptyTitle') ?? base.chatEmptyTitle;
+
+  @override
+  String get chatEmptyMessage => _t('chatEmptyMessage') ?? base.chatEmptyMessage;
+
+  @override
+  String get chatLoadingMore => _t('chatLoadingMore') ?? base.chatLoadingMore;
+
+  @override
+  String get chatLoadEarlier => _t('chatLoadEarlier') ?? base.chatLoadEarlier;
+
+  @override
+  String get chatToday => _t('chatToday') ?? base.chatToday;
+
+  @override
+  String get chatUploading => _t('chatUploading') ?? base.chatUploading;
+
+  @override
+  String get chatAttachTooltip => _t('chatAttachTooltip') ?? base.chatAttachTooltip;
+
+  @override
+  String get chatInputHint => _t('chatInputHint') ?? base.chatInputHint;
+
+  @override
+  String get chatSendTooltip => _t('chatSendTooltip') ?? base.chatSendTooltip;
+
+  @override
+  String chatSharedFile(String fileName) => _f('chatSharedFile', {'fileName': fileName}) ?? base.chatSharedFile(fileName);
+
+  @override
+  String chatSharedFiles(int count) => _f('chatSharedFiles', {'count': count}) ?? base.chatSharedFiles(count);
+
+  @override
+  String get chatCopyText => _t('chatCopyText') ?? base.chatCopyText;
+
+  @override
+  String get chatReportMessage => _t('chatReportMessage') ?? base.chatReportMessage;
+
+  @override
+  String get chatMessageCopied => _t('chatMessageCopied') ?? base.chatMessageCopied;
+
+  @override
+  String get chatHiddenByModerators => _t('chatHiddenByModerators') ?? base.chatHiddenByModerators;
+
+  @override
+  String get chatAttachmentUnavailable => _t('chatAttachmentUnavailable') ?? base.chatAttachmentUnavailable;
+
+  @override
+  String get chatAttachment => _t('chatAttachment') ?? base.chatAttachment;
+
+  @override
+  String get matchesListTitle => _t('matchesListTitle') ?? base.matchesListTitle;
+
+  @override
+  String matchesListCompareLimit(int max) => _f('matchesListCompareLimit', {'max': max}) ?? base.matchesListCompareLimit(max);
+
+  @override
+  String get matchesListFinishFirst => _t('matchesListFinishFirst') ?? base.matchesListFinishFirst;
+
+  @override
+  String get matchesListStillFinding => _t('matchesListStillFinding') ?? base.matchesListStillFinding;
+
+  @override
+  String get matchesListCompleteQuestionnaire => _t('matchesListCompleteQuestionnaire') ?? base.matchesListCompleteQuestionnaire;
+
+  @override
+  String get matchesListUsuallyQuick => _t('matchesListUsuallyQuick') ?? base.matchesListUsuallyQuick;
+
+  @override
+  String get matchesListSortTooltip => _t('matchesListSortTooltip') ?? base.matchesListSortTooltip;
+
+  @override
+  String get matchesListFilterTooltip => _t('matchesListFilterTooltip') ?? base.matchesListFilterTooltip;
+
+  @override
+  String get matchesListLoading => _t('matchesListLoading') ?? base.matchesListLoading;
+
+  @override
+  String get matchesListIntro => _t('matchesListIntro') ?? base.matchesListIntro;
+
+  @override
+  String matchesListSaveVsHome(int min, int max) => _f('matchesListSaveVsHome', {'min': min, 'max': max}) ?? base.matchesListSaveVsHome(min, max);
+
+  @override
+  String get matchesListCompareCosts => _t('matchesListCompareCosts') ?? base.matchesListCompareCosts;
+
+  @override
+  String get matchesListNoMatches => _t('matchesListNoMatches') ?? base.matchesListNoMatches;
+
+  @override
+  String get matchesListNoMatchesMessage => _t('matchesListNoMatchesMessage') ?? base.matchesListNoMatchesMessage;
+
+  @override
+  String get matchesListRunAgain => _t('matchesListRunAgain') ?? base.matchesListRunAgain;
+
+  @override
+  String get matchesListBrowseHospitals => _t('matchesListBrowseHospitals') ?? base.matchesListBrowseHospitals;
+
+  @override
+  String get matchesListNoFilterMatches => _t('matchesListNoFilterMatches') ?? base.matchesListNoFilterMatches;
+
+  @override
+  String get matchesListClearFilters => _t('matchesListClearFilters') ?? base.matchesListClearFilters;
+
+  @override
+  String matchesListSelectedForComparison(int count, int max) => _f('matchesListSelectedForComparison', {'count': count, 'max': max}) ?? base.matchesListSelectedForComparison(count, max);
+
+  @override
+  String get matchesListCompare => _t('matchesListCompare') ?? base.matchesListCompare;
+
+  @override
+  String get matchesListEmergency => _t('matchesListEmergency') ?? base.matchesListEmergency;
+
+  @override
+  String get matchesListGuidanceAcknowledged => _t('matchesListGuidanceAcknowledged') ?? base.matchesListGuidanceAcknowledged;
+
+  @override
+  String get matchesListReadGuidance => _t('matchesListReadGuidance') ?? base.matchesListReadGuidance;
+
+  @override
+  String get aiSummaryUrgencySoon => _t('aiSummaryUrgencySoon') ?? base.aiSummaryUrgencySoon;
+
+  @override
+  String get aiSummaryDisclaimer => _t('aiSummaryDisclaimer') ?? base.aiSummaryDisclaimer;
+
+  @override
+  String get aiSummaryTitleAi => _t('aiSummaryTitleAi') ?? base.aiSummaryTitleAi;
+
+  @override
+  String get aiSummaryTitleRules => _t('aiSummaryTitleRules') ?? base.aiSummaryTitleRules;
+
+  @override
+  String get aiSummaryMoreDetails => _t('aiSummaryMoreDetails') ?? base.aiSummaryMoreDetails;
+
+  @override
+  String get aiSummaryPossibleConditions => _t('aiSummaryPossibleConditions') ?? base.aiSummaryPossibleConditions;
+
+  @override
+  String aiSummaryConditionLikelihood(String name, String likelihood) => _f('aiSummaryConditionLikelihood', {'name': name, 'likelihood': likelihood}) ?? base.aiSummaryConditionLikelihood(name, likelihood);
+
+  @override
+  String get aiSummaryTests => _t('aiSummaryTests') ?? base.aiSummaryTests;
+
+  @override
+  String get aiSummaryQuestions => _t('aiSummaryQuestions') ?? base.aiSummaryQuestions;
+
+  @override
+  String get aiSummaryTravelAdvice => _t('aiSummaryTravelAdvice') ?? base.aiSummaryTravelAdvice;
+
+  @override
+  String aiSummaryBullet(String item) => _f('aiSummaryBullet', {'item': item}) ?? base.aiSummaryBullet(item);
+
+  @override
+  String get reportViewDiscardTitle => _t('reportViewDiscardTitle') ?? base.reportViewDiscardTitle;
+
+  @override
+  String get reportViewDiscardBody => _t('reportViewDiscardBody') ?? base.reportViewDiscardBody;
+
+  @override
+  String get reportViewKeepReviewing => _t('reportViewKeepReviewing') ?? base.reportViewKeepReviewing;
+
+  @override
+  String get reportViewDiscard => _t('reportViewDiscard') ?? base.reportViewDiscard;
+
+  @override
+  String get reportViewFailedTitle => _t('reportViewFailedTitle') ?? base.reportViewFailedTitle;
+
+  @override
+  String get reportViewFailedMessage => _t('reportViewFailedMessage') ?? base.reportViewFailedMessage;
+
+  @override
+  String get reportViewUnsupportedTitle => _t('reportViewUnsupportedTitle') ?? base.reportViewUnsupportedTitle;
+
+  @override
+  String get reportViewUnsupportedMessage => _t('reportViewUnsupportedMessage') ?? base.reportViewUnsupportedMessage;
+
+  @override
+  String get reportViewDiscarded => _t('reportViewDiscarded') ?? base.reportViewDiscarded;
+
+  @override
+  String get reportViewCheckIntro => _t('reportViewCheckIntro') ?? base.reportViewCheckIntro;
+
+  @override
+  String get reportViewQualityHardToRead => _t('reportViewQualityHardToRead') ?? base.reportViewQualityHardToRead;
+
+  @override
+  String reportViewImageQuality(String issues) => _f('reportViewImageQuality', {'issues': issues}) ?? base.reportViewImageQuality(issues);
+
+  @override
+  String get reportViewContactDoctor => _t('reportViewContactDoctor') ?? base.reportViewContactDoctor;
+
+  @override
+  String get reportViewReading => _t('reportViewReading') ?? base.reportViewReading;
+
+  @override
+  String get reportViewReadingHint => _t('reportViewReadingHint') ?? base.reportViewReadingHint;
+
+  @override
+  String get agentScreeningNew => _t('agentScreeningNew') ?? base.agentScreeningNew;
+
+  @override
+  String agentScreeningForPatient(String name) => _f('agentScreeningForPatient', {'name': name}) ?? base.agentScreeningForPatient(name);
+
+  @override
+  String get agentScreeningNeedHelp => _t('agentScreeningNeedHelp') ?? base.agentScreeningNeedHelp;
+
+  @override
+  String get agentScreeningHowLong => _t('agentScreeningHowLong') ?? base.agentScreeningHowLong;
+
+  @override
+  String get agentScreeningImpact => _t('agentScreeningImpact') ?? base.agentScreeningImpact;
+
+  @override
+  String get agentScreeningPreviousTreatments => _t('agentScreeningPreviousTreatments') ?? base.agentScreeningPreviousTreatments;
+
+  @override
+  String get agentScreeningNotes => _t('agentScreeningNotes') ?? base.agentScreeningNotes;
+
+  @override
+  String get agentScreeningSubmit => _t('agentScreeningSubmit') ?? base.agentScreeningSubmit;
+
+  @override
+  String agentScreeningQuotesRequested(int count) => _f('agentScreeningQuotesRequested', {'count': count}) ?? base.agentScreeningQuotesRequested(count);
+
+  @override
+  String get agentScreeningResultTitle => _t('agentScreeningResultTitle') ?? base.agentScreeningResultTitle;
+
+  @override
+  String get agentScreeningNotSubmitted => _t('agentScreeningNotSubmitted') ?? base.agentScreeningNotSubmitted;
+
+  @override
+  String get agentScreeningRunNew => _t('agentScreeningRunNew') ?? base.agentScreeningRunNew;
+
+  @override
+  String get agentScreeningAnalysing => _t('agentScreeningAnalysing') ?? base.agentScreeningAnalysing;
+
+  @override
+  String get agentScreeningFailed => _t('agentScreeningFailed') ?? base.agentScreeningFailed;
+
+  @override
+  String get agentScreeningPleaseTryAgain => _t('agentScreeningPleaseTryAgain') ?? base.agentScreeningPleaseTryAgain;
+
+  @override
+  String get agentScreeningAiTriage => _t('agentScreeningAiTriage') ?? base.agentScreeningAiTriage;
+
+  @override
+  String get agentScreeningMatchedHospitals => _t('agentScreeningMatchedHospitals') ?? base.agentScreeningMatchedHospitals;
+
+  @override
+  String get agentScreeningMatchedHospitalsHint => _t('agentScreeningMatchedHospitalsHint') ?? base.agentScreeningMatchedHospitalsHint;
+
+  @override
+  String get agentScreeningNoMatches => _t('agentScreeningNoMatches') ?? base.agentScreeningNoMatches;
+
+  @override
+  String get agentScreeningCompareQuotes => _t('agentScreeningCompareQuotes') ?? base.agentScreeningCompareQuotes;
+
+  @override
+  String get agentScreeningSelectHospitals => _t('agentScreeningSelectHospitals') ?? base.agentScreeningSelectHospitals;
+
+  @override
+  String agentScreeningRequestQuotes(int count) => _f('agentScreeningRequestQuotes', {'count': count}) ?? base.agentScreeningRequestQuotes(count);
+
+  @override
+  String agentScreeningEstimate(String amount) => _f('agentScreeningEstimate', {'amount': amount}) ?? base.agentScreeningEstimate(amount);
+
+  @override
+  String get agentScreeningRequested => _t('agentScreeningRequested') ?? base.agentScreeningRequested;
 }
 
 /// Every ARB key, in template order.
@@ -9986,4 +10712,190 @@ const List<String> kL10nKeys = [
   'reportAddProcedure',
   'reportAddRecommendation',
   'reportNone',
+  'authContinueWithGoogle',
+  'authContinueWithApple',
+  'authCreateAccountWithEmail',
+  'authSignUpWithEmail',
+  'authContinueBrowsingAsGuest',
+  'authBrowseAsGuest',
+  'authPartnerHint',
+  'authAlreadyHaveAccount',
+  'authEmailLabel',
+  'authOr',
+  'authBackTooltip',
+  'authPasswordLabel',
+  'authShowPassword',
+  'authHidePassword',
+  'authTermsContinue',
+  'authTermsAgree',
+  'authTermsLink',
+  'authPrivacyLink',
+  'authCouldNotOpen',
+  'authAgeAdultConfirm',
+  'authAgeAdult',
+  'authAgeMinor',
+  'authAgeRequired',
+  'authAgeQuestion',
+  'authAgeDialogTitle',
+  'authAgeDialogAdultOnly',
+  'authAgeDialogNeeded',
+  'loginSubtitle',
+  'loginOtpPrompt',
+  'loginOtpLabel',
+  'loginForgotPassword',
+  'loginVerifyAndLogIn',
+  'loginSocialPatientsOnly',
+  'loginNoAccount',
+  'loginSignUp',
+  'registerConflict',
+  'registerCreateAccount',
+  'registerCreateAccountKeepProgress',
+  'registerIntroGuest',
+  'registerIntroAgent',
+  'registerIntroHospital',
+  'registerIntroPatient',
+  'registerFullNamePassport',
+  'registerYourFullName',
+  'registerPasswordHelper',
+  'registerAgencyName',
+  'registerEnterAgencyName',
+  'registerHospitalName',
+  'registerEnterHospitalName',
+  'registerCityOptional',
+  'registerPhoneOptional',
+  'registerCountryOfResidenceOptional',
+  'registerCountryOptional',
+  'registerReferralCodeOptional',
+  'registerAcceptTermsError',
+  'apiErrorTimeout',
+  'apiErrorCancelled',
+  'apiErrorNoConnection',
+  'apiErrorSecureConnection',
+  'apiErrorBadRequest',
+  'apiErrorSignIn',
+  'apiErrorPayment',
+  'apiErrorForbidden',
+  'apiErrorNotFound',
+  'apiErrorConflict',
+  'apiErrorValidation',
+  'apiErrorRateLimited',
+  'apiErrorServer',
+  'apiErrorUnexpected',
+  'apiErrorGeneric',
+  'conversationFallbackTitle',
+  'pushPromptTitle',
+  'pushPromptBody',
+  'pushPromptNotNow',
+  'pushPromptTurnOn',
+  'reportSheetThanks',
+  'reportSheetTitleMessage',
+  'reportSheetTitleResult',
+  'reportSheetIntroMessage',
+  'reportSheetIntroResult',
+  'reportSheetRateLimited',
+  'reportSheetNoteLabel',
+  'reportSheetNoteHint',
+  'reportSheetSend',
+  'reportReasonSpam',
+  'reportReasonAbusive',
+  'reportReasonInappropriate',
+  'reportReasonInaccurate',
+  'reportReasonPrivacy',
+  'reportReasonOther',
+  'chatTitleFallback',
+  'chatParticipantWithRole',
+  'chatRoleHospital',
+  'chatRoleCareTeam',
+  'chatRoleAgent',
+  'chatRolePatient',
+  'chatEmptyTitle',
+  'chatEmptyMessage',
+  'chatLoadingMore',
+  'chatLoadEarlier',
+  'chatToday',
+  'chatUploading',
+  'chatAttachTooltip',
+  'chatInputHint',
+  'chatSendTooltip',
+  'chatSharedFile',
+  'chatSharedFiles',
+  'chatCopyText',
+  'chatReportMessage',
+  'chatMessageCopied',
+  'chatHiddenByModerators',
+  'chatAttachmentUnavailable',
+  'chatAttachment',
+  'matchesListTitle',
+  'matchesListCompareLimit',
+  'matchesListFinishFirst',
+  'matchesListStillFinding',
+  'matchesListCompleteQuestionnaire',
+  'matchesListUsuallyQuick',
+  'matchesListSortTooltip',
+  'matchesListFilterTooltip',
+  'matchesListLoading',
+  'matchesListIntro',
+  'matchesListSaveVsHome',
+  'matchesListCompareCosts',
+  'matchesListNoMatches',
+  'matchesListNoMatchesMessage',
+  'matchesListRunAgain',
+  'matchesListBrowseHospitals',
+  'matchesListNoFilterMatches',
+  'matchesListClearFilters',
+  'matchesListSelectedForComparison',
+  'matchesListCompare',
+  'matchesListEmergency',
+  'matchesListGuidanceAcknowledged',
+  'matchesListReadGuidance',
+  'aiSummaryUrgencySoon',
+  'aiSummaryDisclaimer',
+  'aiSummaryTitleAi',
+  'aiSummaryTitleRules',
+  'aiSummaryMoreDetails',
+  'aiSummaryPossibleConditions',
+  'aiSummaryConditionLikelihood',
+  'aiSummaryTests',
+  'aiSummaryQuestions',
+  'aiSummaryTravelAdvice',
+  'aiSummaryBullet',
+  'reportViewDiscardTitle',
+  'reportViewDiscardBody',
+  'reportViewKeepReviewing',
+  'reportViewDiscard',
+  'reportViewFailedTitle',
+  'reportViewFailedMessage',
+  'reportViewUnsupportedTitle',
+  'reportViewUnsupportedMessage',
+  'reportViewDiscarded',
+  'reportViewCheckIntro',
+  'reportViewQualityHardToRead',
+  'reportViewImageQuality',
+  'reportViewContactDoctor',
+  'reportViewReading',
+  'reportViewReadingHint',
+  'agentScreeningNew',
+  'agentScreeningForPatient',
+  'agentScreeningNeedHelp',
+  'agentScreeningHowLong',
+  'agentScreeningImpact',
+  'agentScreeningPreviousTreatments',
+  'agentScreeningNotes',
+  'agentScreeningSubmit',
+  'agentScreeningQuotesRequested',
+  'agentScreeningResultTitle',
+  'agentScreeningNotSubmitted',
+  'agentScreeningRunNew',
+  'agentScreeningAnalysing',
+  'agentScreeningFailed',
+  'agentScreeningPleaseTryAgain',
+  'agentScreeningAiTriage',
+  'agentScreeningMatchedHospitals',
+  'agentScreeningMatchedHospitalsHint',
+  'agentScreeningNoMatches',
+  'agentScreeningCompareQuotes',
+  'agentScreeningSelectHospitals',
+  'agentScreeningRequestQuotes',
+  'agentScreeningEstimate',
+  'agentScreeningRequested',
 ];

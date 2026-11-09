@@ -12334,6 +12334,1122 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None'**
   String get reportNone;
+
+  /// Auth button: sign in / sign up with a Google account.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get authContinueWithGoogle;
+
+  /// Auth button: sign in / sign up with an Apple ID.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authContinueWithApple;
+
+  /// Auth decision screen button shown to guests: turn the guest session into an email account.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account with Email'**
+  String get authCreateAccountWithEmail;
+
+  /// Auth decision screen button: open the email sign-up form.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with Email'**
+  String get authSignUpWithEmail;
+
+  /// Auth decision screen button shown to guests: keep using the app without an account.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue browsing as Guest'**
+  String get authContinueBrowsingAsGuest;
+
+  /// Auth decision screen button: use the app without an account.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse as Guest'**
+  String get authBrowseAsGuest;
+
+  /// Auth decision screen hint for medical-travel agents (facilitators) and hospital staff.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilitator or hospital team? Sign up with email and choose your role, or log in.'**
+  String get authPartnerHint;
+
+  /// Text before the 'Log in' link on the auth and sign-up screens.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get authAlreadyHaveAccount;
+
+  /// Label of the email field on the login and sign-up forms.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// Divider between the email login button and the Google / Apple buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get authOr;
+
+  /// Tooltip of the back button on the auth screens.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get authBackTooltip;
+
+  /// Default label of the password field.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPasswordLabel;
+
+  /// Tooltip: reveal the typed password.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get authShowPassword;
+
+  /// Tooltip: hide the typed password.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get authHidePassword;
+
+  /// Legal notice under the auth buttons. {terms} and {privacy} are tappable links (authTermsLink / authPrivacyLink).
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our {terms} & {privacy}.'**
+  String authTermsContinue(String terms, String privacy);
+
+  /// Sign-up checkbox label. {terms} and {privacy} are tappable links (authTermsLink / authPrivacyLink).
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the {terms} & {privacy}.'**
+  String authTermsAgree(String terms, String privacy);
+
+  /// Link text inside the legal notice: the Terms of Service.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get authTermsLink;
+
+  /// Link text inside the legal notice: the Privacy Policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get authPrivacyLink;
+
+  /// Snackbar when a legal page could not be opened in the browser.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open {url}'**
+  String authCouldNotOpen(String url);
+
+  /// Sign-up checkbox for agents and hospital users (adults only).
+  ///
+  /// In en, this message translates to:
+  /// **'I confirm I am 18 or older.'**
+  String get authAgeAdultConfirm;
+
+  /// Patient sign-up age option: adult.
+  ///
+  /// In en, this message translates to:
+  /// **'I am 18 or older'**
+  String get authAgeAdult;
+
+  /// Patient sign-up age option: minor with parental / guardian consent.
+  ///
+  /// In en, this message translates to:
+  /// **'I am under 18 and a parent or guardian will give consent for my care'**
+  String get authAgeMinor;
+
+  /// Error when the age question was not answered at sign-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your age'**
+  String get authAgeRequired;
+
+  /// Heading of the age question at sign-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Your age'**
+  String get authAgeQuestion;
+
+  /// Title of the age dialog shown when Google / Apple sign-in creates a new account.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your age'**
+  String get authAgeDialogTitle;
+
+  /// Age dialog text when only adults may continue.
+  ///
+  /// In en, this message translates to:
+  /// **'This type of account is only for adults.'**
+  String get authAgeDialogAdultOnly;
+
+  /// Age dialog text for new patient accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'We need to know this before we create your account.'**
+  String get authAgeDialogNeeded;
+
+  /// Subtitle under the brand on the login screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back. Log in to continue your treatment journey.'**
+  String get loginSubtitle;
+
+  /// Login: two-factor step instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code from your authenticator app.'**
+  String get loginOtpPrompt;
+
+  /// Login: label of the two-factor code field.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication code'**
+  String get loginOtpLabel;
+
+  /// Login: link to reset the password.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get loginForgotPassword;
+
+  /// Login button during the two-factor step.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify & log in'**
+  String get loginVerifyAndLogIn;
+
+  /// Login: note under the Google / Apple buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'Google and Apple sign-in are for patients.'**
+  String get loginSocialPatientsOnly;
+
+  /// Login: text before the 'Sign up' link.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get loginNoAccount;
+
+  /// Login: link to the sign-up form.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get loginSignUp;
+
+  /// Sign-up error when the email is already registered.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists. Try logging in instead.'**
+  String get registerConflict;
+
+  /// Sign-up screen title and submit button.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get registerCreateAccount;
+
+  /// Sign-up submit button for guests (keeps their guest data).
+  ///
+  /// In en, this message translates to:
+  /// **'Create account & keep my progress'**
+  String get registerCreateAccountKeepProgress;
+
+  /// Sign-up intro for guests upgrading their account.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your screenings and matches, request quotes and book treatment. Everything you did as a guest is kept.'**
+  String get registerIntroGuest;
+
+  /// Sign-up intro on the Agent tab (medical-travel facilitators).
+  ///
+  /// In en, this message translates to:
+  /// **'For facilitators and agencies: register patients, compare hospital quotes and track commissions. New agent accounts are verified by our team.'**
+  String get registerIntroAgent;
+
+  /// Sign-up intro on the Hospital tab.
+  ///
+  /// In en, this message translates to:
+  /// **'For hospital teams: receive patient enquiries, send itemised quotes and manage admissions. Your hospital is verified by our team before it is listed.'**
+  String get registerIntroHospital;
+
+  /// Sign-up intro on the Patient tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Get matched with accredited Indian hospitals and track your whole treatment journey.'**
+  String get registerIntroPatient;
+
+  /// Sign-up: name field label for patients.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name (as on passport)'**
+  String get registerFullNamePassport;
+
+  /// Sign-up: name field label for agents and hospital users.
+  ///
+  /// In en, this message translates to:
+  /// **'Your full name'**
+  String get registerYourFullName;
+
+  /// Sign-up: password rules under the password field.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {min} characters with a letter and a number'**
+  String registerPasswordHelper(int min);
+
+  /// Sign-up (agent): agency name field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Agency name'**
+  String get registerAgencyName;
+
+  /// Sign-up (agent): error when the agency name is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your agency name'**
+  String get registerEnterAgencyName;
+
+  /// Sign-up (hospital): hospital name field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital name'**
+  String get registerHospitalName;
+
+  /// Sign-up (hospital): error when the hospital name is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the hospital name'**
+  String get registerEnterHospitalName;
+
+  /// Sign-up (hospital): city field label.
+  ///
+  /// In en, this message translates to:
+  /// **'City (optional)'**
+  String get registerCityOptional;
+
+  /// Sign-up: phone field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone / WhatsApp (optional)'**
+  String get registerPhoneOptional;
+
+  /// Sign-up (patient): country picker label.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence (optional)'**
+  String get registerCountryOfResidenceOptional;
+
+  /// Sign-up (agent / hospital): country picker label.
+  ///
+  /// In en, this message translates to:
+  /// **'Country (optional)'**
+  String get registerCountryOptional;
+
+  /// Sign-up (patient): referral code from a medical-travel facilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilitator referral code (optional)'**
+  String get registerReferralCodeOptional;
+
+  /// Sign-up error when the terms checkbox is not ticked.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the Terms and Privacy Policy'**
+  String get registerAcceptTermsError;
+
+  /// Error: the request timed out.
+  ///
+  /// In en, this message translates to:
+  /// **'The server took too long to respond. Please try again.'**
+  String get apiErrorTimeout;
+
+  /// Error: the request was cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Request cancelled.'**
+  String get apiErrorCancelled;
+
+  /// Error: no network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Check your internet and try again.'**
+  String get apiErrorNoConnection;
+
+  /// Error: TLS / certificate failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure connection failed.'**
+  String get apiErrorSecureConnection;
+
+  /// Error for HTTP 400 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'The request could not be processed.'**
+  String get apiErrorBadRequest;
+
+  /// Error for HTTP 401 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in to continue.'**
+  String get apiErrorSignIn;
+
+  /// Error for HTTP 402 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment could not be completed.'**
+  String get apiErrorPayment;
+
+  /// Error for HTTP 403 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have access to this.'**
+  String get apiErrorForbidden;
+
+  /// Error for HTTP 404 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found.'**
+  String get apiErrorNotFound;
+
+  /// Error for HTTP 409 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'This was changed by someone else. Please refresh.'**
+  String get apiErrorConflict;
+
+  /// Error for HTTP 422 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check the highlighted fields.'**
+  String get apiErrorValidation;
+
+  /// Error for HTTP 429 without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment and try again.'**
+  String get apiErrorRateLimited;
+
+  /// Error for HTTP 5xx without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong on our side. Please try again.'**
+  String get apiErrorServer;
+
+  /// Error for any other HTTP status without a server message.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error ({status}).'**
+  String apiErrorUnexpected(int status);
+
+  /// Fallback error message when no detail is known.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get apiErrorGeneric;
+
+  /// Title of a chat conversation without a subject or other participants.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation'**
+  String get conversationFallbackTitle;
+
+  /// Title of the in-app explanation shown before the system notification permission dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications?'**
+  String get pushPromptTitle;
+
+  /// Body of the notification permission pre-prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Get updates about your case, messages and payments. We never put health details in notifications.'**
+  String get pushPromptBody;
+
+  /// Notification pre-prompt: decline for now.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get pushPromptNotNow;
+
+  /// Notification pre-prompt: continue to the system permission dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get pushPromptTurnOn;
+
+  /// Snackbar after a content report (chat message / AI result) was sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks. Our team will review this report.'**
+  String get reportSheetThanks;
+
+  /// Title of the sheet for reporting a chat message.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this message'**
+  String get reportSheetTitleMessage;
+
+  /// Title of the sheet for reporting an AI result; also the button that opens it.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this result'**
+  String get reportSheetTitleResult;
+
+  /// Intro of the sheet for reporting a chat message.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong with this message. Our team will look at it. The sender is not told who reported it.'**
+  String get reportSheetIntroMessage;
+
+  /// Intro of the sheet for reporting an AI result.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong with this AI result. Our team will look at it and use it to improve the results.'**
+  String get reportSheetIntroResult;
+
+  /// Report sheet error when too many reports were sent.
+  ///
+  /// In en, this message translates to:
+  /// **'You have sent a lot of reports. Please try again later.'**
+  String get reportSheetRateLimited;
+
+  /// Report sheet: label of the optional note field.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note (optional)'**
+  String get reportSheetNoteLabel;
+
+  /// Report sheet: hint of the optional note field.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything that helps our team understand the problem'**
+  String get reportSheetNoteHint;
+
+  /// Report sheet: submit button.
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get reportSheetSend;
+
+  /// Report reason: spam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam'**
+  String get reportReasonSpam;
+
+  /// Report reason: abusive or harassing content.
+  ///
+  /// In en, this message translates to:
+  /// **'Abusive or harassing'**
+  String get reportReasonAbusive;
+
+  /// Report reason: inappropriate content.
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate'**
+  String get reportReasonInappropriate;
+
+  /// Report reason: the AI result is inaccurate.
+  ///
+  /// In en, this message translates to:
+  /// **'Inaccurate'**
+  String get reportReasonInaccurate;
+
+  /// Report reason: privacy concern.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy concern'**
+  String get reportReasonPrivacy;
+
+  /// Report reason: anything else.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get reportReasonOther;
+
+  /// Chat screen title while the conversation is loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get chatTitleFallback;
+
+  /// Chat header: a participant's name with their role.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({role})'**
+  String chatParticipantWithRole(String name, String role);
+
+  /// Chat header role label: hospital staff.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get chatRoleHospital;
+
+  /// Chat header role label: Heal India Global support / coordinators.
+  ///
+  /// In en, this message translates to:
+  /// **'Care team'**
+  String get chatRoleCareTeam;
+
+  /// Chat header role label: medical-travel facilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get chatRoleAgent;
+
+  /// Chat header role label: patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get chatRolePatient;
+
+  /// Empty chat title.
+  ///
+  /// In en, this message translates to:
+  /// **'Say hello'**
+  String get chatEmptyTitle;
+
+  /// Empty chat message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your coordinator usually replies within a few hours.'**
+  String get chatEmptyMessage;
+
+  /// Chat: older messages are loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get chatLoadingMore;
+
+  /// Chat: button to load older messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Load earlier messages'**
+  String get chatLoadEarlier;
+
+  /// Chat day separator for today's messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get chatToday;
+
+  /// Chat composer: an attachment is uploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading...'**
+  String get chatUploading;
+
+  /// Chat composer: attach button tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach a document'**
+  String get chatAttachTooltip;
+
+  /// Chat composer: input hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get chatInputHint;
+
+  /// Chat composer: send button tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSendTooltip;
+
+  /// Message text sent when only one file is attached and no text was typed.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared {fileName}'**
+  String chatSharedFile(String fileName);
+
+  /// Message text sent when several files are attached and no text was typed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{Shared {count} files}}'**
+  String chatSharedFiles(int count);
+
+  /// Chat message menu: copy the message text.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get chatCopyText;
+
+  /// Chat message menu: report the message.
+  ///
+  /// In en, this message translates to:
+  /// **'Report message'**
+  String get chatReportMessage;
+
+  /// Snackbar after copying a chat message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message copied.'**
+  String get chatMessageCopied;
+
+  /// Under your own chat message that moderators hid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden by moderators'**
+  String get chatHiddenByModerators;
+
+  /// Chat attachment chip when the file could not be loaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment unavailable'**
+  String get chatAttachmentUnavailable;
+
+  /// Chat attachment chip while the file name is loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get chatAttachment;
+
+  /// Matches screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Top Matches'**
+  String get matchesListTitle;
+
+  /// Snackbar when the compare limit is reached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can compare up to {max} matches.'**
+  String matchesListCompareLimit(int max);
+
+  /// Matches screen: the screening is still a draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish your screening first'**
+  String get matchesListFinishFirst;
+
+  /// Matches screen: matching is still running.
+  ///
+  /// In en, this message translates to:
+  /// **'Still finding your matches'**
+  String get matchesListStillFinding;
+
+  /// Matches screen: draft screening message.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the questionnaire to see matched doctors.'**
+  String get matchesListCompleteQuestionnaire;
+
+  /// Matches screen: matching in progress message.
+  ///
+  /// In en, this message translates to:
+  /// **'This usually takes under a minute.'**
+  String get matchesListUsuallyQuick;
+
+  /// Matches screen: sort button tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get matchesListSortTooltip;
+
+  /// Matches screen: filter button tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get matchesListFilterTooltip;
+
+  /// Matches screen: loading message.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your matches...'**
+  String get matchesListLoading;
+
+  /// Matches screen: intro text.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on your profile, here are your top matches.'**
+  String get matchesListIntro;
+
+  /// Matches screen: savings banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {min}-{max}% vs treatment at home'**
+  String matchesListSaveVsHome(int min, int max);
+
+  /// Matches screen: cost comparison banner without savings data.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare costs with your home country'**
+  String get matchesListCompareCosts;
+
+  /// Matches screen: no matches title.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches yet'**
+  String get matchesListNoMatches;
+
+  /// Matches screen: no matches message.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find doctors for these answers. Try again or browse hospitals yourself.'**
+  String get matchesListNoMatchesMessage;
+
+  /// Matches screen: re-run matching button.
+  ///
+  /// In en, this message translates to:
+  /// **'Run matching again'**
+  String get matchesListRunAgain;
+
+  /// Matches screen: open hospital search.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse hospitals'**
+  String get matchesListBrowseHospitals;
+
+  /// Matches screen: filters hide every match.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches for these filters'**
+  String get matchesListNoFilterMatches;
+
+  /// Matches screen: clear filters button.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get matchesListClearFilters;
+
+  /// Matches screen: compare bar counter.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/{max} Selected for Comparison'**
+  String matchesListSelectedForComparison(int count, int max);
+
+  /// Matches screen: compare bar button.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get matchesListCompare;
+
+  /// Matches screen: emergency banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answers suggest you may need urgent care. Please seek local emergency care before planning travel.'**
+  String get matchesListEmergency;
+
+  /// Matches screen: emergency guidance was acknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Guidance acknowledged'**
+  String get matchesListGuidanceAcknowledged;
+
+  /// Matches screen: open the emergency guidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the guidance'**
+  String get matchesListReadGuidance;
+
+  /// AI summary urgency chip: 'soon' level.
+  ///
+  /// In en, this message translates to:
+  /// **'See a doctor soon'**
+  String get aiSummaryUrgencySoon;
+
+  /// Default disclaimer under the AI screening summary.
+  ///
+  /// In en, this message translates to:
+  /// **'This summary is generated from your answers to help you choose doctors. It is not a medical diagnosis. A qualified doctor will review your case.'**
+  String get aiSummaryDisclaimer;
+
+  /// Summary card title when the AI produced it.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Summary'**
+  String get aiSummaryTitleAi;
+
+  /// Summary card title when the rules engine produced it.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening Summary'**
+  String get aiSummaryTitleRules;
+
+  /// Summary card: expand details.
+  ///
+  /// In en, this message translates to:
+  /// **'More details'**
+  String get aiSummaryMoreDetails;
+
+  /// Summary card section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible conditions to discuss'**
+  String get aiSummaryPossibleConditions;
+
+  /// Summary card: a possible condition with its likelihood (low / medium / high).
+  ///
+  /// In en, this message translates to:
+  /// **'{likelihood, select, low{{name} (low likelihood)} medium{{name} (medium likelihood)} high{{name} (high likelihood)} other{{name}}}'**
+  String aiSummaryConditionLikelihood(String name, String likelihood);
+
+  /// Summary card section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests that may help'**
+  String get aiSummaryTests;
+
+  /// Summary card section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions for your doctor'**
+  String get aiSummaryQuestions;
+
+  /// Summary card section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel advice'**
+  String get aiSummaryTravelAdvice;
+
+  /// Bulleted list item in the summary card details.
+  ///
+  /// In en, this message translates to:
+  /// **'•  {item}'**
+  String aiSummaryBullet(String item);
+
+  /// Dialog title: discard the AI reading of a medical report.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this reading?'**
+  String get reportViewDiscardTitle;
+
+  /// Dialog body: discard the AI reading.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI reading will not be used for your screening or shared with hospitals. Your uploaded report itself is kept.'**
+  String get reportViewDiscardBody;
+
+  /// Dialog button: do not discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep reviewing'**
+  String get reportViewKeepReviewing;
+
+  /// Button: discard the AI reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get reportViewDiscard;
+
+  /// AI reading failed title.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not read this report'**
+  String get reportViewFailedTitle;
+
+  /// AI reading failed default message.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while reading your report.'**
+  String get reportViewFailedMessage;
+
+  /// AI reading unsupported file title.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type cannot be read'**
+  String get reportViewUnsupportedTitle;
+
+  /// AI reading unsupported file default message.
+  ///
+  /// In en, this message translates to:
+  /// **'Scans such as DICOM images cannot be read automatically. Please upload the radiologist\'s written report or a clear photo of each page instead.'**
+  String get reportViewUnsupportedMessage;
+
+  /// Shown on a discarded AI reading.
+  ///
+  /// In en, this message translates to:
+  /// **'You discarded this reading. It is not used for screening or shared with hospitals.'**
+  String get reportViewDiscarded;
+
+  /// Review banner above the AI reading form. 'Confirm' is the button label (commonConfirm).
+  ///
+  /// In en, this message translates to:
+  /// **'Please check what the AI read. Correct anything that is wrong, then tap Confirm. Only confirmed information is used.'**
+  String get reportViewCheckIntro;
+
+  /// Image quality issue used inside reportViewImageQuality when no specific issue is known.
+  ///
+  /// In en, this message translates to:
+  /// **'parts may be hard to read'**
+  String get reportViewQualityHardToRead;
+
+  /// Warning about the photo quality of a scanned report.
+  ///
+  /// In en, this message translates to:
+  /// **'Image quality: {issues}. A clearer photo gives better results.'**
+  String reportViewImageQuality(String issues);
+
+  /// Alert title above red flags found in a report.
+  ///
+  /// In en, this message translates to:
+  /// **'Please contact a doctor soon'**
+  String get reportViewContactDoctor;
+
+  /// Shown while the AI reads a report.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your report…'**
+  String get reportViewReading;
+
+  /// Shown while the AI reads a report.
+  ///
+  /// In en, this message translates to:
+  /// **'This usually takes less than a minute. You will review everything before it is used.'**
+  String get reportViewReadingHint;
+
+  /// Agent screening form title before the patient name is loaded.
+  ///
+  /// In en, this message translates to:
+  /// **'New screening'**
+  String get agentScreeningNew;
+
+  /// Agent screening form title.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening · {name}'**
+  String agentScreeningForPatient(String name);
+
+  /// Agent screening form: specialty question.
+  ///
+  /// In en, this message translates to:
+  /// **'What does the patient need help with?'**
+  String get agentScreeningNeedHelp;
+
+  /// Agent screening form: symptom duration.
+  ///
+  /// In en, this message translates to:
+  /// **'How long?'**
+  String get agentScreeningHowLong;
+
+  /// Agent screening form section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Impact on daily life'**
+  String get agentScreeningImpact;
+
+  /// Agent screening form field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous treatments (comma separated)'**
+  String get agentScreeningPreviousTreatments;
+
+  /// Agent screening form field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes for the medical team'**
+  String get agentScreeningNotes;
+
+  /// Agent screening form submit button.
+  ///
+  /// In en, this message translates to:
+  /// **'Find matching hospitals'**
+  String get agentScreeningSubmit;
+
+  /// Snackbar after the agent requested quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Quote requested from {count} hospital} other{Quote requested from {count} hospitals}}'**
+  String agentScreeningQuotesRequested(int count);
+
+  /// Agent screening result screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening result'**
+  String get agentScreeningResultTitle;
+
+  /// Agent screening result: draft screening title.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening not submitted'**
+  String get agentScreeningNotSubmitted;
+
+  /// Agent screening result: draft screening message.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a new screening from the patient page.'**
+  String get agentScreeningRunNew;
+
+  /// Agent screening result: processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysing the condition and matching specialists…'**
+  String get agentScreeningAnalysing;
+
+  /// Agent screening result: failed title.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening could not be processed'**
+  String get agentScreeningFailed;
+
+  /// Agent screening result: failed default message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get agentScreeningPleaseTryAgain;
+
+  /// Agent screening result card title when no specialty is known.
+  ///
+  /// In en, this message translates to:
+  /// **'AI triage'**
+  String get agentScreeningAiTriage;
+
+  /// Agent screening result section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched hospitals'**
+  String get agentScreeningMatchedHospitals;
+
+  /// Agent screening result section subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select hospitals to request itemised quotes from'**
+  String get agentScreeningMatchedHospitalsHint;
+
+  /// Agent screening result: no matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches yet'**
+  String get agentScreeningNoMatches;
+
+  /// Agent screening result: open the quote comparison.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare received quotes'**
+  String get agentScreeningCompareQuotes;
+
+  /// Agent screening result: button when nothing is selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select hospitals'**
+  String get agentScreeningSelectHospitals;
+
+  /// Agent screening result: request quotes button.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Request {count} quote} other{Request {count} quotes}}'**
+  String agentScreeningRequestQuotes(int count);
+
+  /// Agent screening result: estimated cost of a match.
+  ///
+  /// In en, this message translates to:
+  /// **'est. {amount}'**
+  String agentScreeningEstimate(String amount);
+
+  /// Agent screening result: a quote was requested from this hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested'**
+  String get agentScreeningRequested;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

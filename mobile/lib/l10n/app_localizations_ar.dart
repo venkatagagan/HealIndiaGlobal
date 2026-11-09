@@ -7122,4 +7122,632 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportNone => 'لا يوجد';
+
+  @override
+  String get authContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get authContinueWithApple => 'Continue with Apple';
+
+  @override
+  String get authCreateAccountWithEmail => 'Create account with Email';
+
+  @override
+  String get authSignUpWithEmail => 'Sign up with Email';
+
+  @override
+  String get authContinueBrowsingAsGuest => 'Continue browsing as Guest';
+
+  @override
+  String get authBrowseAsGuest => 'Browse as Guest';
+
+  @override
+  String get authPartnerHint => 'Facilitator or hospital team? Sign up with email and choose your role, or log in.';
+
+  @override
+  String get authAlreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authOr => 'or';
+
+  @override
+  String get authBackTooltip => 'Back';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
+
+  @override
+  String authTermsContinue(String terms, String privacy) {
+    return 'By continuing, you agree to our $terms & $privacy.';
+  }
+
+  @override
+  String authTermsAgree(String terms, String privacy) {
+    return 'I agree to the $terms & $privacy.';
+  }
+
+  @override
+  String get authTermsLink => 'Terms';
+
+  @override
+  String get authPrivacyLink => 'Privacy Policy';
+
+  @override
+  String authCouldNotOpen(String url) {
+    return 'Could not open $url';
+  }
+
+  @override
+  String get authAgeAdultConfirm => 'I confirm I am 18 or older.';
+
+  @override
+  String get authAgeAdult => 'I am 18 or older';
+
+  @override
+  String get authAgeMinor => 'I am under 18 and a parent or guardian will give consent for my care';
+
+  @override
+  String get authAgeRequired => 'Please confirm your age';
+
+  @override
+  String get authAgeQuestion => 'Your age';
+
+  @override
+  String get authAgeDialogTitle => 'Confirm your age';
+
+  @override
+  String get authAgeDialogAdultOnly => 'This type of account is only for adults.';
+
+  @override
+  String get authAgeDialogNeeded => 'We need to know this before we create your account.';
+
+  @override
+  String get loginSubtitle => 'Welcome back. Log in to continue your treatment journey.';
+
+  @override
+  String get loginOtpPrompt => 'Enter the 6-digit code from your authenticator app.';
+
+  @override
+  String get loginOtpLabel => 'Authentication code';
+
+  @override
+  String get loginForgotPassword => 'Forgot password?';
+
+  @override
+  String get loginVerifyAndLogIn => 'Verify & log in';
+
+  @override
+  String get loginSocialPatientsOnly => 'Google and Apple sign-in are for patients.';
+
+  @override
+  String get loginNoAccount => 'Don\'t have an account?';
+
+  @override
+  String get loginSignUp => 'Sign up';
+
+  @override
+  String get registerConflict => 'An account with this email already exists. Try logging in instead.';
+
+  @override
+  String get registerCreateAccount => 'Create account';
+
+  @override
+  String get registerCreateAccountKeepProgress => 'Create account & keep my progress';
+
+  @override
+  String get registerIntroGuest =>
+      'Save your screenings and matches, request quotes and book treatment. Everything you did as a guest is kept.';
+
+  @override
+  String get registerIntroAgent =>
+      'For facilitators and agencies: register patients, compare hospital quotes and track commissions. New agent accounts are verified by our team.';
+
+  @override
+  String get registerIntroHospital =>
+      'For hospital teams: receive patient enquiries, send itemised quotes and manage admissions. Your hospital is verified by our team before it is listed.';
+
+  @override
+  String get registerIntroPatient =>
+      'Get matched with accredited Indian hospitals and track your whole treatment journey.';
+
+  @override
+  String get registerFullNamePassport => 'Full name (as on passport)';
+
+  @override
+  String get registerYourFullName => 'Your full name';
+
+  @override
+  String registerPasswordHelper(int min) {
+    return 'At least $min characters with a letter and a number';
+  }
+
+  @override
+  String get registerAgencyName => 'Agency name';
+
+  @override
+  String get registerEnterAgencyName => 'Enter your agency name';
+
+  @override
+  String get registerHospitalName => 'Hospital name';
+
+  @override
+  String get registerEnterHospitalName => 'Enter the hospital name';
+
+  @override
+  String get registerCityOptional => 'City (optional)';
+
+  @override
+  String get registerPhoneOptional => 'Phone / WhatsApp (optional)';
+
+  @override
+  String get registerCountryOfResidenceOptional => 'Country of residence (optional)';
+
+  @override
+  String get registerCountryOptional => 'Country (optional)';
+
+  @override
+  String get registerReferralCodeOptional => 'Facilitator referral code (optional)';
+
+  @override
+  String get registerAcceptTermsError => 'Please accept the Terms and Privacy Policy';
+
+  @override
+  String get apiErrorTimeout => 'The server took too long to respond. Please try again.';
+
+  @override
+  String get apiErrorCancelled => 'Request cancelled.';
+
+  @override
+  String get apiErrorNoConnection => 'No connection. Check your internet and try again.';
+
+  @override
+  String get apiErrorSecureConnection => 'Secure connection failed.';
+
+  @override
+  String get apiErrorBadRequest => 'The request could not be processed.';
+
+  @override
+  String get apiErrorSignIn => 'Please sign in to continue.';
+
+  @override
+  String get apiErrorPayment => 'The payment could not be completed.';
+
+  @override
+  String get apiErrorForbidden => 'You do not have access to this.';
+
+  @override
+  String get apiErrorNotFound => 'Not found.';
+
+  @override
+  String get apiErrorConflict => 'This was changed by someone else. Please refresh.';
+
+  @override
+  String get apiErrorValidation => 'Please check the highlighted fields.';
+
+  @override
+  String get apiErrorRateLimited => 'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get apiErrorServer => 'Something went wrong on our side. Please try again.';
+
+  @override
+  String apiErrorUnexpected(int status) {
+    return 'Unexpected error ($status).';
+  }
+
+  @override
+  String get apiErrorGeneric => 'Something went wrong.';
+
+  @override
+  String get conversationFallbackTitle => 'Conversation';
+
+  @override
+  String get pushPromptTitle => 'Turn on notifications?';
+
+  @override
+  String get pushPromptBody =>
+      'Get updates about your case, messages and payments. We never put health details in notifications.';
+
+  @override
+  String get pushPromptNotNow => 'Not now';
+
+  @override
+  String get pushPromptTurnOn => 'Turn on';
+
+  @override
+  String get reportSheetThanks => 'Thanks. Our team will review this report.';
+
+  @override
+  String get reportSheetTitleMessage => 'Report this message';
+
+  @override
+  String get reportSheetTitleResult => 'Report this result';
+
+  @override
+  String get reportSheetIntroMessage =>
+      'Tell us what is wrong with this message. Our team will look at it. The sender is not told who reported it.';
+
+  @override
+  String get reportSheetIntroResult =>
+      'Tell us what is wrong with this AI result. Our team will look at it and use it to improve the results.';
+
+  @override
+  String get reportSheetRateLimited => 'You have sent a lot of reports. Please try again later.';
+
+  @override
+  String get reportSheetNoteLabel => 'Add a note (optional)';
+
+  @override
+  String get reportSheetNoteHint => 'Anything that helps our team understand the problem';
+
+  @override
+  String get reportSheetSend => 'Send report';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonAbusive => 'Abusive or harassing';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate';
+
+  @override
+  String get reportReasonInaccurate => 'Inaccurate';
+
+  @override
+  String get reportReasonPrivacy => 'Privacy concern';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get chatTitleFallback => 'Chat';
+
+  @override
+  String chatParticipantWithRole(String name, String role) {
+    return '$name ($role)';
+  }
+
+  @override
+  String get chatRoleHospital => 'Hospital';
+
+  @override
+  String get chatRoleCareTeam => 'Care team';
+
+  @override
+  String get chatRoleAgent => 'Agent';
+
+  @override
+  String get chatRolePatient => 'Patient';
+
+  @override
+  String get chatEmptyTitle => 'Say hello';
+
+  @override
+  String get chatEmptyMessage => 'Your coordinator usually replies within a few hours.';
+
+  @override
+  String get chatLoadingMore => 'Loading...';
+
+  @override
+  String get chatLoadEarlier => 'Load earlier messages';
+
+  @override
+  String get chatToday => 'Today';
+
+  @override
+  String get chatUploading => 'Uploading...';
+
+  @override
+  String get chatAttachTooltip => 'Attach a document';
+
+  @override
+  String get chatInputHint => 'Type a message';
+
+  @override
+  String get chatSendTooltip => 'Send';
+
+  @override
+  String chatSharedFile(String fileName) {
+    return 'Shared $fileName';
+  }
+
+  @override
+  String chatSharedFiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Shared $count files');
+    return '$_temp0';
+  }
+
+  @override
+  String get chatCopyText => 'Copy text';
+
+  @override
+  String get chatReportMessage => 'Report message';
+
+  @override
+  String get chatMessageCopied => 'Message copied.';
+
+  @override
+  String get chatHiddenByModerators => 'Hidden by moderators';
+
+  @override
+  String get chatAttachmentUnavailable => 'Attachment unavailable';
+
+  @override
+  String get chatAttachment => 'Attachment';
+
+  @override
+  String get matchesListTitle => 'Your Top Matches';
+
+  @override
+  String matchesListCompareLimit(int max) {
+    return 'You can compare up to $max matches.';
+  }
+
+  @override
+  String get matchesListFinishFirst => 'Finish your screening first';
+
+  @override
+  String get matchesListStillFinding => 'Still finding your matches';
+
+  @override
+  String get matchesListCompleteQuestionnaire => 'Complete the questionnaire to see matched doctors.';
+
+  @override
+  String get matchesListUsuallyQuick => 'This usually takes under a minute.';
+
+  @override
+  String get matchesListSortTooltip => 'Sort';
+
+  @override
+  String get matchesListFilterTooltip => 'Filter';
+
+  @override
+  String get matchesListLoading => 'Loading your matches...';
+
+  @override
+  String get matchesListIntro => 'Based on your profile, here are your top matches.';
+
+  @override
+  String matchesListSaveVsHome(int min, int max) {
+    return 'Save $min-$max% vs treatment at home';
+  }
+
+  @override
+  String get matchesListCompareCosts => 'Compare costs with your home country';
+
+  @override
+  String get matchesListNoMatches => 'No matches yet';
+
+  @override
+  String get matchesListNoMatchesMessage =>
+      'We could not find doctors for these answers. Try again or browse hospitals yourself.';
+
+  @override
+  String get matchesListRunAgain => 'Run matching again';
+
+  @override
+  String get matchesListBrowseHospitals => 'Browse hospitals';
+
+  @override
+  String get matchesListNoFilterMatches => 'No matches for these filters';
+
+  @override
+  String get matchesListClearFilters => 'Clear filters';
+
+  @override
+  String matchesListSelectedForComparison(int count, int max) {
+    return '$count/$max Selected for Comparison';
+  }
+
+  @override
+  String get matchesListCompare => 'Compare';
+
+  @override
+  String get matchesListEmergency =>
+      'Your answers suggest you may need urgent care. Please seek local emergency care before planning travel.';
+
+  @override
+  String get matchesListGuidanceAcknowledged => 'Guidance acknowledged';
+
+  @override
+  String get matchesListReadGuidance => 'Read the guidance';
+
+  @override
+  String get aiSummaryUrgencySoon => 'See a doctor soon';
+
+  @override
+  String get aiSummaryDisclaimer =>
+      'This summary is generated from your answers to help you choose doctors. It is not a medical diagnosis. A qualified doctor will review your case.';
+
+  @override
+  String get aiSummaryTitleAi => 'AI Summary';
+
+  @override
+  String get aiSummaryTitleRules => 'Screening Summary';
+
+  @override
+  String get aiSummaryMoreDetails => 'More details';
+
+  @override
+  String get aiSummaryPossibleConditions => 'Possible conditions to discuss';
+
+  @override
+  String aiSummaryConditionLikelihood(String name, String likelihood) {
+    String _temp0 = intl.Intl.selectLogic(likelihood, {
+      'low': '$name (low likelihood)',
+      'medium': '$name (medium likelihood)',
+      'high': '$name (high likelihood)',
+      'other': '$name',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get aiSummaryTests => 'Tests that may help';
+
+  @override
+  String get aiSummaryQuestions => 'Questions for your doctor';
+
+  @override
+  String get aiSummaryTravelAdvice => 'Travel advice';
+
+  @override
+  String aiSummaryBullet(String item) {
+    return '•  $item';
+  }
+
+  @override
+  String get reportViewDiscardTitle => 'Discard this reading?';
+
+  @override
+  String get reportViewDiscardBody =>
+      'The AI reading will not be used for your screening or shared with hospitals. Your uploaded report itself is kept.';
+
+  @override
+  String get reportViewKeepReviewing => 'Keep reviewing';
+
+  @override
+  String get reportViewDiscard => 'Discard';
+
+  @override
+  String get reportViewFailedTitle => 'We could not read this report';
+
+  @override
+  String get reportViewFailedMessage => 'Something went wrong while reading your report.';
+
+  @override
+  String get reportViewUnsupportedTitle => 'This file type cannot be read';
+
+  @override
+  String get reportViewUnsupportedMessage =>
+      'Scans such as DICOM images cannot be read automatically. Please upload the radiologist\'s written report or a clear photo of each page instead.';
+
+  @override
+  String get reportViewDiscarded =>
+      'You discarded this reading. It is not used for screening or shared with hospitals.';
+
+  @override
+  String get reportViewCheckIntro =>
+      'Please check what the AI read. Correct anything that is wrong, then tap Confirm. Only confirmed information is used.';
+
+  @override
+  String get reportViewQualityHardToRead => 'parts may be hard to read';
+
+  @override
+  String reportViewImageQuality(String issues) {
+    return 'Image quality: $issues. A clearer photo gives better results.';
+  }
+
+  @override
+  String get reportViewContactDoctor => 'Please contact a doctor soon';
+
+  @override
+  String get reportViewReading => 'Reading your report…';
+
+  @override
+  String get reportViewReadingHint =>
+      'This usually takes less than a minute. You will review everything before it is used.';
+
+  @override
+  String get agentScreeningNew => 'New screening';
+
+  @override
+  String agentScreeningForPatient(String name) {
+    return 'Screening · $name';
+  }
+
+  @override
+  String get agentScreeningNeedHelp => 'What does the patient need help with?';
+
+  @override
+  String get agentScreeningHowLong => 'How long?';
+
+  @override
+  String get agentScreeningImpact => 'Impact on daily life';
+
+  @override
+  String get agentScreeningPreviousTreatments => 'Previous treatments (comma separated)';
+
+  @override
+  String get agentScreeningNotes => 'Notes for the medical team';
+
+  @override
+  String get agentScreeningSubmit => 'Find matching hospitals';
+
+  @override
+  String agentScreeningQuotesRequested(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Quote requested from $count hospitals',
+      one: 'Quote requested from $count hospital',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get agentScreeningResultTitle => 'Screening result';
+
+  @override
+  String get agentScreeningNotSubmitted => 'Screening not submitted';
+
+  @override
+  String get agentScreeningRunNew => 'Run a new screening from the patient page.';
+
+  @override
+  String get agentScreeningAnalysing => 'Analysing the condition and matching specialists…';
+
+  @override
+  String get agentScreeningFailed => 'Screening could not be processed';
+
+  @override
+  String get agentScreeningPleaseTryAgain => 'Please try again.';
+
+  @override
+  String get agentScreeningAiTriage => 'AI triage';
+
+  @override
+  String get agentScreeningMatchedHospitals => 'Matched hospitals';
+
+  @override
+  String get agentScreeningMatchedHospitalsHint => 'Select hospitals to request itemised quotes from';
+
+  @override
+  String get agentScreeningNoMatches => 'No matches yet';
+
+  @override
+  String get agentScreeningCompareQuotes => 'Compare received quotes';
+
+  @override
+  String get agentScreeningSelectHospitals => 'Select hospitals';
+
+  @override
+  String agentScreeningRequestQuotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Request $count quotes',
+      one: 'Request $count quote',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String agentScreeningEstimate(String amount) {
+    return 'est. $amount';
+  }
+
+  @override
+  String get agentScreeningRequested => 'Requested';
 }

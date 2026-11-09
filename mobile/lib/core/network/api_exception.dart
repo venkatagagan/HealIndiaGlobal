@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../../l10n/l10n.dart';
+
 /// Normalized API error, built from the PLAN §3 error envelope:
 /// `{"error": {"code": "not_found", "message": "Case not found", "details": null, "request_id": "..."}}`.
 ///
@@ -28,30 +30,18 @@ class ApiException implements Exception {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.transformTimeout:
-        return const ApiException(
-          statusCode: 0,
-          code: 'timeout',
-          message: 'The server took too long to respond. Please try again.',
-        );
+        return ApiException(statusCode: 0, code: 'timeout', message: L10n.current.apiErrorTimeout);
       case DioExceptionType.cancel:
-        return const ApiException(statusCode: 0, code: 'cancelled', message: 'Request cancelled.');
+        return ApiException(statusCode: 0, code: 'cancelled', message: L10n.current.apiErrorCancelled);
       case DioExceptionType.connectionError:
-        return const ApiException(
-          statusCode: 0,
-          code: 'network_error',
-          message: 'No connection. Check your internet and try again.',
-        );
+        return ApiException(statusCode: 0, code: 'network_error', message: L10n.current.apiErrorNoConnection);
       case DioExceptionType.badCertificate:
-        return const ApiException(statusCode: 0, code: 'network_error', message: 'Secure connection failed.');
+        return ApiException(statusCode: 0, code: 'network_error', message: L10n.current.apiErrorSecureConnection);
       case DioExceptionType.badResponse:
       case DioExceptionType.unknown:
         final res = e.response;
         if (res == null) {
-          return const ApiException(
-            statusCode: 0,
-            code: 'network_error',
-            message: 'No connection. Check your internet and try again.',
-          );
+          return ApiException(statusCode: 0, code: 'network_error', message: L10n.current.apiErrorNoConnection);
         }
         return ApiException.fromResponse(res.statusCode ?? 0, res.data);
     }
@@ -151,18 +141,22 @@ class ApiException implements Exception {
     _ => 'http_$s',
   };
 
-  static String _messageForStatus(int s) => switch (s) {
-    400 => 'The request could not be processed.',
-    401 => 'Please sign in to continue.',
-    402 => 'The payment could not be completed.',
-    403 => 'You do not have access to this.',
-    404 => 'Not found.',
-    409 => 'This was changed by someone else. Please refresh.',
-    422 => 'Please check the highlighted fields.',
-    429 => 'Too many attempts. Please wait a moment and try again.',
-    >= 500 => 'Something went wrong on our side. Please try again.',
-    _ => 'Unexpected error ($s).',
-  };
+  /// Fallback text for a status without a server message, in the app's current language.
+  static String _messageForStatus(int s) {
+    final l = L10n.current;
+    return switch (s) {
+      400 => l.apiErrorBadRequest,
+      401 => l.apiErrorSignIn,
+      402 => l.apiErrorPayment,
+      403 => l.apiErrorForbidden,
+      404 => l.apiErrorNotFound,
+      409 => l.apiErrorConflict,
+      422 => l.apiErrorValidation,
+      429 => l.apiErrorRateLimited,
+      >= 500 => l.apiErrorServer,
+      _ => l.apiErrorUnexpected(s),
+    };
+  }
 
   static String _friendly(String raw) => raw.startsWith('Exception: ') ? raw.substring(11) : raw;
 
@@ -172,6 +166,6 @@ class ApiException implements Exception {
 
 /// User-facing message for any error (ApiException, DioException or other).
 String errorMessage(Object? error) {
-  if (error == null) return 'Something went wrong.';
+  if (error == null) return L10n.current.apiErrorGeneric;
   return ApiException.from(error).message;
 }
