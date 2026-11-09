@@ -39,6 +39,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta, timezone
 from datetime import time as dtime
 from decimal import Decimal
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
@@ -1568,6 +1569,7 @@ async def _seed(args: argparse.Namespace) -> int:
                 await seeder.seed_hospital_users()
                 await seeder.seed_patients()
                 await seeder.seed_finance()
+        await import_researched_benchmarks(engine)
         if not args.minimal:
             journey_cases: dict[str, uuid.UUID] = {}
             if args.skip_journeys:
@@ -1584,6 +1586,25 @@ async def _seed(args: argparse.Namespace) -> int:
     finally:
         await core_db.dispose_engine()
     return 0
+
+
+RESEARCHED_BENCHMARKS = Path(__file__).resolve().parent / "seed_data" / "benchmarks_research.json"
+
+
+async def import_researched_benchmarks(engine: Any) -> None:
+    """Overlay the illustrative benchmarks with the internet-sourced ones (each row cites its source)."""
+    if not RESEARCHED_BENCHMARKS.exists():
+        return
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from scripts.import_benchmarks import import_rows, load_file
+
+    async with AsyncSession(engine, expire_on_commit=False) as session:
+        report = await import_rows(session, load_file(RESEARCHED_BENCHMARKS))
+    out(
+        f"Researched cost benchmarks: {report.inserted} inserted, {report.updated} updated, "
+        f"{report.unchanged} unchanged, {len(report.errors)} invalid, {len(report.warnings)} warnings"
+    )
 
 
 def _prepare_environment(args: argparse.Namespace) -> None:
