@@ -56,6 +56,7 @@ from app.core.config import settings  # noqa: E402
 from app.core.events import load_module_hooks  # noqa: E402
 from app.core.logging import configure_logging  # noqa: E402
 from app.core.security import create_access_token  # noqa: E402
+from app.i18n import runtime as i18n_runtime  # noqa: E402
 
 configure_logging()
 import app.models  # noqa: E402, F401  - register all tables
@@ -165,6 +166,7 @@ async def _reset_state() -> None:
     jobs_module.reset_periodic_state()
     email_module.outbox.clear()
     storage_module.set_storage(None)
+    i18n_runtime.reset()
 
 
 @pytest.fixture(autouse=True)

@@ -7,6 +7,10 @@ The built-in task ``"email.send"`` (registered here) takes ``{"to", "subject", "
     from app.core.jobs import enqueue
     await enqueue(db, "email.send", {"to": user.email, "subject": "Verify your email",
                                      "template": "verify_email.html", "context": {"name": ..., "url": ...}})
+
+Templates are translated: pass ``"locale"`` (the recipient's language, ``app.i18n.recipient_locale(user)``) in
+the payload and build the subject with ``app.i18n.t`` in that language. Template text comes from the server
+catalog (``t('email.verify.heading')``); ``base.html`` sets ``<html lang dir>`` (``dir="rtl"`` for Arabic).
 """
 
 from __future__ import annotations
@@ -38,12 +42,20 @@ outbox: list[dict[str, Any]] = []
 _OUTBOX_MAX = 200
 
 
-def _base_context() -> dict[str, Any]:
+def _base_context(locale: str) -> dict[str, Any]:
+    from app.i18n import t, text_direction
+
+    def translate(key: str, /, **params: Any) -> str:
+        return t(key, locale, **{"app_name": settings.APP_NAME, **params})
+
     return {
         "app_name": settings.APP_NAME,
-        "tagline": "Your Gateway to Indian Medical Excellence",
+        "tagline": translate("email.common.tagline"),
         "patient_web_url": settings.PATIENT_WEB_URL,
         "support_email": _address_only(settings.EMAIL_FROM),
+        "lang": locale,
+        "dir": text_direction(locale),
+        "t": translate,
     }
 
 
@@ -53,10 +65,13 @@ def _address_only(value: str) -> str:
     return value
 
 
-def render_template(template_name: str, /, **ctx: Any) -> str:
-    """Render ``app/templates/email/<name>`` with autoescaping."""
+def render_template(template_name: str, /, *, locale: str | None = None, **ctx: Any) -> str:
+    """Render ``app/templates/email/<name>`` with autoescaping in ``locale`` (default English): templates
+    get ``t(key, **params)`` bound to that locale plus ``lang``/``dir`` for the ``<html>`` element."""
+    from app.i18n import DEFAULT_LANGUAGE, normalize_locale
+
     template = _env.get_template(template_name)
-    return template.render({**_base_context(), **ctx})
+    return template.render({**_base_context(normalize_locale(locale) or DEFAULT_LANGUAGE), **ctx})
 
 
 def html_to_text(html: str) -> str:
@@ -126,7 +141,11 @@ def _register_task() -> None:
         to = payload["to"]
         subject = str(payload["subject"])
         if payload.get("template"):
-            html = render_template(str(payload["template"]), **dict(payload.get("context") or {}))
+            html = render_template(
+                str(payload["template"]),
+                locale=payload.get("locale"),
+                **dict(payload.get("context") or {}),
+            )
         else:
             html = str(payload.get("html") or "")
         await send_email(to, subject, html, payload.get("text"))

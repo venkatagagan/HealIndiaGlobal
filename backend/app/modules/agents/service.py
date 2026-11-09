@@ -35,6 +35,8 @@ from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.jobs import enqueue
 from app.core.pagination import Page, paginate
 from app.core.security import new_opaque_token
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import (
     Agent,
     Booking,
@@ -644,19 +646,27 @@ async def _send_invite(db: AsyncSession, agent: Agent, patient_user: User, invit
     )
     # One-time token in the URL fragment: never sent to servers or in Referer (INTEGRATION_BACKLOG #22).
     url = f"{settings.PUBLIC_SITE_URL.rstrip('/')}/accept-invite#token={raw}"
+    await i18n_runtime.ensure_fresh()
+    locale = recipient_locale(patient_user)
     await enqueue(
         db,
         "email.send",
         {
             "to": patient_user.email,
-            "subject": f"{agent.agency_name} invited you to Heal India Global",
+            "subject": t(
+                "email.invite.subject_agent",
+                locale,
+                organization=agent.agency_name,
+                app_name=settings.APP_NAME,
+            ),
+            "locale": locale,
             "template": "invite.html",
             "context": {
                 "name": patient_user.full_name,
                 "url": url,
                 "inviter_name": inviter.full_name or agent.agency_name,
                 "organization_name": agent.agency_name,
-                "role": "patient",
+                "role": t("email.invite.role_patient", locale),
                 "expires_hours": INVITE_TTL_HOURS,
             },
         },

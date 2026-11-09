@@ -15,6 +15,7 @@ from fastapi import Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import app.i18n as i18n
 from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.enums import AIRequestStatus, ConsentKind, ScreeningStatus, UserRole
@@ -22,6 +23,7 @@ from app.core.errors import AppError, BadRequest, Conflict, NotFound
 from app.core.events import publish
 from app.core.jobs import enqueue
 from app.core.storage import ObjectNotFound, get_storage, make_key
+from app.i18n import runtime as i18n_runtime
 from app.models import AIRequestLog, Case, PatientProfile, Screening, Specialty, User
 from app.models.voice import VoiceReviewStatus, VoiceStatus, VoiceTranscription
 from app.modules.auth.service import record_consent
@@ -86,8 +88,15 @@ def to_out(t: VoiceTranscription) -> VoiceTranscriptionOut:
     )
 
 
-#: The product is English-only: Whisper is forced to English and no translation step exists.
+#: Fallback language: used when the detected language is not one of the enabled UI languages.
 LANGUAGE = "en"
+
+
+def enabled_hint(value: str | None) -> str | None:
+    """The client's language hint (e.g. the UI language ``ar``) when it is an ENABLED language, else ``None``
+    (auto-detect)."""
+    code = i18n.normalize_locale(value)
+    return code if code is not None and code in i18n.enabled_languages() else None
 
 
 async def _own_profile(db: AsyncSession, user: User) -> PatientProfile | None:
@@ -121,8 +130,10 @@ async def create_transcription(
     consent_ai: bool,
     patient_id: uuid.UUID | None = None,
     request: Request | None = None,
+    language: str | None = None,
 ) -> VoiceTranscriptionOut:
     policies.ensure_can_modify(user)
+    await i18n_runtime.ensure_fresh()
     if not consent_ai:
         raise BadRequest("Consent to AI processing is required to use voice input", code="consent_required")
     if not data:
@@ -164,7 +175,7 @@ async def create_transcription(
         patient_id=patient.id if patient is not None else None,
         screening_id=screening_id,
         case_id=case_id,
-        language_hint=LANGUAGE,
+        language_hint=enabled_hint(language),
         status=VoiceStatus.QUEUED,
         provider=provider.name,
         model=provider.model,
@@ -206,9 +217,13 @@ async def get_transcription(
 
 
 # ------------------------------------------------------------------------------------------- extraction
-async def _extract(db: AsyncSession, text: str) -> tuple[IntakeSuggestion, str | None]:
+async def _extract(
+    db: AsyncSession, text: str, language: str = LANGUAGE
+) -> tuple[IntakeSuggestion, str | None]:
     """Claude when configured (logged in ``ai_request_logs``), else/on failure the deterministic fallback.
-    Returns the suggestion and a user-facing note (``None`` when Claude succeeded)."""
+    ``language`` is the language of ``text``: for non-English text Claude also returns an English translation
+    (``transcript_en``) and the notes in both languages. Returns the suggestion and a user-facing note
+    (``None`` when Claude succeeded)."""
     from app.modules.screening.service import load_catalog
 
     catalog = await load_catalog(db)
@@ -221,10 +236,10 @@ async def _extract(db: AsyncSession, text: str) -> tuple[IntakeSuggestion, str |
                 error="AI is not configured",
             )
         )
-        return ai.rules_suggestion(text, catalog), NOT_CONFIGURED_MESSAGE
+        return ai.rules_suggestion(text, catalog, language), NOT_CONFIGURED_MESSAGE
     slugs = [s.slug for s in catalog.specialties]
     await db.commit()  # no transaction open during the external call
-    outcome = await ai.extract_with_claude(text, slugs)
+    outcome = await ai.extract_with_claude(text, slugs, language)
     db.add(
         AIRequestLog(
             purpose=AI_PURPOSE,
@@ -238,15 +253,17 @@ async def _extract(db: AsyncSession, text: str) -> tuple[IntakeSuggestion, str |
     )
     if outcome.ok and outcome.suggestion is not None:
         return outcome.suggestion, None
-    return ai.rules_suggestion(text, catalog), AI_FAILED_MESSAGE
+    return ai.rules_suggestion(text, catalog, language), AI_FAILED_MESSAGE
 
 
 async def extract_text(db: AsyncSession, user: User, body: IntakeExtractIn) -> IntakeSuggestion:
-    """Typed free text or an on-device transcript -> IntakeSuggestion. Read-only: nothing is applied."""
+    """Typed free text or an on-device transcript -> IntakeSuggestion. Read-only: nothing is applied.
+    ``body.language`` (e.g. the UI language) is used when it is an enabled language, else English."""
     policies.ensure_can_modify(user)
+    await i18n_runtime.ensure_fresh()
     if body.screening_id is not None:
         await policies.screening_for_caller(db, user, body.screening_id)
-    suggestion, _ = await _extract(db, body.text.strip())
+    suggestion, _ = await _extract(db, body.text.strip(), enabled_hint(body.language) or LANGUAGE)
     await db.commit()  # only the ai_request_logs row
     return suggestion
 
@@ -300,10 +317,18 @@ async def process_transcription(db: AsyncSession, transcription_id: uuid.UUID) -
         return True
 
     provider = stt.get_provider()
+    await i18n_runtime.ensure_fresh()
+    # The hint was an enabled language when the recording was uploaded; re-check (an admin may have switched
+    # it off since). No hint -> Whisper auto-detects; a detected language that is not enabled -> English.
+    hint = enabled_hint(t.language_hint)
+    max_seconds = float(settings.VOICE_MAX_SECONDS)
     try:
-        result = await provider.transcribe(
-            data, audio_format, language=LANGUAGE, max_seconds=float(settings.VOICE_MAX_SECONDS)
-        )
+        result = await provider.transcribe(data, audio_format, language=hint, max_seconds=max_seconds)
+        detected = hint or i18n.normalize_locale(result.language) or LANGUAGE
+        if detected not in i18n.enabled_languages():
+            logger.info("voice.language_not_enabled", transcription_id=str(t.id), detected=detected)
+            result = await provider.transcribe(data, audio_format, language=LANGUAGE, max_seconds=max_seconds)
+            detected = LANGUAGE
     except AudioTooLong:
         await _fail(
             db,
@@ -322,7 +347,7 @@ async def process_transcription(db: AsyncSession, transcription_id: uuid.UUID) -
     t.provider = provider.name
     t.model = result.model or provider.model
     t.duration_seconds = result.duration_seconds
-    t.language_detected = LANGUAGE
+    t.language_detected = detected
     t.transcript = result.text
     t.segments = result.segments
     await _delete_audio(t)
@@ -333,9 +358,10 @@ async def process_transcription(db: AsyncSession, transcription_id: uuid.UUID) -
         t.error = "No speech was recognised. Please try again in a quieter place, or type your answers."
         t.completed_at = _now()
     else:
-        suggestion, note = await _extract(db, result.text)
+        suggestion, note = await _extract(db, result.text, detected)
         t.intake_suggestion = suggestion.model_dump(mode="json")
-        t.transcript_en = result.text
+        # English copy for the hospital: the transcript itself, or Claude's translation (NULL without AI).
+        t.transcript_en = result.text if detected == LANGUAGE else (suggestion.transcript_en or None)
         t.status = VoiceStatus.COMPLETED
         t.error = note
         t.completed_at = _now()

@@ -1,0 +1,227 @@
+{
+  "common": {
+    "the_patient": "le patient",
+    "the_hospital": "l'hôpital",
+    "reason": "Motif : {reason}.",
+    "note": "Remarque : {note}",
+    "message": "Message : {message}"
+  },
+  "email": {
+    "common": {
+      "tagline": "Votre porte d'accès à l'excellence médicale indienne",
+      "greeting": "Bonjour {name},",
+      "greeting_anonymous": "Bonjour,",
+      "footer_reason": "Vous recevez cet e-mail en raison d'une activité sur votre compte {app_name}.",
+      "footer_questions": "Des questions ? Écrivez-nous à {email}.",
+      "button_fallback": "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
+      "view_details": "Voir les détails",
+      "open_app": "Ouvrir {app_name}"
+    },
+    "verify": {
+      "subject": "Vérifiez votre adresse e-mail pour {app_name}",
+      "title": "Vérifiez votre adresse e-mail",
+      "heading": "Confirmez votre adresse e-mail",
+      "intro": "Merci d'avoir rejoint {app_name}. Veuillez confirmer votre adresse e-mail pour sécuriser votre compte.",
+      "button": "Vérifier mon adresse e-mail",
+      "expiry": "Ce lien expire dans {hours} heures. Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail."
+    },
+    "reset": {
+      "subject": "Réinitialisation de votre mot de passe {app_name}",
+      "title": "Réinitialisez votre mot de passe",
+      "heading": "Réinitialisez votre mot de passe",
+      "intro": "Nous avons reçu une demande de réinitialisation du mot de passe de votre compte {app_name}.",
+      "button": "Choisir un nouveau mot de passe",
+      "expiry": "Ce lien expire dans {minutes} minutes et ne peut être utilisé qu'une seule fois. Si vous n'avez pas demandé de réinitialisation, aucune action n'est nécessaire : votre mot de passe reste inchangé."
+    },
+    "invite": {
+      "subject_agent": "{organization} vous invite à rejoindre {app_name}",
+      "subject_hospital": "Invitation à rejoindre {organization} sur {app_name}",
+      "title": "Vous avez une invitation",
+      "heading": "Vous avez reçu une invitation",
+      "body": "{inviter} vous invite à rejoindre {app_name}.",
+      "body_org": "{inviter} vous invite à rejoindre {organization} sur {app_name}.",
+      "body_org_role": "{inviter} vous invite à rejoindre {organization} sur {app_name} en tant que {role}.",
+      "default_inviter": "Un membre de l'équipe",
+      "button": "Accepter l'invitation",
+      "expiry": "Cette invitation expire dans {hours} heures.",
+      "role_patient": "patient"
+    },
+    "password_changed": {
+      "subject": "Votre mot de passe a été modifié",
+      "body": "Le mot de passe de votre compte vient d'être modifié. Si vous n'êtes pas à l'origine de cette modification, réinitialisez immédiatement votre mot de passe et contactez l'assistance.",
+      "button": "Réinitialiser le mot de passe"
+    },
+    "hospital_member_added": {
+      "subject": "Ajout à l'équipe de {hospital}",
+      "title": "Vous avez maintenant accès à {hospital}",
+      "body": "{inviter} vous a ajouté(e) à l'équipe de {hospital} en tant que {role}. Connectez-vous au portail hôpital pour commencer.",
+      "default_inviter": "Un collègue",
+      "button": "Ouvrir le portail hôpital"
+    }
+  },
+  "notifications": {
+    "user_registered": {
+      "title": "Bienvenue sur Heal India Global",
+      "body_patient": "Commencez par une pré-évaluation gratuite par intelligence artificielle (AI) pour trouver des hôpitaux et des médecins indiens accrédités adaptés à votre cas, comparer les coûts et demander des devis.",
+      "body_agent": "Complétez le profil de votre agence et transmettez vos documents KYC (vérification d'identité). Une fois votre agence approuvée, vous pourrez ajouter des patients, demander des devis et suivre vos commissions.",
+      "body_hospital": "Complétez le profil de votre hôpital, ajoutez vos médecins et les interventions proposées, transmettez vos documents KYC, puis soumettez votre dossier pour validation afin de commencer à recevoir des demandes de patients internationaux.",
+      "body_default": "Votre compte est prêt."
+    },
+    "hospital_approved": {
+      "title": "{hospital} est désormais en ligne",
+      "body": "Votre hôpital a été approuvé et est désormais visible par les patients internationaux."
+    },
+    "hospital_rejected": {
+      "title": "{hospital} : votre demande doit être modifiée",
+      "body": "La demande d'inscription de votre hôpital n'a pas été approuvée.",
+      "resubmit": "Veuillez vérifier votre profil et vos documents, puis soumettre à nouveau votre demande."
+    },
+    "agent_approved": {
+      "title": "Votre agence a été approuvée",
+      "body": "L'agence {agency} a été approuvée. Vous pouvez désormais ajouter des patients, demander des devis et percevoir des commissions."
+    },
+    "agent_rejected": {
+      "title": "La demande de votre agence n'a pas été approuvée",
+      "body": "La demande de l'agence {agency} n'a pas été approuvée."
+    },
+    "screening": {
+      "emergency_title": "Important : consultez un médecin en urgence",
+      "emergency_body": "Vos réponses indiquent des symptômes qui peuvent nécessiter une prise en charge immédiate. Contactez dès maintenant les services d'urgence locaux ou rendez-vous à l'hôpital le plus proche, au lieu de planifier un voyage.",
+      "failed_title": "Nous n'avons pas pu finaliser votre pré-évaluation",
+      "failed_body": "Une erreur s'est produite lors de l'analyse de vos réponses. Veuillez réessayer ou contacter l'assistance.",
+      "ready_title": "Les résultats de votre pré-évaluation sont prêts",
+      "ready_body": "Nous avons sélectionné des hôpitaux et des médecins adaptés à votre état de santé. Consultez les établissements qui vous correspondent le mieux."
+    },
+    "case_created": {
+      "title": "Nouvelle demande {case_number}",
+      "body": "{patient} a demandé un devis de traitement. Examinez le dossier et envoyez un devis."
+    },
+    "case_cancelled": {
+      "title": "Dossier {case_number} annulé",
+      "body": "Le dossier {case_number} a été annulé."
+    },
+    "case_declined": {
+      "title": "Dossier {case_number} refusé par l'hôpital",
+      "body": "{hospital} ne peut pas prendre en charge le dossier {case_number}. Votre coordinateur peut vous aider à trouver un autre hôpital."
+    },
+    "quote_sent": {
+      "title": "Nouveau devis envoyé par {hospital}",
+      "body": "{hospital} a envoyé un devis de traitement pour le dossier {case_number}.",
+      "amount": "Montant : {amount}.",
+      "valid_until": "Date limite de validité : {date}.",
+      "cta": "Consultez-le et acceptez-le."
+    },
+    "quote_accepted": {
+      "title": "Devis accepté pour le dossier {case_number}",
+      "body": "{patient} a accepté votre devis.",
+      "amount": "Montant : {amount}.",
+      "next": "La réservation et le paiement suivront."
+    },
+    "booking_confirmed": {
+      "title": "Réservation {booking_number} confirmée",
+      "body": "Votre traitement à {hospital} est confirmé.",
+      "admission": "Admission : {date}.",
+      "next": "Prochaines étapes : visa, vols et hébergement.",
+      "hospital_title": "Nouvelle réservation confirmée {booking_number}",
+      "hospital_body": "La réservation pour {patient} est confirmée (acompte reçu)."
+    },
+    "booking_admitted": {
+      "title": "Admission à {hospital} confirmée",
+      "body": "Votre admission pour la réservation {booking_number} est confirmée. Nous vous souhaitons un traitement serein et un bon rétablissement."
+    },
+    "booking_completed": {
+      "title": "Traitement terminé",
+      "body": "Votre traitement à {hospital} (réservation {booking_number}) est terminé. Nous vous souhaitons un prompt rétablissement. N'hésitez pas à donner votre avis sur votre expérience.",
+      "hospital_title": "Réservation {booking_number} terminée",
+      "hospital_body": "Le patient a quitté l'hôpital. Le règlement de cette réservation sera programmé à l'issue de la période de retenue."
+    },
+    "booking_cancelled": {
+      "title": "Réservation {booking_number} annulée",
+      "body": "La réservation {booking_number} a été annulée.",
+      "refund": "Un remboursement de {amount} sera effectué sur le moyen de paiement d'origine."
+    },
+    "payment_captured": {
+      "title": "Paiement reçu",
+      "body": "Nous avons bien reçu votre paiement de {amount}.",
+      "body_booking": "Nous avons bien reçu votre paiement de {amount} pour la réservation {booking_number}.",
+      "body_no_amount": "Nous avons bien reçu votre paiement.",
+      "thanks": "Merci. Un reçu est disponible dans votre compte."
+    },
+    "payment_failed": {
+      "title": "Échec du paiement",
+      "body": "Votre paiement de {amount} (commande {order_number}) n'a pas abouti. Aucun montant n'a été débité ; veuillez réessayer ou choisir un autre moyen de paiement."
+    },
+    "refund_processed": {
+      "title": "Remboursement effectué",
+      "body": "Un remboursement de {amount} a été effectué.",
+      "body_booking": "Un remboursement de {amount} pour la réservation {booking_number} a été effectué.",
+      "timing": "Il peut s'écouler 5 à 10 jours ouvrés avant qu'il n'apparaisse sur votre relevé."
+    },
+    "payout_processed": {
+      "title": "Versement effectué",
+      "body": "Un versement de {amount} a été envoyé sur votre compte bancaire.",
+      "utr": "Référence UTR : {utr}."
+    },
+    "payout_failed": {
+      "title": "Échec du versement",
+      "body": "Votre versement de {amount} n'a pas pu être effectué.",
+      "next": "Veuillez vérifier les coordonnées de votre compte de versement ; notre service financier effectuera une nouvelle tentative.",
+      "staff_body": "Le versement {payout_id} de {amount} à destination de {payee_type} a échoué."
+    },
+    "sos_created": {
+      "title": "Alerte SOS envoyée par {patient}",
+      "body": "{patient} a déclenché une alerte d'urgence.",
+      "location": "Position : {lat}, {lng}.",
+      "cta": "Veuillez intervenir immédiatement."
+    },
+    "sos_updated": {
+      "acknowledged_title": "L'aide est en route",
+      "acknowledged_body": "Notre équipe d'assistance a bien reçu votre SOS et s'en occupe. Gardez votre téléphone à portée de main.",
+      "acknowledged_body_named": "{name}, de notre équipe d'assistance, a bien reçu votre SOS et s'en occupe. Gardez votre téléphone à portée de main.",
+      "resolved_title": "Votre SOS a été clôturé",
+      "resolved_body": "Notre équipe d'assistance a indiqué que votre alerte d'urgence était résolue. Si vous avez encore besoin d'aide, envoyez un nouveau SOS ou appelez notre ligne d'assistance disponible 24/7."
+    },
+    "message_created": {
+      "title": "Nouveau message envoyé par {sender}",
+      "attachment": "Pièce jointe envoyée"
+    }
+  },
+  "errors": {
+    "bad_request": "La demande n'a pas pu être traitée.",
+    "unauthorized": "Veuillez vous connecter pour continuer.",
+    "invalid_token": "Ce lien ou cette session n'est pas valide ou a expiré.",
+    "token_expired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "invalid_refresh_token": "Votre session a pris fin. Veuillez vous reconnecter.",
+    "refresh_token_expired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "invalid_current_password": "Le mot de passe actuel est incorrect.",
+    "weak_password": "Ce mot de passe est trop faible. Veuillez choisir un mot de passe plus long et moins courant.",
+    "password_unchanged": "Choisissez un mot de passe que vous n'avez jamais utilisé sur ce compte.",
+    "email_taken": "Un compte associé à cette adresse e-mail existe déjà.",
+    "invalid_otp": "Le code de vérification est incorrect ou a expiré.",
+    "wrong_portal": "Cette session n'est pas valide ici. Veuillez vous reconnecter.",
+    "invalid_credentials": "L'adresse e-mail ou le mot de passe est incorrect.",
+    "forbidden": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+    "not_found": "L'élément demandé est introuvable.",
+    "method_not_allowed": "Cette action n'est pas autorisée.",
+    "conflict": "La demande est en conflit avec des données existantes.",
+    "validation_error": "Certaines informations sont manquantes ou incorrectes. Veuillez vérifier et réessayer.",
+    "rate_limited": "Trop de demandes. Veuillez patienter un instant et réessayer.",
+    "account_locked": "Ce compte est temporairement verrouillé. Veuillez réessayer plus tard.",
+    "account_suspended": "Ce compte est suspendu. Veuillez contacter l'assistance.",
+    "account_deleted": "Ce compte a été supprimé.",
+    "account_disabled": "Ce compte est désactivé. Veuillez contacter l'assistance.",
+    "email_not_verified": "Veuillez d'abord vérifier votre adresse e-mail.",
+    "mfa_required": "Saisissez le code de votre application d'authentification pour continuer.",
+    "mfa_required_for_staff": "Les comptes du personnel doivent activer la vérification en deux étapes pour continuer.",
+    "ip_not_allowed": "L'accès depuis ce réseau n'est pas autorisé.",
+    "guest_upgrade_required": "Créez un compte complet pour continuer.",
+    "payload_too_large": "Le fichier ou la demande est trop volumineux.",
+    "file_too_large": "Le fichier est trop volumineux.",
+    "unsupported_media_type": "Ce type de fichier n'est pas pris en charge.",
+    "internal_error": "Un problème est survenu de notre côté. Veuillez réessayer plus tard.",
+    "service_unavailable": "Le service est temporairement indisponible. Veuillez réessayer plus tard.",
+    "unknown_locale": "Cette langue n'est pas disponible.",
+    "unknown_translation_key": "Cette clé de traduction n'existe pas.",
+    "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé."
+  }
+}

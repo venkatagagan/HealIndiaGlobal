@@ -19,14 +19,17 @@ from fastapi import Request
 from sqlalchemy import any_, literal, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import app.i18n as i18n
 from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.enums import AIRequestStatus, ConsentKind, DocumentKind
 from app.core.errors import BadRequest, Conflict, NotFound
 from app.core.events import publish
 from app.core.jobs import enqueue
+from app.core.locale import request_locale
 from app.core.pagination import Page, paginate
 from app.core.storage import ObjectNotFound, get_storage
+from app.i18n import runtime as i18n_runtime
 from app.models import AIRequestLog, Case, Document, PatientProfile, User
 from app.models.docai import (
     AnalysisDocType,
@@ -57,8 +60,31 @@ logger = structlog.get_logger(__name__)
 ANALYZE_TASK = "docai.analyze"
 AI_PURPOSE = "docai"
 AI_CONSENT_VERSION = "ai-docai-2026-10"
-#: The product is English-only: every AI output (including ``summary_patient``) is written in English.
+#: Every AI output is written in English, except ``summary_patient``: it is in the patient's language
+#: (``summary_language``) with an English copy in ``summary_patient_en``. Patients get the patient-language
+#: summary; agents, staff and hospitals get the English one.
 OUTPUT_LANGUAGE = "en"
+
+
+def is_patient_view(p: Principal) -> bool:
+    return not p.staff and p.role == "patient"
+
+
+def summary_language_for(
+    requested: str | None, request_language: str | None, profile_user: User | None
+) -> str:
+    """Language of the patient-facing summary: the requested language (``AnalysisCreate.language``, e.g. the
+    UI language) -> the request locale when the patient asks for themself (it already prefers their
+    ``preferred_language``) -> the patient's ``preferred_language``; only enabled languages count, else
+    English."""
+    enabled = i18n.enabled_languages()
+    for candidate in (requested, request_language, getattr(profile_user, "preferred_language", None)):
+        code = i18n.normalize_locale(candidate)
+        if code is not None and code in enabled:
+            return code
+    return OUTPUT_LANGUAGE
+
+
 NOT_CONFIGURED_MESSAGE = "AI document reading is not configured"
 MEDICAL_KINDS = frozenset(
     {
@@ -138,6 +164,11 @@ def to_out(a: DocumentAnalysis, p: Principal) -> DocumentAnalysisOut:
     data = _editable_snapshot(a)
     if clinical and a.confirmed_data is not None:
         data = {f: a.confirmed_data.get(f) for f in EDITABLE_FIELDS}
+    # Patients read the summary in their language; everyone else (agent, staff, hospital) the English copy.
+    values["summary_patient_en"] = a.summary_patient_en
+    if not is_patient_view(p) and a.summary_language != OUTPUT_LANGUAGE and a.summary_patient_en:
+        data["summary_patient"] = a.summary_patient_en
+        values["summary_language"] = OUTPUT_LANGUAGE
     data["key_findings"] = data.get("key_findings") or []
     data["lab_values"] = data.get("lab_values") or []
     data["medications"] = data.get("medications") or []
@@ -254,13 +285,18 @@ async def create_analysis(
         request,
         granted_by_user_id=user.id,
     )
+    await i18n_runtime.ensure_fresh()
+    request_language = request_locale(request) if request is not None and profile.user_id == user.id else None
+    summary_language = summary_language_for(
+        body.language, request_language, await db.get(User, profile.user_id)
+    )
     analysis = DocumentAnalysis(
         document_ids=ids,
         primary_document_id=ids[0],
         patient_id=patient_id,
         case_id=case_id,
         requested_by_user_id=user.id,
-        summary_language=OUTPUT_LANGUAGE,
+        summary_language=summary_language,
         status=DocumentAnalysisStatus.QUEUED,
         model=settings.AI_MODEL,
     )
@@ -366,7 +402,16 @@ def _ensure_reviewable(analysis: DocumentAnalysis) -> None:
         raise Conflict("Only an analysis waiting for review can be changed", code="not_pending_review")
 
 
-def _apply_fields(analysis: DocumentAnalysis, fields: dict[str, Any]) -> None:
+def _apply_fields(analysis: DocumentAnalysis, fields: dict[str, Any], p: Principal | None = None) -> None:
+    if (
+        p is not None
+        and not is_patient_view(p)
+        and "summary_patient" in fields
+        and analysis.summary_language != OUTPUT_LANGUAGE
+    ):
+        # Agents/staff see and edit the English copy; the patient-language summary stays as it is.
+        value = fields.pop("summary_patient")
+        analysis.summary_patient_en = value.strip() or None if isinstance(value, str) else value
     for name, value in fields.items():
         if name in ("key_findings", "lab_values", "medications"):
             value = [v.model_dump(mode="json") if hasattr(v, "model_dump") else v for v in (value or [])]
@@ -387,7 +432,7 @@ async def update_draft(
     fields = {name: getattr(body, name) for name in body.model_fields_set}
     if "doc_type" in fields and fields["doc_type"] is None:
         fields["doc_type"] = AnalysisDocType.OTHER
-    _apply_fields(analysis, fields)
+    _apply_fields(analysis, fields, p)
     await db.commit()
     await db.refresh(analysis)
     return to_out(analysis, p)
@@ -407,7 +452,7 @@ async def confirm_analysis(
     fields = {name: getattr(body, name) for name in body.model_fields_set}
     if "doc_type" in fields and fields["doc_type"] is None:
         fields["doc_type"] = AnalysisDocType.OTHER
-    _apply_fields(analysis, fields)
+    _apply_fields(analysis, fields, p)
     confirmed = _editable_snapshot(analysis)
     analysis.confirmed_data = confirmed
     analysis.review_status = AnalysisReviewStatus.CONFIRMED
@@ -612,9 +657,10 @@ async def process_analysis(db: AsyncSession, analysis_id: uuid.UUID, *, attempt:
         await _finish(db, analysis_id, status, str(exc), quality_issues=[str(exc)])
         return True
     slugs = await _specialty_slugs(db)
+    summary_language = analysis.summary_language or OUTPUT_LANGUAGE
     await db.commit()  # no transaction open during the external call
 
-    outcome = await ai.analyze_pages(pages, slugs)
+    outcome = await ai.analyze_pages(pages, slugs, summary_language)
     db.add(
         _log(
             outcome.status,
@@ -651,13 +697,24 @@ async def process_analysis(db: AsyncSession, analysis_id: uuid.UUID, *, attempt:
         await db.rollback()
         return False
     ai_output = result.model_dump(mode="json")
+    # Patient-facing summary in the patient's language + an English copy for hospitals/agents/staff. When the
+    # model gave no translation, the English summary is used for both and the language falls back to English.
+    english_summary = result.summary_patient or None
+    localized = result.summary_patient_localized.strip() if summary_language != OUTPUT_LANGUAGE else ""
+    if not localized:
+        analysis.summary_language = OUTPUT_LANGUAGE
+    patient_summary = localized or english_summary
+    ai_output.pop("summary_patient_localized", None)
+    ai_output["summary_patient"] = patient_summary
+    ai_output["summary_patient_en"] = english_summary
     analysis.ai_output = ai_output
+    analysis.summary_patient_en = english_summary
     analysis.model = outcome.model
     analysis.doc_type = result.doc_type
     analysis.language = result.language
     analysis.report_date = _parse_date(result.report_date)
     analysis.facility_name = result.facility_name
-    analysis.summary_patient = result.summary_patient or None
+    analysis.summary_patient = patient_summary
     analysis.summary_clinical = result.summary_clinical or None
     analysis.key_findings = ai_output["key_findings"]
     analysis.lab_values = ai_output["lab_values"]

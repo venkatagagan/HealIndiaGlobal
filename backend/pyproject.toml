@@ -59,7 +59,7 @@ where = ["."]
 include = ["app*"]
 
 [tool.setuptools.package-data]
-app = ["templates/**/*"]
+app = ["templates/**/*", "i18n/*.json", "i18n/catalogs/*.json"]
 
 [tool.ruff]
 line-length = 110

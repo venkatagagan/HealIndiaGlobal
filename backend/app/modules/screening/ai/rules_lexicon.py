@@ -61,14 +61,22 @@ SIGNALS: dict[str, SignalDef] = {
         r"inside) (?:the |my |his |her )?(?:middle of (?:the |my |his |her )?|centre of (?:my |the )?)?chest",
         r"(?:tight|heavy) chest|angina|chest (?:hurts|is hurting)|clutch\w* %2chest",
         r"douleurs? %3(?:à la|dans la|de la) poitrine|douleur thoracique|oppression thoracique|serrement %2poitrine",
+        r"mal (?:à|a) la poitrine|(?:point|gêne|brûlure|oppression|poids|serrement) %2(?:dans la |à la |a la |de la |sur la |au milieu de la )poitrine",
+        r"poitrine %2(?:serrée|qui serre|me serre|écrasée|comprimée|qui brûle|me brûle|(?:me )?fait mal)",
         r"dolor %3(?:en el|de|del) pecho|dolor torácico|opresión en el pecho",
         r"dor %3(?:no|do) peito|aperto no peito|dor torácica",
         r"бол\w* %2в груди|давит в груди|жжет в груди|жжёт в груди|загрудинн\w*",
+        r"бол\w* %1за грудиной|(?:сжимает|жмет|жмёт|печет|печёт|тяжесть) %1в груди|бол\w* %1в сердце|сердце (?:болит|давит|сжимает|жмет|жмёт)",
         r"~(?:الم|وجع|ضغط) (?:[^ ]+ ){0,2}(?:في |على )?الصدر",
+        r"~(?:الم|وجع|ضغط|ثقل|ضيق|حرقة) (?:[^ ]+ ){0,2}(?:في |على )?(?:صدري|صدره|صدرها)|~(?:صدري|صدره|صدرها) (?:[^ ]+ )?(?:يوجع|يؤلم|يالم|بيوجع|بيوجعني|واجع|يضغط)|~ذبحة صدرية",
         r"maumivu %3(?:ya |kwenye |katika )?kifua\w*|kifua kinauma",
-        r"~বুকে (?:[^ ]+ )?(?:ব্যথা|চাপ)|~বুক ব্যথা",
+        r"~বুকে (?:[^ ]+ ){0,2}(?:ব্যথা|ব্যাথা|চাপ|ভার)|~বুক (?:[^ ]+ )?(?:ব্যথা|ব্যাথা|চেপে|ভারী)",
         r"~(?:सीने|छाती) में (?:[^ ]+ )?(?:दर्द|दबाव|जकड़न)",
-        exclude=(r"on exertion|when i (?:climb|walk|run)|climbing|stairs|uphill",),
+        exclude=(
+            r"on exertion|when i (?:climb|walk|run)|climbing|stairs|uphill",
+            r"escaliers?|(?:à|a) l'effort|en montant|по лестнице|при нагрузке|при ходьбе",
+            r"~الدرج|~السلالم|~عند المشي|~সিঁড়ি",
+        ),
     ),
     "chest_crushing": _s(
         "Crushing chest pain",
@@ -81,8 +89,13 @@ SIGNALS: dict[str, SignalDef] = {
         "Possible heart attack",
         r"heart attack|cardiac arrest|crise cardiaque|infarctus|ataque (?:al corazón|cardíaco|cardiaco)|"
         r"infarto|инфаркт\w*|mshtuko wa moyo",
-        r"~نوبة قلبية|~جلطة (?:في )?القلب|~হার্ট অ্যাটাক|~दिल का दौरा|~हार्ट अटैक",
-        exclude=(r"\bscreening\b|\brisk\b|\bprevent\w*",),
+        r"attaque cardiaque|arr[êe]t cardiaque|сердечн\w* приступ\w*|остановк\w* сердца",
+        r"~نوبة قلبية|~جلطة (?:في )?القلب|~(?:ازمة|جلطة|سكتة) قلبية|~توقف القلب|~হার্ট অ্যাটাক|~दिल का दौरा|~हार्ट अटैक",
+        r"~হার্ট ?(?:অ‍?্যাটাক|এ‍?্যাটাক|এটাক)",
+        exclude=(
+            r"\bscreening\b|\brisk\b|\bprevent\w*",
+            r"(?:инфаркт\w*|сердечн\w* приступ\w*) %2(?:не было|не был|не была)",
+        ),
     ),
     "chest_at_rest": _s(
         "Chest pain at rest",
@@ -91,6 +104,8 @@ SIGNALS: dict[str, SignalDef] = {
     "rest_onset": _s(
         "Started at rest",
         r"(?:at rest|while %2resting|when resting|woke me|woke him|woke her|in my sleep|while sitting)",
+        r"au repos|pendant (?:mon |son |le )?sommeil|m'a réveillé\w*|l'a réveillé\w*|в покое|во сне|разбудил\w*",
+        r"~(?:اثناء|وقت|في|وانا في) الراحة|~وانا (?:مرتاح|نايم|نائم)|~(?:ايقظني|ايقظته|صحاني) من النوم|~বিশ্রামে|~বিশ্রামের সময়|~ঘুমের মধ্যে",
     ),
     "radiation": _s(
         "Pain spreading to the arm, jaw or neck",
@@ -100,12 +115,14 @@ SIGNALS: dict[str, SignalDef] = {
         r"irradi\w* %3(?:bras|mâchoire|machoire)|bras gauche|brazo izquierdo|braço esquerdo|"
         r"mandíbula|mâchoire|отда\w* %2(?:руку|челюсть|лопатку)|левую руку|mkono wa kushoto",
         r"~الذراع اليسري|~الذراع الايسر|~ينتشر|~الفك|~বাম হাতে|~बाएं हाथ|~बाएँ हाथ|~जबड़े",
+        r"~(?:ذراعي|ذراعه|ذراعها|يدي|يده|يدها|ايدي|ايده|ايدها|اليد) (?:اليسري|الايسر|اليسار|الشمال)|~বাঁ হাত|~বাম হাত|~চোয়াল",
     ),
     "sweating": _s(
         "Cold sweat",
         r"cold sweat\w*|sweating|sweaty|clammy|sueurs?|sudor|suor|пот|потливость|jasho",
-        r"~تعرق|~عرق بارد|~ঘাম|~पसीना",
-        exclude=(r"night sweats?|feeding",),
+        r"transpir\w*|en sueur|потею|потеет|вспотел\w*|в поту|холодн\w* пот\w*",
+        r"~تعرق|~عرق بارد|~عرقان|~(?:يعرق|اعرق|بعرق|بيعرق|تعرق)|~ঘাম|~पसीना",
+        exclude=(r"night sweats?|feeding|sueurs? nocturnes?|ночн\w* пот\w*|потливость ночью",),
     ),
     "tearing_pain": _s(
         "Sudden tearing pain (possible aortic dissection)",
@@ -127,8 +144,11 @@ SIGNALS: dict[str, SignalDef] = {
         r"(?:cara|boca) %2(?:caída|torcida|desviada)|(?:boca|rosto) %2(?:torta|caída|caído|torto)",
         r"(?:перекосил\w*|перекошен\w*) %2(?:лицо|рот)|(?:лицо|рот) %2перекош\w*",
         r"~(?:تدلي|ارتخاء|انحراف|اعوجاج|ميلان) (?:[^ ]+ )?(?:الوجه|الفم)|~(?:الوجه|الفم) (?:[^ ]+ )?(?:مائل|معوج|متدلي)",
+        r"~(?:وجهه|وجهها|وجهي|فمه|فمها|فمي|بقه|بقها|بوزه|بوزها) (?:[^ ]+ )?(?:مائل|مايل|معوج|متدلي|عوج|اعوج|مال|ملتوي|نازل|اتعوج)",
+        r"~(?<![^ ])(?:مال|اعوج|انعوج|اتعوج|التوي|ارتخي) (?:[^ ]+ )?(?:وجهه|وجهها|فمه|فمها|بقه|بقها)",
+        r"(?:bouche|visage) %3(?:paralysé\w*|tombant\w*|affaissé\w*)|(?:paralysie|affaissement) %2(?:du |de la )?(?:visage|bouche)|visage %2tombe",
         r"(?:uso|mdomo) %2(?:umepinda|umelegea|umepooza|umeenda upande)",
-        r"~মুখ (?:[^ ]+ )?(?:বেঁকে|বাঁকা)|~(?:चेहरा|मुंह|मुँह) (?:[^ ]+ )?(?:टेढ़ा|लटक)",
+        r"~মুখ (?:[^ ]+ )?(?:বেঁকে|বাঁকা|ব্যাঁকা|ঝুলে|একদিকে)|~(?:चेहरा|मुंह|मुँह) (?:[^ ]+ )?(?:टेढ़ा|लटक)",
         exclude=(
             r"skin|wrinkl\w*|ageing|aging|face ?lift|cheeks?|jowls?|eyelids?|botox|cosmetic|filler|teeth|"
             r"veneers?|gums?|braces|since birth|for years",
@@ -140,20 +160,29 @@ SIGNALS: dict[str, SignalDef] = {
         r"parole %2(?:pâteuse|bredouillante)|habla %2(?:arrastrada|torpe)|fala %2(?:arrastada|enrolada)",
         r"(?:невнятн\w*|нечетк\w*|нечётк\w*|смазанн\w*) речь|речь %2(?:невнятн\w*|нарушен\w*)",
         r"~ثقل (?:في )?اللسان|~কথা (?:[^ ]+ )?জড়িয়ে|~(?:ज़ुबान|जुबान) लड़खड़ा",
+        r"parle %2(?:bizarrement|difficilement|de travers)|bafouill\w*|n'articule (?:plus|pas)|articule mal|élocution %2(?:difficile|pâteuse|confuse)",
+        r"заплета\w* язык|язык %1заплета\w*|ворочает языком|невнятно %1говорит|говорит %1невнятно",
+        r"~(?:لسانه|لسانها|لساني) (?:[^ ]+ )?(?:ثقيل|تقيل|ثقل|تقل)|~(?:كلامه|كلامها|كلامي) (?:[^ ]+ )?(?:غير مفهوم|مش مفهوم|مو مفهوم|متلخبط|متداخل|ثقيل|تقيل)",
+        r"~কথা (?:[^ ]+ )?অস্পষ্ট|~অস্পষ্ট কথা|~কথা (?:[^ ]+ )?জড়ানো",
     ),
     "speech_difficulty": _s(
         "Sudden difficulty speaking (stroke sign)",
         r"(?:@cant|struggling to|trouble|difficulty|problems?) %1(?:speak\w*|talk\w*|get %1words out|find %1words)",
         r"sudden\w* %3(?:speech|speak\w*|talk\w*)",
         r"n'arrive (?:plus|pas) à parler|ne (?:peut|peux) (?:plus|pas) parler|trouble de la parole",
+        r"(?:du mal|difficult[ée]s?) (?:à|a) parler|ne trouve plus ses mots|n'arrive (?:plus|pas) à trouver ses mots",
         r"no (?:puede|puedo) hablar|dificultad para hablar|não (?:consegue|consigo) falar",
         r"не (?:может|могу) говорить|не говорит",
         r"~(?:لا يستطيع|لا تستطيع|لا استطيع|صعوبة في) (?:[^ ]+ )?(?:الكلام|التكلم|النطق)",
+        r"~(?<![^ ])(?:مش|ما|مو|لا) (?:قادر|قادرة|قادره|يقدر|تقدر|بيقدر|بتقدر|عم يقدر|يستطيع|تستطيع) (?:[^ ]+ )?(?:يتكلم|تتكلم|يحكي|تحكي|يتحدث|تتحدث|الكلام)",
         r"(?:hawezi|anashindwa) (?:ku)?(?:ongea|zungumza|sema)",
-        r"~কথা (?:[^ ]+ )?বলতে পারছ|~(?:बोल नहीं|बोलने में) (?:[^ ]+ )?(?:पा|सक|दिक्कत|परेशानी|तकलीफ)",
+        r"~কথা (?:[^ ]+ )?বলতে (?:পারছ(?:ে|ি|েন)|পারে|পারেন|পারি) ?না|~কথা বলতে (?:[^ ]+ )?(?:সমস্যা|কষ্ট) হচ্ছে",
+        r"~(?:बोल नहीं|बोलने में) (?:[^ ]+ )?(?:पा|सक|दिक्कत|परेशानी|तकलीफ)",
         exclude=(
             r"hoarse|voice|stammer|stutter|delayed|speech therapy|since birth|for (?:months|years)|english|"
             r"language|(?:talk|speak)\w* (?:to|with|about)",
+            r"anglais|français|en public|depuis (?:la naissance|des (?:mois|années))|английск\w*|с рождения",
+            r"~الانجليزي|~الانكليزي|~منذ الولادة|~ইংরেজি|~জন্ম থেকে",
         ),
     ),
     "sudden_weakness": _s(
@@ -166,14 +195,33 @@ SIGNALS: dict[str, SignalDef] = {
         r"(?:debilidad|fuerza) %3(?:un lado|lado (?:izquierdo|derecho))|fraqueza %3(?:um lado|lado)",
         r"(?:онемел\w*|отнял\w*|не двигается) %2(?:рука|нога|половина)",
         r"~شلل|~(?:ضعف|خدر) (?:[^ ]+ )?(?:في )?(?:جانب|نصف)|kupooza|~লকওয়া|~लकवा|~पक्षाघात",
-        exclude=(r"for (?:months|years)|since birth|slowly",),
+        r"faiblesse %3(?:d'un|du|un) côté|(?:paralys\w*|engourdi\w*|faible|inerte) %4(?:d'un|du|un|le) côté|"
+        r"côté %3(?:paralysé|engourdi|inerte|ne répond plus)|(?:bras|jambe|main) %3(?:paralysé\w*|inerte|ne bouge plus)|"
+        r"hémipl[ée]gi\w*|soudain\w* %2(?:faible|paralys\w*|engourdi\w*)|ne sent plus %2(?:son|mon|sa|ma) (?:bras|jambe)",
+        r"(?:слабость|онемени\w*|онемел\w*) %3(?:одной|одну|левой|правой|половин\w*) (?:сторон\w*|половин\w*|тела|лица)|"
+        r"(?:половин\w*|сторон\w*) (?:тела|лица) %2(?:онемел\w*|отнял\w*|парализ\w*|не двига\w*)|парализовал\w*|"
+        r"внезапн\w* %2(?:слабость|онемел\w*|онемени\w*|отнял\w*)",
+        r"~(?:تنميل|خدر|ضعف) (?:[^ ]+ ){0,2}(?:في )?(?:الجانب|الجهة|جنب|نص|نصف|ناحية)|~فجاة (?:[^ ]+ )?(?:ضعف|خدر|تنميل)",
+        r"~(?<![^ ])(?:لا|ما|مش|مو) (?:يستطيع|تستطيع|استطيع|يقدر|تقدر|اقدر|قادر|قادرة|قادره|بيقدر|بتقدر) (?:[^ ]+ )?"
+        r"(?:تحريك|يحرك|تحرك|احرك|رفع|يرفع|ترفع|ارفع) (?:[^ ]+ )?(?:يده|يدها|يدي|ايده|ايدها|ايدي|ذراعه|ذراعها|ذراعي|"
+        r"رجله|رجلها|رجلي|ساقه|ساقها|ساقي|اليد|الذراع|الرجل|الساق)",
+        r"~এক ?(?:পাশ|দিক)(?:ে|ের)? (?:[^ ]+ ){0,2}(?:অবশ|দুর্বল|প্যারালাইজড|অচল)|~(?:ডান|বাম|বাঁ) (?:[^ ]+ ){0,3}অবশ|"
+        r"~হঠাৎ (?:[^ ]+ ){0,3}অবশ|~প্যারালাইসিস|~পক্ষাঘাত",
+        exclude=(
+            r"for (?:months|years)|since birth|slowly",
+            r"depuis (?:la naissance|des (?:mois|années)|\d+ (?:mois|ans))|с рождения|(?:несколько|много) (?:лет|месяцев)|годами",
+            r"~منذ (?:الولادة|سنوات|شهور|اشهر)|~من سنين|~من سنوات|~বছর ধরে|~মাস ধরে|~জন্ম থেকে",
+        ),
     ),
     "stroke_word": _s(
         "Possible stroke signs",
         r"stroke|avc|accident vasculaire|derrame cerebral|ictus|derrame|инсульт\w*|kiharusi",
+        r"attaque cérébrale|микроинсульт\w*|хватил удар",
         r"~سكتة دماغية|~جلطة (?:في )?(?:الدماغ|المخ)|~جلطة دماغية|~স্ট্রোক|~स्ट्रोक",
+        r"~جلطة (?:في )?(?:الراس|راسه|راسها|دماغه|دماغها|مخه|مخها)",
         exclude=(
             r"heat ?stroke|sunstroke|stroke risk|risk of %2stroke|prevent\w* %2stroke|swimming|strokes of|pleural",
+            r"(?:инсульт\w*|микроинсульт\w*) %2(?:не было|не был|не была)",
         ),
     ),
     # ------------------------------------------------------------------------------------- breathing
@@ -188,14 +236,29 @@ SIGNALS: dict[str, SignalDef] = {
         r"(?:breathless\w*|short of breath|shortness of breath) %3(?:at rest|sitting still|when sitting|while "
         r"sitting|lying still|resting|doing nothing)",
         r"(?:n'arrive|ne peut|ne peux) (?:plus|pas) (?:à )?respirer|étouffe|suffoque",
+        r"(?:j'|m'|s')étouff\w*|suffoqu\w*|ne respire (?:plus|pas|presque plus)|a arrêté de respirer|détresse respiratoire|"
+        r"(?:beaucoup de |très )?(?:du mal|difficult[ée]s?) (?:à|a) respirer|difficultés? respiratoires?",
         r"no (?:puede|puedo) respirar|me ahogo|se ahoga|dificultad %1para respirar",
         r"não (?:consegue|consigo) respirar|falta de ar %1(?:forte|grave|intensa)|sufocando",
         r"не (?:может|могу) дышать|задыха\w*|удушь\w*",
+        r"(?:трудно|тяжело) дышать|нечем дышать|не дыш(?:ит|у|ал|ала)|перестал\w* дышать",
         r"~(?:لا|ما) (?:استطيع|يستطيع|تستطيع|اقدر|يقدر) (?:على )?التنفس|~صعوبة (?:شديدة )?في التنفس|~اختناق",
+        r"~(?<![^ ])(?:مش|ما|مو|مب|لا) (?:قادر|قادرة|قادره|اقدر|بقدر|يقدر|بيقدر|تقدر|بتقدر|عم اقدر|عارف|عارفة|استطيع|يستطيع|تستطيع) "
+        r"(?:على )?(?:اتنفس|يتنفس|تتنفس|التنفس|اخد نفسي|اخذ نفسي|اخد نفس|اخذ نفس)",
+        r"~(?<![^ ])(?:لا|ما|مش|مو|ولا|وما|ومش) (?:يتنفس|تتنفس|بيتنفس|بتتنفس)|~(?:توقف|وقف|توقفت|وقفت) (?:عن )?(?:التنفس|تنفسه|تنفسها)|"
+        r"~(?:يختنق|تختنق|اختنق|بختنق|بيختنق|بتختنق)|~(?:ضيق|صعوبة) (?:شديد|شديدة|كبيرة|قوي) (?:في )?(?:التنفس|النفس)|"
+        r"~(?:ضيق|صعوبة) (?:في )?(?:التنفس|النفس) (?:شديد|شديدة|جدا|قوي)|~نفسي مقطوع",
         r"(?:anapumua|ninapumua|kupumua|anahema) kwa shida|(?:hawezi|siwezi|anashindwa) kupumua",
         r"~শ্বাস (?:নিতে )?(?:পারছে না|পারছি না|পারছেন না)",
+        r"~শ্বাস নিতে (?:[^ ]+ )?কষ্ট|~দম (?:[^ ]+ )?(?:বন্ধ হয়ে|আটকে)|~দম নিতে (?:[^ ]+ )?পারছ(?:ি|ে|েন) ?না|"
+        r"~(?:তীব্র|প্রচণ্ড|ভীষণ|খুব|মারাত্মক) শ্বাসকষ্ট|~শ্বাস (?:বন্ধ হয়ে গেছে|নিচ্ছে না|নিচ্ছেন না)",
         r"~(?:सांस|साँस) (?:लेने में )?(?:बहुत )?(?:तकलीफ|दिक्कत)|~(?:सांस|साँस) नहीं (?:ले|आ)",
-        exclude=(r"stairs|uphill|exertion|exercis\w*|climb\w*|walking|nose|nasal|snor\w*|sleep apn\w*",),
+        exclude=(
+            r"stairs|uphill|exertion|exercis\w*|climb\w*|walking|nose|nasal|snor\w*|sleep apn\w*",
+            r"escaliers?|(?:à|a) l'effort|en montant|en marchant|nez|ronfl\w*|лестниц\w*|при нагрузке|при ходьбе|"
+            r"заложен\w* нос|насморк\w*|храп\w*",
+            r"~الدرج|~السلالم|~المجهود|~عند المشي|~(?:الانف|انفي) (?:مسدود|مقفول)|~انسداد الانف|~الشخير|~সিঁড়ি|~হাঁটলে|~পরিশ্রম|~নাক বন্ধ|~নাক দিয়ে",
+        ),
     ),
     "blue": _s(
         "Blue or grey lips or skin",
@@ -204,12 +267,14 @@ SIGNALS: dict[str, SignalDef] = {
         r"lèvres %1(?:bleues|violettes)|labios %1(?:azules|morados)|lábios %1(?:azuis|roxos)",
         r"(?:синие|посинел\w*|синеют) %1губ\w*|губы %1(?:синие|посинел\w*)",
         r"~(?:الشفاه|الشفتين|شفتاه|شفتيه|شفايف) (?:[^ ]+ )?(?:زرقاء|ازرقت|مزرقة)|~ازرقاق",
+        r"~(?:شفتاها|شفتيها|شفتي|شفايفه|شفايفها|شفايفي|وجهه|وجهها) (?:[^ ]+ )?(?:زرق|ازرق|مزرق)",
         r"midomo %3(?:bluu|buluu|samawati)|~ঠোঁট (?:[^ ]+ )?নীল|~होंठ (?:[^ ]+ )?नीले",
     ),
     "breathless": _s(
         "Breathlessness",
         r"short(?:ness)? of breath|breathless\w*|out of breath|@cant %1catch %2breath|wheez\w*",
         r"essouffl\w*|du mal à respirer|falta de aire|me falta el aire|falta de ar|одышк\w*",
+        r"manque d'air|souffle court|не хватает воздуха|нехватк\w* воздуха",
         r"~ضيق (?:[^ ]+ )?(?:في )?التنفس|~ضيق نفس|kupumua kwa shida|~শ্বাসকষ্ট|~(?:सांस|साँस) फूल",
     ),
     "sudden_breathless": _s(
@@ -238,8 +303,12 @@ SIGNALS: dict[str, SignalDef] = {
         r"vomi\w* %3(?:du )?sang|vomit\w* %3sangre|vomit\w* %3sangue|рвот\w* %2кров\w*|рвет кровью|"
         r"рвёт кровью|кровав\w* рвот\w*",
         r"~(?:تقي\w*|اتقي\w*|يتقي\w*|استفر\w*|قيء) (?:[^ ]+ ){0,2}(?:دم|الدم|دما)",
+        r"sang dans (?:les|mes|ses|le|son|mon) vomi\w*|vomissements? %2(?:sanglants?|de sang)",
+        r"~(?:يرجع|برجع|بيرجع|ترجع|بترجع|رجع|رجعت|ترجيع|يستفرغ|تستفرغ|بيستفرغ|بستفرغ) (?:[^ ]+ )?(?:دم|الدم|دما)|~قيء دموي|"
+        r"~(?:دم|الدم) (?:[^ ]+ )?(?:في|مع) (?:القيء|الاستفراغ|الترجيع)",
         r"(?:ku|ana|na|ali|ni)?tapika %1damu",
-        r"~রক্তবমি|~রক্ত বমি|~বমির সাথে রক্ত|~खून की उल्टी|~उल्टी में खून",
+        r"~রক্তবমি|~রক্ত বমি|~বমির সাথে রক্ত|~বমির সঙ্গে রক্ত|~বমিতে রক্ত|~खून की उल्टी|~उल्टी में खून",
+        exclude=(r"~রক্ত ?বমি (?:[^ ]+ )?(?:হয়নি|করেনি|করিনি|হয় নি)",),
     ),
     "melaena": _s(
         "Black, tarry stools",
@@ -257,10 +326,22 @@ SIGNALS: dict[str, SignalDef] = {
         r"ha?emorrhag\w*",
         r"saign\w* %2(?:beaucoup|abondamment)|hémorragie|sangra\w* %2mucho|hemorragia|"
         r"sangrado %1(?:abundante|fuerte)|sangrando muito|sangramento %1(?:forte|intenso)",
+        r"saign\w* %3(?:ne s'arr[êe]te\w* (?:pas|plus)|n'arr[êe]te pas)|(?:le )?sang ne s'arr[êe]te (?:pas|plus)|"
+        r"saign\w* %2(?:énormément|fort|abondant\w*)|(?:beaucoup|énormément) de sang|sang %2(?:gicle|partout|coule à flots)",
         r"сильн\w* кровотечени\w*|кровотечени\w* %2не останавлива\w*",
+        r"кровь %2не (?:останавлива\w*|прекраща\w*|остан\w*)|(?:очень )?много крови|кровь (?:хлещет|льет\w*|фонтаном|ручьем)|"
+        r"обильн\w* кровотечени\w*|сильно кровоточ\w*",
         r"~نزيف (?:[^ ]+ )?(?:حاد|شديد|غزير)|~نزيف لا يتوقف|damu nyingi|~প্রচুর রক্ত",
+        r"~(?:الدم|النزيف) (?:[^ ]+ )?(?:لا|ما|مش|لم|مو) (?:يتوقف|يوقف|بيوقف|يقف|بيقف|وقف)|~نزيف (?:[^ ]+ )?(?:قوي|كثير|كتير)|"
+        r"~(?:ينزف|تنزف|بينزف|بتنزف|انزف|بنزف) (?:[^ ]+ )?(?:بغزارة|بشدة|كثير|كتير|جامد|بقوة)|~دم (?:كثير|كتير)",
+        r"~রক্ত (?:[^ ]+ )?(?:বন্ধ হচ্ছে না|থামছে না)|~অনেক রক্ত (?:যাচ্ছে|পড়ছে|বের হচ্ছে|বেরোচ্ছে)|"
+        r"~(?:প্রচণ্ড|ভীষণ|অতিরিক্ত) রক্তপাত|~রক্তক্ষরণ (?:[^ ]+ )?(?:বন্ধ হচ্ছে না|থামছে না)",
         r"~बहुत (?:ज़्यादा |ज्यादा )?खून (?:बह|निकल)|~भारी रक्तस्राव",
-        exclude=(r"period|menstrua\w*|menses|gums?|nose ?bleeds? (?:for|every)",),
+        exclude=(
+            r"period|menstrua\w*|menses|gums?|nose ?bleeds? (?:for|every)",
+            r"règles|gencives?|месячн\w*|менструа\w*|десн\w*",
+            r"~الدورة|~الحيض|~اللثة|~মাসিক|~পিরিয়ড|~মাড়ি",
+        ),
     ),
     "bleeding_any": _s(
         "Bleeding",
@@ -276,20 +357,33 @@ SIGNALS: dict[str, SignalDef] = {
         "Coughing up blood",
         r"cough\w* %3@blood|@blood %2(?:when|while) (?:i )?cough\w*|ha?emoptysis",
         r"кашл\w* %1кровь\w*|кашель с кровью|tos con sangre|tosse com sangue|toux %2sang",
+        r"crach\w* %2(?:du )?sang",
         r"~(?:سعال|كحة) (?:[^ ]+ )?(?:دم|مع دم)|kukohoa damu|~কাশির সাথে রক্ত|~(?:खांसी|खाँसी) में खून",
+        r"~(?:يكح|بكح|اكح|بيكح|يسعل|اسعل) (?:[^ ]+ )?(?:دم|الدم)|~কাশিতে রক্ত|~কাশির সঙ্গে রক্ত",
     ),
     "fainting": _s(
         "Fainting",
         r"faint\w*|passed out|pass out|passing out|blacked out|black out|collaps\w*|lost consciousness",
         r"évanoui\w*|perdu connaissance|desmay\w*|desmai\w*|обморок\w*|потерял\w* сознание|(?:ku|ali|ni)?zimia",
-        r"~اغمي|~اغماء|~فقد(?:ان)? الوعي|~অজ্ঞান|~জ্ঞান হার|~बेहोश",
+        r"perte de connaissance|tomb\w* dans les pommes|malaise %2(?:perte|chute)|отключил\w*|упал\w* без сознания",
+        r"~اغمي|~اغماء|~فقد(?:ان)? الوعي|~فقد(?:ت)? (?:وعيه|وعيها|وعيي)|~فقدت الوعي|~مغمي (?:عليه|عليها|علي)|~অজ্ঞান|~জ্ঞান হার|~बेहोश",
         exclude=(r"faint (?:line|smell|sound|mark)",),
     ),
     "unconscious": _s(
         "Unconscious or unresponsive",
         r"unconscious|unresponsive|not responding|won't wake up|will not wake up|@cant %1wake (?:him|her|them) "
         r"%1up|inconscient\w*|inconsciente|без сознания|hajitambui|amepoteza fahamu",
+        r"ne (?:répond|réagit) (?:plus|pas|plus du tout)(?! (?:au|aux|à|a) )|ne se réveille (?:plus|pas)(?! (?:la nuit|le matin|avant))|sans connaissance|"
+        r"(?:dans le|en|au) coma|(?:impossible|n'arrive pas|n'arrivons pas|on n'arrive pas) (?:à|a|de) (?:le|la) réveiller",
+        r"не приходит в себя|не реагирует(?! на (?:лечени\w*|терапи\w*|препарат\w*|лекарств\w*|антибиотик\w*))|"
+        r"не просыпается(?! (?:ночью|по ночам))|(?:не можем|не могу|невозможно|не (?:удается|получается)) (?:его |ее )?разбудить|"
+        r"в коме|кома",
         r"~(?:فاقد|غائب عن) الوعي|~জ্ঞান নেই|~होश नहीं",
+        r"~(?:فاقدة|فاقده|غائبة عن|غايب عن|غايبة عن) الوعي|~غيبوبة|"
+        r"~(?<![^ ])(?:لا|ما|مش|مو|ولا|وما|ومش) (?:يستجيب|تستجيب|بيستجيب|بتستجيب|يصحو|تصحو|يصحي|تصحي|بيصحي|بتصحي|يفيق|تفيق|بيفوق|بتفوق)"
+        r"(?! (?:لل|ل|على |الي )?(?:علاج|دوا|ادوي|مضاد))",
+        r"~(?<!ওষুধে )(?<!চিকিৎসায় )সাড়া (?:[^ ]+ )?দিচ্ছ(?:ে|েন) ?না|~সাড়াশব্দ নেই|~জ্ঞান (?:[^ ]+ )?(?:ফিরছে না|ফেরেনি|আসছে না)|"
+        r"~হুঁশ নেই|~বেহুঁশ|~অচেতন|~অচৈতন্য",
     ),
     "dizziness": _s("Dizziness", r"dizz\w*|lightheaded|light headed|vertigo|~মাথা ঘুর|~चक्कर"),
     # ------------------------------------------------------------------------------- mental health
@@ -301,16 +395,40 @@ SIGNALS: dict[str, SignalDef] = {
         r"me suicider|envie de mourir|en finir|ne (?:veux|veut) plus vivre|suicidarme|quitarme la vida|"
         r"no quiero (?:seguir )?vivir|quiero morir(?:me)?|me matar|suicídio|não quero (?:mais )?viver|"
         r"quero morrer|tirar (?:a )?minha (?:própria )?vida",
+        r"(?:veux|veut|voudrais|envie de|préfère) %1mourir|(?:vais|veux|voudrais|envie de|pense à|penser à|pensé à) me tuer|(?:va|veut|voulait) se tuer|mettre fin (?:à|a) (?:mes|ses) jours|"
+        r"mettre fin (?:à|a) (?:ma|sa) vie|en finir avec (?:la|ma) vie|idées noires|"
+        r"(?:n'ai|n'a) (?:plus|pas) (?:envie|goût|gout) de vivre|plus (?:envie|goût|gout) de vivre",
         r"не хочу %1жить|покончить с собой|суицид\w*|убить себя|хочу умереть|покончу с собой",
+        r"самоубийств\w*|наложить на себя руки|св(?:ести|еду) сч[её]ты с жизнью|покончить с жизнью|(?:лучше|хочется) умереть|"
+        r"не хочется %1жить|незачем жить",
         r"kujiua|sitaki kuishi|nataka kufa",
         r"~انتحار|~انتحر|~اقتل نفسي|~لا اريد ان اعيش|~لا اريد العيش|~انهي حياتي",
+        r"~(?<!ما )(?<!مش )(?<!مو )(?<!لا )(?:اريد|اريد ان|نفسي|بدي|ابي|ابغي|ابغا|عايز|عاوز|عايزة|عاوزة|حابب|حابة) (?:ان )?(?:اموت|الموت)|"
+        r"~(?<!ما )(?<!مش )بدي موت|~(?:اقتل|اموت|انهي|اخلص علي) (?:نفسي|حالي)|~(?:انهاء|انهي|اخلص من) حياتي|"
+        r"~(?<![^ ])(?:مش|ما|مو|لا) (?:عايز|عاوز|عايزة|عاوزة|بدي|ابي|ابغي|اريد|حابب) (?:ان )?(?:اعيش|عيش|العيش)",
         r"~আত্মহত্যা|~বাঁচতে চাই না|~মরে যেতে চাই|~आत्महत्या|~खुदकुशी|~जीना नहीं चाह|~मरना चाह",
+        r"~মরতে চাই|~নিজেকে (?:[^ ]+ )?(?:শেষ করে|মেরে ফেল)|~জীবন শেষ করে (?:দিতে|দেব|দিব|ফেলতে)|"
+        r"~বেঁচে থাকতে (?:আর )?চাই না|~বাঁচার (?:কোনো )?(?:ইচ্ছা|ইচ্ছে) নেই",
+        exclude=(
+            r"суицидальн\w* мысл\w* (?:нет|не было)|мысл\w* о (?:самоубийств\w*|суицид\w*) (?:нет|не было)|"
+            r"(?:нет|без|не было) (?:суицидальн\w* )?мысл\w* (?:о )?(?:самоубийств\w*|суицид\w*)",
+            r"~(?<![^ ])(?:لا|لم|ما|مش|ليس|ليست|ليسوا|بدون|ولا|ولم) (?:[^ ]+ ){0,2}(?:ال|بال|لل)?انتحار",
+            r"~আত্মহত্যার (?:[^ ]+ )?(?:চিন্তা|ইচ্ছা|ইচ্ছে|কথা) (?:নেই|নাই|করি না|করিনি|আসে না|আসেনি)",
+        ),
         neg_window=2,  # "No veo sentido, quiero morir": a distant negator belongs to another verb
     ),
     "self_harm": _s(
         "Self-harm",
         r"self harm\w*|(?:harm\w*|hurt\w*|cut\w*) myself|overdos\w*|automutil\w*|autolesi\w*|самоповрежд\w*",
-        exclude=(r"accidentally|by accident",),
+        r"(?:je me fais|je me suis fait|envie de me faire|je veux me faire|je vais me faire) du mal|me scarifi\w*|"
+        r"me mutil\w*|me coupe %2(?:les )?(?:bras|poignets|veines)|me taillad\w*",
+        r"(?:режу|резать|порезать|порезал\w*|наношу|наносить) %1себ\w*|режу %2(?:руки|вены)|причин\w* себе (?:вред|боль)",
+        r"~(?:اؤذي|اذي|اجرح|اذيت|جرحت) (?:نفسي|حالي)|~(?:ايذاء|اذية|اذي) (?:النفس|نفسي)",
+        r"~নিজের (?:[^ ]+ )?ক্ষতি কর|~নিজেকে (?:[^ ]+ )?(?:আঘাত কর|কেটে|কাটি|কাটছি)",
+        exclude=(
+            r"accidentally|by accident|par accident|sans faire exprès|случайно",
+            r"~بالغلط|~بالخطا|~দুর্ঘটনায়|~ভুল করে",
+        ),
         neg_window=2,
     ),
     # ------------------------------------------------------------------------------------ anaphylaxis
@@ -325,14 +443,30 @@ SIGNALS: dict[str, SignalDef] = {
         r"inchaço %2(?:lábios|língua|garganta)|(?:lábios|língua|garganta) %1inchad\w*|garganta fechando",
         r"(?:отек|отёк|опух\w*) %2(?:губ\w*|язык\w*|горл\w*)|(?:губы|язык|горло) %1(?:опух\w*|отек\w*|отёк\w*)",
         r"~(?:تورم|انتفاخ) (?:[^ ]+ )?(?:الشفاه|الشفتين|اللسان|الحلق)",
+        r"gorge %2(?:se ferme|se serre|se resserre|qui se ferme|bloquée|gonfl\w*)|(?:langue|lèvres) %2(?:enfl\w*|gonfl\w*)",
+        r"горло %2(?:сжима\w*|сдавлива\w*|перехват\w*|сужа\w*|закрыва\w*)|(?:сжимает|сдавливает|перехватило) горло",
+        r"~(?:تورم|انتفاخ|ورم) (?:[^ ]+ )?(?:في )?(?:الشفايف|شفايفي|شفتي|لساني|لسانه|لسانها|حلقي|حلقه|حلقها|الزور|زوري|الحنجرة)|"
+        r"~(?:لساني|لسانه|لسانها|حلقي|حلقه|حلقها|زوري|شفايفي|شفايفه|شفايفها|اللسان|الحلق|الشفايف) (?:[^ ]+ )?"
+        r"(?:متورم|منتفخ|وارم|انتفخ|تورم|يتورم|بيتورم|ورم)|~(?:حلقي|حلقه|حلقها|زوري) (?:[^ ]+ )?(?:يقفل|بيقفل|ينغلق|يتسكر|بيتسكر|مسكر|مقفول|يضيق)",
         r"(?:midomo|ulimi|koo) %1(?:kuvimba|imevimba|umevimba|limevimba)",
         r"~(?:ঠোঁট|জিভ|গলা) (?:[^ ]+ )?ফুলে|~(?:होंठ|जीभ|गला) (?:[^ ]+ )?सूज",
-        exclude=(r"tonsil\w*|for (?:weeks|months|years)",),
+        r"~জিহ্বা (?:[^ ]+ )?ফুলে|~গলা (?:[^ ]+ )?(?:বন্ধ হয়ে আস|আটকে আস)",
+        exclude=(
+            r"tonsil\w*|for (?:weeks|months|years)",
+            r"amygdal\w*|depuis des (?:semaines|mois|années)|миндалин\w*|гланд\w*|неделями|месяцами",
+            r"~اللوز|~টনসিল",
+        ),
     ),
     "anaphylaxis_word": _s(
         "Severe allergic reaction",
         r"anaphyla\w*|allergic shock|epi ?pen|choc anaphylactique|anafila\w*|анафилак\w*",
+        r"(?:œd[èe]me|oed[èe]me) de quincke|quincke|choc allergique|réaction allergique %2(?:grave|sévère|violente|forte|importante)|"
+        r"(?:grave|forte|violente) réaction allergique",
+        r"от[её]к квинке|квинке|аллергическ\w* шок|(?:сильн\w*|тяжел\w*|остр\w*) аллергическ\w* реакци\w*",
         r"~صدمة تحسسية|~حساسية مفرطة",
+        r"~صدمة (?:الحساسية|حساسية)|~حساسية (?:شديدة|قوية|خطيرة) (?:بعد|عقب|من بعد)|~(?:رد فعل|تفاعل|نوبة) (?:تحسسي|تحسسية|حساسية) (?:[^ ]+ )?(?:شديد|شديدة|خطير|خطيرة|قوي|قوية)",
+        r"~(?:তীব্র|মারাত্মক|ভয়ানক|গুরুতর|ভীষণ) (?:অ‍?্যালার্জি|এলার্জি|এলার্জী|অ‍?্যালার্জী)(?:র)? (?:প্রতিক্রিয়া|রিঅ‍?্যাকশন|হয়েছে|হচ্ছে)|"
+        r"~অ‍?্যানাফাইল্যাক্সিস|~এনাফাইল্যাক্সিস",
     ),
     "allergen": _s(
         "Allergic trigger",
@@ -467,6 +601,17 @@ SIGNALS: dict[str, SignalDef] = {
         r"(?:seizure|fit|convulsion)s? %3(?:won't stop|not stopping|still going|lasting|for \d+ minutes)|"
         r"(?:is|still) (?:having (?:a )?(?:seizure|fit|convulsion)s?|fitting|convulsing)|seizure now|first (?:ever )?(?:seizure|fit|convulsion)|"
         r"(?:fitting|convulsing) now",
+        r"(?:fait|fais|en train de faire) une crise (?:d'[ée]pilepsie|convulsive|comitiale)|convulse|en train de convulser|"
+        r"(?:convulsions?|crise) %3(?:ne s'arr[êe]te\w* (?:pas|plus)|qui ne s'arr[êe]te\w* pas|dure depuis)|"
+        r"premi[èe]re crise (?:d'[ée]pilepsie|convulsive|comitiale)|premi[èe]res convulsions",
+        r"(?:судорог\w*|припад\w*|конвульси\w*) %3не (?:прекраща\w*|проход\w*|останавлива\w*)|бь[её]тся в (?:судорогах|конвульсиях)|"
+        r"(?:сейчас|прямо сейчас) %3(?:судорог\w*|припад\w*|эпилептическ\w* приступ\w*)|(?:судорог\w*|припад\w*) %2сейчас|"
+        r"(?:начались|начался|начинаются) (?:судорог\w*|припад\w*|эпилептическ\w* приступ\w*)|"
+        r"перв\w* (?:раз )?(?:в жизни )?(?:судорог\w*|припад\w*|эпилептическ\w* приступ\w*)",
+        r"~(?:يتشنج|تتشنج|بيتشنج|بتتشنج)|~(?:تشنجات|التشنجات|التشنج|نوبة الصرع|نوبة صرع) (?:[^ ]+ )?(?:لا|ما|مش|لم) "
+        r"(?:تتوقف|يتوقف|توقف|بتوقف|تقف|بتقف|وقفت)|~(?:اول|لاول) (?:مرة )?(?:[^ ]+ )?(?:نوبة صرع|نوبة تشنج|تشنج)|"
+        r"~(?:نوبة صرع|تشنجات) (?:[^ ]+ )?(?:الان|حاليا|دلوقتي|هلا)",
+        r"~(?<!ধরে )খিঁ?চুনি (?:[^ ]+ )?হচ্ছে|~খিঁ?চুনি (?:[^ ]+ )?(?:থামছে না|বন্ধ হচ্ছে না)|~প্রথম ?(?:বার|বারের মতো)? (?:[^ ]+ )?খিঁ?চুনি",
     ),
     "vision_loss": _s(
         "Sudden loss of vision",

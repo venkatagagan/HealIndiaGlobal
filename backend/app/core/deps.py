@@ -96,6 +96,9 @@ async def _user_from_token(db: AsyncSession, token: str, request: Request | None
             ensure_staff_ip_allowed(request)
         request.state.user = user
         request.state.token_payload = payload
+        # Plain value for the locale middleware (the ORM object may be expired/detached by the time the
+        # response starts, e.g. after an error rolled the session back).
+        request.state.user_language = user.preferred_language
     return user
 
 

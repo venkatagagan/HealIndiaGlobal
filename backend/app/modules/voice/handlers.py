@@ -30,24 +30,16 @@ async def on_voice_transcribed(db: AsyncSession, payload: dict[str, Any]) -> Non
 
         await realtime.send_to_user(t.user_id, "voice.transcribed", data)
         return
-    if t.status == VoiceStatus.COMPLETED:
-        title, body = (
-            "Your recording is ready",
-            "Review the transcript and the suggested answers, then confirm.",
-        )
-    else:
-        title, body = (
-            "We could not process your recording",
-            t.error or "Please try again or type your answers.",
-        )
+    # Rendered in the user's language; the precise failure reason stays on the transcription (``error``).
+    variant = "ready" if t.status == VoiceStatus.COMPLETED else "failed"
     await notify(
         db,
         t.user_id,
         "voice.transcribed",
-        title,
-        body,
-        data,
+        data=data,
         dedupe_key=f"voice.transcribed:{t.id}",
         email=False,
+        title_key=f"notifications.voice.{variant}_title",
+        body_key=f"notifications.voice.{variant}_body",
     )
     queue_realtime(db, [t.user_id], "voice.transcribed", data)

@@ -30,6 +30,8 @@ from app.core.jobs import enqueue
 from app.core.pagination import Page, paginate
 from app.core.settings_store import get_setting
 from app.core.storage import ObjectNotFound, get_storage
+from app.i18n import recipient_locale
+from app.i18n import runtime as i18n_runtime
 from app.models import (
     AIRequestLog,
     Doctor,
@@ -87,11 +89,19 @@ async def _specialties_by_id(db: AsyncSession, ids: set[uuid.UUID]) -> dict[uuid
     return {s.id: s for s in rows}
 
 
-def _to_out(screening: Screening, specialty: Specialty | None) -> ScreeningOut:
+def _localize_result(result: TriageResult, viewer: User | None) -> TriageResult:
+    """Patients read ``summary`` in their language (when the AI wrote one); everyone else the English one."""
+    patient_view = viewer is not None and str(getattr(viewer.role, "value", viewer.role)) == "patient"
+    if patient_view and result.summary_localized and result.summary_language != "en":
+        return result.model_copy(update={"summary_en": result.summary, "summary": result.summary_localized})
+    return result.model_copy(update={"summary_en": result.summary, "summary_language": "en"})
+
+
+def _to_out(screening: Screening, specialty: Specialty | None, viewer: User | None = None) -> ScreeningOut:
     ai_result: TriageResult | None = None
     if screening.ai_result:
         try:
-            ai_result = TriageResult.model_validate(screening.ai_result)
+            ai_result = _localize_result(TriageResult.model_validate(screening.ai_result), viewer)
         except ValidationError:  # stored by an older schema: hide rather than 500
             ai_result = None
     return ScreeningOut(
@@ -121,14 +131,16 @@ def _to_out(screening: Screening, specialty: Specialty | None) -> ScreeningOut:
     )
 
 
-async def to_out(db: AsyncSession, screening: Screening) -> ScreeningOut:
+async def to_out(db: AsyncSession, screening: Screening, viewer: User | None = None) -> ScreeningOut:
     specialty = await db.get(Specialty, screening.specialty_id) if screening.specialty_id else None
-    return _to_out(screening, specialty)
+    return _to_out(screening, specialty, viewer)
 
 
-async def to_out_many(db: AsyncSession, screenings: Sequence[Screening]) -> list[ScreeningOut]:
+async def to_out_many(
+    db: AsyncSession, screenings: Sequence[Screening], viewer: User | None = None
+) -> list[ScreeningOut]:
     specs = await _specialties_by_id(db, {s.specialty_id for s in screenings if s.specialty_id})
-    return [_to_out(s, specs.get(s.specialty_id) if s.specialty_id else None) for s in screenings]
+    return [_to_out(s, specs.get(s.specialty_id) if s.specialty_id else None, viewer) for s in screenings]
 
 
 # --------------------------------------------------------------------------------------------- helpers
@@ -216,7 +228,7 @@ async def create_screening(
         request=request,
     )
     await db.commit()
-    return _to_out(screening, specialty)
+    return _to_out(screening, specialty, user)
 
 
 async def update_screening(
@@ -267,7 +279,7 @@ async def update_screening(
         screening.preferences = prefs.model_dump(mode="json")
 
     await db.commit()
-    return await to_out(db, screening)
+    return await to_out(db, screening, user)
 
 
 async def _start_processing(db: AsyncSession, screening: Screening) -> None:
@@ -329,7 +341,7 @@ async def submit_screening(
         request=request,
     )
     await db.commit()
-    return await to_out(db, screening)
+    return await to_out(db, screening, user)
 
 
 async def rerun_screening(
@@ -354,13 +366,13 @@ async def rerun_screening(
         request=request,
     )
     await db.commit()
-    return await to_out(db, screening)
+    return await to_out(db, screening, user)
 
 
 # --------------------------------------------------------------------------------------------- queries
 async def get_screening(db: AsyncSession, user: User, screening_id: uuid.UUID) -> ScreeningOut:
     screening, _ = await policies.get_screening_scoped(db, user, screening_id)
-    return await to_out(db, screening)
+    return await to_out(db, screening, user)
 
 
 async def list_screenings(
@@ -382,7 +394,7 @@ async def list_screenings(
     stmt = stmt.order_by(Screening.created_at.desc(), Screening.id.desc())
 
     async def transform(rows: list[Screening]) -> list[ScreeningOut]:
-        return await to_out_many(db, rows)
+        return await to_out_many(db, rows, user)
 
     page: Page[ScreeningOut] = await paginate(db, stmt, cast(Any, params), transform=transform)
     return page
@@ -671,7 +683,13 @@ async def process_screening(db: AsyncSession, screening_id: uuid.UUID) -> bool:
     result: TriageResult | None = None
     model: str | None = None
     if wants_ai and settings.ai_available:
-        outcome = await claude.triage_with_claude(intake, catalog, attachments)
+        # The patient-facing summary is also written in the patient's language (English copy kept).
+        await i18n_runtime.ensure_fresh()
+        patient_user = await db.get(User, profile.user_id) if profile is not None else None
+        await db.commit()
+        outcome = await claude.triage_with_claude(
+            intake, catalog, attachments, language=recipient_locale(patient_user)
+        )
         db.add(
             _log_row(
                 screening_id,

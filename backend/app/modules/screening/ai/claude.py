@@ -10,6 +10,7 @@ Tests replace ``create_message`` (the only function that touches the network) wi
 from __future__ import annotations
 
 import base64
+import copy
 import inspect
 import json
 import time
@@ -23,6 +24,7 @@ from pydantic import ValidationError
 
 from app.core.config import settings
 from app.core.enums import AIRequestStatus
+from app.i18n import language_name, normalize_locale
 from app.modules.screening.ai.prompts import build_system_prompt, build_user_text
 from app.modules.screening.ai.schema import (
     TRIAGE_JSON_SCHEMA,
@@ -109,14 +111,41 @@ def build_attachment_blocks(attachments: list[Attachment]) -> list[dict[str, Any
     return blocks
 
 
+def _schema_for(language: str) -> dict[str, Any]:
+    if language == "en":
+        return TRIAGE_JSON_SCHEMA
+    schema = copy.deepcopy(TRIAGE_JSON_SCHEMA)
+    schema["required"].append("summary_localized")
+    schema["properties"]["summary_localized"] = {"type": "string"}
+    return schema
+
+
+def _language_note(language: str) -> str:
+    if language == "en":
+        return ""
+    name = language_name(language)
+    return (
+        f"\n\nThe patient's language is {name} ({language}). Write every field in English as usual, and also "
+        f"write summary_localized: the same summary in {name}, in plain, calm words for a non-medical reader."
+    )
+
+
 def build_request(
-    intake: dict[str, Any], catalog: CatalogSnapshot, attachments: list[Attachment] | None = None
+    intake: dict[str, Any],
+    catalog: CatalogSnapshot,
+    attachments: list[Attachment] | None = None,
+    language: str = "en",
 ) -> dict[str, Any]:
-    """Keyword arguments for ``create_message`` (no thinking/temperature/prefill: rejected by this model)."""
+    """Keyword arguments for ``create_message`` (no thinking/temperature/prefill: rejected by this model).
+    For a non-English patient the summary is also requested in their language (``summary_localized``)."""
+    language = normalize_locale(language) or "en"
     attachment_blocks = build_attachment_blocks(attachments or [])
     content: list[dict[str, Any]] = [
         *attachment_blocks,
-        {"type": "text", "text": build_user_text(intake, len(attachment_blocks))},
+        {
+            "type": "text",
+            "text": build_user_text(intake, len(attachment_blocks)) + _language_note(language),
+        },
     ]
     return {
         "model": settings.AI_MODEL,
@@ -127,7 +156,7 @@ def build_request(
         "messages": [{"role": "user", "content": content}],
         "output_config": {
             "effort": settings.AI_EFFORT,
-            "format": {"type": "json_schema", "schema": TRIAGE_JSON_SCHEMA},
+            "format": {"type": "json_schema", "schema": _schema_for(language)},
         },
     }
 
@@ -162,9 +191,13 @@ def _error_text(exc: BaseException) -> str:
 
 
 async def triage_with_claude(
-    intake: dict[str, Any], catalog: CatalogSnapshot, attachments: list[Attachment] | None = None
+    intake: dict[str, Any],
+    catalog: CatalogSnapshot,
+    attachments: list[Attachment] | None = None,
+    language: str = "en",
 ) -> ClaudeOutcome:
-    request = build_request(intake, catalog, attachments)
+    language = normalize_locale(language) or "en"
+    request = build_request(intake, catalog, attachments, language)
     model = str(request["model"])
     started = time.perf_counter()
 
@@ -222,8 +255,17 @@ async def triage_with_claude(
         data = json.loads(text)
         if not isinstance(data, dict):
             raise ValueError("top-level JSON value is not an object")
-        data.pop("engine", None)
-        result = TriageResult.model_validate({**data, "engine": "claude"})
+        for server_field in ("engine", "summary_language", "summary_en"):
+            data.pop(server_field, None)
+        localized = str(data.pop("summary_localized", "") or "").strip() if language != "en" else ""
+        data.update(
+            {
+                "engine": "claude",
+                "summary_localized": localized,
+                "summary_language": language if localized else "en",
+            }
+        )
+        result = TriageResult.model_validate(data)
     except (ValueError, ValidationError) as exc:
         logger.warning("screening_ai_invalid_output", error=str(exc)[:300], stop_reason=response.stop_reason)
         return ClaudeOutcome(

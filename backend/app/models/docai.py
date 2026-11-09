@@ -125,6 +125,8 @@ class DocumentAnalysis(UUIDPkMixin, TimestampMixin, Base):
     report_date: Mapped[date | None] = mapped_column(Date)
     facility_name: Mapped[str | None] = mapped_column(String(300))
     summary_patient: Mapped[str | None] = mapped_column(Text)
+    #: English copy of ``summary_patient`` for hospitals/agents/staff (equal to it when it is in English)
+    summary_patient_en: Mapped[str | None] = mapped_column(Text)
     summary_clinical: Mapped[str | None] = mapped_column(Text)
     key_findings: Mapped[list[dict[str, Any]]] = json_list_col()
     lab_values: Mapped[list[dict[str, Any]]] = json_list_col()

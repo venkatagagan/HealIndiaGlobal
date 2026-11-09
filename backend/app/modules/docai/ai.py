@@ -10,6 +10,7 @@ Tests replace :func:`create_message` (the only function that touches the network
 from __future__ import annotations
 
 import base64
+import copy
 import json
 import re
 import time
@@ -23,6 +24,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 from app.core.config import settings
 from app.core.enums import AIRequestStatus
+from app.i18n import language_name, normalize_locale
 from app.models.docai import AnalysisDocType, FindingSignificance, LabFlag
 from app.modules.docai.pipeline import PreparedPage
 
@@ -102,6 +104,8 @@ class DocAIResult(BaseModel):
     facility_name: str | None = Field(default=None, max_length=300)
     summary_patient: str = ""
     summary_clinical: str = ""
+    #: ``summary_patient`` in the patient's language (only requested when that is not English)
+    summary_patient_localized: str = ""
     key_findings: list[KeyFinding] = Field(default_factory=list)
     lab_values: list[LabValue] = Field(default_factory=list)
     diagnoses_mentioned: list[str] = Field(default_factory=list)
@@ -144,7 +148,7 @@ class DocAIResult(BaseModel):
         v = _clip(v, 300)
         return v or None
 
-    @field_validator("summary_patient", "summary_clinical", mode="before")
+    @field_validator("summary_patient", "summary_clinical", "summary_patient_localized", mode="before")
     @classmethod
     def _summary(cls, v: Any) -> Any:
         return _clip(v, MAX_TEXT) if isinstance(v, str) else ""
@@ -343,16 +347,45 @@ def build_content(pages: list[PreparedPage], specialty_slugs: list[str]) -> list
     return content
 
 
-def build_request(pages: list[PreparedPage], specialty_slugs: list[str]) -> dict:
+def schema_for(summary_language: str) -> dict[str, Any]:
+    """The output schema; for a non-English patient it also asks for ``summary_patient_localized``."""
+    if (normalize_locale(summary_language) or "en") == "en":
+        return DOC_SCHEMA
+    schema = copy.deepcopy(DOC_SCHEMA)
+    schema["required"].append("summary_patient_localized")
+    schema["properties"]["summary_patient_localized"] = {"type": "string"}
+    return schema
+
+
+def language_instruction(summary_language: str) -> str:
+    code = normalize_locale(summary_language) or "en"
+    if code == "en":
+        return ""
+    name = language_name(code)
+    return (
+        f"\n\nThe patient's language is {name} ({code}). Write summary_patient in English as usual, and also "
+        f"write summary_patient_localized: the same patient summary in {name}, in plain, calm words a "
+        "non-medical reader understands (keep numbers, units and medication names as printed). Every other "
+        "field stays in English."
+    )
+
+
+def build_request(
+    pages: list[PreparedPage], specialty_slugs: list[str], summary_language: str = "en"
+) -> dict:
     """Keyword arguments for :func:`create_message` (no thinking/temperature/prefill: rejected)."""
+    content = build_content(pages, specialty_slugs)
+    extra = language_instruction(summary_language)
+    if extra:
+        content[-1] = {"type": "text", "text": content[-1]["text"] + extra}
     return {
         "model": settings.AI_MODEL,
         "max_tokens": MAX_TOKENS,
         "system": [{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
-        "messages": [{"role": "user", "content": build_content(pages, specialty_slugs)}],
+        "messages": [{"role": "user", "content": content}],
         "output_config": {
             "effort": settings.DOCAI_EFFORT,
-            "format": {"type": "json_schema", "schema": DOC_SCHEMA},
+            "format": {"type": "json_schema", "schema": schema_for(summary_language)},
         },
     }
 
@@ -414,8 +447,10 @@ def _error_text(exc: BaseException) -> str:
     return f"{type(exc).__name__}{f' ({status})' if status else ''}: {message}"
 
 
-async def analyze_pages(pages: list[PreparedPage], specialty_slugs: list[str]) -> AIOutcome:
-    request = build_request(pages, specialty_slugs)
+async def analyze_pages(
+    pages: list[PreparedPage], specialty_slugs: list[str], summary_language: str = "en"
+) -> AIOutcome:
+    request = build_request(pages, specialty_slugs, summary_language)
     model = str(request["model"])
     started = time.perf_counter()
 

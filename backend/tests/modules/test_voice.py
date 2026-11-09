@@ -79,8 +79,8 @@ def stt_result(
 
 def intake_payload(**overrides: Any) -> dict[str, Any]:
     payload: dict[str, Any] = {
-        "transcript_en": "Je suis un modèle qui traduit",  # ignored: the server sets transcript_en
-        "language_detected": "fr",  # ignored: English-only
+        "transcript_en": "Je suis un modèle qui traduit",  # English text: the server sets it
+        "language_detected": "fr",  # ignored: the server sets the language
         "specialty_slug": "orthopedics",
         "body_areas": ["right_leg", "elbow-not-an-area"],
         "pain_intensity": 7,
@@ -187,12 +187,12 @@ async def test_upload_transcribe_extract(
     calls = install_claude(monkeypatch, claude_response(intake_payload()))
     headers = auth_headers(world.patient_user)
 
-    r = await upload(client, headers, language="fr")  # ignored
+    r = await upload(client, headers, language="fr")  # French is not enabled: auto-detect
     assert r.status_code == 202, r.text
     out = r.json()
     assert out["status"] == "queued" and out["review_status"] == "pending_review"
     assert out["patient_id"] == str(world.patient.id)
-    assert out["language_hint"] == "en"
+    assert out["language_hint"] is None  # not an enabled language
     row = await db.get(VoiceTranscription, uuid.UUID(out["id"]))
     key = row.storage_key
     assert key and key.startswith(f"voice/{world.patient_user.id}/")
@@ -202,7 +202,7 @@ async def test_upload_transcribe_extract(
     done = r.json()
     assert done["status"] == "completed", done
     assert done["transcript"].startswith("I have had pain")
-    assert done["transcript_en"] == done["transcript"]  # English-only: no translation step
+    assert done["transcript_en"] == done["transcript"]  # English: no translation step
     assert done["language_detected"] == "en"
     assert done["intake_suggestion"]["transcript_en"] == done["transcript"]
     assert done["intake_suggestion"]["language_detected"] == "en"
@@ -214,7 +214,7 @@ async def test_upload_transcribe_extract(
     assert sug["specialty_slug"] == "orthopedics"
     assert done["audio_retained"] is False
     assert fake.calls == [
-        {"format": "wav", "language": "en", "max_seconds": float(settings.VOICE_MAX_SECONDS)}
+        {"format": "wav", "language": None, "max_seconds": float(settings.VOICE_MAX_SECONDS)}
     ]
 
     # audio deleted after transcription (VOICE_RETAIN_AUDIO=false)
@@ -228,9 +228,9 @@ async def test_upload_transcribe_extract(
     assert req["output_config"]["format"]["type"] == "json_schema"
     assert req["output_config"]["effort"] == settings.AI_EFFORT
     assert req["system"][0]["cache_control"] == {"type": "ephemeral"}
-    assert "<patient_text>" in req["messages"][0]["content"][0]["text"]
-    assert "transcript_en" not in req["output_config"]["format"]["schema"]["properties"]
-    assert "translat" not in req["system"][0]["text"].lower()
+    assert "transcript_en" in req["output_config"]["format"]["schema"]["properties"]  # used for non-English
+    assert "Patient's language: English (en)" in req["messages"][0]["content"][0]["text"]
+    assert "untrusted" in req["system"][0]["text"]
     for forbidden in ("thinking", "temperature"):
         assert forbidden not in req
 
@@ -449,7 +449,7 @@ async def test_no_api_key_uses_rules_fallback(
     )
     assert r.status_code == 200
     assert r.json()["engine"] == "rules" and r.json()["transcript_en"] == "My knee hurts"
-    assert r.json()["language_detected"] == "en"  # the old "language" field is ignored
+    assert r.json()["language_detected"] == "en"  # "es" is not an enabled language
     assert calls == []
     logs = (
         (await db.execute(select(AIRequestLog).where(AIRequestLog.purpose == "voice_intake"))).scalars().all()

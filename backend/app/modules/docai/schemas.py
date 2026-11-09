@@ -49,6 +49,9 @@ class AnalysisCreate(_Request):
     patient_id: uuid.UUID | None = None
     case_id: uuid.UUID | None = None
     consent_ai: bool = False
+    #: language of the patient-facing summary (e.g. the UI language); used when it is an enabled language,
+    #: else the request locale / the patient's preferred language / English
+    language: str | None = Field(default=None, max_length=16)
 
 
 class AnalysisPatch(_Request):
@@ -108,12 +111,15 @@ class DocumentAnalysisOut(BaseModel):
     engine: str
     model: str | None
     error: str | None
+    #: language of ``summary_patient`` in THIS response (patients: their language; others: English)
     summary_language: str
     doc_type: AnalysisDocType | None
     language: str | None
     report_date: date | None
     facility_name: str | None
     summary_patient: str | None
+    #: English copy of the patient summary (what hospitals, agents and staff read)
+    summary_patient_en: str | None = None
     summary_clinical: str | None
     key_findings: list[dict[str, Any]]
     lab_values: list[dict[str, Any]]

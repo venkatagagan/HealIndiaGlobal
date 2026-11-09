@@ -4,6 +4,10 @@ Every error response has the shape::
 
     {"error": {"code": "not_found", "message": "Case not found", "details": null, "request_id": "..."}}
 
+``code`` is stable and never translated. When the request locale (``app.core.locale``) is not English and the
+server catalog has ``errors.<code>`` in that language, ``message`` is that translated text and the original
+English message is added as ``message_en``.
+
 Raise the subclasses below from services/routers; never build error responses by hand::
 
     from app.core.errors import NotFound, Forbidden, Conflict, BadRequest
@@ -159,15 +163,41 @@ def _request_id(request: Request) -> str | None:
     return request.headers.get("x-request-id")
 
 
-def error_body(code: str, message: str, details: Any = None, request_id: str | None = None) -> dict[str, Any]:
-    return {
-        "error": {
-            "code": code,
-            "message": message,
-            "details": jsonable_encoder(details) if details is not None else None,
-            "request_id": request_id,
-        }
+def error_body(
+    code: str,
+    message: str,
+    details: Any = None,
+    request_id: str | None = None,
+    *,
+    message_en: str | None = None,
+) -> dict[str, Any]:
+    body: dict[str, Any] = {
+        "code": code,
+        "message": message,
+        "details": jsonable_encoder(details) if details is not None else None,
+        "request_id": request_id,
     }
+    if message_en is not None:
+        body["message_en"] = message_en
+    return {"error": body}
+
+
+def localize_error(request: Request, code: str, message: str) -> tuple[str, str | None]:
+    """``(message, message_en)``: the ``errors.<code>`` text in the request locale when one exists (the
+    English original then goes to ``message_en``), else ``(message, None)``. Never raises."""
+    try:
+        from app.core.locale import request_locale
+        from app.i18n import DEFAULT_LANGUAGE, STATE, server_catalog, t
+
+        locale = request_locale(request)
+        if locale == DEFAULT_LANGUAGE:
+            return message, None
+        key = f"errors.{code}"
+        if key not in server_catalog(locale) and key not in STATE.overrides.get(locale, {}):
+            return message, None
+        return t(key, locale), message
+    except Exception:  # pragma: no cover - translation must never break error rendering
+        return message, None
 
 
 def error_response(
@@ -179,9 +209,10 @@ def error_response(
     details: Any = None,
     headers: Mapping[str, str] | None = None,
 ) -> JSONResponse:
+    text, message_en = localize_error(request, code, message)
     return JSONResponse(
         status_code=status_code,
-        content=error_body(code, message, details, _request_id(request)),
+        content=error_body(code, text, details, _request_id(request), message_en=message_en),
         headers=dict(headers) if headers else None,
     )
 

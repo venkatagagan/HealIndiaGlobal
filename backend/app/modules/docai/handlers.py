@@ -14,11 +14,10 @@ from app.models import Case, HospitalMember, PatientProfile
 from app.models.docai import DocumentAnalysis
 
 
-async def _notify(
-    db: AsyncSession, user_ids: list[uuid.UUID], title: str, body: str, data: dict[str, Any]
-) -> None:
+async def _notify(db: AsyncSession, user_ids: list[uuid.UUID], key: str, data: dict[str, Any]) -> None:
     """In-app notification (+ realtime ``notification.created``) and a realtime ``document.analyzed`` event,
-    both delivered after the transaction commits."""
+    both delivered after the transaction commits. ``key`` = catalog group (``<key>.title`` / ``<key>.body``),
+    rendered in each recipient's language."""
     if not user_ids:
         return
     kind = "document.analyzed"
@@ -31,7 +30,9 @@ async def _notify(
         await realtime.send_to_users(list(user_ids), kind, data)
         return
     dedupe = f"{kind}:{data.get('analysis_id')}:{data.get('review_status')}"
-    await notify_many(db, user_ids, kind, title, body, data, dedupe_key=dedupe)
+    await notify_many(
+        db, user_ids, kind, data=data, dedupe_key=dedupe, title_key=f"{key}.title", body_key=f"{key}.body"
+    )
     queue_realtime(db, list(user_ids), kind, data)
 
 
@@ -57,8 +58,7 @@ async def on_document_analyzed(db: AsyncSession, payload: dict[str, Any]) -> Non
     await _notify(
         db,
         recipients,
-        "Your report has been read",
-        "Please review the extracted information, correct anything that is wrong and confirm it.",
+        "notifications.document_analyzed",
         _payload(analysis),
     )
 
@@ -78,7 +78,6 @@ async def on_analysis_confirmed(db: AsyncSession, payload: dict[str, Any]) -> No
     await _notify(
         db,
         list(dict.fromkeys(members)),
-        "A patient report is ready",
-        "The patient has confirmed the AI reading of a medical report for one of your cases.",
+        "notifications.document_confirmed",
         _payload(analysis),
     )

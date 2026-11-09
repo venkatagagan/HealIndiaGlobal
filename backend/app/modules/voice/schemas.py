@@ -45,13 +45,14 @@ class VoiceTranscriptionOut(BaseModel):
 
 
 class IntakeExtractIn(BaseModel):
-    """English text (typed, or an on-device English transcript). Unknown fields such as the former
-    ``language`` are ignored (the product is English-only)."""
+    """Typed text or an on-device transcript. ``language`` is the language of the text (e.g. the UI language);
+    it is used when it is an enabled language, otherwise the text is treated as English."""
 
     model_config = ConfigDict(extra="ignore")
 
     text: str = Field(min_length=1, max_length=8000)
     screening_id: uuid.UUID | None = None
+    language: str | None = Field(default=None, max_length=16)
 
 
 class ConfirmIn(_Request):
