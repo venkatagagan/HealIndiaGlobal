@@ -46,7 +46,7 @@ async def test_profile_get_creates_missing_profile(client, db, make_user, auth_h
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["user_id"] == str(user.id) and body["first_name"] == "Omar" and body["last_name"] == "Haddad"
-    assert body["nationality"] == "AE" and body["preferred_currency"] == "USD"
+    assert body["nationality"] == "AE" and body["preferred_currency"] == "AED"  # currency follows the country
     assert body["passport_last4"] is None and "passport_number" not in body
     again = await client.get(f"{API}/patient/profile", headers=auth_headers(user))
     assert again.json()["id"] == body["id"]

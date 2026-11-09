@@ -597,7 +597,7 @@ async def doctor_admin_outs(
         chosen = lead or [hp for hp in hps if proc_specialty.get(hp.procedure_id) == d.specialty_id]
         out.append(
             DoctorAdminOut(
-                **card.model_dump(),
+                **card.model_dump(exclude={"registration_verified"}),
                 bio=d.bio,
                 sub_specialties=list(d.sub_specialties or []),
                 procedures=[hp_outs[hp.id] for hp in chosen if hp.id in hp_outs],

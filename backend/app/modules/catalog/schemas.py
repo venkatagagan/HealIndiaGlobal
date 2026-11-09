@@ -14,6 +14,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
+from app.core.currency import DisplayMoney
+
 
 class _Out(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -44,6 +46,10 @@ class CostBenchmarkOut(_Out):
     cost_max_minor: int
     wait_time_text: str | None = None
     source: str | None = None
+    source_url: str | None = None
+    price_year: int | None = None
+    confidence: str | None = None
+    wait_source: str | None = None
 
 
 class ProcedureOut(_Out):
@@ -58,9 +64,18 @@ class ProcedureOut(_Out):
     india_price_min_minor: int | None = None
     india_price_max_minor: int | None = None
     currency: str = "INR"
+    display_india_price_min: DisplayMoney | None = None
+    display_india_price_max: DisplayMoney | None = None
     benchmarks: list[CostBenchmarkOut] = []
     keywords: list[str] = []
     body_areas: list[str] = []
+
+
+class AccreditationBadge(BaseModel):
+    """An accreditation a platform admin has checked (certificate seen, still valid)."""
+
+    body: str
+    valid_until: date | None = None
 
 
 class HospitalRefMini(_Out):
@@ -69,6 +84,7 @@ class HospitalRefMini(_Out):
     name: str
     city: str | None = None
     accreditations: list[str] = []
+    accreditations_verified: list[AccreditationBadge] = []
 
 
 class HospitalCard(_Out):
@@ -87,6 +103,12 @@ class HospitalCard(_Out):
     international_desk: bool = False
     starting_price_minor: int | None = None
     currency: str = "INR"
+    display_starting_price: DisplayMoney | None = None
+    # Free-text ``accreditations`` (legacy, self-declared) vs admin-checked ``accreditations_verified``.
+    accreditations_verified: list[AccreditationBadge] = []
+    # Earliest day (IST, today or later) with a free slot at this hospital (any doctor or hospital-wide).
+    next_available_consultation: date | None = None
+    next_available_admission: date | None = None
 
 
 class ReviewOut(_Out):
@@ -100,6 +122,12 @@ class ReviewOut(_Out):
     doctor_id: uuid.UUID | None = None
     case_id: uuid.UUID | None = None
     status: str
+    # True when the review was written by the patient of a completed booking at this hospital.
+    verified_patient: bool = False
+    treatment_name: str | None = None
+    doctor_name: str | None = None
+    hospital_name: str | None = None
+    published_at: datetime | None = None
 
 
 class PackageOut(_Out):
@@ -109,6 +137,8 @@ class PackageOut(_Out):
     price_minor: int
     original_price_minor: int | None = None
     currency: str
+    display_price: DisplayMoney | None = None
+    display_original_price: DisplayMoney | None = None
     description: str | None = None
     includes: dict[str, Any] = {}
     is_active: bool = True
@@ -122,6 +152,8 @@ class HospitalProcedureOut(_Out):
     price_min_minor: int | None = None
     price_max_minor: int | None = None
     currency: str
+    display_price_min: DisplayMoney | None = None
+    display_price_max: DisplayMoney | None = None
     hospital_stay_days: int | None = None
     success_rate_pct: float | None = None
     inclusions: list[str] = []
@@ -129,6 +161,9 @@ class HospitalProcedureOut(_Out):
     packages: list[PackageOut] = []
     doctor_ids: list[uuid.UUID] = []
     is_active: bool = True
+    # Lead doctors' slots plus hospital-wide slots (or any slot at the hospital when no lead doctor is set).
+    next_available_consultation: date | None = None
+    next_available_admission: date | None = None
 
 
 class DoctorCard(_Out):
@@ -146,8 +181,14 @@ class DoctorCard(_Out):
     rating_count: int = 0
     consultation_fee_minor: int | None = None
     currency: str = "INR"
+    display_consultation_fee: DisplayMoney | None = None
     teleconsult_available: bool = False
     hospital: HospitalRefMini
+    # True once a platform admin checked the medical registration (cards show the flag, not the number).
+    registration_verified: bool = False
+    # The doctor's own free slots plus hospital-wide slots (doctor_id NULL) at their hospital.
+    next_available_consultation: date | None = None
+    next_available_admission: date | None = None
 
 
 class DoctorDetail(DoctorCard):
@@ -161,6 +202,8 @@ class DoctorDetail(DoctorCard):
     registration_verified: bool = False
     procedures: list[HospitalProcedureOut] = []
     next_available_date: date | None = None
+    # Latest published reviews naming this doctor (full list: GET /doctors/{id}/reviews).
+    reviews: list[ReviewOut] = []
 
 
 class HospitalDetail(HospitalCard):
@@ -193,6 +236,14 @@ class CostHome(BaseModel):
     max_minor: int
     currency: str
     wait_time_text: str | None = None
+    # Benchmark provenance. ``original_currency`` is the benchmark's own currency (amounts above are
+    # converted to ``currency``).
+    original_currency: str | None = None
+    source: str | None = None
+    source_url: str | None = None
+    price_year: int | None = None
+    confidence: str | None = None
+    wait_source: str | None = None
 
 
 class CostIndia(BaseModel):
@@ -200,6 +251,8 @@ class CostIndia(BaseModel):
     max_minor: int
     currency: str
     wait_time_text: str
+    # Earliest free admission slot (IST date) at an active hospital offering the procedure, if any.
+    earliest_admission_date: date | None = None
 
 
 class CostSavings(BaseModel):
@@ -216,12 +269,55 @@ class CostItem(BaseModel):
     currency: str
 
 
-class CostComparisonOut(BaseModel):
+class HomeCountryFields(BaseModel):
+    """How the home country was chosen. ``requested_country`` is the country asked for (query) or detected
+    (profile, account, CDN header, browser language); ``country_used`` is the benchmark country actually
+    shown and differs from it when no benchmark exists for the requested one (``is_fallback``)."""
+
+    requested_country: str | None = None
+    country_used: str
+    is_fallback: bool = False
+    # "query" | "profile" | "account" | "header" | "accept_language" | "default"
+    country_source: str = "default"
+
+
+class CostComparisonOut(HomeCountryFields):
     procedure: IdSlugName
     home: CostHome
     india: CostIndia
     savings: CostSavings
     itemized: list[CostItem]
+
+
+class CostHighlightItem(BaseModel):
+    procedure: IdSlugName
+    specialty: IdSlugName
+    home: CostHome
+    india: CostIndia
+    savings: CostSavings
+
+
+class CostHighlightsOut(HomeCountryFields):
+    currency: str
+    items: list[CostHighlightItem] = []
+
+
+class ProcedureEarliestItem(BaseModel):
+    hospital: HospitalCard
+    hospital_procedure_id: uuid.UUID
+    price_min_minor: int | None = None
+    price_max_minor: int | None = None
+    currency: str
+    display_price_min: DisplayMoney | None = None
+    display_price_max: DisplayMoney | None = None
+    lead_doctor_ids: list[uuid.UUID] = []
+    next_available_admission: date | None = None
+    next_available_consultation: date | None = None
+
+
+class ProcedureEarliestOut(BaseModel):
+    procedure: IdSlugName
+    items: list[ProcedureEarliestItem] = []
 
 
 class SearchResults(BaseModel):

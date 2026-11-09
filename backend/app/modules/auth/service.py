@@ -31,6 +31,7 @@ from sqlalchemy.orm.attributes import set_committed_value
 
 from app.core.audit import audit_log
 from app.core.config import settings
+from app.core.currency import default_currency_for_country
 from app.core.deps import get_client_ip, get_user_agent, is_staff
 from app.core.enums import (
     AgentStatus,
@@ -513,7 +514,7 @@ async def _create_role_records(
                 nationality=country_code,
                 country_of_residence=country_code,
                 preferred_language=user.preferred_language,
-                preferred_currency=settings.DEFAULT_PATIENT_CURRENCY,
+                preferred_currency=await default_currency_for_country(db, country_code),
                 referred_by_agent_id=referred_by_agent_id,
             )
         )
@@ -1199,6 +1200,14 @@ async def update_me(db: AsyncSession, user: User, body: MeUpdateIn, request: Req
     before = {k: getattr(user, k) for k in changes}
     for key, value in changes.items():
         setattr(user, key, value)
+    if changes.get("country_code") and _role(user) == UserRole.PATIENT:
+        # Keep the patient profile's country of residence (and the default currency) in step.
+        from app.modules.patients.service import sync_home_country
+
+        profile = (
+            await db.execute(select(PatientProfile).where(PatientProfile.user_id == user.id))
+        ).scalar_one_or_none()
+        await sync_home_country(db, user, profile, changes["country_code"])
     if changes:
         await audit_log(
             db,

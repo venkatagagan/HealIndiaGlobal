@@ -14,7 +14,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
-from app.core.config import settings
+from app.core.currency import default_currency_for_country
 from app.core.enums import BookingStatus, CaseStatus, ItineraryStatus, SavedEntityType
 from app.core.errors import BadRequest, NotFound
 from app.core.ids import uuid7
@@ -87,7 +87,7 @@ async def get_or_create_profile(db: AsyncSession, user: User) -> PatientProfile:
             nationality=user.country_code,
             country_of_residence=user.country_code,
             preferred_language=user.preferred_language,
-            preferred_currency=settings.DEFAULT_PATIENT_CURRENCY,
+            preferred_currency=await default_currency_for_country(db, user.country_code),
         )
         .on_conflict_do_nothing(index_elements=[PatientProfile.user_id])
     )
@@ -123,9 +123,27 @@ def profile_out(profile: PatientProfile, user: User) -> PatientProfileOut:
         referred_by_agent_id=profile.referred_by_agent_id,
         managed_by_agent_id=profile.managed_by_agent_id,
         preferred_currency=profile.preferred_currency,
+        currency_set_by_user=profile.currency_set_by_user,
         created_at=profile.created_at,
         updated_at=profile.updated_at,
     )
+
+
+async def sync_home_country(
+    db: AsyncSession, user: User, profile: PatientProfile | None, country: str | None
+) -> None:
+    """Keep ``User.country_code`` and ``PatientProfile.country_of_residence`` equal after either changed.
+
+    Until the patient picks a currency themselves (``currency_set_by_user``), ``preferred_currency`` follows
+    the country (its currency when supported, else USD). Clearing the country changes nothing. No commit."""
+    if not country:
+        return
+    user.country_code = country
+    if profile is None:
+        return
+    profile.country_of_residence = country
+    if not profile.currency_set_by_user:
+        profile.preferred_currency = await default_currency_for_country(db, country)
 
 
 async def update_profile(
@@ -145,6 +163,8 @@ async def update_profile(
                     details={"supported": supported},
                 )
             profile.preferred_currency = ccy
+            profile.currency_set_by_user = True
+    new_country = changes.pop("country_of_residence", None)
     if "passport_number" in changes:
         number = changes.pop("passport_number")
         profile.passport_number = number
@@ -159,6 +179,13 @@ async def update_profile(
             changes[key] = {k: v for k, v in changes[key].items() if v is not None}
     for key, value in changes.items():
         setattr(profile, key, value)
+    if new_country:
+        if new_country != profile.country_of_residence:
+            await sync_home_country(db, user, profile, new_country)
+        else:
+            user.country_code = new_country
+    elif "country_of_residence" in body.model_fields_set:
+        profile.country_of_residence = None
 
     if profile.full_name and ("first_name" in changes or "last_name" in changes):
         user.full_name = profile.full_name[:200]

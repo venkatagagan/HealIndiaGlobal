@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Sequence
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any, cast
 
 import structlog
@@ -24,6 +24,7 @@ from app.core.enums import (
     ConsentKind,
     HospitalStatus,
     ScreeningStatus,
+    SlotKind,
 )
 from app.core.errors import BadRequest, Conflict, ValidationFailed
 from app.core.events import publish
@@ -47,6 +48,7 @@ from app.models import (
     User,
 )
 from app.modules.auth.service import record_consent
+from app.modules.catalog.earliest import slot_minima
 from app.modules.privacy.guards import ensure_guardian_consent
 from app.modules.screening import policies
 from app.modules.screening.ai import claude
@@ -479,6 +481,12 @@ async def build_match_outs(
             starting[hid] = (int(min_price), str(ccy))
 
     savings = await compute_savings(db, matches, home_country)
+    minima = await slot_minima(db, hospital_ids)
+
+    def _next(m: ScreeningMatch, kind: SlotKind) -> date | None:
+        if m.doctor_id is not None:
+            return minima.doctor(m.doctor_id, m.hospital_id, kind)
+        return minima.hospital(m.hospital_id, kind)
 
     out: list[MatchOut] = []
     for m in matches:
@@ -541,6 +549,8 @@ async def build_match_outs(
                 estimated_cost_minor=m.estimated_cost_minor,
                 currency=m.currency,
                 savings=SavingsOut(**sav) if sav else None,
+                next_available_consultation=_next(m, SlotKind.CONSULTATION),
+                next_available_admission=_next(m, SlotKind.ADMISSION),
             )
         )
     return out

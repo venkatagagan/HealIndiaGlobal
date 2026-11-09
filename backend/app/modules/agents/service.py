@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit_log
 from app.core.config import settings
+from app.core.currency import default_currency_for_country
 from app.core.deps import PageQuery
 from app.core.enums import (
     AgentStatus,
@@ -697,6 +698,7 @@ async def create_patient(
         managed_by_agent_id=agent.id,
         referred_by_agent_id=agent.id,
         preferred_language="en",
+        preferred_currency=await default_currency_for_country(db, body.nationality),
     )
     db.add(profile)
     try:
@@ -801,6 +803,13 @@ async def update_patient(
             before[key] = getattr(patient, key)
             setattr(patient, key, changes[key])
             after[key] = changes[key]
+    if "preferred_currency" in changes:
+        patient.currency_set_by_user = True
+    if changes.get("country_of_residence"):
+        from app.modules.patients.service import sync_home_country
+
+        await sync_home_country(db, patient_user, patient, changes["country_of_residence"])
+        after["preferred_currency"] = patient.preferred_currency
     if "address" in changes:
         before["address"] = patient.address
         patient.address = body.address.model_dump(exclude_none=True) if body.address else None

@@ -22,6 +22,7 @@ from app.modules.cases import consultations as consultation_service
 from app.modules.cases import emergency as emergency_service
 from app.modules.cases import policies, serializers
 from app.modules.cases import service as case_service
+from app.modules.cases.display import DisplayCurrency, with_display
 from app.modules.cases.schemas import (
     AssignCoordinator,
     BookingAdmit,
@@ -151,9 +152,11 @@ async def list_cases(
             description="created_at | updated_at | case_number | status; prefix '-' for descending",
         ),
     ] = None,
-) -> Page[CaseOut]:
+    currency: DisplayCurrency = None,
+) -> Any:
     stmt = case_service.list_cases_stmt(user, sort=sort, **filters.as_kwargs())
-    return await paginate(db, stmt, params, transform=lambda rows: serializers.case_outs(db, rows))
+    page = await paginate(db, stmt, params, transform=lambda rows: serializers.case_outs(db, rows))
+    return await with_display(db, page, user, currency)
 
 
 @router.get("/cases/status-counts", response_model=CaseStatusCounts)
@@ -164,9 +167,11 @@ async def case_status_counts(db: DbSession, user: CurrentUser, filters: CaseFilt
 
 
 @router.get("/cases/{case_id}", response_model=CaseDetail)
-async def get_case(case_id: uuid.UUID, db: DbSession, user: CurrentUser) -> CaseDetail:
+async def get_case(
+    case_id: uuid.UUID, db: DbSession, user: CurrentUser, currency: DisplayCurrency = None
+) -> Any:
     case = await policies.get_case_for_user(db, case_id, user)
-    return await serializers.case_detail(db, case)
+    return await with_display(db, await serializers.case_detail(db, case), user, currency)
 
 
 @router.post("/cases/{case_id}/status", response_model=CaseOut)
@@ -302,9 +307,11 @@ async def list_bookings(
             description="created_at | admission_date | booking_number | total_minor | status; '-' = desc",
         ),
     ] = None,
-) -> Page[BookingOut]:
+    currency: DisplayCurrency = None,
+) -> Any:
     stmt = booking_service.list_bookings_stmt(user, sort=sort, **filters)
-    return await paginate(db, stmt, params, transform=lambda rows: serializers.booking_outs(db, rows))
+    page = await paginate(db, stmt, params, transform=lambda rows: serializers.booking_outs(db, rows))
+    return await with_display(db, page, user, currency)
 
 
 @router.get("/bookings/status-counts", response_model=CaseStatusCounts)
@@ -317,9 +324,11 @@ async def booking_status_counts(
 
 
 @router.get("/bookings/{booking_id}", response_model=BookingOut)
-async def get_booking(booking_id: uuid.UUID, db: DbSession, user: CurrentUser) -> BookingOut:
+async def get_booking(
+    booking_id: uuid.UUID, db: DbSession, user: CurrentUser, currency: DisplayCurrency = None
+) -> Any:
     booking = await booking_service.get_booking_for_user(db, booking_id, user)
-    return await serializers.booking_out_one(db, booking)
+    return await with_display(db, await serializers.booking_out_one(db, booking), user, currency)
 
 
 @router.post("/bookings/{booking_id}/cancel", response_model=BookingCancelOut)

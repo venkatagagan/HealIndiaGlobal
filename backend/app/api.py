@@ -27,6 +27,7 @@ from app.modules.privacy.router import router as privacy_router
 from app.modules.screening.router import router as screening_router
 from app.modules.settlements.router import router as settlements_router
 from app.modules.travel.router import router as travel_router
+from app.modules.trust.router import router as trust_router
 from app.modules.voice.router import router as voice_router
 
 api_router = APIRouter(prefix="/api/v1")
@@ -51,5 +52,6 @@ for _router in (
     moderation_router,  # after admin_router: /admin/reports/{report_id} vs /admin/reports/revenue
     voice_router,
     privacy_router,
+    trust_router,
 ):
     api_router.include_router(_router)

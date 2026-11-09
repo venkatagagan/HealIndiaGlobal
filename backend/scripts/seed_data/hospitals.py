@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
+#: (hospital slug, body) left unverified so the admin accreditation queue has an item.
+ACCREDITATION_PENDING: tuple[str, str] = ("pournami-chennai", "nabl")
+
 __all__ = ["HOSPITALS", "gstin_for"]
 
 _GST_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

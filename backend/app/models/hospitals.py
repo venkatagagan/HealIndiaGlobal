@@ -39,6 +39,7 @@ __all__ = [
     "AvailabilitySlot",
     "Doctor",
     "Hospital",
+    "HospitalAccreditation",
     "HospitalMember",
     "HospitalProcedure",
     "HospitalSpecialty",
@@ -296,6 +297,9 @@ class AvailabilitySlot(UUIDPkMixin, TimestampMixin, Base):
 
 
 class Review(UUIDPkMixin, TimestampMixin, Base):
+    """Patient review. ``booking_id`` set = written by the patient of that (completed) booking, i.e. a
+    verified patient; one review per booking."""
+
     __tablename__ = "reviews"
     __table_args__ = (sa.CheckConstraint("rating >= 1 AND rating <= 5", name="rating_range"),)
 
@@ -303,6 +307,10 @@ class Review(UUIDPkMixin, TimestampMixin, Base):
     doctor_id: Mapped[uuid.UUID | None] = fk("doctors.id", ondelete="SET NULL", nullable=True)
     patient_id: Mapped[uuid.UUID] = fk("patient_profiles.id", ondelete="CASCADE")
     case_id: Mapped[uuid.UUID | None] = fk("cases.id", ondelete="SET NULL", nullable=True)
+    booking_id: Mapped[uuid.UUID | None] = fk(
+        "bookings.id", ondelete="SET NULL", nullable=True, index=False, unique=True
+    )
+    procedure_id: Mapped[uuid.UUID | None] = fk("procedures.id", ondelete="SET NULL", nullable=True)
     rating: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     title: Mapped[str | None] = mapped_column(String(200))
     body: Mapped[str | None] = mapped_column(Text)
@@ -313,3 +321,24 @@ class Review(UUIDPkMixin, TimestampMixin, Base):
         server_default="pending",
         index=True,
     )
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    moderated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    moderated_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    moderation_reason: Mapped[str | None] = mapped_column(Text)
+
+
+class HospitalAccreditation(UUIDPkMixin, TimestampMixin, Base):
+    """Structured accreditation (JCI, NABH, NABL, ...). Shown as verified only after a platform admin checked
+    the certificate (``verified_at``) and while ``valid_until`` has not passed. ``Hospital.accreditations``
+    (free text) is kept for compatibility."""
+
+    __tablename__ = "hospital_accreditations"
+    __table_args__ = (sa.UniqueConstraint("hospital_id", "body"),)
+
+    hospital_id: Mapped[uuid.UUID] = fk("hospitals.id", ondelete="CASCADE")
+    body: Mapped[str] = mapped_column(String(20), nullable=False)
+    certificate_number: Mapped[str | None] = mapped_column(String(100))
+    valid_until: Mapped[dt.date | None] = mapped_column(Date)
+    verified_by_admin_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    document_id: Mapped[uuid.UUID | None] = fk("documents.id", ondelete="SET NULL", nullable=True)

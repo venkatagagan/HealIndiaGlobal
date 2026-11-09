@@ -300,3 +300,6 @@ class MatchOut(BaseModel):
     estimated_cost_minor: int | None = None
     currency: str | None = None
     savings: SavingsOut | None = None
+    # Earliest free day (IST): the matched doctor's own + hospital-wide slots, else any slot at the hospital.
+    next_available_consultation: date | None = None
+    next_available_admission: date | None = None

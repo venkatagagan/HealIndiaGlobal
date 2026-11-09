@@ -156,6 +156,8 @@ class PatientProfileOut(BaseModel):
     referred_by_agent_id: uuid.UUID | None
     managed_by_agent_id: uuid.UUID | None
     preferred_currency: str
+    # False while the currency still follows the country of residence (set true by choosing one).
+    currency_set_by_user: bool = False
     created_at: datetime
     updated_at: datetime
 

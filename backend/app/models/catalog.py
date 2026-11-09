@@ -8,7 +8,7 @@ from decimal import Decimal
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy import Boolean, DateTime, Integer, Numeric, String, Text, func
+from sqlalchemy import Boolean, DateTime, Integer, Numeric, SmallInteger, String, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -96,6 +96,12 @@ class CostBenchmark(UUIDPkMixin, TimestampMixin, Base):
     cost_max_minor: Mapped[int] = money_col()
     wait_time_text: Mapped[str | None] = mapped_column(String(100))
     source: Mapped[str | None] = mapped_column(String(255))
+    # Where the figures come from (shown next to the home price so patients can check it).
+    source_url: Mapped[str | None] = mapped_column(String(1024))
+    price_year: Mapped[int | None] = mapped_column(SmallInteger)
+    # "high" | "medium" | "low" (how well the source matches a self-pay price for this procedure)
+    confidence: Mapped[str | None] = mapped_column(String(20))
+    wait_source: Mapped[str | None] = mapped_column(String(255))
 
 
 class CulturalTip(UUIDPkMixin, TimestampMixin, Base):
