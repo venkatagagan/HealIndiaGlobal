@@ -51,7 +51,7 @@ class BrandHeader extends StatelessWidget {
     this.leading,
     this.trailing,
     this.onDark = false,
-    this.padding = const EdgeInsets.fromLTRB(16, 12, 16, 8),
+    this.padding = const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 8),
   });
 
   final bool centered;
