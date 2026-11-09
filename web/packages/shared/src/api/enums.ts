@@ -461,7 +461,7 @@ export const LIKELIHOODS = ['low', 'medium', 'high'] as const;
 export type Likelihood = (typeof LIKELIHOODS)[number];
 export const LIKELIHOOD_LABELS = labelsFor(LIKELIHOODS);
 
-export const HOSPITAL_SORTS = ['rating', 'price', 'name'] as const;
+export const HOSPITAL_SORTS = ['rating', 'price', 'name', 'soonest'] as const;
 export type HospitalSort = (typeof HOSPITAL_SORTS)[number];
 
 export const REPORT_GROUP_BY = ['month', 'hospital', 'specialty'] as const;

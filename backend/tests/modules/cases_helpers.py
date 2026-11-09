@@ -249,6 +249,8 @@ RECORDED_EVENTS = (
     "booking.cancelled",
     "sos.created",
     "sos.updated",
+    "review.submitted",
+    "review.moderated",
 )
 
 

@@ -15,7 +15,12 @@ const ACCREDITATIONS = [
   { value: 'nabl', label: 'NABL' },
   { value: 'iso', label: 'ISO' },
 ];
-const SORT_LABELS: Record<HospitalSort, string> = { rating: 'Top rated', price: 'Lowest price', name: 'Name (A–Z)' };
+const SORT_LABELS: Record<HospitalSort, string> = {
+  rating: 'Top rated',
+  price: 'Lowest price',
+  name: 'Name (A–Z)',
+  soonest: 'Soonest appointment',
+};
 const FILTERS = {
   q: filterParam.text(),
   city: filterParam.text(),

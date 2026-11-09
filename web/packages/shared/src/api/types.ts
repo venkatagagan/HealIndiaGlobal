@@ -338,6 +338,8 @@ export interface PatientProfileOut {
   referred_by_agent_id: Uuid | null;
   managed_by_agent_id: Uuid | null;
   preferred_currency: CurrencyCode;
+  /** false while preferred_currency still follows country_of_residence */
+  currency_set_by_user?: boolean;
   email?: string | null;
   full_name?: string;
   created_at?: IsoDateTime;
@@ -493,6 +495,26 @@ export interface CostBenchmarkOut {
   id?: Uuid;
   procedure_id?: Uuid;
   source?: string | null;
+  source_url?: string | null;
+  price_year?: number | null;
+  /** high | medium | low */
+  confidence?: string | null;
+  wait_source?: string | null;
+}
+
+/** Amount converted to the viewer's currency for display only (`?currency=` or the patient's preferred
+ * currency). `fx_rate` = units of `currency` per 1 unit of the original currency. */
+export interface DisplayMoney {
+  amount_minor: number;
+  currency: CurrencyCode;
+  fx_rate: string;
+  approximate: boolean;
+}
+
+/** An accreditation a platform admin has checked (still valid). */
+export interface AccreditationBadge {
+  body: string;
+  valid_until: IsoDate | null;
 }
 
 export interface ProcedureOut {
@@ -507,6 +529,8 @@ export interface ProcedureOut {
   india_price_min_minor: number | null;
   india_price_max_minor: number | null;
   currency: CurrencyCode;
+  display_india_price_min?: DisplayMoney | null;
+  display_india_price_max?: DisplayMoney | null;
   benchmarks: CostBenchmarkOut[];
   keywords?: string[];
   body_areas?: string[];
@@ -516,6 +540,7 @@ export interface ProcedureOut {
 export interface ProcedureListParams {
   specialty?: string;
   q?: string;
+  currency?: CurrencyCode;
 }
 
 export interface HospitalRefMini {
@@ -524,6 +549,7 @@ export interface HospitalRefMini {
   name: string;
   city: string;
   accreditations: string[];
+  accreditations_verified?: AccreditationBadge[];
 }
 
 export interface HospitalCard {
@@ -543,6 +569,12 @@ export interface HospitalCard {
   international_desk: boolean;
   starting_price_minor: number | null;
   currency: CurrencyCode;
+  display_starting_price?: DisplayMoney | null;
+  /** admin-verified, unexpired accreditations (`accreditations` is the hospital's own free-text list) */
+  accreditations_verified?: AccreditationBadge[];
+  /** earliest free slot (IST date) */
+  next_available_consultation?: IsoDate | null;
+  next_available_admission?: IsoDate | null;
 }
 
 export interface ReviewOut {
@@ -556,6 +588,92 @@ export interface ReviewOut {
   doctor_id?: Uuid | null;
   case_id?: Uuid | null;
   status?: ReviewStatus;
+  /** written for a completed booking at this hospital */
+  verified_patient?: boolean;
+  treatment_name?: string | null;
+  doctor_name?: string | null;
+  hospital_name?: string | null;
+  published_at?: IsoDateTime | null;
+}
+
+/** GET /me/reviews */
+export interface PatientReviewOut extends ReviewOut {
+  booking_id: Uuid | null;
+  moderation_reason: string | null;
+  updated_at: IsoDateTime | null;
+  /** pending reviews can still be edited or deleted */
+  editable: boolean;
+}
+
+/** GET /me/reviews/eligible - completed bookings without a review */
+export interface ReviewableBookingOut {
+  booking_id: Uuid;
+  booking_number: string;
+  hospital: IdSlugName;
+  doctor: { id: Uuid; name: string } | null;
+  procedure: IdSlugName | null;
+  admission_date: IsoDate | null;
+  discharge_date: IsoDate | null;
+  completed_at: IsoDateTime | null;
+}
+
+/** POST /reviews */
+export interface ReviewCreateIn {
+  hospital_id: Uuid;
+  booking_id: Uuid;
+  doctor_id?: Uuid | null;
+  rating: number;
+  title?: string | null;
+  body?: string | null;
+}
+
+/** PATCH /me/reviews/{id} (pending reviews only) */
+export interface ReviewUpdateIn {
+  doctor_id?: Uuid | null;
+  rating?: number;
+  title?: string | null;
+  body?: string | null;
+}
+
+/** GET /admin/reviews */
+export interface AdminReviewOut extends ReviewOut {
+  booking_id: Uuid | null;
+  booking_number: string | null;
+  patient_id: Uuid;
+  moderation_reason: string | null;
+  moderated_at: IsoDateTime | null;
+  moderated_by_user_id: Uuid | null;
+  updated_at: IsoDateTime | null;
+}
+
+/** PATCH /admin/reviews/{id} - a reason is required to hide */
+export interface ReviewModerateIn {
+  status: 'published' | 'hidden';
+  reason?: string | null;
+}
+
+/** /admin/hospitals/{id}/accreditations, /admin/accreditations/{id}, /hospital-portal/accreditations */
+export interface AccreditationOut {
+  id: Uuid;
+  hospital_id: Uuid;
+  body: string;
+  certificate_number: string | null;
+  valid_until: IsoDate | null;
+  document_id: Uuid | null;
+  verified: boolean;
+  verified_at: IsoDateTime | null;
+  verified_by_admin_id: Uuid | null;
+  /** verified and not expired: shown in accreditations_verified */
+  is_public: boolean;
+  created_at: IsoDateTime;
+  updated_at: IsoDateTime;
+}
+
+export interface AccreditationIn {
+  body: string;
+  certificate_number?: string | null;
+  valid_until?: IsoDate | null;
+  document_id?: Uuid | null;
 }
 
 export interface PackageIncludes {
@@ -574,6 +692,8 @@ export interface PackageOut {
   price_minor: number;
   original_price_minor: number | null;
   currency: CurrencyCode;
+  display_price?: DisplayMoney | null;
+  display_original_price?: DisplayMoney | null;
   description: string | null;
   includes: PackageIncludes;
   is_active?: boolean;
@@ -594,6 +714,10 @@ export interface HospitalProcedureOut {
   packages: PackageOut[];
   doctor_ids?: Uuid[];
   is_active?: boolean;
+  display_price_min?: DisplayMoney | null;
+  display_price_max?: DisplayMoney | null;
+  next_available_consultation?: IsoDate | null;
+  next_available_admission?: IsoDate | null;
 }
 
 export interface DoctorCard {
@@ -613,6 +737,12 @@ export interface DoctorCard {
   currency: CurrencyCode;
   teleconsult_available: boolean;
   hospital: HospitalRefMini;
+  display_consultation_fee?: DisplayMoney | null;
+  /** an admin checked the medical registration */
+  registration_verified?: boolean;
+  /** the doctor's own + hospital-wide free slots (IST date) */
+  next_available_consultation?: IsoDate | null;
+  next_available_admission?: IsoDate | null;
 }
 
 export interface DoctorDetail extends DoctorCard {
@@ -625,6 +755,8 @@ export interface DoctorDetail extends DoctorCard {
   registration_council?: string | null;
   registration_council_name?: string | null;
   registration_verified?: boolean;
+  /** latest published reviews naming this doctor */
+  reviews?: ReviewOut[];
 }
 
 /** GET /content/medical-councils — "nmc" + State Medical Councils. */
@@ -657,6 +789,7 @@ export interface HospitalListParams extends PageParams {
   accreditation?: string;
   language?: string;
   sort?: HospitalSort;
+  currency?: CurrencyCode;
 }
 
 export interface DoctorListParams extends PageParams {
@@ -666,6 +799,8 @@ export interface DoctorListParams extends PageParams {
   language?: string;
   gender?: Gender;
   procedure?: string;
+  sort?: 'soonest' | 'experience';
+  currency?: CurrencyCode;
 }
 
 export interface AvailabilityDay {
@@ -681,35 +816,97 @@ export interface AvailabilityParams {
   to?: IsoDate;
 }
 
-export interface CostComparison {
+export interface CostHome {
+  country_code: CountryCode;
+  min_minor: number;
+  max_minor: number;
+  currency: CurrencyCode;
+  wait_time_text: string | null;
+  /** the benchmark's own currency (amounts above are converted to `currency`) */
+  original_currency?: CurrencyCode | null;
+  source?: string | null;
+  source_url?: string | null;
+  price_year?: number | null;
+  /** high | medium | low */
+  confidence?: string | null;
+  wait_source?: string | null;
+}
+
+export interface CostIndia {
+  min_minor: number;
+  max_minor: number;
+  currency: CurrencyCode;
+  wait_time_text: string;
+  /** earliest free admission slot at a hospital offering the procedure */
+  earliest_admission_date?: IsoDate | null;
+}
+
+export interface CostSavings {
+  min_minor: number;
+  max_minor: number;
+  currency: CurrencyCode;
+  pct_min: number;
+  pct_max: number;
+}
+
+/** How the home country was chosen; `country_used` differs from `requested_country` when no benchmark exists
+ * for it (`is_fallback`). */
+export interface HomeCountryInfo {
+  requested_country?: CountryCode | null;
+  country_used?: CountryCode;
+  is_fallback?: boolean;
+  /** query | profile | account | header | accept_language | default */
+  country_source?: string;
+}
+
+export interface CostComparison extends HomeCountryInfo {
   procedure: IdSlugName;
-  home: {
-    country_code: CountryCode;
-    min_minor: number;
-    max_minor: number;
-    currency: CurrencyCode;
-    wait_time_text: string | null;
-  };
-  india: {
-    min_minor: number;
-    max_minor: number;
-    currency: CurrencyCode;
-    wait_time_text: string;
-  };
-  savings: {
-    min_minor: number;
-    max_minor: number;
-    currency: CurrencyCode;
-    pct_min: number;
-    pct_max: number;
-  };
+  home: CostHome;
+  india: CostIndia;
+  savings: CostSavings;
   itemized: { category: QuoteLineCategory | (string & {}); amount_minor: number; currency: CurrencyCode }[];
 }
 
 export interface CostComparisonParams {
   procedure: string;
-  country: CountryCode;
+  /** default: the signed-in patient's country, else detected, else US (is_fallback) */
+  country?: CountryCode;
   currency?: CurrencyCode;
+}
+
+/** GET /cost-comparison/highlights */
+export interface CostHighlights extends HomeCountryInfo {
+  currency: CurrencyCode;
+  items: {
+    procedure: IdSlugName;
+    specialty: IdSlugName;
+    home: CostHome;
+    india: CostIndia;
+    savings: CostSavings;
+  }[];
+}
+
+export interface CostHighlightsParams {
+  country?: CountryCode;
+  currency?: CurrencyCode;
+  limit?: number;
+}
+
+/** GET /procedures/{slug}/earliest */
+export interface ProcedureEarliest {
+  procedure: IdSlugName;
+  items: {
+    hospital: HospitalCard;
+    hospital_procedure_id: Uuid;
+    price_min_minor: number | null;
+    price_max_minor: number | null;
+    currency: CurrencyCode;
+    display_price_min?: DisplayMoney | null;
+    display_price_max?: DisplayMoney | null;
+    lead_doctor_ids: Uuid[];
+    next_available_admission: IsoDate | null;
+    next_available_consultation: IsoDate | null;
+  }[];
 }
 
 export interface SearchResults {
@@ -1047,6 +1244,8 @@ export interface MatchOut {
   estimated_cost_minor: number | null;
   currency: CurrencyCode;
   savings: MatchSavings | null;
+  next_available_consultation?: IsoDate | null;
+  next_available_admission?: IsoDate | null;
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -1064,6 +1263,8 @@ export interface QuoteLineItem {
   category: QuoteLineCategory;
   description: string;
   amount_minor: number;
+  /** in responses, with a display currency */
+  display_amount?: DisplayMoney | null;
 }
 
 export interface QuoteOut {
@@ -1074,6 +1275,8 @@ export interface QuoteOut {
   line_items: QuoteLineItem[];
   total_minor: number;
   currency: CurrencyCode;
+  /** approximate total in the viewer's currency (patients: preferred currency; others: ?currency=) */
+  display_total?: DisplayMoney | null;
   estimated_stay_days: number | null;
   valid_until: IsoDate | null;
   prepared_by_name: string | null;
@@ -1128,6 +1331,10 @@ export interface BookingOut {
   amount_paid_minor: number;
   amount_refunded_minor: number;
   balance_due_minor: number;
+  display_total?: DisplayMoney | null;
+  display_deposit?: DisplayMoney | null;
+  display_amount_paid?: DisplayMoney | null;
+  display_balance_due?: DisplayMoney | null;
   created_at: IsoDateTime;
   confirmed_at: IsoDateTime | null;
   admitted_at: IsoDateTime | null;
@@ -2945,6 +3152,10 @@ export interface CostBenchmarkIn {
   cost_max_minor: number;
   wait_time_text?: string | null;
   source?: string | null;
+  source_url?: string | null;
+  price_year?: number | null;
+  confidence?: 'high' | 'medium' | 'low' | null;
+  wait_source?: string | null;
 }
 
 export interface CulturalTipIn {

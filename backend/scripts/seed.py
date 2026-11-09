@@ -51,7 +51,7 @@ from scripts.seed_data.catalog import PROCEDURES, SPECIALTIES
 from scripts.seed_data.content import CULTURAL_TIPS, FX_RATES, FX_SOURCE
 from scripts.seed_data.doctors import DOCTORS
 from scripts.seed_data.finance import COMMISSION_RULES, PAYOUT_ACCOUNTS
-from scripts.seed_data.hospitals import HOSPITALS
+from scripts.seed_data.hospitals import ACCREDITATION_PENDING, HOSPITALS
 from scripts.seed_data.journeys import JOURNEYS, REVIEWS, STAGES
 from scripts.seed_data.offerings import (
     build_packages,
@@ -104,6 +104,7 @@ _REPORT_TABLES = (
     "consents",
     "payout_accounts",
     "commission_rules",
+    "hospital_accreditations",
     "reviews",
     "cases",
     "case_status_history",
@@ -495,6 +496,7 @@ class Seeder:
                 },
             )
             self.ids["hospital"][hospital["slug"]] = hospital_id
+            await self.seed_accreditations(hospital, hospital_id, approver)
             await self.insert_ignore(
                 "hospital_specialties",
                 [
@@ -546,6 +548,28 @@ class Seeder:
             f"  {len(HOSPITALS)} hospitals, {len(DOCTORS)} doctors, {len(ACCOMMODATIONS)} accommodation "
             f"providers, {len(SERVICE_PROVIDERS)} service providers"
         )
+
+    async def seed_accreditations(
+        self, hospital: dict[str, Any], hospital_id: uuid.UUID, approver: uuid.UUID | None
+    ) -> None:
+        """Structured certificates for the declared accreditations: verified by the demo admin, valid for two
+        more years. One certificate (``ACCREDITATION_PENDING``) is left unverified for the admin queue."""
+        if not self.has_table("hospital_accreditations"):
+            return
+        for index, body in enumerate(hospital.get("accreditations") or []):
+            pending = (hospital["slug"], body) == ACCREDITATION_PENDING
+            serial = index + 1
+            await self.upsert(
+                "hospital_accreditations",
+                {"hospital_id": hospital_id, "body": body},
+                insert_only={
+                    "certificate_number": f"{body.upper()}-DEMO-{hospital['slug'][:12].upper()}-{serial:02d}",
+                    "valid_until": self.today.replace(year=self.today.year + 2),
+                    "verified_at": None if pending else self.now,
+                    "verified_by_admin_id": None if pending else approver,
+                },
+                update=False,
+            )
 
     def _stay_choice(self, hospital_slug: str) -> tuple[int, str]:
         """Nightly rate + type used for packages: the cheapest hotel/serviced apartment near the hospital."""
@@ -740,27 +764,51 @@ class Seeder:
     async def seed_reviews(self, journey_cases: dict[str, uuid.UUID]) -> None:
         if not self.has_table("reviews"):
             return
-        count = 0
+        count = verified = 0
         for review in REVIEWS:
             patient_id = self.ids["patient"].get(review["patient"])
             if patient_id is None:
                 continue
             case_id = journey_cases.get(review["journey"]) if review["journey"] else None
+            link: dict[str, Any] = {}
+            if case_id:
+                link["case_id"] = case_id
+                booking = await self.completed_booking(case_id)
+                if booking is not None:
+                    # a completed booking makes it a verified-patient review
+                    link.update(booking_id=booking.id, procedure_id=booking.procedure_id)
+                    verified += 1
             await self.upsert(
                 "reviews",
                 {"patient_id": patient_id, "hospital_id": self.ids["hospital"][review["hospital"]]},
-                # link the review to its journey case once that case exists (e.g. on a later run)
-                {"case_id": case_id} if case_id else None,
+                # link the review to its journey case/booking once they exist (e.g. on a later run)
+                link or None,
                 insert_only={
                     "doctor_id": self.ids["doctor"].get(review["doctor"]) if review["doctor"] else None,
                     "rating": review["rating"],
                     "title": review["title"],
                     "body": review["body"],
                     "status": review["status"],
+                    "published_at": self.now if review["status"] == "published" else None,
                 },
             )
             count += 1
-        out(f"Reviews\n  {count} patient reviews (published + 1 pending moderation)")
+        out(
+            f"Reviews\n  {count} patient reviews (published + 1 pending moderation), "
+            f"{verified} linked to a completed booking"
+        )
+
+    async def completed_booking(self, case_id: uuid.UUID) -> Any:
+        if not self.has_table("bookings"):
+            return None
+        bookings = self.table("bookings")
+        return (
+            await self.conn.execute(
+                sa.select(bookings.c.id, bookings.c.procedure_id)
+                .where(bookings.c.case_id == case_id, bookings.c.status == "completed")
+                .limit(1)
+            )
+        ).first()
 
 
 def _consent_version() -> str:

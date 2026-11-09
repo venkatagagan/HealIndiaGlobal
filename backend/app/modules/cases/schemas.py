@@ -8,6 +8,7 @@ from typing import Any
 
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.core.currency import DisplayMoney
 from app.core.enums import (
     BookingStatus,
     CaseStatus,
@@ -81,6 +82,8 @@ class PackageOut(_Out):
     price_minor: int
     original_price_minor: int | None = None
     currency: str
+    display_price: DisplayMoney | None = None
+    display_original_price: DisplayMoney | None = None
     description: str | None = None
     includes: dict[str, Any] = Field(default_factory=dict)
 
@@ -116,9 +119,12 @@ class QuoteOut(_Out):
     case_id: uuid.UUID
     status: QuoteStatus
     treatment_plan: str | None = None
+    # With ?currency= (or a patient's preferred currency) each line item also gets ``display_amount``.
     line_items: list[dict[str, Any]] = Field(default_factory=list)
     total_minor: int
     currency: str
+    # Approximate total in the viewer's currency; the hospital is paid in ``currency``.
+    display_total: DisplayMoney | None = None
     estimated_stay_days: int | None = None
     valid_until: date | None = None
     prepared_by_name: str | None = None
@@ -196,6 +202,10 @@ class BookingOut(_Out):
     amount_paid_minor: int
     amount_refunded_minor: int
     balance_due_minor: int
+    display_total: DisplayMoney | None = None
+    display_deposit: DisplayMoney | None = None
+    display_amount_paid: DisplayMoney | None = None
+    display_balance_due: DisplayMoney | None = None
     cancel_reason: str | None = None
     refund_policy: list[RefundTier] | None = None
     created_at: datetime

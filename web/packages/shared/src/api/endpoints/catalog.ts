@@ -5,6 +5,8 @@ import type {
   AvailabilityParams,
   CostComparison,
   CostComparisonParams,
+  CostHighlights,
+  CostHighlightsParams,
   CulturalTipOut,
   DoctorCard,
   DoctorDetail,
@@ -15,8 +17,11 @@ import type {
   HospitalDetail,
   HospitalListParams,
   Page,
+  PageParams,
+  ProcedureEarliest,
   ProcedureListParams,
   ProcedureOut,
+  ReviewOut,
   SearchResults,
   ServiceKind,
   ServiceProviderOut,
@@ -47,6 +52,16 @@ export const catalogApi = {
 
   /** India prices converted to `currency` */
   costComparison: (params: CostComparisonParams) => api.get<CostComparison>('/cost-comparison', params),
+  /** top procedures by savings for the (detected) home country */
+  costHighlights: (params?: CostHighlightsParams) =>
+    api.get<CostHighlights>('/cost-comparison/highlights', params),
+  /** hospitals offering the procedure, earliest free admission first */
+  procedureEarliest: (slug: string, params?: { limit?: number; currency?: string }) =>
+    api.get<ProcedureEarliest>(`/procedures/${seg(slug)}/earliest`, params),
+  hospitalReviews: (slugOrId: string, params?: PageParams) =>
+    api.get<Page<ReviewOut>>(`/hospitals/${seg(slugOrId)}/reviews`, params),
+  doctorReviews: (idOrSlug: string, params?: PageParams) =>
+    api.get<Page<ReviewOut>>(`/doctors/${seg(idOrSlug)}/reviews`, params),
   /** up to 5 of each kind */
   search: (q: string) => api.get<SearchResults>('/search', { q }),
 

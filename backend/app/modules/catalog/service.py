@@ -24,7 +24,7 @@ from sqlalchemy import Select, any_, func, literal, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import cache
-from app.core.enums import Gender, HospitalStatus, QuoteStatus, ReviewStatus, ServiceKind
+from app.core.enums import Gender, HospitalStatus, QuoteStatus, ReviewStatus, ServiceKind, SlotKind
 from app.core.errors import BadRequest, NotFound
 from app.core.money import (
     BASE_CURRENCY,
@@ -47,6 +47,7 @@ from app.models import (
     Doctor,
     FxRate,
     Hospital,
+    HospitalAccreditation,
     HospitalProcedure,
     HospitalSpecialty,
     PatientProfile,
@@ -59,11 +60,15 @@ from app.models import (
 )
 from app.modules.catalog.content import DEFAULT_CULTURAL_TIPS, INDIA_WAIT_TIME_TEXT, ITEMIZED_SPLIT_BPS
 from app.modules.catalog.councils import MEDICAL_COUNCILS, council_name
+from app.modules.catalog.earliest import SlotMinima, doctor_soonest_subq, hospital_soonest_subq, slot_minima
 from app.modules.catalog.schemas import (
     AccommodationProviderOut,
+    AccreditationBadge,
     AvailabilityDay,
     CostBenchmarkOut,
     CostComparisonOut,
+    CostHighlightItem,
+    CostHighlightsOut,
     CostHome,
     CostIndia,
     CostItem,
@@ -79,6 +84,8 @@ from app.modules.catalog.schemas import (
     IdSlugName,
     MedicalCouncilOut,
     PackageOut,
+    ProcedureEarliestItem,
+    ProcedureEarliestOut,
     ProcedureOut,
     ReviewOut,
     SearchResults,
@@ -94,6 +101,9 @@ TRGM_MIN_LEN = 3
 MAX_AVAILABILITY_DAYS = 366
 DEFAULT_AVAILABILITY_DAYS = 60
 DEFAULT_HOME_COUNTRY = "US"
+HIGHLIGHTS_DEFAULT_LIMIT = 6
+HIGHLIGHTS_MAX_LIMIT = 30
+DETAIL_REVIEWS_LIMIT = 20
 
 
 # ----------------------------------------------------------------------------- utilities
@@ -326,6 +336,7 @@ async def build_hospital_procedures(
     packages: dict[uuid.UUID, list[PackageOut]] = defaultdict(list)
     for pkg in (await db.execute(pkg_stmt)).scalars():
         packages[pkg.hospital_procedure_id].append(package_out(pkg))
+    minima = await slot_minima(db, {hp.hospital_id for hp in hps})
     out: list[HospitalProcedureOut] = []
     for hp in hps:
         proc = procs.get(hp.procedure_id)
@@ -346,6 +357,9 @@ async def build_hospital_procedures(
                 packages=packages.get(hp.id, []),
                 doctor_ids=list(hp.doctor_ids or []),
                 is_active=hp.is_active,
+                **minima.pair(
+                    lambda kind, hp=hp: minima.offering(hp.hospital_id, list(hp.doctor_ids or []), kind)
+                ),
             )
         )
     return out
@@ -375,8 +389,37 @@ def _starting_price_subq() -> Any:
     )
 
 
-async def build_hospital_cards(db: AsyncSession, hospitals: Sequence[Hospital]) -> list[HospitalCard]:
-    """Public ``HospitalCard`` for each hospital (specialty names + starting price), in the given order."""
+async def verified_accreditations(
+    db: AsyncSession, hospital_ids: Sequence[uuid.UUID]
+) -> dict[uuid.UUID, list[AccreditationBadge]]:
+    """Admin-verified, unexpired accreditations per hospital (one query)."""
+    out: dict[uuid.UUID, list[AccreditationBadge]] = defaultdict(list)
+    ids = list(set(hospital_ids))
+    if not ids:
+        return out
+    rows = await db.execute(
+        select(
+            HospitalAccreditation.hospital_id, HospitalAccreditation.body, HospitalAccreditation.valid_until
+        )
+        .where(
+            HospitalAccreditation.hospital_id.in_(ids),
+            HospitalAccreditation.verified_at.is_not(None),
+            or_(
+                HospitalAccreditation.valid_until.is_(None), HospitalAccreditation.valid_until >= today_ist()
+            ),
+        )
+        .order_by(HospitalAccreditation.hospital_id, HospitalAccreditation.body)
+    )
+    for hid, body, valid_until in rows.all():
+        out[hid].append(AccreditationBadge(body=body, valid_until=valid_until))
+    return out
+
+
+async def build_hospital_cards(
+    db: AsyncSession, hospitals: Sequence[Hospital], *, minima: SlotMinima | None = None
+) -> list[HospitalCard]:
+    """Public ``HospitalCard`` for each hospital (specialty names, starting price, verified accreditations,
+    earliest free consultation/admission day), in the given order."""
     if not hospitals:
         return []
     ids = [h.id for h in hospitals]
@@ -411,10 +454,22 @@ async def build_hospital_cards(db: AsyncSession, hospitals: Sequence[Hospital]) 
             )
         ).all()
     )
-    return [_hospital_card(h, names.get(h.id, {}), prices.get(h.id)) for h in hospitals]
+    badges = await verified_accreditations(db, ids)
+    if minima is None:
+        minima = await slot_minima(db, ids)
+    return [
+        _hospital_card(h, names.get(h.id, {}), prices.get(h.id), badges.get(h.id, []), minima)
+        for h in hospitals
+    ]
 
 
-def _hospital_card(h: Hospital, names: dict[str, tuple[int, str]], price: int | None) -> HospitalCard:
+def _hospital_card(
+    h: Hospital,
+    names: dict[str, tuple[int, str]],
+    price: int | None,
+    badges: list[AccreditationBadge],
+    minima: SlotMinima,
+) -> HospitalCard:
     return HospitalCard(
         id=h.id,
         slug=h.slug,
@@ -431,6 +486,8 @@ def _hospital_card(h: Hospital, names: dict[str, tuple[int, str]], price: int | 
         international_desk=h.international_desk,
         starting_price_minor=int(price) if price is not None else None,
         currency=BASE_CURRENCY,
+        accreditations_verified=list(badges),
+        **minima.pair(lambda kind: minima.hospital(h.id, kind)),
     )
 
 
@@ -489,7 +546,19 @@ def _public_hospitals_stmt(
             .exists()
         )
     if accreditation and accreditation.strip():
-        stmt = stmt.where(Hospital.accreditations.contains([accreditation.strip().lower()]))
+        body = accreditation.strip().lower()
+        stmt = stmt.where(
+            or_(
+                Hospital.accreditations.contains([body]),
+                select(HospitalAccreditation.id)
+                .where(
+                    HospitalAccreditation.hospital_id == Hospital.id,
+                    func.lower(HospitalAccreditation.body) == body,
+                    HospitalAccreditation.verified_at.is_not(None),
+                )
+                .exists(),
+            )
+        )
     if language and language.strip():
         stmt = stmt.where(Hospital.languages.overlap(language_variants(language)))
 
@@ -501,6 +570,14 @@ def _public_hospitals_stmt(
         stmt = stmt.order_by(_starting_price_subq().asc().nulls_last(), Hospital.name, Hospital.id)
     elif sort == "name":
         stmt = stmt.order_by(Hospital.name, Hospital.id)
+    elif sort == "soonest":
+        # Earliest free slot of any kind (consultation or admission); hospitals without slots last.
+        stmt = stmt.order_by(
+            hospital_soonest_subq().asc().nulls_last(),
+            Hospital.rating_avg.desc(),
+            Hospital.name,
+            Hospital.id,
+        )
     elif term:
         stmt = stmt.order_by(func.similarity(Hospital.name, term).desc(), Hospital.name, Hospital.id)
     else:
@@ -535,8 +612,42 @@ async def get_active_hospital(db: AsyncSession, slug_or_id: str) -> Hospital:
 
 
 async def review_outs(db: AsyncSession, reviews: Sequence[Review]) -> list[ReviewOut]:
-    """``ReviewOut`` with a privacy-preserving patient name ("Amara O.")."""
+    """``ReviewOut`` with a privacy-preserving patient name ("Amara O."), the treatment, doctor and hospital
+    names, and ``verified_patient`` (written for a completed booking)."""
+    if not reviews:
+        return []
     patient_ids = {r.patient_id for r in reviews}
+    case_procs: dict[uuid.UUID, uuid.UUID] = {}
+    legacy_cases = {r.case_id for r in reviews if r.procedure_id is None and r.case_id is not None}
+    if legacy_cases:
+        for cid, pid in (
+            await db.execute(select(Case.id, Case.procedure_id).where(Case.id.in_(legacy_cases)))
+        ).all():
+            if pid is not None:
+                case_procs[cid] = pid
+
+    def _proc_id(r: Review) -> uuid.UUID | None:
+        return r.procedure_id or (case_procs.get(r.case_id) if r.case_id else None)
+
+    proc_ids = {pid for r in reviews if (pid := _proc_id(r)) is not None}
+    proc_names: dict[uuid.UUID, str] = {}
+    if proc_ids:
+        proc_names = dict(
+            (await db.execute(select(Procedure.id, Procedure.name).where(Procedure.id.in_(proc_ids)))).all()
+        )
+    doctor_ids = {r.doctor_id for r in reviews if r.doctor_id is not None}
+    doctor_names: dict[uuid.UUID, str] = {}
+    if doctor_ids:
+        doctor_names = dict(
+            (await db.execute(select(Doctor.id, Doctor.full_name).where(Doctor.id.in_(doctor_ids)))).all()
+        )
+    hospital_names = dict(
+        (
+            await db.execute(
+                select(Hospital.id, Hospital.name).where(Hospital.id.in_({r.hospital_id for r in reviews}))
+            )
+        ).all()
+    )
     names: dict[uuid.UUID, str] = {}
     if patient_ids:
         rows = await db.execute(
@@ -562,9 +673,46 @@ async def review_outs(db: AsyncSession, reviews: Sequence[Review]) -> list[Revie
             doctor_id=r.doctor_id,
             case_id=r.case_id,
             status=str(r.status),
+            verified_patient=r.booking_id is not None,
+            treatment_name=proc_names.get(pid) if (pid := _proc_id(r)) is not None else None,
+            doctor_name=doctor_names.get(r.doctor_id) if r.doctor_id else None,
+            hospital_name=hospital_names.get(r.hospital_id),
+            published_at=r.published_at,
         )
         for r in reviews
     ]
+
+
+def _published_reviews_stmt() -> Select[Any]:
+    return select(Review).where(Review.status == ReviewStatus.PUBLISHED)
+
+
+def _newest_first(stmt: Select[Any]) -> Select[Any]:
+    return stmt.order_by(func.coalesce(Review.published_at, Review.created_at).desc(), Review.id.desc())
+
+
+async def public_review_outs(db: AsyncSession, reviews: Sequence[Review]) -> list[ReviewOut]:
+    """Public pages never link a review to the patient's case (the hospital portal still gets case_id)."""
+    return [r.model_copy(update={"case_id": None}) for r in await review_outs(db, reviews)]
+
+
+async def list_public_reviews(
+    db: AsyncSession,
+    params: Any,
+    *,
+    hospital_id: uuid.UUID | None = None,
+    doctor_id: uuid.UUID | None = None,
+) -> Page[ReviewOut]:
+    stmt = _published_reviews_stmt()
+    if hospital_id is not None:
+        stmt = stmt.where(Review.hospital_id == hospital_id)
+    if doctor_id is not None:
+        stmt = stmt.where(Review.doctor_id == doctor_id)
+
+    async def _transform(rows: list[Review]) -> list[ReviewOut]:
+        return await public_review_outs(db, rows)
+
+    return await paginate(db, _newest_first(stmt), params, transform=_transform)
 
 
 async def get_hospital_detail(db: AsyncSession, slug_or_id: str) -> HospitalDetail:
@@ -594,10 +742,9 @@ async def get_hospital_detail(db: AsyncSession, slug_or_id: str) -> HospitalDeta
     reviews = list(
         (
             await db.execute(
-                select(Review)
-                .where(Review.hospital_id == hospital.id, Review.status == ReviewStatus.PUBLISHED)
-                .order_by(Review.created_at.desc(), Review.id)
-                .limit(20)
+                _newest_first(_published_reviews_stmt().where(Review.hospital_id == hospital.id)).limit(
+                    DETAIL_REVIEWS_LIMIT
+                )
             )
         ).scalars()
     )
@@ -615,8 +762,7 @@ async def get_hospital_detail(db: AsyncSession, slug_or_id: str) -> HospitalDeta
         airport_distance_km=_float(hospital.airport_distance_km),
         doctors=await build_doctor_cards(db, doctors, hospitals={hospital.id: hospital}),
         procedures=await build_hospital_procedures(db, hps),
-        # Public page: no link from a review to the patient's case (the hospital portal still gets case_id).
-        reviews=[r.model_copy(update={"case_id": None}) for r in await review_outs(db, reviews)],
+        reviews=await public_review_outs(db, reviews),
     )
 
 
@@ -638,17 +784,22 @@ async def build_doctor_cards(
             await db.execute(select(Specialty).where(Specialty.id.in_({d.specialty_id for d in doctors})))
         ).scalars()
     }
+    hospital_ids = list({d.hospital_id for d in doctors})
+    badges = await verified_accreditations(db, hospital_ids)
+    minima = await slot_minima(db, hospital_ids)
     out: list[DoctorCard] = []
     for d in doctors:
         hosp = known.get(d.hospital_id)
         spec = specs.get(d.specialty_id)
         if hosp is None or spec is None:
             continue
-        out.append(_doctor_card(d, hosp, spec))
+        out.append(_doctor_card(d, hosp, spec, badges.get(d.hospital_id, []), minima))
     return out
 
 
-def _doctor_card(d: Doctor, h: Hospital, s: Specialty) -> DoctorCard:
+def _doctor_card(
+    d: Doctor, h: Hospital, s: Specialty, badges: list[AccreditationBadge], minima: SlotMinima
+) -> DoctorCard:
     return DoctorCard(
         id=d.id,
         slug=d.slug,
@@ -666,8 +817,15 @@ def _doctor_card(d: Doctor, h: Hospital, s: Specialty) -> DoctorCard:
         currency=d.currency,
         teleconsult_available=d.teleconsult_available,
         hospital=HospitalRefMini(
-            id=h.id, slug=h.slug, name=h.name, city=h.city, accreditations=list(h.accreditations or [])
+            id=h.id,
+            slug=h.slug,
+            name=h.name,
+            city=h.city,
+            accreditations=list(h.accreditations or []),
+            accreditations_verified=list(badges),
         ),
+        registration_verified=d.registration_verified_at is not None,
+        **minima.pair(lambda kind: minima.doctor(d.id, d.hospital_id, kind)),
     )
 
 
@@ -715,6 +873,7 @@ async def list_doctors(
     language: str | None = None,
     gender: Gender | None = None,
     procedure: str | None = None,
+    sort: str | None = None,
 ) -> Page[DoctorCard]:
     stmt = _public_doctors_stmt()
     term = _clean_term(q)
@@ -730,7 +889,16 @@ async def list_doctors(
         stmt = stmt.where(Doctor.gender == gender)
     if procedure and procedure.strip():
         stmt = stmt.where(_doctor_procedure_condition(procedure))
-    if term:
+    if sort == "soonest":
+        # Earliest free slot (own or hospital-wide, any kind); doctors without slots last.
+        stmt = stmt.order_by(
+            doctor_soonest_subq().asc().nulls_last(), Doctor.rating_avg.desc(), Doctor.full_name, Doctor.id
+        )
+    elif sort == "experience":
+        stmt = stmt.order_by(
+            Doctor.experience_years.desc().nulls_last(), Doctor.rating_avg.desc(), Doctor.full_name, Doctor.id
+        )
+    elif term:
         stmt = stmt.order_by(func.similarity(Doctor.full_name, term).desc(), Doctor.full_name, Doctor.id)
     else:
         stmt = stmt.order_by(
@@ -805,13 +973,23 @@ def medical_councils() -> list[MedicalCouncilOut]:
 async def build_doctor_detail(db: AsyncSession, doctor: Doctor, *, public: bool = True) -> DoctorDetail:
     card = (await build_doctor_cards(db, [doctor]))[0]
     hps = await doctor_procedures(db, doctor, public=public)
+    reviews = list(
+        (
+            await db.execute(
+                _newest_first(_published_reviews_stmt().where(Review.doctor_id == doctor.id)).limit(
+                    DETAIL_REVIEWS_LIMIT
+                )
+            )
+        ).scalars()
+    )
     return DoctorDetail(
-        **card.model_dump(),
+        **card.model_dump(exclude={"registration_verified"}),
         bio=doctor.bio,
         sub_specialties=list(doctor.sub_specialties or []),
         **registration_fields(doctor),
         procedures=await build_hospital_procedures(db, hps, active_packages_only=public),
         next_available_date=await next_available_date(db, doctor.id),
+        reviews=await public_review_outs(db, reviews),
     )
 
 
@@ -989,109 +1167,318 @@ async def _quote_itemization(db: AsyncSession, procedure_id: uuid.UUID) -> list[
     return [(c, w) for c, w in weights if w > 0]
 
 
-async def cost_comparison(
-    db: AsyncSession, *, procedure: str, country: str | None, currency: str | None
-) -> CostComparisonOut:
-    proc = await _get_active_procedure(db, procedure)
-    country_code = (country or DEFAULT_HOME_COUNTRY).strip().upper()
-    if len(country_code) != 2 or not country_code.isalpha():
+def _valid_country(code: str | None) -> str | None:
+    if code is None:
+        return None
+    value = code.strip().upper()
+    if len(value) != 2 or not value.isalpha() or not value.isascii():
         raise BadRequest("country must be an ISO-3166 alpha-2 code", code="invalid_country")
+    return value
 
-    bench_rows = list(
-        (
-            await db.execute(
-                select(CostBenchmark).where(
-                    CostBenchmark.procedure_id == proc.id,
-                    CostBenchmark.country_code.in_({country_code, DEFAULT_HOME_COUNTRY}),
-                )
-            )
-        ).scalars()
-    )
-    by_country = {b.country_code.upper(): b for b in bench_rows}
-    bench = by_country.get(country_code) or by_country.get(DEFAULT_HOME_COUNTRY)
-    if bench is None:
-        raise NotFound("No cost benchmark is available for this procedure", code="benchmark_not_found")
-    target = await _supported_currency(db, currency or bench.currency)
 
-    # India range from active hospital procedures at active hospitals (any currency, normalised to INR).
-    rates: dict[str, Decimal] = {}
-    hp_rows = (
+def _lo_hi(lo: int | None, hi: int | None) -> tuple[int, int] | None:
+    low = lo if lo is not None else hi
+    high = hi if hi is not None else lo
+    if low is None or high is None:
+        return None
+    return low, high
+
+
+async def _india_ranges(
+    db: AsyncSession, procs: Sequence[Procedure], rates: dict[str, Decimal]
+) -> dict[uuid.UUID, tuple[int, int]]:
+    """India price range (INR minor) per procedure: active offerings at active hospitals (any currency,
+    normalised to INR), else the procedure's own indicative range. One query for all procedures."""
+    if not procs:
+        return {}
+    rows = (
         await db.execute(
             select(
+                HospitalProcedure.procedure_id,
                 HospitalProcedure.price_min_minor,
                 HospitalProcedure.price_max_minor,
                 HospitalProcedure.currency,
             )
             .join(Hospital, Hospital.id == HospitalProcedure.hospital_id)
             .where(
-                HospitalProcedure.procedure_id == proc.id,
+                HospitalProcedure.procedure_id.in_([p.id for p in procs]),
                 HospitalProcedure.is_active.is_(True),
                 Hospital.status == HospitalStatus.ACTIVE,
             )
         )
     ).all()
-    mins: list[int] = []
-    maxs: list[int] = []
-    for pmin, pmax, ccy in hp_rows:
-        lo = pmin if pmin is not None else pmax
-        hi = pmax if pmax is not None else pmin
-        if lo is None or hi is None:
+    mins: dict[uuid.UUID, list[int]] = defaultdict(list)
+    maxs: dict[uuid.UUID, list[int]] = defaultdict(list)
+    for pid, pmin, pmax, ccy in rows:
+        pair = _lo_hi(pmin, pmax)
+        if pair is None:
             continue
-        mins.append(await _to_inr(db, lo, ccy, rates))
-        maxs.append(await _to_inr(db, hi, ccy, rates))
-    if mins:
-        india_min_inr, india_max_inr = min(mins), max(maxs)
-    else:
-        lo = (
-            proc.india_price_min_minor
-            if proc.india_price_min_minor is not None
-            else proc.india_price_max_minor
-        )
-        hi = (
-            proc.india_price_max_minor
-            if proc.india_price_max_minor is not None
-            else proc.india_price_min_minor
-        )
-        if lo is None or hi is None:
-            raise NotFound("No India pricing is available for this procedure", code="price_not_found")
-        india_min_inr = await _to_inr(db, lo, proc.currency, rates)
-        india_max_inr = await _to_inr(db, hi, proc.currency, rates)
-    india_min_inr, india_max_inr = min(india_min_inr, india_max_inr), max(india_min_inr, india_max_inr)
+        mins[pid].append(await _to_inr(db, pair[0], ccy, rates))
+        maxs[pid].append(await _to_inr(db, pair[1], ccy, rates))
+    out: dict[uuid.UUID, tuple[int, int]] = {}
+    for proc in procs:
+        if mins.get(proc.id):
+            lo, hi = min(mins[proc.id]), max(maxs[proc.id])
+        else:
+            pair = _lo_hi(proc.india_price_min_minor, proc.india_price_max_minor)
+            if pair is None:
+                continue
+            lo = await _to_inr(db, pair[0], proc.currency, rates)
+            hi = await _to_inr(db, pair[1], proc.currency, rates)
+        out[proc.id] = (min(lo, hi), max(lo, hi))
+    return out
 
-    india_min, _ = await convert(db, india_min_inr, BASE_CURRENCY, target)
-    india_max, _ = await convert(db, india_max_inr, BASE_CURRENCY, target)
+
+async def earliest_admissions(db: AsyncSession, procedure_ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, date]:
+    """Earliest free admission day per procedure across active hospitals offering it (one query)."""
+    ids = list(set(procedure_ids))
+    if not ids:
+        return {}
+    active_doctor = (
+        select(Doctor.id).where(Doctor.id == AvailabilitySlot.doctor_id, Doctor.is_active.is_(True)).exists()
+    )
+    rows = await db.execute(
+        select(HospitalProcedure.procedure_id, func.min(AvailabilitySlot.date))
+        .join(Hospital, Hospital.id == HospitalProcedure.hospital_id)
+        .join(AvailabilitySlot, AvailabilitySlot.hospital_id == HospitalProcedure.hospital_id)
+        .where(
+            HospitalProcedure.procedure_id.in_(ids),
+            HospitalProcedure.is_active.is_(True),
+            Hospital.status == HospitalStatus.ACTIVE,
+            AvailabilitySlot.slot_kind == SlotKind.ADMISSION,
+            AvailabilitySlot.date >= today_ist(),
+            AvailabilitySlot.capacity > AvailabilitySlot.booked,
+            or_(AvailabilitySlot.doctor_id.is_(None), active_doctor),
+        )
+        .group_by(HospitalProcedure.procedure_id)
+    )
+    return {pid: day for pid, day in rows.all() if day is not None}
+
+
+async def _cost_parts(
+    db: AsyncSession,
+    bench: CostBenchmark,
+    india_inr: tuple[int, int],
+    target: str,
+    earliest: date | None,
+) -> tuple[CostHome, CostIndia, CostSavings]:
+    india_min, _ = await convert(db, india_inr[0], BASE_CURRENCY, target)
+    india_max, _ = await convert(db, india_inr[1], BASE_CURRENCY, target)
     home_min, _ = await convert(db, bench.cost_min_minor, bench.currency, target)
     home_max, _ = await convert(db, bench.cost_max_minor, bench.currency, target)
     home_min, home_max = min(home_min, home_max), max(home_min, home_max)
-
     save_low = max(home_min - india_min, 0)
     save_high = max(home_max - india_max, 0)
     pct_low, pct_high = _pct(save_low, home_min), _pct(save_high, home_max)
+    home = CostHome(
+        country_code=bench.country_code.upper(),
+        min_minor=home_min,
+        max_minor=home_max,
+        currency=target,
+        wait_time_text=bench.wait_time_text,
+        original_currency=bench.currency,
+        source=bench.source,
+        source_url=bench.source_url,
+        price_year=bench.price_year,
+        confidence=bench.confidence,
+        wait_source=bench.wait_source,
+    )
+    india = CostIndia(
+        min_minor=india_min,
+        max_minor=india_max,
+        currency=target,
+        wait_time_text=INDIA_WAIT_TIME_TEXT,
+        earliest_admission_date=earliest,
+    )
+    savings = CostSavings(
+        min_minor=min(save_low, save_high),
+        max_minor=max(save_low, save_high),
+        currency=target,
+        pct_min=min(pct_low, pct_high),
+        pct_max=max(pct_low, pct_high),
+    )
+    return home, india, savings
 
-    india_mid = (india_min + india_max + 1) // 2
+
+async def cost_comparison(
+    db: AsyncSession,
+    *,
+    procedure: str,
+    country: str | None,
+    currency: str | None,
+    country_source: str | None = None,
+) -> CostComparisonOut:
+    """Home-country vs India price for one procedure. ``country`` is the requested/detected home country
+    (``None`` = unknown); without a benchmark for it the US benchmark is shown with ``is_fallback=true``."""
+    proc = await _get_active_procedure(db, procedure)
+    requested = _valid_country(country)
+    bench_rows = list(
+        (
+            await db.execute(
+                select(CostBenchmark).where(
+                    CostBenchmark.procedure_id == proc.id,
+                    CostBenchmark.country_code.in_({requested or DEFAULT_HOME_COUNTRY, DEFAULT_HOME_COUNTRY}),
+                )
+            )
+        ).scalars()
+    )
+    by_country = {b.country_code.upper(): b for b in bench_rows}
+    bench = by_country.get(requested) if requested else None
+    is_fallback = bench is None
+    if bench is None:
+        bench = by_country.get(DEFAULT_HOME_COUNTRY)
+    if bench is None:
+        raise NotFound("No cost benchmark is available for this procedure", code="benchmark_not_found")
+    target = await _supported_currency(db, currency or bench.currency)
+
+    rates: dict[str, Decimal] = {}
+    india_inr = (await _india_ranges(db, [proc], rates)).get(proc.id)
+    if india_inr is None:
+        raise NotFound("No India pricing is available for this procedure", code="price_not_found")
+    earliest = (await earliest_admissions(db, [proc.id])).get(proc.id)
+    home, india, savings = await _cost_parts(db, bench, india_inr, target, earliest)
+
+    india_mid = (india.min_minor + india.max_minor + 1) // 2
     weights = await _quote_itemization(db, proc.id) or list(ITEMIZED_SPLIT_BPS)
     itemized = [CostItem(category=c, amount_minor=a, currency=target) for c, a in _split(india_mid, weights)]
 
     return CostComparisonOut(
+        requested_country=requested,
+        country_used=bench.country_code.upper(),
+        is_fallback=is_fallback,
+        country_source=country_source or ("query" if requested else "default"),
         procedure=IdSlugName(id=proc.id, slug=proc.slug, name=proc.name),
-        home=CostHome(
-            country_code=bench.country_code.upper(),
-            min_minor=home_min,
-            max_minor=home_max,
-            currency=target,
-            wait_time_text=bench.wait_time_text,
-        ),
-        india=CostIndia(
-            min_minor=india_min, max_minor=india_max, currency=target, wait_time_text=INDIA_WAIT_TIME_TEXT
-        ),
-        savings=CostSavings(
-            min_minor=min(save_low, save_high),
-            max_minor=max(save_low, save_high),
-            currency=target,
-            pct_min=min(pct_low, pct_high),
-            pct_max=max(pct_low, pct_high),
-        ),
+        home=home,
+        india=india,
+        savings=savings,
         itemized=itemized,
+    )
+
+
+async def cost_highlights(
+    db: AsyncSession,
+    *,
+    country: str | None,
+    currency: str | None,
+    limit: int = HIGHLIGHTS_DEFAULT_LIMIT,
+    country_source: str | None = None,
+) -> CostHighlightsOut:
+    """Procedures with the biggest savings for a home country (for the home screen), best first."""
+    requested = _valid_country(country)
+    limit = max(1, min(int(limit), HIGHLIGHTS_MAX_LIMIT))
+
+    def _bench_stmt(code: str) -> Any:
+        return (
+            select(CostBenchmark, Procedure, Specialty)
+            .join(Procedure, Procedure.id == CostBenchmark.procedure_id)
+            .join(Specialty, Specialty.id == Procedure.specialty_id)
+            .where(
+                CostBenchmark.country_code == code,
+                Procedure.is_active.is_(True),
+                Specialty.is_active.is_(True),
+            )
+        )
+
+    rows = list((await db.execute(_bench_stmt(requested))).all()) if requested else []
+    is_fallback = not rows
+    country_used = requested if rows else DEFAULT_HOME_COUNTRY
+    if not rows:
+        rows = list((await db.execute(_bench_stmt(DEFAULT_HOME_COUNTRY))).all())
+    if not rows:
+        target = await _supported_currency(db, currency or "USD")
+        return CostHighlightsOut(
+            requested_country=requested,
+            country_used=country_used or DEFAULT_HOME_COUNTRY,
+            is_fallback=True,
+            country_source=country_source or ("query" if requested else "default"),
+            currency=target,
+        )
+    target = await _supported_currency(db, currency or rows[0][0].currency)
+    rates: dict[str, Decimal] = {}
+    india = await _india_ranges(db, [p for _, p, _ in rows], rates)
+    earliest = await earliest_admissions(db, [p.id for _, p, _ in rows])
+    items: list[CostHighlightItem] = []
+    for bench, proc, spec in rows:
+        india_inr = india.get(proc.id)
+        if india_inr is None:
+            continue
+        home, india_part, savings = await _cost_parts(db, bench, india_inr, target, earliest.get(proc.id))
+        if savings.max_minor <= 0:
+            continue
+        items.append(
+            CostHighlightItem(
+                procedure=IdSlugName(id=proc.id, slug=proc.slug, name=proc.name),
+                specialty=IdSlugName(id=spec.id, slug=spec.slug, name=spec.name),
+                home=home,
+                india=india_part,
+                savings=savings,
+            )
+        )
+    items.sort(key=lambda i: (-i.savings.pct_max, -i.savings.max_minor, i.procedure.name))
+    return CostHighlightsOut(
+        requested_country=requested,
+        country_used=country_used,
+        is_fallback=is_fallback,
+        country_source=country_source or ("query" if requested else "default"),
+        currency=target,
+        items=items[:limit],
+    )
+
+
+async def supported_display_currency(db: AsyncSession, value: str | None) -> str | None:
+    """Validate a ``?currency=`` / preferred currency for display amounts (``None`` passes through)."""
+    if not value:
+        return None
+    return await _supported_currency(db, value)
+
+
+# ----------------------------------------------------------------------------- earliest appointment
+async def procedure_earliest(db: AsyncSession, procedure: str, *, limit: int = 20) -> ProcedureEarliestOut:
+    """Hospitals offering the procedure, earliest free admission day first (then price)."""
+    proc = await _get_active_procedure(db, procedure)
+    rows = list(
+        (
+            await db.execute(
+                select(HospitalProcedure, Hospital)
+                .join(Hospital, Hospital.id == HospitalProcedure.hospital_id)
+                .where(
+                    HospitalProcedure.procedure_id == proc.id,
+                    HospitalProcedure.is_active.is_(True),
+                    Hospital.status == HospitalStatus.ACTIVE,
+                )
+            )
+        ).all()
+    )
+    minima = await slot_minima(db, [h.id for _, h in rows])
+    cards = {c.id: c for c in await build_hospital_cards(db, [h for _, h in rows], minima=minima)}
+    items: list[ProcedureEarliestItem] = []
+    for hp, hospital in rows:
+        card = cards.get(hospital.id)
+        if card is None:
+            continue
+        lead = list(hp.doctor_ids or [])
+        items.append(
+            ProcedureEarliestItem(
+                hospital=card,
+                hospital_procedure_id=hp.id,
+                price_min_minor=hp.price_min_minor,
+                price_max_minor=hp.price_max_minor,
+                currency=hp.currency,
+                lead_doctor_ids=lead,
+                **minima.pair(lambda kind, hid=hospital.id, lead=lead: minima.offering(hid, lead, kind)),
+            )
+        )
+    far = date.max
+    items.sort(
+        key=lambda i: (
+            i.next_available_admission or far,
+            i.next_available_consultation or far,
+            i.price_min_minor if i.price_min_minor is not None else 2**62,
+            i.hospital.name,
+        )
+    )
+    return ProcedureEarliestOut(
+        procedure=IdSlugName(id=proc.id, slug=proc.slug, name=proc.name), items=items[:limit]
     )
 
 
@@ -1255,7 +1642,9 @@ __all__ = [
     "build_hospital_procedures",
     "cached",
     "cost_comparison",
+    "cost_highlights",
     "cultural_tips",
+    "earliest_admissions",
     "doctor_procedures",
     "fx_rates",
     "get_active_doctor",
@@ -1270,11 +1659,16 @@ __all__ = [
     "list_doctors",
     "list_hospitals",
     "list_procedures",
+    "list_public_reviews",
     "list_specialties",
     "next_available_date",
     "package_out",
+    "procedure_earliest",
+    "public_review_outs",
     "review_outs",
     "search",
     "service_providers",
+    "supported_display_currency",
     "today_ist",
+    "verified_accreditations",
 ]

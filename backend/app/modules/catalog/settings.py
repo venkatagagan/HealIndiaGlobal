@@ -40,6 +40,10 @@ class CatalogSettings(BaseSettings):
     WEBSITE_SERVER_IPS: Annotated[list[str], NoDecode] = Field(default_factory=list)
     CATALOG_RATE_LIMIT_PUBLIC: int = 300
     CATALOG_RATE_LIMIT_WEBSITE: int = 6000
+    # Honour the CDN/edge country header (``CF-IPCountry`` / ``X-Country``) to pick a visitor's home country
+    # for the cost comparison. Only enable it when the edge sets/overwrites that header (clients can send
+    # anything); it is also ignored unless the direct peer is one of ``TRUSTED_PROXIES``.
+    TRUST_COUNTRY_HEADER: bool = False
 
     @field_validator("WEBSITE_SERVER_IPS", mode="before")
     @classmethod

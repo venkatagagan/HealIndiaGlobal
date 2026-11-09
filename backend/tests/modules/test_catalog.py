@@ -320,6 +320,7 @@ async def test_cost_comparison_math_and_conversion(client, db):
         "max_minor": 6250_00,
         "currency": "USD",
         "wait_time_text": "1–2 weeks",
+        "earliest_admission_date": None,
     }
     assert c["home"] == {
         "country_code": "US",
@@ -327,7 +328,14 @@ async def test_cost_comparison_math_and_conversion(client, db):
         "max_minor": 50_000_00,
         "currency": "USD",
         "wait_time_text": "3–6 months",
+        "original_currency": "USD",
+        "source": "test",
+        "source_url": None,
+        "price_year": None,
+        "confidence": None,
+        "wait_source": None,
     }
+    assert (c["requested_country"], c["country_used"], c["is_fallback"]) == ("US", "US", False)
     # savings: 35000-4000 = 31000 (88.57% -> 89), 50000-6250 = 43750 (87.5% -> 88)
     assert c["savings"] == {
         "min_minor": 31_000_00,
@@ -362,6 +370,7 @@ async def test_cost_comparison_fallbacks(client, db):
     assert r.status_code == 200, r.text
     c = r.json()
     assert c["home"]["country_code"] == "US"
+    assert (c["requested_country"], c["country_used"], c["is_fallback"]) == ("GB", "US", True)
     assert c["home"]["currency"] == "GBP"
     # 100000 USD * 88 / 110 = 80000 GBP ; India ₹4,00,000 / 110 = 3636.36 GBP
     assert c["home"]["min_minor"] == 80_000_00

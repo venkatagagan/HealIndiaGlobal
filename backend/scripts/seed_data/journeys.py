@@ -57,6 +57,36 @@ JOURNEYS: list[dict[str, Any]] = [
         },
     },
     {
+        "key": "completed-om-dental",
+        "target": "completed",
+        "patient": f"patient.om{_D}",
+        "actor": "patient",
+        "hospital": "pournami-chennai",
+        "hospital_user": f"owner.pournami-chennai{_D}",
+        "procedure": "dental-implants",
+        "doctor": "divya-raghavan",
+        "patient_notes": (
+            "Two missing lower molars (36, 46) after old extractions. Would like fixed implants rather than "
+            "a bridge and can stay about a week."
+        ),
+        "quote": {
+            "factor": 1.00,
+            "treatment_plan": (
+                "3D CBCT planning, two titanium implants with immediate temporary crowns and a review "
+                "after 5 days; permanent crowns on a later visit or by the patient's own dentist."
+            ),
+            "lines": [
+                ("surgery", "Implant surgery (2 implants) under local anaesthesia", 45),
+                ("implants", "Two titanium implants with abutments", 35),
+                ("tests_scans", "CBCT scan and treatment planning", 10),
+                ("medications", "Medicines and temporary crowns", 5),
+                ("doctor_fees", "Review consultation", 5),
+            ],
+        },
+        "booking": {"payment_option": "full", "pay_currency": "USD", "admission_in_days": 1},
+        "assign_coordinator": False,
+    },
+    {
         "key": "admitted-uk-hip",
         "target": "admitted",
         "patient": f"patient.uk{_D}",
@@ -228,7 +258,8 @@ JOURNEYS: list[dict[str, Any]] = [
     },
 ]
 
-#: Published (and one pending) reviews by demo patients. ``journey`` links the review to that journey's case.
+#: Published (and one pending) reviews by demo patients. ``journey`` links the review to that journey's case
+#: and its completed booking, which makes it a "verified patient" review once that journey has completed.
 REVIEWS: list[dict[str, Any]] = [
     {
         "patient": f"patient.us{_D}",
@@ -247,7 +278,7 @@ REVIEWS: list[dict[str, Any]] = [
         "patient": f"patient.om{_D}",
         "hospital": "pournami-chennai",
         "doctor": "divya-raghavan",
-        "journey": None,
+        "journey": "completed-om-dental",
         "rating": 5,
         "title": "Two implants in one trip",
         "body": (

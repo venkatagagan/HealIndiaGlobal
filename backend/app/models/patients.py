@@ -49,6 +49,10 @@ class PatientProfile(UUIDPkMixin, TimestampMixin, Base):
     preferred_currency: Mapped[str] = mapped_column(
         String(3), nullable=False, default="USD", server_default="USD"
     )
+    # True once the patient picked a currency themselves; until then it follows the country of residence.
+    currency_set_by_user: Mapped[bool] = mapped_column(
+        sa.Boolean, nullable=False, default=False, server_default=sa.false()
+    )
 
     user: Mapped[User] = relationship("User", back_populates="patient_profile", lazy="raise")
 

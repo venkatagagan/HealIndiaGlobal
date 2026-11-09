@@ -22,6 +22,11 @@ from scripts.seed_data.content import FX_RATES, currency_exponent
 __all__ = ["BENCHMARK_COUNTRIES", "BENCHMARK_SOURCE", "COST_BENCHMARKS", "build_cost_benchmarks"]
 
 BENCHMARK_SOURCE = "Illustrative estimate - self-pay, private sector (demo data)"
+#: Demo figures are estimates, so they are marked low confidence; real rows come from
+#: ``scripts/import_benchmarks.py`` with a cited source URL, year and confidence.
+BENCHMARK_PRICE_YEAR = 2025
+BENCHMARK_CONFIDENCE = "low"
+BENCHMARK_WAIT_SOURCE = "Illustrative typical waiting time (demo data)"
 
 #: country -> currency
 BENCHMARK_COUNTRIES: dict[str, str] = {
@@ -131,6 +136,10 @@ def build_cost_benchmarks() -> list[dict[str, Any]]:
                     "cost_max_minor": high_minor,
                     "wait_time_text": _WAIT_TIMES[country][idx],
                     "source": BENCHMARK_SOURCE,
+                    "source_url": None,
+                    "price_year": BENCHMARK_PRICE_YEAR,
+                    "confidence": BENCHMARK_CONFIDENCE,
+                    "wait_source": BENCHMARK_WAIT_SOURCE,
                 }
             )
     return rows

@@ -498,6 +498,10 @@ class CostBenchmarkOut(_Out):
     cost_max_minor: int
     wait_time_text: str | None = None
     source: str | None = None
+    source_url: str | None = None
+    price_year: int | None = None
+    confidence: str | None = None
+    wait_source: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
@@ -530,6 +534,10 @@ class CostBenchmarkIn(_In):
     cost_max_minor: int = Field(ge=0, le=MAX_MINOR)
     wait_time_text: str | None = Field(default=None, max_length=100)
     source: str | None = Field(default=None, max_length=255)
+    source_url: str | None = Field(default=None, max_length=1024)
+    price_year: int | None = Field(default=None, ge=1990, le=2100)
+    confidence: Literal["high", "medium", "low"] | None = None
+    wait_source: str | None = Field(default=None, max_length=255)
 
     @field_validator("country_code")
     @classmethod
@@ -554,6 +562,10 @@ class CostBenchmarkPatch(_In):
     cost_max_minor: int | None = Field(default=None, ge=0, le=MAX_MINOR)
     wait_time_text: str | None = Field(default=None, max_length=100)
     source: str | None = Field(default=None, max_length=255)
+    source_url: str | None = Field(default=None, max_length=1024)
+    price_year: int | None = Field(default=None, ge=1990, le=2100)
+    confidence: Literal["high", "medium", "low"] | None = None
+    wait_source: str | None = Field(default=None, max_length=255)
 
     @field_validator("country_code")
     @classmethod
