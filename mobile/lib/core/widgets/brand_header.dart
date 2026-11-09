@@ -100,8 +100,9 @@ class BrandHeader extends StatelessWidget {
       excludeSemantics: true,
       child: Padding(
         padding: padding,
-        child: SizedBox(
-          height: showTagline ? 48 : 32,
+        // Minimum (not fixed) height: a translated tagline may need its second line.
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: showTagline ? 48 : 32),
           child: Stack(
             alignment: Alignment.center,
             children: [

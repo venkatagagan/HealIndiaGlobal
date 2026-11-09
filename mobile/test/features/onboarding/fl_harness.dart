@@ -14,6 +14,7 @@ import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/network/api_client.dart';
 import 'package:heal_india_global/core/repositories/catalog_repository.dart';
 import 'package:heal_india_global/core/theme/app_theme.dart';
+import 'package:heal_india_global/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const guestUser = User(id: 'g1', role: UserRole.patient, status: UserStatus.active, isGuest: true);
@@ -196,6 +197,7 @@ Future<GoRouter> pumpScreen(
   List<Override> overrides = const [],
   String? initialLocation,
   Size logicalSize = const Size(520, 1000),
+  Locale locale = const Locale('en'),
 }) async {
   AppTextStyles.useGoogleFonts = false;
   // 520 x 1000 logical: phone-like height; a little wider than a phone because the test font's
@@ -231,7 +233,13 @@ Future<GoRouter> pumpScreen(
         fxRatesProvider.overrideWith((ref) async => const {'USD': 83.0, 'EUR': 90.0}),
         ...overrides,
       ],
-      child: MaterialApp.router(theme: AppTheme.dark(), routerConfig: router),
+      child: MaterialApp.router(
+        theme: AppTheme.dark(),
+        routerConfig: router,
+        locale: locale,
+        supportedLocales: L10n.supportedLocales,
+        localizationsDelegates: L10n.delegates(),
+      ),
     ),
   );
   await tester.pump();

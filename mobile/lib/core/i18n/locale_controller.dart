@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,8 +127,26 @@ class LocaleState {
       );
 }
 
-/// Device languages in preference order (overridable in tests).
-final deviceLocalesProvider = Provider<List<Locale>>((ref) => PlatformDispatcher.instance.locales);
+/// Device languages in preference order (overridable in tests). Follows system changes, including the
+/// Android 13+ per-app language setting.
+final deviceLocalesProvider = Provider<List<Locale>>((ref) => ref.watch(_deviceLocalesWatcherProvider));
+
+final _deviceLocalesWatcherProvider = NotifierProvider<_DeviceLocalesWatcher, List<Locale>>(_DeviceLocalesWatcher.new);
+
+class _DeviceLocalesWatcher extends Notifier<List<Locale>> with WidgetsBindingObserver {
+  @override
+  List<Locale> build() {
+    final binding = WidgetsBinding.instance;
+    binding.addObserver(this);
+    ref.onDispose(() => binding.removeObserver(this));
+    return binding.platformDispatcher.locales;
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    state = locales ?? WidgetsBinding.instance.platformDispatcher.locales;
+  }
+}
 
 /// The app language: saved user choice -> device language if enabled -> English.
 ///

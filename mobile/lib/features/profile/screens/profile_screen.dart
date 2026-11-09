@@ -229,7 +229,11 @@ class _GuestUpgradeCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(l10n.profileGuestUpgradeBody, style: context.text.bodySmall?.copyWith(color: Colors.white)),
           const SizedBox(height: 14),
-          Row(
+          // Wrap: translated button labels may not fit side by side.
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               FilledButton(
                 style: FilledButton.styleFrom(
@@ -240,7 +244,6 @@ class _GuestUpgradeCard extends StatelessWidget {
                 onPressed: () => context.push(Routes.registerFrom(Routes.profile)),
                 child: Text(l10n.profileCreateAccount),
               ),
-              const SizedBox(width: 8),
               TextButton(
                 style: TextButton.styleFrom(foregroundColor: Colors.white),
                 onPressed: () => context.push(Routes.loginFrom(Routes.profile)),
