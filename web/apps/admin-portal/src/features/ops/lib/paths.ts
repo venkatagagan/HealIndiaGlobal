@@ -24,6 +24,7 @@ export const opsPaths = {
   audit: `${OPS_BASE}/audit-logs`,
   messages: `${OPS_BASE}/messages`,
   privacy: `${OPS_BASE}/privacy-requests`,
+  privacyTools: `${OPS_BASE}/privacy-tools`,
   moderation: `${OPS_BASE}/moderation`,
   enquiries: `${OPS_BASE}/enquiries`,
   reviews: `${OPS_BASE}/reviews`,
