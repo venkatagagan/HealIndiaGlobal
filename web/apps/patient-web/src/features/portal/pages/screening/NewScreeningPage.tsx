@@ -4,14 +4,16 @@ import { toast } from 'sonner';
 import { ArrowRight, BadgePercent, Clock, HelpCircle, History, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { BrandMark } from '@hig/shared/layout';
 import { errorMessage } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useCreateScreening, useScreenings, useSpecialties } from '../../api/queries';
 import { SpecialtyTile, specialtyColors } from '../../components/SpecialtyIcon';
 import { paths } from '../../lib/paths';
-import { cn, formatRelative, useDocumentTitle } from '../../lib/shared';
+import { cn, formatNumber, formatRelative, useDocumentTitle } from '../../lib/shared';
 import { EmptyState, ErrorState, Skeleton } from '../../ui/primitives';
 
 export function NewScreeningPage() {
-  useDocumentTitle('New AI screening');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('screening.new.documentTitle'));
   const [params] = useSearchParams();
   const preselected = params.get('specialty');
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ export function NewScreeningPage() {
       const screening = await create.mutateAsync(slug ? { specialty_slug: slug } : {});
       navigate(paths.screeningStep(screening.id, 1));
     } catch (err) {
-      toast.error(errorMessage(err, 'Could not start a screening.'));
+      toast.error(errorMessage(err, t('screening.new.startFailed')));
       setPending(null);
     }
   }
@@ -51,32 +53,30 @@ export function NewScreeningPage() {
         <BrandMark mono className="pointer-events-none absolute -end-6 -top-6 hidden size-48 text-white/12 sm:block" />
         <div className="relative max-w-2xl">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold ring-1 ring-white/25 backdrop-blur">
-            <Sparkles className="size-3.5" aria-hidden /> AI screening
+            <Sparkles className="size-3.5" aria-hidden /> {t('screening.new.badge')}
           </p>
-          <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">What brings you to India?</h1>
-          <p className="mt-2 text-sm text-white/90 sm:text-base">
-            Select your medical need. Our AI screening takes about 3 minutes and matches you with accredited hospitals.
-          </p>
+          <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">{t('screening.new.title')}</h1>
+          <p className="mt-2 text-sm text-white/90 sm:text-base">{t('screening.new.intro')}</p>
           <div className="relative mt-5">
             <Search className="pointer-events-none absolute start-3.5 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search for a condition or specialty"
-              aria-label="Search specialties"
+              placeholder={t('screening.new.searchPlaceholder')}
+              aria-label={t('screening.new.searchLabel')}
               className="h-12 w-full rounded-xl border-0 bg-white ps-11 pe-4 text-sm text-slate-900 shadow-raised placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-white/40"
             />
           </div>
           <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-white/90">
             <li className="inline-flex items-center gap-1.5">
-              <Clock className="size-4" aria-hidden /> About 3 minutes
+              <Clock className="size-4" aria-hidden /> {t('screening.new.aboutMinutes')}
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="size-4" aria-hidden /> Accredited hospitals only
+              <ShieldCheck className="size-4" aria-hidden /> {t('screening.new.accreditedOnly')}
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <BadgePercent className="size-4" aria-hidden /> Free, no obligation
+              <BadgePercent className="size-4" aria-hidden /> {t('screening.new.freeNoObligation')}
             </li>
           </ul>
         </div>
@@ -93,9 +93,9 @@ export function NewScreeningPage() {
             </span>
             <div>
               <h2 id="continue-heading" className="text-sm font-semibold text-fg">
-                Continue where you left off
+                {t('screening.new.continueTitle')}
               </h2>
-              <p className="text-xs text-muted">Your answers are saved</p>
+              <p className="text-xs text-muted">{t('screening.new.answersSaved')}</p>
             </div>
           </div>
           <ul className="flex flex-wrap gap-2">
@@ -107,10 +107,15 @@ export function NewScreeningPage() {
                 >
                   <SpecialtyTile slug={d.specialty?.slug ?? null} size="sm" />
                   <span className="min-w-0">
-                    <span className="block truncate">{d.specialty?.name ?? 'General screening'}</span>
-                    <span className="block text-xs font-normal text-muted">Started {formatRelative(d.created_at)}</span>
+                    <span className="block truncate">{d.specialty?.name ?? t('screening.generalScreening')}</span>
+                    <span className="block text-xs font-normal text-muted">
+                      {t('screening.new.startedAgo', { when: formatRelative(d.created_at) })}
+                    </span>
                   </span>
-                  <ArrowRight className="size-4 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary-ink" aria-hidden />
+                  <ArrowRight
+                    className="size-4 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary-ink rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
+                    aria-hidden
+                  />
                 </Link>
               </li>
             ))}
@@ -119,10 +124,10 @@ export function NewScreeningPage() {
       ) : null}
 
       <div className="mb-3 flex items-end justify-between gap-3">
-        <h2 className="text-lg font-semibold text-fg">Choose a specialty</h2>
+        <h2 className="text-lg font-semibold text-fg">{t('screening.new.chooseSpecialty')}</h2>
         {specialties.data ? (
           <p className="text-sm text-muted">
-            {list.length} of {specialties.data.length}
+            {t('screening.new.countOf', { shown: formatNumber(list.length), total: formatNumber(specialties.data.length) })}
           </p>
         ) : null}
       </div>
@@ -138,7 +143,7 @@ export function NewScreeningPage() {
       ) : (
         <>
           {list.length === 0 ? (
-            <EmptyState title="No specialty matches your search" description="Try another term, or start a general screening." />
+            <EmptyState title={t('screening.new.noMatchTitle')} description={t('screening.new.noMatchDescription')} />
           ) : (
             <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {list.map((s) => (
@@ -159,15 +164,18 @@ export function NewScreeningPage() {
                     <SpecialtyTile slug={s.slug} />
                     {s.savings_min_pct != null && s.savings_max_pct != null ? (
                       <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-semibold text-success-ink ring-1 ring-inset ring-current/15">
-                        Save {s.savings_min_pct}-{s.savings_max_pct}%
+                        {t('screening.new.savePct', { min: formatNumber(s.savings_min_pct), max: formatNumber(s.savings_max_pct) })}
                       </span>
                     ) : null}
                   </div>
                   <span className="mt-4 font-semibold leading-snug text-fg">{s.name}</span>
                   {s.description ? <span className="mt-1.5 line-clamp-2 text-sm text-muted">{s.description}</span> : null}
                   <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold text-primary-ink">
-                    Start screening
-                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
+                    {t('screening.new.startScreening')}
+                    <ArrowRight
+                      className="size-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
+                      aria-hidden
+                    />
                   </span>
                 </button>
               ))}
@@ -183,10 +191,13 @@ export function NewScreeningPage() {
               <HelpCircle className="size-6" aria-hidden />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-semibold text-fg">Not sure which specialty?</span>
-              <span className="block text-sm text-muted">Start a general screening - we will suggest the right specialists.</span>
+              <span className="block font-semibold text-fg">{t('screening.new.notSureTitle')}</span>
+              <span className="block text-sm text-muted">{t('screening.new.notSureDescription')}</span>
             </span>
-            <ArrowRight className="size-5 shrink-0 text-accent-ink transition-transform group-hover:translate-x-1" aria-hidden />
+            <ArrowRight
+              className="size-5 shrink-0 text-accent-ink transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
+              aria-hidden
+            />
           </button>
         </>
       )}

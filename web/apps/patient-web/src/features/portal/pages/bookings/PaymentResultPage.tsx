@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 import { CircleCheckBig, Clock, Download, XCircle } from 'lucide-react';
 import { errorMessage, PAYMENT_PURPOSE_LABELS, paymentsApi, type InvoiceOut } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useInvoices, useOrder } from '../../api/queries';
 import { Money, StatusBadge } from '../../components/common';
 import { paths } from '../../lib/paths';
@@ -15,7 +16,8 @@ export function PaymentResultPage() {
   const { id = '' } = useParams();
   const [params] = useSearchParams();
   const orderId = params.get('order') ?? '';
-  useDocumentTitle('Payment status');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('pay.result.documentTitle'));
   const [polling, setPolling] = useState(true);
   const order = useOrder(orderId, { pollMs: polling ? 2000 : false });
   const paid = order.data?.status === 'paid' || order.data?.status === 'partially_refunded' || order.data?.status === 'refunded';
@@ -23,11 +25,11 @@ export function PaymentResultPage() {
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setPolling(false), POLL_LIMIT_MS);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setPolling(false), POLL_LIMIT_MS);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (!orderId) return <ErrorState title="Missing payment reference" />;
+  if (!orderId) return <ErrorState title={t('pay.result.missingReference')} />;
   if (order.isPending) return <Skeleton className="mx-auto h-80 max-w-xl" />;
   if (order.isError) return <ErrorState error={order.error} onRetry={() => void order.refetch()} />;
 
@@ -41,7 +43,7 @@ export function PaymentResultPage() {
     try {
       await paymentsApi.downloadInvoicePdf(inv);
     } catch (err) {
-      toast.error(errorMessage(err, 'Download failed.'));
+      toast.error(errorMessage(err, t('payments.receipt.downloadFailed')));
     } finally {
       setDownloading(false);
     }
@@ -60,39 +62,39 @@ export function PaymentResultPage() {
           )}
           <h1 className="mt-3 text-2xl font-bold" aria-live="polite">
             {paid
-              ? 'Payment successful'
+              ? t('pay.result.successTitle')
               : failed
-                ? 'Payment not completed'
+                ? t('pay.result.failedTitle')
                 : waitingBank
-                  ? 'Awaiting your bank transfer'
-                  : 'Confirming your payment...'}
+                  ? t('pay.result.bankTitle')
+                  : t('pay.result.confirmingTitle')}
           </h1>
           <p className="mt-1 text-sm text-white/90">
             {paid
-              ? 'Thank you. Your booking has been updated and a receipt is on its way to your email.'
+              ? t('pay.result.successText')
               : failed
-                ? 'You have not been charged. You can try again with the same or another method.'
+                ? t('pay.result.failedText')
                 : waitingBank
-                  ? 'We will confirm as soon as the funds arrive - usually 1-3 business days.'
-                  : 'This usually takes a few seconds.'}
+                  ? t('pay.result.bankText')
+                  : t('pay.result.confirmingText')}
           </p>
         </div>
         <CardBody>
           <dl className="grid grid-cols-2 gap-4">
-            <KeyValue label="Order">{o.order_number}</KeyValue>
-            <KeyValue label="Status">
+            <KeyValue label={t('pay.result.order')}>{o.order_number}</KeyValue>
+            <KeyValue label={t('pay.result.status')}>
               <StatusBadge status={o.status} />
             </KeyValue>
-            <KeyValue label="Amount">
+            <KeyValue label={t('pay.result.amount')}>
               <Money minor={o.amount_minor} currency={o.currency} />
             </KeyValue>
-            <KeyValue label="For">{PAYMENT_PURPOSE_LABELS[o.purpose] ?? o.purpose}</KeyValue>
+            <KeyValue label={t('pay.result.for')}>{PAYMENT_PURPOSE_LABELS[o.purpose] ?? o.purpose}</KeyValue>
             {o.currency !== o.base_currency ? (
-              <KeyValue label="In INR">
+              <KeyValue label={t('pay.result.inInr')}>
                 <Money minor={o.base_amount_minor} currency={o.base_currency} />
               </KeyValue>
             ) : null}
-            <KeyValue label={paid ? 'Paid on' : 'Created'}>{formatDateTime(o.paid_at ?? o.created_at)}</KeyValue>
+            <KeyValue label={paid ? t('pay.result.paidOn') : t('pay.result.created')}>{formatDateTime(o.paid_at ?? o.created_at)}</KeyValue>
           </dl>
           <div className="mt-6 flex flex-wrap gap-2">
             {paid && receipt ? (
@@ -102,10 +104,10 @@ export function PaymentResultPage() {
                 onClick={() => void downloadReceipt(receipt)}
                 icon={<Download className="h-4 w-4" aria-hidden />}
               >
-                Download receipt
+                {t('pay.result.downloadReceipt')}
               </Button>
             ) : null}
-            {failed ? <ButtonLink to={paths.pay(id)}>Try again</ButtonLink> : null}
+            {failed ? <ButtonLink to={paths.pay(id)}>{t('pay.result.tryAgain')}</ButtonLink> : null}
             {!paid && !failed && !polling ? (
               <Button
                 variant="outline"
@@ -114,15 +116,15 @@ export function PaymentResultPage() {
                   void order.refetch();
                 }}
               >
-                Refresh status
+                {t('pay.result.refreshStatus')}
               </Button>
             ) : null}
             <ButtonLink to={paths.booking(id)} variant={paid ? 'primary' : 'outline'}>
-              View booking
+              {t('pay.result.viewBooking')}
             </ButtonLink>
             {paid ? (
               <ButtonLink to={paths.trip(id)} variant="accent">
-                Plan your trip
+                {t('pay.result.planTrip')}
               </ButtonLink>
             ) : null}
           </div>

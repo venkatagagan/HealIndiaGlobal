@@ -1,6 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
+import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { Building2, Copy, CreditCard, FlaskConical, Lock, ShieldCheck, Upload } from 'lucide-react';
 import {
@@ -15,12 +16,13 @@ import {
   type PaymentGateway,
   type PaymentPurpose,
 } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { invalidateBookingRelated, useBooking, useInstallments, usePatientProfile } from '../../api/queries';
 import { BackLink, formatBytes, MAX_UPLOAD_BYTES, Money } from '../../components/common';
 import { openRazorpayCheckout } from '../../lib/razorpay';
 import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
-import { cn, formatDate, SUPPORTED_CURRENCIES, useDocumentTitle } from '../../lib/shared';
+import { cn, formatDate, formatNumber, SUPPORTED_CURRENCIES, useDocumentTitle } from '../../lib/shared';
 import {
   Alert,
   Button,
@@ -35,8 +37,7 @@ import {
   Skeleton,
 } from '../../ui/primitives';
 
-const FX_UNAVAILABLE_MESSAGE =
-  'Payments in your currency are temporarily unavailable — please try again shortly or pay in INR/USD.';
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 /** Mock gateway is only offered in development builds or when explicitly enabled for a test environment. */
 const MOCK_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_MOCK_PAYMENTS === 'true';
@@ -51,18 +52,25 @@ interface DueOption {
   installment?: InstallmentOut;
 }
 
-function dueOptions(booking: BookingOut, installments: InstallmentOut[], installmentId: string | null): DueOption[] {
+function dueOptions(t: TFn, booking: BookingOut, installments: InstallmentOut[], installmentId: string | null): DueOption[] {
   if (installmentId) {
     const inst = installments.find((i) => i.id === installmentId);
     return inst && inst.status !== 'paid' && inst.status !== 'cancelled'
-      ? [{ purpose: 'installment', label: `Instalment ${inst.seq} (due ${formatDate(inst.due_date)})`, amount: inst.amount_minor, installment: inst }]
+      ? [
+          {
+            purpose: 'installment',
+            label: t('pay.due.instalment', { seq: inst.seq, date: formatDate(inst.due_date) }),
+            amount: inst.amount_minor,
+            installment: inst,
+          },
+        ]
       : [];
   }
   if (booking.status === 'pending_payment') {
-    if (booking.payment_option === 'full') return [{ purpose: 'booking_full', label: 'Full payment', amount: booking.total_minor }];
+    if (booking.payment_option === 'full') return [{ purpose: 'booking_full', label: t('pay.due.full'), amount: booking.total_minor }];
     return [
-      { purpose: 'booking_deposit', label: 'Deposit to confirm your booking', amount: booking.deposit_minor },
-      { purpose: 'booking_full', label: 'Pay the full amount now', amount: booking.total_minor },
+      { purpose: 'booking_deposit', label: t('pay.due.deposit'), amount: booking.deposit_minor },
+      { purpose: 'booking_full', label: t('pay.due.fullNow'), amount: booking.total_minor },
     ];
   }
   if (booking.status === 'cancelled' || booking.balance_due_minor <= 0) return [];
@@ -71,16 +79,24 @@ function dueOptions(booking: BookingOut, installments: InstallmentOut[], install
       .filter((i) => i.status === 'due' || i.status === 'overdue')
       .sort((a, b) => a.seq - b.seq)[0];
     return next
-      ? [{ purpose: 'installment', label: `Instalment ${next.seq} (due ${formatDate(next.due_date)})`, amount: next.amount_minor, installment: next }]
+      ? [
+          {
+            purpose: 'installment',
+            label: t('pay.due.instalment', { seq: next.seq, date: formatDate(next.due_date) }),
+            amount: next.amount_minor,
+            installment: next,
+          },
+        ]
       : [];
   }
-  return [{ purpose: 'booking_balance', label: 'Remaining balance', amount: booking.balance_due_minor }];
+  return [{ purpose: 'booking_balance', label: t('pay.due.balance'), amount: booking.balance_due_minor }];
 }
 
 export function PayPage() {
   const { id = '' } = useParams();
+  const { t } = useAppTranslation();
   const [params] = useSearchParams();
-  useDocumentTitle('Payment');
+  useDocumentTitle(t('pay.title'));
   const booking = useBooking(id);
   const installments = useInstallments(id, booking.data?.payment_option === 'installments');
 
@@ -95,12 +111,13 @@ export function PayPage() {
   if (booking.isError) return <ErrorState error={booking.error} onRetry={() => void booking.refetch()} />;
   if (booking.data.payment_option === 'installments' && installments.isPending) return <Skeleton className="h-72 w-full" />;
 
-  const options = dueOptions(booking.data, installments.data ?? [], params.get('installment'));
+  const options = dueOptions(t, booking.data, installments.data ?? [], params.get('installment'));
   if (options.length === 0) return <Navigate to={paths.booking(id)} replace />;
   return <PayForm booking={booking.data} options={options} />;
 }
 
 function PayForm({ booking, options }: { booking: BookingOut; options: DueOption[] }) {
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const me = useMe();
@@ -157,21 +174,21 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
         return;
       }
       if (gateway === 'razorpay') {
-        if (!co.razorpay) throw new Error('Card payments are not available right now. Please choose another method.');
+        if (!co.razorpay) throw new Error(t('pay.errors.cardUnavailable'));
         const outcome = await openRazorpayCheckout(co.razorpay);
         if (outcome.kind === 'success') {
           await paymentsApi.verifyRazorpay(co.order.id, outcome.response);
-          toast.success('Payment received');
+          toast.success(t('pay.toast.received'));
           finished(co.order.id);
         } else if (outcome.kind === 'failed') {
-          toast.error(`Payment failed: ${outcome.message}`);
+          toast.error(t('pay.toast.failed', { message: outcome.message }));
         } else {
-          toast.info('Payment cancelled. You have not been charged.');
+          toast.info(t('pay.toast.cancelled'));
         }
       }
       // bank transfer and mock continue in the panels below
     } catch (err) {
-      toast.error(isFxRateUnavailable(err) ? FX_UNAVAILABLE_MESSAGE : errorMessage(err, 'The payment could not be started.'));
+      toast.error(isFxRateUnavailable(err) ? t('pay.errors.fxUnavailable') : errorMessage(err, t('pay.errors.startFailed')));
     } finally {
       setBusy(false);
     }
@@ -180,22 +197,22 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
   const methods: { value: UiGateway; title: string; text: string; icon: ReactNode }[] = [
     {
       value: 'razorpay',
-      title: 'Credit / debit card or UPI',
-      text: 'Visa, MasterCard, Amex, RuPay, UPI - secure checkout by Razorpay',
+      title: t('pay.methods.cardTitle'),
+      text: t('pay.methods.cardText'),
       icon: <CreditCard className="h-5 w-5" aria-hidden />,
     },
     {
       value: 'bank_transfer',
-      title: 'International bank transfer',
-      text: 'SWIFT / wire transfer. Your booking is confirmed once the funds arrive.',
+      title: t('pay.methods.bankTitle'),
+      text: t('pay.methods.bankText'),
       icon: <Building2 className="h-5 w-5" aria-hidden />,
     },
     ...(MOCK_ENABLED
       ? [
           {
             value: 'mock' as const,
-            title: 'Test payment (development only)',
-            text: 'Simulates a gateway success or failure. Never available in production.',
+            title: t('pay.methods.mockTitle'),
+            text: t('pay.methods.mockText'),
             icon: <FlaskConical className="h-5 w-5" aria-hidden />,
           },
         ]
@@ -205,20 +222,23 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
   return (
     <div className="mx-auto max-w-4xl">
       <PageHeader
-        back={<BackLink to={paths.booking(booking.id)}>Booking {booking.booking_number}</BackLink>}
-        title="Payment"
-        description={`${booking.procedure?.name ?? 'Treatment'} at ${booking.hospital.name} · admission ${formatDate(booking.admission_date)}`}
+        back={<BackLink to={paths.booking(booking.id)}>{t('pay.backToBooking', { number: booking.booking_number })}</BackLink>}
+        title={t('pay.title')}
+        description={t('pay.description', {
+          treatment: booking.procedure?.name ?? t('bookings.treatment'),
+          hospital: booking.hospital.name,
+          date: formatDate(booking.admission_date),
+        })}
       />
       <div className="mb-6 flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-sm dark:bg-slate-900">
-        <Lock className="h-4 w-4 text-green-600" aria-hidden /> Secure payment - card details are entered on the payment provider's
-        page and never stored by Heal India Global.
+        <Lock className="h-4 w-4 text-green-600" aria-hidden /> {t('pay.secureNote')}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="space-y-6 lg:col-span-3">
           {options.length > 1 ? (
             <Card>
-              <CardHeader title="What would you like to pay?" />
+              <CardHeader title={t('pay.whatToPay')} />
               <CardBody className="space-y-2">
                 {options.map((o, i) => (
                   <RadioCard key={o.purpose} name="due" checked={i === purposeIdx} onChange={() => setPurposeIdx(i)} title={o.label}>
@@ -230,7 +250,7 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
           ) : null}
 
           <Card>
-            <CardHeader title="Payment method" />
+            <CardHeader title={t('pay.method')} />
             <CardBody className="space-y-2">
               {methods.map((m) => (
                 <RadioCard
@@ -258,37 +278,37 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
 
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader title="Price summary" />
+            <CardHeader title={t('bookings.summary.title')} />
             <CardBody className="space-y-2 text-sm">
-              <Row label="Subtotal">
+              <Row label={t('bookings.summary.subtotal')}>
                 <Money minor={booking.subtotal_minor} currency={booking.currency} />
               </Row>
               {booking.discount_minor ? (
-                <Row label="Discount">
+                <Row label={t('bookings.summary.discount')}>
                   -<Money minor={booking.discount_minor} currency={booking.currency} />
                 </Row>
               ) : null}
               {booking.service_fee_minor ? (
-                <Row label="Service fee">
+                <Row label={t('bookings.summary.serviceFee')}>
                   <Money minor={booking.service_fee_minor} currency={booking.currency} />
                 </Row>
               ) : null}
-              <Row label="Taxes">
+              <Row label={t('bookings.summary.taxes')}>
                 <Money minor={booking.tax_minor} currency={booking.currency} />
               </Row>
-              <Row label="Total" strong>
+              <Row label={t('bookings.summary.total')} strong>
                 <Money minor={booking.total_minor} currency={booking.currency} />
               </Row>
               {booking.amount_paid_minor ? (
-                <Row label="Paid so far">
+                <Row label={t('payments.page.paidSoFar')}>
                   <Money minor={booking.amount_paid_minor} currency={booking.currency} />
                 </Row>
               ) : null}
               <div className="my-3 border-t border-slate-200 dark:border-slate-800" />
-              <Row label="Due now" strong>
+              <Row label={t('pay.dueNow')} strong>
                 <Money minor={due.amount} currency={booking.currency} />
               </Row>
-              <Field label="Pay in" htmlFor="pay-ccy" className="pt-2">
+              <Field label={t('pay.payIn')} htmlFor="pay-ccy" className="pt-2">
                 <Select id="pay-ccy" value={currency} onChange={(e) => setCurrency(e.target.value)}>
                   {SUPPORTED_CURRENCIES.map((c) => (
                     <option key={c} value={c}>
@@ -299,29 +319,37 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
               </Field>
               {checkout ? (
                 <p className="rounded-xl bg-green-50 p-3 text-sm dark:bg-green-500/10">
-                  You will be charged{' '}
+                  {t('pay.willBeCharged')}{' '}
                   <strong>
                     <Money minor={checkout.order.amount_minor} currency={checkout.order.currency} />
                   </strong>
                   {checkout.order.currency !== checkout.order.base_currency ? (
                     <span className="block text-xs text-slate-500">
-                      = <Money minor={checkout.order.base_amount_minor} currency={checkout.order.base_currency} /> at 1{' '}
-                      {checkout.order.currency} = {Number(checkout.order.fx_rate).toFixed(4)} {checkout.order.base_currency}
+                      <Trans
+                        t={t}
+                        i18nKey="pay.fxLine"
+                        values={{
+                          currency: checkout.order.currency,
+                          rate: formatNumber(Number(checkout.order.fx_rate), { minimumFractionDigits: 4, maximumFractionDigits: 4 }),
+                          baseCurrency: checkout.order.base_currency,
+                        }}
+                        components={{ 0: <Money minor={checkout.order.base_amount_minor} currency={checkout.order.base_currency} /> }}
+                      />
                     </span>
                   ) : null}
-                  <span className="block text-xs text-slate-500">Order {checkout.order.order_number}</span>
+                  <span className="block text-xs text-slate-500">{t('pay.orderNumber', { number: checkout.order.order_number })}</span>
                 </p>
               ) : (
-                <p className="text-xs text-slate-500">The exact amount in {currency} is shown before you confirm.</p>
+                <p className="text-xs text-slate-500">{t('pay.exactAmountNote', { currency })}</p>
               )}
               {booking.insurance_claim_requested ? (
                 <p className="flex items-center gap-1 text-xs text-slate-500">
-                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> Insurance claim requested - we will send you the claim documents.
+                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> {t('pay.insuranceNote')}
                 </p>
               ) : null}
               {!(checkout && gateway !== 'razorpay') ? (
                 <Button size="lg" variant="accent" className="mt-3 w-full" loading={busy} onClick={() => void pay()}>
-                  {gateway === 'razorpay' ? 'Pay securely' : gateway === 'bank_transfer' ? 'Get bank details' : 'Create test order'}
+                  {gateway === 'razorpay' ? t('pay.paySecurely') : gateway === 'bank_transfer' ? t('pay.getBankDetails') : t('pay.createTestOrder')}
                 </Button>
               ) : null}
             </CardBody>
@@ -374,6 +402,7 @@ function RadioCard({
 }
 
 function CopyRow({ label, value }: { label: string; value: string | null }) {
+  const { t } = useAppTranslation();
   if (!value) return null;
   return (
     <div className="flex items-center justify-between gap-3 py-1.5">
@@ -385,12 +414,12 @@ function CopyRow({ label, value }: { label: string; value: string | null }) {
         type="button"
         onClick={() => {
           void navigator.clipboard?.writeText(value).then(
-            () => toast.success(`${label} copied`),
-            () => toast.error('Copy failed'),
+            () => toast.success(t('pay.copy.copied', { label })),
+            () => toast.error(t('pay.copy.failed')),
           );
         }}
         className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-        aria-label={`Copy ${label}`}
+        aria-label={t('pay.copy.label', { label })}
       >
         <Copy className="h-4 w-4" />
       </button>
@@ -399,6 +428,7 @@ function CopyRow({ label, value }: { label: string; value: string | null }) {
 }
 
 function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut; caseId: string | null | undefined; onDone: () => void }) {
+  const { t } = useAppTranslation();
   const details = checkout.bank_transfer!;
   const [reference, setReference] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -406,15 +436,15 @@ function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut
 
   async function submit() {
     if (!file) {
-      toast.error('Attach your transfer receipt (PDF or image).');
+      toast.error(t('pay.bank.errors.noFile'));
       return;
     }
     if (file.size > MAX_UPLOAD_BYTES) {
-      toast.error(`The file is larger than ${formatBytes(MAX_UPLOAD_BYTES)}.`);
+      toast.error(t('pay.bank.errors.tooLarge', { size: formatBytes(MAX_UPLOAD_BYTES) }));
       return;
     }
     if (!reference.trim()) {
-      toast.error('Enter the transfer reference from your bank (UTR / SWIFT reference).');
+      toast.error(t('pay.bank.errors.noReference'));
       return;
     }
     setBusy(true);
@@ -423,10 +453,10 @@ function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut
       // it to the order's case when the proof is submitted)
       const doc = await documentsApi.upload({ file, kind: 'payment_proof', case_id: checkout.order.case_id ?? caseId ?? undefined });
       await paymentsApi.submitBankTransferProof(checkout.order.id, { document_id: doc.id, reference: reference.trim() });
-      toast.success('Thank you - we will confirm your payment once the funds arrive (usually 1-3 business days).');
+      toast.success(t('pay.bank.submitted'));
       onDone();
     } catch (err) {
-      toast.error(errorMessage(err, 'The proof could not be submitted.'));
+      toast.error(errorMessage(err, t('pay.bank.errors.submitFailed')));
     } finally {
       setBusy(false);
     }
@@ -436,33 +466,38 @@ function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut
   return (
     <Card>
       <CardHeader
-        title="Bank transfer details"
-        description="Transfer the exact amount and include the payment reference so we can match your payment."
+        title={t('pay.bank.title')}
+        description={t('pay.bank.description')}
       />
       <CardBody className="space-y-4">
         <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
           <div className="mb-2 flex justify-between text-sm">
-            <span className="text-slate-500">Amount to transfer</span>
+            <span className="text-slate-500">{t('pay.bank.amount')}</span>
             <strong>
               <Money minor={amount.amount_minor} currency={amount.currency} />
             </strong>
           </div>
-          <CopyRow label="Payment reference" value={details.reference} />
-          <CopyRow label="Beneficiary" value={details.beneficiary_name} />
-          <CopyRow label="Bank" value={details.bank_name} />
-          <CopyRow label="Account number" value={details.account_number} />
-          <CopyRow label="SWIFT / BIC" value={details.swift} />
-          <CopyRow label="IBAN" value={details.iban} />
-          <CopyRow label="IFSC" value={details.ifsc} />
+          <CopyRow label={t('pay.bank.reference')} value={details.reference} />
+          <CopyRow label={t('pay.bank.beneficiary')} value={details.beneficiary_name} />
+          <CopyRow label={t('pay.bank.bank')} value={details.bank_name} />
+          <CopyRow label={t('pay.bank.accountNumber')} value={details.account_number} />
+          <CopyRow label={t('pay.bank.swift')} value={details.swift} />
+          <CopyRow label={t('pay.bank.iban')} value={details.iban} />
+          <CopyRow label={t('pay.bank.ifsc')} value={details.ifsc} />
         </div>
         <Alert tone="amber">
-          Your bank may charge transfer fees; please choose "OUR" charges so the hospital receives the full amount.
+          {t('pay.bank.feesNote')}
         </Alert>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Your transfer reference" htmlFor="bt-ref" required>
-            <Input id="bt-ref" maxLength={100} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="e.g. UTR or SWIFT ref" />
+          <Field label={t('pay.bank.yourReference')} htmlFor="bt-ref" required>
+            <Input id="bt-ref" maxLength={100} value={reference} onChange={(e) => setReference(e.target.value)} placeholder={t('pay.bank.referencePlaceholder')} />
           </Field>
-          <Field label="Transfer receipt" htmlFor="bt-file" required hint={file ? `${file.name} · ${formatBytes(file.size)}` : 'PDF or image'}>
+          <Field
+            label={t('pay.bank.receipt')}
+            htmlFor="bt-file"
+            required
+            hint={file ? `${file.name} · ${formatBytes(file.size)}` : t('pay.bank.receiptHint')}
+          >
             <Input
               id="bt-file"
               type="file"
@@ -473,7 +508,7 @@ function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut
           </Field>
         </div>
         <Button onClick={() => void submit()} loading={busy} icon={<Upload className="h-4 w-4" aria-hidden />}>
-          Submit payment proof
+          {t('pay.bank.submit')}
         </Button>
       </CardBody>
     </Card>
@@ -481,9 +516,10 @@ function BankTransferPanel({ checkout, caseId, onDone }: { checkout: CheckoutOut
 }
 
 function MockPanel({ checkout, onDone }: { checkout: CheckoutOut; onDone: () => void }) {
+  const { t } = useAppTranslation();
   const [busy, setBusy] = useState<'success' | 'failure' | null>(null);
   if (!checkout.mock) {
-    return <Alert tone="red">The test gateway is not enabled on this server.</Alert>;
+    return <Alert tone="red">{t('pay.mock.disabled')}</Alert>;
   }
   async function complete(outcome: 'success' | 'failure') {
     setBusy(outcome);
@@ -499,13 +535,13 @@ function MockPanel({ checkout, onDone }: { checkout: CheckoutOut; onDone: () => 
   }
   return (
     <Card>
-      <CardHeader title="Test payment" description={`Order ${checkout.order.order_number}`} />
+      <CardHeader title={t('pay.mock.title')} description={t('pay.orderNumber', { number: checkout.order.order_number })} />
       <CardBody className="flex flex-wrap gap-2">
         <Button onClick={() => void complete('success')} loading={busy === 'success'} disabled={!!busy}>
-          Simulate success
+          {t('pay.mock.success')}
         </Button>
         <Button variant="danger" onClick={() => void complete('failure')} loading={busy === 'failure'} disabled={!!busy}>
-          Simulate failure
+          {t('pay.mock.failure')}
         </Button>
       </CardBody>
     </Card>

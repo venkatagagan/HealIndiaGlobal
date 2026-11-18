@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
+import { useAppTranslation } from '../../../../i18n';
 import { usePatientProfile } from '../../api/queries';
 import { GuestBanner } from '../../components/GuestUpgrade';
 import { useMe } from '../../lib/session';
@@ -9,34 +11,29 @@ import { CompanionsSection, ConsentsSection, SecuritySection } from './ProfileEx
 import { EmergencyForm, PassportForm, PersonalForm, PreferencesForm } from './ProfileForms';
 
 type Tab = 'personal' | 'travel' | 'companions' | 'preferences' | 'privacy' | 'security';
-const TABS: { value: Tab; label: string }[] = [
-  { value: 'personal', label: 'Personal info' },
-  { value: 'travel', label: 'Passport & emergency' },
-  { value: 'companions', label: 'Companions' },
-  { value: 'preferences', label: 'Preferences' },
-  { value: 'privacy', label: 'Privacy & account' },
-  { value: 'security', label: 'Security' },
-];
+const TAB_VALUES: Tab[] = ['personal', 'travel', 'companions', 'preferences', 'privacy', 'security'];
 
 export function ProfilePage() {
-  useDocumentTitle('Profile');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('profile.title'));
   const me = useMe();
   const profile = usePatientProfile();
   const [params, setParams] = useSearchParams();
-  const tab = (TABS.find((t) => t.value === params.get('tab'))?.value ?? 'personal') as Tab;
+  const tabs = useMemo(() => TAB_VALUES.map((value) => ({ value, label: t(`profile.tabs.${value}`) })), [t]);
+  const tab = (TAB_VALUES.find((v) => v === params.get('tab')) ?? 'personal') as Tab;
   const isGuest = me.data?.is_guest ?? false;
 
   return (
     <div>
       {isGuest ? <GuestBanner /> : null}
       <PageHeader
-        title="Profile"
-        description={me.data?.email ? `Signed in as ${me.data.email}` : 'Manage your details, travel documents and privacy.'}
+        title={t('profile.title')}
+        description={me.data?.email ? t('profile.signedInAs', { email: me.data.email }) : t('profile.description')}
       />
       <Tabs
         value={tab}
         onChange={(v) => setParams(v === 'personal' ? {} : { tab: v }, { replace: true })}
-        tabs={TABS}
+        tabs={tabs}
         className="mb-6"
       />
       {profile.isPending ? (
@@ -66,8 +63,8 @@ export function ProfilePage() {
           {tab === 'security' ? (
             isGuest ? (
               <EmptyState
-                title="Create an account first"
-                description="Guest sessions have no password. Create your account to set a password and two-step verification."
+                title={t('profile.guestSecurity.title')}
+                description={t('profile.guestSecurity.description')}
               />
             ) : (
               <SecuritySection />

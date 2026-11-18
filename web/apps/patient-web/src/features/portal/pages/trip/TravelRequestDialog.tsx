@@ -1,51 +1,61 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
+import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { errorMessage, travelApi, type Uuid } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { invalidateTravel, useAccommodations } from '../../api/queries';
-import { Money } from '../../components/common';
+import { formatMoney, formatNumber } from '../../lib/shared';
 import { Button, Field, Input, Modal, Select, Textarea } from '../../ui/primitives';
 
 export type RequestKind = 'visa' | 'flight' | 'airport_pickup' | 'airport_drop' | 'accommodation' | 'translator' | 'local_guide';
 
-const TITLES: Record<RequestKind, { title: string; description: string }> = {
-  visa: { title: 'Request e-Medical visa support', description: 'We arrange the hospital invitation letter and guide your application.' },
-  flight: { title: 'Request flight booking', description: 'Our travel desk sends you flight options and prices.' },
-  airport_pickup: { title: 'Request airport pickup', description: 'A driver meets you at arrivals and takes you to your hotel or hospital.' },
-  airport_drop: { title: 'Request airport drop', description: 'Transport from your hotel or hospital to the airport.' },
-  accommodation: { title: 'Request accommodation', description: 'Hotels and guest houses close to your hospital.' },
-  translator: { title: 'Request a translator', description: 'A medical interpreter for consultations and admission.' },
-  local_guide: { title: 'Request a local guide', description: 'Help with shopping, sightseeing and getting around.' },
+type TFn = ReturnType<typeof useAppTranslation>['t'];
+
+/** Catalog key of each dialog: `trip.request.<key>.title` / `.description`. */
+const TITLE_KEYS: Record<RequestKind, string> = {
+  visa: 'visa',
+  flight: 'flight',
+  airport_pickup: 'airportPickup',
+  airport_drop: 'airportDrop',
+  accommodation: 'accommodation',
+  translator: 'translator',
+  local_guide: 'localGuide',
 };
 
-const schema = z
-  .object({
-    visa_type: z.enum(['e_medical', 'e_medical_attendant']),
-    from_location: z.string().max(200),
-    to_location: z.string().max(200),
-    depart_at: z.string(),
-    arrive_at: z.string(),
-    flight_number: z.string().max(20),
-    passengers: z.string().regex(/^\d{0,2}$/, 'Enter a number'),
-    provider_id: z.string(),
-    check_in: z.string(),
-    check_out: z.string(),
-    guests: z.string().regex(/^\d{0,2}$/, 'Enter a number'),
-    room_type: z.string().max(100),
-    starts_at: z.string(),
-    ends_at: z.string(),
-    notes: z.string().max(2000),
-  })
-  .refine((v) => !v.check_in || !v.check_out || v.check_in < v.check_out, {
-    path: ['check_out'],
-    message: 'Check-out must be after check-in',
-  })
-  .refine((v) => !v.starts_at || !v.ends_at || v.starts_at < v.ends_at, { path: ['ends_at'], message: 'Must be after the start' });
+function buildSchema(t: TFn) {
+  return z
+    .object({
+      visa_type: z.enum(['e_medical', 'e_medical_attendant']),
+      from_location: z.string().max(200),
+      to_location: z.string().max(200),
+      depart_at: z.string(),
+      arrive_at: z.string(),
+      flight_number: z.string().max(20),
+      passengers: z.string().regex(/^\d{0,2}$/, t('trip.request.errors.number')),
+      provider_id: z.string(),
+      check_in: z.string(),
+      check_out: z.string(),
+      guests: z.string().regex(/^\d{0,2}$/, t('trip.request.errors.number')),
+      room_type: z.string().max(100),
+      starts_at: z.string(),
+      ends_at: z.string(),
+      notes: z.string().max(2000),
+    })
+    .refine((v) => !v.check_in || !v.check_out || v.check_in < v.check_out, {
+      path: ['check_out'],
+      message: t('trip.request.errors.checkOutAfterCheckIn'),
+    })
+    .refine((v) => !v.starts_at || !v.ends_at || v.starts_at < v.ends_at, {
+      path: ['ends_at'],
+      message: t('trip.request.errors.endAfterStart'),
+    });
+}
 
-type Values = z.infer<typeof schema>;
+type Values = z.infer<ReturnType<typeof buildSchema>>;
 
 const EMPTY: Values = {
   visa_type: 'e_medical',
@@ -87,7 +97,9 @@ export function TravelRequestDialog({
   hospitalCity: string;
   admissionDate: string | null;
 }) {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
+  const schema = useMemo(() => buildSchema(t), [t]);
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: EMPTY });
   const { errors, isSubmitting } = form.formState;
   const accommodations = useAccommodations({ hospital_id: hospitalId }, kind === 'accommodation');
@@ -114,7 +126,7 @@ export function TravelRequestDialog({
           break;
         case 'flight':
           if (!v.from_location.trim() || !v.depart_at) {
-            form.setError('from_location', { message: 'Departure city and date are required' });
+            form.setError('from_location', { message: t('trip.request.errors.departureRequired') });
             return;
           }
           await travelApi.createTravelBooking({
@@ -130,7 +142,9 @@ export function TravelRequestDialog({
         case 'airport_pickup':
         case 'airport_drop':
           if (!(kind === 'airport_pickup' ? v.arrive_at : v.depart_at)) {
-            form.setError(kind === 'airport_pickup' ? 'arrive_at' : 'depart_at', { message: 'Date and time are required' });
+            form.setError(kind === 'airport_pickup' ? 'arrive_at' : 'depart_at', {
+              message: t('trip.request.errors.dateTimeRequired'),
+            });
             return;
           }
           await travelApi.createTravelBooking({
@@ -146,7 +160,7 @@ export function TravelRequestDialog({
           break;
         case 'accommodation':
           if (!v.provider_id || !v.check_in || !v.check_out) {
-            form.setError('provider_id', { message: 'Choose a place to stay and your dates' });
+            form.setError('provider_id', { message: t('trip.request.errors.stayRequired') });
             return;
           }
           await travelApi.createAccommodationBooking({
@@ -171,55 +185,55 @@ export function TravelRequestDialog({
           break;
       }
       invalidateTravel(qc);
-      toast.success('Request sent. Your coordinator will confirm the details.');
+      toast.success(t('trip.request.sent'));
       onClose();
     } catch (err) {
-      toast.error(errorMessage(err, 'The request could not be sent.'));
+      toast.error(errorMessage(err, t('trip.request.sendFailed')));
     }
   });
 
-  const meta = kind ? TITLES[kind] : null;
+  const titleKey = kind ? TITLE_KEYS[kind] : null;
   const reg = form.register;
 
   return (
     <Modal
       open={!!kind}
       onClose={onClose}
-      title={meta?.title ?? ''}
-      description={meta?.description}
+      title={titleKey ? t(`trip.request.${titleKey}.title`) : ''}
+      description={titleKey ? t(`trip.request.${titleKey}.description`) : undefined}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
-            Cancel
+            {t('trip.request.cancel')}
           </Button>
           <Button type="submit" form="travel-request-form" loading={isSubmitting}>
-            Send request
+            {t('trip.request.send')}
           </Button>
         </>
       }
     >
       <form id="travel-request-form" onSubmit={onSubmit} className="space-y-4" noValidate>
         {kind === 'visa' ? (
-          <Field label="Visa type" htmlFor="tr-visa">
+          <Field label={t('trip.request.fields.visaType')} htmlFor="tr-visa">
             <Select id="tr-visa" {...reg('visa_type')}>
-              <option value="e_medical">e-Medical visa (patient)</option>
-              <option value="e_medical_attendant">e-Medical Attendant visa (companion)</option>
+              <option value="e_medical">{t('trip.request.fields.visaPatient')}</option>
+              <option value="e_medical_attendant">{t('trip.request.fields.visaCompanion')}</option>
             </Select>
           </Field>
         ) : null}
 
         {kind === 'flight' ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Flying from" htmlFor="tr-from" error={errors.from_location?.message} required>
-              <Input id="tr-from" placeholder="City or airport" {...reg('from_location')} />
+            <Field label={t('trip.request.fields.flyingFrom')} htmlFor="tr-from" error={errors.from_location?.message} required>
+              <Input id="tr-from" placeholder={t('trip.request.fields.cityOrAirport')} {...reg('from_location')} />
             </Field>
-            <Field label="Flying to" htmlFor="tr-to">
+            <Field label={t('trip.request.fields.flyingTo')} htmlFor="tr-to">
               <Input id="tr-to" {...reg('to_location')} />
             </Field>
-            <Field label="Preferred departure" htmlFor="tr-depart" required>
+            <Field label={t('trip.request.fields.preferredDeparture')} htmlFor="tr-depart" required>
               <Input id="tr-depart" type="datetime-local" {...reg('depart_at')} />
             </Field>
-            <Field label="Passengers" htmlFor="tr-pax" error={errors.passengers?.message}>
+            <Field label={t('trip.request.fields.passengers')} htmlFor="tr-pax" error={errors.passengers?.message}>
               <Input id="tr-pax" inputMode="numeric" {...reg('passengers')} />
             </Field>
           </div>
@@ -228,24 +242,30 @@ export function TravelRequestDialog({
         {kind === 'airport_pickup' || kind === 'airport_drop' ? (
           <div className="grid gap-4 sm:grid-cols-2">
             {kind === 'airport_pickup' ? (
-              <Field label="Arrival date & time" htmlFor="tr-arrive" error={errors.arrive_at?.message} required>
+              <Field label={t('trip.request.fields.arrival')} htmlFor="tr-arrive" error={errors.arrive_at?.message} required>
                 <Input id="tr-arrive" type="datetime-local" {...reg('arrive_at')} />
               </Field>
             ) : (
-              <Field label="Flight departure date & time" htmlFor="tr-depart2" error={errors.depart_at?.message} required>
+              <Field label={t('trip.request.fields.flightDeparture')} htmlFor="tr-depart2" error={errors.depart_at?.message} required>
                 <Input id="tr-depart2" type="datetime-local" {...reg('depart_at')} />
               </Field>
             )}
-            <Field label="Flight number" htmlFor="tr-flight">
-              <Input id="tr-flight" placeholder="e.g. AI 102" {...reg('flight_number')} />
+            <Field label={t('trip.request.fields.flightNumber')} htmlFor="tr-flight">
+              <Input id="tr-flight" placeholder={t('trip.request.fields.flightNumberPlaceholder')} {...reg('flight_number')} />
             </Field>
-            <Field label={kind === 'airport_pickup' ? 'Airport' : 'Pickup address'} htmlFor="tr-from2">
+            <Field
+              label={kind === 'airport_pickup' ? t('trip.request.fields.airport') : t('trip.request.fields.pickupAddress')}
+              htmlFor="tr-from2"
+            >
               <Input id="tr-from2" {...reg('from_location')} />
             </Field>
-            <Field label={kind === 'airport_pickup' ? 'Drop-off (hotel / hospital)' : 'Airport'} htmlFor="tr-to2">
+            <Field
+              label={kind === 'airport_pickup' ? t('trip.request.fields.dropOff') : t('trip.request.fields.airport')}
+              htmlFor="tr-to2"
+            >
               <Input id="tr-to2" {...reg('to_location')} />
             </Field>
-            <Field label="Passengers" htmlFor="tr-pax2" error={errors.passengers?.message}>
+            <Field label={t('trip.request.fields.passengers')} htmlFor="tr-pax2" error={errors.passengers?.message}>
               <Input id="tr-pax2" inputMode="numeric" {...reg('passengers')} />
             </Field>
           </div>
@@ -253,39 +273,43 @@ export function TravelRequestDialog({
 
         {kind === 'accommodation' ? (
           <div className="space-y-4">
-            <Field label="Place to stay" htmlFor="tr-provider" error={errors.provider_id?.message} required>
+            <Field label={t('trip.request.fields.placeToStay')} htmlFor="tr-provider" error={errors.provider_id?.message} required>
               <Select id="tr-provider" {...reg('provider_id')} disabled={accommodations.isPending}>
-                <option value="">{accommodations.isPending ? 'Loading options...' : 'Select accommodation'}</option>
+                <option value="">
+                  {accommodations.isPending ? t('trip.request.fields.loadingOptions') : t('trip.request.fields.selectAccommodation')}
+                </option>
                 {(accommodations.data ?? []).map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}
-                    {a.distance_km != null ? ` · ${a.distance_km} km` : ''}
-                    {a.star_rating ? ` · ${a.star_rating}★` : ''}
+                    {a.distance_km != null ? ` · ${t('trip.request.fields.distanceKm', { km: formatNumber(a.distance_km) })}` : ''}
+                    {a.star_rating ? ` · ${formatNumber(a.star_rating)}★` : ''}
                   </option>
                 ))}
               </Select>
             </Field>
-            {(() => {
-              const chosen = chosenProvider;
-              return chosen ? (
-                <p className="text-sm text-slate-500">
-                  From <Money minor={chosen.nightly_rate_minor} currency={chosen.currency} trim /> per night
-                  {chosen.amenities.length ? ` · ${chosen.amenities.slice(0, 4).join(', ')}` : ''}
-                </p>
-              ) : null;
-            })()}
+            {chosenProvider ? (
+              <p className="text-sm text-slate-500">
+                <Trans
+                  t={t}
+                  i18nKey="trip.request.fields.nightlyRate"
+                  values={{ amount: formatMoney(chosenProvider.nightly_rate_minor, chosenProvider.currency, undefined, { trimZeros: true }) }}
+                  components={{ 0: <span className="tabular-nums" /> }}
+                />
+                {chosenProvider.amenities.length ? ` · ${chosenProvider.amenities.slice(0, 4).join(', ')}` : ''}
+              </p>
+            ) : null}
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Check-in" htmlFor="tr-in" required>
+              <Field label={t('trip.request.fields.checkIn')} htmlFor="tr-in" required>
                 <Input id="tr-in" type="date" {...reg('check_in')} />
               </Field>
-              <Field label="Check-out" htmlFor="tr-out" error={errors.check_out?.message} required>
+              <Field label={t('trip.request.fields.checkOut')} htmlFor="tr-out" error={errors.check_out?.message} required>
                 <Input id="tr-out" type="date" {...reg('check_out')} />
               </Field>
-              <Field label="Guests" htmlFor="tr-guests" error={errors.guests?.message}>
+              <Field label={t('trip.request.fields.guests')} htmlFor="tr-guests" error={errors.guests?.message}>
                 <Input id="tr-guests" inputMode="numeric" {...reg('guests')} />
               </Field>
-              <Field label="Room type" htmlFor="tr-room">
-                <Input id="tr-room" placeholder="e.g. twin room" {...reg('room_type')} />
+              <Field label={t('trip.request.fields.roomType')} htmlFor="tr-room">
+                <Input id="tr-room" placeholder={t('trip.request.fields.roomTypePlaceholder')} {...reg('room_type')} />
               </Field>
             </div>
           </div>
@@ -293,17 +317,17 @@ export function TravelRequestDialog({
 
         {kind === 'translator' || kind === 'local_guide' ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="From" htmlFor="tr-start">
+            <Field label={t('trip.request.fields.from')} htmlFor="tr-start">
               <Input id="tr-start" type="datetime-local" {...reg('starts_at')} />
             </Field>
-            <Field label="Until" htmlFor="tr-end" error={errors.ends_at?.message}>
+            <Field label={t('trip.request.fields.until')} htmlFor="tr-end" error={errors.ends_at?.message}>
               <Input id="tr-end" type="datetime-local" {...reg('ends_at')} />
             </Field>
           </div>
         ) : null}
 
         <Field
-          label={kind === 'translator' ? 'Language needed & notes' : 'Notes'}
+          label={kind === 'translator' ? t('trip.request.fields.languageNotes') : t('trip.request.fields.notes')}
           htmlFor="tr-notes"
           error={errors.notes?.message}
         >

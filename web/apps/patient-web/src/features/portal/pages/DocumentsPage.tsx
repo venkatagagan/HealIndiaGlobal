@@ -4,12 +4,13 @@ import { ReportAiPanel } from '@hig/shared/docai';
 import { DOCUMENT_KIND_LABELS, DOCUMENT_STATUSES, PATIENT_DOCUMENT_KINDS, type DocumentKind, type DocumentOut } from '@hig/shared/api';
 import { filterParam, matchesSearch, useDocumentTitle, useTableState } from '@hig/shared/lib';
 import { DataTable, DateRangeFilter, ExportButton, FilterBar, MultiSelectFilter, statusTone } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { useCases, useDocuments } from '../api/queries';
 import { UploadButton } from '../components/common';
 import {
   AI_READING,
-  AI_READING_LABELS,
   AI_READING_TONES,
+  aiReadingLabel,
   documentColumns,
   documentTypeLabel,
   useAiReadings,
@@ -18,13 +19,13 @@ import {
 import { TableTabs, countBy, inDateRange, patientStatusLabel } from '../components/listing';
 import { Button, Card, Field, PageHeader, Select } from '../ui/primitives';
 
-/** Tabs group the document types the way patients think about them. */
+/** Tabs group the document types the way patients think about them (label: `documents.groups.<value>`). */
 const GROUPS = [
-  { value: 'medical', label: 'Medical', kinds: ['medical_report', 'lab_result', 'imaging', 'prescription'] },
-  { value: 'travel', label: 'Passport & visa', kinds: ['passport', 'visa', 'invitation_letter'] },
-  { value: 'payments', label: 'Payments', kinds: ['receipt', 'invoice', 'payment_proof'] },
-  { value: 'other', label: 'Other', kinds: ['other'] },
-] as const satisfies readonly { value: string; label: string; kinds: readonly DocumentKind[] }[];
+  { value: 'medical', kinds: ['medical_report', 'lab_result', 'imaging', 'prescription'] },
+  { value: 'travel', kinds: ['passport', 'visa', 'invitation_letter'] },
+  { value: 'payments', kinds: ['receipt', 'invoice', 'payment_proof'] },
+  { value: 'other', kinds: ['other'] },
+] as const satisfies readonly { value: string; kinds: readonly DocumentKind[] }[];
 const GROUP_VALUES = GROUPS.map((g) => g.value);
 const FILTER_KINDS: DocumentKind[] = [...PATIENT_DOCUMENT_KINDS, 'invitation_letter', 'receipt', 'invoice'];
 
@@ -41,7 +42,8 @@ const FILTERS = {
 const groupKinds = (g: string): readonly string[] => GROUPS.find((x) => x.value === g)?.kinds ?? [];
 
 export function DocumentsPage() {
-  useDocumentTitle('Documents');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('documents.title'));
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', defaultPageSize: 10 });
   const { filters, setFilter, setFilters } = table;
   const [uploadKind, setUploadKind] = useState<DocumentKind>('medical_report');
@@ -54,6 +56,7 @@ export function DocumentsPage() {
   const actions = useDocumentActions();
   const columns = useMemo(
     () => documentColumns({ renderActions: actions.renderActions, readings, caseNumbers }),
+    // headers are read from i18n at build time; `renderActions` is new on every render, so this follows the language
     [actions.renderActions, readings, caseNumbers],
   );
 
@@ -82,8 +85,8 @@ export function DocumentsPage() {
   return (
     <div>
       <PageHeader
-        title="Documents"
-        description="Passport, visa, medical reports and receipts in one secure place. Only you, your care team and the hospitals handling your cases can open them."
+        title={t('documents.title')}
+        description={t('documents.description')}
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
@@ -93,12 +96,12 @@ export function DocumentsPage() {
               <Upload className="size-5" />
             </span>
             <div>
-              <h2 className="font-semibold">Upload documents</h2>
-              <p className="text-sm text-muted">PDF, JPG, PNG, WEBP, HEIC or DICOM · up to 20 MB per file.</p>
+              <h2 className="font-semibold">{t('documents.upload.title')}</h2>
+              <p className="text-sm text-muted">{t('documents.upload.hint')}</p>
             </div>
           </div>
           <div className="mt-auto flex flex-wrap items-end gap-3">
-            <Field label="Document type" htmlFor="upload-kind" className="min-w-[12rem] flex-1">
+            <Field label={t('documents.upload.type')} htmlFor="upload-kind" className="min-w-[12rem] flex-1">
               <Select id="upload-kind" value={uploadKind} onChange={(e) => setUploadKind(e.target.value as DocumentKind)}>
                 {PATIENT_DOCUMENT_KINDS.map((k) => (
                   <option key={k} value={k}>
@@ -107,7 +110,7 @@ export function DocumentsPage() {
                 ))}
               </Select>
             </Field>
-            <UploadButton kind={uploadKind} label="Upload files" variant="primary" multiple />
+            <UploadButton kind={uploadKind} label={t('documents.upload.button')} variant="primary" multiple />
           </div>
         </Card>
         <Card className="flex flex-col gap-4 p-5">
@@ -116,18 +119,16 @@ export function DocumentsPage() {
               <Sparkles className="size-5" />
             </span>
             <div>
-              <h2 className="font-semibold">Read a medical report with AI</h2>
-              <p className="text-sm text-muted">
-                Our AI extracts the key results; you check and confirm them. Only confirmed information is shared with hospitals.
-              </p>
+              <h2 className="font-semibold">{t('documents.ai.title')}</h2>
+              <p className="text-sm text-muted">{t('documents.ai.description')}</p>
             </div>
           </div>
           <div className="mt-auto flex flex-wrap items-center gap-3">
             <Button variant={showAi ? 'outline' : 'accent'} onClick={() => setShowAi((v) => !v)} aria-expanded={showAi}>
-              {showAi ? 'Hide' : 'Start'}
+              {showAi ? t('documents.ai.hide') : t('documents.ai.start')}
             </Button>
             <span className="inline-flex items-center gap-1.5 text-xs text-muted">
-              <ShieldCheck className="size-4 text-success" aria-hidden /> Nothing is shared until you confirm
+              <ShieldCheck className="size-4 text-success" aria-hidden /> {t('documents.ai.notShared')}
             </span>
           </div>
         </Card>
@@ -139,10 +140,10 @@ export function DocumentsPage() {
         </Card>
       ) : null}
 
-      <h2 className="mb-3 text-lg font-semibold">Your files</h2>
+      <h2 className="mb-3 text-lg font-semibold">{t('documents.files.title')}</h2>
       <DataTable
         id="patient.documents"
-        caption="Your files"
+        caption={t('documents.files.title')}
         table={table}
         columns={columns}
         rows={docs.data ? rows : undefined}
@@ -151,24 +152,27 @@ export function DocumentsPage() {
         error={docs.error}
         onRetry={() => void docs.refetch()}
         emptyIcon={<FileText className="size-8" aria-hidden />}
-        emptyTitle="No documents yet"
-        emptyDescription="Upload your passport and recent medical reports - hospitals need them to prepare an accurate quote."
+        emptyTitle={t('documents.files.emptyTitle')}
+        emptyDescription={t('documents.files.emptyDescription')}
         header={
           <TableTabs
-            label="Document group"
-            items={[{ value: '', label: 'All', count: base.length }, ...GROUPS.map((g) => ({ value: g.value, label: g.label, count: groupCount(g.value) }))]}
+            label={t('documents.groups.label')}
+            items={[
+              { value: '', label: t('documents.groups.all'), count: base.length },
+              ...GROUPS.map((g) => ({ value: g.value, label: t(`documents.groups.${g.value}`), count: groupCount(g.value) })),
+            ]}
             value={filters.group}
             onChange={(g) => setFilter('group', g)}
           />
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'File name, type or case…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('documents.filters.search') }}
             onReset={table.resetFilters}
             actions={<ExportButton filename="my-documents" columns={columns} rows={rows} />}
             more={
               <MultiSelectFilter
-                label="Checked by team"
+                label={t('documents.filters.checked')}
                 value={filters.status}
                 onChange={(v) => setFilter('status', v)}
                 options={DOCUMENT_STATUSES.map((s) => ({
@@ -181,19 +185,19 @@ export function DocumentsPage() {
             }
           >
             <MultiSelectFilter
-              label="Type"
+              label={t('documents.filters.type')}
               value={filters.kind}
               onChange={(v) => setFilter('kind', v)}
               options={FILTER_KINDS.map((k) => ({ value: k, label: DOCUMENT_KIND_LABELS[k], count: kindCounts[k] ?? 0 }))}
             />
             <MultiSelectFilter
-              label="AI reading"
+              label={t('documents.filters.aiReading')}
               icon={<Sparkles className="size-3.5 opacity-70" aria-hidden />}
               value={filters.ai}
               onChange={(v) => setFilter('ai', v)}
-              options={AI_READING.map((r) => ({ value: r, label: AI_READING_LABELS[r], tone: AI_READING_TONES[r], count: aiCounts[r] ?? 0 }))}
+              options={AI_READING.map((r) => ({ value: r, label: aiReadingLabel(r), tone: AI_READING_TONES[r], count: aiCounts[r] ?? 0 }))}
             />
-            <DateRangeFilter label="Uploaded" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('documents.filters.uploaded')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />

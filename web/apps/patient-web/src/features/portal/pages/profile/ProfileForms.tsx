@@ -1,20 +1,24 @@
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import type { TFunction } from 'i18next';
 import { errorMessage, fieldErrors, GENDERS, GENDER_LABELS, type PatientProfileIn, type PatientProfileOut } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useUpdatePatientProfile } from '../../api/queries';
-import { COUNTRY_OPTIONS, LANGUAGE_OPTIONS } from '../../lib/countries';
+import { countryOptions, LANGUAGE_OPTIONS } from '../../lib/countries';
 import { SUPPORTED_CURRENCIES, todayIsoDate } from '../../lib/shared';
 import { Button, Card, CardBody, CardHeader, Field, Input, Select, Textarea } from '../../ui/primitives';
 
-const phone = z
-  .string()
-  .trim()
-  .max(32)
-  .regex(/^$|^\+?[\d\s()-]{6,32}$/, 'Enter a valid phone number with country code');
+const phone = (t: TFunction) =>
+  z
+    .string()
+    .trim()
+    .max(32)
+    .regex(/^$|^\+?[\d\s()-]{6,32}$/, t('profile.validation.phone'));
 const optionalText = (max: number) => z.string().trim().max(max);
-const isoDate = z.string().regex(/^$|^\d{4}-\d{2}-\d{2}$/, 'Use the date picker');
+const isoDate = (t: TFunction) => z.string().regex(/^$|^\d{4}-\d{2}-\d{2}$/, t('profile.validation.datePicker'));
 
 function blankToNull(v: string): string | null {
   const t = v.trim();
@@ -22,7 +26,12 @@ function blankToNull(v: string): string | null {
 }
 
 /** Applies server-side 422 field errors to the form, falling back to a toast. */
-function handleSaveError<T extends string>(err: unknown, setError: (name: T, e: { message: string }) => void, fields: readonly T[]) {
+function handleSaveError<T extends string>(
+  err: unknown,
+  setError: (name: T, e: { message: string }) => void,
+  fields: readonly T[],
+  fallback: string,
+) {
   const errs = fieldErrors(err);
   let mapped = false;
   for (const f of fields) {
@@ -31,39 +40,62 @@ function handleSaveError<T extends string>(err: unknown, setError: (name: T, e: 
       mapped = true;
     }
   }
-  if (!mapped) toast.error(errorMessage(err, 'Could not save your changes.'));
+  if (!mapped) toast.error(errorMessage(err, fallback));
 }
 
 // ---------------------------------------------------------------------------------------------------------
 // Personal & medical
 // ---------------------------------------------------------------------------------------------------------
-const personalSchema = z.object({
-  first_name: z.string().trim().min(1, 'Required').max(80),
-  last_name: z.string().trim().min(1, 'Required').max(80),
-  date_of_birth: isoDate.refine((v) => !v || v <= todayIsoDate(), 'Date of birth cannot be in the future'),
-  gender: z.enum(['', ...GENDERS]),
-  nationality: z.string(),
-  country_of_residence: z.string(),
-  phone,
-  whatsapp: phone,
-  line1: optionalText(200),
-  line2: optionalText(200),
-  city: optionalText(100),
-  state: optionalText(100),
-  postal_code: optionalText(20),
-  blood_group: z.enum(['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-  allergies: optionalText(2000),
-  medical_history: optionalText(4000),
-  insurance_provider: optionalText(120),
-  insurance_policy_number: optionalText(64),
-});
-type PersonalValues = z.infer<typeof personalSchema>;
-const PERSONAL_FIELDS = Object.keys(personalSchema.shape) as (keyof PersonalValues)[];
+const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const;
+const personalSchema = (t: TFunction) =>
+  z.object({
+    first_name: z.string().trim().min(1, t('profile.validation.required')).max(80),
+    last_name: z.string().trim().min(1, t('profile.validation.required')).max(80),
+    date_of_birth: isoDate(t).refine((v) => !v || v <= todayIsoDate(), t('profile.validation.dobFuture')),
+    gender: z.enum(['', ...GENDERS]),
+    nationality: z.string(),
+    country_of_residence: z.string(),
+    phone: phone(t),
+    whatsapp: phone(t),
+    line1: optionalText(200),
+    line2: optionalText(200),
+    city: optionalText(100),
+    state: optionalText(100),
+    postal_code: optionalText(20),
+    blood_group: z.enum(['', ...BLOOD_GROUPS]),
+    allergies: optionalText(2000),
+    medical_history: optionalText(4000),
+    insurance_provider: optionalText(120),
+    insurance_policy_number: optionalText(64),
+  });
+type PersonalValues = z.infer<ReturnType<typeof personalSchema>>;
+const PERSONAL_FIELDS: (keyof PersonalValues)[] = [
+  'first_name',
+  'last_name',
+  'date_of_birth',
+  'gender',
+  'nationality',
+  'country_of_residence',
+  'phone',
+  'whatsapp',
+  'line1',
+  'line2',
+  'city',
+  'state',
+  'postal_code',
+  'blood_group',
+  'allergies',
+  'medical_history',
+  'insurance_provider',
+  'insurance_policy_number',
+];
 
 export function PersonalForm({ profile }: { profile: PatientProfileOut }) {
+  const { t } = useAppTranslation();
   const save = useUpdatePatientProfile();
+  const schema = useMemo(() => personalSchema(t), [t]);
   const form = useForm<PersonalValues>({
-    resolver: zodResolver(personalSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       first_name: profile.first_name ?? '',
       last_name: profile.last_name ?? '',
@@ -114,30 +146,30 @@ export function PersonalForm({ profile }: { profile: PatientProfileOut }) {
     };
     try {
       await save.mutateAsync(body);
-      toast.success('Profile saved');
+      toast.success(t('profile.personal.saved'));
       form.reset({ ...v, insurance_policy_number: '' });
     } catch (err) {
-      handleSaveError(err, form.setError, PERSONAL_FIELDS);
+      handleSaveError(err, form.setError, PERSONAL_FIELDS, t('profile.saveFailed'));
     }
   });
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-6">
       <Card>
-        <CardHeader title="Personal information" description="As shown in your passport." />
+        <CardHeader title={t('profile.personal.title')} description={t('profile.personal.description')} />
         <CardBody className="grid gap-4 sm:grid-cols-2">
-          <Field label="First name" htmlFor="pf-first" error={errors.first_name?.message} required>
+          <Field label={t('profile.personal.firstName')} htmlFor="pf-first" error={errors.first_name?.message} required>
             <Input id="pf-first" autoComplete="given-name" {...r('first_name')} />
           </Field>
-          <Field label="Last name" htmlFor="pf-last" error={errors.last_name?.message} required>
+          <Field label={t('profile.personal.lastName')} htmlFor="pf-last" error={errors.last_name?.message} required>
             <Input id="pf-last" autoComplete="family-name" {...r('last_name')} />
           </Field>
-          <Field label="Date of birth" htmlFor="pf-dob" error={errors.date_of_birth?.message}>
+          <Field label={t('profile.personal.dob')} htmlFor="pf-dob" error={errors.date_of_birth?.message}>
             <Input id="pf-dob" type="date" max={todayIsoDate()} {...r('date_of_birth')} />
           </Field>
-          <Field label="Gender" htmlFor="pf-gender">
+          <Field label={t('profile.personal.gender')} htmlFor="pf-gender">
             <Select id="pf-gender" {...r('gender')}>
-              <option value="">Select</option>
+              <option value="">{t('profile.select')}</option>
               {GENDERS.map((g) => (
                 <option key={g} value={g}>
                   {GENDER_LABELS[g]}
@@ -145,82 +177,86 @@ export function PersonalForm({ profile }: { profile: PatientProfileOut }) {
               ))}
             </Select>
           </Field>
-          <Field label="Nationality" htmlFor="pf-nat">
+          <Field label={t('profile.personal.nationality')} htmlFor="pf-nat">
             <Select id="pf-nat" {...r('nationality')}>
-              <option value="">Select</option>
-              {COUNTRY_OPTIONS.map((c) => (
+              <option value="">{t('profile.select')}</option>
+              {countryOptions().map((c) => (
                 <option key={c.value} value={c.value}>
                   {c.label}
                 </option>
               ))}
             </Select>
           </Field>
-          <Field label="Country of residence" htmlFor="pf-res">
+          <Field label={t('profile.personal.residence')} htmlFor="pf-res">
             <Select id="pf-res" {...r('country_of_residence')}>
-              <option value="">Select</option>
-              {COUNTRY_OPTIONS.map((c) => (
+              <option value="">{t('profile.select')}</option>
+              {countryOptions().map((c) => (
                 <option key={c.value} value={c.value}>
                   {c.label}
                 </option>
               ))}
             </Select>
           </Field>
-          <Field label="Phone" htmlFor="pf-phone" error={errors.phone?.message}>
-            <Input id="pf-phone" type="tel" autoComplete="tel" placeholder="+234 801 234 5678" {...r('phone')} />
+          <Field label={t('profile.personal.phone')} htmlFor="pf-phone" error={errors.phone?.message}>
+            <Input id="pf-phone" type="tel" autoComplete="tel" placeholder="+234 801 234 5678" dir="ltr" {...r('phone')} />
           </Field>
-          <Field label="WhatsApp" htmlFor="pf-wa" error={errors.whatsapp?.message}>
-            <Input id="pf-wa" type="tel" {...r('whatsapp')} />
+          <Field label={t('profile.personal.whatsapp')} htmlFor="pf-wa" error={errors.whatsapp?.message}>
+            <Input id="pf-wa" type="tel" dir="ltr" {...r('whatsapp')} />
           </Field>
         </CardBody>
       </Card>
 
       <Card>
-        <CardHeader title="Home address" />
+        <CardHeader title={t('profile.address.title')} />
         <CardBody className="grid gap-4 sm:grid-cols-2">
-          <Field label="Address line 1" htmlFor="pf-l1" className="sm:col-span-2">
+          <Field label={t('profile.address.line1')} htmlFor="pf-l1" className="sm:col-span-2">
             <Input id="pf-l1" autoComplete="address-line1" {...r('line1')} />
           </Field>
-          <Field label="Address line 2" htmlFor="pf-l2" className="sm:col-span-2">
+          <Field label={t('profile.address.line2')} htmlFor="pf-l2" className="sm:col-span-2">
             <Input id="pf-l2" autoComplete="address-line2" {...r('line2')} />
           </Field>
-          <Field label="City" htmlFor="pf-city">
+          <Field label={t('profile.address.city')} htmlFor="pf-city">
             <Input id="pf-city" autoComplete="address-level2" {...r('city')} />
           </Field>
-          <Field label="State / region" htmlFor="pf-state">
+          <Field label={t('profile.address.state')} htmlFor="pf-state">
             <Input id="pf-state" autoComplete="address-level1" {...r('state')} />
           </Field>
-          <Field label="Postal code" htmlFor="pf-zip">
+          <Field label={t('profile.address.postalCode')} htmlFor="pf-zip">
             <Input id="pf-zip" autoComplete="postal-code" {...r('postal_code')} />
           </Field>
         </CardBody>
       </Card>
 
       <Card>
-        <CardHeader title="Medical & insurance" description="Shared only with hospitals handling your cases." />
+        <CardHeader title={t('profile.medical.title')} description={t('profile.medical.description')} />
         <CardBody className="grid gap-4 sm:grid-cols-2">
-          <Field label="Blood group" htmlFor="pf-blood">
+          <Field label={t('profile.medical.bloodGroup')} htmlFor="pf-blood">
             <Select id="pf-blood" {...r('blood_group')}>
-              <option value="">Unknown</option>
-              {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((b) => (
+              <option value="">{t('profile.medical.unknown')}</option>
+              {BLOOD_GROUPS.map((b) => (
                 <option key={b} value={b}>
                   {b}
                 </option>
               ))}
             </Select>
           </Field>
-          <Field label="Allergies" htmlFor="pf-allergies">
-            <Input id="pf-allergies" placeholder="e.g. penicillin" {...r('allergies')} />
+          <Field label={t('profile.medical.allergies')} htmlFor="pf-allergies">
+            <Input id="pf-allergies" placeholder={t('profile.medical.allergiesPlaceholder')} {...r('allergies')} />
           </Field>
-          <Field label="Medical history" htmlFor="pf-history" className="sm:col-span-2">
+          <Field label={t('profile.medical.history')} htmlFor="pf-history" className="sm:col-span-2">
             <Textarea id="pf-history" rows={4} {...r('medical_history')} />
           </Field>
-          <Field label="Insurance provider" htmlFor="pf-ins">
+          <Field label={t('profile.medical.insuranceProvider')} htmlFor="pf-ins">
             <Input id="pf-ins" {...r('insurance_provider')} />
           </Field>
           <Field
-            label="Policy number"
+            label={t('profile.medical.policyNumber')}
             htmlFor="pf-policy"
-            hint={profile.insurance_policy_last4 ? `Saved: •••• ${profile.insurance_policy_last4}. Enter a new number to replace it.` : 'Stored encrypted.'}
+            hint={
+              profile.insurance_policy_last4
+                ? t('profile.medical.policySaved', { last4: profile.insurance_policy_last4 })
+                : t('profile.medical.policyEncrypted')
+            }
           >
             <Input id="pf-policy" autoComplete="off" {...r('insurance_policy_number')} />
           </Field>
@@ -229,7 +265,7 @@ export function PersonalForm({ profile }: { profile: PatientProfileOut }) {
 
       <div className="flex justify-end">
         <Button type="submit" loading={save.isPending} disabled={!isDirty}>
-          Save changes
+          {t('profile.personal.save')}
         </Button>
       </div>
     </form>
@@ -239,19 +275,22 @@ export function PersonalForm({ profile }: { profile: PatientProfileOut }) {
 // ---------------------------------------------------------------------------------------------------------
 // Passport
 // ---------------------------------------------------------------------------------------------------------
-const passportSchema = z.object({
-  passport_number: z
-    .string()
-    .trim()
-    .regex(/^$|^[A-Za-z0-9]{6,20}$/, 'Letters and numbers only (6-20 characters)'),
-  passport_expiry: isoDate,
-});
-type PassportValues = z.infer<typeof passportSchema>;
+const passportSchema = (t: TFunction) =>
+  z.object({
+    passport_number: z
+      .string()
+      .trim()
+      .regex(/^$|^[A-Za-z0-9]{6,20}$/, t('profile.validation.passport')),
+    passport_expiry: isoDate(t),
+  });
+type PassportValues = z.infer<ReturnType<typeof passportSchema>>;
 
 export function PassportForm({ profile }: { profile: PatientProfileOut }) {
+  const { t } = useAppTranslation();
   const save = useUpdatePatientProfile();
+  const schema = useMemo(() => passportSchema(t), [t]);
   const form = useForm<PassportValues>({
-    resolver: zodResolver(passportSchema),
+    resolver: zodResolver(schema),
     defaultValues: { passport_number: '', passport_expiry: profile.passport_expiry ?? '' },
   });
   const { errors, isDirty } = form.formState;
@@ -261,31 +300,36 @@ export function PassportForm({ profile }: { profile: PatientProfileOut }) {
         ...(v.passport_number ? { passport_number: v.passport_number.toUpperCase() } : {}),
         passport_expiry: v.passport_expiry || null,
       });
-      toast.success('Passport details saved');
+      toast.success(t('profile.passport.saved'));
       form.reset({ passport_number: '', passport_expiry: v.passport_expiry });
     } catch (err) {
-      handleSaveError(err, form.setError, ['passport_number', 'passport_expiry'] as const);
+      handleSaveError(err, form.setError, ['passport_number', 'passport_expiry'] as const, t('profile.saveFailed'));
     }
   });
   return (
     <Card>
-      <CardHeader title="Passport" description="Needed for your visa invitation letter. Stored encrypted; only the last 4 characters are shown." />
+      <CardHeader title={t('profile.passport.title')} description={t('profile.passport.description')} />
       <CardBody>
         <form onSubmit={onSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Passport number"
+            label={t('profile.passport.number')}
             htmlFor="pp-number"
             error={errors.passport_number?.message}
-            hint={profile.passport_last4 ? `On file: •••• ${profile.passport_last4}` : 'Not added yet'}
+            hint={profile.passport_last4 ? t('profile.passport.onFile', { last4: profile.passport_last4 }) : t('profile.passport.notAdded')}
           >
-            <Input id="pp-number" autoComplete="off" placeholder={profile.passport_last4 ? 'Enter to replace' : ''} {...form.register('passport_number')} />
+            <Input
+              id="pp-number"
+              autoComplete="off"
+              placeholder={profile.passport_last4 ? t('profile.passport.replacePlaceholder') : ''}
+              {...form.register('passport_number')}
+            />
           </Field>
-          <Field label="Expiry date" htmlFor="pp-expiry" error={errors.passport_expiry?.message}>
+          <Field label={t('profile.passport.expiry')} htmlFor="pp-expiry" error={errors.passport_expiry?.message}>
             <Input id="pp-expiry" type="date" min={todayIsoDate()} {...form.register('passport_expiry')} />
           </Field>
           <div className="sm:col-span-2 flex justify-end">
             <Button type="submit" loading={save.isPending} disabled={!isDirty}>
-              Save passport
+              {t('profile.passport.save')}
             </Button>
           </div>
         </form>
@@ -297,17 +341,23 @@ export function PassportForm({ profile }: { profile: PatientProfileOut }) {
 // ---------------------------------------------------------------------------------------------------------
 // Emergency contact
 // ---------------------------------------------------------------------------------------------------------
-const emergencySchema = z.object({
-  name: z.string().trim().min(2, 'Required').max(120),
-  relationship: z.string().trim().min(2, 'Required').max(60),
-  phone: z.string().trim().regex(/^\+?[\d\s()-]{6,32}$/, 'Enter a valid phone number with country code'),
-});
-type EmergencyValues = z.infer<typeof emergencySchema>;
+const emergencySchema = (t: TFunction) =>
+  z.object({
+    name: z.string().trim().min(2, t('profile.validation.required')).max(120),
+    relationship: z.string().trim().min(2, t('profile.validation.required')).max(60),
+    phone: z
+      .string()
+      .trim()
+      .regex(/^\+?[\d\s()-]{6,32}$/, t('profile.validation.phone')),
+  });
+type EmergencyValues = z.infer<ReturnType<typeof emergencySchema>>;
 
 export function EmergencyForm({ profile }: { profile: PatientProfileOut }) {
+  const { t } = useAppTranslation();
   const save = useUpdatePatientProfile();
+  const schema = useMemo(() => emergencySchema(t), [t]);
   const form = useForm<EmergencyValues>({
-    resolver: zodResolver(emergencySchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: profile.emergency_contact?.name ?? '',
       relationship: profile.emergency_contact?.relationship ?? '',
@@ -318,7 +368,7 @@ export function EmergencyForm({ profile }: { profile: PatientProfileOut }) {
   const onSubmit = form.handleSubmit(async (v) => {
     try {
       await save.mutateAsync({ emergency_contact: v });
-      toast.success('Emergency contact saved');
+      toast.success(t('profile.emergency.saved'));
       form.reset(v);
     } catch (err) {
       toast.error(errorMessage(err));
@@ -326,21 +376,21 @@ export function EmergencyForm({ profile }: { profile: PatientProfileOut }) {
   });
   return (
     <Card>
-      <CardHeader title="Emergency contact" description="Someone we can call if we cannot reach you during your trip." />
+      <CardHeader title={t('profile.emergency.title')} description={t('profile.emergency.description')} />
       <CardBody>
         <form onSubmit={onSubmit} noValidate className="grid gap-4 sm:grid-cols-3">
-          <Field label="Full name" htmlFor="ec-name" error={errors.name?.message} required>
+          <Field label={t('profile.emergency.name')} htmlFor="ec-name" error={errors.name?.message} required>
             <Input id="ec-name" {...form.register('name')} />
           </Field>
-          <Field label="Relationship" htmlFor="ec-rel" error={errors.relationship?.message} required>
-            <Input id="ec-rel" placeholder="e.g. spouse" {...form.register('relationship')} />
+          <Field label={t('profile.emergency.relationship')} htmlFor="ec-rel" error={errors.relationship?.message} required>
+            <Input id="ec-rel" placeholder={t('profile.emergency.relationshipPlaceholder')} {...form.register('relationship')} />
           </Field>
-          <Field label="Phone" htmlFor="ec-phone" error={errors.phone?.message} required>
-            <Input id="ec-phone" type="tel" {...form.register('phone')} />
+          <Field label={t('profile.emergency.phone')} htmlFor="ec-phone" error={errors.phone?.message} required>
+            <Input id="ec-phone" type="tel" dir="ltr" {...form.register('phone')} />
           </Field>
           <div className="sm:col-span-3 flex justify-end">
             <Button type="submit" loading={save.isPending} disabled={!isDirty}>
-              Save contact
+              {t('profile.emergency.save')}
             </Button>
           </div>
         </form>
@@ -356,6 +406,7 @@ const prefsSchema = z.object({ preferred_currency: z.string().length(3) });
 type PrefsValues = z.infer<typeof prefsSchema>;
 
 export function PreferencesForm({ profile }: { profile: PatientProfileOut }) {
+  const { t } = useAppTranslation();
   const save = useUpdatePatientProfile();
   const form = useForm<PrefsValues>({
     resolver: zodResolver(prefsSchema),
@@ -364,7 +415,7 @@ export function PreferencesForm({ profile }: { profile: PatientProfileOut }) {
   const onSubmit = form.handleSubmit(async (v) => {
     try {
       await save.mutateAsync(v);
-      toast.success('Preferences saved');
+      toast.success(t('profile.preferences.saved'));
       form.reset(v);
     } catch (err) {
       toast.error(errorMessage(err));
@@ -372,10 +423,10 @@ export function PreferencesForm({ profile }: { profile: PatientProfileOut }) {
   });
   return (
     <Card>
-      <CardHeader title="Preferences" description="Prices and payments are shown in your preferred currency." />
+      <CardHeader title={t('profile.preferences.title')} description={t('profile.preferences.description')} />
       <CardBody>
         <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
-          <Field label="Preferred currency" htmlFor="pr-ccy">
+          <Field label={t('profile.preferences.currency')} htmlFor="pr-ccy">
             <Select id="pr-ccy" {...form.register('preferred_currency')}>
               {SUPPORTED_CURRENCIES.map((c) => (
                 <option key={c} value={c}>
@@ -385,11 +436,15 @@ export function PreferencesForm({ profile }: { profile: PatientProfileOut }) {
             </Select>
           </Field>
           <p className="text-xs text-slate-500 sm:col-span-2">
-            Doctor language preferences ({LANGUAGE_OPTIONS.slice(0, 3).map((l) => l.label).join(', ')}, ...) are set per screening.
+            {t('profile.preferences.languagesNote', {
+              examples: LANGUAGE_OPTIONS.slice(0, 3)
+                .map((l) => l.label)
+                .join(', '),
+            })}
           </p>
           <div className="sm:col-span-2 flex justify-end">
             <Button type="submit" loading={save.isPending} disabled={!form.formState.isDirty}>
-              Save preferences
+              {t('profile.preferences.save')}
             </Button>
           </div>
         </form>

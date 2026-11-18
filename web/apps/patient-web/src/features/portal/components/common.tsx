@@ -3,8 +3,9 @@ import { ArrowLeft, FileUp, Star } from 'lucide-react';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { errorMessage, humanize, type DocumentKind, type DocumentOut, type Uuid } from '@hig/shared/api';
+import { useAppTranslation } from '../../../i18n';
 import { useUploadDocument } from '../api/queries';
-import { cn, formatMoney, formatMoneyRange } from '../lib/shared';
+import { cn, formatMoney, formatMoneyRange, formatNumber } from '../lib/shared';
 import { Badge, Button, type Tone } from '../ui/primitives';
 
 const STATUS_TONES: Record<string, Tone> = {
@@ -62,21 +63,17 @@ const STATUS_TONES: Record<string, Tone> = {
   emergency: 'red',
 };
 
-const STATUS_LABEL_OVERRIDES: Record<string, string> = {
-  pending_payment: 'Awaiting payment',
-  enquiry: 'Enquiry sent',
-  in_treatment: 'In treatment',
-};
-
 export function statusTone(status: string | null | undefined): Tone {
   return (status && STATUS_TONES[status]) || 'neutral';
 }
 
+/** Badge label: `status.<value>` in the catalog (English wording for unknown values). */
 export function StatusBadge({ status, className }: { status: string | null | undefined; className?: string }) {
+  const { t } = useAppTranslation();
   if (!status) return null;
   return (
     <Badge tone={statusTone(status)} className={className}>
-      {STATUS_LABEL_OVERRIDES[status] ?? humanize(status)}
+      {t(`status.${status}`, { defaultValue: humanize(status) })}
     </Badge>
   );
 }
@@ -110,12 +107,13 @@ export function MoneyRange({
 }
 
 export function Rating({ value, count }: { value: number | null | undefined; count?: number }) {
-  if (value === null || value === undefined) return <span className="text-sm text-muted">No ratings yet</span>;
+  const { t } = useAppTranslation();
+  if (value === null || value === undefined) return <span className="text-sm text-muted">{t('ui.rating.none')}</span>;
   return (
     <span className="inline-flex items-center gap-1 text-sm text-fg">
       <Star className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden />
-      <span className="font-semibold">{Number(value).toFixed(1)}</span>
-      {count !== undefined ? <span className="text-muted">({count} reviews)</span> : null}
+      <span className="font-semibold">{formatNumber(Number(value), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+      {count !== undefined ? <span className="text-muted">{t('ui.rating.reviews', { count, formatted: formatNumber(count) })}</span> : null}
     </span>
   );
 }
@@ -126,7 +124,7 @@ export function BackLink({ to, children }: { to: string; children: ReactNode }) 
       to={to}
       className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-fg"
     >
-      <ArrowLeft className="h-4 w-4" aria-hidden />
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
       {children}
     </Link>
   );
@@ -168,10 +166,11 @@ export const ACCEPTED_UPLOAD_TYPES = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.dcm,appl
 /** client-side guard only; the API enforces MAX_UPLOAD_MB and magic bytes */
 export const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 
+/** "12 KB", "3.4 MB" (digits follow the UI language; units stay as they are). */
 export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1024) return `${formatNumber(bytes)} B`;
+  if (bytes < 1024 * 1024) return `${formatNumber(bytes / 1024, { maximumFractionDigits: 0 })} KB`;
+  return `${formatNumber(bytes / (1024 * 1024), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MB`;
 }
 
 /** Button that opens a file picker and uploads via POST /documents. */
@@ -179,7 +178,7 @@ export function UploadButton({
   kind,
   caseId,
   onUploaded,
-  label = 'Upload',
+  label: labelProp,
   variant = 'outline',
   size = 'md',
   multiple = false,
@@ -192,6 +191,8 @@ export function UploadButton({
   size?: 'sm' | 'md';
   multiple?: boolean;
 }) {
+  const { t } = useAppTranslation();
+  const label = labelProp ?? t('ui.upload.button');
   const inputRef = useRef<HTMLInputElement>(null);
   const upload = useUploadDocument();
   const [busy, setBusy] = useState(false);
@@ -202,15 +203,15 @@ export function UploadButton({
     try {
       for (const file of Array.from(files)) {
         if (file.size > MAX_UPLOAD_BYTES) {
-          toast.error(`${file.name} is larger than ${formatBytes(MAX_UPLOAD_BYTES)}.`);
+          toast.error(t('ui.upload.tooLarge', { name: file.name, size: formatBytes(MAX_UPLOAD_BYTES) }));
           continue;
         }
         try {
           const doc = await upload.mutateAsync({ file, kind, case_id: caseId });
-          toast.success(`${file.name} uploaded`);
+          toast.success(t('ui.upload.uploaded', { name: file.name }));
           onUploaded?.(doc);
         } catch (err) {
-          toast.error(`${file.name}: ${errorMessage(err)}`);
+          toast.error(t('ui.upload.failed', { name: file.name, error: errorMessage(err) }));
         }
       }
     } finally {
@@ -237,7 +238,7 @@ export function UploadButton({
         loading={busy}
         icon={<FileUp className="h-4 w-4" aria-hidden />}
         onClick={() => inputRef.current?.click()}
-        aria-label={label ? undefined : 'Attach a file'}
+        aria-label={label ? undefined : t('ui.upload.attach')}
       >
         {label}
       </Button>

@@ -23,75 +23,77 @@ import { NotificationBell, PortalLayout, type NavItem } from '@hig/shared/layout
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { isApiError, type MessageOut } from '@hig/shared/api';
+import type { TFunction } from 'i18next';
+import { useAppTranslation } from '../../../i18n';
 import { qk, useUnreadCount } from '../api/queries';
 import { useRealtimeConnection, useRealtimeEvent } from '../lib/realtime';
 import { paths, PORTAL_BASE } from '../lib/paths';
 import { useLogout, useMe } from '../lib/session';
-import { cn } from '../lib/shared';
+import { cn, formatNumber, i18n } from '../lib/shared';
 import { Button, ButtonLink, ErrorState, Spinner } from '../ui/primitives';
 
 /** Unread notification counter for nav items. */
 function CountBadge({ count }: { count: number }) {
   return (
     <span className="rounded-full bg-danger-strong px-1.5 py-px text-[11px] font-semibold text-white tabular-nums">
-      {count > 99 ? '99+' : count}
+      {count > 99 ? `${formatNumber(99)}+` : formatNumber(count)}
     </span>
   );
 }
 
 /** Sidebar: Dashboard, then accordion sections (one open at a time; the section of the current page opens). */
-function buildNav(unread: number): NavItem[] {
+function buildNav(unread: number, t: TFunction): NavItem[] {
   const badge = unread > 0 ? <CountBadge count={unread} /> : undefined;
   return [
-    { to: paths.dashboard, label: 'Dashboard', icon: LayoutDashboard, end: true, accent: 'green' },
+    { to: paths.dashboard, label: t('shell.nav.dashboard'), icon: LayoutDashboard, end: true, accent: 'green' },
     {
       id: 'care',
-      label: 'Care',
+      label: t('shell.nav.care'),
       icon: HeartPulse,
       accent: 'rose',
       children: [
-        { to: paths.screenings, label: 'AI screenings', icon: Stethoscope },
-        { to: paths.cases, label: 'My cases', icon: BriefcaseMedical },
+        { to: paths.screenings, label: t('shell.nav.screenings'), icon: Stethoscope },
+        { to: paths.cases, label: t('shell.nav.cases'), icon: BriefcaseMedical },
       ],
     },
     {
       id: 'bookings',
-      label: 'Bookings & payments',
+      label: t('shell.nav.bookingsPayments'),
       icon: CalendarRange,
       accent: 'blue',
       children: [
-        { to: paths.bookings, label: 'Bookings', icon: CalendarCheck },
-        { to: paths.payments, label: 'Payments', icon: Receipt },
+        { to: paths.bookings, label: t('shell.nav.bookings'), icon: CalendarCheck },
+        { to: paths.payments, label: t('shell.nav.payments'), icon: Receipt },
       ],
     },
     {
       id: 'trip',
-      label: 'Trip & documents',
+      label: t('shell.nav.tripDocuments'),
       icon: Plane,
       accent: 'cyan',
       children: [
-        { to: paths.tripIndex, label: 'Trip', icon: Plane },
-        { to: paths.documents, label: 'Documents', icon: FileText },
+        { to: paths.tripIndex, label: t('shell.nav.trip'), icon: Plane },
+        { to: paths.documents, label: t('shell.nav.documents'), icon: FileText },
       ],
     },
     {
       id: 'inbox',
-      label: 'Messages & alerts',
+      label: t('shell.nav.inbox'),
       icon: MessagesSquare,
       accent: 'violet',
       children: [
-        { to: paths.messages, label: 'Messages', icon: MessageSquare },
-        { to: paths.notifications, label: 'Notifications', icon: Bell, badge },
+        { to: paths.messages, label: t('shell.nav.messages'), icon: MessageSquare },
+        { to: paths.notifications, label: t('shell.nav.notifications'), icon: Bell, badge },
       ],
     },
     {
       id: 'account',
-      label: 'Account',
+      label: t('shell.nav.account'),
       icon: UserRound,
       accent: 'amber',
       children: [
-        { to: paths.saved, label: 'Saved', icon: Bookmark },
-        { to: paths.profile, label: 'Profile', icon: User },
+        { to: paths.saved, label: t('shell.nav.saved'), icon: Bookmark },
+        { to: paths.profile, label: t('shell.nav.profile'), icon: User },
       ],
     },
   ];
@@ -99,26 +101,28 @@ function buildNav(unread: number): NavItem[] {
 
 interface BottomItem {
   to: string;
-  label: string;
+  /** catalog key of the label */
+  labelKey: string;
   icon: ReactNode;
   end?: boolean;
 }
 
 const BOTTOM_NAV: BottomItem[] = [
-  { to: paths.dashboard, label: 'Home', icon: <Home className="h-5 w-5" aria-hidden />, end: true },
-  { to: `${PORTAL_BASE}/screening/new`, label: 'Screening', icon: <Stethoscope className="h-5 w-5" aria-hidden /> },
-  { to: paths.tripIndex, label: 'Trip', icon: <Plane className="h-5 w-5" aria-hidden /> },
-  { to: paths.messages, label: 'Messages', icon: <MessageSquare className="h-5 w-5" aria-hidden /> },
-  { to: paths.profile, label: 'Profile', icon: <User className="h-5 w-5" aria-hidden /> },
+  { to: paths.dashboard, labelKey: 'shell.bottomNav.home', icon: <Home className="h-5 w-5" aria-hidden />, end: true },
+  { to: `${PORTAL_BASE}/screening/new`, labelKey: 'shell.bottomNav.screening', icon: <Stethoscope className="h-5 w-5" aria-hidden /> },
+  { to: paths.tripIndex, labelKey: 'shell.bottomNav.trip', icon: <Plane className="h-5 w-5" aria-hidden /> },
+  { to: paths.messages, labelKey: 'shell.bottomNav.messages', icon: <MessageSquare className="h-5 w-5" aria-hidden /> },
+  { to: paths.profile, labelKey: 'shell.bottomNav.profile', icon: <User className="h-5 w-5" aria-hidden /> },
 ];
 
 const MENU_LINK =
   'flex w-full items-center gap-2 px-4 py-2 text-start text-sm text-fg hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:outline-none';
 
 function PageFallback() {
+  const { t } = useAppTranslation();
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Spinner label="Loading page" />
+      <Spinner label={t('shell.loadingPage')} />
     </div>
   );
 }
@@ -143,8 +147,8 @@ class PageErrorBoundary extends Component<{ resetKey: string; children: ReactNod
     if (this.state.error) {
       return (
         <ErrorState
-          title="This page could not be displayed"
-          error={new Error('Please reload the page. If it keeps happening, contact support.')}
+          title={i18n.t('patient:shell.pageError.title')}
+          error={new Error(i18n.t('patient:shell.pageError.description'))}
           onRetry={() => window.location.reload()}
         />
       );
@@ -205,6 +209,7 @@ function FullScreen({ children }: { children: ReactNode }) {
 }
 
 export function PortalShell() {
+  const { t } = useAppTranslation();
   const me = useMe();
   const location = useLocation();
   const logout = useLogout();
@@ -213,7 +218,7 @@ export function PortalShell() {
   if (me.isPending) {
     return (
       <FullScreen>
-        <Spinner label="Loading your portal" />
+        <Spinner label={t('shell.loadingPortal')} />
       </FullScreen>
     );
   }
@@ -233,17 +238,18 @@ export function PortalShell() {
     return (
       <FullScreen>
         <div className="max-w-md rounded-2xl border border-border bg-surface p-6 text-center shadow-card">
-          <h1 className="text-lg font-semibold text-fg">This portal is for patients</h1>
+          <h1 className="text-lg font-semibold text-fg">{t('shell.wrongRole.title')}</h1>
           <p className="mt-2 text-sm text-muted">
-            You are signed in as a {user.role.replace('_', ' ')} account. Please use your own portal, or sign out and
-            sign in with a patient account.
+            {t('shell.wrongRole.description', {
+              role: t(`shell.roles.${user.role}`, { defaultValue: user.role.replace('_', ' ') }),
+            })}
           </p>
           <div className="mt-4 flex justify-center gap-2">
             <ButtonLink to="/" variant="outline">
-              Home
+              {t('shell.wrongRole.home')}
             </ButtonLink>
             <Button variant="primary" loading={logout.isPending} onClick={signOut}>
-              Sign out
+              {t('shell.signOut')}
             </Button>
           </div>
         </div>
@@ -252,26 +258,26 @@ export function PortalShell() {
   }
 
   const count = unread.data?.count ?? 0;
-  const displayName = user.is_guest ? 'Guest' : user.full_name;
+  const displayName = user.is_guest ? t('shell.guest') : user.full_name;
 
   return (
     <>
       <RealtimeBridge />
       <PortalLayout
-        nav={buildNav(count)}
+        nav={buildNav(count, t)}
         homeTo={paths.dashboard}
-        subtitle="Patient portal"
-        primaryAction={{ label: 'Start AI screening', to: paths.newScreening(), icon: Stethoscope }}
+        subtitle={t('shell.subtitle')}
+        primaryAction={{ label: t('shell.startScreening'), to: paths.newScreening(), icon: Stethoscope }}
         user={{ name: displayName, email: user.email, role: user.role, avatarUrl: user.avatar_url }}
         userMenuItems={
           <>
             <Link to={paths.profile} role="menuitem" className={MENU_LINK}>
               <User className="size-4 text-muted" aria-hidden />
-              Profile
+              {t('shell.menu.profile')}
             </Link>
             <Link to={paths.saved} role="menuitem" className={MENU_LINK}>
               <Bookmark className="size-4 text-muted" aria-hidden />
-              Saved hospitals & doctors
+              {t('shell.menu.saved')}
             </Link>
           </>
         }
@@ -290,7 +296,7 @@ export function PortalShell() {
 
       {/* Mobile bottom navigation (mirrors the app design) */}
       <nav
-        aria-label="Quick navigation"
+        aria-label={t('shell.bottomNav.label')}
         className="surface-glass fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-border pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
         {BOTTOM_NAV.map((item) => (
@@ -308,7 +314,7 @@ export function PortalShell() {
             }
           >
             {item.icon}
-            {item.label}
+            {t(item.labelKey)}
           </NavLink>
         ))}
       </nav>

@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { UserPlus } from 'lucide-react';
 import type { CaseOut, Uuid } from '@hig/shared/api';
 import { EmergencyAckPanel as SharedEmergencyAckPanel, isGuestUpgradeError } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { qk } from '../api/queries';
 import { useMe } from '../lib/session';
 import { Button } from '../ui/primitives';
@@ -65,19 +66,20 @@ export function useGuestGate() {
   };
 }
 
-/** Inline notice used instead of a booking/case form for guests. */
+/**
+ * Inline notice used instead of a booking/case form for guests. `action` is a translated verb phrase that
+ * completes "Create your free account to {{action}}" (e.g. `t('book.guestAction')`).
+ */
 export function GuestAccountRequired({ action, children }: { action: string; children?: ReactNode }) {
+  const { t } = useAppTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-2xl border border-violet-200 bg-violet-50 p-5 dark:border-violet-500/30 dark:bg-violet-500/10">
-      <p className="font-semibold">Create your free account to {action}</p>
-      <p className="mt-1 text-sm text-muted">
-        Guest sessions can explore and run a screening. To request quotes, book and pay, hospitals need a verified
-        account. Everything you did as a guest is kept.
-      </p>
+      <p className="font-semibold">{t('careGates.guest.title', { action })}</p>
+      <p className="mt-1 text-sm text-muted">{t('careGates.guest.description')}</p>
       {children}
       <Button className="mt-3" icon={<UserPlus className="h-4 w-4" aria-hidden />} onClick={() => setOpen(true)}>
-        Create account
+        {t('careGates.guest.createAccount')}
       </Button>
       <GuestUpgradeDialog open={open} onClose={() => setOpen(false)} />
     </div>

@@ -13,12 +13,17 @@ import {
   useDocumentAnalyses,
   type DocumentAnalysisOut,
 } from '@hig/shared/docai';
+import { i18n } from '@hig/shared/lib';
 import { Button, DateCell, type DataTableColumn } from '@hig/shared/ui';
+import { APP_NS, useAppTranslation } from '../../../i18n';
 import { useDeleteDocument } from '../api/queries';
 import { paths } from '../lib/paths';
 import { ConfirmDialog } from '../ui/primitives';
 import { formatBytes } from './common';
 import { PatientStatus, patientStatusLabel } from './listing';
+
+/** Lazy lookup in this app's namespace for helpers that are not components (called at render time). */
+const tr = (key: string): string => i18n.t(`${APP_NS}:${key}`);
 
 export const NON_DELETABLE_KINDS = new Set<DocumentKind>(['invoice', 'receipt', 'invitation_letter']);
 export const canDeleteDocument = (d: DocumentOut) => !NON_DELETABLE_KINDS.has(d.kind) && d.status !== 'verified';
@@ -29,13 +34,15 @@ export const isReportKind = (kind: string) => REPORT_KINDS.includes(kind);
 /** AI reading state used for filtering (the cell itself renders the live shared control). */
 export const AI_READING = ['not_read', 'reading', 'review', 'confirmed', 'failed'] as const;
 export type AiReading = (typeof AI_READING)[number];
-export const AI_READING_LABELS: Record<AiReading, string> = {
-  not_read: 'Not read yet',
-  reading: 'Reading…',
-  review: 'Ready for your check',
-  confirmed: 'Confirmed',
-  failed: 'Could not read',
+const AI_READING_KEYS: Record<AiReading, string> = {
+  not_read: 'notRead',
+  reading: 'reading',
+  review: 'review',
+  confirmed: 'confirmed',
+  failed: 'failed',
 };
+/** Patient wording of an AI reading state, in the current language (call at render time). */
+export const aiReadingLabel = (r: AiReading): string => tr(`documents.aiReading.${AI_READING_KEYS[r]}`);
 export const AI_READING_TONES = { not_read: 'neutral', reading: 'info', review: 'warning', confirmed: 'success', failed: 'danger' } as const;
 
 function readingOf(a: DocumentAnalysisOut | undefined): AiReading {
@@ -62,6 +69,7 @@ export function useAiReadings(documents: readonly DocumentOut[] | undefined): Ma
 export const documentTypeLabel = (kind: string) => DOCUMENT_KIND_LABELS[kind as DocumentKind] ?? kind;
 
 function FileCell({ doc }: { doc: DocumentOut }) {
+  const { t } = useAppTranslation();
   const Icon = doc.content_type.startsWith('image/') ? FileImage : FileText;
   return (
     <span className="flex min-w-0 items-center gap-3">
@@ -74,7 +82,7 @@ function FileCell({ doc }: { doc: DocumentOut }) {
         </span>
         <span className="block truncate text-xs text-muted">
           {formatBytes(doc.size_bytes)}
-          {doc.uploaded_by_name ? ` · by ${doc.uploaded_by_name}` : ''}
+          {doc.uploaded_by_name ? ` · ${t('documents.table.uploadedBy', { name: doc.uploaded_by_name })}` : ''}
         </span>
       </span>
     </span>
@@ -83,6 +91,7 @@ function FileCell({ doc }: { doc: DocumentOut }) {
 
 /** Download + delete buttons and the delete confirmation (one dialog for the whole table). */
 export function useDocumentActions() {
+  const { t } = useAppTranslation();
   const remove = useDeleteDocument();
   const [downloading, setDownloading] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<DocumentOut | null>(null);
@@ -92,7 +101,7 @@ export function useDocumentActions() {
     try {
       await documentsApi.downloadAndSave(doc);
     } catch (err) {
-      toast.error(errorMessage(err, 'Download failed.'));
+      toast.error(errorMessage(err, t('documents.table.downloadFailed')));
     } finally {
       setDownloading(null);
     }
@@ -105,13 +114,19 @@ export function useDocumentActions() {
         size="icon-sm"
         loading={downloading === doc.id}
         onClick={() => void download(doc)}
-        aria-label={`Download ${doc.file_name}`}
-        title="Download"
+        aria-label={t('documents.table.downloadFile', { name: doc.file_name })}
+        title={t('documents.table.download')}
       >
         <Download className="size-4" aria-hidden />
       </Button>
       {canDeleteDocument(doc) ? (
-        <Button variant="ghost" size="icon-sm" onClick={() => setConfirm(doc)} aria-label={`Delete ${doc.file_name}`} title="Delete">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => setConfirm(doc)}
+          aria-label={t('documents.table.deleteFile', { name: doc.file_name })}
+          title={t('documents.table.delete')}
+        >
           <Trash2 className="size-4 text-danger" aria-hidden />
         </Button>
       ) : null}
@@ -122,22 +137,22 @@ export function useDocumentActions() {
     <ConfirmDialog
       open={!!confirm}
       onClose={() => setConfirm(null)}
-      title="Delete document?"
-      confirmLabel="Delete"
+      title={t('documents.table.deleteTitle')}
+      confirmLabel={t('documents.table.delete')}
       tone="danger"
       loading={remove.isPending}
       onConfirm={() => {
         if (!confirm) return;
         remove.mutate(confirm.id, {
           onSuccess: () => {
-            toast.success('Document deleted');
+            toast.success(t('documents.table.deleted'));
             setConfirm(null);
           },
           onError: (err) => toast.error(errorMessage(err)),
         });
       }}
     >
-      {confirm ? `"${confirm.file_name}" will be removed. Hospitals linked to your cases will no longer see it.` : null}
+      {confirm ? t('documents.table.deleteBody', { name: confirm.file_name }) : null}
     </ConfirmDialog>
   );
 
@@ -157,7 +172,7 @@ export function documentColumns({
   const cols: DataTableColumn<DocumentOut>[] = [
     {
       key: 'file_name',
-      header: 'File',
+      header: tr('documents.table.file'),
       sticky: true,
       sortable: true,
       mobile: 'primary',
@@ -168,7 +183,7 @@ export function documentColumns({
     },
     {
       key: 'kind',
-      header: 'Type',
+      header: tr('documents.table.type'),
       sortable: true,
       sortValue: (d) => documentTypeLabel(d.kind),
       cell: (d) => <span className="whitespace-nowrap">{documentTypeLabel(d.kind)}</span>,
@@ -178,16 +193,16 @@ export function documentColumns({
   if (caseNumbers) {
     cols.push({
       key: 'case',
-      header: 'Case',
+      header: tr('documents.table.case'),
       sortable: true,
       sortValue: (d) => (d.case_id ? (caseNumbers.get(d.case_id) ?? '') : ''),
       cell: (d) =>
         d.case_id ? (
           <Link to={paths.case(d.case_id)} className="font-mono text-xs font-medium text-primary-ink hover:underline">
-            {caseNumbers.get(d.case_id) ?? 'View case'}
+            {caseNumbers.get(d.case_id) ?? tr('documents.table.viewCase')}
           </Link>
         ) : (
-          <span className="text-xs text-muted">Personal file</span>
+          <span className="text-xs text-muted">{tr('documents.table.personalFile')}</span>
         ),
       exportValue: (d) => (d.case_id ? (caseNumbers.get(d.case_id) ?? d.case_id) : ''),
     });
@@ -195,7 +210,7 @@ export function documentColumns({
   cols.push(
     {
       key: 'created_at',
-      header: 'Uploaded',
+      header: tr('documents.table.uploaded'),
       sortable: true,
       sortDescFirst: true,
       cell: (d) => <DateCell value={d.created_at} display="date" />,
@@ -203,7 +218,7 @@ export function documentColumns({
     },
     {
       key: 'status',
-      header: 'Checked by team',
+      header: tr('documents.table.checked'),
       sortable: true,
       mobile: 'badge',
       cell: (d) => <PatientStatus status={d.status} kind="document" />,
@@ -211,23 +226,23 @@ export function documentColumns({
     },
     {
       key: 'ai',
-      header: 'AI reading',
+      header: tr('documents.table.aiReading'),
       sortable: true,
       sortValue: (d) => {
         const r = readings.get(d.id);
         return r ? AI_READING.indexOf(r) : null;
       },
       cell: (d) =>
-        isReportKind(d.kind) ? <DocumentAiStatus document={d} audience="patient" /> : <span className="text-xs text-muted">Not needed</span>,
+        isReportKind(d.kind) ? <DocumentAiStatus document={d} audience="patient" /> : <span className="text-xs text-muted">{tr('documents.table.notNeeded')}</span>,
       exportValue: (d) => {
         const r = readings.get(d.id);
-        return r ? AI_READING_LABELS[r] : '';
+        return r ? aiReadingLabel(r) : '';
       },
     },
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{tr('documents.table.actions')}</span>,
+      title: tr('documents.table.actions'),
       align: 'end',
       hideable: false,
       exportable: false,

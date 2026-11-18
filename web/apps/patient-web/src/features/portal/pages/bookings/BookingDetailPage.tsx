@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
+import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { CalendarClock, Plane } from 'lucide-react';
 import {
@@ -10,11 +11,12 @@ import {
   type RefundTier,
 } from '@hig/shared/api';
 import { DataTable, DateCell, MoneyCell, StatusBadgeCell, type DataTableColumn } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../../i18n';
 import { useBooking, useCancelBooking, useInstallments } from '../../api/queries';
 import { PaymentsTable } from '../../components/payments';
 import { BackLink, Money, StatusBadge } from '../../components/common';
 import { paths } from '../../lib/paths';
-import { cn, daysUntil, formatDate, useDocumentTitle } from '../../lib/shared';
+import { cn, daysUntil, formatDate, formatMoney, formatNumber, useDocumentTitle } from '../../lib/shared';
 import {
   Alert,
   Button,
@@ -30,6 +32,8 @@ import {
   Skeleton,
   Textarea,
 } from '../../ui/primitives';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 /**
  * Default cancellation policy (platform setting `refund_policy`, PLAN 6.3). Used only for the preview; the server
@@ -48,30 +52,31 @@ export function refundPolicyOf(booking: BookingOut): { tiers: RefundTier[]; snap
   return { tiers: [...tiers].sort((a, b) => b.days_before - a.days_before), snapshot: !!(snap && snap.length) };
 }
 
-function tierLabel(tiers: RefundTier[], index: number): string {
+function tierLabel(t: TFn, tiers: RefundTier[], index: number): string {
   const tier = tiers[index];
   if (!tier) return '';
-  if (tier.days_before > 0) return `${tier.days_before}+ days before admission`;
+  if (tier.days_before > 0) return t('bookings.refund.daysOrMore', { count: tier.days_before });
   const previous = tiers[index - 1];
-  return previous ? `Less than ${previous.days_before} days before admission` : 'Any time before admission';
+  return previous ? t('bookings.refund.lessThanDays', { count: previous.days_before }) : t('bookings.refund.anyTime');
 }
 
 export function RefundPolicyList({ booking, highlightPct }: { booking: BookingOut; highlightPct?: number }) {
+  const { t } = useAppTranslation();
   const { tiers, snapshot } = refundPolicyOf(booking);
   return (
     <>
       <ul className="mt-2 space-y-1 text-muted">
         {tiers.map((r, i) => (
           <li key={`${r.days_before}-${r.refund_pct}`} className={cn(highlightPct === r.refund_pct && 'font-semibold text-fg')}>
-            {tierLabel(tiers, i)}: {r.refund_pct}% refund
+            {t('bookings.refund.tierLine', { tier: tierLabel(t, tiers, i), pct: formatNumber(r.refund_pct) })}
           </li>
         ))}
       </ul>
       <p className="mt-2 text-xs text-muted">
         {snapshot
-          ? 'This policy was fixed when your booking was confirmed.'
-          : 'Standard policy - it is fixed for your booking when the booking is confirmed.'}{' '}
-        If the hospital or Heal India Global cancels, you get a 100% refund.
+          ? t('bookings.refund.snapshotNote')
+          : t('bookings.refund.standardNote')}{' '}
+        {t('bookings.refund.fullRefundNote')}
       </p>
     </>
   );
@@ -89,8 +94,9 @@ export function refundPreview(booking: BookingOut): { pct: number; amount: numbe
 
 export function BookingDetailPage() {
   const { id = '' } = useParams();
+  const { t } = useAppTranslation();
   const booking = useBooking(id);
-  useDocumentTitle(booking.data ? `Booking ${booking.data.booking_number}` : 'Booking');
+  useDocumentTitle(booking.data ? t('bookings.detail.documentTitle', { number: booking.data.booking_number }) : t('bookings.detail.documentTitleFallback'));
   if (booking.isPending) {
     return (
       <div className="space-y-4">
@@ -104,6 +110,7 @@ export function BookingDetailPage() {
 }
 
 function BookingDetailView({ booking }: { booking: BookingOut }) {
+  const { t } = useAppTranslation();
   const isPlan = booking.payment_option === 'installments';
   const installments = useInstallments(booking.id, isPlan);
   const cancel = useCancelBooking(booking.id);
@@ -114,21 +121,27 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
   const preview = refundPreview(booking);
   const canPay = booking.status !== 'cancelled' && booking.status !== 'completed' && booking.balance_due_minor > 0;
   const installmentColumns: DataTableColumn<InstallmentOut>[] = [
-    { key: 'seq', header: 'Instalment', sortable: true, mobile: 'primary', cell: (i) => <span className="font-medium">Instalment {i.seq}</span> },
-    { key: 'due_date', header: 'Due', sortable: true, cell: (i) => <DateCell value={i.due_date} display="date" /> },
-    { key: 'amount_minor', header: 'Amount', align: 'end', sortable: true, cell: (i) => <MoneyCell minor={i.amount_minor} currency={i.currency} /> },
-    { key: 'status', header: 'Status', mobile: 'badge', cell: (i) => <StatusBadgeCell status={i.status} kind="installment" /> },
-    { key: 'paid_at', header: 'Paid on', cell: (i) => <DateCell value={i.paid_at} display="date" /> },
+    {
+      key: 'seq',
+      header: t('bookings.detail.installments.instalment'),
+      sortable: true,
+      mobile: 'primary',
+      cell: (i) => <span className="font-medium">{t('bookings.detail.installments.instalmentNumber', { seq: i.seq })}</span>,
+    },
+    { key: 'due_date', header: t('bookings.detail.installments.due'), sortable: true, cell: (i) => <DateCell value={i.due_date} display="date" /> },
+    { key: 'amount_minor', header: t('bookings.detail.installments.amount'), align: 'end', sortable: true, cell: (i) => <MoneyCell minor={i.amount_minor} currency={i.currency} /> },
+    { key: 'status', header: t('bookings.detail.installments.status'), mobile: 'badge', cell: (i) => <StatusBadgeCell status={i.status} kind="installment" /> },
+    { key: 'paid_at', header: t('bookings.detail.installments.paidOn'), cell: (i) => <DateCell value={i.paid_at} display="date" /> },
     {
       key: 'pay',
-      header: <span className="sr-only">Pay</span>,
-      title: 'Pay',
+      header: <span className="sr-only">{t('bookings.detail.installments.pay')}</span>,
+      title: t('bookings.detail.installments.pay'),
       align: 'end',
       mobile: 'meta',
       cell: (i) =>
         (i.status === 'due' || i.status === 'overdue') && booking.status !== 'cancelled' ? (
           <ButtonLink to={paths.pay(booking.id, i.id)} size="sm">
-            Pay
+            {t('bookings.detail.installments.pay')}
           </ButtonLink>
         ) : null,
     },
@@ -137,10 +150,10 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
   return (
     <div>
       <PageHeader
-        back={<BackLink to={paths.bookings}>Bookings</BackLink>}
+        back={<BackLink to={paths.bookings}>{t('bookings.list.title')}</BackLink>}
         title={
           <span className="flex flex-wrap items-center gap-3">
-            {booking.procedure?.name ?? booking.package?.name ?? 'Treatment'}
+            {booking.procedure?.name ?? booking.package?.name ?? t('bookings.treatment')}
             <StatusBadge status={booking.status} className="text-sm" />
           </span>
         }
@@ -148,30 +161,34 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
         actions={
           <>
             <ButtonLink to={paths.case(booking.case_id)} variant="outline">
-              View case
+              {t('bookings.detail.viewCase')}
             </ButtonLink>
             {booking.status !== 'cancelled' ? (
               <ButtonLink to={paths.trip(booking.id)} variant="accent" icon={<Plane className="h-4 w-4" aria-hidden />}>
-                Trip hub
+                {t('bookings.detail.tripHub')}
               </ButtonLink>
             ) : null}
-            {canPay && !isPlan ? <ButtonLink to={paths.pay(booking.id)}>Pay now</ButtonLink> : null}
-            {canPay && isPlan && booking.status === 'pending_payment' ? <ButtonLink to={paths.pay(booking.id)}>Pay deposit</ButtonLink> : null}
+            {canPay && !isPlan ? <ButtonLink to={paths.pay(booking.id)}>{t('bookings.detail.payNow')}</ButtonLink> : null}
+            {canPay && isPlan && booking.status === 'pending_payment' ? <ButtonLink to={paths.pay(booking.id)}>{t('bookings.detail.payDeposit')}</ButtonLink> : null}
           </>
         }
       />
 
       {booking.status === 'pending_payment' ? (
-        <Alert tone="amber" className="mb-6" title="Payment needed to confirm">
-          Your admission date is held once the deposit is paid.
+        <Alert tone="amber" className="mb-6" title={t('bookings.detail.paymentNeededTitle')}>
+          {t('bookings.detail.paymentNeededText')}
         </Alert>
       ) : booking.status === 'cancelled' ? (
-        <Alert tone="neutral" className="mb-6" title={`Cancelled ${formatDate(booking.cancelled_at)}`}>
-          {booking.cancel_reason ?? 'This booking was cancelled.'}
+        <Alert tone="neutral" className="mb-6" title={t('bookings.detail.cancelledOn', { date: formatDate(booking.cancelled_at) })}>
+          {booking.cancel_reason ?? t('bookings.detail.cancelledText')}
           {booking.amount_refunded_minor > 0 ? (
             <>
               {' '}
-              Refunded so far: <Money minor={booking.amount_refunded_minor} currency={booking.currency} />.
+              <Trans
+                t={t}
+                i18nKey="bookings.detail.refundedSoFar"
+                components={{ 0: <Money minor={booking.amount_refunded_minor} currency={booking.currency} /> }}
+              />
             </>
           ) : null}
         </Alert>
@@ -180,30 +197,32 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader title="Treatment" />
+            <CardHeader title={t('bookings.detail.treatmentCard')} />
             <CardBody>
               <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <KeyValue label="Hospital">
+                <KeyValue label={t('bookings.detail.hospital')}>
                   {booking.hospital.name}, {booking.hospital.city}
                 </KeyValue>
-                <KeyValue label="Doctor">{booking.doctor?.full_name ?? '—'}</KeyValue>
-                <KeyValue label="Package">{booking.package?.name ?? (booking.quote_id ? 'Accepted quote' : '—')}</KeyValue>
-                <KeyValue label="Admission">{formatDate(booking.admission_date)}</KeyValue>
-                <KeyValue label="Discharge">{formatDate(booking.discharge_date)}</KeyValue>
-                <KeyValue label="Duration">{booking.duration_days ? `${booking.duration_days} days` : '—'}</KeyValue>
-                <KeyValue label="Payment option">
+                <KeyValue label={t('bookings.detail.doctor')}>{booking.doctor?.full_name ?? '—'}</KeyValue>
+                <KeyValue label={t('bookings.detail.package')}>{booking.package?.name ?? (booking.quote_id ? t('bookings.detail.acceptedQuote') : '—')}</KeyValue>
+                <KeyValue label={t('bookings.detail.admission')}>{formatDate(booking.admission_date)}</KeyValue>
+                <KeyValue label={t('bookings.detail.discharge')}>{formatDate(booking.discharge_date)}</KeyValue>
+                <KeyValue label={t('bookings.detail.duration')}>{booking.duration_days ? t('bookings.detail.days', { count: booking.duration_days }) : '—'}</KeyValue>
+                <KeyValue label={t('bookings.detail.paymentOption')}>
                   {PAYMENT_OPTION_LABELS[booking.payment_option]}
-                  {booking.installment_months ? ` · ${booking.installment_months} months` : ''}
+                  {booking.installment_months ? ` · ${t('bookings.detail.months', { count: booking.installment_months })}` : ''}
                 </KeyValue>
-                <KeyValue label="Insurance claim">{booking.insurance_claim_requested ? 'Requested' : 'No'}</KeyValue>
-                <KeyValue label="Booked">{formatDate(booking.created_at)}</KeyValue>
+                <KeyValue label={t('bookings.detail.insuranceClaim')}>
+                  {booking.insurance_claim_requested ? t('bookings.detail.requested') : t('bookings.detail.no')}
+                </KeyValue>
+                <KeyValue label={t('bookings.detail.booked')}>{formatDate(booking.created_at)}</KeyValue>
               </dl>
             </CardBody>
           </Card>
 
           {isPlan ? (
             <Card>
-              <CardHeader title="Instalment plan" />
+              <CardHeader title={t('bookings.detail.installments.title')} />
               <CardBody>
                 {installments.isPending ? (
                   <Skeleton className="h-24 w-full" />
@@ -211,7 +230,7 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
                   <ErrorState error={installments.error} onRetry={() => void installments.refetch()} />
                 ) : (
                   <DataTable
-                    caption="Instalment plan"
+                    caption={t('bookings.detail.installments.title')}
                     columns={installmentColumns}
                     rows={installments.data}
                     defaultSort={{ key: 'seq', direction: 'asc' }}
@@ -220,8 +239,8 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
                     showViewOptions={false}
                     className="shadow-none"
                     emptyIcon={<CalendarClock className="size-7" aria-hidden />}
-                    emptyTitle="No schedule yet"
-                    emptyDescription="The schedule is created once your booking is confirmed."
+                    emptyTitle={t('bookings.detail.installments.emptyTitle')}
+                    emptyDescription={t('bookings.detail.installments.emptyDescription')}
                   />
                 )}
               </CardBody>
@@ -230,11 +249,11 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
 
           <Card>
             <CardHeader
-              title="Payments & receipts"
-              description="Every payment for this booking. Download a receipt as a PDF."
+              title={t('payments.page.title')}
+              description={t('bookings.detail.paymentsDescription')}
               action={
                 <ButtonLink to={paths.payments} variant="outline" size="sm">
-                  All payments
+                  {t('bookings.detail.allPayments')}
                 </ButtonLink>
               }
             />
@@ -246,27 +265,27 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
 
         <div className="space-y-6">
           <Card>
-            <CardHeader title="Price summary" />
+            <CardHeader title={t('bookings.summary.title')} />
             <CardBody className="space-y-2 text-sm">
-              <SummaryRow label="Subtotal" minor={booking.subtotal_minor} currency={booking.currency} />
-              {booking.discount_minor ? <SummaryRow label="Discount" minor={-booking.discount_minor} currency={booking.currency} /> : null}
-              {booking.service_fee_minor ? <SummaryRow label="Service fee" minor={booking.service_fee_minor} currency={booking.currency} /> : null}
-              <SummaryRow label="Taxes" minor={booking.tax_minor} currency={booking.currency} />
-              <SummaryRow label="Total" minor={booking.total_minor} currency={booking.currency} strong />
+              <SummaryRow label={t('bookings.summary.subtotal')} minor={booking.subtotal_minor} currency={booking.currency} />
+              {booking.discount_minor ? <SummaryRow label={t('bookings.summary.discount')} minor={-booking.discount_minor} currency={booking.currency} /> : null}
+              {booking.service_fee_minor ? <SummaryRow label={t('bookings.summary.serviceFee')} minor={booking.service_fee_minor} currency={booking.currency} /> : null}
+              <SummaryRow label={t('bookings.summary.taxes')} minor={booking.tax_minor} currency={booking.currency} />
+              <SummaryRow label={t('bookings.summary.total')} minor={booking.total_minor} currency={booking.currency} strong />
               <div className="border-t border-border pt-2" />
-              <SummaryRow label="Deposit" minor={booking.deposit_minor} currency={booking.currency} />
-              <SummaryRow label="Paid" minor={booking.amount_paid_minor} currency={booking.currency} />
+              <SummaryRow label={t('bookings.summary.deposit')} minor={booking.deposit_minor} currency={booking.currency} />
+              <SummaryRow label={t('bookings.summary.paid')} minor={booking.amount_paid_minor} currency={booking.currency} />
               {booking.amount_refunded_minor ? (
-                <SummaryRow label="Refunded" minor={booking.amount_refunded_minor} currency={booking.currency} />
+                <SummaryRow label={t('bookings.summary.refunded')} minor={booking.amount_refunded_minor} currency={booking.currency} />
               ) : null}
-              <SummaryRow label="Balance due" minor={booking.balance_due_minor} currency={booking.currency} strong />
+              <SummaryRow label={t('bookings.summary.balanceDue')} minor={booking.balance_due_minor} currency={booking.currency} strong />
             </CardBody>
           </Card>
 
           {booking.status !== 'cancelled' && booking.status !== 'completed' ? (
             <Card>
               <CardBody className="text-sm">
-                <p className="font-semibold">Cancellation policy</p>
+                <p className="font-semibold">{t('bookings.refund.policyTitle')}</p>
                 <RefundPolicyList booking={booking} highlightPct={preview.pct} />
               </CardBody>
             </Card>
@@ -274,7 +293,7 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
 
           {cancellable ? (
             <Button variant="outline" className="w-full text-danger" onClick={() => setCancelOpen(true)}>
-              Cancel booking
+              {t('bookings.cancel.button')}
             </Button>
           ) : null}
         </div>
@@ -283,11 +302,11 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
       <Modal
         open={cancelOpen}
         onClose={() => setCancelOpen(false)}
-        title="Cancel this booking?"
+        title={t('bookings.cancel.title')}
         footer={
           <>
             <Button variant="outline" onClick={() => setCancelOpen(false)}>
-              Keep booking
+              {t('bookings.cancel.keep')}
             </Button>
             <Button
               variant="danger"
@@ -298,7 +317,7 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
                   { reason: reason.trim() },
                   {
                     onSuccess: () => {
-                      toast.success('Booking cancelled. Any refund is processed to your original payment method.');
+                      toast.success(t('bookings.cancel.success'));
                       setCancelOpen(false);
                     },
                     onError: (err) => toast.error(errorMessage(err)),
@@ -306,26 +325,30 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
                 )
               }
             >
-              Cancel booking
+              {t('bookings.cancel.button')}
             </Button>
           </>
         }
       >
         <div className="space-y-4 text-sm">
           <div className="rounded-xl bg-surface-2 p-4">
-            <p className="font-semibold">Cancellation policy</p>
+            <p className="font-semibold">{t('bookings.refund.policyTitle')}</p>
             <RefundPolicyList booking={booking} highlightPct={preview.pct} />
             <p className="mt-3">
-              {preview.days !== null ? `${Math.max(0, preview.days)} days before admission. ` : ''}
-              Estimated refund:{' '}
-              <strong>
-                <Money minor={preview.amount} currency={booking.currency} />
-              </strong>{' '}
-              ({preview.pct}% of the amount paid)
+              <Trans
+                t={t}
+                i18nKey={preview.days !== null ? 'bookings.cancel.estimateWithDays' : 'bookings.cancel.estimate'}
+                values={{
+                  ...(preview.days !== null ? { count: Math.max(0, preview.days) } : {}),
+                  amount: formatMoney(preview.amount, booking.currency),
+                  pct: formatNumber(preview.pct),
+                }}
+                components={{ 0: <strong /> }}
+              />
             </p>
-            <p className="mt-1 text-xs text-muted">The final amount is confirmed by our team according to the policy in force.</p>
+            <p className="mt-1 text-xs text-muted">{t('bookings.cancel.finalAmountNote')}</p>
           </div>
-          <Field label="Reason for cancelling" htmlFor="cancel-reason" required>
+          <Field label={t('bookings.cancel.reason')} htmlFor="cancel-reason" required>
             <Textarea id="cancel-reason" maxLength={1000} value={reason} onChange={(e) => setReason(e.target.value)} />
           </Field>
         </div>

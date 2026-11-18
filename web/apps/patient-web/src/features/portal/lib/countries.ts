@@ -1,4 +1,9 @@
-/** Country options (ISO 3166-1 alpha-2) for patient-facing selects; names come from Intl.DisplayNames. */
+/**
+ * Country options (ISO 3166-1 alpha-2) for patient-facing selects; names come from Intl.DisplayNames in the UI
+ * language. Preference languages are stored by English name and shown with a translated label.
+ */
+import { i18n, intlLocale } from '@hig/shared/lib';
+
 const CODES = [
   'AE', 'AF', 'AU', 'BD', 'BH', 'BT', 'CA', 'CD', 'CM', 'DE', 'DZ', 'EG', 'ES', 'ET', 'FJ', 'FR', 'GB', 'GH', 'IE',
   'IN', 'IQ', 'IR', 'IT', 'JO', 'JP', 'KE', 'KW', 'KZ', 'LB', 'LK', 'LY', 'MA', 'MM', 'MU', 'MV', 'MW', 'MY', 'MZ',
@@ -6,17 +11,21 @@ const CODES = [
   'TR', 'TZ', 'UA', 'UG', 'US', 'UZ', 'YE', 'ZA', 'ZM', 'ZW',
 ] as const;
 
-let displayNames: Intl.DisplayNames | null = null;
+const displayNames = new Map<string, Intl.DisplayNames | null>();
 function names(): Intl.DisplayNames | null {
-  if (displayNames) return displayNames;
+  const locale = intlLocale();
+  if (displayNames.has(locale)) return displayNames.get(locale) ?? null;
+  let dn: Intl.DisplayNames | null;
   try {
-    displayNames = new Intl.DisplayNames(undefined, { type: 'region' });
+    dn = new Intl.DisplayNames([locale], { type: 'region' });
   } catch {
-    displayNames = null;
+    dn = null;
   }
-  return displayNames;
+  displayNames.set(locale, dn);
+  return dn;
 }
 
+/** Country name in the UI language ("IN" -> "India" / "Inde" / "الهند"). */
 export function countryName(code: string | null | undefined): string {
   if (!code) return '—';
   try {
@@ -26,24 +35,51 @@ export function countryName(code: string | null | undefined): string {
   }
 }
 
-export const COUNTRY_OPTIONS: { value: string; label: string }[] = CODES.map((code) => ({
-  value: code,
-  label: countryName(code),
-})).sort((a, b) => a.label.localeCompare(b.label));
+const optionsCache = new Map<string, { value: string; label: string }[]>();
 
-/** Languages offered in screening preferences (stored by name, matching doctors'/hospitals' `languages`). */
-export const LANGUAGE_OPTIONS: { value: string; label: string; flag: string }[] = [
-  { value: 'English', label: 'English', flag: '🇬🇧' },
-  { value: 'Hindi', label: 'Hindi', flag: '🇮🇳' },
-  { value: 'Arabic', label: 'Arabic', flag: '🇸🇦' },
-  { value: 'French', label: 'French', flag: '🇫🇷' },
-  { value: 'Russian', label: 'Russian', flag: '🇷🇺' },
-  { value: 'Bengali', label: 'Bengali', flag: '🇧🇩' },
-  { value: 'Swahili', label: 'Swahili', flag: '🇰🇪' },
-  { value: 'Spanish', label: 'Spanish', flag: '🇪🇸' },
-  { value: 'Pashto', label: 'Pashto', flag: '🇦🇫' },
-  { value: 'Uzbek', label: 'Uzbek', flag: '🇺🇿' },
-  { value: 'Dari', label: 'Dari', flag: '🇦🇫' },
-  { value: 'Amharic', label: 'Amharic', flag: '🇪🇹' },
-  { value: 'Portuguese', label: 'Portuguese', flag: '🇵🇹' },
+/** Country options sorted by name in the UI language (call at render time). */
+export function countryOptions(): { value: string; label: string }[] {
+  const locale = intlLocale();
+  let list = optionsCache.get(locale);
+  if (!list) {
+    list = CODES.map((code) => ({ value: code, label: countryName(code) })).sort((a, b) =>
+      a.label.localeCompare(b.label, locale),
+    );
+    optionsCache.set(locale, list);
+  }
+  return list;
+}
+
+const LANGUAGES: readonly { value: string; key: string; flag: string }[] = [
+  { value: 'English', key: 'english', flag: '🇬🇧' },
+  { value: 'Hindi', key: 'hindi', flag: '🇮🇳' },
+  { value: 'Arabic', key: 'arabic', flag: '🇸🇦' },
+  { value: 'French', key: 'french', flag: '🇫🇷' },
+  { value: 'Russian', key: 'russian', flag: '🇷🇺' },
+  { value: 'Bengali', key: 'bengali', flag: '🇧🇩' },
+  { value: 'Swahili', key: 'swahili', flag: '🇰🇪' },
+  { value: 'Spanish', key: 'spanish', flag: '🇪🇸' },
+  { value: 'Pashto', key: 'pashto', flag: '🇦🇫' },
+  { value: 'Uzbek', key: 'uzbek', flag: '🇺🇿' },
+  { value: 'Dari', key: 'dari', flag: '🇦🇫' },
+  { value: 'Amharic', key: 'amharic', flag: '🇪🇹' },
+  { value: 'Portuguese', key: 'portuguese', flag: '🇵🇹' },
 ];
+
+/**
+ * Languages offered in screening preferences (stored by English name, matching doctors'/hospitals'
+ * `languages`). `label` is read lazily (`patient:languages.<key>`), so it follows the UI language.
+ */
+export const LANGUAGE_OPTIONS: readonly { readonly value: string; readonly label: string; readonly flag: string }[] =
+  LANGUAGES.map(({ value, key, flag }) => ({
+    value,
+    flag,
+    get label() {
+      return i18n.t(`patient:languages.${key}`, { defaultValue: value });
+    },
+  }));
+
+/** Translated label of a stored language name (falls back to the stored name). */
+export function languageLabel(value: string): string {
+  return LANGUAGE_OPTIONS.find((l) => l.value === value)?.label ?? value;
+}

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Trans } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, Search } from 'lucide-react';
 import { authApi, errorMessage, PREVIOUS_TREATMENTS, type PreviousTreatment, type ScreeningSeverity } from '@hig/shared/api';
 import { VoiceIntakeButton, type ConfirmedIntake } from '@hig/shared/voice';
+import { useAppTranslation } from '../../../../i18n';
 import { usePatientProfile, useScreening, useSubmitScreening, useUpdateScreening } from '../../api/queries';
 import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
@@ -13,17 +15,18 @@ import { BodyMap, PainSlider } from './BodyMap';
 import { StepDuration } from './StepDuration';
 import { StepPreferences } from './StepPreferences';
 import { StepSymptoms } from './StepSymptoms';
-import { draftFromScreening, STEP_TITLES, stepPayload, TOTAL_STEPS, validateStep, type WizardDraft } from './wizardModel';
+import {
+  draftFromScreening,
+  STEP_SUBTITLE_KEYS,
+  STEP_TITLE_KEYS,
+  stepPayload,
+  TOTAL_STEPS,
+  validateStep,
+  type WizardDraft,
+} from './wizardModel';
 
 /** Consent document version recorded with POST /auth/consents. */
 export const AI_CONSENT_VERSION = '2026-10';
-
-const STEP_SUBTITLES = [
-  'Tap on the body to select the area. You can select more than one.',
-  'Answer each card, or add your own symptoms.',
-  'Duration, daily impact and what you have tried so far.',
-  'Optional - helps us rank hospitals and doctors for you.',
-];
 
 /** Merge confirmed voice/typed answers into the local draft: fill empty answers, overwrite only what the patient chose. */
 function mergeVoiceIntake(draft: WizardDraft, result: ConfirmedIntake): Partial<WizardDraft> {
@@ -57,7 +60,8 @@ function mergeVoiceIntake(draft: WizardDraft, result: ConfirmedIntake): Partial<
 export function WizardPage() {
   const { id = '', step: stepParam = '1' } = useParams();
   const step = Math.min(TOTAL_STEPS, Math.max(1, Number.parseInt(stepParam, 10) || 1));
-  useDocumentTitle(`Screening · step ${step}`);
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('screening.wizard.documentTitle', { step }));
   const navigate = useNavigate();
   const screening = useScreening(id);
   const me = useMe();
@@ -116,7 +120,7 @@ export function WizardPage() {
       await update.mutateAsync(stepPayload(step, draft));
       return true;
     } catch (err) {
-      toast.error(errorMessage(err, 'Your answers could not be saved.'));
+      toast.error(errorMessage(err, t('screening.wizard.toast.saveFailed')));
       return false;
     }
   }
@@ -143,7 +147,7 @@ export function WizardPage() {
 
   async function saveAndExit() {
     if (await save()) {
-      toast.success('Progress saved. You can continue from your dashboard.');
+      toast.success(t('screening.wizard.toast.progressSaved'));
       navigate(paths.dashboard);
     }
   }
@@ -170,7 +174,7 @@ export function WizardPage() {
       await submit.mutateAsync(consent);
       navigate(paths.screeningProcessing(id), { replace: true });
     } catch (err) {
-      toast.error(errorMessage(err, 'We could not start the analysis. Please try again.'));
+      toast.error(errorMessage(err, t('screening.wizard.toast.analysisFailed')));
     }
   }
 
@@ -179,24 +183,23 @@ export function WizardPage() {
       <div className="mb-6">
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
-            Step {step} of {TOTAL_STEPS}
-            {step === TOTAL_STEPS ? ' · Optional' : ''}
+            {t('screening.wizard.stepOf', { step, total: TOTAL_STEPS })}
+            {step === TOTAL_STEPS ? ` · ${t('screening.wizard.optional')}` : ''}
             {screening.data.specialty ? ` · ${screening.data.specialty.name}` : ''}
           </p>
           <Button variant="ghost" size="sm" icon={<Save className="h-4 w-4" aria-hidden />} onClick={() => void saveAndExit()} disabled={busy}>
-            Save &amp; exit
+            {t('screening.wizard.saveAndExit')}
           </Button>
         </div>
         <ProgressBar value={(step / TOTAL_STEPS) * 100} className="mt-2" tone={step === 1 ? 'red' : 'green'} />
-        <h1 className="mt-6 text-2xl font-bold tracking-tight sm:text-3xl">{STEP_TITLES[step - 1]}</h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{STEP_SUBTITLES[step - 1]}</p>
+        <h1 className="mt-6 text-2xl font-bold tracking-tight sm:text-3xl">{t(STEP_TITLE_KEYS[step - 1] ?? STEP_TITLE_KEYS[0])}</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t(STEP_SUBTITLE_KEYS[step - 1] ?? STEP_SUBTITLE_KEYS[0])}</p>
       </div>
 
       {step <= 2 ? (
         <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-violet-500/30 dark:bg-violet-500/10">
           <p className="text-sm text-slate-700 dark:text-slate-200">
-            <span className="font-semibold">Prefer to talk?</span> Describe your problem by voice in your own language -
-            we fill in the answers and you check them before anything is saved.
+            <Trans t={t} i18nKey="screening.wizard.voicePrompt" components={{ 0: <span className="font-semibold" /> }} />
           </p>
           <VoiceIntakeButton
             screeningId={id}
@@ -234,7 +237,7 @@ export function WizardPage() {
             onDurationValue={(v) => patch({ duration_value: v })}
             onDurationUnit={(u) => patch({ duration_unit: u })}
             onSeverity={(s) => patch({ severity: s })}
-            onTreatments={(t) => patch({ previous_treatments: t })}
+            onTreatments={(treatments) => patch({ previous_treatments: treatments })}
             onReportIds={(ids) => patch({ report_document_ids: ids })}
           />
         ) : (
@@ -243,22 +246,27 @@ export function WizardPage() {
 
         {error ? (
           <Alert tone="red" className="mt-6">
-            {error}
+            {t(error)}
           </Alert>
         ) : null}
 
         <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
-          <Button variant="secondary" onClick={() => void goBack()} disabled={busy} icon={<ArrowLeft className="h-4 w-4" aria-hidden />}>
-            Previous
+          <Button
+            variant="secondary"
+            onClick={() => void goBack()}
+            disabled={busy}
+            icon={<ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />}
+          >
+            {t('screening.wizard.previous')}
           </Button>
           {step < TOTAL_STEPS ? (
             <Button onClick={() => void goNext()} loading={update.isPending} className="sm:min-w-40">
-              Next <ArrowRight className="h-4 w-4" aria-hidden />
+              {t('screening.wizard.next')} <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
             </Button>
           ) : (
             <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
               <Button variant="ghost" onClick={() => void finish(true)} disabled={busy}>
-                Skip &amp; use defaults
+                {t('screening.wizard.skipDefaults')}
               </Button>
               <Button
                 size="lg"
@@ -266,16 +274,13 @@ export function WizardPage() {
                 loading={busy}
                 icon={<Search className="h-4 w-4" aria-hidden />}
               >
-                Find my doctors
+                {t('screening.wizard.findDoctors')}
               </Button>
             </div>
           )}
         </div>
       </Card>
-      <p className="mt-4 text-center text-xs text-slate-500 dark:text-slate-400">
-        This questionnaire does not provide a diagnosis. If you have severe chest pain, difficulty breathing or signs of a
-        stroke, call your local emergency number now.
-      </p>
+      <p className="mt-4 text-center text-xs text-slate-500 dark:text-slate-400">{t('screening.wizard.disclaimer')}</p>
     </div>
   );
 }

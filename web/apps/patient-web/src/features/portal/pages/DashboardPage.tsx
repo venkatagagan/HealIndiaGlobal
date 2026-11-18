@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import type { ChecklistItemOut } from '@hig/shared/api';
 import { heroActionClass, PageHero } from '@hig/shared/layout';
+import { useAppTranslation } from '../../../i18n';
 import { useDashboard } from '../api/queries';
 import { GuestBanner } from '../components/GuestUpgrade';
 import { SpecialtyTile } from '../components/SpecialtyIcon';
@@ -27,7 +28,7 @@ import { EmergencyContactsDialog, PreArrivalGuideDialog } from '../components/Su
 import { StatusBadge } from '../components/common';
 import { paths } from '../lib/paths';
 import { useMe } from '../lib/session';
-import { cn, formatDate, formatRelative, formatTime, useDocumentTitle } from '../lib/shared';
+import { cn, formatDate, formatNumber, formatRelative, formatTime, useDocumentTitle } from '../lib/shared';
 import { ButtonLink, Card, CardBody, CardHeader, ErrorState, ProgressBar, Skeleton } from '../ui/primitives';
 
 export function ChecklistIcon({ status }: { status: ChecklistItemOut['status'] }) {
@@ -100,7 +101,8 @@ function HeroStat({ icon, label, value, to }: { icon: ReactNode; label: string; 
 }
 
 export function DashboardPage() {
-  useDocumentTitle('Dashboard');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('dashboard.title'));
   const me = useMe();
   const dashboard = useDashboard();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
@@ -115,29 +117,29 @@ export function DashboardPage() {
 
       <PageHero
         eyebrow={formatDate(new Date(), 'EEEE, d MMMM')}
-        title={firstName ? `Welcome back, ${firstName}` : 'Welcome'}
-        description="Your treatment journey at a glance."
+        title={firstName ? t('dashboard.welcomeBack', { name: firstName }) : t('dashboard.welcome')}
+        description={t('dashboard.description')}
         actions={
           <>
             <Link to={paths.newScreening()} className={heroActionClass('solid')}>
               <Stethoscope className="size-4" aria-hidden />
-              New AI screening
+              {t('dashboard.newScreening')}
             </Link>
             <Link to={paths.messages} className={heroActionClass('glass')}>
               <MessageSquare className="size-4" aria-hidden />
-              Message coordinator
+              {t('dashboard.messageCoordinator')}
             </Link>
           </>
         }
         aside={
           data ? (
             <div className="grid w-full grid-cols-3 gap-2 sm:w-auto sm:gap-3">
-              <HeroStat icon={<BriefcaseMedical className="size-5" aria-hidden />} label="Active cases" value={data.active_cases} to={paths.cases} />
-              <HeroStat icon={<Bell className="size-5" aria-hidden />} label="Unread alerts" value={data.unread_notifications} to={paths.notifications} />
+              <HeroStat icon={<BriefcaseMedical className="size-5" aria-hidden />} label={t('dashboard.stats.activeCases')} value={formatNumber(data.active_cases)} to={paths.cases} />
+              <HeroStat icon={<Bell className="size-5" aria-hidden />} label={t('dashboard.stats.unreadAlerts')} value={formatNumber(data.unread_notifications)} to={paths.notifications} />
               <HeroStat
                 icon={<CalendarClock className="size-5" aria-hidden />}
-                label="Days to treatment"
-                value={data.days_until_treatment !== null && data.days_until_treatment >= 0 ? data.days_until_treatment : '—'}
+                label={t('dashboard.stats.daysToTreatment')}
+                value={data.days_until_treatment !== null && data.days_until_treatment >= 0 ? formatNumber(data.days_until_treatment) : '—'}
                 to={data.next_booking ? paths.booking(data.next_booking.id) : paths.bookings}
               />
             </div>
@@ -180,6 +182,7 @@ function DashboardContent({
   onEmergency: () => void;
   onGuide: () => void;
 }) {
+  const { t } = useAppTranslation();
   const booking = data.next_booking;
   const checklist = [...data.checklist].sort((a, b) => a.sort_order - b.sort_order);
   const done = checklist.filter((c) => c.status === 'done').length;
@@ -197,41 +200,43 @@ function DashboardContent({
                 className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_0%,rgb(255_255_255/0.18),transparent_70%)]"
                 aria-hidden
               />
-              <p className="relative text-xs font-semibold uppercase tracking-wider text-white/85">Until treatment</p>
+              <p className="relative text-xs font-semibold uppercase tracking-wider text-white/85">{t('dashboard.countdown.untilTreatment')}</p>
               {days !== null && days >= 0 ? (
                 <p className="relative mt-1">
-                  <span className="text-6xl font-extrabold tabular-nums">{days}</span>
-                  <span className="ml-2 text-xl text-white/85">{days === 1 ? 'day' : 'days'}</span>
+                  <span className="text-6xl font-extrabold tabular-nums">{formatNumber(days)}</span>
+                  <span className="ms-2 text-xl text-white/85">{t('dashboard.countdown.dayUnit', { count: days })}</span>
                 </p>
               ) : (
-                <p className="relative mt-2 text-2xl font-bold">{booking.status === 'admitted' ? 'In treatment' : 'Date to be confirmed'}</p>
+                <p className="relative mt-2 text-2xl font-bold">
+                  {booking.status === 'admitted' ? t('dashboard.countdown.inTreatment') : t('dashboard.countdown.dateTbc')}
+                </p>
               )}
               <p className="relative mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25">
-                <CalendarClock className="size-3.5" aria-hidden /> Admission {formatDate(booking.admission_date)}
+                <CalendarClock className="size-3.5" aria-hidden /> {t('dashboard.countdown.admission', { date: formatDate(booking.admission_date) })}
               </p>
             </div>
             <div className="space-y-3 p-6">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Next booking</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted">{t('dashboard.nextBooking.title')}</p>
                 <StatusBadge status={booking.status} />
               </div>
-              <p className="text-lg font-semibold text-fg">{booking.procedure?.name ?? 'Treatment'}</p>
+              <p className="text-lg font-semibold text-fg">{booking.procedure?.name ?? t('dashboard.nextBooking.treatment')}</p>
               <p className="text-sm text-muted">
                 {booking.hospital.name}, {booking.hospital.city}
                 {booking.doctor ? ` · ${booking.doctor.full_name}` : ''}
               </p>
-              <p className="font-mono text-xs text-muted">Booking {booking.booking_number}</p>
+              <p className="font-mono text-xs text-muted">{t('dashboard.nextBooking.number', { number: booking.booking_number })}</p>
               <div className="flex flex-wrap gap-2 pt-2">
                 <ButtonLink to={paths.trip(booking.id)} variant="accent" size="sm">
-                  Open trip hub
+                  {t('dashboard.nextBooking.openTrip')}
                 </ButtonLink>
                 {booking.status === 'pending_payment' ? (
                   <ButtonLink to={paths.pay(booking.id)} size="sm">
-                    Complete payment
+                    {t('dashboard.nextBooking.completePayment')}
                   </ButtonLink>
                 ) : (
                   <ButtonLink to={paths.booking(booking.id)} variant="outline" size="sm">
-                    Booking details
+                    {t('dashboard.nextBooking.details')}
                   </ButtonLink>
                 )}
               </div>
@@ -243,13 +248,10 @@ function DashboardContent({
               <Sparkles className="size-7" aria-hidden />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-lg font-semibold text-fg">No upcoming treatment yet</p>
-              <p className="mt-1 text-sm text-muted">
-                Tell us about your condition - our AI screening matches you with accredited Indian hospitals and doctors in
-                minutes.
-              </p>
+              <p className="text-lg font-semibold text-fg">{t('dashboard.noBooking.title')}</p>
+              <p className="mt-1 text-sm text-muted">{t('dashboard.noBooking.description')}</p>
             </div>
-            <ButtonLink to={paths.newScreening()}>Start AI screening</ButtonLink>
+            <ButtonLink to={paths.newScreening()}>{t('dashboard.noBooking.start')}</ButtonLink>
           </div>
         )}
       </Card>
@@ -257,8 +259,12 @@ function DashboardContent({
       {/* Checklist */}
       <Card>
         <CardHeader
-          title="Your checklist"
-          description={checklist.length ? `${done} of ${checklist.length} completed` : 'Appears once a booking is confirmed'}
+          title={t('dashboard.checklist.title')}
+          description={
+            checklist.length
+              ? t('dashboard.checklist.progress', { done: formatNumber(done), total: formatNumber(checklist.length) })
+              : t('dashboard.checklist.pending')
+          }
           action={
             <span className="inline-flex size-9 items-center justify-center rounded-xl bg-accent-soft text-accent-ink">
               <ListChecks className="size-5" aria-hidden />
@@ -279,25 +285,49 @@ function DashboardContent({
               </ul>
             </>
           ) : (
-            <p className="text-sm text-muted">Visa, flights, insurance, airport pickup and accommodation tasks will be tracked here.</p>
+            <p className="text-sm text-muted">{t('dashboard.checklist.empty')}</p>
           )}
         </CardBody>
       </Card>
 
       {/* Quick actions */}
       <div className="lg:col-span-3">
-        <h2 className="mb-3 text-lg font-semibold text-fg">Quick actions</h2>
+        <h2 className="mb-3 text-lg font-semibold text-fg">{t('dashboard.quick.title')}</h2>
         <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
-          <QuickAction tone="blue" icon={<FileUp className="size-5" aria-hidden />} label="Upload documents" hint="Reports, scans, passport" to={paths.documents} />
-          <QuickAction tone="violet" icon={<MessageSquare className="size-5" aria-hidden />} label="Chat with coordinator" hint="Usually replies within hours" to={paths.messages} />
-          <QuickAction tone="rose" icon={<PhoneCall className="size-5" aria-hidden />} label="Emergency contacts" hint="24/7 help in India" onClick={onEmergency} />
-          <QuickAction tone="amber" icon={<BookOpen className="size-5" aria-hidden />} label="Pre-arrival guide" hint="Visa, travel and stay tips" onClick={onGuide} />
+          <QuickAction
+            tone="blue"
+            icon={<FileUp className="size-5" aria-hidden />}
+            label={t('dashboard.quick.upload')}
+            hint={t('dashboard.quick.uploadHint')}
+            to={paths.documents}
+          />
+          <QuickAction
+            tone="violet"
+            icon={<MessageSquare className="size-5" aria-hidden />}
+            label={t('dashboard.quick.chat')}
+            hint={t('dashboard.quick.chatHint')}
+            to={paths.messages}
+          />
+          <QuickAction
+            tone="rose"
+            icon={<PhoneCall className="size-5" aria-hidden />}
+            label={t('dashboard.quick.emergency')}
+            hint={t('dashboard.quick.emergencyHint')}
+            onClick={onEmergency}
+          />
+          <QuickAction
+            tone="amber"
+            icon={<BookOpen className="size-5" aria-hidden />}
+            label={t('dashboard.quick.guide')}
+            hint={t('dashboard.quick.guideHint')}
+            onClick={onGuide}
+          />
         </div>
       </div>
 
       {/* Today */}
       <Card className="lg:col-span-2">
-        <CardHeader title="Today's schedule" description={formatDate(new Date(), 'EEEE, d MMMM')} />
+        <CardHeader title={t('dashboard.today.title')} description={formatDate(new Date(), 'EEEE, d MMMM')} />
         <CardBody>
           {data.today_schedule.length ? (
             <ol className="space-y-3">
@@ -321,7 +351,7 @@ function DashboardContent({
           ) : (
             <div className="flex items-center gap-3 rounded-xl border border-dashed border-border-strong p-4 text-sm text-muted">
               <CalendarClock className="size-5 shrink-0" aria-hidden />
-              Nothing scheduled for today.
+              {t('dashboard.today.empty')}
             </div>
           )}
         </CardBody>
@@ -329,7 +359,7 @@ function DashboardContent({
 
       {/* Summary */}
       <Card>
-        <CardHeader title="Your journey" />
+        <CardHeader title={t('dashboard.journey.title')} />
         <CardBody className="space-y-3">
           <Link
             to={paths.cases}
@@ -339,9 +369,9 @@ function DashboardContent({
               <span className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-soft text-primary-ink">
                 <BriefcaseMedical className="size-5" aria-hidden />
               </span>
-              Active cases
+              {t('dashboard.journey.activeCases')}
             </span>
-            <span className="text-xl font-bold tabular-nums text-fg">{data.active_cases}</span>
+            <span className="text-xl font-bold tabular-nums text-fg">{formatNumber(data.active_cases)}</span>
           </Link>
           <Link
             to={paths.notifications}
@@ -351,9 +381,9 @@ function DashboardContent({
               <span className="inline-flex size-9 items-center justify-center rounded-lg bg-info-soft text-info-ink">
                 <Bell className="size-5" aria-hidden />
               </span>
-              Unread notifications
+              {t('dashboard.journey.unreadNotifications')}
             </span>
-            <span className="text-xl font-bold tabular-nums text-fg">{data.unread_notifications}</span>
+            <span className="text-xl font-bold tabular-nums text-fg">{formatNumber(data.unread_notifications)}</span>
           </Link>
           {data.coordinator ? (
             <div className="flex items-center gap-3 rounded-xl bg-linear-to-r from-accent-soft to-transparent p-3 text-sm">
@@ -361,7 +391,7 @@ function DashboardContent({
                 <UserRound className="size-5" aria-hidden />
               </span>
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">Your coordinator</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">{t('dashboard.journey.coordinator')}</p>
                 <p className="truncate font-semibold text-fg">{data.coordinator.full_name}</p>
                 {data.coordinator.phone ? <p className="text-muted">{data.coordinator.phone}</p> : null}
               </div>
@@ -373,10 +403,10 @@ function DashboardContent({
       {/* Recent screenings */}
       <Card className="lg:col-span-3">
         <CardHeader
-          title="Recent screenings"
+          title={t('dashboard.screenings.title')}
           action={
             <Link to={paths.screenings} className="inline-flex items-center gap-1 text-sm font-semibold text-primary-ink hover:underline">
-              View all <ArrowRight className="size-4" aria-hidden />
+              {t('dashboard.screenings.viewAll')} <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
             </Link>
           }
         />
@@ -398,8 +428,10 @@ function DashboardContent({
                     <div className="flex min-w-0 items-center gap-3">
                       <SpecialtyTile slug={s.specialty?.slug ?? null} size="sm" />
                       <div className="min-w-0">
-                        <p className="font-medium text-fg">{s.specialty?.name ?? 'General screening'}</p>
-                        <p className="truncate text-sm text-muted">{s.summary ?? `Started ${formatRelative(s.created_at)}`}</p>
+                        <p className="font-medium text-fg">{s.specialty?.name ?? t('dashboard.screenings.general')}</p>
+                        <p className="truncate text-sm text-muted">
+                          {s.summary ?? t('dashboard.screenings.started', { when: formatRelative(s.created_at) })}
+                        </p>
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -411,7 +443,7 @@ function DashboardContent({
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-muted">You have not completed a screening yet.</p>
+            <p className="text-sm text-muted">{t('dashboard.screenings.empty')}</p>
           )}
         </CardBody>
       </Card>

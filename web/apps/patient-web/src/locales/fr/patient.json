@@ -1,0 +1,1642 @@
+{
+  "book": {
+    "acceptedQuote": "Votre devis accepté",
+    "admissionDate": "Date d'admission",
+    "admissionDateHint": "Les dates en vert ont des places d'admission disponibles.",
+    "admissionOn": "Admission le <0>{{date}}</0>",
+    "backToCase": "Retour au dossier",
+    "created": "Réservation {{number}} créée",
+    "errors": {
+      "chooseDate": "Choisissez votre date d'admission.",
+      "chooseSource": "Choisissez un forfait ou votre devis accepté.",
+      "createFailed": "La réservation n'a pas pu être créée."
+    },
+    "formTitle": "Choisir les dates et le forfait",
+    "guestAction": "réserver votre traitement",
+    "includes": {
+      "airportPickup": "accueil à l'aéroport",
+      "localTransport": "transport local",
+      "meals": "repas",
+      "nights_one": "{{count}} nuit d'hébergement",
+      "nights_other": "{{count}} nuits d'hébergement",
+      "teleconsults_one": "{{count}} téléconsultation de suivi",
+      "teleconsults_other": "{{count}} téléconsultations de suivi",
+      "text": "Comprend : {{list}}",
+      "translator": "interprète"
+    },
+    "insuranceHint": "Nous préparerons les documents dont votre assureur a besoin. Le paiement reste dû selon l'échéancier prévu.",
+    "insuranceLabel": "Je souhaite demander une prise en charge par mon assurance",
+    "itemizedQuote": "Devis détaillé de l'hôpital",
+    "monthsLabel": "Nombre de mensualités",
+    "noDate": "Aucune date choisie pour le moment.",
+    "noPackages": "Cet hôpital ne propose pas de forfait standard pour ce traitement. Veuillez attendre le devis de l'hôpital, puis l'accepter pour réserver.",
+    "options": {
+      "depositText": "Réservez votre date avec un acompte ; payez le solde avant l'admission.",
+      "depositTitle": "Payer un acompte maintenant",
+      "fullText": "Un seul paiement maintenant.",
+      "fullTitle": "Payer la totalité",
+      "planText": "Acompte maintenant, puis mensualités.",
+      "planTitle": "Paiement échelonné"
+    },
+    "paymentOption": "Mode de paiement",
+    "plan": "Plan",
+    "planValue_one": "Acompte + {{count}} mensualité",
+    "planValue_other": "Acompte + {{count}} mensualités",
+    "preferredDate": "Date d'admission souhaitée",
+    "preferredDateHint": "L'hôpital n'a pas publié de disponibilités pour ce mois. Choisissez une date souhaitée - il vous la confirmera.",
+    "proceed": "Passer au paiement",
+    "quoteWaitingText": "Acceptez le devis de l'hôpital sur la page du dossier pour réserver au prix indiqué, ou choisissez un forfait standard ci-dessous.",
+    "quoteWaitingTitle": "Un devis vous attend",
+    "reviewQuote": "Voir le devis",
+    "save": "Économisez <0/>",
+    "selectPackage": "Choisir un forfait",
+    "stayDuration_one": "Durée du traitement : environ {{count}} jour à l'hôpital",
+    "stayDuration_other": "Durée du traitement : environ {{count}} jours à l'hôpital",
+    "taxesNote": "Les taxes, les frais de service et le montant exact de l'acompte sont calculés à l'étape suivante, avant le paiement. Vous pouvez payer dans votre propre devise.",
+    "title": "Réserver un traitement"
+  },
+  "bookings": {
+    "cancel": {
+      "button": "Annuler la réservation",
+      "estimate": "Remboursement estimé : <0>{{amount}}</0> ({{pct}} % du montant payé)",
+      "estimateWithDays_one": "{{count}} jour avant l'admission. Remboursement estimé : <0>{{amount}}</0> ({{pct}} % du montant payé)",
+      "estimateWithDays_other": "{{count}} jours avant l'admission. Remboursement estimé : <0>{{amount}}</0> ({{pct}} % du montant payé)",
+      "finalAmountNote": "Le montant final est confirmé par notre équipe selon les conditions en vigueur.",
+      "keep": "Conserver la réservation",
+      "reason": "Motif de l'annulation",
+      "success": "Réservation annulée. Tout remboursement est effectué sur votre moyen de paiement d'origine.",
+      "title": "Annuler cette réservation ?"
+    },
+    "detail": {
+      "acceptedQuote": "Devis accepté",
+      "admission": "Admission",
+      "allPayments": "Tous les paiements",
+      "booked": "Réservée le",
+      "cancelledOn": "Annulée le {{date}}",
+      "cancelledText": "Cette réservation a été annulée.",
+      "days_one": "{{count}} jour",
+      "days_other": "{{count}} jours",
+      "discharge": "Sortie",
+      "doctor": "Médecin",
+      "documentTitle": "Réservation {{number}}",
+      "documentTitleFallback": "Réservation",
+      "duration": "Durée",
+      "hospital": "Hôpital",
+      "installments": {
+        "amount": "Montant",
+        "due": "Date d'échéance",
+        "emptyDescription": "L'échéancier est créé dès que votre réservation est confirmée.",
+        "emptyTitle": "Aucun échéancier pour le moment",
+        "instalment": "Échéance",
+        "instalmentNumber": "Échéance {{seq}}",
+        "paidOn": "Payée le",
+        "pay": "Payer",
+        "status": "Statut",
+        "title": "Plan de paiement échelonné"
+      },
+      "insuranceClaim": "Demande de prise en charge par l'assurance",
+      "months_one": "{{count}} mois",
+      "months_other": "{{count}} mois",
+      "no": "Non",
+      "package": "Forfait",
+      "payDeposit": "Payer l'acompte",
+      "payNow": "Payer maintenant",
+      "paymentNeededText": "Votre date d'admission est réservée dès le paiement de l'acompte.",
+      "paymentNeededTitle": "Paiement requis pour confirmer",
+      "paymentOption": "Mode de paiement",
+      "paymentsDescription": "Tous les paiements pour cette réservation. Téléchargez un reçu au format PDF.",
+      "refundedSoFar": "Montant remboursé à ce jour : <0/>.",
+      "requested": "Demandée",
+      "treatmentCard": "Traitement",
+      "tripHub": "Espace voyage",
+      "viewCase": "Voir le dossier"
+    },
+    "list": {
+      "all": "Toutes",
+      "amountLeftToPay": "<0/> restant à payer",
+      "cancelled": "Annulée",
+      "columns": {
+        "admission": "Admission",
+        "bookedOn": "Réservée le",
+        "hospital": "Hôpital",
+        "leftToPay": "Reste à payer",
+        "payment": "Paiement",
+        "status": "Statut",
+        "treatment": "Traitement"
+      },
+      "description": "Vos traitements confirmés, vos dates d'admission et le montant restant à payer.",
+      "discharge": "Sortie le {{date}}",
+      "emptyDescription": "Dès que vous acceptez un devis et choisissez vos dates, votre réservation apparaît ici.",
+      "emptyTitle": "Aucune réservation pour le moment",
+      "goToCases": "Voir mes dossiers",
+      "inDays_one": "Dans {{count}} jour",
+      "inDays_other": "Dans {{count}} jours",
+      "leftToPayCount": "Reste à payer ({{n}})",
+      "openBooking": "Ouvrir la réservation {{number}}",
+      "paidInFull": "Payée intégralement",
+      "paymentsLink": "Paiements et reçus",
+      "searchPlaceholder": "Traitement ou n° de réservation…",
+      "statusTabs": "Statut de la réservation",
+      "title": "Réservations",
+      "today": "Aujourd'hui"
+    },
+    "refund": {
+      "anyTime": "À tout moment avant l'admission",
+      "daysOrMore_one": "{{count}} jour ou plus avant l'admission",
+      "daysOrMore_other": "{{count}} jours ou plus avant l'admission",
+      "fullRefundNote": "Si l'hôpital ou Heal India Global annule, vous êtes remboursé à 100 %.",
+      "lessThanDays_one": "Moins de {{count}} jour avant l'admission",
+      "lessThanDays_other": "Moins de {{count}} jours avant l'admission",
+      "policyTitle": "Conditions d'annulation",
+      "snapshotNote": "Ces conditions ont été fixées lors de la confirmation de votre réservation.",
+      "standardNote": "Conditions standard - elles sont fixées pour votre réservation au moment de sa confirmation.",
+      "tierLine": "{{tier}} : remboursement de {{pct}} %"
+    },
+    "summary": {
+      "balanceDue": "Solde à payer",
+      "deposit": "Acompte",
+      "discount": "Remise",
+      "paid": "Payé",
+      "refunded": "Remboursé",
+      "serviceFee": "Frais de service",
+      "subtotal": "Sous-total",
+      "taxes": "Taxes",
+      "title": "Récapitulatif du prix",
+      "total": "Total"
+    },
+    "treatment": "Traitement"
+  },
+  "calendar": {
+    "admissionDates": "Dates d'admission",
+    "available": "Disponible",
+    "dayAvailable_one": "{{day}}, {{count}} place disponible",
+    "dayAvailable_other": "{{day}}, {{count}} places disponibles",
+    "dayNotAvailable": "{{day}}, non disponible",
+    "nextMonth": "Mois suivant",
+    "previousMonth": "Mois précédent",
+    "selected": "Sélectionné"
+  },
+  "careGates": {
+    "guest": {
+      "createAccount": "Créer un compte",
+      "description": "En tant qu'invité, vous pouvez explorer et faire une évaluation. Pour demander des devis, réserver et payer, les hôpitaux ont besoin d'un compte vérifié. Tout ce que vous avez fait en tant qu'invité est conservé.",
+      "title": "Créez votre compte gratuit pour {{action}}"
+    }
+  },
+  "cases": {
+    "detail": {
+      "acceptBody": "Vous acceptez un devis de <0>{{amount}}</0>. Vous choisirez ensuite votre date d'admission et votre mode de paiement. Rien n'est encore débité.",
+      "acceptQuote": "Accepter le devis",
+      "acceptTitle": "Accepter ce devis ?",
+      "acceptedToast": "Devis accepté. Choisissez votre date d'admission pour réserver.",
+      "admission": "Admission le {{date}}",
+      "agent": "Agent",
+      "allPayments": "Tous les paiements",
+      "back": "Retour",
+      "balance": "Solde",
+      "bookTreatment": "Réserver le traitement",
+      "bookingDetails": "Détails de la réservation",
+      "bookingTitle": "Réservation {{number}}",
+      "cancelBody": "L'hôpital sera informé que vous n'avez plus besoin de ce devis.",
+      "cancelCase": "Annuler ce dossier",
+      "cancelConfirm": "Annuler le dossier",
+      "cancelReason": "Motif (facultatif)",
+      "cancelTitle": "Annuler ce dossier ?",
+      "cancelledToast": "Dossier annulé",
+      "conversationFailed": "Impossible d'ouvrir la conversation.",
+      "coordinator": "Coordinateur",
+      "declineQuote": "Refuser le devis",
+      "declineReason": "Motif (facultatif, communiqué à l'hôpital)",
+      "declineTitle": "Refuser ce devis",
+      "declinedBody": "Consultez vos messages pour plus de détails, ou demandez un devis à un autre hôpital proposé.",
+      "declinedTitle": "L'hôpital n'a pas pu accepter ce dossier",
+      "declinedToast": "Devis refusé",
+      "details": "Détails",
+      "docTitle": "Dossier {{number}}",
+      "docTitleFallback": "Dossier",
+      "doctor": "Médecin",
+      "documentsCaption": "Documents du dossier",
+      "documentsDescription": "Partagés avec l'hôpital qui traite ce dossier.",
+      "documentsEmptyDescription": "Téléversez vos comptes rendus récents pour que l'hôpital puisse préparer un devis précis.",
+      "documentsEmptyTitle": "Aucun document partagé dans ce dossier pour le moment",
+      "documentsTitle": "Documents",
+      "earlierQuotes": "Devis précédents",
+      "hospital": "Hôpital",
+      "itineraryDescription": "Rendez-vous, admission et transferts pour ce traitement.",
+      "itineraryTitle": "Itinéraire",
+      "medicalSummary": "Résumé médical",
+      "messages": "Messages",
+      "messagesUnread": "Messages ({{n}})",
+      "noQuotes": "Aucun devis pour le moment.",
+      "openTripHub": "Ouvrir l'espace voyage",
+      "paid": "Payé",
+      "payNow": "Payer maintenant",
+      "payment": "Paiement",
+      "paymentOption": {
+        "deposit": "acompte",
+        "full": "intégral",
+        "installments": "échelonné"
+      },
+      "paymentsDescription": "Acomptes et paiements du solde pour cette réservation, avec les reçus.",
+      "paymentsTitle": "Paiements",
+      "quoteDetails": "Détails du devis",
+      "quotesDescription": "Devis de traitement détaillés envoyés par l'hôpital.",
+      "quotesTitle": "Devis",
+      "readReportAi": "Lire un compte rendu avec l'IA",
+      "screening": "Évaluation",
+      "timeline": "Historique",
+      "total": "Total",
+      "tripHub": "Espace voyage",
+      "upload": "Téléverser",
+      "viewQuoteSent": "Voir le devis envoyé le {{date}}",
+      "viewScreening": "Voir l'évaluation",
+      "waitingBody": "{{hospital}} examine votre dossier. Vous serez averti dès qu'un devis détaillé sera prêt, généralement sous 48 heures.",
+      "waitingTitle": "En attente du devis de l'hôpital",
+      "yourNote": "Votre note"
+    },
+    "list": {
+      "all": "Tous",
+      "columns": {
+        "caseNumber": "Numéro de dossier",
+        "hospital": "Hôpital",
+        "lastUpdate": "Dernière mise à jour",
+        "latestQuote": "Dernier devis",
+        "opened": "Ouvert le",
+        "status": "Statut",
+        "treatment": "Traitement"
+      },
+      "description": "Chaque demande de devis à un hôpital est un dossier. Suivez ici les devis, réservations et messages.",
+      "emptyDescription": "Effectuez une évaluation par IA et demandez un devis à un hôpital proposé pour ouvrir un dossier.",
+      "emptyTitle": "Aucun dossier pour le moment",
+      "filters": {
+        "date": "Date",
+        "hospital": "Hôpital",
+        "status": "Statut"
+      },
+      "findHospital": "Trouver un hôpital",
+      "notYet": "Pas encore",
+      "openCase": "Ouvrir le dossier {{number}}",
+      "openedOn": "Ouvert le {{date}}",
+      "searchPlaceholder": "Rechercher par numéro de dossier…",
+      "startScreening": "Commencer l'évaluation par IA",
+      "statusTabs": "Statut du dossier",
+      "title": "Mes dossiers",
+      "treatmentEnquiry": "Demande de traitement"
+    },
+    "new": {
+      "chooseFirstDescription": "Parcourez les hôpitaux et les médecins, ou laissez notre évaluation par IA trouver l'option la plus adaptée pour vous.",
+      "chooseFirstTitle": "Choisissez d'abord un hôpital ou un médecin",
+      "consentDescription": "Nécessaire pour que les médecins de l'hôpital puissent étudier votre dossier.",
+      "consentLabel": "J'accepte de partager mon profil, mes réponses à l'évaluation et mes comptes rendus médicaux avec cet hôpital",
+      "consentRequired": "Vous devez donner votre accord avant que nous puissions envoyer votre dossier à l'hôpital",
+      "fullAccountRequired": "Veuillez créer un compte complet avant de demander des devis.",
+      "generalScreening": "Évaluation générale",
+      "guestAction": "demander un devis",
+      "intro": "L'hôpital examine vos informations et vous envoie un devis détaillé, généralement sous 48 heures. Gratuit et sans engagement.",
+      "noScreening": "Aucune évaluation",
+      "notesHint": "Diagnostic actuel, dates souhaitées, questions pour le médecin.",
+      "notesLabel": "Décrivez votre état de santé et vos besoins",
+      "requested": "Devis demandé. Dossier {{number}} créé.",
+      "screeningFirst": "Faire d'abord l'évaluation par IA",
+      "screeningHint": "Donne d'emblée aux médecins vos symptômes, vos antécédents et vos comptes rendus.",
+      "screeningLabel": "Joindre une évaluation (recommandé)",
+      "send": "Envoyer la demande",
+      "sendFailed": "Votre demande n'a pas pu être envoyée.",
+      "startScreening": "Commencer l'évaluation par IA",
+      "title": "Demander un devis"
+    },
+    "quote": {
+      "amount": "Montant",
+      "byName": "par {{name}}",
+      "columns": {
+        "hospitalStay": "Séjour à l'hôpital",
+        "sent": "Envoyé le",
+        "status": "Statut",
+        "validUntil": "Valable jusqu'au"
+      },
+      "decline": "Refuser",
+      "expired": "Ce devis a expiré. Envoyez un message à l'hôpital pour une mise à jour.",
+      "included": "Ce qui est inclus",
+      "lineItems": "Lignes du devis",
+      "reason": "Motif : {{reason}}",
+      "sent": "Envoyé le {{date}}",
+      "sentBy": "Envoyé le {{date}} par {{name}}",
+      "share": "Part du total",
+      "stayDaysShort_one": "~{{n}} jour",
+      "stayDaysShort_other": "~{{n}} jours",
+      "stayDays_one": "~{{n}} jour d'hospitalisation",
+      "stayDays_other": "~{{n}} jours d'hospitalisation",
+      "total": "Total",
+      "validUntil": "valable jusqu'au {{date}}"
+    }
+  },
+  "costComparison": {
+    "cost": "Coût",
+    "description": "{{country}} vs Inde, en {{currency}}",
+    "disclaimer": "Fourchettes indicatives basées sur des références publiées ; votre prix final provient du devis de l'hôpital.",
+    "itemized": "Détail des coûts (Inde)",
+    "noCountry": "Ajoutez votre pays de résidence dans votre profil pour voir combien vous pourriez économiser.",
+    "noProcedure": "Aucune intervention n'a encore été suggérée, la comparaison n'est donc pas disponible.",
+    "procedure": "Intervention",
+    "savings": "Économies",
+    "savingsValue": "{{range}} ({{min}}-{{max}} %)",
+    "setCountry": "Indiquez votre pays de résidence pour comparer les coûts",
+    "title": "Comparaison du coût du traitement",
+    "treatmentIn": "Traitement : {{country}}",
+    "treatmentInIndia": "Traitement en Inde",
+    "unavailable": "Comparaison indisponible",
+    "varies": "Variable",
+    "waitTime": "Délai d'attente"
+  },
+  "dashboard": {
+    "checklist": {
+      "empty": "Les démarches de visa, vols, assurance, accueil à l'aéroport et hébergement seront suivies ici.",
+      "pending": "Apparaît une fois la réservation confirmée",
+      "progress": "{{done}} sur {{total}} terminées",
+      "title": "Votre liste de tâches"
+    },
+    "countdown": {
+      "admission": "Admission le {{date}}",
+      "dateTbc": "Date à confirmer",
+      "dayUnit_one": "jour",
+      "dayUnit_other": "jours",
+      "inTreatment": "En traitement",
+      "untilTreatment": "Avant le traitement"
+    },
+    "description": "Votre parcours de soins en un coup d'œil.",
+    "journey": {
+      "activeCases": "Dossiers en cours",
+      "coordinator": "Votre coordinateur",
+      "title": "Votre parcours",
+      "unreadNotifications": "Notifications non lues"
+    },
+    "messageCoordinator": "Écrire au coordinateur",
+    "newScreening": "Nouvelle évaluation IA",
+    "nextBooking": {
+      "completePayment": "Finaliser le paiement",
+      "details": "Détails de la réservation",
+      "number": "Réservation {{number}}",
+      "openTrip": "Ouvrir l'espace voyage",
+      "title": "Prochaine réservation",
+      "treatment": "Traitement"
+    },
+    "noBooking": {
+      "description": "Décrivez-nous votre état de santé : notre évaluation par IA vous oriente en quelques minutes vers des hôpitaux et des médecins agréés en Inde.",
+      "start": "Commencer l'évaluation IA",
+      "title": "Aucun traitement prévu pour le moment"
+    },
+    "quick": {
+      "chat": "Discuter avec le coordinateur",
+      "chatHint": "Répond généralement en quelques heures",
+      "emergency": "Contacts d'urgence",
+      "emergencyHint": "Aide 24h/24 et 7j/7 en Inde",
+      "guide": "Guide avant l'arrivée",
+      "guideHint": "Conseils visa, voyage et séjour",
+      "title": "Actions rapides",
+      "upload": "Envoyer des documents",
+      "uploadHint": "Comptes rendus, imagerie, passeport"
+    },
+    "screenings": {
+      "empty": "Vous n'avez encore terminé aucune évaluation.",
+      "general": "Évaluation générale",
+      "started": "Commencée {{when}}",
+      "title": "Évaluations récentes",
+      "viewAll": "Tout voir"
+    },
+    "stats": {
+      "activeCases": "Dossiers en cours",
+      "daysToTreatment": "Jours avant le traitement",
+      "unreadAlerts": "Alertes non lues"
+    },
+    "title": "Tableau de bord",
+    "today": {
+      "empty": "Rien de prévu aujourd'hui.",
+      "title": "Programme du jour"
+    },
+    "welcome": "Bienvenue",
+    "welcomeBack": "Bon retour, {{name}}"
+  },
+  "documents": {
+    "ai": {
+      "description": "Notre IA extrait les principaux résultats ; vous les vérifiez et les confirmez. Seules les informations confirmées sont transmises aux hôpitaux.",
+      "hide": "Masquer",
+      "notShared": "Rien n'est partagé avant votre confirmation",
+      "start": "Commencer",
+      "title": "Lire un compte rendu médical avec l'IA"
+    },
+    "aiReading": {
+      "confirmed": "Confirmé",
+      "failed": "Lecture impossible",
+      "notRead": "Pas encore lu",
+      "reading": "Lecture en cours…",
+      "review": "Prêt pour votre vérification"
+    },
+    "description": "Passeport, visa, comptes rendus médicaux et reçus réunis dans un espace sécurisé. Seuls vous, votre équipe de soins et les hôpitaux qui traitent vos dossiers peuvent les ouvrir.",
+    "files": {
+      "emptyDescription": "Envoyez votre passeport et vos comptes rendus médicaux récents : les hôpitaux en ont besoin pour établir un devis précis.",
+      "emptyTitle": "Aucun document pour le moment",
+      "title": "Vos fichiers"
+    },
+    "filters": {
+      "aiReading": "Lecture par l'IA",
+      "checked": "Vérifié par l'équipe",
+      "search": "Nom de fichier, type ou dossier…",
+      "type": "Type",
+      "uploaded": "Envoyé le"
+    },
+    "groups": {
+      "all": "Tous",
+      "label": "Catégorie de documents",
+      "medical": "Médical",
+      "other": "Autres",
+      "payments": "Paiements",
+      "travel": "Passeport et visa"
+    },
+    "table": {
+      "actions": "Actions",
+      "aiReading": "Lecture par l'IA",
+      "case": "Dossier",
+      "checked": "Vérifié par l'équipe",
+      "delete": "Supprimer",
+      "deleteBody": "« {{name}} » sera supprimé. Les hôpitaux liés à vos dossiers ne pourront plus le voir.",
+      "deleteFile": "Supprimer {{name}}",
+      "deleteTitle": "Supprimer le document ?",
+      "deleted": "Document supprimé",
+      "download": "Télécharger",
+      "downloadFailed": "Le téléchargement a échoué.",
+      "downloadFile": "Télécharger {{name}}",
+      "file": "Fichier",
+      "notNeeded": "Non nécessaire",
+      "personalFile": "Fichier personnel",
+      "type": "Type",
+      "uploaded": "Envoyé le",
+      "uploadedBy": "par {{name}}",
+      "viewCase": "Voir le dossier"
+    },
+    "title": "Documents",
+    "upload": {
+      "button": "Envoyer des fichiers",
+      "hint": "PDF, JPG, PNG, WEBP, HEIC ou DICOM · jusqu'à 20 MB par fichier.",
+      "title": "Envoyer des documents",
+      "type": "Type de document"
+    }
+  },
+  "itinerary": {
+    "caption": "Programme",
+    "emptyDescription": "Votre coordinateur et l'hôpital ajouteront ici les rendez-vous, l'admission et les transferts.",
+    "emptyTitle": "Pas encore de programme",
+    "status": "Statut",
+    "until": "jusqu'à {{time}}",
+    "what": "Quoi",
+    "when": "Quand",
+    "where": "Où"
+  },
+  "languages": {
+    "amharic": "Amharique",
+    "arabic": "Arabe",
+    "bengali": "Bengali",
+    "dari": "Dari",
+    "english": "Anglais",
+    "french": "Français",
+    "hindi": "Hindi",
+    "pashto": "Pachto",
+    "portuguese": "Portugais",
+    "russian": "Russe",
+    "spanish": "Espagnol",
+    "swahili": "Swahili",
+    "uzbek": "Ouzbek"
+  },
+  "listing": {
+    "noMatches": {
+      "description": "Essayez une autre recherche ou retirez un filtre.",
+      "reset": "Réinitialiser les filtres",
+      "title": "Aucun résultat correspondant"
+    },
+    "sort": "Trier",
+    "sortLabel": "{{label}} :",
+    "sortValue": "{{label}} : {{value}}",
+    "status": {
+      "booking": {
+        "admitted": "Hospitalisé",
+        "cancelled": "Annulée",
+        "completed": "Terminée",
+        "confirmed": "Confirmée",
+        "pending_payment": "En attente de paiement"
+      },
+      "case": {
+        "accepted": "Devis accepté",
+        "booked": "Réservé",
+        "cancelled": "Annulé",
+        "completed": "Terminé",
+        "declined": "Refusé par l'hôpital",
+        "enquiry": "En attente de devis",
+        "in_treatment": "En traitement",
+        "quoted": "Devis reçu"
+      },
+      "document": {
+        "rejected": "Nouvelle copie requise",
+        "uploaded": "Téléversé",
+        "verified": "Vérifié"
+      },
+      "order": {
+        "cancelled": "Annulé",
+        "created": "Non finalisé",
+        "expired": "Expiré",
+        "failed": "Échoué",
+        "paid": "Payé",
+        "partially_refunded": "Partiellement remboursé",
+        "pending": "En cours de traitement",
+        "refunded": "Remboursé"
+      },
+      "quote": {
+        "accepted": "Accepté",
+        "expired": "Expiré",
+        "rejected": "Refusé",
+        "sent": "En attente de votre décision",
+        "withdrawn": "Retiré"
+      },
+      "screening": {
+        "completed": "Résultats prêts",
+        "draft": "Non terminé",
+        "failed": "Échoué",
+        "processing": "Analyse en cours"
+      }
+    }
+  },
+  "notifications": {
+    "category": {
+      "booking": "Réservation",
+      "case": "Dossier",
+      "document": "Document",
+      "message": "Message",
+      "payment": "Paiement",
+      "quote": "Devis",
+      "screening": "Évaluation",
+      "trip": "Voyage",
+      "update": "Mise à jour"
+    },
+    "caughtUp": {
+      "description": "Aucune notification non lue.",
+      "title": "Vous êtes à jour"
+    },
+    "columns": {
+      "about": "Sujet",
+      "notification": "Notification",
+      "received": "Reçue"
+    },
+    "description": "Les nouvelles de vos dossiers, réservations, paiements et messages.",
+    "empty": {
+      "description": "Nous vous préviendrons ici lorsqu'un hôpital enverra un devis, qu'un paiement sera reçu ou que votre voyage sera mis à jour.",
+      "title": "Aucune notification pour le moment"
+    },
+    "markAll": "Tout marquer comme lu",
+    "markedAll": "Toutes les notifications ont été marquées comme lues",
+    "openRow": "Ouvrir la notification : {{title}}",
+    "tabs": {
+      "all": "Toutes",
+      "label": "Afficher",
+      "unread": "Non lues"
+    },
+    "title": "Notifications",
+    "unreadSr": "(non lue)"
+  },
+  "pay": {
+    "backToBooking": "Réservation {{number}}",
+    "bank": {
+      "accountNumber": "Numéro de compte",
+      "amount": "Montant à virer",
+      "bank": "Banque",
+      "beneficiary": "Bénéficiaire",
+      "description": "Virez le montant exact et indiquez la référence de paiement pour que nous puissions identifier votre paiement.",
+      "errors": {
+        "noFile": "Joignez votre justificatif de virement (PDF ou image).",
+        "noReference": "Saisissez la référence du virement fournie par votre banque (référence UTR / SWIFT).",
+        "submitFailed": "Le justificatif n'a pas pu être envoyé.",
+        "tooLarge": "Le fichier dépasse {{size}}."
+      },
+      "feesNote": "Votre banque peut facturer des frais de virement ; veuillez choisir l'option de frais « OUR » pour que l'hôpital reçoive le montant total.",
+      "iban": "IBAN",
+      "ifsc": "IFSC",
+      "receipt": "Justificatif de virement",
+      "receiptHint": "PDF ou image",
+      "reference": "Référence de paiement",
+      "referencePlaceholder": "ex. UTR ou réf. SWIFT",
+      "submit": "Envoyer le justificatif de paiement",
+      "submitted": "Merci - nous confirmerons votre paiement dès réception des fonds (généralement sous 1 à 3 jours ouvrés).",
+      "swift": "SWIFT / BIC",
+      "title": "Coordonnées pour le virement",
+      "yourReference": "Référence de votre virement"
+    },
+    "copy": {
+      "copied": "{{label}} copié",
+      "failed": "Échec de la copie",
+      "label": "Copier {{label}}"
+    },
+    "createTestOrder": "Créer une commande de test",
+    "description": "{{treatment}} à {{hospital}} · admission le {{date}}",
+    "due": {
+      "balance": "Solde restant",
+      "deposit": "Acompte pour confirmer votre réservation",
+      "full": "Paiement intégral",
+      "fullNow": "Payer la totalité maintenant",
+      "instalment": "Échéance {{seq}} (à payer le {{date}})"
+    },
+    "dueNow": "À payer maintenant",
+    "errors": {
+      "cardUnavailable": "Le paiement par carte n'est pas disponible pour le moment. Veuillez choisir un autre moyen de paiement.",
+      "fxUnavailable": "Les paiements dans votre devise sont temporairement indisponibles — veuillez réessayer dans un instant ou payer en INR/USD.",
+      "startFailed": "Le paiement n'a pas pu être lancé."
+    },
+    "exactAmountNote": "Le montant exact en {{currency}} s'affiche avant votre confirmation.",
+    "fxLine": "= <0/> au taux de 1 {{currency}} = {{rate}} {{baseCurrency}}",
+    "getBankDetails": "Obtenir les coordonnées bancaires",
+    "insuranceNote": "Prise en charge par l'assurance demandée - nous vous enverrons les documents de demande.",
+    "method": "Moyen de paiement",
+    "methods": {
+      "bankText": "Virement SWIFT. Votre réservation est confirmée dès réception des fonds.",
+      "bankTitle": "Virement bancaire international",
+      "cardText": "Visa, MasterCard, Amex, RuPay, UPI - paiement sécurisé par Razorpay",
+      "cardTitle": "Carte de crédit / débit ou UPI",
+      "mockText": "Simule une réussite ou un échec du paiement. Jamais disponible en production.",
+      "mockTitle": "Paiement de test (développement uniquement)"
+    },
+    "mock": {
+      "disabled": "La passerelle de test n'est pas activée sur ce serveur.",
+      "failure": "Simuler un échec",
+      "success": "Simuler une réussite",
+      "title": "Paiement de test"
+    },
+    "orderNumber": "Commande {{number}}",
+    "payIn": "Payer en",
+    "paySecurely": "Payer en toute sécurité",
+    "result": {
+      "amount": "Montant",
+      "bankText": "Nous confirmerons dès réception des fonds - généralement sous 1 à 3 jours ouvrés.",
+      "bankTitle": "En attente de votre virement",
+      "confirmingText": "Cela prend généralement quelques secondes.",
+      "confirmingTitle": "Confirmation de votre paiement...",
+      "created": "Créé le",
+      "documentTitle": "Statut du paiement",
+      "downloadReceipt": "Télécharger le reçu",
+      "failedText": "Aucun montant ne vous a été débité. Vous pouvez réessayer avec le même moyen de paiement ou un autre.",
+      "failedTitle": "Paiement non abouti",
+      "for": "Objet",
+      "inInr": "En INR",
+      "missingReference": "Référence de paiement manquante",
+      "order": "Commande",
+      "paidOn": "Payé le",
+      "planTrip": "Préparer votre voyage",
+      "refreshStatus": "Actualiser le statut",
+      "status": "Statut",
+      "successText": "Merci. Votre réservation a été mise à jour et un reçu vous est envoyé par e-mail.",
+      "successTitle": "Paiement réussi",
+      "tryAgain": "Réessayer",
+      "viewBooking": "Voir la réservation"
+    },
+    "secureNote": "Paiement sécurisé - les données de carte sont saisies sur la page du prestataire de paiement et ne sont jamais enregistrées par Heal India Global.",
+    "title": "Paiement",
+    "toast": {
+      "cancelled": "Paiement annulé. Aucun montant ne vous a été débité.",
+      "failed": "Échec du paiement : {{message}}",
+      "received": "Paiement reçu"
+    },
+    "whatToPay": "Que souhaitez-vous payer ?",
+    "willBeCharged": "Montant qui vous sera débité :"
+  },
+  "payments": {
+    "columns": {
+      "amount": "Montant",
+      "approx": "≈ {{amount}}",
+      "date": "Date",
+      "description": "Description",
+      "method": "Moyen",
+      "receipt": "Reçu",
+      "reference": "Référence",
+      "started": "Initié",
+      "status": "Statut"
+    },
+    "groups": {
+      "paid": "Payés",
+      "processing": "En cours",
+      "refunded": "Remboursés",
+      "unsuccessful": "Non aboutis"
+    },
+    "page": {
+      "acrossBookings_one": "Sur {{count}} réservation",
+      "acrossBookings_other": "Sur {{count}} réservations",
+      "all": "Tous",
+      "allPaid": "Toutes les réservations sont payées",
+      "description": "Tous les paiements effectués pour votre traitement, avec des reçus téléchargeables.",
+      "emptyDescription": "Lorsque vous payez un acompte ou un solde pour une réservation, il apparaît ici avec son reçu.",
+      "emptyTitle": "Aucun paiement pour le moment",
+      "goToBookings": "Voir les réservations",
+      "leftToPay": "Reste à payer",
+      "nothingDue": "Rien à payer",
+      "openBookingFor": "Ouvrir la réservation : {{description}}",
+      "paidSoFar": "Payé à ce jour",
+      "payBalance": "Payer le solde",
+      "receipts": "Reçus",
+      "receiptsHint": "Téléchargez n'importe quel reçu au format PDF",
+      "searchPlaceholder": "Rechercher des paiements…",
+      "seeLeftToPay": "Voir ce qu'il reste à payer",
+      "statusTabs": "Statut du paiement",
+      "successfulPayments_one": "{{count}} paiement réussi",
+      "successfulPayments_other": "{{count}} paiements réussis",
+      "title": "Paiements et reçus",
+      "withReceipt": "Avec reçu"
+    },
+    "receipt": {
+      "button": "Reçu",
+      "downloadFailed": "Échec du téléchargement.",
+      "downloadLabel": "Télécharger le reçu {{number}}",
+      "pdf": "PDF"
+    },
+    "table": {
+      "caption": "Paiements",
+      "emptyDescription": "Les reçus apparaissent ici après chaque paiement réussi.",
+      "emptyTitle": "Aucun paiement pour le moment."
+    }
+  },
+  "profile": {
+    "address": {
+      "city": "Ville",
+      "line1": "Adresse (ligne 1)",
+      "line2": "Adresse (ligne 2)",
+      "postalCode": "Code postal",
+      "state": "État / région",
+      "title": "Adresse du domicile"
+    },
+    "cancel": "Annuler",
+    "companions": {
+      "add": "Ajouter",
+      "addTitle": "Ajouter un accompagnant",
+      "added": "Accompagnant ajouté",
+      "born": "né(e) le {{date}}",
+      "description": "Famille ou amis qui voyagent avec vous.",
+      "dialogDescription": "Les accompagnants peuvent demander un e-Medical Attendant visa avec votre lettre d'invitation.",
+      "dob": "Date de naissance",
+      "editName": "Modifier {{name}}",
+      "editTitle": "Modifier l'accompagnant",
+      "empty": "Aucun accompagnant ajouté",
+      "fullName": "Nom complet (comme sur le passeport)",
+      "nationality": "Nationalité",
+      "noNationality": "Nationalité non renseignée",
+      "passport": "Numéro de passeport",
+      "passportLast4": "passeport •••• {{last4}}",
+      "relationship": "Lien",
+      "relationshipPlaceholder": "ex. conjoint, fils",
+      "remove": "Retirer",
+      "removeBody": "{{name}} sera retiré(e) de votre profil.",
+      "removeName": "Retirer {{name}}",
+      "removeTitle": "Retirer l'accompagnant ?",
+      "removed": "Accompagnant retiré",
+      "storedEncrypted": "Stocké de façon chiffrée",
+      "title": "Accompagnants",
+      "updated": "Accompagnant mis à jour"
+    },
+    "consents": {
+      "copy": {
+        "ai_processing": "Autoriser l'IA à analyser vos réponses à l'évaluation et vos comptes rendus pour suggérer des spécialistes. Ce n'est pas un diagnostic.",
+        "marketing": "Actualités et offres occasionnelles par e-mail. Vous pouvez vous désabonner à tout moment.",
+        "privacy": "Comment nous collectons, conservons et protégeons vos données personnelles et de santé.",
+        "share_with_hospitals": "Nous autoriser à transmettre votre dossier aux hôpitaux auxquels vous demandez un devis.",
+        "terms": "Conditions d'utilisation de Heal India Global."
+      },
+      "description": "Chaque modification est enregistrée avec sa date, pour votre protection.",
+      "granted": "{{label}} : consentement donné",
+      "lastUpdated": "Dernière mise à jour le {{date}}",
+      "required": "Obligatoire pour utiliser le service. Contactez le support pour fermer votre compte.",
+      "title": "Confidentialité et consentements",
+      "withdrawn": "{{label}} : consentement retiré"
+    },
+    "description": "Gérez vos informations, vos documents de voyage et votre confidentialité.",
+    "emergency": {
+      "description": "Une personne que nous pouvons appeler si nous ne parvenons pas à vous joindre pendant votre voyage.",
+      "name": "Nom complet",
+      "phone": "Téléphone",
+      "relationship": "Lien",
+      "relationshipPlaceholder": "ex. conjoint",
+      "save": "Enregistrer le contact",
+      "saved": "Contact d'urgence enregistré",
+      "title": "Contact d'urgence"
+    },
+    "guestSecurity": {
+      "description": "Les sessions invité n'ont pas de mot de passe. Créez votre compte pour définir un mot de passe et la vérification en deux étapes.",
+      "title": "Créez d'abord un compte"
+    },
+    "medical": {
+      "allergies": "Allergies",
+      "allergiesPlaceholder": "ex. pénicilline",
+      "bloodGroup": "Groupe sanguin",
+      "description": "Transmises uniquement aux hôpitaux qui traitent vos dossiers.",
+      "history": "Antécédents médicaux",
+      "insuranceProvider": "Assureur",
+      "policyEncrypted": "Stocké de façon chiffrée.",
+      "policyNumber": "Numéro de police",
+      "policySaved": "Enregistré : •••• {{last4}}. Saisissez un nouveau numéro pour le remplacer.",
+      "title": "Santé et assurance",
+      "unknown": "Inconnu"
+    },
+    "passport": {
+      "description": "Nécessaire pour votre lettre d'invitation pour le visa. Stocké de façon chiffrée ; seuls les 4 derniers caractères sont affichés.",
+      "expiry": "Date d'expiration",
+      "notAdded": "Pas encore ajouté",
+      "number": "Numéro de passeport",
+      "onFile": "Enregistré : •••• {{last4}}",
+      "replacePlaceholder": "Saisir pour remplacer",
+      "save": "Enregistrer le passeport",
+      "saved": "Informations du passeport enregistrées",
+      "title": "Passeport"
+    },
+    "personal": {
+      "description": "Telles qu'elles figurent sur votre passeport.",
+      "dob": "Date de naissance",
+      "firstName": "Prénom",
+      "gender": "Sexe",
+      "lastName": "Nom",
+      "nationality": "Nationalité",
+      "phone": "Téléphone",
+      "residence": "Pays de résidence",
+      "save": "Enregistrer les modifications",
+      "saved": "Profil enregistré",
+      "title": "Informations personnelles",
+      "whatsapp": "WhatsApp"
+    },
+    "preferences": {
+      "currency": "Devise préférée",
+      "description": "Les prix et les paiements sont affichés dans votre devise préférée.",
+      "languagesNote": "Les préférences de langue du médecin ({{examples}}, ...) se choisissent pour chaque évaluation.",
+      "save": "Enregistrer les préférences",
+      "saved": "Préférences enregistrées",
+      "title": "Préférences"
+    },
+    "save": "Enregistrer",
+    "saveFailed": "Impossible d'enregistrer vos modifications.",
+    "security": {
+      "changePassword": "Changer le mot de passe",
+      "code": "Code à 6 chiffres",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "invalidCode": "Code invalide",
+      "mfaDescription": "Protégez votre compte avec un code issu d'une application d'authentification (Google Authenticator, Microsoft Authenticator, 1Password...).",
+      "mfaTitle": "Vérification en deux étapes",
+      "mfaTurnedOff": "Vérification en deux étapes désactivée",
+      "mfaTurnedOn": "La vérification en deux étapes est activée",
+      "newPassword": "Nouveau mot de passe",
+      "off": "Désactivée",
+      "on": "Activée",
+      "passwordChanged": "Mot de passe modifié. Vos autres appareils ont été déconnectés.",
+      "passwordHint": "Au moins 10 caractères, dont une lettre et un chiffre.",
+      "setUp": "Configurer la vérification en deux étapes",
+      "step1": "1. Dans votre application d'authentification, ajoutez un compte avec cette clé <0>(ou ouvrez-la sur cet appareil)</0> :",
+      "step2": "2. Saisissez le code à 6 chiffres affiché pour terminer.",
+      "turnOff": "Désactiver",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "verify": "Vérifier"
+    },
+    "select": "Sélectionner",
+    "signedInAs": "Connecté en tant que {{email}}",
+    "tabs": {
+      "companions": "Accompagnants",
+      "personal": "Informations personnelles",
+      "preferences": "Préférences",
+      "privacy": "Confidentialité et compte",
+      "security": "Sécurité",
+      "travel": "Passeport et urgence"
+    },
+    "title": "Profil",
+    "validation": {
+      "code": "Saisissez le code à 6 chiffres",
+      "datePicker": "Utilisez le sélecteur de date",
+      "dobFuture": "La date de naissance ne peut pas être dans le futur",
+      "notFuture": "Ne peut pas être dans le futur",
+      "passport": "Lettres et chiffres uniquement (6 à 20 caractères)",
+      "passwordLength": "Au moins 10 caractères",
+      "passwordLetter": "Doit contenir au moins une lettre",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordNumber": "Doit contenir au moins un chiffre",
+      "passwordSame": "Choisissez un autre mot de passe",
+      "phone": "Saisissez un numéro de téléphone valide avec l'indicatif du pays",
+      "required": "Obligatoire"
+    }
+  },
+  "razorpay": {
+    "declined": "Le paiement a été refusé.",
+    "initFailed": "Le paiement Razorpay n'a pas pu démarrer.",
+    "loadFailed": "Impossible de charger le paiement Razorpay. Vérifiez votre connexion et réessayez."
+  },
+  "saved": {
+    "all": "Tous",
+    "description": "Les hôpitaux, médecins et interventions que vous avez enregistrés pour les comparer plus tard.",
+    "empty": {
+      "browse": "Parcourir les hôpitaux",
+      "description": "Touchez le signet d'un médecin dans vos résultats, ou parcourez les hôpitaux pour les enregistrer pour plus tard.",
+      "title": "Aucun favori pour le moment"
+    },
+    "filters": {
+      "accreditation": "Accréditation",
+      "city": "Ville",
+      "search": "Nom, ville ou spécialité…",
+      "specialty": "Spécialité"
+    },
+    "findMore": "Trouver d'autres spécialistes",
+    "footer": "{{shown}} sur {{total}} favoris",
+    "fromInIndia": "À partir de <0></0> en Inde",
+    "item": "Élément enregistré",
+    "listLabel": "Éléments enregistrés",
+    "remove": "Retirer {{name}} des favoris",
+    "removed": "Retiré des favoris",
+    "savedOn": "Enregistré le {{date}}",
+    "sort": {
+      "name": "Nom (A–Z)",
+      "rating": "Mieux notés",
+      "recent": "Ajoutés récemment"
+    },
+    "tabsLabel": "Type de favori",
+    "title": "Favoris",
+    "typeSingular": {
+      "doctor": "Médecin",
+      "hospital": "Hôpital",
+      "procedure": "Intervention"
+    },
+    "types": {
+      "doctor": "Médecins",
+      "hospital": "Hôpitaux",
+      "procedure": "Interventions"
+    },
+    "years_one": "{{count}} an",
+    "years_other": "{{count}} ans"
+  },
+  "screening": {
+    "bodyMap": {
+      "areaSelected": "{{area}} (sélectionné)",
+      "back": "Dos",
+      "chooseFromList": "Ou choisissez dans la liste",
+      "clear": "Effacer",
+      "front": "Face",
+      "frontFacing": "Face (vous faisant face)",
+      "mapLabelBack": "Carte du corps, vue de dos. Sélectionnez les zones où vous avez des symptômes.",
+      "mapLabelFront": "Carte du corps, vue de face. Sélectionnez les zones où vous avez des symptômes.",
+      "removeArea": "Retirer {{area}}",
+      "selectedAreas": "Zones sélectionnées",
+      "tapHint": "Touchez le corps pour sélectionner une zone.",
+      "viewLabel": "Vue du corps"
+    },
+    "compare": {
+      "about": "environ {{amount}}",
+      "backToMatches": "Retour aux correspondances",
+      "best": "Meilleur",
+      "bestMatch": "Meilleure correspondance",
+      "calls_one": "{{value}} appel",
+      "calls_other": "{{value}} appels",
+      "caption": "Comparaison des correspondances sélectionnées",
+      "description": "Côte à côte : le prix, ce qui est inclus, le médecin et l'hôpital. La meilleure valeur de chaque ligne est mise en évidence.",
+      "documentTitle": "Comparer les correspondances",
+      "freeNoObligation": "Gratuit, sans engagement",
+      "goBack": "Retour",
+      "groups": {
+        "cost": "Coût",
+        "doctor": "Médecin",
+        "hospital": "Hôpital"
+      },
+      "inCountry": "Pays : {{country}}",
+      "included": "Inclus",
+      "lowestEstimate": "<0>{{name}}</0> propose l'estimation la plus basse - {{amount}} de moins que la plus élevée.",
+      "lowestPrice": "Prix le plus bas",
+      "nights_one": "{{value}} nuit",
+      "nights_other": "{{value}} nuits",
+      "notIncluded": "Non inclus",
+      "onRequest": "Sur demande",
+      "onlyDifferences": "Afficher uniquement les différences",
+      "options_one": "{{count}} option",
+      "options_other": "{{count}} options",
+      "pctRange": "{{min}}–{{max}} %",
+      "percent": "{{value}} %",
+      "reasons": "Raisons",
+      "rows": {
+        "accreditation": "Accréditation",
+        "airportPickup": "Accueil à l'aéroport",
+        "consultFee": "Tarif de consultation",
+        "estimatedTotal": "Total estimé",
+        "estimatedTotalHint": "Forfait de traitement ; le prix définitif figure dans le devis de l'hôpital",
+        "experience": "Expérience",
+        "followupCalls": "Appels vidéo de suivi",
+        "homeCost": "Même traitement dans votre pays",
+        "hospital": "Hôpital",
+        "hotelNights": "Nuits d'hôtel",
+        "intlDesk": "Service des patients internationaux",
+        "languages": "Langues",
+        "localTransport": "Transport local",
+        "meals": "Repas",
+        "package": "Forfait",
+        "rating": "Note des patients",
+        "specialty": "Spécialité",
+        "successRate": "Taux de réussite",
+        "translator": "Interprète",
+        "videoConsult": "Consultation vidéo",
+        "youSave": "Vous économisez"
+      },
+      "selectTwo": "Sélectionnez au moins deux correspondances à comparer",
+      "title": "Comparez vos correspondances",
+      "vsLowest": "+{{amount}} par rapport au plus bas",
+      "whyMatches": "Pourquoi cela vous correspond",
+      "years_one": "{{value}} an",
+      "years_other": "{{value}} ans"
+    },
+    "duration": {
+      "dailyImpact": "Impact au quotidien",
+      "detachAll": "Retirer tous les comptes rendus",
+      "impact": {
+        "mobility": {
+          "groupLabel": "Impact sur la mobilité",
+          "question": "Dans quelle mesure cela affecte-t-il votre mobilité ?",
+          "title": "Mobilité"
+        },
+        "sleep": {
+          "groupLabel": "Impact sur le sommeil",
+          "question": "Dans quelle mesure cela affecte-t-il votre sommeil ?",
+          "title": "Sommeil"
+        },
+        "work": {
+          "groupLabel": "Impact sur le travail",
+          "question": "Dans quelle mesure cela affecte-t-il votre travail ?",
+          "title": "Travail"
+        }
+      },
+      "noReports": "Aucun compte rendu téléversé pour le moment.",
+      "numberOf": {
+        "days": "Nombre de jours",
+        "months": "Nombre de mois",
+        "weeks": "Nombre de semaines",
+        "years": "Nombre d'années"
+      },
+      "optionalParen": "(facultatif)",
+      "previousReports": "Comptes rendus antérieurs",
+      "previousTreatments": "Traitements antérieurs",
+      "reportsAttached_one": "{{count}} compte rendu joint",
+      "reportsAttached_other": "{{count}} comptes rendus joints",
+      "reportsHelp": "Les examens d'imagerie, résultats d'analyses ou courriers médicaux aident les hôpitaux à établir un devis précis. Téléversez un PDF ou photographiez les pages - notre IA peut lire le compte rendu, et vous vérifiez et confirmez ce qu'elle a trouvé.",
+      "severity": "Gravité",
+      "unitLabel": "Unité de durée",
+      "uploadedOn": "Téléversé le {{date}}",
+      "valuePlaceholder": "par ex. 3"
+    },
+    "generalScreening": "Évaluation générale",
+    "list": {
+      "all": "Toutes",
+      "areasSummary": "Zones : {{areas}}",
+      "columns": {
+        "completed": "Terminée",
+        "nextStep": "Étape suivante",
+        "screening": "Évaluation",
+        "started": "Commencée",
+        "status": "Statut",
+        "urgency": "Urgence"
+      },
+      "description": "Vos évaluations par IA et les médecins et hôpitaux correspondants.",
+      "emptyDescription": "Répondez à quelques questions et soyez mis en relation avec des spécialistes en quelques minutes.",
+      "emptyTitle": "Aucune évaluation pour le moment",
+      "newScreening": "Nouvelle évaluation",
+      "next": {
+        "completed": "Voir les correspondances",
+        "draft": "Continuer à répondre",
+        "failed": "Voir les détails",
+        "processing": "Voir l'avancement"
+      },
+      "rowLabel": "{{action}} : {{title}}",
+      "searchPlaceholder": "Spécialité, symptôme ou synthèse…",
+      "startAiScreening": "Commencer l'évaluation par IA",
+      "statusTabs": "Statut de l'évaluation",
+      "symptomsSummary_one": "{{count}} symptôme",
+      "symptomsSummary_other": "{{count}} symptômes",
+      "title": "Mes évaluations"
+    },
+    "match": {
+      "compare": "Comparer",
+      "estimatedTotal": "Coût total estimé",
+      "experience_one": "{{years}} an d'expérience",
+      "experience_other": "{{years}} ans d'expérience",
+      "onRequest": "Sur demande",
+      "package": "Forfait : {{name}}",
+      "requestQuote": "Demander un devis",
+      "saveDoctor": "Enregistrer le médecin",
+      "savingsVsHome": "Économisez {{min}}-{{max}} % par rapport à {{range}} dans votre pays",
+      "score": "Correspondance {{score}} %",
+      "success": "{{pct}} % de réussite",
+      "unsaveDoctor": "Retirer le médecin des favoris",
+      "viewDetails": "Voir les détails",
+      "viewHospital": "Voir l'hôpital"
+    },
+    "new": {
+      "aboutMinutes": "Environ 3 minutes",
+      "accreditedOnly": "Uniquement des hôpitaux accrédités",
+      "answersSaved": "Vos réponses sont enregistrées",
+      "badge": "Évaluation par IA",
+      "chooseSpecialty": "Choisissez une spécialité",
+      "continueTitle": "Reprendre là où vous vous êtes arrêté",
+      "countOf": "{{shown}} sur {{total}}",
+      "documentTitle": "Nouvelle évaluation par IA",
+      "freeNoObligation": "Gratuit, sans engagement",
+      "intro": "Sélectionnez votre besoin médical. Notre évaluation par IA prend environ 3 minutes et vous met en relation avec des hôpitaux accrédités.",
+      "noMatchDescription": "Essayez un autre terme ou commencez une évaluation générale.",
+      "noMatchTitle": "Aucune spécialité ne correspond à votre recherche",
+      "notSureDescription": "Commencez une évaluation générale - nous vous suggérerons les bons spécialistes.",
+      "notSureTitle": "Vous ne savez pas quelle spécialité choisir ?",
+      "savePct": "Économisez {{min}}-{{max}} %",
+      "searchLabel": "Rechercher des spécialités",
+      "searchPlaceholder": "Rechercher une maladie ou une spécialité",
+      "startFailed": "Impossible de démarrer une évaluation.",
+      "startScreening": "Commencer l'évaluation",
+      "startedAgo": "Commencée {{when}}",
+      "title": "Qu'est-ce qui vous amène en Inde ?"
+    },
+    "pain": {
+      "label": "Intensité de la douleur",
+      "levels": {
+        "mild": "Légère",
+        "moderate": "Modérée",
+        "none": "Aucune douleur",
+        "severe": "Sévère",
+        "worst": "La pire imaginable"
+      },
+      "scaleModerate": "Modérée",
+      "scaleNone": "Aucune",
+      "scaleWorst": "Maximale",
+      "score": "{{value}}/10",
+      "valueText": "{{value}} sur 10, {{label}}"
+    },
+    "preferences": {
+      "aiConsent": "J'accepte le traitement par l'IA de mes informations de santé pour cette évaluation",
+      "aiInfo": {
+        "hospitals": "Les hôpitaux ne voient vos informations qu'après votre demande de devis et votre accord pour les partager.",
+        "notDiagnosis": "Ce n'est pas un diagnostic. Un médecin examine toujours votre dossier avant tout traitement.",
+        "sent": "Vos réponses (et les comptes rendus joints) sont transmis de façon sécurisée à notre fournisseur d'IA pour préparer une synthèse d'orientation (triage).",
+        "withdraw": "Vous pouvez retirer ce consentement à tout moment dans votre profil."
+      },
+      "aiInfoTitle": "Comment vos informations sont utilisées",
+      "budget": "Fourchette de budget",
+      "budgetBetween": "{{min}} – {{max}}",
+      "budgetHint": "Budget total du traitement, séjour à l'hôpital compris.",
+      "budgetOver": "{{amount}}+",
+      "budgetUnder": "Moins de {{amount}}",
+      "currency": "Devise",
+      "doctorGender": "Sexe du médecin",
+      "doctorGenderLabel": "Préférence de sexe du médecin",
+      "earliest": "Au plus tôt",
+      "homeCountry": "Votre pays de résidence",
+      "homeCountryHint": "Sert à comparer les coûts de traitement et les délais d'attente avec votre pays.",
+      "language": "Langue",
+      "languageHint": "Nous privilégions les médecins et le personnel qui parlent ces langues.",
+      "latest": "Au plus tard",
+      "maximum": "Maximum ({{symbol}})",
+      "minimum": "Minimum ({{symbol}})",
+      "noMaximum": "Pas de maximum",
+      "noMinimum": "Pas de minimum",
+      "selectCountry": "Sélectionnez un pays",
+      "travelWindow": "Période de voyage",
+      "travelWindowHint": "Quand pourriez-vous voyager en Inde ?",
+      "useAi": "Utiliser les recommandations de l'IA",
+      "useAiHint": "Un modèle d'IA examine vos réponses pour suggérer des spécialités et des interventions. Désactivez cette option pour utiliser uniquement notre correspondance basée sur des règles."
+    },
+    "processing": {
+      "backToDashboard": "Retour au tableau de bord",
+      "documentTitle": "Recherche de votre correspondance",
+      "doneTitle": "Vos correspondances sont prêtes",
+      "failedRetry": "Vos réponses sont enregistrées - vous pouvez réessayer.",
+      "failedTitle": "Un problème est survenu",
+      "failedWithError": "L'analyse n'a pas pu être terminée. Vos réponses sont enregistrées - vous pouvez réessayer.",
+      "footer": "Cela prend généralement moins d'une minute. Vous pouvez quitter cette page - nous vous préviendrons lorsque vos correspondances seront prêtes.",
+      "stepDone": "terminé",
+      "stepInProgress": "en cours",
+      "steps": {
+        "analyzing": "Analyse de votre état de santé",
+        "matching": "Mise en relation avec des spécialistes",
+        "savings": "Calcul des économies"
+      },
+      "tryAgain": "Réessayer",
+      "workingTitle": "Recherche de votre correspondance idéale..."
+    },
+    "requestQuote": {
+      "cancel": "Annuler",
+      "consentHint": "Nécessaire pour que les médecins de l'hôpital puissent évaluer votre dossier. Vous pouvez demander des devis à plusieurs hôpitaux.",
+      "consentLabel": "J'accepte de partager mes réponses à l'évaluation, la synthèse de l'IA et les comptes rendus joints avec cet hôpital",
+      "errors": {
+        "consentRequired": "Vous devez donner votre accord avant que nous puissions envoyer votre dossier à l'hôpital",
+        "noteTooLong": "Votre message doit faire moins de 4000 caractères"
+      },
+      "guestAction": "demander un devis",
+      "guestError": "Veuillez créer un compte complet avant de demander des devis.",
+      "info": "L'hôpital examine votre évaluation et envoie un devis détaillé, généralement sous 48 heures. La demande de devis est gratuite et ne vous engage à rien.",
+      "messageHint": "Dates souhaitées, questions ou toute information utile pour le médecin.",
+      "messageLabel": "Message pour l'hôpital (facultatif)",
+      "send": "Envoyer la demande",
+      "sendFailed": "Votre demande n'a pas pu être envoyée.",
+      "success": "Devis demandé à {{hospital}}. Dossier {{caseNumber}} créé.",
+      "title": "Demander un devis"
+    },
+    "symptoms": {
+      "add": "Ajouter",
+      "addLabel": "Ajouter un autre symptôme",
+      "addMoreBelow": "Ajoutez tout autre élément ci-dessous.",
+      "addPlaceholder": "Ajouter un autre symptôme (par ex. raideur du genou)",
+      "allAnswered": "Toutes les suggestions ont une réponse",
+      "answerMaybe": "Peut-être : {{symptom}}",
+      "answerNo": "Non, je n'ai pas : {{symptom}}",
+      "answerYes": "Oui, j'ai : {{symptom}}",
+      "changeAnswer": "Modifier la réponse pour {{symptom}}",
+      "empty": "Répondez aux cartes ou ajoutez vos propres symptômes.",
+      "fallback": {
+        "dizziness": "Vertiges",
+        "fatigue": "Fatigue",
+        "fever": "Fièvre",
+        "headaches": "Maux de tête",
+        "pain": "Douleur",
+        "shortnessOfBreath": "Essoufflement",
+        "swelling": "Gonflement",
+        "weightLoss": "Perte de poids"
+      },
+      "notesHint": "Quand cela a-t-il commencé, qu'est-ce qui l'améliore ou l'aggrave, tout diagnostic déjà posé.",
+      "notesLabel": "Décrivez-le avec vos propres mots (facultatif)",
+      "question": "Avez-vous ce symptôme ?",
+      "quickSelect": "Sélection rapide",
+      "remove": "Retirer {{symptom}}",
+      "suggestionsLeft_one": "{{count}} suggestion restante",
+      "suggestionsLeft_other": "{{count}} suggestions restantes",
+      "yours": "Vos symptômes"
+    },
+    "wizard": {
+      "disclaimer": "Ce questionnaire ne fournit pas de diagnostic. En cas de douleur thoracique intense, de difficulté à respirer ou de signes d'accident vasculaire cérébral, appelez immédiatement le numéro d'urgence local.",
+      "documentTitle": "Évaluation · étape {{step}}",
+      "errors": {
+        "aiConsent": "Veuillez accepter le traitement par l'IA, ou désactivez « Utiliser les recommandations de l'IA ».",
+        "answerSymptom": "Répondez « Oui » ou « Peut-être » à au moins un symptôme, ou décrivez vos symptômes avec vos propres mots.",
+        "budgetMinMax": "Le budget minimum est supérieur au maximum.",
+        "budgetNumber": "Saisissez le budget sous forme de nombre.",
+        "durationMissing": "Indiquez-nous depuis combien de temps vous avez ce problème.",
+        "durationUnrealistic": "Veuillez saisir une durée réaliste.",
+        "selectArea": "Sélectionnez au moins une zone sur la carte du corps (ou « Corps entier / général »).",
+        "travelWindow": "La période de voyage se termine avant de commencer."
+      },
+      "findDoctors": "Trouver mes médecins",
+      "next": "Suivant",
+      "optional": "Facultatif",
+      "previous": "Précédent",
+      "saveAndExit": "Enregistrer et quitter",
+      "skipDefaults": "Passer et utiliser les valeurs par défaut",
+      "stepOf": "Étape {{step}} sur {{total}}",
+      "steps": {
+        "areas": {
+          "subtitle": "Touchez le corps pour sélectionner la zone. Vous pouvez en choisir plusieurs.",
+          "title": "Où ressentez-vous des troubles ?"
+        },
+        "duration": {
+          "subtitle": "Durée, impact au quotidien et ce que vous avez déjà essayé.",
+          "title": "Depuis combien de temps avez-vous ce problème ?"
+        },
+        "preferences": {
+          "subtitle": "Facultatif - nous aide à classer les hôpitaux et les médecins pour vous.",
+          "title": "Personnalisez vos correspondances"
+        },
+        "symptoms": {
+          "subtitle": "Répondez à chaque carte ou ajoutez vos propres symptômes.",
+          "title": "Quels symptômes ressentez-vous ?"
+        }
+      },
+      "toast": {
+        "analysisFailed": "Nous n'avons pas pu lancer l'analyse. Veuillez réessayer.",
+        "progressSaved": "Progression enregistrée. Vous pouvez reprendre depuis votre tableau de bord.",
+        "saveFailed": "Vos réponses n'ont pas pu être enregistrées."
+      },
+      "voicePrompt": "<0>Vous préférez parler ?</0> Décrivez votre problème à voix haute dans votre langue - nous remplissons les réponses et vous les vérifiez avant tout enregistrement."
+    }
+  },
+  "shell": {
+    "bottomNav": {
+      "home": "Accueil",
+      "label": "Navigation rapide",
+      "messages": "Messages",
+      "profile": "Profil",
+      "screening": "Évaluation",
+      "trip": "Voyage"
+    },
+    "guest": "Invité",
+    "loadingPage": "Chargement de la page",
+    "loadingPortal": "Chargement de votre espace",
+    "menu": {
+      "profile": "Profil",
+      "saved": "Hôpitaux et médecins enregistrés"
+    },
+    "nav": {
+      "account": "Compte",
+      "bookings": "Réservations",
+      "bookingsPayments": "Réservations et paiements",
+      "care": "Soins",
+      "cases": "Mes dossiers",
+      "dashboard": "Tableau de bord",
+      "documents": "Documents",
+      "inbox": "Messages et alertes",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "payments": "Paiements",
+      "profile": "Profil",
+      "saved": "Favoris",
+      "screenings": "Évaluations IA",
+      "trip": "Voyage",
+      "tripDocuments": "Voyage et documents"
+    },
+    "pageError": {
+      "description": "Veuillez recharger la page. Si le problème persiste, contactez l'assistance.",
+      "title": "Cette page n'a pas pu s'afficher"
+    },
+    "roles": {
+      "admin": "administrateur",
+      "agent": "agent",
+      "finance": "finance",
+      "hospital": "hôpital",
+      "patient": "patient",
+      "super_admin": "super-administrateur",
+      "support": "assistance"
+    },
+    "signOut": "Se déconnecter",
+    "startScreening": "Commencer une évaluation IA",
+    "subtitle": "Espace patient",
+    "wrongRole": {
+      "description": "Vous êtes connecté avec un compte {{role}}. Veuillez utiliser votre propre espace, ou vous déconnecter et vous reconnecter avec un compte patient.",
+      "home": "Accueil",
+      "title": "Cet espace est réservé aux patients"
+    }
+  },
+  "status": {
+    "accepted": "Accepté",
+    "admitted": "Hospitalisé",
+    "applied": "Demande déposée",
+    "approved": "Approuvé",
+    "booked": "Réservé",
+    "cancelled": "Annulé",
+    "captured": "Encaissé",
+    "completed": "Terminé",
+    "confirmed": "Confirmé",
+    "created": "Créé",
+    "declined": "Refusé",
+    "documents_pending": "Documents en attente",
+    "done": "Fait",
+    "draft": "Brouillon",
+    "due": "À payer",
+    "emergency": "Urgence",
+    "enquiry": "Demande envoyée",
+    "expired": "Expiré",
+    "failed": "Échoué",
+    "in_progress": "En cours",
+    "in_treatment": "En traitement",
+    "invitation_issued": "Lettre d'invitation émise",
+    "not_started": "Non commencé",
+    "overdue": "En retard",
+    "paid": "Payé",
+    "partially_refunded": "Partiellement remboursé",
+    "pending": "En attente",
+    "pending_payment": "En attente de paiement",
+    "processing": "En cours de traitement",
+    "quoted": "Devis reçu",
+    "refunded": "Remboursé",
+    "rejected": "Refusé",
+    "requested": "Demandé",
+    "routine": "Non urgent",
+    "scheduled": "Planifié",
+    "sent": "Envoyé",
+    "soon": "Bientôt",
+    "uploaded": "Téléversé",
+    "urgent": "Urgent",
+    "verified": "Vérifié",
+    "withdrawn": "Retiré"
+  },
+  "support": {
+    "call": "Appeler",
+    "chat": "Discuter",
+    "coordinator": "Votre coordinateur · {{name}}",
+    "emergencyContact": "Votre contact d'urgence · {{phone}}",
+    "emergencyDialog": {
+      "description": "Touchez pour appeler. Les appels passent par le téléphone de votre appareil.",
+      "outsideIndia": "Si vous êtes hors d'Inde et avez besoin d'une aide médicale urgente, appelez le numéro d'urgence local.",
+      "title": "Contacts d'urgence"
+    },
+    "guide": {
+      "arrival": {
+        "item1": "Votre chauffeur vous attendra à la sortie des arrivées avec une pancarte à votre nom",
+        "item2": "Partagez votre position en direct avec votre coordinateur à l'atterrissage",
+        "item3": "Enregistrez le numéro d'assistance 24h/24 dans votre téléphone",
+        "title": "À l'arrivée"
+      },
+      "culturalTips": "Conseils culturels",
+      "description": "Tout ce qu'il faut préparer avant votre voyage en Inde.",
+      "documents": {
+        "item1": "Passeport valide au moins 6 mois, plus 2 photocopies",
+        "item2": "e-Medical visa imprimé (et e-Medical Attendant visa pour les accompagnants)",
+        "item3": "Lettre d'invitation de l'hôpital et confirmation de votre réservation",
+        "item4": "Tous vos comptes rendus médicaux, examens d'imagerie et ordonnances antérieurs",
+        "item5": "Police d'assurance voyage et coordonnées de vos contacts d'urgence",
+        "title": "Documents à emporter"
+      },
+      "health": {
+        "item1": "Emportez suffisamment de vos médicaments habituels pour tout le séjour, dans leur emballage d'origine, avec les ordonnances",
+        "item2": "Informez votre coordinateur de vos allergies et de vos traitements en cours avant le départ",
+        "item3": "Buvez de l'eau en bouteille ou filtrée et évitez la nourriture de rue non cuite avant votre intervention",
+        "title": "Santé et médicaments"
+      },
+      "money": {
+        "item1": "Les cartes sont largement acceptées ; gardez quelques roupies indiennes pour les petits achats",
+        "item2": "Votre coordinateur peut vous aider à obtenir une carte SIM locale à votre arrivée",
+        "item3": "Gardez vos reçus : votre assureur peut les demander",
+        "title": "Argent et connexion"
+      },
+      "title": "Guide avant l'arrivée"
+    },
+    "helplines": {
+      "emergency": "Services d'urgence (Inde)",
+      "loadError": "Impossible de charger les numéros d'assistance. En cas d'urgence en Inde, composez le 112.",
+      "patient": "Assistance patients 24h/24, 7j/7",
+      "whatsapp": "Assistance WhatsApp"
+    },
+    "message": "Envoyer un message",
+    "reachViaMessages": "Contactez-le via Messages",
+    "sos": {
+      "body": "Votre coordinateur et l'équipe d'assistance 24h/24 seront alertés immédiatement, avec votre position (si vous l'autorisez). En cas d'urgence vitale, appelez aussi le <0>112</0>.",
+      "button": "SOS",
+      "confirm": "Envoyer le SOS maintenant",
+      "confirmTitle": "Envoyer une alerte SOS ?",
+      "failed": "Le SOS n'a pas pu être envoyé : {{error}}. Veuillez appeler l'assistance ou le 112.",
+      "messageLabel": "Que se passe-t-il ? (facultatif)",
+      "messagePlaceholder": "ex. : douleur intense à l'hôtel, besoin d'aide",
+      "sent": "SOS envoyé. Votre coordinateur et notre équipe d'assistance ont été alertés et vont vous appeler."
+    }
+  },
+  "trip": {
+    "hub": {
+      "accommodationEmpty": "Aucun hébergement demandé pour le moment.",
+      "accommodationTitle": "Hébergement",
+      "addVisaRequest": "+ Ajouter une demande de visa (par ex. pour un accompagnant)",
+      "admission": "Admission le {{date}}",
+      "airportDistance": "À {{km}} km de l'aéroport",
+      "arrives": "Arrivée le {{date}}",
+      "backToBooking": "Réservation {{number}}",
+      "callHelpline": "Appeler l'assistance 24 h/24",
+      "checklistEmpty": "Votre liste de contrôle est créée lorsque la réservation est confirmée.",
+      "checklistProgress": "{{done}} sur {{total}} terminés",
+      "checklistTitle": "Liste de contrôle avant l'arrivée",
+      "checklistUpdateFailed": "Impossible de mettre à jour la liste de contrôle.",
+      "confirmation": "Confirmation {{code}}",
+      "daysUnit_one": "jour",
+      "daysUnit_other": "jours",
+      "departs": "Départ le {{date}}",
+      "downloadFailed": "Le téléchargement a échoué.",
+      "flightsEmpty": "Aucune demande de vol ou de transfert pour le moment.",
+      "flightsTitle": "Vols et transferts",
+      "getTranslator": "Obtenir un interprète",
+      "guests_one": "{{n}} personne",
+      "guests_other": "{{n}} personnes",
+      "helpTitle": "Aide 24 h/24, 7 j/7",
+      "inTreatment": "En traitement",
+      "invitationLetter": "Lettre d'invitation",
+      "itineraryDescription": "Rendez-vous, admission et transferts, dans l'ordre.",
+      "itineraryEmpty": "Votre coordinateur et l'hôpital ajouteront votre programme ici.",
+      "itineraryTitle": "Itinéraire",
+      "loadFailed": "Chargement impossible. Veuillez actualiser la page.",
+      "markDone": "Marquer comme fait",
+      "openMap": "Ouvrir la carte",
+      "pnr": "PNR {{pnr}}",
+      "reference": "Réf. {{ref}}",
+      "requestVisa": "Demander une aide pour le visa",
+      "routeSeparator": " → ",
+      "servicesEmpty": "Aucun interprète ni guide demandé pour le moment.",
+      "servicesTitle": "Interprète et guide local",
+      "tipsDescription": "Quelques conseils pour faciliter votre séjour en Inde.",
+      "tipsEmpty": "Aucun conseil pour le moment.",
+      "tipsTitle": "Conseils culturels",
+      "title": "Espace voyage",
+      "travelDescription": "Demandez des services : votre coordinateur confirme les détails et les prix.",
+      "travelTitle": "Voyage et hébergement",
+      "treatment": "Traitement",
+      "underway": "En cours",
+      "undo": "Annuler",
+      "untilTreatment": "Avant le traitement",
+      "visa": "Visa",
+      "visaIntro": "La plupart des patients internationaux ont besoin d'un e-Medical visa pour l'Inde. Nous fournissons la lettre d'invitation de l'hôpital."
+    },
+    "index": {
+      "docTitle": "Voyage",
+      "emptyDescription": "Lorsque vous réservez un traitement, votre visa, vos vols, votre prise en charge, votre hébergement et votre itinéraire sont organisés ici.",
+      "emptyTitle": "Aucun voyage à venir",
+      "goToCases": "Aller à mes dossiers",
+      "title": "Votre voyage"
+    },
+    "request": {
+      "accommodation": {
+        "description": "Hôtels et maisons d'hôtes proches de votre hôpital.",
+        "title": "Demander un hébergement"
+      },
+      "airportDrop": {
+        "description": "Transport de votre hôtel ou de l'hôpital jusqu'à l'aéroport.",
+        "title": "Demander un transfert vers l'aéroport"
+      },
+      "airportPickup": {
+        "description": "Un chauffeur vous attend à l'arrivée et vous conduit à votre hôtel ou à l'hôpital.",
+        "title": "Demander un accueil à l'aéroport"
+      },
+      "cancel": "Annuler",
+      "errors": {
+        "checkOutAfterCheckIn": "Le départ doit être postérieur à l'arrivée",
+        "dateTimeRequired": "La date et l'heure sont obligatoires",
+        "departureRequired": "La ville et la date de départ sont obligatoires",
+        "endAfterStart": "Doit être postérieur au début",
+        "number": "Saisissez un nombre",
+        "stayRequired": "Choisissez un hébergement et vos dates"
+      },
+      "fields": {
+        "airport": "Aéroport",
+        "arrival": "Date et heure d'arrivée",
+        "checkIn": "Arrivée",
+        "checkOut": "Départ",
+        "cityOrAirport": "Ville ou aéroport",
+        "distanceKm": "{{km}} km",
+        "dropOff": "Dépose (hôtel / hôpital)",
+        "flightDeparture": "Date et heure de départ du vol",
+        "flightNumber": "Numéro de vol",
+        "flightNumberPlaceholder": "ex. AI 102",
+        "flyingFrom": "Départ de",
+        "flyingTo": "Destination",
+        "from": "Du",
+        "guests": "Personnes",
+        "languageNotes": "Langue souhaitée et remarques",
+        "loadingOptions": "Chargement des options...",
+        "nightlyRate": "À partir de <0>{{amount}}</0> par nuit",
+        "notes": "Remarques",
+        "passengers": "Passagers",
+        "pickupAddress": "Adresse de prise en charge",
+        "placeToStay": "Hébergement",
+        "preferredDeparture": "Départ souhaité",
+        "roomType": "Type de chambre",
+        "roomTypePlaceholder": "ex. chambre à deux lits",
+        "selectAccommodation": "Choisir un hébergement",
+        "until": "Au",
+        "visaCompanion": "e-Medical Attendant visa (accompagnant)",
+        "visaPatient": "e-Medical visa (patient)",
+        "visaType": "Type de visa"
+      },
+      "flight": {
+        "description": "Notre service voyage vous envoie des options de vol et leurs prix.",
+        "title": "Demander une réservation de vol"
+      },
+      "localGuide": {
+        "description": "De l'aide pour les courses, les visites et les déplacements.",
+        "title": "Demander un guide local"
+      },
+      "send": "Envoyer la demande",
+      "sendFailed": "La demande n'a pas pu être envoyée.",
+      "sent": "Demande envoyée. Votre coordinateur confirmera les détails.",
+      "translator": {
+        "description": "Un interprète médical pour les consultations et l'admission.",
+        "title": "Demander un interprète"
+      },
+      "visa": {
+        "description": "Nous obtenons la lettre d'invitation de l'hôpital et vous guidons dans votre demande.",
+        "title": "Demander une aide pour l'e-Medical visa"
+      }
+    },
+    "requests": {
+      "accommodation": "Hébergement",
+      "airportDrop": "Transfert vers l'aéroport",
+      "airportPickup": "Accueil à l'aéroport",
+      "flight": "Vol",
+      "localGuide": "Guide local",
+      "translator": "Interprète"
+    }
+  },
+  "ui": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "error": {
+      "description": "Impossible de charger ce contenu pour le moment. Veuillez réessayer.",
+      "retry": "Réessayer",
+      "title": "Un problème est survenu"
+    },
+    "loading": "Chargement",
+    "pagination": {
+      "label": "Pagination",
+      "next": "Suivant",
+      "page": "Page {{page}} sur {{pages}}",
+      "previous": "Précédent"
+    },
+    "rating": {
+      "none": "Pas encore d'avis",
+      "reviews_one": "({{formatted}} avis)",
+      "reviews_other": "({{formatted}} avis)"
+    },
+    "upload": {
+      "attach": "Joindre un fichier",
+      "button": "Téléverser",
+      "failed": "{{name}} : {{error}}",
+      "tooLarge": "{{name}} dépasse {{size}}.",
+      "uploaded": "{{name}} téléversé"
+    }
+  }
+}

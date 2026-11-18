@@ -16,7 +16,8 @@ import {
 } from 'react';
 import { AlertTriangle, Inbox, Loader2, X } from 'lucide-react';
 import { Link, type LinkProps } from 'react-router';
-import { cn } from '../lib/shared';
+import { useAppTranslation } from '../../../i18n';
+import { cn, formatNumber } from '../lib/shared';
 
 // ---------------------------------------------------------------------------------------------------------
 // Buttons
@@ -240,7 +241,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
   ref,
 ) {
   return (
-    <select ref={ref} className={cn(controlBase, 'h-10 pr-8', className)} {...rest}>
+    <select ref={ref} className={cn(controlBase, 'h-10 pe-8', className)} {...rest}>
       {children}
     </select>
   );
@@ -267,7 +268,7 @@ export function Field({
     <div className={cn('space-y-1.5', className)}>
       <label htmlFor={htmlFor} className="block text-sm font-medium text-fg">
         {label}
-        {required ? <span className="ml-0.5 text-danger">*</span> : null}
+        {required ? <span className="ms-0.5 text-danger">*</span> : null}
       </label>
       {children}
       {error ? (
@@ -390,11 +391,12 @@ export function SegmentedControl<T extends string>({
 // ---------------------------------------------------------------------------------------------------------
 // Feedback
 // ---------------------------------------------------------------------------------------------------------
-export function Spinner({ className, label = 'Loading' }: { className?: string; label?: string }) {
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <span role="status" className={cn('inline-flex items-center gap-2 text-muted', className)}>
       <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('ui.loading')}</span>
     </span>
   );
 }
@@ -404,8 +406,9 @@ export function Skeleton({ className }: { className?: string }) {
 }
 
 export function SkeletonList({ rows = 3, className }: { rows?: number; className?: string }) {
+  const { t } = useAppTranslation();
   return (
-    <div className={cn('space-y-3', className)} role="status" aria-label="Loading">
+    <div className={cn('space-y-3', className)} role="status" aria-label={t('ui.loading')}>
       {Array.from({ length: rows }, (_, i) => (
         <Skeleton key={i} className="h-20 w-full" />
       ))}
@@ -442,7 +445,7 @@ export function EmptyState({
 }
 
 export function ErrorState({
-  title = 'Something went wrong',
+  title,
   error,
   onRetry,
   className,
@@ -452,8 +455,8 @@ export function ErrorState({
   onRetry?: () => void;
   className?: string;
 }) {
-  const message =
-    error instanceof Error && error.message ? error.message : 'We could not load this right now. Please try again.';
+  const { t } = useAppTranslation();
+  const message = error instanceof Error && error.message ? error.message : t('ui.error.description');
   return (
     <div
       role="alert"
@@ -463,11 +466,11 @@ export function ErrorState({
       )}
     >
       <AlertTriangle className="mb-2 h-7 w-7 text-danger" aria-hidden />
-      <p className="font-semibold text-danger-ink">{title}</p>
+      <p className="font-semibold text-danger-ink">{title ?? t('ui.error.title')}</p>
       <p className="mt-1 max-w-md text-sm text-danger-ink/90">{message}</p>
       {onRetry ? (
         <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
-          Try again
+          {t('ui.error.retry')}
         </Button>
       ) : null}
     </div>
@@ -543,6 +546,7 @@ export function Modal({
   footer?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
+  const { t } = useAppTranslation();
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   useEffect(() => {
@@ -581,7 +585,7 @@ export function Modal({
               type="button"
               onClick={onClose}
               className="rounded-lg p-1 text-muted hover:bg-surface-2"
-              aria-label="Close"
+              aria-label={t('ui.close')}
             >
               <X className="h-5 w-5" />
             </button>
@@ -604,7 +608,7 @@ export function ConfirmDialog({
   onConfirm,
   title,
   children,
-  confirmLabel = 'Confirm',
+  confirmLabel,
   tone = 'primary',
   loading,
 }: {
@@ -617,6 +621,7 @@ export function ConfirmDialog({
   tone?: 'primary' | 'danger';
   loading?: boolean;
 }) {
+  const { t } = useAppTranslation();
   return (
     <Modal
       open={open}
@@ -626,10 +631,10 @@ export function ConfirmDialog({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('ui.cancel')}
           </Button>
           <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} loading={loading}>
-            {confirmLabel}
+            {confirmLabel ?? t('ui.confirm')}
           </Button>
         </>
       }
@@ -674,7 +679,7 @@ export function Tabs<T extends string>({
         >
           {tab.label}
           {tab.count !== undefined ? (
-            <span className="ml-1.5 rounded-full bg-surface-2 px-1.5 text-xs">{tab.count}</span>
+            <span className="ms-1.5 rounded-full bg-surface-2 px-1.5 text-xs">{formatNumber(tab.count)}</span>
           ) : null}
         </button>
       ))}
@@ -691,17 +696,18 @@ export function Pagination({
   pages: number;
   onChange: (page: number) => void;
 }) {
+  const { t } = useAppTranslation();
   if (pages <= 1) return null;
   return (
-    <nav className="mt-6 flex items-center justify-center gap-3" aria-label="Pagination">
+    <nav className="mt-6 flex items-center justify-center gap-3" aria-label={t('ui.pagination.label')}>
       <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onChange(page - 1)}>
-        Previous
+        {t('ui.pagination.previous')}
       </Button>
       <span className="text-sm text-muted">
-        Page {page} of {pages}
+        {t('ui.pagination.page', { page: formatNumber(page), pages: formatNumber(pages) })}
       </span>
       <Button variant="outline" size="sm" disabled={page >= pages} onClick={() => onChange(page + 1)}>
-        Next
+        {t('ui.pagination.next')}
       </Button>
     </nav>
   );

@@ -1,17 +1,22 @@
 import { Fragment, useMemo, useState, type ReactNode } from 'react';
+import { Trans } from 'react-i18next';
 import { Navigate, useParams, useSearchParams } from 'react-router';
 import { BadgeCheck, Check, Minus, Trophy } from 'lucide-react';
 import { PACKAGE_TIER_LABELS, type MatchOut } from '@hig/shared/api';
 import { Switch } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../../i18n';
 import { useMatches, useScreening } from '../../api/queries';
 import { Accreditations, Avatar, BackLink, Money, Rating } from '../../components/common';
 import { paths } from '../../lib/paths';
-import { cn, formatMoney, formatMoneyRange, useDocumentTitle } from '../../lib/shared';
+import { cn, formatMoney, formatMoneyRange, formatNumber, useDocumentTitle } from '../../lib/shared';
 import { Badge, Button, EmptyState, ErrorState, PageHeader, SkeletonList } from '../../ui/primitives';
 import { RequestQuoteDialog } from './RequestQuoteDialog';
 
+type T = ReturnType<typeof useAppTranslation>['t'];
 type Best = 'min' | 'max';
 interface Row {
+  /** stable id (React key, special cases) */
+  id: string;
   label: string;
   hint?: string;
   render: (m: MatchOut) => ReactNode;
@@ -20,21 +25,12 @@ interface Row {
   best?: Best;
 }
 interface Group {
+  id: string;
   title: string;
   rows: Row[];
 }
 
 const num = (v: number | string | null | undefined) => (v === null || v === undefined || v === '' ? null : Number(v));
-const yesNo = (v: boolean | number | null | undefined, unit?: string) =>
-  v === null || v === undefined || v === false || v === 0 ? (
-    <span className="inline-flex items-center gap-1 text-muted">
-      <Minus className="size-4" aria-hidden /> Not included
-    </span>
-  ) : (
-    <span className="inline-flex items-center gap-1 text-success-ink">
-      <Check className="size-4" aria-hidden /> {typeof v === 'number' && unit ? `${v} ${unit}` : 'Included'}
-    </span>
-  );
 const dash = <span className="text-muted">—</span>;
 
 /** Mid-point estimate of what the patient saves vs the home-country price. */
@@ -44,146 +40,226 @@ function savingMinor(m: MatchOut): number | null {
   return Math.max(0, Math.round(home - m.estimated_cost_minor));
 }
 
-const GROUPS: Group[] = [
-  {
-    title: 'Cost',
-    rows: [
-      {
-        label: 'Estimated total',
-        hint: 'Treatment package; final price comes with the hospital quote',
-        value: (m) => num(m.estimated_cost_minor),
-        best: 'min',
-        render: (m) =>
-          m.estimated_cost_minor != null ? (
-            <span className="text-lg font-bold tabular-nums">
-              <Money minor={m.estimated_cost_minor} currency={m.currency} trim />
-            </span>
-          ) : (
-            <span className="text-muted">On request</span>
-          ),
-      },
-      {
-        label: 'Same treatment at home',
-        value: (m) => (m.savings ? (m.savings.home_min_minor + m.savings.home_max_minor) / 2 : null),
-        render: (m) =>
-          m.savings ? (
-            <span className="tabular-nums">
-              {formatMoneyRange(m.savings.home_min_minor, m.savings.home_max_minor, m.savings.home_currency)}
-              <span className="block text-xs text-muted">in {m.savings.home_country}</span>
-            </span>
-          ) : (
-            dash
-          ),
-      },
-      {
-        label: 'You save',
-        value: (m) => savingMinor(m) ?? (m.savings ? m.savings.pct_max : null),
-        best: 'max',
-        render: (m) => {
-          const saved = savingMinor(m);
-          return m.savings ? (
-            <span className="font-semibold text-success-ink">
-              {m.savings.pct_min}–{m.savings.pct_max}%
-              {saved ? <span className="block text-xs font-normal text-muted">about {formatMoney(saved, m.currency, undefined, { trimZeros: true })}</span> : null}
-            </span>
-          ) : (
-            dash
-          );
+function buildGroups(t: T): Group[] {
+  /** "Included" / "Not included", or "3 nights" when a count is given with its catalog key. */
+  const yesNo = (v: boolean | number | null | undefined, countKey?: string) =>
+    v === null || v === undefined || v === false || v === 0 ? (
+      <span className="inline-flex items-center gap-1 text-muted">
+        <Minus className="size-4" aria-hidden /> {t('screening.compare.notIncluded')}
+      </span>
+    ) : (
+      <span className="inline-flex items-center gap-1 text-success-ink">
+        <Check className="size-4" aria-hidden />{' '}
+        {typeof v === 'number' && countKey ? t(countKey, { count: v, value: formatNumber(v) }) : t('screening.compare.included')}
+      </span>
+    );
+
+  return [
+    {
+      id: 'cost',
+      title: t('screening.compare.groups.cost'),
+      rows: [
+        {
+          id: 'estimatedTotal',
+          label: t('screening.compare.rows.estimatedTotal'),
+          hint: t('screening.compare.rows.estimatedTotalHint'),
+          value: (m) => num(m.estimated_cost_minor),
+          best: 'min',
+          render: (m) =>
+            m.estimated_cost_minor != null ? (
+              <span className="text-lg font-bold tabular-nums">
+                <Money minor={m.estimated_cost_minor} currency={m.currency} trim />
+              </span>
+            ) : (
+              <span className="text-muted">{t('screening.compare.onRequest')}</span>
+            ),
         },
-      },
-      {
-        label: 'Package',
-        value: (m) => m.package?.name ?? null,
-        render: (m) =>
-          m.package ? (
+        {
+          id: 'homeCost',
+          label: t('screening.compare.rows.homeCost'),
+          value: (m) => (m.savings ? (m.savings.home_min_minor + m.savings.home_max_minor) / 2 : null),
+          render: (m) =>
+            m.savings ? (
+              <span className="tabular-nums">
+                {formatMoneyRange(m.savings.home_min_minor, m.savings.home_max_minor, m.savings.home_currency)}
+                <span className="block text-xs text-muted">{t('screening.compare.inCountry', { country: m.savings.home_country })}</span>
+              </span>
+            ) : (
+              dash
+            ),
+        },
+        {
+          id: 'youSave',
+          label: t('screening.compare.rows.youSave'),
+          value: (m) => savingMinor(m) ?? (m.savings ? m.savings.pct_max : null),
+          best: 'max',
+          render: (m) => {
+            const saved = savingMinor(m);
+            return m.savings ? (
+              <span className="font-semibold text-success-ink">
+                {t('screening.compare.pctRange', { min: formatNumber(m.savings.pct_min), max: formatNumber(m.savings.pct_max) })}
+                {saved ? (
+                  <span className="block text-xs font-normal text-muted">
+                    {t('screening.compare.about', { amount: formatMoney(saved, m.currency, undefined, { trimZeros: true }) })}
+                  </span>
+                ) : null}
+              </span>
+            ) : (
+              dash
+            );
+          },
+        },
+        {
+          id: 'package',
+          label: t('screening.compare.rows.package'),
+          value: (m) => m.package?.name ?? null,
+          render: (m) =>
+            m.package ? (
+              <span>
+                {m.package.name}
+                {(PACKAGE_TIER_LABELS[m.package.tier] ?? m.package.tier).toLowerCase() !== m.package.name.toLowerCase() ? (
+                  <span className="block text-xs text-muted">{PACKAGE_TIER_LABELS[m.package.tier] ?? m.package.tier}</span>
+                ) : null}
+              </span>
+            ) : (
+              dash
+            ),
+        },
+        {
+          id: 'hotelNights',
+          label: t('screening.compare.rows.hotelNights'),
+          value: (m) => m.package?.includes.accommodation_nights ?? 0,
+          best: 'max',
+          render: (m) => yesNo(m.package?.includes.accommodation_nights, 'screening.compare.nights'),
+        },
+        {
+          id: 'airportPickup',
+          label: t('screening.compare.rows.airportPickup'),
+          value: (m) => !!m.package?.includes.airport_pickup,
+          render: (m) => yesNo(m.package?.includes.airport_pickup),
+        },
+        {
+          id: 'translator',
+          label: t('screening.compare.rows.translator'),
+          value: (m) => !!m.package?.includes.translator,
+          render: (m) => yesNo(m.package?.includes.translator),
+        },
+        {
+          id: 'meals',
+          label: t('screening.compare.rows.meals'),
+          value: (m) => !!m.package?.includes.meals,
+          render: (m) => yesNo(m.package?.includes.meals),
+        },
+        {
+          id: 'localTransport',
+          label: t('screening.compare.rows.localTransport'),
+          value: (m) => !!m.package?.includes.local_transport,
+          render: (m) => yesNo(m.package?.includes.local_transport),
+        },
+        {
+          id: 'followupCalls',
+          label: t('screening.compare.rows.followupCalls'),
+          value: (m) => m.package?.includes.followup_teleconsults ?? 0,
+          best: 'max',
+          render: (m) => yesNo(m.package?.includes.followup_teleconsults, 'screening.compare.calls'),
+        },
+      ],
+    },
+    {
+      id: 'doctor',
+      title: t('screening.compare.groups.doctor'),
+      rows: [
+        {
+          id: 'specialty',
+          label: t('screening.compare.rows.specialty'),
+          value: (m) => m.doctor?.specialty.name ?? null,
+          render: (m) => m.doctor?.specialty.name ?? dash,
+        },
+        {
+          id: 'experience',
+          label: t('screening.compare.rows.experience'),
+          value: (m) => num(m.doctor?.experience_years),
+          best: 'max',
+          render: (m) =>
+            m.doctor?.experience_years
+              ? t('screening.compare.years', { count: m.doctor.experience_years, value: formatNumber(m.doctor.experience_years) })
+              : dash,
+        },
+        {
+          id: 'successRate',
+          label: t('screening.compare.rows.successRate'),
+          value: (m) => num(m.doctor?.success_rate_pct),
+          best: 'max',
+          render: (m) =>
+            m.doctor?.success_rate_pct != null
+              ? t('screening.compare.percent', {
+                  value: formatNumber(Number(m.doctor.success_rate_pct), { maximumFractionDigits: 0 }),
+                })
+              : dash,
+        },
+        {
+          id: 'rating',
+          label: t('screening.compare.rows.rating'),
+          value: (m) => num(m.doctor?.rating_avg ?? m.hospital.rating_avg),
+          best: 'max',
+          render: (m) => <Rating value={m.doctor?.rating_avg ?? m.hospital.rating_avg} count={m.doctor?.rating_count ?? m.hospital.rating_count} />,
+        },
+        {
+          id: 'languages',
+          label: t('screening.compare.rows.languages'),
+          value: (m) => (m.doctor?.languages.length ? m.doctor.languages : m.hospital.languages).join(', '),
+          render: (m) => (m.doctor?.languages.length ? m.doctor.languages : m.hospital.languages).join(', ') || dash,
+        },
+        {
+          id: 'videoConsult',
+          label: t('screening.compare.rows.videoConsult'),
+          value: (m) => !!m.doctor?.teleconsult_available,
+          render: (m) => (m.doctor ? yesNo(m.doctor.teleconsult_available) : dash),
+        },
+        {
+          id: 'consultFee',
+          label: t('screening.compare.rows.consultFee'),
+          value: (m) => num(m.doctor?.consultation_fee_minor),
+          best: 'min',
+          render: (m) =>
+            m.doctor?.consultation_fee_minor != null ? <Money minor={m.doctor.consultation_fee_minor} currency={m.doctor.currency} trim /> : dash,
+        },
+      ],
+    },
+    {
+      id: 'hospital',
+      title: t('screening.compare.groups.hospital'),
+      rows: [
+        {
+          id: 'hospital',
+          label: t('screening.compare.rows.hospital'),
+          value: (m) => m.hospital.name,
+          render: (m) => (
             <span>
-              {m.package.name}
-              {(PACKAGE_TIER_LABELS[m.package.tier] ?? m.package.tier).toLowerCase() !== m.package.name.toLowerCase() ? (
-                <span className="block text-xs text-muted">{PACKAGE_TIER_LABELS[m.package.tier] ?? m.package.tier}</span>
-              ) : null}
+              <span className="font-medium">{m.hospital.name}</span>
+              <span className="block text-xs text-muted">
+                {m.hospital.city}
+                {m.hospital.state ? `, ${m.hospital.state}` : ''}
+              </span>
             </span>
-          ) : (
-            dash
           ),
-      },
-      { label: 'Hotel nights', value: (m) => m.package?.includes.accommodation_nights ?? 0, best: 'max', render: (m) => yesNo(m.package?.includes.accommodation_nights, 'nights') },
-      { label: 'Airport pickup', value: (m) => !!m.package?.includes.airport_pickup, render: (m) => yesNo(m.package?.includes.airport_pickup) },
-      { label: 'Translator', value: (m) => !!m.package?.includes.translator, render: (m) => yesNo(m.package?.includes.translator) },
-      { label: 'Meals', value: (m) => !!m.package?.includes.meals, render: (m) => yesNo(m.package?.includes.meals) },
-      { label: 'Local transport', value: (m) => !!m.package?.includes.local_transport, render: (m) => yesNo(m.package?.includes.local_transport) },
-      {
-        label: 'Follow-up video calls',
-        value: (m) => m.package?.includes.followup_teleconsults ?? 0,
-        best: 'max',
-        render: (m) => yesNo(m.package?.includes.followup_teleconsults, 'calls'),
-      },
-    ],
-  },
-  {
-    title: 'Doctor',
-    rows: [
-      { label: 'Specialty', value: (m) => m.doctor?.specialty.name ?? null, render: (m) => m.doctor?.specialty.name ?? dash },
-      {
-        label: 'Experience',
-        value: (m) => num(m.doctor?.experience_years),
-        best: 'max',
-        render: (m) => (m.doctor?.experience_years ? `${m.doctor.experience_years} years` : dash),
-      },
-      {
-        label: 'Success rate',
-        value: (m) => num(m.doctor?.success_rate_pct),
-        best: 'max',
-        render: (m) => (m.doctor?.success_rate_pct != null ? `${Number(m.doctor.success_rate_pct).toFixed(0)}%` : dash),
-      },
-      {
-        label: 'Patient rating',
-        value: (m) => num(m.doctor?.rating_avg ?? m.hospital.rating_avg),
-        best: 'max',
-        render: (m) => <Rating value={m.doctor?.rating_avg ?? m.hospital.rating_avg} count={m.doctor?.rating_count ?? m.hospital.rating_count} />,
-      },
-      {
-        label: 'Languages',
-        value: (m) => (m.doctor?.languages.length ? m.doctor.languages : m.hospital.languages).join(', '),
-        render: (m) => (m.doctor?.languages.length ? m.doctor.languages : m.hospital.languages).join(', ') || dash,
-      },
-      {
-        label: 'Video consultation',
-        value: (m) => !!m.doctor?.teleconsult_available,
-        render: (m) => (m.doctor ? yesNo(m.doctor.teleconsult_available) : dash),
-      },
-      {
-        label: 'Consultation fee',
-        value: (m) => num(m.doctor?.consultation_fee_minor),
-        best: 'min',
-        render: (m) => (m.doctor?.consultation_fee_minor != null ? <Money minor={m.doctor.consultation_fee_minor} currency={m.doctor.currency} trim /> : dash),
-      },
-    ],
-  },
-  {
-    title: 'Hospital',
-    rows: [
-      {
-        label: 'Hospital',
-        value: (m) => m.hospital.name,
-        render: (m) => (
-          <span>
-            <span className="font-medium">{m.hospital.name}</span>
-            <span className="block text-xs text-muted">
-              {m.hospital.city}
-              {m.hospital.state ? `, ${m.hospital.state}` : ''}
-            </span>
-          </span>
-        ),
-      },
-      {
-        label: 'Accreditation',
-        value: (m) => m.hospital.accreditations.join(','),
-        render: (m) => (m.hospital.accreditations.length ? <Accreditations values={m.hospital.accreditations} /> : dash),
-      },
-      { label: 'International patient desk', value: (m) => m.hospital.international_desk, render: (m) => yesNo(m.hospital.international_desk) },
-    ],
-  },
-];
+        },
+        {
+          id: 'accreditation',
+          label: t('screening.compare.rows.accreditation'),
+          value: (m) => m.hospital.accreditations.join(','),
+          render: (m) => (m.hospital.accreditations.length ? <Accreditations values={m.hospital.accreditations} /> : dash),
+        },
+        {
+          id: 'intlDesk',
+          label: t('screening.compare.rows.intlDesk'),
+          value: (m) => m.hospital.international_desk,
+          render: (m) => yesNo(m.hospital.international_desk),
+        },
+      ],
+    },
+  ];
+}
 
 /** Index of the best column for a row (only when the values differ). */
 function bestIndex(row: Row, matches: MatchOut[]): number[] {
@@ -204,7 +280,9 @@ function differs(row: Row, matches: MatchOut[]): boolean {
 export function ComparePage() {
   const { id = '' } = useParams();
   const [params] = useSearchParams();
-  useDocumentTitle('Compare matches');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('screening.compare.documentTitle'));
+  const allGroups = useMemo(() => buildGroups(t), [t]);
   const ids = useMemo(() => (params.get('m') ?? '').split(',').filter(Boolean).slice(0, 3), [params]);
   const screening = useScreening(id);
   const matches = useMatches(id, screening.data?.status === 'completed');
@@ -228,22 +306,22 @@ export function ComparePage() {
   const topScore = Math.max(...chosen.map((m) => Number(m.match_score)));
   const nameOf = (m: MatchOut) => m.doctor?.full_name ?? m.hospital.name;
 
-  const groups = GROUPS.map((g) => ({ ...g, rows: onlyDiff ? g.rows.filter((r) => differs(r, chosen)) : g.rows })).filter((g) => g.rows.length);
+  const groups = allGroups.map((g) => ({ ...g, rows: onlyDiff ? g.rows.filter((r) => differs(r, chosen)) : g.rows })).filter((g) => g.rows.length);
   const colWidth = chosen.length === 3 ? 'w-[26%]' : 'w-[38%]';
 
   return (
     <div>
       <PageHeader
-        back={<BackLink to={paths.screeningResults(id)}>Back to matches</BackLink>}
-        title="Compare your matches"
-        description="Side by side: price, what is included, the doctor and the hospital. The best value in each row is highlighted."
+        back={<BackLink to={paths.screeningResults(id)}>{t('screening.compare.backToMatches')}</BackLink>}
+        title={t('screening.compare.title')}
+        description={t('screening.compare.description')}
       />
       {chosen.length < 2 ? (
         <EmptyState
-          title="Select at least two matches to compare"
+          title={t('screening.compare.selectTwo')}
           action={
             <Button variant="outline" onClick={() => history.back()}>
-              Go back
+              {t('screening.compare.goBack')}
             </Button>
           }
         />
@@ -254,24 +332,33 @@ export function ComparePage() {
               <p className="inline-flex items-center gap-2 rounded-full bg-success-soft px-3 py-1.5 text-sm text-success-ink">
                 <Trophy className="size-4" aria-hidden />
                 <span>
-                  <strong>{nameOf(cheapest)}</strong> is the lowest estimate - {formatMoney(spread, cheapest.currency, undefined, { trimZeros: true })} less
-                  than the highest.
+                  <Trans
+                    t={t}
+                    i18nKey="screening.compare.lowestEstimate"
+                    values={{
+                      name: nameOf(cheapest),
+                      amount: formatMoney(spread, cheapest.currency, undefined, { trimZeros: true }),
+                    }}
+                    components={{ 0: <strong /> }}
+                  />
                 </span>
               </p>
             ) : (
               <span />
             )}
-            <Switch checked={onlyDiff} onChange={setOnlyDiff} label="Only show differences" />
+            <Switch checked={onlyDiff} onChange={setOnlyDiff} label={t('screening.compare.onlyDifferences')} />
           </div>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
             <div className="overflow-x-auto">
               <table className={cn('w-full table-fixed border-collapse text-sm', chosen.length === 3 ? 'min-w-[640px]' : 'min-w-[460px]')}>
-                <caption className="sr-only">Comparison of selected matches</caption>
+                <caption className="sr-only">{t('screening.compare.caption')}</caption>
                 <thead>
                   <tr className="border-b border-border">
                     <th scope="col" className="sticky start-0 z-10 w-28 bg-surface p-3 text-start align-bottom sm:w-52 sm:p-4">
-                      <span className="text-xs font-semibold tracking-wide text-muted uppercase">{chosen.length} options</span>
+                      <span className="text-xs font-semibold tracking-wide text-muted uppercase">
+                        {t('screening.compare.options', { count: chosen.length })}
+                      </span>
                     </th>
                     {chosen.map((m) => {
                       const isCheapest = cheapest?.id === m.id && spread > 0;
@@ -281,12 +368,12 @@ export function ComparePage() {
                             <div className="flex flex-wrap gap-1.5">
                               {isCheapest ? (
                                 <Badge tone="green">
-                                  <Trophy className="h-3 w-3" aria-hidden /> Lowest price
+                                  <Trophy className="h-3 w-3" aria-hidden /> {t('screening.compare.lowestPrice')}
                                 </Badge>
                               ) : null}
                               {Number(m.match_score) === topScore ? (
                                 <Badge tone="violet">
-                                  <BadgeCheck className="h-3 w-3" aria-hidden /> Best match
+                                  <BadgeCheck className="h-3 w-3" aria-hidden /> {t('screening.compare.bestMatch')}
                                 </Badge>
                               ) : null}
                             </div>
@@ -301,7 +388,9 @@ export function ComparePage() {
                               <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2" aria-hidden>
                                 <span className="block h-full rounded-full bg-primary" style={{ width: `${Math.round(Number(m.match_score))}%` }} />
                               </span>
-                              <span className="font-semibold text-fg tabular-nums">{Math.round(Number(m.match_score))}% match</span>
+                              <span className="font-semibold text-fg tabular-nums">
+                                {t('screening.match.score', { score: formatNumber(Math.round(Number(m.match_score))) })}
+                              </span>
                             </div>
                           </div>
                         </th>
@@ -311,7 +400,7 @@ export function ComparePage() {
                 </thead>
                 <tbody>
                   {groups.map((g) => (
-                    <Fragment key={g.title}>
+                    <Fragment key={g.id}>
                       <tr className="border-b border-border bg-surface-2/60">
                         <th scope="colgroup" colSpan={chosen.length + 1} className="px-4 py-2 text-start text-xs font-semibold tracking-wide text-muted uppercase">
                           {g.title}
@@ -320,7 +409,7 @@ export function ComparePage() {
                       {g.rows.map((row) => {
                         const best = bestIndex(row, chosen);
                         return (
-                          <tr key={row.label} className="border-b border-border last:border-0">
+                          <tr key={row.id} className="border-b border-border last:border-0">
                             <th scope="row" className="sticky start-0 z-10 bg-surface px-3 py-3 text-start align-top font-medium text-fg sm:px-4">
                               {row.label}
                               {row.hint ? <span className="mt-0.5 hidden text-xs font-normal text-muted sm:block">{row.hint}</span> : null}
@@ -337,12 +426,18 @@ export function ComparePage() {
                                 <span className="inline-flex flex-wrap items-center gap-1.5">
                                   {row.render(m)}
                                   {best.includes(i) ? (
-                                    <span className="rounded-full bg-success-soft px-1.5 text-[11px] leading-5 font-semibold text-success-ink">Best</span>
+                                    <span className="rounded-full bg-success-soft px-1.5 text-[11px] leading-5 font-semibold text-success-ink">
+                                      {t('screening.compare.best')}
+                                    </span>
                                   ) : null}
                                 </span>
-                                {row.label === 'Estimated total' && cheapest && cheapest.id !== m.id && m.estimated_cost_minor != null && m.currency === cheapest.currency ? (
+                                {row.id === 'estimatedTotal' && cheapest && cheapest.id !== m.id && m.estimated_cost_minor != null && m.currency === cheapest.currency ? (
                                   <span className="block text-xs font-normal text-muted">
-                                    +{formatMoney(m.estimated_cost_minor - cheapest.estimated_cost_minor!, m.currency, undefined, { trimZeros: true })} vs lowest
+                                    {t('screening.compare.vsLowest', {
+                                      amount: formatMoney(m.estimated_cost_minor - cheapest.estimated_cost_minor!, m.currency, undefined, {
+                                        trimZeros: true,
+                                      }),
+                                    })}
                                   </span>
                                 ) : null}
                               </td>
@@ -356,12 +451,12 @@ export function ComparePage() {
                     <>
                       <tr className="border-b border-border bg-surface-2/60">
                         <th scope="colgroup" colSpan={chosen.length + 1} className="px-4 py-2 text-start text-xs font-semibold tracking-wide text-muted uppercase">
-                          Why it matches you
+                          {t('screening.compare.whyMatches')}
                         </th>
                       </tr>
                       <tr className="border-b border-border">
                         <th scope="row" className="sticky start-0 z-10 bg-surface px-4 py-3 text-start align-top font-medium">
-                          Reasons
+                          {t('screening.compare.reasons')}
                         </th>
                         {chosen.map((m) => (
                           <td key={m.id} className="px-4 py-3 align-top">
@@ -382,11 +477,11 @@ export function ComparePage() {
                 {!emergency ? (
                   <tfoot>
                     <tr className="bg-surface-2/40">
-                      <td className="sticky start-0 z-10 bg-surface px-4 py-4 text-xs text-muted">Free, no obligation</td>
+                      <td className="sticky start-0 z-10 bg-surface px-4 py-4 text-xs text-muted">{t('screening.compare.freeNoObligation')}</td>
                       {chosen.map((m) => (
                         <td key={m.id} className="px-4 py-4">
                           <Button variant="danger" size="sm" onClick={() => setQuoteFor(m)} className="w-full sm:w-auto">
-                            Request quote
+                            {t('screening.match.requestQuote')}
                           </Button>
                         </td>
                       ))}

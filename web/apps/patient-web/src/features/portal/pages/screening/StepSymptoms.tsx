@@ -1,17 +1,28 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Check, Minus, Plus, Sparkles, X } from 'lucide-react';
-import type { ScreeningSymptom, SymptomAnswer } from '@hig/shared/api';
+import { SYMPTOM_ANSWER_LABELS, type ScreeningSymptom, type SymptomAnswer } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useSymptomLibrary } from '../../api/queries';
 import { cn } from '../../lib/shared';
 import { Badge, Button, Field, Input, Skeleton, Textarea } from '../../ui/primitives';
 
-const ANSWER_STYLES: Record<SymptomAnswer, { tone: 'green' | 'amber' | 'neutral'; label: string }> = {
-  yes: { tone: 'green', label: 'Yes' },
-  maybe: { tone: 'amber', label: 'Maybe' },
-  no: { tone: 'neutral', label: 'No' },
+const ANSWER_TONES: Record<SymptomAnswer, 'green' | 'amber' | 'neutral'> = {
+  yes: 'green',
+  maybe: 'amber',
+  no: 'neutral',
 };
 
-const FALLBACK_SUGGESTIONS = ['Pain', 'Fatigue', 'Swelling', 'Fever', 'Headaches', 'Dizziness', 'Shortness of breath', 'Weight loss'];
+/** Shown when the symptom library has nothing for the chosen areas (catalog keys under screening.symptoms.fallback). */
+const FALLBACK_SUGGESTIONS = [
+  'pain',
+  'fatigue',
+  'swelling',
+  'fever',
+  'headaches',
+  'dizziness',
+  'shortnessOfBreath',
+  'weightLoss',
+] as const;
 
 export function StepSymptoms({
   specialtySlug,
@@ -28,6 +39,7 @@ export function StepSymptoms({
   onSymptoms: (s: ScreeningSymptom[]) => void;
   onNotes: (n: string) => void;
 }) {
+  const { t } = useAppTranslation();
   const library = useSymptomLibrary(specialtySlug ? { specialty: specialtySlug } : {});
   const [custom, setCustom] = useState('');
 
@@ -46,8 +58,9 @@ export function StepSymptoms({
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
       .map((x) => x.name);
     const unique = [...new Set(scored)];
-    return unique.length ? unique.slice(0, 24) : library.isSuccess ? FALLBACK_SUGGESTIONS : [];
-  }, [library.data, library.isSuccess, bodyAreas, specialtySlug]);
+    if (unique.length) return unique.slice(0, 24);
+    return library.isSuccess ? FALLBACK_SUGGESTIONS.map((key) => t(`screening.symptoms.fallback.${key}`)) : [];
+  }, [library.data, library.isSuccess, bodyAreas, specialtySlug, t]);
 
   const answered = new Map(symptoms.map((s) => [s.name.toLowerCase(), s.answer]));
   const queue = suggestions.filter((name) => !answered.has(name.toLowerCase()));
@@ -80,7 +93,7 @@ export function StepSymptoms({
           ) : current ? (
             <div className="rounded-2xl bg-gradient-to-b from-slate-800 to-slate-900 p-6 text-center text-white shadow-lg">
               <p className="text-xs uppercase tracking-wider text-slate-400">
-                {queue.length} suggestion{queue.length === 1 ? '' : 's'} left
+                {t('screening.symptoms.suggestionsLeft', { count: queue.length })}
               </p>
               <div className="mx-auto mt-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400">
                 <Sparkles className="h-7 w-7" aria-hidden />
@@ -88,13 +101,13 @@ export function StepSymptoms({
               <p className="mt-4 text-2xl font-bold" aria-live="polite">
                 {current}
               </p>
-              <p className="mt-1 text-sm text-slate-400">Do you have this symptom?</p>
+              <p className="mt-1 text-sm text-slate-400">{t('screening.symptoms.question')}</p>
               <div className="mt-6 flex items-center justify-center gap-4">
                 <button
                   type="button"
                   onClick={() => answer(current, 'no')}
                   className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/20 text-red-400 ring-1 ring-red-500/40 hover:bg-red-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                  aria-label={`No, I do not have ${current}`}
+                  aria-label={t('screening.symptoms.answerNo', { symptom: current })}
                 >
                   <X className="h-6 w-6" />
                 </button>
@@ -102,7 +115,7 @@ export function StepSymptoms({
                   type="button"
                   onClick={() => answer(current, 'maybe')}
                   className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/40 hover:bg-amber-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-                  aria-label={`Maybe ${current}`}
+                  aria-label={t('screening.symptoms.answerMaybe', { symptom: current })}
                 >
                   <Minus className="h-6 w-6" />
                 </button>
@@ -110,28 +123,28 @@ export function StepSymptoms({
                   type="button"
                   onClick={() => answer(current, 'yes')}
                   className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400 ring-1 ring-green-500/40 hover:bg-green-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
-                  aria-label={`Yes, I have ${current}`}
+                  aria-label={t('screening.symptoms.answerYes', { symptom: current })}
                 >
                   <Check className="h-6 w-6" />
                 </button>
               </div>
               <div className="mt-3 flex justify-center gap-10 text-xs text-slate-400">
-                <span>No</span>
-                <span>Maybe</span>
-                <span>Yes</span>
+                <span>{SYMPTOM_ANSWER_LABELS.no}</span>
+                <span>{SYMPTOM_ANSWER_LABELS.maybe}</span>
+                <span>{SYMPTOM_ANSWER_LABELS.yes}</span>
               </div>
             </div>
           ) : (
             <div className="flex h-full min-h-48 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 p-6 text-center dark:border-slate-700">
               <Check className="h-8 w-8 text-green-500" aria-hidden />
-              <p className="mt-2 font-semibold">All suggestions answered</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Add anything else below.</p>
+              <p className="mt-2 font-semibold">{t('screening.symptoms.allAnswered')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.symptoms.addMoreBelow')}</p>
             </div>
           )}
 
           {queue.length > 1 ? (
             <div className="mt-4">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">Quick select</p>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">{t('screening.symptoms.quickSelect')}</p>
               <div className="flex flex-wrap gap-2">
                 {queue.slice(1, 13).map((name) => (
                   <button
@@ -151,36 +164,36 @@ export function StepSymptoms({
         {/* Answers */}
         <div className="space-y-4">
           <div>
-            <p className="font-semibold">Your symptoms</p>
+            <p className="font-semibold">{t('screening.symptoms.yours')}</p>
             {symptoms.length ? (
               <ul className="mt-2 flex flex-wrap gap-2">
                 {symptoms.map((s) => (
                   <li
                     key={s.name}
                     className={cn(
-                      'inline-flex items-center gap-2 rounded-full border py-1 pl-3 pr-1 text-sm',
+                      'inline-flex items-center gap-2 rounded-full border py-1 ps-3 pe-1 text-sm',
                       s.answer === 'no'
                         ? 'border-slate-200 text-slate-400 line-through dark:border-slate-800'
                         : 'border-slate-300 dark:border-slate-700',
                     )}
                   >
                     {s.name}
-                    <Badge tone={ANSWER_STYLES[s.answer].tone}>{ANSWER_STYLES[s.answer].label}</Badge>
+                    <Badge tone={ANSWER_TONES[s.answer]}>{SYMPTOM_ANSWER_LABELS[s.answer]}</Badge>
                     <select
-                      aria-label={`Change answer for ${s.name}`}
+                      aria-label={t('screening.symptoms.changeAnswer', { symptom: s.name })}
                       value={s.answer}
                       onChange={(e) => answer(s.name, e.target.value as SymptomAnswer)}
                       className="rounded bg-transparent text-xs text-slate-500 focus:outline-none"
                     >
-                      <option value="yes">Yes</option>
-                      <option value="maybe">Maybe</option>
-                      <option value="no">No</option>
+                      <option value="yes">{SYMPTOM_ANSWER_LABELS.yes}</option>
+                      <option value="maybe">{SYMPTOM_ANSWER_LABELS.maybe}</option>
+                      <option value="no">{SYMPTOM_ANSWER_LABELS.no}</option>
                     </select>
                     <button
                       type="button"
                       onClick={() => remove(s.name)}
                       className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
-                      aria-label={`Remove ${s.name}`}
+                      aria-label={t('screening.symptoms.remove', { symptom: s.name })}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -188,7 +201,7 @@ export function StepSymptoms({
                 ))}
               </ul>
             ) : (
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Answer the cards or add your own symptoms.</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('screening.symptoms.empty')}</p>
             )}
           </div>
 
@@ -196,19 +209,19 @@ export function StepSymptoms({
             <Input
               value={custom}
               onChange={(e) => setCustom(e.target.value)}
-              placeholder="Add another symptom (e.g. knee stiffness)"
-              aria-label="Add another symptom"
+              placeholder={t('screening.symptoms.addPlaceholder')}
+              aria-label={t('screening.symptoms.addLabel')}
               maxLength={80}
             />
             <Button type="submit" variant="outline" disabled={!custom.trim()}>
-              Add
+              {t('screening.symptoms.add')}
             </Button>
           </form>
 
           <Field
-            label="Describe it in your own words (optional)"
+            label={t('screening.symptoms.notesLabel')}
             htmlFor="symptom-notes"
-            hint="When did it start, what makes it better or worse, any diagnosis you already have."
+            hint={t('screening.symptoms.notesHint')}
           >
             <Textarea
               id="symptom-notes"

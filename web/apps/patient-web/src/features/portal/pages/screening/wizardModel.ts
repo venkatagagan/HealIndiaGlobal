@@ -95,42 +95,48 @@ export function stepPayload(step: number, d: WizardDraft): ScreeningUpdateIn {
   }
 }
 
-/** Returns an error message when the step cannot be completed yet. */
+/** Returns the catalog key (namespace `patient`) of the error to show when the step cannot be completed yet. */
 export function validateStep(step: number, d: WizardDraft): string | null {
   switch (step) {
     case 1:
-      return d.body_areas.length ? null : 'Select at least one area on the body map (or "Whole body / general").';
+      return d.body_areas.length ? null : 'screening.wizard.errors.selectArea';
     case 2: {
       const positive = d.symptoms.some((s) => s.answer !== 'no');
-      return positive || d.notes.trim().length >= 3
-        ? null
-        : 'Answer "Yes" or "Maybe" to at least one symptom, or describe your symptoms in your own words.';
+      return positive || d.notes.trim().length >= 3 ? null : 'screening.wizard.errors.answerSymptom';
     }
     case 3: {
       const value = Number.parseInt(d.duration_value, 10);
-      if (!Number.isFinite(value) || value <= 0) return 'Tell us how long you have had this condition.';
-      if (value > 1000) return 'Please enter a realistic duration.';
+      if (!Number.isFinite(value) || value <= 0) return 'screening.wizard.errors.durationMissing';
+      if (value > 1000) return 'screening.wizard.errors.durationUnrealistic';
       return null;
     }
     default: {
       const min = d.budget_min ? toMinor(d.budget_min, d.budget_currency) : null;
       const max = d.budget_max ? toMinor(d.budget_max, d.budget_currency) : null;
-      if ((d.budget_min && min === null) || (d.budget_max && max === null)) return 'Enter the budget as a number.';
-      if (min !== null && max !== null && min > max) return 'The minimum budget is higher than the maximum.';
+      if ((d.budget_min && min === null) || (d.budget_max && max === null)) return 'screening.wizard.errors.budgetNumber';
+      if (min !== null && max !== null && min > max) return 'screening.wizard.errors.budgetMinMax';
       if (d.travel_window_start && d.travel_window_end && d.travel_window_start > d.travel_window_end) {
-        return 'The travel window ends before it starts.';
+        return 'screening.wizard.errors.travelWindow';
       }
       if (d.use_ai && !d.consent_ai) {
-        return 'Please agree to AI processing, or turn off "Use AI recommendations".';
+        return 'screening.wizard.errors.aiConsent';
       }
       return null;
     }
   }
 }
 
-export const STEP_TITLES = [
-  'Where are you experiencing issues?',
-  'Which symptoms are you experiencing?',
-  'How long have you had this condition?',
-  'Personalize your matches',
-];
+/** Catalog keys (namespace `patient`) of the step titles and subtitles. */
+export const STEP_TITLE_KEYS = [
+  'screening.wizard.steps.areas.title',
+  'screening.wizard.steps.symptoms.title',
+  'screening.wizard.steps.duration.title',
+  'screening.wizard.steps.preferences.title',
+] as const;
+
+export const STEP_SUBTITLE_KEYS = [
+  'screening.wizard.steps.areas.subtitle',
+  'screening.wizard.steps.symptoms.subtitle',
+  'screening.wizard.steps.duration.subtitle',
+  'screening.wizard.steps.preferences.subtitle',
+] as const;

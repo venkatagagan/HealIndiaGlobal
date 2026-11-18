@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Bell, BriefcaseMedical, CalendarCheck, CheckCheck, CreditCard, FileText, MessageSquare, Plane, Stethoscope } from 'lucide-react';
+import type { TFunction } from 'i18next';
 import { errorMessage, notificationsApi, type NotificationOut } from '@hig/shared/api';
 import { filterParam, useDocumentTitle, useTableState } from '@hig/shared/lib';
 import { DataTable, DateCell, type DataTableColumn } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { qk, useMarkNotificationRead, useUnreadCount } from '../api/queries';
 import { TableTabs } from '../components/listing';
 import { paths } from '../lib/paths';
@@ -31,25 +33,25 @@ export function notificationTarget(n: NotificationOut): string | null {
   return null;
 }
 
-/** "booking.confirmed" -> Bookings (icon + label) */
+/** "booking.confirmed" -> Bookings (icon + label; `label` is the key under `notifications.category`) */
 const CATEGORIES: Record<string, { label: string; icon: typeof Bell; tone: string }> = {
-  booking: { label: 'Booking', icon: CalendarCheck, tone: 'bg-success-soft text-success-ink' },
-  case: { label: 'Case', icon: BriefcaseMedical, tone: 'bg-primary-soft text-primary-ink' },
-  quote: { label: 'Quote', icon: BriefcaseMedical, tone: 'bg-primary-soft text-primary-ink' },
-  payment: { label: 'Payment', icon: CreditCard, tone: 'bg-warning-soft text-warning-ink' },
-  refund: { label: 'Payment', icon: CreditCard, tone: 'bg-warning-soft text-warning-ink' },
-  message: { label: 'Message', icon: MessageSquare, tone: 'bg-info-soft text-info-ink' },
-  screening: { label: 'Screening', icon: Stethoscope, tone: 'bg-accent-soft text-accent-ink' },
-  travel: { label: 'Trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
-  visa: { label: 'Trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
-  document: { label: 'Document', icon: FileText, tone: 'bg-neutral-soft text-neutral-ink' },
+  booking: { label: 'booking', icon: CalendarCheck, tone: 'bg-success-soft text-success-ink' },
+  case: { label: 'case', icon: BriefcaseMedical, tone: 'bg-primary-soft text-primary-ink' },
+  quote: { label: 'quote', icon: BriefcaseMedical, tone: 'bg-primary-soft text-primary-ink' },
+  payment: { label: 'payment', icon: CreditCard, tone: 'bg-warning-soft text-warning-ink' },
+  refund: { label: 'payment', icon: CreditCard, tone: 'bg-warning-soft text-warning-ink' },
+  message: { label: 'message', icon: MessageSquare, tone: 'bg-info-soft text-info-ink' },
+  screening: { label: 'screening', icon: Stethoscope, tone: 'bg-accent-soft text-accent-ink' },
+  travel: { label: 'trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
+  visa: { label: 'trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
+  document: { label: 'document', icon: FileText, tone: 'bg-neutral-soft text-neutral-ink' },
 };
-const categoryOf = (n: NotificationOut) => CATEGORIES[n.kind.split('.')[0] ?? ''] ?? { label: 'Update', icon: Bell, tone: 'bg-neutral-soft text-neutral-ink' };
+const categoryOf = (n: NotificationOut) => CATEGORIES[n.kind.split('.')[0] ?? ''] ?? { label: 'update', icon: Bell, tone: 'bg-neutral-soft text-neutral-ink' };
 
-const COLUMNS: DataTableColumn<NotificationOut>[] = [
+const columns = (t: TFunction): DataTableColumn<NotificationOut>[] => [
   {
     key: 'title',
-    header: 'Notification',
+    header: t('notifications.columns.notification'),
     mobile: 'primary',
     cell: (n) => {
       const cat = categoryOf(n);
@@ -63,7 +65,7 @@ const COLUMNS: DataTableColumn<NotificationOut>[] = [
           <span className="min-w-0">
             <span className={cn('block text-fg', !n.read_at ? 'font-semibold' : 'font-medium')}>
               {n.title}
-              {!n.read_at ? <span className="sr-only"> (unread)</span> : null}
+              {!n.read_at ? <span className="sr-only"> {t('notifications.unreadSr')}</span> : null}
             </span>
             {n.body ? <span className="line-clamp-2 block max-w-3xl text-sm whitespace-normal text-muted">{n.body}</span> : null}
           </span>
@@ -83,13 +85,17 @@ const COLUMNS: DataTableColumn<NotificationOut>[] = [
   },
   {
     key: 'category',
-    header: 'About',
+    header: t('notifications.columns.about'),
     mobile: 'badge',
-    cell: (n) => <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-fg/80">{categoryOf(n).label}</span>,
+    cell: (n) => (
+      <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-fg/80">
+        {t(`notifications.category.${categoryOf(n).label}`)}
+      </span>
+    ),
   },
   {
     key: 'created_at',
-    header: 'Received',
+    header: t('notifications.columns.received'),
     align: 'end',
     mobile: 'hidden',
     cell: (n) => <DateCell value={n.created_at} display="relative" className="text-muted" />,
@@ -99,8 +105,10 @@ const COLUMNS: DataTableColumn<NotificationOut>[] = [
 const FILTERS = { show: filterParam.oneOf(['unread'] as const) };
 
 export function NotificationsPage() {
-  useDocumentTitle('Notifications');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('notifications.title'));
   const navigate = useNavigate();
+  const cols = useMemo(() => columns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultPageSize: 25 });
   const unreadOnly = table.filters.show === 'unread';
   const params = { page: table.page, page_size: table.pageSize, ...(unreadOnly ? { unread: true } : {}) };
@@ -116,10 +124,10 @@ export function NotificationsPage() {
 
   const tabs = useMemo(
     () => [
-      { value: '' as const, label: 'All', count: totalAll.data },
-      { value: 'unread' as const, label: 'Unread', count: unread.data?.count },
+      { value: '' as const, label: t('notifications.tabs.all'), count: totalAll.data },
+      { value: 'unread' as const, label: t('notifications.tabs.unread'), count: unread.data?.count },
     ],
-    [totalAll.data, unread.data],
+    [totalAll.data, unread.data, t],
   );
 
   function open(n: NotificationOut) {
@@ -131,8 +139,8 @@ export function NotificationsPage() {
   return (
     <div>
       <PageHeader
-        title="Notifications"
-        description="Updates about your cases, bookings, payments and messages."
+        title={t('notifications.title')}
+        description={t('notifications.description')}
         actions={
           <Button
             variant="outline"
@@ -142,20 +150,20 @@ export function NotificationsPage() {
             loading={mark.isPending && mark.variables === 'all'}
             onClick={() =>
               mark.mutate('all', {
-                onSuccess: () => toast.success('All notifications marked as read'),
+                onSuccess: () => toast.success(t('notifications.markedAll')),
                 onError: (err) => toast.error(errorMessage(err)),
               })
             }
           >
-            Mark all as read
+            {t('notifications.markAll')}
           </Button>
         }
       />
       <DataTable
         id="patient.notifications"
-        caption="Notifications"
+        caption={t('notifications.title')}
         table={table}
-        columns={COLUMNS}
+        columns={cols}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -163,24 +171,24 @@ export function NotificationsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={open}
-        rowLabel={(n) => `Open notification: ${n.title}`}
+        rowLabel={(n) => t('notifications.openRow', { title: n.title })}
         rowClassName={(n) => (n.read_at ? undefined : 'bg-primary-soft/25')}
         showViewOptions={false}
         emptyIcon={<Bell className="size-8" aria-hidden />}
-        emptyTitle="No notifications yet"
-        emptyDescription="We will let you know here when a hospital sends a quote, a payment is received or your trip is updated."
+        emptyTitle={t('notifications.empty.title')}
+        emptyDescription={t('notifications.empty.description')}
         filtersActive={unreadOnly}
         onResetFilters={table.resetFilters}
         empty={
           unreadOnly && list.data?.total === 0 ? (
             <div className="px-4 py-14 text-center">
               <CheckCheck className="mx-auto size-8 text-success" aria-hidden />
-              <p className="mt-3 font-semibold">You are all caught up</p>
-              <p className="mt-1 text-sm text-muted">There are no unread notifications.</p>
+              <p className="mt-3 font-semibold">{t('notifications.caughtUp.title')}</p>
+              <p className="mt-1 text-sm text-muted">{t('notifications.caughtUp.description')}</p>
             </div>
           ) : undefined
         }
-        header={<TableTabs label="Show" items={tabs} value={table.filters.show} onChange={(v) => table.setFilter('show', v)} />}
+        header={<TableTabs label={t('notifications.tabs.label')} items={tabs} value={table.filters.show} onChange={(v) => table.setFilter('show', v)} />}
       />
     </div>
   );

@@ -5,7 +5,8 @@
  */
 import type { ReactNode } from 'react';
 import { ArrowDownUp, Check, ChevronDown } from 'lucide-react';
-import { cn } from '@hig/shared/lib';
+import { cn, i18n } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import {
   EmptyState,
   Popover,
@@ -16,40 +17,28 @@ import {
   type StatusKind,
 } from '@hig/shared/ui';
 
-/** Patient-friendly wording for workflow statuses (the shared labels are written for staff). */
-const PATIENT_LABELS: Partial<Record<StatusKind, Record<string, string>>> = {
-  case: {
-    enquiry: 'Waiting for quote',
-    quoted: 'Quote received',
-    accepted: 'Quote accepted',
-    booked: 'Booked',
-    in_treatment: 'In treatment',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
-    declined: 'Declined by hospital',
-  },
-  booking: { pending_payment: 'Awaiting payment', confirmed: 'Confirmed', admitted: 'Admitted', completed: 'Completed', cancelled: 'Cancelled' },
-  order: {
-    created: 'Not completed',
-    pending: 'Processing',
-    paid: 'Paid',
-    partially_refunded: 'Partly refunded',
-    refunded: 'Refunded',
-    failed: 'Failed',
-    expired: 'Expired',
-    cancelled: 'Cancelled',
-  },
-  quote: { sent: 'Awaiting your decision', accepted: 'Accepted', rejected: 'Declined', expired: 'Expired', withdrawn: 'Withdrawn' },
-  screening: { draft: 'Not finished', processing: 'Analysing', completed: 'Matches ready', failed: 'Failed' },
-  document: { uploaded: 'Uploaded', verified: 'Verified', rejected: 'Needs a new copy' },
+/**
+ * Patient-friendly wording for workflow statuses (the shared labels are written for staff). The text lives in
+ * the catalog at `listing.status.<kind>.<status>`; this lists which statuses have patient wording.
+ */
+const PATIENT_LABELS: Partial<Record<StatusKind, readonly string[]>> = {
+  case: ['enquiry', 'quoted', 'accepted', 'booked', 'in_treatment', 'completed', 'cancelled', 'declined'],
+  booking: ['pending_payment', 'confirmed', 'admitted', 'completed', 'cancelled'],
+  order: ['created', 'pending', 'paid', 'partially_refunded', 'refunded', 'failed', 'expired', 'cancelled'],
+  quote: ['sent', 'accepted', 'rejected', 'expired', 'withdrawn'],
+  screening: ['draft', 'processing', 'completed', 'failed'],
+  document: ['uploaded', 'verified', 'rejected'],
 };
 
+/** Patient wording of a status in the current language (read at call time), or undefined if there is none. */
 export function patientStatusLabel(status: string, kind: StatusKind): string | undefined {
-  return PATIENT_LABELS[kind]?.[status];
+  if (!PATIENT_LABELS[kind]?.includes(status)) return undefined;
+  return i18n.t(`patient:listing.status.${kind}.${status}`);
 }
 
 /** Status badge with the patient wording. */
 export function PatientStatus({ status, kind, className }: { status: string | null | undefined; kind: StatusKind; className?: string }) {
+  useAppTranslation(); // re-render on language change
   if (!status) return <span className="text-muted">—</span>;
   return <StatusBadge status={status} kind={kind} label={patientStatusLabel(status, kind)} className={className} />;
 }
@@ -114,13 +103,15 @@ export function SortMenu<V extends string>({
   value,
   options,
   onChange,
-  label = 'Sort',
+  label: labelProp,
 }: {
   value: V;
   options: readonly SortOption<V>[];
   onChange: (value: V) => void;
   label?: string;
 }) {
+  const { t } = useAppTranslation();
+  const label = labelProp ?? t('listing.sort');
   const pop = usePopover();
   const current = options.find((o) => o.value === value) ?? options[0];
   return (
@@ -129,11 +120,11 @@ export function SortMenu<V extends string>({
         type="button"
         {...pop.triggerProps}
         aria-haspopup="listbox"
-        aria-label={`${label}: ${current?.label ?? ''}`}
+        aria-label={t('listing.sortValue', { label, value: current?.label ?? '' })}
         className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface px-3 text-sm font-medium text-fg/80 shadow-xs transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <ArrowDownUp className="size-3.5 opacity-70" aria-hidden />
-        <span className="hidden sm:inline">{label}:</span>
+        <span className="hidden sm:inline">{t('listing.sortLabel', { label })}</span>
         <span className="font-semibold text-fg">{current?.label}</span>
         <ChevronDown className="size-3.5 opacity-60" aria-hidden />
       </button>
@@ -202,19 +193,20 @@ export function ListEmpty({
   description?: string;
   action?: ReactNode;
 }) {
+  const { t } = useAppTranslation();
   if (filtered) {
     return (
       <EmptyState
         className="py-12"
-        title="No matching results"
-        description="Try a different search or remove a filter."
+        title={t('listing.noMatches.title')}
+        description={t('listing.noMatches.description')}
         action={
           <button
             type="button"
             onClick={onReset}
             className="h-9 rounded-lg border border-border bg-surface px-3 text-sm font-medium hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Reset filters
+            {t('listing.noMatches.reset')}
           </button>
         }
       />

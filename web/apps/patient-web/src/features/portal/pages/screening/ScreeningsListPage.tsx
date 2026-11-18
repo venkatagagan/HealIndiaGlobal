@@ -13,10 +13,13 @@ import {
   statusTone,
   type DataTableColumn,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../../i18n';
 import { useScreenings } from '../../api/queries';
 import { PatientStatus, TableTabs, countBy, inDateRange, patientStatusLabel, quickValue } from '../../components/listing';
 import { paths } from '../../lib/paths';
 import { ButtonLink, PageHeader } from '../../ui/primitives';
+
+type T = ReturnType<typeof useAppTranslation>['t'];
 
 export function screeningHref(s: Pick<ScreeningOut, 'id' | 'status'>): string {
   if (s.status === 'draft') return paths.screeningStep(s.id, 1);
@@ -24,11 +27,12 @@ export function screeningHref(s: Pick<ScreeningOut, 'id' | 'status'>): string {
   return paths.screeningProcessing(s.id);
 }
 
+/** Catalog keys of the "next step" link per status. */
 const NEXT_STEP: Record<ScreeningStatus, string> = {
-  draft: 'Continue answering',
-  processing: 'Check progress',
-  completed: 'View matches',
-  failed: 'See details',
+  draft: 'screening.list.next.draft',
+  processing: 'screening.list.next.processing',
+  completed: 'screening.list.next.completed',
+  failed: 'screening.list.next.failed',
 };
 
 const FILTERS = {
@@ -40,77 +44,88 @@ const FILTERS = {
 };
 const TABS: ScreeningStatus[] = ['completed', 'draft', 'processing', 'failed'];
 const label = (s: ScreeningStatus) => patientStatusLabel(s, 'screening') ?? s;
-const titleOf = (s: ScreeningOut) => s.specialty?.name ?? 'General screening';
-const summaryOf = (s: ScreeningOut) =>
-  s.ai_result?.summary ?? (s.body_areas.length ? `Areas: ${s.body_areas.join(', ')}` : s.symptoms.length ? `${s.symptoms.length} symptoms` : null);
+const titleOf = (t: T, s: ScreeningOut) => s.specialty?.name ?? t('screening.generalScreening');
+const summaryOf = (t: T, s: ScreeningOut) =>
+  s.ai_result?.summary ??
+  (s.body_areas.length
+    ? t('screening.list.areasSummary', { areas: s.body_areas.join(', ') })
+    : s.symptoms.length
+      ? t('screening.list.symptomsSummary', { count: s.symptoms.length })
+      : null);
 
-const COLUMNS: DataTableColumn<ScreeningOut>[] = [
-  {
-    key: 'specialty',
-    header: 'Screening',
-    sticky: true,
-    sortable: true,
-    sortValue: titleOf,
-    mobile: 'primary',
-    className: 'max-w-96',
-    cell: (s) => (
-      <span className="block min-w-0">
-        <span className="block truncate font-medium text-fg">{titleOf(s)}</span>
-        {summaryOf(s) ? <span className="line-clamp-1 text-xs text-muted">{summaryOf(s)}</span> : null}
-      </span>
-    ),
-    mobileCell: (s) => <span className="font-semibold">{titleOf(s)}</span>,
-    exportValue: titleOf,
-  },
-  {
-    key: 'urgency',
-    header: 'Urgency',
-    sortable: true,
-    sortValue: (s) => (s.urgency ? URGENCIES.indexOf(s.urgency) : null),
-    mobile: 'badge',
-    cell: (s) => (s.urgency ? <StatusBadge status={s.urgency} kind="urgency" /> : <span className="text-muted">—</span>),
-    exportValue: (s) => (s.urgency ? URGENCY_LABELS[s.urgency] : ''),
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    sortable: true,
-    mobile: 'badge',
-    cell: (s) => <PatientStatus status={s.status} kind="screening" />,
-    exportValue: (s) => label(s.status),
-  },
-  {
-    key: 'created_at',
-    header: 'Started',
-    sortable: true,
-    sortDescFirst: true,
-    cell: (s) => <DateCell value={s.created_at} display="date" />,
-    exportValue: (s) => s.created_at,
-  },
-  {
-    key: 'completed_at',
-    header: 'Completed',
-    sortable: true,
-    sortDescFirst: true,
-    defaultHidden: true,
-    cell: (s) => <DateCell value={s.completed_at} display="date" />,
-    exportValue: (s) => s.completed_at,
-  },
-  {
-    key: 'next',
-    header: 'Next step',
-    exportable: false,
-    mobile: 'meta',
-    cell: (s) => (
-      <span className="inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap text-primary-ink">
-        {NEXT_STEP[s.status]} <ArrowRight className="size-3.5" aria-hidden />
-      </span>
-    ),
-  },
-];
+function buildColumns(t: T): DataTableColumn<ScreeningOut>[] {
+  const title = (s: ScreeningOut) => titleOf(t, s);
+  const summary = (s: ScreeningOut) => summaryOf(t, s);
+  return [
+    {
+      key: 'specialty',
+      header: t('screening.list.columns.screening'),
+      sticky: true,
+      sortable: true,
+      sortValue: title,
+      mobile: 'primary',
+      className: 'max-w-96',
+      cell: (s) => (
+        <span className="block min-w-0">
+          <span className="block truncate font-medium text-fg">{title(s)}</span>
+          {summary(s) ? <span className="line-clamp-1 text-xs text-muted">{summary(s)}</span> : null}
+        </span>
+      ),
+      mobileCell: (s) => <span className="font-semibold">{title(s)}</span>,
+      exportValue: title,
+    },
+    {
+      key: 'urgency',
+      header: t('screening.list.columns.urgency'),
+      sortable: true,
+      sortValue: (s) => (s.urgency ? URGENCIES.indexOf(s.urgency) : null),
+      mobile: 'badge',
+      cell: (s) => (s.urgency ? <StatusBadge status={s.urgency} kind="urgency" /> : <span className="text-muted">—</span>),
+      exportValue: (s) => (s.urgency ? URGENCY_LABELS[s.urgency] : ''),
+    },
+    {
+      key: 'status',
+      header: t('screening.list.columns.status'),
+      sortable: true,
+      mobile: 'badge',
+      cell: (s) => <PatientStatus status={s.status} kind="screening" />,
+      exportValue: (s) => label(s.status),
+    },
+    {
+      key: 'created_at',
+      header: t('screening.list.columns.started'),
+      sortable: true,
+      sortDescFirst: true,
+      cell: (s) => <DateCell value={s.created_at} display="date" />,
+      exportValue: (s) => s.created_at,
+    },
+    {
+      key: 'completed_at',
+      header: t('screening.list.columns.completed'),
+      sortable: true,
+      sortDescFirst: true,
+      defaultHidden: true,
+      cell: (s) => <DateCell value={s.completed_at} display="date" />,
+      exportValue: (s) => s.completed_at,
+    },
+    {
+      key: 'next',
+      header: t('screening.list.columns.nextStep'),
+      exportable: false,
+      mobile: 'meta',
+      cell: (s) => (
+        <span className="inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap text-primary-ink">
+          {t(NEXT_STEP[s.status])} <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+        </span>
+      ),
+    },
+  ];
+}
 
 export function ScreeningsListPage() {
-  useDocumentTitle('My screenings');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('screening.list.title'));
+  const columns = useMemo(() => buildColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', defaultPageSize: 10 });
   const { filters, setFilter, setFilters } = table;
   const list = useScreenings({ page: 1, page_size: 100 });
@@ -118,10 +133,10 @@ export function ScreeningsListPage() {
   const base = useMemo(
     () =>
       all
-        .filter(matchesSearch(filters.q, (s: ScreeningOut) => [titleOf(s), summaryOf(s), ...s.body_areas]))
+        .filter(matchesSearch(filters.q, (s: ScreeningOut) => [titleOf(t, s), summaryOf(t, s), ...s.body_areas]))
         .filter((s) => !filters.urgency.length || (!!s.urgency && filters.urgency.includes(s.urgency)))
         .filter((s) => inDateRange(s.created_at, filters.from, filters.to)),
-    [all, filters.q, filters.urgency, filters.from, filters.to],
+    [all, filters.q, filters.urgency, filters.from, filters.to, t],
   );
   const rows = useMemo(() => base.filter((s) => !filters.status.length || filters.status.includes(s.status)), [base, filters.status]);
   const counts = useMemo(() => countBy(base, (s) => s.status), [base]);
@@ -129,51 +144,58 @@ export function ScreeningsListPage() {
   return (
     <div>
       <PageHeader
-        title="My screenings"
-        description="Your AI screenings and their matched doctors and hospitals."
+        title={t('screening.list.title')}
+        description={t('screening.list.description')}
         actions={
           <ButtonLink to={paths.newScreening()} icon={<Stethoscope className="h-4 w-4" aria-hidden />}>
-            New screening
+            {t('screening.list.newScreening')}
           </ButtonLink>
         }
       />
       <DataTable
         id="patient.screenings"
-        caption="My screenings"
+        caption={t('screening.list.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data ? rows : undefined}
         loading={list.isLoading}
         fetching={list.isFetching && !list.isLoading}
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={screeningHref}
-        rowLabel={(s) => `${NEXT_STEP[s.status]}: ${titleOf(s)}`}
+        rowLabel={(s) => t('screening.list.rowLabel', { action: t(NEXT_STEP[s.status]), title: titleOf(t, s) })}
         emptyIcon={<Stethoscope className="size-8" aria-hidden />}
-        emptyTitle="No screenings yet"
-        emptyDescription="Answer a few questions and get matched with specialists in minutes."
-        emptyAction={<ButtonLink to={paths.newScreening()}>Start AI screening</ButtonLink>}
+        emptyTitle={t('screening.list.emptyTitle')}
+        emptyDescription={t('screening.list.emptyDescription')}
+        emptyAction={<ButtonLink to={paths.newScreening()}>{t('screening.list.startAiScreening')}</ButtonLink>}
         header={
           <TableTabs
-            label="Screening status"
-            items={[{ value: '', label: 'All', count: base.length }, ...TABS.map((s) => ({ value: s, label: label(s), count: counts[s] ?? 0 }))]}
+            label={t('screening.list.statusTabs')}
+            items={[
+              { value: '', label: t('screening.list.all'), count: base.length },
+              ...TABS.map((s) => ({ value: s, label: label(s), count: counts[s] ?? 0 })),
+            ]}
             value={quickValue(filters.status, TABS)}
             onChange={(s) => setFilter('status', s ? [s] : [])}
           />
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Specialty, symptom or summary…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('screening.list.searchPlaceholder') }}
             onReset={table.resetFilters}
-            actions={<ExportButton filename="my-screenings" columns={COLUMNS} rows={rows} />}
+            actions={<ExportButton filename="my-screenings" columns={columns} rows={rows} />}
           >
             <MultiSelectFilter
-              label="Urgency"
+              label={t('screening.list.columns.urgency')}
               value={filters.urgency}
               onChange={(v) => setFilter('urgency', v)}
               options={URGENCIES.map((u) => ({ value: u, label: URGENCY_LABELS[u], tone: statusTone(u, 'urgency') }))}
             />
-            <DateRangeFilter label="Started" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter
+              label={t('screening.list.columns.started')}
+              value={{ from: filters.from, to: filters.to }}
+              onChange={({ from, to }) => setFilters({ from, to })}
+            />
           </FilterBar>
         }
       />
