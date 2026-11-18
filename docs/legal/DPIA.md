@@ -46,11 +46,12 @@ Anthropic, PBC in the United States. The data inventory, purposes, bases, recipi
 
 | Flow | From → to | Mechanism | Notes |
 |---|---|---|---|
-| Patients (EU/UK/other) → Platform | Patient's country → India (hosting region TODO-BUSINESS) | GDPR Art. 49(1)(b)/(a) for the patient's own requested service; SCCs/IDTA where we use processors | India has no EU adequacy decision. Counsel to confirm the mechanism for onward transfers (R2). |
+| Patients (EU/UK/other) → Platform | Patient's country → **United States** (AWS `us-east-2` Ohio; backups `us-west-2` Oregon) | GDPR Art. 49(1)(b)/(a) for the patient's own requested service; the AWS Data Processing Addendum with SCCs (and the UK IDTA) for the hosting processor; the EU-US Data Privacy Framework only where the provider is certified (verify) | The controller is in India (no EU adequacy decision); counsel to confirm the mechanism for onward transfers (R2). |
+| Platform (India controller) → hosting | India → United States (AWS) | DPDP s.16: permitted unless the US is restricted by notification (not restricted at last check); AWS DPA; AWS BAA signed as a precaution | All Platform data: database (RDS), documents (S3, SSE-KMS), backups (AWS Backup, copied to us-west-2), email (SES), SMS codes (SNS). Re-check DPDP notifications at launch and yearly. |
 | Platform → Anthropic | India → US | DPDP s.16: allowed unless the destination is restricted by notification (none at last check); GDPR: SCCs with Anthropic (EU/UK data) | Re-check DPDP restricted-country notifications at launch and yearly. |
 | Platform → payment providers | India → US/EU (Stripe, if enabled) | Provider terms / SCCs | Razorpay stays in India. |
-| Platform → hospitals | Within India | Data Sharing Consent per hospital | Hospitals are independent controllers. |
-| Platform → agents | India → agent's country | Patient consent (`share_with_agent` for documents); agent agreement | Agents in many countries — keep the agent agreement's transfer clauses. |
+| Platform → hospitals | United States (hosting) → India | Data Sharing Consent per hospital | Hospitals are independent controllers. |
+| Platform → agents | United States (hosting) → agent's country | Patient consent (`share_with_agent` for documents); agent agreement | Agents in many countries — keep the agent agreement's transfer clauses. |
 
 ## 5. Risk assessment
 
@@ -68,6 +69,8 @@ Likelihood and severity: L = low, M = medium, H = high. Residual risk is after t
 | 8 | Data kept longer than needed | M | M | Purge jobs, erasure, legal holds | L |
 | 9 | Breach not reported in time | L | H | Breach register with 72 h deadline and overdue flag; runbook; admin alerts | L |
 | 10 | Data subjects cannot exercise rights | L | M | Self-service export, deletion, nominee, request form (also without account), SLA reminders | L |
+| 11 | Access to data hosted in the US by foreign authorities or the hosting provider | L | H | Encryption at rest with a customer-managed KMS key, field-level encryption of identifiers and health free text with keys held in our Secrets Manager secret, TLS everywhere, AWS DPA commitments on government requests, least-privilege IAM, no SSH, CloudTrail/CloudWatch | L–M (R8) |
+| 12 | Hosting compliance gap (CERT-In 180-day log localisation; HIPAA if it applies) | M | M | AWS BAA signed as a precaution; only HIPAA-eligible services (EC2, EBS, RDS, S3, KMS, Secrets Manager, SES, SNS, CloudWatch, AWS Backup, Systems Manager, ECR, Route 53 DNS without personal data) | M (R9) |
 
 ## 6. Recommendations (open)
 
@@ -78,6 +81,11 @@ Likelihood and severity: L = low, M = medium, H = high. Residual risk is after t
 - **R5** Consider encrypting structured health JSON (symptoms, key findings, lab values) and chat message bodies.
 - **R6** Clinical governance for AI output (named clinical safety officer, incident review, periodic eval runs).
 - **R7** Require a date of birth before screening so the under-18 gate always applies.
+- **R8** Record the AWS contracting entity, the DPA/SCC version and (if relied on) AWS's Data Privacy Framework
+  certification; review yearly. TODO-BUSINESS.
+- **R9** CERT-In Directions (2022) require system logs of service providers to be kept within Indian jurisdiction
+  for 180 days: decide how (e.g. a copy of CloudWatch/application logs exported to an AWS `ap-south-1` bucket, or
+  counsel's view that the Directions do not apply) before launch. TODO-BUSINESS.
 - **R8** Infrastructure: S3 object-lock/lifecycle for versions, encrypted backups with a 35-day window and a
   deletion log re-applied after restores; `DATABASE_SSLMODE=require` in production.
 

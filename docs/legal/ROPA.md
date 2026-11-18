@@ -16,11 +16,17 @@ How to read this: one row per processing activity. "Where in the system" points 
 checked against reality. Retention defaults are settings in `backend/.env.example`; legal holds
 (`users.legal_hold`, `cases.legal_hold`, set by admins at `/admin/privacy/legal-holds`) suspend erasure and purges.
 
+> **Hosting.** Every activity below stores its data with Amazon Web Services in the **United States**
+> (US East (Ohio) `us-east-2`; AWS Backup copies in US West (Oregon) `us-west-2`), so each one involves a
+> transfer outside India even where the column below shows "—" (that column lists the *other* recipients'
+> locations). Transfer bases: DPDP s.16 (permitted unless restricted by notification); GDPR SCCs / UK IDTA through
+> the AWS Data Processing Addendum. Infrastructure: `deploy/terraform/aws-starter`.
+
 ## 1. Processing activities
 
 | # | Activity | Data subjects | Personal data (special categories in **bold**) | Purpose | Lawful basis (GDPR / DPDP) | Recipients | Transfers outside India | Retention | Where in the system |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Accounts and sign-in | Patients, guardians, agents, hospital users, staff | Name, email, phone, country, password hash, MFA secret (encrypted), Google/Apple ids, IP and user agent of sessions | Provide accounts, security | Contract; legitimate interests (security) / consent (`terms`, `privacy`) | Hosting; Google/Apple (sign-in only) | Hosting region TODO-BUSINESS; Google/Apple (US) | Life of account; erasure on deletion; inactive accounts 3 years (30-day notice) | `users`, `refresh_tokens`, `app/modules/auth` |
+| 1 | Accounts and sign-in | Patients, guardians, agents, hospital users, staff | Name, email, phone, country, password hash, MFA secret (encrypted), Google/Apple ids, IP and user agent of sessions | Provide accounts, security | Contract; legitimate interests (security) / consent (`terms`, `privacy`) | Hosting; Google/Apple (sign-in only) | United States (AWS `us-east-2`; backups `us-west-2`); Google/Apple (US) | Life of account; erasure on deletion; inactive accounts 3 years (30-day notice) | `users`, `refresh_tokens`, `app/modules/auth` |
 | 2 | Patient profile | Patients, companions | Name, date of birth, gender, nationality, passport number (encrypted), address, emergency contact, insurance (encrypted), **blood group, allergies, medical history (encrypted)** | Match, quote, book, arrange travel | Contract; **explicit consent** for health data (Art. 9(2)(a)) / consent | Hospitals the patient shares with; agent (if any) | Hospitals are in India; agent's country | Life of account; pseudonymised shell on erasure | `patient_profiles`, `patient_companions` |
 | 3 | Screening (questionnaire + triage) | Patients | **Symptoms, body areas, pain, duration, previous treatments, notes (encrypted), AI result (encrypted)**, urgency | Suggest specialties and hospitals, flag emergencies | Explicit consent (`privacy`; `ai_processing` for AI) / consent | Anthropic (only with AI consent); staff | US (Anthropic) | Life of account; erased on deletion | `screenings`, `screening_matches`, `app/modules/screening` |
 | 4 | AI reading of medical reports (document AI) | Patients | **Report pages, diagnoses, lab values, medicines; AI summaries (encrypted)** | Help patients and hospitals read reports | Explicit consent (`ai_processing`) / consent | Anthropic; hospital sees confirmed version only | US (Anthropic) | Life of account; erased on deletion | `document_analyses`, `app/modules/docai` |
@@ -43,7 +49,8 @@ checked against reality. Retention defaults are settings in `backend/.env.exampl
 | Party | Role | Data | Safeguards | Status |
 |---|---|---|---|---|
 | Anthropic, PBC (Claude API) | Processor | Screening answers + profile health fields, report pages, voice transcripts (only with AI consent) | Commercial terms + DPA; no training on API data; retention per Anthropic terms (30 days default at last check) | TODO-BUSINESS: sign DPA, record transfer mechanism (SCCs if GDPR applies), decide on zero-data-retention |
-| Hosting / object storage | Processor | All data | Encryption at rest (S3 SSE), TLS, `DATABASE_SSLMODE=require` | TODO-BUSINESS: provider and region |
+| Amazon Web Services (hosting: EC2, RDS PostgreSQL, S3, AWS Backup, Secrets Manager, KMS, CloudWatch) | Processor | All data | US: `us-east-2` (Ohio), backup copies `us-west-2` (Oregon). Encryption at rest with a customer-managed KMS key (EBS, RDS, S3 SSE-KMS, backups), TLS, `DATABASE_SSLMODE=require`, private database subnets, no SSH, least-privilege instance role; AWS DPA (SCCs); AWS BAA signed as a precaution, HIPAA-eligible services only | TODO-BUSINESS: AWS contracting entity; accept the DPA terms and the BAA in AWS Artifact |
+| Amazon SES (email) / Amazon SNS (SMS one-time codes) | Processor | Email address + message; phone number + code text (never health details) | US (`us-east-2`); SMS travels over mobile networks in the recipient's country | Covered by the AWS DPA; SNS text: `sms.verification_code` |
 | Razorpay / Stripe | Independent controller for payment data (regulated) | Payer details, amounts | PCI DSS; card data never reaches us | TODO-BUSINESS: confirm roles in contracts |
 | Email / push providers | Processor | Address/device token and message text (no health details in push) | DPA | TODO-BUSINESS |
 | Hospitals | Independent controllers | Shared case data | Hospital Partner Agreement data clauses | Signed per hospital |

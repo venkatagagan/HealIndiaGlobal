@@ -35,7 +35,9 @@
 - **Sharing.** With the hospitals you choose, your agent (if you use one), our payment, AI, hosting and
   communications providers, the travel and local service providers you book, and authorities when the law
   requires it. **We do not sell your personal data, and we never use your health information for advertising.**
-- **Where.** In India and in other countries where our providers operate, including the United States.
+- **Where.** We store your data in the **United States**, with Amazon Web Services (AWS) in its US East (Ohio)
+  region and backup copies in its US West (Oregon) region. Hospitals and our team in India, and some of our
+  providers in other countries, also process it (section 8).
 - **Your rights.** You can access, correct and erase your data, withdraw consent, nominate someone to act for you,
   and complain to us, the Data Protection Board of India or (in the EU/UK) your data protection authority.
 
@@ -195,8 +197,9 @@ to automated processing.
 | Our staff (care coordinators, support, finance, operations) | What each role needs: finance sees only payment documents; support sees the documents of the cases they coordinate, and anything else only in an emergency with a recorded reason; every view of your health records by staff is logged | To provide and administer the service | India [[and other staff locations]] |
 | Payment providers and banks: Razorpay (India); Stripe [[STRIPE CONTRACTING ENTITY]] [[if enabled]]; [[OUR BANK]] | Payer name, email and phone; amount, currency and order reference; payment status | To take payments, make refunds and payouts, and prevent fraud | India; [[USA / EU]] |
 | Our AI provider: Anthropic, PBC | Screening data, report pages and voice transcripts described in section 5 — **only if you choose the AI feature concerned** | To generate the screening summary, read reports and turn voice descriptions into form answers | United States [[or region arranged]] |
-| Cloud hosting and storage: [[HOSTING PROVIDER]] | All Platform data, stored encrypted in transit and with sensitive fields additionally encrypted | To run the Platform | [[HOSTING REGION]] |
-| Email delivery: [[EMAIL PROVIDER]] | Email address and message content | To send account and booking emails | [[LOCATION]] |
+| Cloud hosting, storage and backups: Amazon Web Services, Inc. [[AWS CONTRACTING ENTITY, e.g. Amazon Web Services India Private Limited for India-billed accounts]] | All Platform data: the database, uploaded documents and backups, encrypted in transit and at rest (customer-managed keys), with sensitive fields additionally encrypted by us | To run the Platform, keep backups and recover from incidents | United States: AWS US East (Ohio, `us-east-2`); backup copies in AWS US West (Oregon, `us-west-2`) |
+| Email delivery: Amazon Simple Email Service (AWS) | Email address and message content | To send account and booking emails | United States (`us-east-2`) |
+| Text messages (only if you verify a phone number): Amazon Simple Notification Service (AWS) and the mobile networks it uses | Your phone number and the one-time code message (no health details) | To send verification codes | United States; mobile networks in your country |
 | Push notifications: Google Firebase Cloud Messaging (and Apple Push Notification service on iPhone) | Device token and notification text | To send app notifications | United States / global |
 | Google (only if you use Google Sign-In) | Google handles your sign-in; we receive your basic profile | Sign-in | United States / global |
 | Map tile provider: [[OpenStreetMap tile servers / MAP PROVIDER]] | Your IP address and the map area you view | To display maps in the app | [[LOCATION]] |
@@ -217,16 +220,27 @@ independent; our agreements require them to use your data only for your case and
 
 ## 8. International transfers
 
-Most of our patients live outside India, so using the Platform involves transferring your data to India
-[[and to HOSTING REGION]]. Some providers process data in other countries, including the United States (our AI
-provider, Google [[, Stripe, EMAIL PROVIDER, ERROR MONITORING PROVIDER]]).
+We are based in India, but **we host the Platform in the United States**: your data is stored with Amazon Web
+Services (AWS) in its US East (Ohio) region, and encrypted backup copies are kept in its US West (Oregon) region.
+So using the Platform transfers your data to the United States, and — for the hospitals you choose and our team —
+to India. Some providers process data in other countries too, including the United States (our AI provider, AWS
+email and text messages, Google [[, Stripe, ERROR MONITORING PROVIDER]]).
 
-- **India:** the DPDP Act allows transfers outside India except to countries the Government of India restricts by
-  notification. We will comply with any such restriction.
-- **EU/EEA and UK:** where the GDPR applies, we protect transfers (including onward transfers from India) with
-  appropriate safeguards — the European Commission's Standard Contractual Clauses and, for the UK, the
-  International Data Transfer Addendum — or rely on an adequacy decision where one exists. You can ask us for a
-  copy of these safeguards (commercial details may be removed).
+- **India:** section 16 of the DPDP Act allows personal data to be transferred outside India except to countries
+  the Government of India restricts by notification; the United States is not restricted at the date of this
+  policy. We will comply with any such restriction and with stricter sector rules that apply to us.
+- **EU/EEA and UK:** where the GDPR applies, we protect transfers (including onward transfers to our hosting
+  provider and other processors) with appropriate safeguards — the European Commission's Standard Contractual
+  Clauses, incorporated in the AWS Data Processing Addendum, and, for the UK, the International Data Transfer
+  Addendum — or, where applicable, the EU-US Data Privacy Framework for providers certified under it. You can ask
+  us for a copy of these safeguards (commercial details may be removed).
+- **United States:** data stored in the United States can be subject to lawful access requests by US authorities
+  under US law. Our hosting provider's terms commit it to challenge over-broad requests and to notify us where
+  allowed [[counsel to confirm the wording against the current AWS DPA]].
+
+> **Drafting note:** Before publication, confirm (a) the AWS contracting entity and that the AWS GDPR DPA (with
+> SCCs) applies to the account, (b) whether AWS is currently certified under the EU-US Data Privacy Framework
+> before relying on it, and (c) the DPDP restricted-country list. TODO-BUSINESS.
 
 ## 9. How long we keep your data
 
@@ -246,7 +260,7 @@ When a retention period ends, we delete your data or irreversibly anonymise it. 
 | Messages | While the case is active and for [[3 years]] after it is closed |
 | Payments, refunds, receipts, invoices, settlement and tax records | [[8 years]] from the end of the financial year of the transaction (Indian company, tax and GST law) |
 | Consent records | As long as your account exists and [[8 years]] afterwards, to show that consent was given |
-| Security and audit logs | At least 1 year (DPDP Rules) and at least 180 days within India for system logs (CERT-In Directions, 2022); up to [[3 years]] |
+| Security and audit logs | At least 1 year (DPDP Rules) and at least 180 days within India for system logs (CERT-In Directions, 2022) [[TODO-BUSINESS: with US hosting, keep a copy of the system logs in India - see DPIA R9]]; up to [[3 years]] |
 | AI request logs (metadata only) | [[2 years]] |
 | Marketing preferences | Until you withdraw consent; we keep a suppression record so that we do not contact you again |
 | KYC, bank and payout records of agents and hospitals | The duration of the relationship plus [[8 years]] |
@@ -415,7 +429,9 @@ the UK).
   rights in section 12.2. [[Our EU and UK representatives are listed in section 18.]]
 - **United States:** we are not a health care provider, health plan or health care clearinghouse, and we do not act
   for one when you use the Platform, so we understand that HIPAA does not govern our handling of your information
-  [[counsel to confirm]]. Some US state laws give you rights over consumer health data (for example Washington's
+  [[counsel to confirm]]. As a precaution we have signed Amazon Web Services' Business Associate Addendum and
+  use only HIPAA-eligible AWS services for your data [[TODO-BUSINESS: confirm the BAA is accepted in AWS
+  Artifact before launch]]. Some US state laws give you rights over consumer health data (for example Washington's
   My Health My Data Act); [[counsel to confirm applicability and whether a separate consumer health data privacy
   policy is needed]]. You can exercise the rights in section 12.
 - **Other countries:** we respect the rights that your local data protection law gives you. Contact us to

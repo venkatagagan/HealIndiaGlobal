@@ -9,6 +9,14 @@
 | Register | `breach_incidents` table — `POST/GET/PATCH /api/v1/admin/privacy/breaches` (admins). Recording an incident starts the 72-hour clock (`notification_deadline_at`) and alerts every admin. |
 | Related | [ROPA.md](ROPA.md) · [DPIA.md](DPIA.md) · `docs/SECURITY.md` · `docs/OPERATIONS.md` |
 
+## Where the data is
+
+The Platform is hosted with Amazon Web Services in the **United States** (`us-east-2` Ohio; AWS Backup copies in
+`us-west-2` Oregon). Evidence sources for an investigation: CloudWatch Logs (`/hig/<env>/system`,
+`/hig/<env>/containers`, RDS PostgreSQL logs), the application `audit_logs`, AWS CloudTrail (enable an
+organisation trail - TODO-BUSINESS), S3 versioning of the documents bucket. Contain with the runbooks in
+`deploy/starter/README.md` (rotate secrets, revoke the instance role sessions, restore from AWS Backup).
+
 ## Deadlines at a glance
 
 | Who | When | What | Law |
@@ -20,6 +28,8 @@
 | EU/UK data subjects | **Without undue delay** if high risk | Art. 34 contents | GDPR Art. 34 |
 | Hospitals / agents (independent controllers) | Promptly, as the partner agreements require | Facts relevant to their patients | Contracts |
 | Anthropic / other processors | Processors must tell **us** without undue delay | — | DPAs |
+| US state authorities / residents | Per state breach-notification law where US residents are affected (timelines vary, often "without unreasonable delay", some 30-60 days) | As each statute requires | US state laws [[counsel to confirm]] |
+| Under HIPAA, only if counsel finds it applies | Business associate rules; the AWS BAA covers AWS's duties to us | — | 45 CFR 164.400-414 [[counsel to confirm]] |
 
 "Aware" = the moment we have a reasonable degree of certainty that a breach involving personal data happened.
 Record that time as `detected_at`. TODO-BUSINESS: confirm the Board's online reporting channel once it is live.
@@ -93,5 +103,5 @@ on the person responsible, remediation, and the reports made to affected people.
 | Incident lead | [[ ]] | [[ ]] | [[ ]] |
 | DPO | [[ ]] | [[ ]] | [[ ]] |
 | Legal counsel | [[ ]] | [[ ]] | [[ ]] |
-| Hosting provider security | [[ ]] | [[ ]] | [[ ]] |
+| Hosting provider security (AWS) | AWS Support (open a case: "Security") | — | https://aws.amazon.com/security/vulnerability-reporting/ ; abuse: abuse@amazonaws.com |
 | CERT-In | — | +91-1800-11-4949 | incident@cert-in.org.in |
