@@ -12,10 +12,12 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Send, Trash2 } from 'lucide-react';
+import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
 import { errorMessage, isApiError } from '../api/client';
 import { authApi } from '../api/endpoints/auth';
 import type { AccountDeleteIn, UserOut } from '../api/types';
+import { useCommonTranslation } from '../lib/i18n';
 import { Button } from '../ui/Button';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { FormField, Input, Textarea } from '../ui/form';
@@ -24,45 +26,29 @@ import { websiteUrl } from './doors';
 
 export type DeleteAccountAudience = 'patient' | 'agent' | 'hospital';
 
-const BLOCKER_LABELS: Record<string, string> = {
-  cases_in_progress: 'treatment cases in progress',
-  active_bookings: 'active bookings',
-  payments_in_progress: 'payments in progress',
-  owned_listed_hospitals: 'listed hospitals you are the only owner of (add another owner or ask us to delist first)',
+/** API blocker key -> catalog key (common:deleteAccount.blockers.*). */
+const BLOCKER_KEYS: Record<string, string> = {
+  cases_in_progress: 'casesInProgress',
+  active_bookings: 'activeBookings',
+  payments_in_progress: 'paymentsInProgress',
+  owned_listed_hospitals: 'ownedListedHospitals',
   // older key names
-  active_cases: 'treatment cases in progress',
-  pending_payments: 'payments in progress',
-  listed_hospitals_owned: 'listed hospitals you are the only owner of (add another owner or ask us to delist first)',
-};
-
-const COPY: Record<DeleteAccountAudience, { erased: string; lose: string }> = {
-  patient: {
-    erased:
-      'Your contact details, passport and insurance numbers, health notes, companions, saved items and documents ' +
-      'that are not part of a case are erased and you are signed out everywhere.',
-    lose: 'You will lose access to your screenings, cases, messages and documents.',
-  },
-  agent: {
-    erased:
-      'Your contact details and agency profile are erased, your agency is closed and you are signed out everywhere. ' +
-      'Your patients keep their own accounts and cases.',
-    lose: 'You will lose access to your patients, cases, messages and commission history.',
-  },
-  hospital: {
-    erased:
-      'Your contact details are erased, you are removed from every hospital team and you are signed out everywhere. ' +
-      'The hospital listing itself stays with its other owners.',
-    lose: 'You will lose access to the hospital portal, its cases and messages.',
-  },
+  active_cases: 'casesInProgress',
+  pending_payments: 'paymentsInProgress',
+  listed_hospitals_owned: 'ownedListedHospitals',
 };
 
 const CONFIRM_WORD = 'DELETE';
 
-function blockerList(details: unknown): string[] {
+function blockerList(details: unknown, t: TFunction): string[] {
   if (!details || typeof details !== 'object') return [];
   return Object.entries(details as Record<string, unknown>)
     .filter(([, v]) => (typeof v === 'number' ? v > 0 : !!v))
-    .map(([k, v]) => `${typeof v === 'number' ? `${v} ` : ''}${BLOCKER_LABELS[k] ?? k.replace(/_/g, ' ')}`);
+    .map(([k, v]) => {
+      const key = BLOCKER_KEYS[k];
+      const label = key ? t(`deleteAccount.blockers.${key}`) : k.replace(/_/g, ' ');
+      return typeof v === 'number' ? t('deleteAccount.blockerCount', { n: v, label }) : label;
+    });
 }
 
 export interface DeleteAccountSectionProps {
@@ -74,10 +60,11 @@ export interface DeleteAccountSectionProps {
 }
 
 export function DeleteAccountSection({ user, audience = 'patient', homeUrl, className }: DeleteAccountSectionProps) {
+  const { t } = useCommonTranslation();
   const qc = useQueryClient();
   const isGuest = user?.is_guest ?? false;
   const mfa = user?.mfa_enabled ?? false;
-  const copy = COPY[audience];
+  const copy = { erased: t(`deleteAccount.${audience}.erased`), lose: t(`deleteAccount.${audience}.lose`) };
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [mfaCode, setMfaCode] = useState('');
@@ -129,14 +116,14 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
       window.location.replace(new URL('/account/delete?status=deleted', websiteUrl()).toString());
     } catch (err) {
       if (isApiError(err) && err.code === 'account_deletion_blocked') {
-        setBlockers(blockerList(err.details));
+        setBlockers(blockerList(err.details, t));
         setError(err.message);
       } else if (isApiError(err) && err.code === 'invalid_current_password') {
-        setError('The password is incorrect.');
+        setError(t('deleteAccount.wrongPassword'));
       } else if (isApiError(err) && err.code === 'invalid_otp') {
-        setError('The authenticator code is not valid.');
+        setError(t('deleteAccount.wrongCode'));
       } else {
-        setError(errorMessage(err, 'Your account could not be deleted. Please try again or contact support.'));
+        setError(errorMessage(err, t('deleteAccount.failed')));
       }
     } finally {
       setBusy(false);
@@ -148,9 +135,9 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
     try {
       await authApi.requestDeletion(reason.trim() ? { reason: reason.trim().slice(0, 500) } : {});
       setRequested(true);
-      toast.success('Deletion requested. Our team will contact you and close the account once nothing is pending.');
+      toast.success(t('deleteAccount.requestedToast'));
     } catch (err) {
-      toast.error(errorMessage(err, 'The request could not be sent. Please contact support.'));
+      toast.error(errorMessage(err, t('deleteAccount.requestFailed')));
     } finally {
       setBusy(false);
     }
@@ -161,12 +148,12 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
       <Card className={className}>
         <CardBody className="space-y-3">
           <p className="flex items-center gap-2 text-lg font-semibold">
-            <CheckCircle2 className="size-5 text-success-ink" aria-hidden /> Your account has been deleted
+            <CheckCircle2 className="size-5 text-success-ink" aria-hidden /> {t('deleteAccount.deletedTitle')}
           </p>
-          <p className="text-sm text-muted">You have been signed out on all devices.</p>
+          <p className="text-sm text-muted">{t('deleteAccount.signedOut')}</p>
           {retained.length ? (
             <>
-              <p className="text-sm text-muted">What we are required to keep:</p>
+              <p className="text-sm text-muted">{t('deleteAccount.requiredToKeep')}</p>
               <ul className="list-disc space-y-1 ps-5 text-sm text-muted">
                 {retained.map((r) => (
                   <li key={r}>{r}</li>
@@ -174,7 +161,7 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
               </ul>
             </>
           ) : null}
-          <Button onClick={() => window.location.assign(homeUrl ?? websiteUrl())}>Continue</Button>
+          <Button onClick={() => window.location.assign(homeUrl ?? websiteUrl())}>{t('actions.continue')}</Button>
         </CardBody>
       </Card>
     );
@@ -184,11 +171,11 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
 
   return (
     <Card className={className}>
-      <CardHeader title="Delete account" description="Permanently close your Heal India Global account and erase your personal data." />
+      <CardHeader title={t('deleteAccount.title')} description={t('deleteAccount.description')} />
       <CardBody className="space-y-3">
         <div className="grid gap-3 text-sm sm:grid-cols-2">
           <div>
-            <p className="font-medium text-fg">What is deleted</p>
+            <p className="font-medium text-fg">{t('deleteAccount.whatDeleted')}</p>
             {deleted.length ? (
               <ul className="mt-1 list-disc space-y-0.5 ps-5 text-muted">
                 {deleted.map((d) => (
@@ -200,7 +187,7 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
             )}
           </div>
           <div>
-            <p className="font-medium text-fg">What we keep (required by law)</p>
+            <p className="font-medium text-fg">{t('deleteAccount.whatKept')}</p>
             {retained.length ? (
               <ul className="mt-1 list-disc space-y-0.5 ps-5 text-muted">
                 {retained.map((r) => (
@@ -208,31 +195,25 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
                 ))}
               </ul>
             ) : (
-              <p className="mt-1 text-muted">
-                Payment records and medical records that belong to a treatment case, for the period the law requires,
-                with access limited to the treating hospital and our compliance team.
-              </p>
+              <p className="mt-1 text-muted">{t('deleteAccount.keptDefault')}</p>
             )}
           </div>
         </div>
-        <p className="text-sm text-muted">
-          Accounts with treatment, bookings or payments in progress can be deleted once they are finished or cancelled,
-          or you can ask us to close the account for you.
-        </p>
+        <p className="text-sm text-muted">{t('deleteAccount.inProgressNote')}</p>
         <Button variant="danger" leftIcon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)}>
-          Delete my account
+          {t('deleteAccount.deleteMine')}
         </Button>
       </CardBody>
 
       <Modal
         open={open}
         onClose={close}
-        title="Delete your account?"
-        description="This cannot be undone."
+        title={t('deleteAccount.confirmTitle')}
+        description={t('deleteAccount.confirmDescription')}
         footer={
           <>
             <Button variant="outline" onClick={close} disabled={busy}>
-              Cancel
+              {t('actions.cancel')}
             </Button>
             {blockers.length ? (
               <Button
@@ -242,11 +223,11 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
                 leftIcon={<Send className="size-4" aria-hidden />}
                 onClick={() => void requestDeletion()}
               >
-                {requested ? 'Deletion requested' : 'Request deletion'}
+                {requested ? t('deleteAccount.requested') : t('deleteAccount.request')}
               </Button>
             ) : null}
             <Button variant="danger" loading={busy} disabled={!canSubmit} onClick={() => void submit()}>
-              Delete permanently
+              {t('deleteAccount.deletePermanently')}
             </Button>
           </>
         }
@@ -256,16 +237,16 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
             <AlertTriangle className="size-5 shrink-0" aria-hidden />
             <span>
               {copy.lose}
-              {isGuest ? ' Guest data cannot be recovered after deletion.' : ''}
+              {isGuest ? ` ${t('deleteAccount.guestNote')}` : ''}
             </span>
           </div>
           {!isGuest ? (
-            <FormField label="Your password" hint="Leave empty only if you always sign in with Google or Apple.">
+            <FormField label={t('deleteAccount.password')} hint={t('deleteAccount.passwordHint')}>
               <Input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </FormField>
           ) : null}
           {mfa ? (
-            <FormField label="Authenticator code" hint="The 6-digit code from your authenticator app." required>
+            <FormField label={t('deleteAccount.code')} hint={t('deleteAccount.codeHint')} required>
               <Input
                 inputMode="numeric"
                 autoComplete="one-time-code"
@@ -275,10 +256,10 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
               />
             </FormField>
           ) : null}
-          <FormField label="Why are you leaving?" optional>
+          <FormField label={t('deleteAccount.reason')} optional>
             <Textarea rows={2} maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} />
           </FormField>
-          <FormField label={`Type ${CONFIRM_WORD} to confirm`} required>
+          <FormField label={t('deleteAccount.typeToConfirm', { word: CONFIRM_WORD })} required>
             <Input autoComplete="off" value={typed} onChange={(e) => setTyped(e.target.value)} />
           </FormField>
           {error ? (
@@ -293,8 +274,8 @@ export function DeleteAccountSection({ user, audience = 'patient', homeUrl, clas
                   </ul>
                   <p className="mt-2">
                     {requested
-                      ? 'Your deletion request was sent. We will contact you by email.'
-                      : 'You can ask us to close the account for you with "Request deletion".'}
+                      ? t('deleteAccount.requestSent')
+                      : t('deleteAccount.requestHint')}
                   </p>
                 </>
               ) : null}

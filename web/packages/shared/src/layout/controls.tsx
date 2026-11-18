@@ -39,12 +39,13 @@ export interface NotificationBellProps {
 
 /** Top-bar bell linking to the notifications page, with an unread counter. */
 export function NotificationBell({ to, count, className }: NotificationBellProps) {
+  const { t } = useCommonTranslation();
   const unread = count ?? 0;
   return (
     <Link
       to={to}
-      aria-label={unread > 0 ? `Notifications, ${unread} unread` : 'Notifications'}
-      title="Notifications"
+      aria-label={unread > 0 ? t('notifications.unreadLabel', { count: unread }) : t('notifications.label')}
+      title={t('notifications.label')}
       className={cn(
         'relative inline-flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',

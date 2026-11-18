@@ -3,6 +3,7 @@ import { ChevronDown, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { errorMessage } from '../api/client';
 import { cn } from '../lib/cn';
+import { formatNumber, useCommonTranslation } from '../lib/i18n';
 import { Button, type ButtonSize, type ButtonVariant } from './Button';
 import { Popover, usePopover } from './Popover';
 
@@ -91,12 +92,14 @@ export function ExportButton<T>({
   rows,
   fetchAll,
   total,
-  label = 'Export',
+  label,
   variant = 'outline',
   size = 'sm',
   className,
 }: ExportButtonProps<T>) {
+  const { t } = useCommonTranslation();
   const popover = usePopover();
+  const buttonLabel = label ?? t('export.label');
   const [busy, setBusy] = useState(false);
   const stamped = `${filename}-${new Date().toISOString().slice(0, 10)}`;
   const pageCount = rows?.length ?? 0;
@@ -104,7 +107,7 @@ export function ExportButton<T>({
   const exportPage = () => {
     popover.setOpen(false);
     if (!rows || rows.length === 0) {
-      toast.info('Nothing to export');
+      toast.info(t('export.nothing'));
       return;
     }
     exportCsv(rows, columns, stamped);
@@ -115,27 +118,27 @@ export function ExportButton<T>({
     setBusy(true);
     try {
       const all = await fetchAll();
-      if (all.length === 0) toast.info('Nothing to export');
+      if (all.length === 0) toast.info(t('export.nothing'));
       else {
         exportCsv(all, columns, stamped);
-        toast.success(`Exported ${all.length.toLocaleString()} rows`);
+        toast.success(t('export.exported', { count: all.length, n: formatNumber(all.length) }));
       }
     } catch (error) {
-      toast.error(errorMessage(error, 'Export failed'));
+      toast.error(errorMessage(error, t('export.failed')));
     } finally {
       setBusy(false);
     }
   };
 
   const classes = cn('h-9 rounded-full', className);
-  const text = <span className="hidden sm:inline">{label}</span>;
+  const text = <span className="hidden sm:inline">{buttonLabel}</span>;
   if (!fetchAll) {
     return (
       <Button
         variant={variant}
         size={size}
         className={classes}
-        aria-label={label}
+        aria-label={buttonLabel}
         leftIcon={<Download className="size-4" aria-hidden />}
         onClick={exportPage}
         disabled={!pageCount}
@@ -154,7 +157,7 @@ export function ExportButton<T>({
         variant={variant}
         size={size}
         className={classes}
-        aria-label={label}
+        aria-label={buttonLabel}
         loading={busy}
         leftIcon={<Download className="size-4" aria-hidden />}
         rightIcon={<ChevronDown className="size-3.5 opacity-60" aria-hidden />}
@@ -165,16 +168,16 @@ export function ExportButton<T>({
       >
         {text}
       </Button>
-      <Popover {...popover.popoverProps} align="end" role="menu" label="Export" className={cn('w-64 p-1.5')}>
+      <Popover {...popover.popoverProps} align="end" role="menu" label={t('export.label')} className={cn('w-64 p-1.5')}>
         <button type="button" role="menuitem" className={item} onClick={exportPage} disabled={!pageCount}>
-          <span>Current page</span>
-          <span className="text-xs text-muted tabular-nums">{pageCount.toLocaleString()} rows</span>
+          <span>{t('export.currentPage')}</span>
+          <span className="text-xs text-muted tabular-nums">{t('export.rows', { count: pageCount, n: formatNumber(pageCount) })}</span>
         </button>
         <button type="button" role="menuitem" className={item} onClick={() => void exportAll()}>
-          <span>All matching results</span>
-          {total !== undefined && <span className="text-xs text-muted tabular-nums">{total.toLocaleString()} rows</span>}
+          <span>{t('export.allResults')}</span>
+          {total !== undefined && <span className="text-xs text-muted tabular-nums">{t('export.rows', { count: total, n: formatNumber(total) })}</span>}
         </button>
-        <p className="px-2.5 pt-1 pb-1.5 text-xs text-muted">CSV · current filters and sort</p>
+        <p className="px-2.5 pt-1 pb-1.5 text-xs text-muted">{t('export.hint')}</p>
       </Popover>
     </>
   );

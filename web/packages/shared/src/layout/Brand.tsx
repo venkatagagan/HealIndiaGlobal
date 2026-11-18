@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { cn } from '../lib/cn';
+import { useCommonTranslation } from '../lib/i18n';
 
 export const BRAND = {
   name: 'Heal India Global',
@@ -51,6 +52,7 @@ export interface BrandLogoProps {
 
 /** "Heal India Global" wordmark with the logo mark. */
 export function BrandLogo({ subtitle, tagline = false, compact = false, to, href, className }: BrandLogoProps) {
+  const { t } = useCommonTranslation();
   const content = (
     <span className={cn('inline-flex min-w-0 items-center gap-2.5', className)}>
       <BrandMark />
@@ -60,7 +62,7 @@ export function BrandLogo({ subtitle, tagline = false, compact = false, to, href
         <span className="min-w-0 leading-tight">
           <span className="block truncate text-[15px] font-bold tracking-tight text-fg">{BRAND.name}</span>
           {(subtitle || tagline) && (
-            <span className="block truncate text-xs font-medium text-muted">{subtitle ?? BRAND.tagline}</span>
+            <span className="block truncate text-xs font-medium text-muted">{subtitle ?? t('brand.tagline')}</span>
           )}
         </span>
       )}

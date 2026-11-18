@@ -14,6 +14,7 @@ import { addDays, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { Calendar, Check, ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { formatDate } from '../lib/dates';
+import { formatNumber, i18n, useCommonTranslation } from '../lib/i18n';
 import { Popover, usePopover } from './Popover';
 import { normalizeTone, TONE_SOLID, type Tone } from './tone';
 
@@ -107,13 +108,14 @@ interface TriggerProps {
 }
 
 function FilterTrigger({ label, summary, count, icon, trigger, inMore, haspopup = 'dialog' }: TriggerProps) {
+  const { t } = useCommonTranslation();
   const active = summary !== null;
   if (inMore) {
     return (
       <div className="flex flex-col gap-1">
         <span className="text-xs font-medium text-muted">{label}</span>
-        <button type="button" {...trigger} aria-haspopup={haspopup} aria-label={`${label}: ${summary ?? 'Any'}`} className={FIELD_BUTTON}>
-          <span className={cn('truncate', !active && 'text-muted')}>{summary ?? 'Any'}</span>
+        <button type="button" {...trigger} aria-haspopup={haspopup} aria-label={`${label}: ${summary ?? t('filters.any')}`} className={FIELD_BUTTON}>
+          <span className={cn('truncate', !active && 'text-muted')}>{summary ?? t('filters.any')}</span>
           <ChevronDown className="size-4 shrink-0 text-muted" aria-hidden />
         </button>
       </div>
@@ -144,6 +146,7 @@ function FilterTrigger({ label, summary, count, icon, trigger, inMore, haspopup 
 }
 
 function PanelHeader({ title, onClear, canClear }: { title: string; onClear: () => void; canClear: boolean }) {
+  const { t } = useCommonTranslation();
   return (
     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</p>
@@ -153,7 +156,7 @@ function PanelHeader({ title, onClear, canClear }: { title: string; onClear: () 
         disabled={!canClear}
         className="rounded px-1 text-xs font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:invisible"
       >
-        Clear
+        {t('actions.clear')}
       </button>
     </div>
   );
@@ -176,6 +179,7 @@ function listboxKeyDown(event: KeyboardEvent<HTMLElement>) {
 }
 
 function OptionSearch({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
+  const { t } = useCommonTranslation();
   return (
     <div className="relative border-b border-border p-2">
       <Search className="pointer-events-none absolute start-4.5 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden />
@@ -185,8 +189,8 @@ function OptionSearch({ value, onChange, label }: { value: string; onChange: (v:
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={listboxKeyDown}
-        placeholder={`Filter ${label.toLowerCase()}…`}
-        aria-label={`Filter ${label} options`}
+        placeholder={t('filters.filterPlaceholder', { label: label.toLowerCase() })}
+        aria-label={t('filters.filterOptions', { label })}
         className={cn(SMALL_INPUT, 'ps-8')}
       />
     </div>
@@ -252,7 +256,7 @@ function OptionRow<V extends string>({
         <span className="block truncate">{option.label}</span>
         {option.description && <span className="block truncate text-xs text-muted">{option.description}</span>}
       </span>
-      {option.count !== undefined && <span className="shrink-0 text-xs text-muted tabular-nums">{option.count.toLocaleString()}</span>}
+      {option.count !== undefined && <span className="shrink-0 text-xs text-muted tabular-nums">{formatNumber(option.count)}</span>}
     </div>
   );
 }
@@ -284,6 +288,7 @@ export function SelectFilter<V extends string = string>({
   loading = false,
   align = 'start',
 }: SelectFilterProps<V>) {
+  const { t } = useCommonTranslation();
   const ctx = useContext(FilterBarContext);
   const popover = usePopover();
   const search = useOptionSearch(options, searchable);
@@ -303,8 +308,8 @@ export function SelectFilter<V extends string = string>({
           <PanelHeader title={label} onClear={() => pick('')} canClear={Boolean(value)} />
           {search.enabled && <OptionSearch value={search.query} onChange={search.setQuery} label={label} />}
           <div role="listbox" aria-label={label} onKeyDown={listboxKeyDown} className="min-h-0 flex-1 overflow-y-auto p-1.5">
-            {loading && options.length === 0 && <p className="px-2 py-3 text-sm text-muted">Loading…</p>}
-            {!loading && search.visible.length === 0 && <p className="px-2 py-3 text-sm text-muted">No matches</p>}
+            {loading && options.length === 0 && <p className="px-2 py-3 text-sm text-muted">{t('states.loading')}</p>}
+            {!loading && search.visible.length === 0 && <p className="px-2 py-3 text-sm text-muted">{t('filters.noMatches')}</p>}
             {search.visible.map((option) => (
               <OptionRow
                 key={option.value}
@@ -345,6 +350,7 @@ export function MultiSelectFilter<V extends string = string>({
   loading = false,
   align = 'start',
 }: MultiSelectFilterProps<V>) {
+  const { t } = useCommonTranslation();
   const ctx = useContext(FilterBarContext);
   const popover = usePopover();
   const search = useOptionSearch(options, searchable);
@@ -375,8 +381,8 @@ export function MultiSelectFilter<V extends string = string>({
             onKeyDown={listboxKeyDown}
             className="min-h-0 flex-1 overflow-y-auto p-1.5"
           >
-            {loading && options.length === 0 && <p className="px-2 py-3 text-sm text-muted">Loading…</p>}
-            {!loading && search.visible.length === 0 && <p className="px-2 py-3 text-sm text-muted">No matches</p>}
+            {loading && options.length === 0 && <p className="px-2 py-3 text-sm text-muted">{t('states.loading')}</p>}
+            {!loading && search.visible.length === 0 && <p className="px-2 py-3 text-sm text-muted">{t('filters.noMatches')}</p>}
             {search.visible.map((option) => (
               <OptionRow key={option.value} option={option} selected={value.includes(option.value)} multiple onToggle={() => toggle(option.value)} />
             ))}
@@ -388,9 +394,9 @@ export function MultiSelectFilter<V extends string = string>({
                 onClick={() => onChange([...new Set([...value, ...allVisible])])}
                 className="rounded font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Select all
+                {t('filters.selectAll')}
               </button>
-              <span className="text-muted tabular-nums">{value.length} selected</span>
+              <span className="text-muted tabular-nums">{t('filters.selected', { count: value.length, n: formatNumber(value.length) })}</span>
             </div>
           )}
         </div>
@@ -417,14 +423,16 @@ export interface DatePreset {
 const iso = (d: Date) => format(d, 'yyyy-MM-dd');
 
 export const DEFAULT_DATE_PRESETS: readonly DatePreset[] = [
-  { id: 'today', label: 'Today', range: () => ({ from: iso(new Date()), to: iso(new Date()) }) },
-  { id: '7d', label: 'Last 7 days', range: () => ({ from: iso(addDays(new Date(), -6)), to: iso(new Date()) }) },
-  { id: '30d', label: 'Last 30 days', range: () => ({ from: iso(addDays(new Date(), -29)), to: iso(new Date()) }) },
-  { id: '90d', label: 'Last 90 days', range: () => ({ from: iso(addDays(new Date(), -89)), to: iso(new Date()) }) },
-  { id: 'month', label: 'This month', range: () => ({ from: iso(startOfMonth(new Date())), to: iso(new Date()) }) },
+  { id: 'today', get label() { return i18n.t('common:filters.presets.today'); }, range: () => ({ from: iso(new Date()), to: iso(new Date()) }) },
+  { id: '7d', get label() { return i18n.t('common:filters.presets.last7'); }, range: () => ({ from: iso(addDays(new Date(), -6)), to: iso(new Date()) }) },
+  { id: '30d', get label() { return i18n.t('common:filters.presets.last30'); }, range: () => ({ from: iso(addDays(new Date(), -29)), to: iso(new Date()) }) },
+  { id: '90d', get label() { return i18n.t('common:filters.presets.last90'); }, range: () => ({ from: iso(addDays(new Date(), -89)), to: iso(new Date()) }) },
+  { id: 'month', get label() { return i18n.t('common:filters.presets.thisMonth'); }, range: () => ({ from: iso(startOfMonth(new Date())), to: iso(new Date()) }) },
   {
     id: 'last-month',
-    label: 'Last month',
+    get label() {
+      return i18n.t('common:filters.presets.lastMonth');
+    },
     range: () => {
       const d = subMonths(new Date(), 1);
       return { from: iso(startOfMonth(d)), to: iso(endOfMonth(d)) };
@@ -444,7 +452,9 @@ export function describeDateRange(range: DateRange, presets: readonly DatePreset
     const sameYear = range.from.slice(0, 4) === range.to.slice(0, 4);
     return `${formatDate(range.from, sameYear ? 'd MMM' : 'd MMM yyyy')} – ${formatDate(range.to)}`;
   }
-  return range.from ? `From ${formatDate(range.from)}` : `Until ${formatDate(range.to)}`;
+  return range.from
+    ? i18n.t('common:filters.fromDate', { date: formatDate(range.from) })
+    : i18n.t('common:filters.untilDate', { date: formatDate(range.to) });
 }
 
 export interface DateRangeFilterProps<F extends string = string> {
@@ -469,6 +479,7 @@ export function DateRangeFilter<F extends string = string>({
   onFieldChange,
   align = 'start',
 }: DateRangeFilterProps<F>) {
+  const { t } = useCommonTranslation();
   const ctx = useContext(FilterBarContext);
   const popover = usePopover();
   const fromId = useId();
@@ -494,7 +505,7 @@ export function DateRangeFilter<F extends string = string>({
         <PanelHeader title={label} onClear={() => onChange({ from: '', to: '' })} canClear={Boolean(value.from || value.to)} />
         <div className="flex min-h-0 flex-col gap-3 overflow-y-auto p-3">
           {fieldOptions && fieldOptions.length > 1 && (
-            <div role="radiogroup" aria-label="Date field" className="grid grid-flow-col gap-1 rounded-lg bg-surface-2 p-1">
+            <div role="radiogroup" aria-label={t('filters.dateField')} className="grid grid-flow-col gap-1 rounded-lg bg-surface-2 p-1">
               {fieldOptions.map((o) => (
                 <button
                   key={o.value}
@@ -512,7 +523,7 @@ export function DateRangeFilter<F extends string = string>({
               ))}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-1.5" role="group" aria-label="Presets">
+          <div className="grid grid-cols-2 gap-1.5" role="group" aria-label={t('filters.presetsLabel')}>
             {presets.map((preset) => (
               <button
                 key={preset.id}
@@ -532,7 +543,7 @@ export function DateRangeFilter<F extends string = string>({
           </div>
           <div className="grid grid-cols-2 gap-2">
             <label htmlFor={fromId} className="flex flex-col gap-1 text-xs font-medium text-muted">
-              From
+              {t('filters.from')}
               <input
                 id={fromId}
                 type="date"
@@ -543,7 +554,7 @@ export function DateRangeFilter<F extends string = string>({
               />
             </label>
             <label htmlFor={toId} className="flex flex-col gap-1 text-xs font-medium text-muted">
-              To
+              {t('filters.to')}
               <input
                 id={toId}
                 type="date"
@@ -578,12 +589,13 @@ export interface AmountRangeFilterProps {
 }
 
 export function AmountRangeFilter({ label, value, onChange, currency, align = 'start' }: AmountRangeFilterProps) {
+  const { t } = useCommonTranslation();
   const ctx = useContext(FilterBarContext);
   const popover = usePopover();
   const [draft, setDraft] = useState({ min: '', max: '' });
   const minId = useId();
   const maxId = useId();
-  const fmt = (n: number) => `${currency ? `${currency} ` : ''}${n.toLocaleString()}`;
+  const fmt = (n: number) => `${currency ? `${currency} ` : ''}${formatNumber(n)}`;
   const summary =
     value.min !== undefined && value.max !== undefined
       ? `${fmt(value.min)} – ${fmt(value.max)}`
@@ -619,7 +631,7 @@ export function AmountRangeFilter({ label, value, onChange, currency, align = 's
           <div className="grid grid-cols-2 gap-2">
             {(['min', 'max'] as const).map((k) => (
               <label key={k} htmlFor={k === 'min' ? minId : maxId} className="flex flex-col gap-1 text-xs font-medium text-muted">
-                {k === 'min' ? 'Minimum' : 'Maximum'}
+                {k === 'min' ? t('filters.minimum') : t('filters.maximum')}
                 <input
                   id={k === 'min' ? minId : maxId}
                   type="number"
@@ -637,7 +649,7 @@ export function AmountRangeFilter({ label, value, onChange, currency, align = 's
             type="submit"
             className="h-8 rounded-lg bg-primary text-sm font-medium text-primary-fg hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Apply
+            {t('filters.apply')}
           </button>
         </form>
       </Popover>
@@ -656,8 +668,9 @@ export interface ToggleFilterProps {
 }
 
 export function ToggleFilter({ label, pressed, onChange, icon }: ToggleFilterProps) {
+  const { t } = useCommonTranslation();
   const ctx = useContext(FilterBarContext);
-  useActiveFilterChip(label, pressed ? 'Yes' : null, () => onChange(false));
+  useActiveFilterChip(label, pressed ? t('filters.yes') : null, () => onChange(false));
   if (ctx?.inMore) {
     return (
       <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-border px-3 py-2 text-sm">
@@ -689,7 +702,8 @@ export interface FilterSearchProps {
   className?: string;
 }
 
-export function FilterSearch({ value, onChange, placeholder = 'Search…', label = 'Search', debounceMs = 300, className }: FilterSearchProps) {
+export function FilterSearch({ value, onChange, placeholder, label, debounceMs = 300, className }: FilterSearchProps) {
+  const { t } = useCommonTranslation();
   const [text, setText] = useState(value);
   const [emitted, setEmitted] = useState(value);
   const [prevValue, setPrevValue] = useState(value);
@@ -714,7 +728,7 @@ export function FilterSearch({ value, onChange, placeholder = 'Search…', label
     const handle = setTimeout(() => emit(text), debounceMs);
     return () => clearTimeout(handle);
   }, [text, emitted, debounceMs, emit]);
-  useActiveFilterChip('Search', value ? `“${value}”` : null, () => {
+  useActiveFilterChip(t('actions.search'), value ? `“${value}”` : null, () => {
     setText('');
     emit('');
   });
@@ -724,8 +738,8 @@ export function FilterSearch({ value, onChange, placeholder = 'Search…', label
       <input
         type="search"
         role="searchbox"
-        aria-label={label}
-        placeholder={placeholder}
+        aria-label={label ?? t('actions.search')}
+        placeholder={placeholder ?? t('filters.searchPlaceholder')}
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
@@ -751,7 +765,7 @@ export function FilterSearch({ value, onChange, placeholder = 'Search…', label
             emit('');
           }}
           className="absolute end-2 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-muted hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Clear search"
+          aria-label={t('filters.clearSearch')}
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -788,14 +802,17 @@ export function FilterBar({
   search,
   children,
   more,
-  moreLabel = 'More filters',
+  moreLabel: moreLabelProp,
   actions,
   resultCount,
-  resultLabel = (n) => `${n.toLocaleString()} ${n === 1 ? 'result' : 'results'}`,
+  resultLabel: resultLabelProp,
   onReset,
   showChips = true,
   className,
 }: FilterBarProps) {
+  const { t } = useCommonTranslation();
+  const moreLabel = moreLabelProp ?? t('filters.more');
+  const resultLabel = resultLabelProp ?? ((n: number) => t('filters.results', { count: n, n: formatNumber(n) }));
   const [chips, setChips] = useState<ActiveChip[]>([]);
   const register = useCallback((id: string, chip: ActiveChip | null) => {
     setChips((prev) => {
@@ -820,7 +837,7 @@ export function FilterBar({
         <div className="flex flex-wrap items-center gap-2">
           {search && <FilterSearch {...search} className={cn('w-full sm:w-64 2xl:w-80', search.className)} />}
           {/* pills: one horizontally scrolling row on phones, wrapping on larger screens */}
-          <div className="-mx-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto px-1 py-0.5 [mask-image:linear-gradient(to_right,black_88%,transparent)] [scrollbar-width:none] sm:contents">
+          <div className="-mx-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto px-1 py-0.5 [mask-image:linear-gradient(to_right,black_88%,transparent)] rtl:[mask-image:linear-gradient(to_left,black_88%,transparent)] [scrollbar-width:none] sm:contents">
           {children}
           {more && (
             <>
@@ -851,7 +868,7 @@ export function FilterBar({
                     }}
                     className="h-8 rounded-lg bg-primary px-3 text-sm font-medium text-primary-fg hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
-                    Done
+                    {t('filters.done')}
                   </button>
                 </div>
               </Popover>
@@ -870,7 +887,7 @@ export function FilterBar({
           )}
         </div>
         {showChips && chips.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5" aria-label="Active filters" role="group">
+          <div className="flex flex-wrap items-center gap-1.5" aria-label={t('filters.active')} role="group">
             {chips.map((chip) => (
               <span
                 key={chip.id}
@@ -881,7 +898,7 @@ export function FilterBar({
                 <button
                   type="button"
                   onClick={chip.onClear}
-                  aria-label={`Remove filter ${chip.label}`}
+                  aria-label={t('filters.remove', { label: chip.label })}
                   className="inline-flex size-5 items-center justify-center rounded-full text-muted hover:bg-border hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <X className="size-3" aria-hidden />
@@ -894,7 +911,7 @@ export function FilterBar({
                 onClick={onReset}
                 className="ms-1 rounded px-1 text-xs font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Reset all
+                {t('filters.resetAll')}
               </button>
             )}
           </div>
@@ -925,9 +942,10 @@ export interface QuickFiltersProps<V extends string = string> {
   className?: string;
 }
 
-export function QuickFilters<V extends string = string>({ items, value, onChange, label = 'Quick filters', className }: QuickFiltersProps<V>) {
+export function QuickFilters<V extends string = string>({ items, value, onChange, label, className }: QuickFiltersProps<V>) {
+  const { t } = useCommonTranslation();
   return (
-    <div role="group" aria-label={label} className={cn('-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]', className)}>
+    <div role="group" aria-label={label ?? t('filters.quick')} className={cn('-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]', className)}>
       {items.map((item) => {
         const active = item.value === value;
         return (
@@ -951,7 +969,7 @@ export function QuickFilters<V extends string = string>({ items, value, onChange
                   active ? 'bg-primary-soft text-primary-ink' : 'bg-surface-2 text-muted group-hover:text-fg',
                 )}
               >
-                {item.count === null ? '–' : item.count.toLocaleString()}
+                {item.count === null ? '–' : formatNumber(item.count)}
               </span>
             )}
             <span

@@ -236,7 +236,7 @@ export function LoginPage({
           <Button type="submit" size="lg" fullWidth loading={submitting}>
             {t('auth.verify')}
           </Button>
-          <Button variant="ghost" onClick={backToCredentials} disabled={submitting} leftIcon={<ArrowLeft className="size-4" aria-hidden />}>
+          <Button variant="ghost" onClick={backToCredentials} disabled={submitting} leftIcon={<ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />}>
             {t('auth.useDifferentAccount')}
           </Button>
         </form>

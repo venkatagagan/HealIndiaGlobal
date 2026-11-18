@@ -47,7 +47,27 @@
     "sortAscending": "Sorted ascending",
     "sortDescending": "Sorted descending",
     "sortBy": "Sort by {{column}}",
-    "actions": "Actions"
+    "actions": "Actions",
+    "rowsPerPage": "Rows per page",
+    "viewOptions": "Table view options",
+    "density": "Density",
+    "comfortable": "Comfortable",
+    "compact": "Compact",
+    "columns": "Columns",
+    "resetView": "Reset view",
+    "open": "Open",
+    "noMatchTitle": "No matching results",
+    "noMatchDescription": "Try a different search or remove some filters.",
+    "resetFilters": "Reset filters",
+    "bulkActions": "Bulk actions",
+    "selected_one": "{{n}} selected",
+    "selected_other": "{{n}} selected",
+    "clearSelection": "Clear selection",
+    "selectPage": "Select all rows on this page",
+    "deselectPage": "Deselect all rows on this page",
+    "selectRow": "Select row",
+    "deselectRow": "Deselect row",
+    "selectPageShort": "Select page"
   },
   "upload": {
     "drop": "Drag and drop files here, or",
@@ -175,5 +195,593 @@
   "language": {
     "label": "Language",
     "choose": "Choose a language"
+  },
+  "careGates": {
+    "emergency": {
+      "title": "Emergency — seek local care now",
+      "patientLead": "Your answers suggest you may need urgent medical care. Please seek local emergency care now: call your local emergency number or go to the nearest emergency department. Do not wait to travel for treatment.",
+      "patientAck": "I have read this guidance. I have sought (or will seek) local medical advice, and I understand Heal India Global does not provide emergency care.",
+      "patientDone": "Thank you. You can continue with your case.",
+      "agentLead": "This patient's screening suggests they may need urgent medical care. Before planning medical travel, make sure the patient seeks local emergency care now: their local emergency number or the nearest emergency department. They should not wait to travel for treatment.",
+      "agentAck": "I have shared this guidance with the patient. They have sought (or will seek) local medical advice, and we understand Heal India Global does not provide emergency care.",
+      "agentDone": "Acknowledged. You can continue with this case.",
+      "notSubstitute": "Medical travel is not a substitute for emergency care. Treatment planning in India can continue only after a local doctor has confirmed it is safe to travel.",
+      "dialIndia": "In India, dial 112 for emergencies.",
+      "continue": "I understand - continue"
+    },
+    "upgrade": {
+      "titleNamed": "{{name}} needs a full account",
+      "title": "The patient needs a full account",
+      "body": "This patient is still using a guest session. Hospitals need a verified account before quotes can be accepted, bookings made or payments taken. Ask the patient to open Heal India Global and choose “Create account” - everything from their guest session is kept - then try again."
+    }
+  },
+  "clipboard": {
+    "copied": "Copied to clipboard",
+    "failed": "Could not copy",
+    "copyValue": "Copy {{value}}"
+  },
+  "export": {
+    "label": "Export",
+    "nothing": "Nothing to export",
+    "exported_one": "Exported {{n}} row",
+    "exported_other": "Exported {{n}} rows",
+    "failed": "Export failed",
+    "currentPage": "Current page",
+    "allResults": "All matching results",
+    "rows_one": "{{n}} row",
+    "rows_other": "{{n}} rows",
+    "hint": "CSV · current filters and sort"
+  },
+  "breadcrumb": "Breadcrumb",
+  "filters": {
+    "any": "Any",
+    "yes": "Yes",
+    "filterPlaceholder": "Filter {{label}}…",
+    "filterOptions": "Filter {{label}} options",
+    "noMatches": "No matches",
+    "selectAll": "Select all",
+    "selected_one": "{{n}} selected",
+    "selected_other": "{{n}} selected",
+    "presets": {
+      "today": "Today",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month"
+    },
+    "fromDate": "From {{date}}",
+    "untilDate": "Until {{date}}",
+    "dateField": "Date field",
+    "presetsLabel": "Presets",
+    "from": "From",
+    "to": "To",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "apply": "Apply",
+    "searchPlaceholder": "Search…",
+    "clearSearch": "Clear search",
+    "more": "More filters",
+    "results_one": "{{n}} result",
+    "results_other": "{{n}} results",
+    "done": "Done",
+    "active": "Active filters",
+    "remove": "Remove filter {{label}}",
+    "resetAll": "Reset all",
+    "quick": "Quick filters"
+  },
+  "notifications": {
+    "label": "Notifications",
+    "unreadLabel": "Notifications, {{count}} unread"
+  },
+  "deleteAccount": {
+    "blockers": {
+      "casesInProgress": "treatment cases in progress",
+      "activeBookings": "active bookings",
+      "paymentsInProgress": "payments in progress",
+      "ownedListedHospitals": "listed hospitals you are the only owner of (add another owner or ask us to delist first)"
+    },
+    "blockerCount": "{{n}} {{label}}",
+    "patient": {
+      "erased": "Your contact details, passport and insurance numbers, health notes, companions, saved items and documents that are not part of a case are erased and you are signed out everywhere.",
+      "lose": "You will lose access to your screenings, cases, messages and documents."
+    },
+    "agent": {
+      "erased": "Your contact details and agency profile are erased, your agency is closed and you are signed out everywhere. Your patients keep their own accounts and cases.",
+      "lose": "You will lose access to your patients, cases, messages and commission history."
+    },
+    "hospital": {
+      "erased": "Your contact details are erased, you are removed from every hospital team and you are signed out everywhere. The hospital listing itself stays with its other owners.",
+      "lose": "You will lose access to the hospital portal, its cases and messages."
+    },
+    "wrongPassword": "The password is incorrect.",
+    "wrongCode": "The authenticator code is not valid.",
+    "failed": "Your account could not be deleted. Please try again or contact support.",
+    "requestedToast": "Deletion requested. Our team will contact you and close the account once nothing is pending.",
+    "requestFailed": "The request could not be sent. Please contact support.",
+    "deletedTitle": "Your account has been deleted",
+    "signedOut": "You have been signed out on all devices.",
+    "requiredToKeep": "What we are required to keep:",
+    "title": "Delete account",
+    "description": "Permanently close your Heal India Global account and erase your personal data.",
+    "whatDeleted": "What is deleted",
+    "whatKept": "What we keep (required by law)",
+    "keptDefault": "Payment records and medical records that belong to a treatment case, for the period the law requires, with access limited to the treating hospital and our compliance team.",
+    "inProgressNote": "Accounts with treatment, bookings or payments in progress can be deleted once they are finished or cancelled, or you can ask us to close the account for you.",
+    "deleteMine": "Delete my account",
+    "confirmTitle": "Delete your account?",
+    "confirmDescription": "This cannot be undone.",
+    "requested": "Deletion requested",
+    "request": "Request deletion",
+    "deletePermanently": "Delete permanently",
+    "guestNote": "Guest data cannot be recovered after deletion.",
+    "password": "Your password",
+    "passwordHint": "Leave empty only if you always sign in with Google or Apple.",
+    "code": "Authenticator code",
+    "codeHint": "The 6-digit code from your authenticator app.",
+    "reason": "Why are you leaving?",
+    "typeToConfirm": "Type {{word}} to confirm",
+    "requestSent": "Your deletion request was sent. We will contact you by email.",
+    "requestHint": "You can ask us to close the account for you with \"Request deletion\"."
+  },
+  "enums": {
+    "userRole": {
+      "patient": "Patient",
+      "agent": "Agent",
+      "hospital": "Hospital staff",
+      "admin": "Operations admin",
+      "finance": "Finance",
+      "support": "Support / coordinator",
+      "super_admin": "Super admin"
+    },
+    "userStatus": {
+      "active": "Active",
+      "pending_verification": "Pending verification",
+      "suspended": "Suspended",
+      "deleted": "Deleted"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "undisclosed": "Prefer not to say"
+    },
+    "doctorGenderPref": {
+      "male": "Male",
+      "female": "Female",
+      "no_preference": "No preference"
+    },
+    "kycStatus": {
+      "not_submitted": "Not submitted",
+      "pending": "Under review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "hospitalStatus": {
+      "draft": "Draft",
+      "pending_review": "Pending review",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "agentStatus": {
+      "pending": "Pending approval",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "hospitalMemberRole": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "coordinator": "Coordinator",
+      "finance": "Finance",
+      "doctor": "Doctor"
+    },
+    "packageTier": {
+      "medical_only": "Medical only",
+      "medical_stay": "Medical + Stay",
+      "all_inclusive": "All-inclusive"
+    },
+    "screeningStatus": {
+      "draft": "Draft",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "urgency": {
+      "routine": "Routine",
+      "soon": "Soon",
+      "urgent": "Urgent",
+      "emergency": "Emergency"
+    },
+    "durationUnit": {
+      "days": "Days",
+      "weeks": "Weeks",
+      "months": "Months",
+      "years": "Years"
+    },
+    "severityLevel": {
+      "none": "None",
+      "mild": "Mild",
+      "moderate": "Moderate",
+      "severe": "Severe"
+    },
+    "symptomAnswer": {
+      "yes": "Yes",
+      "maybe": "Maybe",
+      "no": "No"
+    },
+    "previousTreatment": {
+      "medication": "Medication",
+      "physical_therapy": "Physical therapy",
+      "surgery": "Surgery",
+      "other": "Other"
+    },
+    "caseStatus": {
+      "enquiry": "Enquiry",
+      "quoted": "Quoted",
+      "accepted": "Accepted",
+      "booked": "Booked",
+      "in_treatment": "In treatment",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "declined": "Declined"
+    },
+    "quoteStatus": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "expired": "Expired",
+      "withdrawn": "Withdrawn"
+    },
+    "quoteLineCategory": {
+      "surgery": "Surgery",
+      "hospital_stay": "Hospital stay",
+      "medications": "Medications",
+      "tests_scans": "Tests & scans",
+      "doctor_fees": "Doctor fees",
+      "implants": "Implants",
+      "other": "Other"
+    },
+    "bookingStatus": {
+      "pending_payment": "Pending payment",
+      "confirmed": "Confirmed",
+      "admitted": "Admitted",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "paymentOption": {
+      "full": "Pay in full",
+      "deposit": "Pay deposit now",
+      "installments": "Payment plan"
+    },
+    "consultationStatus": {
+      "requested": "Requested",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "consultationMode": {
+      "video": "Video",
+      "phone": "Phone"
+    },
+    "checklistStatus": {
+      "pending": "Pending",
+      "in_progress": "In progress",
+      "done": "Done"
+    },
+    "checklistKey": {
+      "treatment_booked": "Treatment booked",
+      "visa_approved": "Visa approved",
+      "flight_booked": "Flight booked",
+      "travel_insurance": "Travel insurance",
+      "airport_pickup": "Airport pickup",
+      "documents_uploaded": "Documents uploaded",
+      "accommodation_booked": "Accommodation booked"
+    },
+    "itineraryKind": {
+      "appointment": "Appointment",
+      "admission": "Admission",
+      "surgery": "Surgery",
+      "pickup": "Pick-up",
+      "checkin": "Check-in",
+      "checkout": "Check-out",
+      "followup": "Follow-up",
+      "sightseeing": "Sightseeing",
+      "other": "Other"
+    },
+    "itineraryStatus": {
+      "scheduled": "Scheduled",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "visaStatus": {
+      "not_started": "Not started",
+      "documents_pending": "Documents pending",
+      "invitation_issued": "Invitation issued",
+      "applied": "Applied",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "visaType": {
+      "e_medical": "e-Medical visa",
+      "e_medical_attendant": "e-Medical attendant visa"
+    },
+    "travelKind": {
+      "flight": "Flight",
+      "airport_pickup": "Airport pickup",
+      "airport_drop": "Airport drop",
+      "local_transport": "Local transport"
+    },
+    "serviceBookingStatus": {
+      "requested": "Requested",
+      "quoted": "Quoted",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "accommodationType": {
+      "hotel": "Hotel",
+      "guest_house": "Guest house",
+      "service_apartment": "Service apartment",
+      "hospital_guest_room": "Hospital guest room"
+    },
+    "serviceKind": {
+      "translator": "Translator",
+      "local_guide": "Local guide",
+      "transport": "Transport",
+      "travel_agent": "Travel agent",
+      "insurance": "Insurance"
+    },
+    "rateUnit": {
+      "hour": "Per hour",
+      "day": "Per day",
+      "trip": "Per trip",
+      "fixed": "Fixed"
+    },
+    "sosStatus": {
+      "open": "Open",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved"
+    },
+    "documentKind": {
+      "passport": "Passport",
+      "visa": "Visa",
+      "medical_report": "Medical report",
+      "prescription": "Prescription",
+      "lab_result": "Lab result",
+      "imaging": "Imaging (X-ray / MRI / CT)",
+      "invitation_letter": "Invitation letter",
+      "invoice": "Invoice",
+      "receipt": "Receipt",
+      "kyc_registration": "KYC - Registration certificate",
+      "kyc_accreditation": "KYC - Accreditation certificate",
+      "kyc_pan": "KYC - PAN card",
+      "kyc_gst": "KYC - GST certificate",
+      "kyc_id_proof": "KYC - ID proof",
+      "bank_proof": "Bank proof",
+      "payment_proof": "Payment proof",
+      "other": "Other"
+    },
+    "documentStatus": {
+      "uploaded": "Uploaded",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "consentKind": {
+      "terms": "Terms of service",
+      "privacy": "Privacy policy",
+      "ai_processing": "AI processing of my health information",
+      "share_with_hospitals": "Share my case with partner hospitals",
+      "marketing": "Marketing communications"
+    },
+    "paymentGateway": {
+      "razorpay": "Card / UPI (Razorpay)",
+      "stripe": "Card (Stripe)",
+      "bank_transfer": "Bank transfer (SWIFT)",
+      "mock": "Test payment (dev)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "Consultation fee",
+      "booking_deposit": "Booking deposit",
+      "booking_balance": "Booking balance",
+      "booking_full": "Booking full",
+      "installment": "Installment",
+      "service": "Service"
+    },
+    "orderStatus": {
+      "created": "Created",
+      "pending": "Pending",
+      "paid": "Paid",
+      "partially_refunded": "Partially refunded",
+      "refunded": "Refunded",
+      "failed": "Failed",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "paymentStatus": {
+      "created": "Created",
+      "authorized": "Authorized",
+      "captured": "Captured",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "partially_refunded": "Partially refunded"
+    },
+    "paymentMethod": {
+      "card": "Card",
+      "upi": "UPI",
+      "netbanking": "Net banking",
+      "bank_transfer": "Bank transfer",
+      "wallet": "Wallet",
+      "emi": "EMI",
+      "mock": "Mock"
+    },
+    "refundStatus": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "processing": "Processing",
+      "processed": "Processed",
+      "failed": "Failed",
+      "rejected": "Rejected"
+    },
+    "installmentStatus": {
+      "due": "Due",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "invoiceKind": {
+      "patient_receipt": "Patient receipt",
+      "commission_invoice": "Commission invoice",
+      "agent_statement": "Agent statement",
+      "credit_note": "Credit note"
+    },
+    "ledgerAccountType": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "revenue": "Revenue",
+      "expense": "Expense",
+      "equity": "Equity"
+    },
+    "ledgerOwnerType": {
+      "platform": "Platform",
+      "hospital": "Hospital",
+      "agent": "Agent",
+      "vendor": "Vendor",
+      "gateway": "Gateway",
+      "tax": "Tax"
+    },
+    "entryDirection": {
+      "debit": "Debit",
+      "credit": "Credit"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "Payment captured",
+      "gateway_fee": "Gateway fee",
+      "revenue_recognition": "Revenue recognition",
+      "agent_commission": "Agent commission",
+      "refund": "Refund",
+      "payout": "Payout",
+      "adjustment": "Adjustment",
+      "cancellation_retention": "Cancellation retention",
+      "tax_remittance": "Tax remittance",
+      "fx_difference": "Fx difference"
+    },
+    "commissionScope": {
+      "global": "Global",
+      "hospital": "Hospital",
+      "specialty": "Specialty",
+      "procedure": "Procedure",
+      "agent": "Agent"
+    },
+    "payeeType": {
+      "hospital": "Hospital",
+      "agent": "Agent",
+      "vendor": "Vendor"
+    },
+    "settlementItemStatus": {
+      "pending": "Pending",
+      "eligible": "Eligible",
+      "on_hold": "On hold",
+      "batched": "Batched",
+      "paid": "Paid",
+      "reversed": "Reversed"
+    },
+    "settlementBatchStatus": {
+      "draft": "Draft",
+      "pending_approval": "Pending approval",
+      "approved": "Approved",
+      "processing": "Processing",
+      "completed": "Completed",
+      "partially_failed": "Partially failed",
+      "cancelled": "Cancelled"
+    },
+    "payoutStatus": {
+      "queued": "Queued",
+      "processing": "Processing",
+      "needs_reconciliation": "Needs reconciliation",
+      "processed": "Processed",
+      "failed": "Failed",
+      "reversed": "Reversed"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "Manual bank transfer",
+      "mock": "Mock (dev)"
+    },
+    "payoutAccountStatus": {
+      "active": "Active",
+      "disabled": "Disabled"
+    },
+    "jobStatus": {
+      "queued": "Queued",
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "dead": "Dead"
+    },
+    "reviewStatus": {
+      "pending": "Pending",
+      "published": "Published",
+      "hidden": "Hidden"
+    },
+    "accreditation": {
+      "jci": "JCI",
+      "nabh": "NABH",
+      "nabl": "NABL",
+      "iso": "ISO"
+    },
+    "agentTier": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    },
+    "slotKind": {
+      "consultation": "Consultation",
+      "admission": "Admission"
+    },
+    "savedEntityType": {
+      "hospital": "Hospital",
+      "doctor": "Doctor",
+      "procedure": "Procedure"
+    },
+    "conversationKind": {
+      "case": "Case",
+      "support": "Support",
+      "direct": "Direct"
+    },
+    "likelihood": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "bodyArea": {
+      "head": "Head",
+      "neck": "Neck",
+      "chest": "Chest",
+      "abdomen": "Abdomen",
+      "pelvis": "Pelvis",
+      "back": "Back",
+      "left_arm": "Left arm",
+      "right_arm": "Right arm",
+      "left_leg": "Left leg",
+      "right_leg": "Right leg",
+      "skin": "Skin",
+      "general": "Whole body / general"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "unauthorized": "Please sign in to continue.",
+    "forbidden": "You don't have permission to do that.",
+    "notFound": "Not found.",
+    "conflict": "This item was changed by someone else. Refresh and try again.",
+    "validation": "Please check the highlighted fields.",
+    "rateLimited": "Too many requests. Please wait a moment and try again.",
+    "server": "The server had a problem. Please try again shortly.",
+    "requestFailed": "Request failed.",
+    "network": "Cannot reach the server. Check your connection and try again."
   }
 }

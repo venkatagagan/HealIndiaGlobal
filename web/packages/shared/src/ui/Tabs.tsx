@@ -57,7 +57,9 @@ export function Tabs<T extends string = string>({
     if (event.key === 'Home') nextPos = 0;
     else if (event.key === 'End') nextPos = enabled.length - 1;
     else {
-      const forward = event.key === 'ArrowRight';
+      // right-to-left: ArrowLeft moves to the next tab
+      const rtl = getComputedStyle(event.currentTarget).direction === 'rtl';
+      const forward = (event.key === 'ArrowRight') !== rtl;
       nextPos = (currentPos + (forward ? 1 : -1) + enabled.length) % enabled.length;
     }
     const target = enabled[nextPos];

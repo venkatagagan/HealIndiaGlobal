@@ -102,11 +102,15 @@ export interface VoiceUploadIn {
   /** agents/staff recording on behalf of a patient */
   patient_id?: Uuid;
   consent_ai: true;
+  /** spoken language hint (default: the current UI language) */
+  language?: string;
 }
 
 export interface IntakeExtractIn {
   text: string;
   screening_id?: Uuid;
+  /** language of the text (default: the current UI language) */
+  language?: string;
 }
 
 export interface VoiceConfirmIn {

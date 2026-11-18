@@ -38,16 +38,16 @@ export function PageHeader({ title, description, actions, breadcrumbs, back, met
           to={back.to}
           className="inline-flex w-fit items-center gap-1 rounded text-sm font-medium text-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ArrowLeft className="size-4" aria-hidden />
+          <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
           {back.label ?? t('actions.back')}
         </Link>
       )}
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <nav aria-label="Breadcrumb">
+        <nav aria-label={t('breadcrumb')}>
           <ol className="flex flex-wrap items-center gap-1 text-sm text-muted">
             {breadcrumbs.map((crumb, i) => (
               <li key={i} className="flex items-center gap-1">
-                {i > 0 && <ChevronRight className="size-3.5" aria-hidden />}
+                {i > 0 && <ChevronRight className="size-3.5 rtl:-scale-x-100" aria-hidden />}
                 {crumb.to && i < breadcrumbs.length - 1 ? (
                   <Link to={crumb.to} className="hover:text-fg hover:underline">
                     {crumb.label}

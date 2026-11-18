@@ -516,7 +516,7 @@ export function PortalLayout({
                   FOCUS,
                 )}
               >
-                <ChevronRight className="size-3.5" aria-hidden />
+                <ChevronRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
               </button>
             </>
           ) : (
@@ -532,7 +532,7 @@ export function PortalLayout({
                   FOCUS,
                 )}
               >
-                <PanelLeftClose className="size-[18px]" aria-hidden />
+                <PanelLeftClose className="size-[18px] rtl:-scale-x-100" aria-hidden />
               </button>
             </>
           )}

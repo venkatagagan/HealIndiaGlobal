@@ -1,0 +1,807 @@
+{
+  "brand": {
+    "name": "Heal India Global",
+    "tagline": "بوابتك إلى التميّز الطبي في الهند"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "retry": "حاول مرة أخرى",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "search": "بحث",
+    "clear": "مسح",
+    "upload": "رفع",
+    "download": "تنزيل",
+    "remove": "إزالة",
+    "view": "عرض",
+    "continue": "متابعة",
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "signUp": "إنشاء حساب",
+    "more": "المزيد"
+  },
+  "states": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا يوجد شيء هنا بعد",
+    "noResults": "لم يتم العثور على نتائج",
+    "error": "حدث خطأ ما",
+    "errorDescription": "يُرجى المحاولة مرة أخرى بعد قليل.",
+    "notAvailable": "غير متوفر"
+  },
+  "pagination": {
+    "label": "التنقل بين الصفحات",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة {{page}} من {{pages}}",
+    "summary": "{{from}}–{{to}} من {{total}}",
+    "goTo": "الانتقال إلى الصفحة {{page}}"
+  },
+  "table": {
+    "sortAscending": "مرتّب تصاعديًا",
+    "sortDescending": "مرتّب تنازليًا",
+    "sortBy": "الترتيب حسب {{column}}",
+    "actions": "الإجراءات",
+    "rowsPerPage": "عدد الصفوف في الصفحة",
+    "viewOptions": "خيارات عرض الجدول",
+    "density": "الكثافة",
+    "comfortable": "مريح",
+    "compact": "مضغوط",
+    "columns": "الأعمدة",
+    "resetView": "إعادة ضبط العرض",
+    "open": "فتح",
+    "noMatchTitle": "لا توجد نتائج مطابقة",
+    "noMatchDescription": "جرّب بحثًا مختلفًا أو أزِل بعض عوامل التصفية.",
+    "resetFilters": "إعادة ضبط عوامل التصفية",
+    "bulkActions": "إجراءات جماعية",
+    "selected_zero": "تم تحديد {{n}} عنصر",
+    "selected_one": "تم تحديد {{n}} عنصر",
+    "selected_two": "تم تحديد {{n}} عنصرين",
+    "selected_few": "تم تحديد {{n}} عناصر",
+    "selected_many": "تم تحديد {{n}} عنصرًا",
+    "selected_other": "تم تحديد {{n}} عنصر",
+    "clearSelection": "إلغاء التحديد",
+    "selectPage": "تحديد كل الصفوف في هذه الصفحة",
+    "deselectPage": "إلغاء تحديد كل الصفوف في هذه الصفحة",
+    "selectRow": "تحديد الصف",
+    "deselectRow": "إلغاء تحديد الصف",
+    "selectPageShort": "تحديد الصفحة"
+  },
+  "upload": {
+    "drop": "اسحب الملفات وأفلتها هنا، أو",
+    "browse": "تصفّح",
+    "hint": "PDF أو JPG أو PNG أو WEBP أو HEIC أو DICOM · حتى {{size}} MB",
+    "tooLarge": "حجم «{{name}}» أكبر من {{size}} MB",
+    "badType": "نوع الملف «{{name}}» غير مدعوم",
+    "tooMany": "يمكنك رفع {{max}} ملفات كحد أقصى",
+    "remove": "إزالة {{name}}",
+    "uploading": "جارٍ الرفع…"
+  },
+  "theme": {
+    "label": "المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "حسب النظام",
+    "toggle": "تبديل الوضع الداكن"
+  },
+  "layout": {
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "collapseSidebar": "طي الشريط الجانبي",
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "skipToContent": "الانتقال إلى المحتوى",
+    "mainNavigation": "التنقل الرئيسي",
+    "userMenu": "قائمة الحساب",
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "asideTitle": "علاج بمستوى عالمي، ننسّقه من أجلك",
+    "asidePoint1": "مستشفيات شريكة معتمدة وأطباء متخصصون",
+    "asidePoint2": "عروض أسعار علاج واضحة ومفصّلة بندًا بندًا",
+    "asidePoint3": "تنسيق التأشيرة والسفر والإقامة من البداية إلى النهاية"
+  },
+  "dialog": {
+    "confirmTitle": "هل أنت متأكد؟",
+    "confirmDescription": "لا يمكن التراجع عن هذا الإجراء."
+  },
+  "stepper": {
+    "progress": "الخطوة {{current}} من {{total}}",
+    "completed": "مكتملة",
+    "current": "الخطوة الحالية"
+  },
+  "form": {
+    "optional": "اختياري",
+    "required": "مطلوب"
+  },
+  "roles": {
+    "patient": "مريض",
+    "agent": "وكيل",
+    "hospital": "مستشفى",
+    "admin": "مسؤول العمليات",
+    "finance": "المالية",
+    "support": "الدعم",
+    "super_admin": "المسؤول الأعلى"
+  },
+  "auth": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "signInTitle": "تسجيل الدخول إلى حسابك",
+    "signInSubtitle": "مرحبًا بعودتك! أدخل بياناتك للمتابعة.",
+    "staffTitle": "تسجيل دخول الموظفين",
+    "staffSubtitle": "لوحة العمليات — للموظفين المصرّح لهم فقط.",
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جارٍ تسجيل الدخول…",
+    "mfaTitle": "التحقق بخطوتين",
+    "mfaPrompt": "أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.",
+    "mfaCode": "رمز التحقق",
+    "verify": "تحقق وسجّل الدخول",
+    "useDifferentAccount": "استخدام حساب آخر",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "createAccount": "إنشاء حساب",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "checkingSession": "جارٍ التحقق من جلستك…",
+    "redirecting": "جارٍ تحويلك إلى صفحة تسجيل الدخول…",
+    "wrongPortalTitle": "هذه البوابة ليست مخصصة لحسابك",
+    "wrongPortalBody": "أنت مسجّل الدخول باسم {{name}} ({{role}}). هذا القسم مخصص لـ: {{roles}}.",
+    "goToMyPortal": "الانتقال إلى بوابتي",
+    "guest": "المتابعة كضيف",
+    "errors": {
+      "emailRequired": "أدخل بريدك الإلكتروني",
+      "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا",
+      "passwordRequired": "أدخل كلمة المرور",
+      "codeInvalid": "أدخل الرمز المكوّن من 6 أرقام",
+      "generic": "فشل تسجيل الدخول. يُرجى المحاولة مرة أخرى."
+    }
+  },
+  "register": {
+    "title": "أنشئ حسابك",
+    "subtitle": "انضم إلى Heal India Global خلال دقيقة.",
+    "accountType": "نوع الحساب",
+    "fullName": "الاسم الكامل",
+    "phone": "الهاتف",
+    "country": "الدولة (رمز من حرفين)",
+    "referralCode": "رمز الإحالة",
+    "agencyName": "اسم الوكالة",
+    "hospitalName": "اسم المستشفى",
+    "city": "المدينة",
+    "passwordHint": "10 أحرف على الأقل، تتضمن حرفًا ورقمًا.",
+    "acceptTerms": "أوافق على شروط الخدمة وسياسة الخصوصية.",
+    "terms": "شروط الخدمة",
+    "privacy": "سياسة الخصوصية",
+    "submit": "إنشاء الحساب",
+    "submitting": "جارٍ إنشاء الحساب…",
+    "roleHints": {
+      "patient": "اعثر على علاج في الهند وأدِر رحلتك العلاجية.",
+      "agent": "أحِل المرضى وأدِر شؤونهم بصفتك وسيطًا طبيًا.",
+      "hospital": "أدرِج مستشفاك واستقبل المرضى الدوليين."
+    },
+    "errors": {
+      "fullNameRequired": "أدخل اسمك الكامل",
+      "passwordWeak": "استخدم 10 أحرف على الأقل تتضمن حرفًا ورقمًا",
+      "termsRequired": "يجب أن توافق على الشروط للمتابعة",
+      "agencyRequired": "أدخل اسم وكالتك",
+      "hospitalRequired": "أدخل اسم المستشفى",
+      "cityRequired": "أدخل المدينة",
+      "countryInvalid": "استخدم رمز دولة من حرفين، مثل US"
+    }
+  },
+  "realtime": {
+    "connected": "متصل",
+    "reconnecting": "جارٍ إعادة الاتصال…"
+  },
+  "language": {
+    "label": "اللغة",
+    "choose": "اختر لغة"
+  },
+  "careGates": {
+    "emergency": {
+      "title": "حالة طارئة — اطلب الرعاية الطبية المحلية الآن",
+      "patientLead": "تشير إجاباتك إلى أنك قد تحتاج إلى رعاية طبية عاجلة. يُرجى طلب رعاية الطوارئ المحلية الآن: اتصل برقم الطوارئ المحلي أو توجّه إلى أقرب قسم طوارئ. لا تنتظر السفر لتلقي العلاج.",
+      "patientAck": "لقد قرأت هذه الإرشادات. لقد طلبت (أو سأطلب) استشارة طبية محلية، وأفهم أن Heal India Global لا تقدّم رعاية الطوارئ.",
+      "patientDone": "شكرًا لك. يمكنك متابعة حالتك.",
+      "agentLead": "يشير التقييم الأولي لهذا المريض إلى أنه قد يحتاج إلى رعاية طبية عاجلة. قبل التخطيط للسفر العلاجي، تأكّد من أن المريض يطلب رعاية الطوارئ المحلية الآن: عبر رقم الطوارئ المحلي أو أقرب قسم طوارئ. يجب ألا ينتظر السفر لتلقي العلاج.",
+      "agentAck": "لقد شاركت هذه الإرشادات مع المريض. لقد طلب (أو سيطلب) استشارة طبية محلية، ونحن نفهم أن Heal India Global لا تقدّم رعاية الطوارئ.",
+      "agentDone": "تم الإقرار. يمكنك متابعة هذه الحالة.",
+      "notSubstitute": "السفر العلاجي ليس بديلًا عن رعاية الطوارئ. لا يمكن متابعة التخطيط للعلاج في الهند إلا بعد أن يؤكّد طبيب محلي أن السفر آمن.",
+      "dialIndia": "في الهند، اتصل بالرقم 112 في حالات الطوارئ.",
+      "continue": "فهمت - متابعة"
+    },
+    "upgrade": {
+      "titleNamed": "يحتاج {{name}} إلى حساب كامل",
+      "title": "يحتاج المريض إلى حساب كامل",
+      "body": "لا يزال هذا المريض يستخدم جلسة ضيف. تحتاج المستشفيات إلى حساب موثّق قبل قبول عروض الأسعار أو إجراء الحجوزات أو استلام المدفوعات. اطلب من المريض فتح Heal India Global واختيار «إنشاء حساب» - مع الاحتفاظ بكل ما في جلسة الضيف - ثم حاول مرة أخرى."
+    }
+  },
+  "clipboard": {
+    "copied": "تم النسخ إلى الحافظة",
+    "failed": "تعذّر النسخ",
+    "copyValue": "نسخ {{value}}"
+  },
+  "export": {
+    "label": "تصدير",
+    "nothing": "لا يوجد شيء للتصدير",
+    "exported_zero": "تم تصدير {{n}} صف",
+    "exported_one": "تم تصدير {{n}} صف",
+    "exported_two": "تم تصدير {{n}} صفين",
+    "exported_few": "تم تصدير {{n}} صفوف",
+    "exported_many": "تم تصدير {{n}} صفًا",
+    "exported_other": "تم تصدير {{n}} صف",
+    "failed": "فشل التصدير",
+    "currentPage": "الصفحة الحالية",
+    "allResults": "كل النتائج المطابقة",
+    "rows_zero": "{{n}} صف",
+    "rows_one": "{{n}} صف",
+    "rows_two": "{{n}} صفان",
+    "rows_few": "{{n}} صفوف",
+    "rows_many": "{{n}} صفًا",
+    "rows_other": "{{n}} صف",
+    "hint": "CSV · عوامل التصفية والترتيب الحالية"
+  },
+  "breadcrumb": "مسار التنقل",
+  "filters": {
+    "any": "الكل",
+    "yes": "نعم",
+    "filterPlaceholder": "تصفية {{label}}…",
+    "filterOptions": "خيارات تصفية {{label}}",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "selectAll": "تحديد الكل",
+    "selected_zero": "تم تحديد {{n}} عنصر",
+    "selected_one": "تم تحديد {{n}} عنصر",
+    "selected_two": "تم تحديد {{n}} عنصرين",
+    "selected_few": "تم تحديد {{n}} عناصر",
+    "selected_many": "تم تحديد {{n}} عنصرًا",
+    "selected_other": "تم تحديد {{n}} عنصر",
+    "presets": {
+      "today": "اليوم",
+      "last7": "آخر 7 أيام",
+      "last30": "آخر 30 يومًا",
+      "last90": "آخر 90 يومًا",
+      "thisMonth": "هذا الشهر",
+      "lastMonth": "الشهر الماضي"
+    },
+    "fromDate": "من {{date}}",
+    "untilDate": "حتى {{date}}",
+    "dateField": "حقل التاريخ",
+    "presetsLabel": "فترات جاهزة",
+    "from": "من",
+    "to": "إلى",
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى",
+    "apply": "تطبيق",
+    "searchPlaceholder": "بحث…",
+    "clearSearch": "مسح البحث",
+    "more": "مزيد من عوامل التصفية",
+    "results_zero": "{{n}} نتيجة",
+    "results_one": "{{n}} نتيجة",
+    "results_two": "{{n}} نتيجتان",
+    "results_few": "{{n}} نتائج",
+    "results_many": "{{n}} نتيجة",
+    "results_other": "{{n}} نتيجة",
+    "done": "تم",
+    "active": "عوامل التصفية النشطة",
+    "remove": "إزالة عامل التصفية {{label}}",
+    "resetAll": "إعادة ضبط الكل",
+    "quick": "تصفية سريعة"
+  },
+  "notifications": {
+    "label": "الإشعارات",
+    "unreadLabel": "الإشعارات، {{count}} غير مقروءة"
+  },
+  "deleteAccount": {
+    "blockers": {
+      "casesInProgress": "حالات علاج قيد التنفيذ",
+      "activeBookings": "حجوزات نشطة",
+      "paymentsInProgress": "مدفوعات قيد المعالجة",
+      "ownedListedHospitals": "مستشفيات مُدرجة أنت مالكها الوحيد (أضف مالكًا آخر أو اطلب منا إلغاء إدراجها أولًا)"
+    },
+    "blockerCount": "{{n}} {{label}}",
+    "patient": {
+      "erased": "تُمحى بيانات الاتصال الخاصة بك، وأرقام جواز السفر والتأمين، والملاحظات الصحية، والمرافقون، والعناصر المحفوظة، والمستندات غير المرتبطة بحالة علاج، ويتم تسجيل خروجك من جميع الأجهزة.",
+      "lose": "ستفقد الوصول إلى تقييماتك الأولية وحالاتك ورسائلك ومستنداتك."
+    },
+    "agent": {
+      "erased": "تُمحى بيانات الاتصال الخاصة بك وملف وكالتك، وتُغلق وكالتك، ويتم تسجيل خروجك من جميع الأجهزة. يحتفظ مرضاك بحساباتهم وحالاتهم الخاصة.",
+      "lose": "ستفقد الوصول إلى مرضاك وحالاتك ورسائلك وسجل عمولاتك."
+    },
+    "hospital": {
+      "erased": "تُمحى بيانات الاتصال الخاصة بك، وتُزال من جميع فرق المستشفيات، ويتم تسجيل خروجك من جميع الأجهزة. تبقى صفحة المستشفى نفسها لدى مالكيها الآخرين.",
+      "lose": "ستفقد الوصول إلى بوابة المستشفى وحالاتها ورسائلها."
+    },
+    "wrongPassword": "كلمة المرور غير صحيحة.",
+    "wrongCode": "رمز المصادقة غير صالح.",
+    "failed": "تعذّر حذف حسابك. يُرجى المحاولة مرة أخرى أو التواصل مع الدعم.",
+    "requestedToast": "تم طلب الحذف. سيتواصل معك فريقنا ويغلق الحساب بعد إنهاء كل ما هو معلّق.",
+    "requestFailed": "تعذّر إرسال الطلب. يُرجى التواصل مع الدعم.",
+    "deletedTitle": "تم حذف حسابك",
+    "signedOut": "تم تسجيل خروجك من جميع الأجهزة.",
+    "requiredToKeep": "ما نحن ملزمون بالاحتفاظ به:",
+    "title": "حذف الحساب",
+    "description": "إغلاق حسابك في Heal India Global نهائيًا ومحو بياناتك الشخصية.",
+    "whatDeleted": "ما الذي يُحذف",
+    "whatKept": "ما نحتفظ به (بموجب القانون)",
+    "keptDefault": "سجلات الدفع والسجلات الطبية التابعة لحالة علاج، طوال المدة التي يفرضها القانون، مع حصر الوصول إليها في المستشفى المعالج وفريق الامتثال لدينا.",
+    "inProgressNote": "يمكن حذف الحسابات التي لديها علاج أو حجوزات أو مدفوعات قيد التنفيذ بعد اكتمالها أو إلغائها، أو يمكنك أن تطلب منا إغلاق الحساب نيابةً عنك.",
+    "deleteMine": "حذف حسابي",
+    "confirmTitle": "هل تريد حذف حسابك؟",
+    "confirmDescription": "لا يمكن التراجع عن ذلك.",
+    "requested": "تم طلب الحذف",
+    "request": "طلب الحذف",
+    "deletePermanently": "حذف نهائي",
+    "guestNote": "لا يمكن استرداد بيانات الضيف بعد حذفها.",
+    "password": "كلمة المرور الخاصة بك",
+    "passwordHint": "اتركها فارغة فقط إذا كنت تسجّل الدخول دائمًا عبر Google أو Apple.",
+    "code": "رمز المصادقة",
+    "codeHint": "الرمز المكوّن من 6 أرقام من تطبيق المصادقة.",
+    "reason": "لماذا تغادر؟",
+    "typeToConfirm": "اكتب {{word}} للتأكيد",
+    "requestSent": "تم إرسال طلب الحذف. سنتواصل معك عبر البريد الإلكتروني.",
+    "requestHint": "يمكنك أن تطلب منا إغلاق الحساب نيابةً عنك عبر «طلب الحذف»."
+  },
+  "enums": {
+    "userRole": {
+      "patient": "مريض",
+      "agent": "وكيل",
+      "hospital": "موظف مستشفى",
+      "admin": "مسؤول العمليات",
+      "finance": "المالية",
+      "support": "الدعم / منسّق",
+      "super_admin": "المسؤول الأعلى"
+    },
+    "userStatus": {
+      "active": "نشط",
+      "pending_verification": "بانتظار التحقق",
+      "suspended": "معلّق",
+      "deleted": "محذوف"
+    },
+    "gender": {
+      "male": "ذكر",
+      "female": "أنثى",
+      "other": "آخر",
+      "undisclosed": "أفضّل عدم الإفصاح"
+    },
+    "doctorGenderPref": {
+      "male": "طبيب",
+      "female": "طبيبة",
+      "no_preference": "لا تفضيل"
+    },
+    "kycStatus": {
+      "not_submitted": "لم يُقدَّم",
+      "pending": "قيد المراجعة",
+      "approved": "مقبول",
+      "rejected": "مرفوض"
+    },
+    "hospitalStatus": {
+      "draft": "مسودة",
+      "pending_review": "بانتظار المراجعة",
+      "active": "نشط",
+      "suspended": "معلّق",
+      "rejected": "مرفوض"
+    },
+    "agentStatus": {
+      "pending": "بانتظار الموافقة",
+      "active": "نشط",
+      "suspended": "معلّق",
+      "rejected": "مرفوض"
+    },
+    "hospitalMemberRole": {
+      "owner": "مالك",
+      "admin": "مسؤول",
+      "coordinator": "منسّق",
+      "finance": "المالية",
+      "doctor": "طبيب"
+    },
+    "packageTier": {
+      "medical_only": "العلاج فقط",
+      "medical_stay": "العلاج + الإقامة",
+      "all_inclusive": "شامل كل شيء"
+    },
+    "screeningStatus": {
+      "draft": "مسودة",
+      "processing": "قيد المعالجة",
+      "completed": "مكتمل",
+      "failed": "فشل"
+    },
+    "urgency": {
+      "routine": "اعتيادي",
+      "soon": "قريبًا",
+      "urgent": "عاجل",
+      "emergency": "طارئ"
+    },
+    "durationUnit": {
+      "days": "أيام",
+      "weeks": "أسابيع",
+      "months": "أشهر",
+      "years": "سنوات"
+    },
+    "severityLevel": {
+      "none": "لا يوجد",
+      "mild": "خفيف",
+      "moderate": "متوسط",
+      "severe": "شديد"
+    },
+    "symptomAnswer": {
+      "yes": "نعم",
+      "maybe": "ربما",
+      "no": "لا"
+    },
+    "previousTreatment": {
+      "medication": "أدوية",
+      "physical_therapy": "علاج طبيعي",
+      "surgery": "جراحة",
+      "other": "أخرى"
+    },
+    "caseStatus": {
+      "enquiry": "استفسار",
+      "quoted": "تم تقديم عرض سعر",
+      "accepted": "مقبولة",
+      "booked": "محجوزة",
+      "in_treatment": "قيد العلاج",
+      "completed": "مكتملة",
+      "cancelled": "ملغاة",
+      "declined": "مرفوضة"
+    },
+    "quoteStatus": {
+      "draft": "مسودة",
+      "sent": "مُرسَل",
+      "accepted": "مقبول",
+      "rejected": "مرفوض",
+      "expired": "منتهي الصلاحية",
+      "withdrawn": "مسحوب"
+    },
+    "quoteLineCategory": {
+      "surgery": "الجراحة",
+      "hospital_stay": "الإقامة في المستشفى",
+      "medications": "الأدوية",
+      "tests_scans": "الفحوصات والأشعة",
+      "doctor_fees": "أتعاب الطبيب",
+      "implants": "الغرسات",
+      "other": "أخرى"
+    },
+    "bookingStatus": {
+      "pending_payment": "بانتظار الدفع",
+      "confirmed": "مؤكَّد",
+      "admitted": "تم الإدخال",
+      "completed": "مكتمل",
+      "cancelled": "ملغى"
+    },
+    "paymentOption": {
+      "full": "الدفع بالكامل",
+      "deposit": "دفع العربون الآن",
+      "installments": "خطة دفع"
+    },
+    "consultationStatus": {
+      "requested": "مطلوبة",
+      "scheduled": "مجدولة",
+      "completed": "مكتملة",
+      "cancelled": "ملغاة"
+    },
+    "consultationMode": {
+      "video": "فيديو",
+      "phone": "هاتف"
+    },
+    "checklistStatus": {
+      "pending": "معلّق",
+      "in_progress": "قيد التنفيذ",
+      "done": "تم"
+    },
+    "checklistKey": {
+      "treatment_booked": "تم حجز العلاج",
+      "visa_approved": "تمت الموافقة على التأشيرة",
+      "flight_booked": "تم حجز الرحلة",
+      "travel_insurance": "تأمين السفر",
+      "airport_pickup": "الاستقبال من المطار",
+      "documents_uploaded": "تم رفع المستندات",
+      "accommodation_booked": "تم حجز السكن"
+    },
+    "itineraryKind": {
+      "appointment": "موعد",
+      "admission": "دخول المستشفى",
+      "surgery": "جراحة",
+      "pickup": "استقبال",
+      "checkin": "تسجيل الوصول",
+      "checkout": "تسجيل المغادرة",
+      "followup": "متابعة",
+      "sightseeing": "جولة سياحية",
+      "other": "أخرى"
+    },
+    "itineraryStatus": {
+      "scheduled": "مجدول",
+      "done": "تم",
+      "cancelled": "ملغى"
+    },
+    "visaStatus": {
+      "not_started": "لم يبدأ",
+      "documents_pending": "المستندات معلّقة",
+      "invitation_issued": "تم إصدار الدعوة",
+      "applied": "تم التقديم",
+      "approved": "مقبولة",
+      "rejected": "مرفوضة"
+    },
+    "visaType": {
+      "e_medical": "تأشيرة طبية إلكترونية",
+      "e_medical_attendant": "تأشيرة مرافق طبي إلكترونية"
+    },
+    "travelKind": {
+      "flight": "رحلة جوية",
+      "airport_pickup": "الاستقبال من المطار",
+      "airport_drop": "التوصيل إلى المطار",
+      "local_transport": "تنقل محلي"
+    },
+    "serviceBookingStatus": {
+      "requested": "مطلوب",
+      "quoted": "تم تقديم عرض سعر",
+      "confirmed": "مؤكَّد",
+      "completed": "مكتمل",
+      "cancelled": "ملغى"
+    },
+    "accommodationType": {
+      "hotel": "فندق",
+      "guest_house": "دار ضيافة",
+      "service_apartment": "شقة فندقية",
+      "hospital_guest_room": "غرفة ضيوف في المستشفى"
+    },
+    "serviceKind": {
+      "translator": "مترجم",
+      "local_guide": "مرشد محلي",
+      "transport": "نقل",
+      "travel_agent": "وكيل سفر",
+      "insurance": "تأمين"
+    },
+    "rateUnit": {
+      "hour": "بالساعة",
+      "day": "باليوم",
+      "trip": "بالرحلة",
+      "fixed": "ثابت"
+    },
+    "sosStatus": {
+      "open": "مفتوح",
+      "acknowledged": "تم الاستلام",
+      "resolved": "تمت المعالجة"
+    },
+    "documentKind": {
+      "passport": "جواز السفر",
+      "visa": "التأشيرة",
+      "medical_report": "تقرير طبي",
+      "prescription": "وصفة طبية",
+      "lab_result": "نتيجة مختبر",
+      "imaging": "تصوير طبي (أشعة سينية / رنين مغناطيسي / أشعة مقطعية)",
+      "invitation_letter": "خطاب دعوة",
+      "invoice": "فاتورة",
+      "receipt": "إيصال",
+      "kyc_registration": "KYC - شهادة التسجيل",
+      "kyc_accreditation": "KYC - شهادة الاعتماد",
+      "kyc_pan": "KYC - بطاقة PAN",
+      "kyc_gst": "KYC - شهادة GST",
+      "kyc_id_proof": "KYC - إثبات الهوية",
+      "bank_proof": "إثبات الحساب البنكي",
+      "payment_proof": "إثبات الدفع",
+      "other": "أخرى"
+    },
+    "documentStatus": {
+      "uploaded": "تم الرفع",
+      "verified": "تم التحقق",
+      "rejected": "مرفوض"
+    },
+    "consentKind": {
+      "terms": "شروط الخدمة",
+      "privacy": "سياسة الخصوصية",
+      "ai_processing": "معالجة معلوماتي الصحية بالذكاء الاصطناعي",
+      "share_with_hospitals": "مشاركة حالتي مع المستشفيات الشريكة",
+      "marketing": "الرسائل التسويقية"
+    },
+    "paymentGateway": {
+      "razorpay": "بطاقة / UPI (Razorpay)",
+      "stripe": "بطاقة (Stripe)",
+      "bank_transfer": "تحويل بنكي (SWIFT)",
+      "mock": "دفعة تجريبية (للتطوير)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "رسوم الاستشارة",
+      "booking_deposit": "عربون الحجز",
+      "booking_balance": "المبلغ المتبقي من الحجز",
+      "booking_full": "كامل مبلغ الحجز",
+      "installment": "قسط",
+      "service": "خدمة"
+    },
+    "orderStatus": {
+      "created": "تم الإنشاء",
+      "pending": "معلّق",
+      "paid": "مدفوع",
+      "partially_refunded": "مسترد جزئيًا",
+      "refunded": "مسترد",
+      "failed": "فشل",
+      "expired": "منتهي الصلاحية",
+      "cancelled": "ملغى"
+    },
+    "paymentStatus": {
+      "created": "تم الإنشاء",
+      "authorized": "مُصرَّح به",
+      "captured": "تم التحصيل",
+      "failed": "فشل",
+      "refunded": "مسترد",
+      "partially_refunded": "مسترد جزئيًا"
+    },
+    "paymentMethod": {
+      "card": "بطاقة",
+      "upi": "UPI",
+      "netbanking": "الخدمات المصرفية عبر الإنترنت",
+      "bank_transfer": "تحويل بنكي",
+      "wallet": "محفظة إلكترونية",
+      "emi": "EMI",
+      "mock": "تجريبي"
+    },
+    "refundStatus": {
+      "requested": "مطلوب",
+      "approved": "مقبول",
+      "processing": "قيد المعالجة",
+      "processed": "تمت المعالجة",
+      "failed": "فشل",
+      "rejected": "مرفوض"
+    },
+    "installmentStatus": {
+      "due": "مستحق",
+      "paid": "مدفوع",
+      "overdue": "متأخر",
+      "cancelled": "ملغى"
+    },
+    "invoiceKind": {
+      "patient_receipt": "إيصال المريض",
+      "commission_invoice": "فاتورة العمولة",
+      "agent_statement": "كشف حساب الوكيل",
+      "credit_note": "إشعار دائن"
+    },
+    "ledgerAccountType": {
+      "asset": "أصل",
+      "liability": "التزام",
+      "revenue": "إيراد",
+      "expense": "مصروف",
+      "equity": "حقوق ملكية"
+    },
+    "ledgerOwnerType": {
+      "platform": "المنصة",
+      "hospital": "مستشفى",
+      "agent": "وكيل",
+      "vendor": "مورّد",
+      "gateway": "بوابة الدفع",
+      "tax": "ضريبة"
+    },
+    "entryDirection": {
+      "debit": "مدين",
+      "credit": "دائن"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "تحصيل دفعة",
+      "gateway_fee": "رسوم بوابة الدفع",
+      "revenue_recognition": "إثبات الإيراد",
+      "agent_commission": "عمولة الوكيل",
+      "refund": "استرداد",
+      "payout": "صرف مستحقات",
+      "adjustment": "تسوية",
+      "cancellation_retention": "مبلغ محتجز عند الإلغاء",
+      "tax_remittance": "توريد الضريبة",
+      "fx_difference": "فرق سعر الصرف"
+    },
+    "commissionScope": {
+      "global": "عام",
+      "hospital": "مستشفى",
+      "specialty": "تخصص",
+      "procedure": "إجراء",
+      "agent": "وكيل"
+    },
+    "payeeType": {
+      "hospital": "مستشفى",
+      "agent": "وكيل",
+      "vendor": "مورّد"
+    },
+    "settlementItemStatus": {
+      "pending": "معلّق",
+      "eligible": "مستحق",
+      "on_hold": "محتجز",
+      "batched": "ضمن دفعة",
+      "paid": "مدفوع",
+      "reversed": "معكوس"
+    },
+    "settlementBatchStatus": {
+      "draft": "مسودة",
+      "pending_approval": "بانتظار الموافقة",
+      "approved": "مقبولة",
+      "processing": "قيد المعالجة",
+      "completed": "مكتملة",
+      "partially_failed": "فشلت جزئيًا",
+      "cancelled": "ملغاة"
+    },
+    "payoutStatus": {
+      "queued": "في قائمة الانتظار",
+      "processing": "قيد المعالجة",
+      "needs_reconciliation": "تحتاج إلى مطابقة",
+      "processed": "تمت المعالجة",
+      "failed": "فشل",
+      "reversed": "معكوس"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "تحويل بنكي يدوي",
+      "mock": "تجريبي (للتطوير)"
+    },
+    "payoutAccountStatus": {
+      "active": "نشط",
+      "disabled": "معطّل"
+    },
+    "jobStatus": {
+      "queued": "في قائمة الانتظار",
+      "running": "قيد التشغيل",
+      "succeeded": "نجح",
+      "failed": "فشل",
+      "dead": "متوقف نهائيًا"
+    },
+    "reviewStatus": {
+      "pending": "معلّق",
+      "published": "منشور",
+      "hidden": "مخفي"
+    },
+    "accreditation": {
+      "jci": "JCI",
+      "nabh": "NABH",
+      "nabl": "NABL",
+      "iso": "ISO"
+    },
+    "agentTier": {
+      "bronze": "برونزي",
+      "silver": "فضي",
+      "gold": "ذهبي"
+    },
+    "slotKind": {
+      "consultation": "استشارة",
+      "admission": "دخول المستشفى"
+    },
+    "savedEntityType": {
+      "hospital": "مستشفى",
+      "doctor": "طبيب",
+      "procedure": "إجراء"
+    },
+    "conversationKind": {
+      "case": "حالة",
+      "support": "الدعم",
+      "direct": "مباشرة"
+    },
+    "likelihood": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "high": "مرتفع"
+    },
+    "bodyArea": {
+      "head": "الرأس",
+      "neck": "الرقبة",
+      "chest": "الصدر",
+      "abdomen": "البطن",
+      "pelvis": "الحوض",
+      "back": "الظهر",
+      "left_arm": "الذراع اليسرى",
+      "right_arm": "الذراع اليمنى",
+      "left_leg": "الساق اليسرى",
+      "right_leg": "الساق اليمنى",
+      "skin": "الجلد",
+      "general": "الجسم كله / عام"
+    }
+  },
+  "errors": {
+    "generic": "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
+    "unauthorized": "يُرجى تسجيل الدخول للمتابعة.",
+    "forbidden": "ليس لديك إذن للقيام بذلك.",
+    "notFound": "غير موجود.",
+    "conflict": "عدّل شخص آخر هذا العنصر. حدّث الصفحة وحاول مرة أخرى.",
+    "validation": "يُرجى مراجعة الحقول المميّزة.",
+    "rateLimited": "طلبات كثيرة جدًا. يُرجى الانتظار قليلًا ثم المحاولة مرة أخرى.",
+    "server": "حدثت مشكلة في الخادم. يُرجى المحاولة مرة أخرى بعد قليل.",
+    "requestFailed": "فشل الطلب.",
+    "network": "تعذّر الوصول إلى الخادم. تحقق من اتصالك وحاول مرة أخرى."
+  }
+}

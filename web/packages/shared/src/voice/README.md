@@ -1,6 +1,6 @@
 # `@hig/shared/voice` - voice intake (PLAN 7.2)
 
-Speak in English (or type) -> transcript -> AI-suggested answers -> **mandatory review ->
+Speak in the patient's language (the UI language is sent as `language`; or type) -> transcript -> AI-suggested answers -> **mandatory review ->
 edit -> confirm**.
 
 ## Components

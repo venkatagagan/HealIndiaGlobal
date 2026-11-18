@@ -208,6 +208,11 @@
     color-scheme: light;
   }
 
+  /* right-to-left: the "end" side is on the left, so end/start drawers slide in from the other direction */
+  :root[dir='rtl'] {
+    --hig-slide-distance: -100%;
+  }
+
   /* dark values of the semantic tokens (base layer beats the theme layer) */
   .dark {
     color-scheme: dark;

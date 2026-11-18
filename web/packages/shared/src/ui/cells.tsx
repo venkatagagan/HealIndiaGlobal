@@ -3,6 +3,7 @@ import { Check, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '../lib/cn';
 import { formatDate, formatDateTime, formatRelative, toDate } from '../lib/dates';
+import { useCommonTranslation } from '../lib/i18n';
 import { formatMoney } from '../lib/money';
 import { StatusBadge, type StatusKind } from './Badge';
 import { Avatar } from './display';
@@ -108,6 +109,7 @@ export interface IdCellProps {
 
 /** Monospace identifier (case number, reference) with a copy button that doesn't trigger the row click. */
 export function IdCell({ value, copy = true, secondary, className }: IdCellProps) {
+  const { t } = useCommonTranslation();
   const [copied, setCopied] = useState(false);
   if (!value) return <span className="text-muted">—</span>;
   const onCopy = async (event: MouseEvent) => {
@@ -116,10 +118,10 @@ export function IdCell({ value, copy = true, secondary, className }: IdCellProps
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      toast.success('Copied to clipboard');
+      toast.success(t('clipboard.copied'));
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      toast.error('Could not copy');
+      toast.error(t('clipboard.failed'));
     }
   };
   return (
@@ -131,7 +133,7 @@ export function IdCell({ value, copy = true, secondary, className }: IdCellProps
             type="button"
             onClick={onCopy}
             onKeyDown={(e) => e.stopPropagation()}
-            aria-label={`Copy ${value}`}
+            aria-label={t('clipboard.copyValue', { value })}
             className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted opacity-0 transition-opacity group-hover/id:opacity-100 hover:bg-surface-2 hover:text-fg focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {copied ? <Check className="size-3.5 text-success-ink" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}

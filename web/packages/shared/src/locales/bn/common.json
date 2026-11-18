@@ -1,0 +1,787 @@
+{
+  "brand": {
+    "name": "Heal India Global",
+    "tagline": "ভারতের উৎকৃষ্ট চিকিৎসাসেবার পথে আপনার প্রবেশদ্বার"
+  },
+  "actions": {
+    "save": "সংরক্ষণ করুন",
+    "cancel": "বাতিল",
+    "confirm": "নিশ্চিত করুন",
+    "close": "বন্ধ করুন",
+    "delete": "মুছুন",
+    "edit": "সম্পাদনা",
+    "retry": "আবার চেষ্টা করুন",
+    "back": "পেছনে",
+    "next": "পরবর্তী",
+    "previous": "আগের",
+    "submit": "জমা দিন",
+    "search": "খুঁজুন",
+    "clear": "মুছে ফেলুন",
+    "upload": "আপলোড",
+    "download": "ডাউনলোড",
+    "remove": "সরান",
+    "view": "দেখুন",
+    "continue": "চালিয়ে যান",
+    "signIn": "সাইন ইন",
+    "signOut": "সাইন আউট",
+    "signUp": "সাইন আপ",
+    "more": "আরও"
+  },
+  "states": {
+    "loading": "লোড হচ্ছে…",
+    "empty": "এখানে এখনো কিছু নেই",
+    "noResults": "কোনো ফলাফল পাওয়া যায়নি",
+    "error": "কিছু একটা সমস্যা হয়েছে",
+    "errorDescription": "অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।",
+    "notAvailable": "পাওয়া যাচ্ছে না"
+  },
+  "pagination": {
+    "label": "পৃষ্ঠা নির্বাচন",
+    "previous": "আগের পৃষ্ঠা",
+    "next": "পরের পৃষ্ঠা",
+    "page": "পৃষ্ঠা {{page}} / {{pages}}",
+    "summary": "{{total}}টির মধ্যে {{from}}–{{to}}",
+    "goTo": "পৃষ্ঠা {{page}}-এ যান"
+  },
+  "table": {
+    "sortAscending": "ঊর্ধ্বক্রমে সাজানো",
+    "sortDescending": "নিম্নক্রমে সাজানো",
+    "sortBy": "{{column}} অনুযায়ী সাজান",
+    "actions": "কার্যক্রম",
+    "rowsPerPage": "প্রতি পৃষ্ঠায় সারি",
+    "viewOptions": "টেবিল দেখার বিকল্প",
+    "density": "ঘনত্ব",
+    "comfortable": "আরামদায়ক",
+    "compact": "সংক্ষিপ্ত",
+    "columns": "কলাম",
+    "resetView": "ভিউ রিসেট করুন",
+    "open": "খুলুন",
+    "noMatchTitle": "মিলে যায় এমন কোনো ফলাফল নেই",
+    "noMatchDescription": "অন্যভাবে খুঁজে দেখুন বা কিছু ফিল্টার সরিয়ে দিন।",
+    "resetFilters": "ফিল্টার রিসেট করুন",
+    "bulkActions": "একসাথে কার্যক্রম",
+    "selected_one": "{{n}}টি নির্বাচিত",
+    "selected_other": "{{n}}টি নির্বাচিত",
+    "clearSelection": "নির্বাচন মুছুন",
+    "selectPage": "এই পৃষ্ঠার সব সারি নির্বাচন করুন",
+    "deselectPage": "এই পৃষ্ঠার সব সারির নির্বাচন বাতিল করুন",
+    "selectRow": "সারি নির্বাচন করুন",
+    "deselectRow": "সারির নির্বাচন বাতিল করুন",
+    "selectPageShort": "পৃষ্ঠা নির্বাচন"
+  },
+  "upload": {
+    "drop": "ফাইলগুলি এখানে টেনে এনে ছাড়ুন, অথবা",
+    "browse": "ফাইল বেছে নিন",
+    "hint": "PDF, JPG, PNG, WEBP, HEIC বা DICOM · সর্বোচ্চ {{size}} MB",
+    "tooLarge": "“{{name}}” ফাইলটি {{size}} MB-এর চেয়ে বড়",
+    "badType": "“{{name}}” ফাইলের ধরনটি সমর্থিত নয়",
+    "tooMany": "আপনি সর্বোচ্চ {{max}}টি ফাইল আপলোড করতে পারেন",
+    "remove": "{{name}} সরান",
+    "uploading": "আপলোড হচ্ছে…"
+  },
+  "theme": {
+    "label": "থিম",
+    "light": "হালকা",
+    "dark": "গাঢ়",
+    "system": "সিস্টেম",
+    "toggle": "ডার্ক মোড চালু/বন্ধ করুন"
+  },
+  "layout": {
+    "openMenu": "মেনু খুলুন",
+    "closeMenu": "মেনু বন্ধ করুন",
+    "collapseSidebar": "সাইডবার ছোট করুন",
+    "expandSidebar": "সাইডবার বড় করুন",
+    "skipToContent": "মূল বিষয়বস্তুতে যান",
+    "mainNavigation": "প্রধান নেভিগেশন",
+    "userMenu": "অ্যাকাউন্ট মেনু",
+    "allRightsReserved": "সর্বস্বত্ব সংরক্ষিত।",
+    "asideTitle": "বিশ্বমানের চিকিৎসা, আপনার জন্য সমন্বিত",
+    "asidePoint1": "স্বীকৃত অংশীদার হাসপাতাল ও বিশেষজ্ঞ চিকিৎসক",
+    "asidePoint2": "স্বচ্ছ, খাত-ভিত্তিক বিস্তারিত চিকিৎসা কোটেশন",
+    "asidePoint3": "ভিসা, যাতায়াত ও থাকার ব্যবস্থা শুরু থেকে শেষ পর্যন্ত সমন্বিত"
+  },
+  "dialog": {
+    "confirmTitle": "আপনি কি নিশ্চিত?",
+    "confirmDescription": "এই কাজটি আর ফেরানো যাবে না।"
+  },
+  "stepper": {
+    "progress": "ধাপ {{current}} / {{total}}",
+    "completed": "সম্পন্ন",
+    "current": "বর্তমান ধাপ"
+  },
+  "form": {
+    "optional": "ঐচ্ছিক",
+    "required": "আবশ্যক"
+  },
+  "roles": {
+    "patient": "রোগী",
+    "agent": "এজেন্ট",
+    "hospital": "হাসপাতাল",
+    "admin": "অপারেশনস অ্যাডমিন",
+    "finance": "ফাইন্যান্স",
+    "support": "সাপোর্ট",
+    "super_admin": "সুপার অ্যাডমিন"
+  },
+  "auth": {
+    "email": "ইমেল",
+    "password": "পাসওয়ার্ড",
+    "showPassword": "পাসওয়ার্ড দেখান",
+    "hidePassword": "পাসওয়ার্ড লুকান",
+    "signInTitle": "আপনার অ্যাকাউন্টে সাইন ইন করুন",
+    "signInSubtitle": "আবার স্বাগতম! চালিয়ে যেতে আপনার তথ্য দিন।",
+    "staffTitle": "কর্মী সাইন ইন",
+    "staffSubtitle": "অপারেশনস কনসোল — শুধুমাত্র অনুমোদিত কর্মীদের জন্য।",
+    "signIn": "সাইন ইন",
+    "signingIn": "সাইন ইন হচ্ছে…",
+    "mfaTitle": "দুই-ধাপের যাচাইকরণ",
+    "mfaPrompt": "আপনার অথেন্টিকেটর অ্যাপ থেকে 6-অঙ্কের কোডটি লিখুন।",
+    "mfaCode": "যাচাইকরণ কোড",
+    "verify": "যাচাই করে সাইন ইন করুন",
+    "useDifferentAccount": "অন্য অ্যাকাউন্ট ব্যবহার করুন",
+    "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "noAccount": "অ্যাকাউন্ট নেই?",
+    "createAccount": "অ্যাকাউন্ট তৈরি করুন",
+    "haveAccount": "আগে থেকেই অ্যাকাউন্ট আছে?",
+    "checkingSession": "আপনার সেশন যাচাই করা হচ্ছে…",
+    "redirecting": "আপনাকে সাইন ইন পৃষ্ঠায় নিয়ে যাওয়া হচ্ছে…",
+    "wrongPortalTitle": "এই পোর্টালটি আপনার অ্যাকাউন্টের জন্য নয়",
+    "wrongPortalBody": "আপনি {{name}} ({{role}}) হিসেবে সাইন ইন করেছেন। এই অংশটি যাদের জন্য: {{roles}}।",
+    "goToMyPortal": "আমার পোর্টালে যান",
+    "guest": "অতিথি হিসেবে চালিয়ে যান",
+    "errors": {
+      "emailRequired": "আপনার ইমেল ঠিকানা লিখুন",
+      "emailInvalid": "একটি সঠিক ইমেল ঠিকানা লিখুন",
+      "passwordRequired": "আপনার পাসওয়ার্ড লিখুন",
+      "codeInvalid": "6-অঙ্কের কোডটি লিখুন",
+      "generic": "সাইন ইন করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+    }
+  },
+  "register": {
+    "title": "আপনার অ্যাকাউন্ট তৈরি করুন",
+    "subtitle": "এক মিনিটেই Heal India Global-এ যোগ দিন।",
+    "accountType": "অ্যাকাউন্টের ধরন",
+    "fullName": "পুরো নাম",
+    "phone": "ফোন",
+    "country": "দেশ (2-অক্ষরের কোড)",
+    "referralCode": "রেফারেল কোড",
+    "agencyName": "এজেন্সির নাম",
+    "hospitalName": "হাসপাতালের নাম",
+    "city": "শহর",
+    "passwordHint": "কমপক্ষে 10টি অক্ষর, যার মধ্যে একটি বর্ণ ও একটি সংখ্যা থাকবে।",
+    "acceptTerms": "আমি পরিষেবার শর্তাবলি এবং গোপনীয়তা নীতিতে সম্মত।",
+    "terms": "পরিষেবার শর্তাবলি",
+    "privacy": "গোপনীয়তা নীতি",
+    "submit": "অ্যাকাউন্ট তৈরি করুন",
+    "submitting": "অ্যাকাউন্ট তৈরি হচ্ছে…",
+    "roleHints": {
+      "patient": "ভারতে চিকিৎসা খুঁজুন এবং আপনার চিকিৎসা-ভ্রমণ পরিচালনা করুন।",
+      "agent": "সহায়তাকারী (ফ্যাসিলিটেটর) হিসেবে রোগী রেফার ও পরিচালনা করুন।",
+      "hospital": "আপনার হাসপাতাল তালিকাভুক্ত করুন এবং বিদেশি রোগী গ্রহণ করুন।"
+    },
+    "errors": {
+      "fullNameRequired": "আপনার পুরো নাম লিখুন",
+      "passwordWeak": "কমপক্ষে 10টি অক্ষর ব্যবহার করুন, যার মধ্যে একটি বর্ণ ও একটি সংখ্যা থাকবে",
+      "termsRequired": "চালিয়ে যেতে আপনাকে শর্তাবলিতে সম্মত হতে হবে",
+      "agencyRequired": "আপনার এজেন্সির নাম লিখুন",
+      "hospitalRequired": "হাসপাতালের নাম লিখুন",
+      "cityRequired": "শহরের নাম লিখুন",
+      "countryInvalid": "2-অক্ষরের দেশের কোড ব্যবহার করুন, যেমন BD"
+    }
+  },
+  "realtime": {
+    "connected": "লাইভ",
+    "reconnecting": "আবার সংযোগ করা হচ্ছে…"
+  },
+  "language": {
+    "label": "ভাষা",
+    "choose": "একটি ভাষা বেছে নিন"
+  },
+  "careGates": {
+    "emergency": {
+      "title": "জরুরি অবস্থা — এখনই স্থানীয়ভাবে চিকিৎসা নিন",
+      "patientLead": "আপনার উত্তরগুলি থেকে মনে হচ্ছে আপনার জরুরি চিকিৎসার প্রয়োজন হতে পারে। অনুগ্রহ করে এখনই স্থানীয় জরুরি চিকিৎসা নিন: আপনার স্থানীয় জরুরি নম্বরে ফোন করুন অথবা নিকটতম জরুরি বিভাগে যান। চিকিৎসার জন্য ভ্রমণের অপেক্ষায় দেরি করবেন না।",
+      "patientAck": "আমি এই নির্দেশনা পড়েছি। আমি স্থানীয় চিকিৎসকের পরামর্শ নিয়েছি (বা নেব), এবং আমি বুঝি যে Heal India Global জরুরি চিকিৎসা প্রদান করে না।",
+      "patientDone": "ধন্যবাদ। আপনি আপনার কেস নিয়ে এগিয়ে যেতে পারেন।",
+      "agentLead": "এই রোগীর স্ক্রিনিং থেকে মনে হচ্ছে তাঁর জরুরি চিকিৎসার প্রয়োজন হতে পারে। চিকিৎসা-ভ্রমণের পরিকল্পনা করার আগে নিশ্চিত করুন যে রোগী এখনই স্থানীয় জরুরি চিকিৎসা নিচ্ছেন: তাঁর স্থানীয় জরুরি নম্বর অথবা নিকটতম জরুরি বিভাগ। চিকিৎসার জন্য ভ্রমণের অপেক্ষায় তাঁর দেরি করা উচিত নয়।",
+      "agentAck": "আমি এই নির্দেশনা রোগীকে জানিয়েছি। তিনি স্থানীয় চিকিৎসকের পরামর্শ নিয়েছেন (বা নেবেন), এবং আমরা বুঝি যে Heal India Global জরুরি চিকিৎসা প্রদান করে না।",
+      "agentDone": "স্বীকৃত। আপনি এই কেস নিয়ে এগিয়ে যেতে পারেন।",
+      "notSubstitute": "চিকিৎসা-ভ্রমণ জরুরি চিকিৎসার বিকল্প নয়। একজন স্থানীয় চিকিৎসক ভ্রমণ নিরাপদ বলে নিশ্চিত করার পরেই কেবল ভারতে চিকিৎসার পরিকল্পনা চালিয়ে যাওয়া যাবে।",
+      "dialIndia": "ভারতে জরুরি প্রয়োজনে 112 নম্বরে ফোন করুন।",
+      "continue": "আমি বুঝেছি - চালিয়ে যান"
+    },
+    "upgrade": {
+      "titleNamed": "{{name}}-এর একটি পূর্ণ অ্যাকাউন্ট প্রয়োজন",
+      "title": "রোগীর একটি পূর্ণ অ্যাকাউন্ট প্রয়োজন",
+      "body": "এই রোগী এখনো অতিথি সেশন ব্যবহার করছেন। কোটেশন গ্রহণ, বুকিং করা বা পেমেন্ট নেওয়ার আগে হাসপাতালগুলির একটি যাচাইকৃত অ্যাকাউন্ট প্রয়োজন। রোগীকে Heal India Global খুলে “অ্যাকাউন্ট তৈরি করুন” বেছে নিতে বলুন - অতিথি সেশনের সবকিছু রাখা থাকবে - তারপর আবার চেষ্টা করুন।"
+    }
+  },
+  "clipboard": {
+    "copied": "ক্লিপবোর্ডে কপি হয়েছে",
+    "failed": "কপি করা যায়নি",
+    "copyValue": "{{value}} কপি করুন"
+  },
+  "export": {
+    "label": "এক্সপোর্ট",
+    "nothing": "এক্সপোর্ট করার মতো কিছু নেই",
+    "exported_one": "{{n}}টি সারি এক্সপোর্ট হয়েছে",
+    "exported_other": "{{n}}টি সারি এক্সপোর্ট হয়েছে",
+    "failed": "এক্সপোর্ট ব্যর্থ হয়েছে",
+    "currentPage": "বর্তমান পৃষ্ঠা",
+    "allResults": "মিলে যাওয়া সব ফলাফল",
+    "rows_one": "{{n}}টি সারি",
+    "rows_other": "{{n}}টি সারি",
+    "hint": "CSV · বর্তমান ফিল্টার ও ক্রম অনুযায়ী"
+  },
+  "breadcrumb": "ব্রেডক্রাম্ব",
+  "filters": {
+    "any": "যেকোনো",
+    "yes": "হ্যাঁ",
+    "filterPlaceholder": "{{label}} ফিল্টার করুন…",
+    "filterOptions": "{{label}}-এর ফিল্টার বিকল্প",
+    "noMatches": "কোনো মিল নেই",
+    "selectAll": "সব নির্বাচন করুন",
+    "selected_one": "{{n}}টি নির্বাচিত",
+    "selected_other": "{{n}}টি নির্বাচিত",
+    "presets": {
+      "today": "আজ",
+      "last7": "গত 7 দিন",
+      "last30": "গত 30 দিন",
+      "last90": "গত 90 দিন",
+      "thisMonth": "এই মাস",
+      "lastMonth": "গত মাস"
+    },
+    "fromDate": "{{date}} থেকে",
+    "untilDate": "{{date}} পর্যন্ত",
+    "dateField": "তারিখের ক্ষেত্র",
+    "presetsLabel": "পূর্বনির্ধারিত",
+    "from": "থেকে",
+    "to": "পর্যন্ত",
+    "minimum": "সর্বনিম্ন",
+    "maximum": "সর্বোচ্চ",
+    "apply": "প্রয়োগ করুন",
+    "searchPlaceholder": "খুঁজুন…",
+    "clearSearch": "অনুসন্ধান মুছুন",
+    "more": "আরও ফিল্টার",
+    "results_one": "{{n}}টি ফলাফল",
+    "results_other": "{{n}}টি ফলাফল",
+    "done": "সম্পন্ন",
+    "active": "সক্রিয় ফিল্টার",
+    "remove": "{{label}} ফিল্টার সরান",
+    "resetAll": "সব রিসেট করুন",
+    "quick": "দ্রুত ফিল্টার"
+  },
+  "notifications": {
+    "label": "বিজ্ঞপ্তি",
+    "unreadLabel": "বিজ্ঞপ্তি, {{count}}টি অপঠিত"
+  },
+  "deleteAccount": {
+    "blockers": {
+      "casesInProgress": "চলমান চিকিৎসা কেস",
+      "activeBookings": "সক্রিয় বুকিং",
+      "paymentsInProgress": "প্রক্রিয়াধীন পেমেন্ট",
+      "ownedListedHospitals": "তালিকাভুক্ত হাসপাতাল যেগুলির একমাত্র মালিক আপনি (আগে অন্য একজন মালিক যোগ করুন অথবা তালিকা থেকে সরানোর জন্য আমাদের অনুরোধ করুন)"
+    },
+    "blockerCount": "{{n}} {{label}}",
+    "patient": {
+      "erased": "আপনার যোগাযোগের তথ্য, পাসপোর্ট ও বিমা নম্বর, স্বাস্থ্য-সংক্রান্ত নোট, সঙ্গীদের তথ্য, সংরক্ষিত আইটেম এবং যেসব নথি কোনো কেসের অংশ নয় সেগুলি মুছে ফেলা হবে, এবং সব ডিভাইস থেকে আপনাকে সাইন আউট করা হবে।",
+      "lose": "আপনি আপনার স্ক্রিনিং, কেস, বার্তা ও নথিতে আর প্রবেশ করতে পারবেন না।"
+    },
+    "agent": {
+      "erased": "আপনার যোগাযোগের তথ্য ও এজেন্সি প্রোফাইল মুছে ফেলা হবে, আপনার এজেন্সি বন্ধ করা হবে এবং সব ডিভাইস থেকে আপনাকে সাইন আউট করা হবে। আপনার রোগীদের নিজস্ব অ্যাকাউন্ট ও কেস থেকে যাবে।",
+      "lose": "আপনি আপনার রোগী, কেস, বার্তা ও কমিশনের ইতিহাসে আর প্রবেশ করতে পারবেন না।"
+    },
+    "hospital": {
+      "erased": "আপনার যোগাযোগের তথ্য মুছে ফেলা হবে, প্রতিটি হাসপাতাল টিম থেকে আপনাকে সরিয়ে দেওয়া হবে এবং সব ডিভাইস থেকে আপনাকে সাইন আউট করা হবে। হাসপাতালের তালিকাটি তার অন্য মালিকদের কাছে থেকে যাবে।",
+      "lose": "আপনি হাসপাতাল পোর্টাল এবং এর কেস ও বার্তায় আর প্রবেশ করতে পারবেন না।"
+    },
+    "wrongPassword": "পাসওয়ার্ডটি সঠিক নয়।",
+    "wrongCode": "অথেন্টিকেটর কোডটি সঠিক নয়।",
+    "failed": "আপনার অ্যাকাউন্ট মুছে ফেলা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন অথবা সাপোর্টের সাথে যোগাযোগ করুন।",
+    "requestedToast": "মুছে ফেলার অনুরোধ পাঠানো হয়েছে। আমাদের টিম আপনার সাথে যোগাযোগ করবে এবং কোনো কিছু বাকি না থাকলে অ্যাকাউন্টটি বন্ধ করবে।",
+    "requestFailed": "অনুরোধটি পাঠানো যায়নি। অনুগ্রহ করে সাপোর্টের সাথে যোগাযোগ করুন।",
+    "deletedTitle": "আপনার অ্যাকাউন্ট মুছে ফেলা হয়েছে",
+    "signedOut": "সব ডিভাইস থেকে আপনাকে সাইন আউট করা হয়েছে।",
+    "requiredToKeep": "যা আমাদের রাখতে হয়:",
+    "title": "অ্যাকাউন্ট মুছুন",
+    "description": "আপনার Heal India Global অ্যাকাউন্ট স্থায়ীভাবে বন্ধ করুন এবং আপনার ব্যক্তিগত তথ্য মুছে ফেলুন।",
+    "whatDeleted": "যা মুছে ফেলা হবে",
+    "whatKept": "যা আমরা রাখি (আইন অনুযায়ী আবশ্যক)",
+    "keptDefault": "কোনো চিকিৎসা কেসের অন্তর্ভুক্ত পেমেন্টের রেকর্ড ও মেডিকেল রেকর্ড, আইনে যতদিন প্রয়োজন ততদিন রাখা হয়; এগুলিতে প্রবেশাধিকার শুধু চিকিৎসাকারী হাসপাতাল ও আমাদের কমপ্লায়েন্স টিমের মধ্যে সীমিত থাকে।",
+    "inProgressNote": "যেসব অ্যাকাউন্টে চিকিৎসা, বুকিং বা পেমেন্ট চলমান আছে, সেগুলি শেষ বা বাতিল হওয়ার পরে মুছে ফেলা যাবে, অথবা আপনার হয়ে অ্যাকাউন্টটি বন্ধ করার জন্য আমাদের অনুরোধ করতে পারেন।",
+    "deleteMine": "আমার অ্যাকাউন্ট মুছুন",
+    "confirmTitle": "আপনার অ্যাকাউন্ট মুছে ফেলবেন?",
+    "confirmDescription": "এটি আর ফেরানো যাবে না।",
+    "requested": "মুছে ফেলার অনুরোধ করা হয়েছে",
+    "request": "মুছে ফেলার অনুরোধ করুন",
+    "deletePermanently": "স্থায়ীভাবে মুছুন",
+    "guestNote": "মুছে ফেলার পরে অতিথি অ্যাকাউন্টের তথ্য আর ফিরিয়ে আনা যাবে না।",
+    "password": "আপনার পাসওয়ার্ড",
+    "passwordHint": "শুধুমাত্র যদি আপনি সবসময় Google বা Apple দিয়ে সাইন ইন করেন, তাহলেই এটি খালি রাখুন।",
+    "code": "অথেন্টিকেটর কোড",
+    "codeHint": "আপনার অথেন্টিকেটর অ্যাপের 6-অঙ্কের কোড।",
+    "reason": "আপনি কেন চলে যাচ্ছেন?",
+    "typeToConfirm": "নিশ্চিত করতে {{word}} লিখুন",
+    "requestSent": "মুছে ফেলার অনুরোধ পাঠানো হয়েছে। আমরা ইমেলের মাধ্যমে আপনার সাথে যোগাযোগ করব।",
+    "requestHint": "\"মুছে ফেলার অনুরোধ করুন\" ব্যবহার করে আপনার হয়ে অ্যাকাউন্টটি বন্ধ করার জন্য আমাদের অনুরোধ করতে পারেন।"
+  },
+  "enums": {
+    "userRole": {
+      "patient": "রোগী",
+      "agent": "এজেন্ট",
+      "hospital": "হাসপাতাল কর্মী",
+      "admin": "অপারেশনস অ্যাডমিন",
+      "finance": "ফাইন্যান্স",
+      "support": "সাপোর্ট / সমন্বয়কারী",
+      "super_admin": "সুপার অ্যাডমিন"
+    },
+    "userStatus": {
+      "active": "সক্রিয়",
+      "pending_verification": "যাচাইয়ের অপেক্ষায়",
+      "suspended": "স্থগিত",
+      "deleted": "মুছে ফেলা হয়েছে"
+    },
+    "gender": {
+      "male": "পুরুষ",
+      "female": "নারী",
+      "other": "অন্যান্য",
+      "undisclosed": "বলতে চাই না"
+    },
+    "doctorGenderPref": {
+      "male": "পুরুষ",
+      "female": "নারী",
+      "no_preference": "কোনো পছন্দ নেই"
+    },
+    "kycStatus": {
+      "not_submitted": "জমা দেওয়া হয়নি",
+      "pending": "পর্যালোচনাধীন",
+      "approved": "অনুমোদিত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "hospitalStatus": {
+      "draft": "খসড়া",
+      "pending_review": "পর্যালোচনার অপেক্ষায়",
+      "active": "সক্রিয়",
+      "suspended": "স্থগিত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "agentStatus": {
+      "pending": "অনুমোদনের অপেক্ষায়",
+      "active": "সক্রিয়",
+      "suspended": "স্থগিত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "hospitalMemberRole": {
+      "owner": "মালিক",
+      "admin": "অ্যাডমিন",
+      "coordinator": "সমন্বয়কারী",
+      "finance": "ফাইন্যান্স",
+      "doctor": "ডাক্তার"
+    },
+    "packageTier": {
+      "medical_only": "শুধু চিকিৎসা",
+      "medical_stay": "চিকিৎসা + থাকা",
+      "all_inclusive": "সবকিছু অন্তর্ভুক্ত"
+    },
+    "screeningStatus": {
+      "draft": "খসড়া",
+      "processing": "প্রক্রিয়াধীন",
+      "completed": "সম্পন্ন",
+      "failed": "ব্যর্থ"
+    },
+    "urgency": {
+      "routine": "সাধারণ",
+      "soon": "শীঘ্রই",
+      "urgent": "জরুরি",
+      "emergency": "অতি জরুরি"
+    },
+    "durationUnit": {
+      "days": "দিন",
+      "weeks": "সপ্তাহ",
+      "months": "মাস",
+      "years": "বছর"
+    },
+    "severityLevel": {
+      "none": "নেই",
+      "mild": "হালকা",
+      "moderate": "মাঝারি",
+      "severe": "তীব্র"
+    },
+    "symptomAnswer": {
+      "yes": "হ্যাঁ",
+      "maybe": "হয়তো",
+      "no": "না"
+    },
+    "previousTreatment": {
+      "medication": "ওষুধ",
+      "physical_therapy": "ফিজিওথেরাপি",
+      "surgery": "অস্ত্রোপচার",
+      "other": "অন্যান্য"
+    },
+    "caseStatus": {
+      "enquiry": "অনুসন্ধান",
+      "quoted": "কোটেশন দেওয়া হয়েছে",
+      "accepted": "গৃহীত",
+      "booked": "বুক করা হয়েছে",
+      "in_treatment": "চিকিৎসাধীন",
+      "completed": "সম্পন্ন",
+      "cancelled": "বাতিল",
+      "declined": "প্রত্যাখ্যাত"
+    },
+    "quoteStatus": {
+      "draft": "খসড়া",
+      "sent": "পাঠানো হয়েছে",
+      "accepted": "গৃহীত",
+      "rejected": "প্রত্যাখ্যাত",
+      "expired": "মেয়াদোত্তীর্ণ",
+      "withdrawn": "প্রত্যাহার করা হয়েছে"
+    },
+    "quoteLineCategory": {
+      "surgery": "অস্ত্রোপচার",
+      "hospital_stay": "হাসপাতালে থাকা",
+      "medications": "ওষুধপত্র",
+      "tests_scans": "পরীক্ষা ও স্ক্যান",
+      "doctor_fees": "ডাক্তারের ফি",
+      "implants": "ইমপ্ল্যান্ট",
+      "other": "অন্যান্য"
+    },
+    "bookingStatus": {
+      "pending_payment": "পেমেন্টের অপেক্ষায়",
+      "confirmed": "নিশ্চিত",
+      "admitted": "ভর্তি হয়েছেন",
+      "completed": "সম্পন্ন",
+      "cancelled": "বাতিল"
+    },
+    "paymentOption": {
+      "full": "পুরো টাকা পরিশোধ করুন",
+      "deposit": "এখন অগ্রিম জমা দিন",
+      "installments": "কিস্তিতে পরিশোধ"
+    },
+    "consultationStatus": {
+      "requested": "অনুরোধ করা হয়েছে",
+      "scheduled": "নির্ধারিত",
+      "completed": "সম্পন্ন",
+      "cancelled": "বাতিল"
+    },
+    "consultationMode": {
+      "video": "ভিডিও",
+      "phone": "ফোন"
+    },
+    "checklistStatus": {
+      "pending": "বাকি",
+      "in_progress": "চলমান",
+      "done": "সম্পন্ন"
+    },
+    "checklistKey": {
+      "treatment_booked": "চিকিৎসা বুক করা হয়েছে",
+      "visa_approved": "ভিসা অনুমোদিত",
+      "flight_booked": "ফ্লাইট বুক করা হয়েছে",
+      "travel_insurance": "ভ্রমণ বিমা",
+      "airport_pickup": "বিমানবন্দর থেকে পিকআপ",
+      "documents_uploaded": "নথি আপলোড করা হয়েছে",
+      "accommodation_booked": "থাকার ব্যবস্থা বুক করা হয়েছে"
+    },
+    "itineraryKind": {
+      "appointment": "অ্যাপয়েন্টমেন্ট",
+      "admission": "ভর্তি",
+      "surgery": "অস্ত্রোপচার",
+      "pickup": "পিকআপ",
+      "checkin": "চেক-ইন",
+      "checkout": "চেক-আউট",
+      "followup": "ফলো-আপ",
+      "sightseeing": "দর্শনীয় স্থান ভ্রমণ",
+      "other": "অন্যান্য"
+    },
+    "itineraryStatus": {
+      "scheduled": "নির্ধারিত",
+      "done": "সম্পন্ন",
+      "cancelled": "বাতিল"
+    },
+    "visaStatus": {
+      "not_started": "শুরু হয়নি",
+      "documents_pending": "নথি বাকি",
+      "invitation_issued": "আমন্ত্রণপত্র দেওয়া হয়েছে",
+      "applied": "আবেদন করা হয়েছে",
+      "approved": "অনুমোদিত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "visaType": {
+      "e_medical": "ই-মেডিকেল ভিসা",
+      "e_medical_attendant": "ই-মেডিকেল অ্যাটেনড্যান্ট ভিসা"
+    },
+    "travelKind": {
+      "flight": "ফ্লাইট",
+      "airport_pickup": "বিমানবন্দর থেকে পিকআপ",
+      "airport_drop": "বিমানবন্দরে পৌঁছে দেওয়া",
+      "local_transport": "স্থানীয় যাতায়াত"
+    },
+    "serviceBookingStatus": {
+      "requested": "অনুরোধ করা হয়েছে",
+      "quoted": "কোটেশন দেওয়া হয়েছে",
+      "confirmed": "নিশ্চিত",
+      "completed": "সম্পন্ন",
+      "cancelled": "বাতিল"
+    },
+    "accommodationType": {
+      "hotel": "হোটেল",
+      "guest_house": "গেস্ট হাউস",
+      "service_apartment": "সার্ভিস অ্যাপার্টমেন্ট",
+      "hospital_guest_room": "হাসপাতালের অতিথি কক্ষ"
+    },
+    "serviceKind": {
+      "translator": "অনুবাদক",
+      "local_guide": "স্থানীয় গাইড",
+      "transport": "যাতায়াত",
+      "travel_agent": "ট্রাভেল এজেন্ট",
+      "insurance": "বিমা"
+    },
+    "rateUnit": {
+      "hour": "প্রতি ঘণ্টা",
+      "day": "প্রতি দিন",
+      "trip": "প্রতি ট্রিপ",
+      "fixed": "নির্দিষ্ট"
+    },
+    "sosStatus": {
+      "open": "খোলা",
+      "acknowledged": "স্বীকৃত",
+      "resolved": "সমাধান হয়েছে"
+    },
+    "documentKind": {
+      "passport": "পাসপোর্ট",
+      "visa": "ভিসা",
+      "medical_report": "মেডিকেল রিপোর্ট",
+      "prescription": "প্রেসক্রিপশন",
+      "lab_result": "ল্যাব রিপোর্ট",
+      "imaging": "ইমেজিং (এক্স-রে / MRI / CT)",
+      "invitation_letter": "আমন্ত্রণপত্র",
+      "invoice": "ইনভয়েস",
+      "receipt": "রসিদ",
+      "kyc_registration": "KYC - নিবন্ধন সনদ",
+      "kyc_accreditation": "KYC - স্বীকৃতি সনদ",
+      "kyc_pan": "KYC - PAN কার্ড",
+      "kyc_gst": "KYC - GST সনদ",
+      "kyc_id_proof": "KYC - পরিচয়ের প্রমাণ",
+      "bank_proof": "ব্যাংকের প্রমাণপত্র",
+      "payment_proof": "পেমেন্টের প্রমাণ",
+      "other": "অন্যান্য"
+    },
+    "documentStatus": {
+      "uploaded": "আপলোড হয়েছে",
+      "verified": "যাচাইকৃত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "consentKind": {
+      "terms": "পরিষেবার শর্তাবলি",
+      "privacy": "গোপনীয়তা নীতি",
+      "ai_processing": "আমার স্বাস্থ্য-তথ্য AI দিয়ে প্রক্রিয়াকরণ",
+      "share_with_hospitals": "অংশীদার হাসপাতালগুলির সাথে আমার কেস শেয়ার করা",
+      "marketing": "বিপণন-সংক্রান্ত বার্তা"
+    },
+    "paymentGateway": {
+      "razorpay": "কার্ড / UPI (Razorpay)",
+      "stripe": "কার্ড (Stripe)",
+      "bank_transfer": "ব্যাংক ট্রান্সফার (SWIFT)",
+      "mock": "পরীক্ষামূলক পেমেন্ট (dev)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "পরামর্শ ফি",
+      "booking_deposit": "বুকিংয়ের অগ্রিম",
+      "booking_balance": "বুকিংয়ের বাকি অংশ",
+      "booking_full": "বুকিংয়ের পুরো অর্থ",
+      "installment": "কিস্তি",
+      "service": "পরিষেবা"
+    },
+    "orderStatus": {
+      "created": "তৈরি হয়েছে",
+      "pending": "বাকি",
+      "paid": "পরিশোধিত",
+      "partially_refunded": "আংশিক ফেরত",
+      "refunded": "ফেরত দেওয়া হয়েছে",
+      "failed": "ব্যর্থ",
+      "expired": "মেয়াদোত্তীর্ণ",
+      "cancelled": "বাতিল"
+    },
+    "paymentStatus": {
+      "created": "তৈরি হয়েছে",
+      "authorized": "অনুমোদিত",
+      "captured": "গৃহীত",
+      "failed": "ব্যর্থ",
+      "refunded": "ফেরত দেওয়া হয়েছে",
+      "partially_refunded": "আংশিক ফেরত"
+    },
+    "paymentMethod": {
+      "card": "কার্ড",
+      "upi": "UPI",
+      "netbanking": "নেট ব্যাংকিং",
+      "bank_transfer": "ব্যাংক ট্রান্সফার",
+      "wallet": "ওয়ালেট",
+      "emi": "EMI",
+      "mock": "নকল (পরীক্ষা)"
+    },
+    "refundStatus": {
+      "requested": "অনুরোধ করা হয়েছে",
+      "approved": "অনুমোদিত",
+      "processing": "প্রক্রিয়াধীন",
+      "processed": "সম্পন্ন",
+      "failed": "ব্যর্থ",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "installmentStatus": {
+      "due": "পরিশোধযোগ্য",
+      "paid": "পরিশোধিত",
+      "overdue": "মেয়াদ পেরিয়ে গেছে",
+      "cancelled": "বাতিল"
+    },
+    "invoiceKind": {
+      "patient_receipt": "রোগীর রসিদ",
+      "commission_invoice": "কমিশন ইনভয়েস",
+      "agent_statement": "এজেন্ট বিবরণী",
+      "credit_note": "ক্রেডিট নোট"
+    },
+    "ledgerAccountType": {
+      "asset": "সম্পদ",
+      "liability": "দায়",
+      "revenue": "রাজস্ব",
+      "expense": "ব্যয়",
+      "equity": "মালিকানা স্বত্ব"
+    },
+    "ledgerOwnerType": {
+      "platform": "প্ল্যাটফর্ম",
+      "hospital": "হাসপাতাল",
+      "agent": "এজেন্ট",
+      "vendor": "বিক্রেতা",
+      "gateway": "গেটওয়ে",
+      "tax": "কর"
+    },
+    "entryDirection": {
+      "debit": "ডেবিট",
+      "credit": "ক্রেডিট"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "পেমেন্ট গৃহীত",
+      "gateway_fee": "গেটওয়ে ফি",
+      "revenue_recognition": "রাজস্ব স্বীকৃতি",
+      "agent_commission": "এজেন্ট কমিশন",
+      "refund": "ফেরত",
+      "payout": "পেআউট",
+      "adjustment": "সমন্বয়",
+      "cancellation_retention": "বাতিলকরণে কর্তিত অর্থ",
+      "tax_remittance": "কর প্রদান",
+      "fx_difference": "বৈদেশিক মুদ্রা বিনিময়ের পার্থক্য"
+    },
+    "commissionScope": {
+      "global": "সর্বজনীন",
+      "hospital": "হাসপাতাল",
+      "specialty": "বিশেষত্ব",
+      "procedure": "চিকিৎসা-পদ্ধতি",
+      "agent": "এজেন্ট"
+    },
+    "payeeType": {
+      "hospital": "হাসপাতাল",
+      "agent": "এজেন্ট",
+      "vendor": "বিক্রেতা"
+    },
+    "settlementItemStatus": {
+      "pending": "বাকি",
+      "eligible": "যোগ্য",
+      "on_hold": "স্থগিত রাখা",
+      "batched": "ব্যাচভুক্ত",
+      "paid": "পরিশোধিত",
+      "reversed": "বাতিল করে ফেরানো"
+    },
+    "settlementBatchStatus": {
+      "draft": "খসড়া",
+      "pending_approval": "অনুমোদনের অপেক্ষায়",
+      "approved": "অনুমোদিত",
+      "processing": "প্রক্রিয়াধীন",
+      "completed": "সম্পন্ন",
+      "partially_failed": "আংশিক ব্যর্থ",
+      "cancelled": "বাতিল"
+    },
+    "payoutStatus": {
+      "queued": "সারিতে আছে",
+      "processing": "প্রক্রিয়াধীন",
+      "needs_reconciliation": "মিলিয়ে দেখা প্রয়োজন",
+      "processed": "সম্পন্ন",
+      "failed": "ব্যর্থ",
+      "reversed": "বাতিল করে ফেরানো"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "ম্যানুয়াল ব্যাংক ট্রান্সফার",
+      "mock": "নকল (dev)"
+    },
+    "payoutAccountStatus": {
+      "active": "সক্রিয়",
+      "disabled": "নিষ্ক্রিয়"
+    },
+    "jobStatus": {
+      "queued": "সারিতে আছে",
+      "running": "চলছে",
+      "succeeded": "সফল",
+      "failed": "ব্যর্থ",
+      "dead": "বন্ধ হয়ে গেছে"
+    },
+    "reviewStatus": {
+      "pending": "বাকি",
+      "published": "প্রকাশিত",
+      "hidden": "লুকানো"
+    },
+    "accreditation": {
+      "jci": "JCI",
+      "nabh": "NABH",
+      "nabl": "NABL",
+      "iso": "ISO"
+    },
+    "agentTier": {
+      "bronze": "ব্রোঞ্জ",
+      "silver": "সিলভার",
+      "gold": "গোল্ড"
+    },
+    "slotKind": {
+      "consultation": "পরামর্শ",
+      "admission": "ভর্তি"
+    },
+    "savedEntityType": {
+      "hospital": "হাসপাতাল",
+      "doctor": "ডাক্তার",
+      "procedure": "চিকিৎসা-পদ্ধতি"
+    },
+    "conversationKind": {
+      "case": "কেস",
+      "support": "সাপোর্ট",
+      "direct": "সরাসরি"
+    },
+    "likelihood": {
+      "low": "কম",
+      "medium": "মাঝারি",
+      "high": "বেশি"
+    },
+    "bodyArea": {
+      "head": "মাথা",
+      "neck": "ঘাড়",
+      "chest": "বুক",
+      "abdomen": "পেট",
+      "pelvis": "তলপেট / শ্রোণী",
+      "back": "পিঠ",
+      "left_arm": "বাম হাত",
+      "right_arm": "ডান হাত",
+      "left_leg": "বাম পা",
+      "right_leg": "ডান পা",
+      "skin": "ত্বক",
+      "general": "সারা শরীর / সাধারণ"
+    }
+  },
+  "errors": {
+    "generic": "কিছু একটা সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+    "unauthorized": "চালিয়ে যেতে অনুগ্রহ করে সাইন ইন করুন।",
+    "forbidden": "এটি করার অনুমতি আপনার নেই।",
+    "notFound": "পাওয়া যায়নি।",
+    "conflict": "এই আইটেমটি অন্য কেউ পরিবর্তন করেছেন। রিফ্রেশ করে আবার চেষ্টা করুন।",
+    "validation": "অনুগ্রহ করে চিহ্নিত ঘরগুলি যাচাই করুন।",
+    "rateLimited": "অনেক বেশি অনুরোধ এসেছে। একটু অপেক্ষা করে আবার চেষ্টা করুন।",
+    "server": "সার্ভারে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পরে আবার চেষ্টা করুন।",
+    "requestFailed": "অনুরোধ ব্যর্থ হয়েছে।",
+    "network": "সার্ভারের সাথে সংযোগ করা যাচ্ছে না। আপনার ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।"
+  }
+}
