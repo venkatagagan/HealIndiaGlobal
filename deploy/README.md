@@ -5,7 +5,8 @@ interchangeable compute targets:
 
 | path | what |
 |---|---|
-| `terraform/aws/` | **Primary.** AWS `ap-south-1` (Mumbai, keeps patient data in India): VPC, ECS Fargate, RDS PostgreSQL 17 Multi-AZ, ElastiCache Redis 7, S3, CloudFront, WAF, Secrets Manager, CloudWatch alarms, AWS Backup and DR |
+| `terraform/aws-starter/` + `starter/` | **Launch (chosen).** AWS `us-east-2` (Ohio), backups copied to `us-west-2` (Oregon), ~USD 150/month: one Graviton EC2 box running `infra/docker-compose.yml` + `infra/docker-compose.aws.yml`, RDS PostgreSQL 17, S3, SES, SNS SMS, Route 53, AWS Backup, CloudWatch, Budgets, GitHub OIDC deploys. Runbook: [`starter/README.md`](starter/README.md) |
+| `terraform/aws/` | **Full scale (upgrade path).** AWS `us-east-2` / DR `us-west-2`: VPC, ECS Fargate, RDS PostgreSQL 17 Multi-AZ, ElastiCache Redis 7, S3, CloudFront, WAF, Secrets Manager, CloudWatch alarms, AWS Backup and DR |
 | `k8s/` | Alternative: kustomize base plus `staging` and `production` overlays for any Kubernetes cluster with ingress-nginx and cert-manager (see `k8s/README.md`) |
 | `observability/` | Prometheus scrape config and rules, Alertmanager, SQL/Redis/blackbox exporters, the Grafana dashboard (see `observability/README.md`) |
 | `scripts/set-secret.sh` | Sets a Secrets Manager value without echoing it |
@@ -14,7 +15,15 @@ The single-host, production-like stack (`infra/docker-compose.yml`) is a separat
 from one domain behind nginx, as PLAN section 3.1 specifies. It is the reference for path routing, the
 least-privilege database roles and client-IP handling.
 
-## Architecture (AWS)
+## Data location
+
+Patient data is hosted in the **United States**: AWS `us-east-2` (Ohio), with backup copies in `us-west-2`
+(Oregon). The privacy policy, ROPA, DPIA and breach plan in `docs/legal/` describe this and the cross-border
+transfer bases (India DPDP Act s.16; GDPR SCCs and the UK IDTA through the AWS Data Processing Addendum). Sign the
+AWS Business Associate Addendum in AWS Artifact as a precaution and use only HIPAA-eligible services. Do not move
+data to another region without updating those documents.
+
+## Architecture (AWS, full scale)
 
 ```
                            Internet (patients, agents, hospitals, staff, Razorpay/Stripe webhooks)
@@ -35,7 +44,7 @@ least-privilege database roles and client-IP handling.
                                              ElastiCache Redis 7 (TLS + AUTH, 2 nodes)
                                                                    |
      S3 documents bucket (SSE-KMS, versioned, private, lifecycle)  |  Secrets Manager (KMS) -> task definitions
-     CloudWatch logs + alarms -> SNS                               |  AWS Backup (daily/monthly) -> DR region (ap-south-2)
+     CloudWatch logs + alarms -> SNS                               |  AWS Backup (daily/monthly) -> DR region (us-west-2)
 ```
 
 ## Deploy step by step
@@ -124,7 +133,7 @@ Prerequisites:
 
 ## Launch sizing and rough monthly cost
 
-**These are estimates only.** They use on-demand `ap-south-1` list prices as of 2026, exclude tax, data transfer
+**These are estimates only.** They use on-demand `us-east-2` list prices as of 2026, exclude tax, data transfer
 beyond a modest amount, Support plans and the Claude API. Check the AWS Pricing Calculator before committing.
 
 | component | launch default | approx. USD / month |
@@ -177,7 +186,7 @@ Cost levers:
 | Accidental data change or delete | RDS PITR (14 days) to a new instance, then copy the affected rows back | about 5 min | 1-2 h |
 | AZ failure | RDS Multi-AZ failover, Redis replica promotion, ECS tasks spread over 3 AZs | 0 | 1-5 min (automatic) |
 | Document deleted or overwritten | S3 versioning (noncurrent versions kept `documents_noncurrent_expiration_days`) | 0 | minutes |
-| Region loss (`enable_dr = true`) | AWS Backup copies daily snapshots to `dr_region` (ap-south-2 Hyderabad, still in India). Documents replicated by CRR. Secrets and ECR images replicated | 24 h for the DB (daily copy); minutes for documents | 4-8 h (apply the stack in the DR region from the copied snapshot with `rds_snapshot_identifier`) |
+| Region loss (`enable_dr = true`) | AWS Backup copies daily snapshots to `dr_region` (us-west-2 Oregon, still in the United States). Documents replicated by CRR. Secrets and ECR images replicated | 24 h for the DB (daily copy); minutes for documents | 4-8 h (apply the stack in the DR region from the copied snapshot with `rds_snapshot_identifier`) |
 | Long-term retention | AWS Backup monthly snapshots kept 365 days | n/a | n/a |
 
 Practise a restore every quarter: restore PITR into a scratch instance, run the app's smoke tests against it, and

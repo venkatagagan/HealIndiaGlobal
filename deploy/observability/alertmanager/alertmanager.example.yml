@@ -3,7 +3,7 @@
 # keep real webhook URLs / passwords in the secret store (Alertmanager supports *_file fields).
 global:
   resolve_timeout: 5m
-  smtp_smarthost: "email-smtp.ap-south-1.amazonaws.com:587"
+  smtp_smarthost: "email-smtp.us-east-2.amazonaws.com:587"
   smtp_from: "alerts@healindia.example"
   smtp_auth_username: "REPLACE_ME"
   smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password

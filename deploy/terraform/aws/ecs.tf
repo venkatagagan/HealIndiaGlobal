@@ -42,24 +42,24 @@ locals {
   # Non-secret settings shared by api, worker and migrate (names match backend/app/core/config.py).
   app_environment = merge(
     {
-      ENV                          = local.app_env
-      APP_NAME                     = "Heal India Global"
-      API_BASE_URL                 = "https://${local.hosts.api}"
-      PATIENT_WEB_URL              = "https://${local.hosts.patient}"
-      AGENT_PORTAL_URL             = "https://${local.hosts.agent}"
-      HOSPITAL_PORTAL_URL          = "https://${local.hosts.hospital}"
-      ADMIN_PORTAL_URL             = "https://${local.hosts.admin}"
-      PUBLIC_SITE_URL              = "https://${local.hosts.patient}"
-      LOG_LEVEL                    = var.log_level
-      LOG_JSON                     = "true"
-      ENABLE_DOCS                  = "false"
-      SENTRY_DSN                   = var.sentry_dsn
-      DB_POOL_SIZE                 = tostring(var.db_pool_size)
-      DB_MAX_OVERFLOW              = tostring(var.db_max_overflow)
-      CORS_ORIGINS                 = join(",", local.spa_origins)
-      COOKIE_SECURE                = "true"
+      ENV                 = local.app_env
+      APP_NAME            = "Heal India Global"
+      API_BASE_URL        = "https://${local.hosts.api}"
+      PATIENT_WEB_URL     = "https://${local.hosts.patient}"
+      AGENT_PORTAL_URL    = "https://${local.hosts.agent}"
+      HOSPITAL_PORTAL_URL = "https://${local.hosts.hospital}"
+      ADMIN_PORTAL_URL    = "https://${local.hosts.admin}"
+      PUBLIC_SITE_URL     = "https://${local.hosts.patient}"
+      LOG_LEVEL           = var.log_level
+      LOG_JSON            = "true"
+      ENABLE_DOCS         = "false"
+      SENTRY_DSN          = var.sentry_dsn
+      DB_POOL_SIZE        = tostring(var.db_pool_size)
+      DB_MAX_OVERFLOW     = tostring(var.db_max_overflow)
+      CORS_ORIGINS        = join(",", local.spa_origins)
+      COOKIE_SECURE       = "true"
       # Host validation happens at CloudFront/ALB; ALB health checks use the task IP as Host header.
-      TRUSTED_HOSTS                = "*"
+      TRUSTED_HOSTS = "*"
 
       # The ALB admits only CloudFront (origin-facing prefix list + secret X-Origin-Verify header) and CloudFront
       # always overwrites CloudFront-Viewer-Address, so the API keys rate limits, audit IPs and STAFF_ALLOWED_IPS
@@ -70,16 +70,16 @@ locals {
       STAFF_ALLOWED_IPS = join(",", var.staff_allowed_cidrs)
 
       # Production refuses to start without staff MFA, so it is forced on there.
-      ADMIN_MFA_REQUIRED           = local.app_env == "production" ? "true" : tostring(var.admin_mfa_required)
-      REQUIRE_EMAIL_VERIFICATION   = tostring(var.require_email_verification)
-      GOOGLE_CLIENT_IDS            = join(",", var.google_client_ids)
-      APPLE_CLIENT_IDS             = join(",", var.apple_client_ids)
-      APPLE_TEAM_ID                = var.apple_team_id
-      APPLE_KEY_ID                 = var.apple_key_id
-      AI_ENABLED                   = tostring(var.ai_enabled)
-      AI_MODEL                     = var.ai_model
-      AI_EFFORT                    = var.ai_effort
-      AI_TIMEOUT_SECONDS           = "90"
+      ADMIN_MFA_REQUIRED         = local.app_env == "production" ? "true" : tostring(var.admin_mfa_required)
+      REQUIRE_EMAIL_VERIFICATION = tostring(var.require_email_verification)
+      GOOGLE_CLIENT_IDS          = join(",", var.google_client_ids)
+      APPLE_CLIENT_IDS           = join(",", var.apple_client_ids)
+      APPLE_TEAM_ID              = var.apple_team_id
+      APPLE_KEY_ID               = var.apple_key_id
+      AI_ENABLED                 = tostring(var.ai_enabled)
+      AI_MODEL                   = var.ai_model
+      AI_EFFORT                  = var.ai_effort
+      AI_TIMEOUT_SECONDS         = "90"
       # Voice intake: production requires local speech-to-text and never retains audio.
       STT_PROVIDER                 = "local_whisper"
       VOICE_RETAIN_AUDIO           = "false"
@@ -111,9 +111,9 @@ locals {
 
   # gunicorn knobs read by the image (backend/Dockerfile). Keep-alive must exceed the ALB idle timeout.
   api_process_environment = {
-    WEB_CONCURRENCY     = tostring(var.web_concurrency)
-    GUNICORN_TIMEOUT    = "60"
-    GUNICORN_KEEPALIVE  = tostring(var.alb_idle_timeout + 10)
+    WEB_CONCURRENCY    = tostring(var.web_concurrency)
+    GUNICORN_TIMEOUT   = "60"
+    GUNICORN_KEEPALIVE = tostring(var.alb_idle_timeout + 10)
     # Trust X-Forwarded-* only from inside the VPC (the ALB), never "*": with "*" uvicorn takes the LEFTMOST
     # X-Forwarded-For entry, which the client controls (INTEGRATION_BACKLOG #20). Behind CloudFront the hop the
     # ALB reports is a CloudFront edge; the real viewer address arrives in `CloudFront-Viewer-Address`

@@ -8,6 +8,12 @@ For the AWS (Terraform) and Kubernetes targets see [deploy/README.md](../deploy/
 section lists what they still need to match this stack (single-domain routing, the website service, split
 database roles).
 
+
+> **AWS targets.** Low-cost launch (one Graviton EC2 box with this compose stack + RDS, ~USD 150/month,
+> us-east-2 with backups in us-west-2): [deploy/starter/README.md](../deploy/starter/README.md) and
+> `deploy/terraform/aws-starter`. Full scale (ECS Fargate, Multi-AZ RDS, CloudFront, WAF):
+> [deploy/README.md](../deploy/README.md) and `deploy/terraform/aws`.
+
 ## 1. Components
 
 Everything is served from **one domain** (`SITE_DOMAIN`) with path routing (PLAN §3.1;
@@ -31,7 +37,7 @@ Everything is served from **one domain** (`SITE_DOMAIN`) with path routing (PLAN
 | `worker` | same image, `python -m app.worker` | Background jobs and schedules, `APP_DB_USER`. Scale horizontally |
 | `postgres` | `postgres:17` + `infra/postgres/init` | Prefer a managed service (RDS/Cloud SQL/Azure Flexible Server) in production |
 | `redis` | `redis:7-alpine` | Password-protected; prefer managed Redis with TLS in production |
-| `minio` | optional profile `s3` | Use AWS S3 (ap-south-1) or another managed object store in production |
+| `minio` | optional profile `s3` | Use AWS S3 (us-east-2) or another managed object store in production |
 
 **Database roles** (`infra/postgres/init/02-roles.sh`, runs on first initialisation; idempotent, re-run it by hand
 for an existing volume or after rotating a password):
@@ -163,7 +169,10 @@ immediately, then create other staff from the admin console at `/gahi/`.
       enabled, lifecycle rules for old versions, access logs on.
 - [ ] Least-privilege IAM credentials limited to the bucket (`s3:GetObject`, `PutObject`, `DeleteObject`,
       `ListBucket`); prefer instance/task roles over static keys.
-- [ ] Store data in India (`ap-south-1` Mumbai / `ap-south-2` Hyderabad) unless a documented transfer basis exists.
+- [ ] Data is hosted in the United States (AWS `us-east-2` Ohio, backup copies in `us-west-2` Oregon), as the
+      privacy policy, ROPA and DPIA state; the cross-border transfer bases are in docs/legal (DPDP s.16, GDPR
+      SCCs / UK IDTA through the AWS DPA). Changing the region means updating those documents first.
+- [ ] SSE-KMS for the documents bucket: `S3_SSE=aws:kms` + `S3_SSE_KMS_KEY_ID` (the AWS starter does this).
 - [ ] Files are only ever served through the API's authorised download endpoint - never via public URLs.
 - [ ] Local storage (`STORAGE_BACKEND=local`) is acceptable only for single-host deployments; back up the
       `storage` volume.
@@ -231,11 +240,16 @@ immediately, then create other staff from the admin console at `/gahi/`.
 
 ## 12. Email, SMS and push
 
-- [ ] `EMAIL_BACKEND=smtp` with a transactional provider (Amazon SES ap-south-1, SendGrid, Postmark, Mailgun):
-      `SMTP_HOST/PORT/USER/PASSWORD`, `SMTP_STARTTLS=true`, verified `EMAIL_FROM` domain.
+- [ ] `EMAIL_BACKEND=ses` (Amazon SES API through the instance/task role - no SMTP password; `SES_REGION`,
+      `SES_CONFIGURATION_SET`) or `EMAIL_BACKEND=smtp` with a transactional provider (SES SMTP
+      `email-smtp.us-east-2.amazonaws.com`, SendGrid, Postmark, Mailgun): `SMTP_HOST/PORT/USER/PASSWORD`,
+      `SMTP_STARTTLS=true`. Verified `EMAIL_FROM` domain (`no-reply@healindiaglobal.ai`); production refuses
+      `EMAIL_BACKEND=console`.
 - [ ] SPF, DKIM and DMARC (`p=quarantine` or stricter) on the sending domain; bounce/complaint handling.
-- [ ] SMS/WhatsApp (if enabled later, e.g. MSG91, Twilio, Gupshup): DLT registration of sender ids and templates is
-      mandatory for Indian numbers; international numbers need provider-specific sender registration.
+- [ ] SMS one-time codes: `SMS_PROVIDER=sns` (Amazon SNS through the role; `SNS_SMS_ORIGINATION_NUMBER` for US
+      numbers, `SMS_ALLOWED_COUNTRY_CODES` against SMS pumping; leave the SNS sandbox and raise the spend
+      limit first - deploy/starter/README.md "SMS"). Indian numbers additionally need DLT registration of the
+      sender id and template (TRAI); international numbers need provider-specific sender registration.
 - [ ] Push (FCM/APNs): service-account credentials in the secret store; prune invalid device tokens.
 - [ ] Never send medical details in email/SMS bodies; link to the authenticated app instead.
 

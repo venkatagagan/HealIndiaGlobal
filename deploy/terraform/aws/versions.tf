@@ -1,4 +1,5 @@
-# Heal India Global - AWS reference deployment (ap-south-1 / Mumbai, India data residency).
+# Heal India Global - AWS reference deployment (full scale). Primary region us-east-2 (US East, Ohio), DR copies
+# in us-west-2 (US West, Oregon). The low-cost single-box variant is ../aws-starter (deploy/starter/README.md).
 #
 # One root module, one state per environment:
 #   terraform init -backend-config=backend-production.hcl     (see backend.tf.example / backend.hcl.example)

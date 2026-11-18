@@ -21,7 +21,7 @@ terraform {
 variable "aws_region" {
   description = "Region for the state bucket and lock table."
   type        = string
-  default     = "ap-south-1"
+  default     = "us-east-2"
 }
 
 variable "state_bucket_name" {

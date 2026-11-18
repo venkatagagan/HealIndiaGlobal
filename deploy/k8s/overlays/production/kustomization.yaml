@@ -30,13 +30,13 @@ configMapGenerator:
 
 images:
   - name: hig-api
-    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/api
+    newName: 123456789012.dkr.ecr.us-east-2.amazonaws.com/hig/production/api
     newTag: "REPLACE_WITH_GIT_SHA"
   - name: hig-web
-    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/web
+    newName: 123456789012.dkr.ecr.us-east-2.amazonaws.com/hig/production/web
     newTag: "REPLACE_WITH_GIT_SHA"
   - name: hig-website
-    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/hig/production/website
+    newName: 123456789012.dkr.ecr.us-east-2.amazonaws.com/hig/production/website
     newTag: "REPLACE_WITH_GIT_SHA"
 
 patches:

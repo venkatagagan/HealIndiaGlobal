@@ -3,7 +3,9 @@
 Day-to-day running of Heal India Global: local setup on Windows, processes, background jobs, health and
 metrics, backups, and runbooks.
 
-* Production deployment, TLS, scaling, monitoring stack: [DEPLOYMENT.md](DEPLOYMENT.md). Architecture:
+* Production deployment, TLS, scaling, monitoring stack: [DEPLOYMENT.md](DEPLOYMENT.md). AWS launch (one EC2
+  box + RDS in us-east-2, backups in us-west-2): [deploy/starter/README.md](../deploy/starter/README.md) - deploys,
+  secrets, certificates, restore drill and the box's runbooks. Architecture:
   [ARCHITECTURE.md](ARCHITECTURE.md). Money flows and daily reconciliation: [PAYMENTS.md](PAYMENTS.md) §11.
   Security model: [SECURITY.md](SECURITY.md).
 * **House rules:**
@@ -151,13 +153,14 @@ Production requires Redis.
 |---|---|---|
 | App | `ENV` (`development` / `test` / `staging` / `production`), `APP_NAME`, `API_BASE_URL`, `PATIENT_WEB_URL`, `AGENT_PORTAL_URL`, `HOSPITAL_PORTAL_URL`, `ADMIN_PORTAL_URL`, `ENABLE_DOCS` (true), `TRUSTED_HOSTS` (`*`) | `ENV=production` turns on strict validation (§6.4) |
 | Logging | `LOG_LEVEL` (INFO), `LOG_JSON` (false; true in production), `SENTRY_DSN` | Logs are redacted (SECURITY.md §14) |
-| Database | `DATABASE_URL`, `DB_POOL_SIZE` (10), `DB_MAX_OVERFLOW` (20), `DB_ECHO` (false) | Local: `…@127.0.0.1:5433/healindia` |
+| Database | `DATABASE_URL`, `DATABASE_SSLMODE` (`prefer`), `DB_POOL_SIZE` (10), `DB_MAX_OVERFLOW` (20), `DB_ECHO` (false) | Local: `…@127.0.0.1:5433/healindia`. Production needs `require` or stronger unless the database is on the same host |
 | Redis | `REDIS_URL` (empty) | §2.6 |
 | Auth | `JWT_SECRET`, `JWT_ALGORITHM` (HS256), `JWT_ISSUER`, `JWT_AUDIENCE`, `ACCESS_TOKEN_TTL_MINUTES` (15), `REFRESH_TOKEN_TTL_DAYS` (30), `COOKIE_SECURE` (false), `COOKIE_DOMAIN`, `CORS_ORIGINS`, `CORS_ORIGIN_REGEX` (dev only), `GOOGLE_CLIENT_IDS`, `ADMIN_MFA_REQUIRED` (false), `REQUIRE_EMAIL_VERIFICATION` (false), `RATE_LIMIT_ENABLED` (true) | An empty `JWT_SECRET` outside production means an ephemeral secret: sessions don't survive a restart |
 | Encryption | `FIELD_ENCRYPTION_KEY` (32 bytes, base64) | Required in production. Rotation: §6.4. |
 | AI | `ANTHROPIC_API_KEY` (empty → rules engine), `AI_MODEL` (`claude-opus-5-5`), `AI_EFFORT` (`medium`), `AI_ENABLED` (true), `AI_TIMEOUT_SECONDS` (90) | |
-| Storage | `STORAGE_BACKEND` (`local` / `s3`), `STORAGE_LOCAL_DIR` (`./storage`), `S3_BUCKET`, `S3_ENDPOINT_URL`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `MAX_UPLOAD_MB` (15) | |
-| Email | `EMAIL_BACKEND` (`console` / `smtp`), `SMTP_HOST`, `SMTP_PORT` (587), `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_STARTTLS` (true), `EMAIL_FROM` | `console` prints emails to the log |
+| Storage | `STORAGE_BACKEND` (`local` / `s3`), `STORAGE_LOCAL_DIR` (`./storage`), `STORAGE_LOCAL_IN_PRODUCTION` (false), `S3_BUCKET`, `S3_ENDPOINT_URL`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_SSE` (`AES256` / `aws:kms` / `bucket_default`), `S3_SSE_KMS_KEY_ID`, `MAX_UPLOAD_MB` (15) | On AWS leave the key settings empty (instance/task role). Production refuses `local` unless `STORAGE_LOCAL_IN_PRODUCTION=true` (single host, backed-up volume) |
+| Email | `EMAIL_BACKEND` (`console` / `smtp` / `ses`), `SMTP_HOST`, `SMTP_PORT` (587), `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_STARTTLS` (true), `SES_REGION`, `SES_CONFIGURATION_SET`, `EMAIL_FROM` (production: `Heal India Global <no-reply@healindiaglobal.ai>`) | `console` prints emails to the log (refused in production); `ses` uses the AWS role, no password |
+| SMS (guest phone codes) | `SMS_PROVIDER` (`console` / `none` / `sns`), `SNS_REGION`, `SNS_SMS_SENDER_ID`, `SNS_SMS_ORIGINATION_NUMBER`, `SNS_SMS_TYPE` (Transactional), `SMS_ALLOWED_COUNTRY_CODES` | Text from the server catalog `sms.verification_code` in the guest's language. SNS sandbox / origination numbers: deploy/starter/README.md |
 | Payments | `PAYMENT_GATEWAYS_ENABLED` (`mock,bank_transfer`), `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `BASE_CURRENCY` (INR), `DEFAULT_PATIENT_CURRENCY` (USD) | `mock` is refused in production |
 | Worker | `RUN_WORKER_IN_API` (true), `WORKER_POLL_INTERVAL_SECONDS` (2.0) | |
 | Dev only | `LOCAL_PG_SUPERUSER_PASSWORD` | Written by `setup-db.ps1`; not read by the app |

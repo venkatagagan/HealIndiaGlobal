@@ -5,7 +5,7 @@
 
 project     = "hig"
 environment = "production"
-aws_region  = "ap-south-1"
+aws_region  = "us-east-2" # US East (Ohio)
 
 tags = {
   Owner      = "platform-team"
@@ -20,7 +20,7 @@ route53_zone_id = "Z0123456789EXAMPLE" # public hosted zone of domain_name; "" =
 # hostnames = { patient = "www.healindia.example" }
 # Bring your own issued certificates instead of DNS-validated ones:
 # cloudfront_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/..."
-# alb_certificate_arn        = "arn:aws:acm:ap-south-1:123456789012:certificate/..."
+# alb_certificate_arn        = "arn:aws:acm:us-east-2:123456789012:certificate/..."
 
 # ---- Network ---------------------------------------------------------------------------------------
 vpc_cidr                   = "10.40.0.0/16"
@@ -60,7 +60,7 @@ ai_enabled                 = true
 ai_model                   = "claude-opus-5-5"
 ai_effort                  = "medium"
 email_backend              = "smtp"
-smtp_host                  = "email-smtp.ap-south-1.amazonaws.com"
+smtp_host                  = "email-smtp.us-east-2.amazonaws.com"
 smtp_port                  = 587
 email_from                 = "Heal India Global <no-reply@healindia.example>"
 google_client_ids          = [] # public OAuth client ids (web, android, ios)
@@ -85,8 +85,8 @@ redis_node_type           = "cache.t4g.small"
 redis_num_cache_clusters  = 2 # staging: 1
 
 # ---- Backup / DR -----------------------------------------------------------------------------------
-enable_dr                     = true # requires the ap-south-2 opt-in region to be enabled
-dr_region                     = "ap-south-2"
+enable_dr                     = true # copies to us-west-2 (no region opt-in needed)
+dr_region                     = "us-west-2"
 backup_daily_retention_days   = 35
 backup_monthly_retention_days = 365
 dr_backup_retention_days      = 35

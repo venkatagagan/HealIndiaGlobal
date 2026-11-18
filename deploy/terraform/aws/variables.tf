@@ -23,9 +23,9 @@ variable "environment" {
 }
 
 variable "aws_region" {
-  description = "Primary region. ap-south-1 (Mumbai) keeps patient data in India."
+  description = "Primary region (all personal data). us-east-2 = US East (Ohio); the privacy documents state US hosting."
   type        = string
-  default     = "ap-south-1"
+  default     = "us-east-2"
 }
 
 variable "tags" {
@@ -49,7 +49,7 @@ variable "vpc_cidr" {
 }
 
 variable "az_count" {
-  description = "Number of availability zones (ap-south-1 has 3)."
+  description = "Number of availability zones (us-east-2 has 3)."
   type        = number
   default     = 3
 
@@ -411,9 +411,9 @@ variable "email_backend" {
 }
 
 variable "smtp_host" {
-  description = "SMTP_HOST (e.g. email-smtp.ap-south-1.amazonaws.com for Amazon SES)."
+  description = "SMTP_HOST (Amazon SES SMTP endpoint of the primary region, e.g. email-smtp.us-east-2.amazonaws.com)."
   type        = string
-  default     = "email-smtp.ap-south-1.amazonaws.com"
+  default     = "email-smtp.us-east-2.amazonaws.com"
 }
 
 variable "smtp_port" {
@@ -659,9 +659,9 @@ variable "enable_dr" {
 }
 
 variable "dr_region" {
-  description = "DR region. ap-south-2 (Hyderabad) keeps copies in India; it is an opt-in region."
+  description = "DR region for backup copies, replicas and ECR replication. us-west-2 = US West (Oregon)."
   type        = string
-  default     = "ap-south-2"
+  default     = "us-west-2"
 }
 
 variable "backup_daily_retention_days" {
