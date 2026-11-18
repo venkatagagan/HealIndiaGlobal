@@ -253,6 +253,13 @@ class Settings(BaseSettings):
     # Data export (GET /auth/me/export): requests per user per day and the largest export with files.
     DATA_EXPORT_DAILY_LIMIT: int = Field(default=3, ge=1, le=50)
     DATA_EXPORT_MAX_FILES_MB: int = Field(default=200, ge=1, le=2000)
+    # Patient referral programme ("refer a friend", docs/REFERRALS.md): master switch; reward amounts, caps and
+    # expiry are the finance-controlled platform setting ``referral_programme``.
+    REFERRAL_ENABLED: bool = True
+    # App deep link for shared referral links (``<scheme>://register?ref=CODE``).
+    MOBILE_APP_SCHEME: str = "healindia"
+    # Agent CRM: leads marked lost are deleted this many days after they were lost (0 disables the purge).
+    CRM_LOST_LEAD_RETENTION_DAYS: int = Field(default=365, ge=0)
     # Age of majority for guardian consent (DPDP s.9: a "child" is under 18).
     AGE_OF_MAJORITY: int = Field(default=18, ge=1, le=25)
 
