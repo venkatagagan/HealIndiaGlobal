@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
+import { Trans } from 'react-i18next';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Check, Plus, X } from 'lucide-react';
 import {
   REFUND_STATUSES,
-  REFUND_STATUS_LABELS,
   paymentsApi,
   type RefundListParams,
   type RefundOut,
@@ -32,6 +32,7 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { formatMoney } from '../lib/shared';
+import { enumLabel, ft, useFinanceTranslation, type FinanceT } from '../lib/i18n';
 import { financeKeys, useApproveRefund, useRejectRefund } from '../api/queries';
 import { notifyError, notifySuccess, ReasonDialog } from '../components/finance';
 import { RefundDialog } from '../components/RefundDialog';
@@ -74,10 +75,10 @@ const QUICK_STATUSES: RefundStatus[] = ['requested', 'approved', 'processing', '
 // ---------------------------------------------------------------------------------------------------------
 // Columns (actions need the signed-in user, so they are built per render)
 // ---------------------------------------------------------------------------------------------------------
-const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
+const baseColumns = (t: FinanceT): DataTableColumn<RefundOut>[] => [
   {
     key: 'order',
-    header: 'Order',
+    header: t('orders.columns.order'),
     sticky: true,
     mobile: 'secondary',
     cell: (r) => <IdCell value={r.order_number ?? r.order_id.slice(0, 8)} secondary={r.gateway_refund_id ?? undefined} />,
@@ -85,15 +86,15 @@ const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('orders.columns.patient'),
     mobile: 'primary',
     className: 'max-w-52',
-    cell: (r) => <PersonCell name={r.patient_name ?? 'Unknown patient'} secondary={r.reason ?? undefined} />,
+    cell: (r) => <PersonCell name={r.patient_name ?? t('refunds.unknownPatient')} secondary={r.reason ?? undefined} />,
     exportValue: (r) => r.patient_name ?? '',
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('orders.columns.amount'),
     align: 'end',
     sortable: true,
     sortKey: 'base_amount_minor',
@@ -109,15 +110,15 @@ const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('orders.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (r) => <StatusBadgeCell status={r.status} kind="refund" />,
-    exportValue: (r) => REFUND_STATUS_LABELS[r.status] ?? r.status,
+    exportValue: (r) => enumLabel('status', r.status),
   },
   {
     key: 'reason',
-    header: 'Reason',
+    header: t('common.reason'),
     defaultHidden: true,
     className: 'max-w-64',
     cell: (r) => <span className="line-clamp-2">{r.reason ?? '—'}</span>,
@@ -125,7 +126,7 @@ const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
   },
   {
     key: 'requested',
-    header: 'Requested',
+    header: t('orderDetail.refunds.requested'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -134,13 +135,13 @@ const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
   },
   {
     key: 'approved_by',
-    header: 'Approved by',
+    header: t('reviews.markPaid.approvedBy'),
     cell: (r) => <TextCell primary={r.approved_by_name ?? <span className="text-muted">—</span>} />,
     exportValue: (r) => r.approved_by_name ?? '',
   },
   {
     key: 'processed',
-    header: 'Processed',
+    header: t('orderDetail.refunds.processed'),
     sortable: true,
     sortKey: 'processed_at',
     sortDescFirst: true,
@@ -151,6 +152,7 @@ const BASE_COLUMNS: DataTableColumn<RefundOut>[] = [
 ];
 
 function actionsColumn(
+  t: FinanceT,
   perms: FinancePermissions,
   thresholdMinor: number,
   onApprove: (r: RefundOut) => void,
@@ -158,8 +160,8 @@ function actionsColumn(
 ): DataTableColumn<RefundOut> {
   return {
     key: 'actions',
-    header: <span className="sr-only">Actions</span>,
-    title: 'Actions',
+    header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+    title: t('orderDetail.actions'),
     align: 'end',
     hideable: false,
     exportable: false,
@@ -173,19 +175,15 @@ function actionsColumn(
             size="sm"
             onClick={() => onApprove(r)}
             disabled={blocked}
-            title={
-              blocked
-                ? `You requested this refund and it is above ${formatMoney(thresholdMinor, 'INR')}: a different finance user must approve it`
-                : undefined
-            }
+            title={blocked ? t('refunds.blockedTitle', { amount: formatMoney(thresholdMinor, 'INR') }) : undefined}
             icon={<Check className="size-3.5" aria-hidden />}
           >
-            Approve
+            {t('reviews.approve')}
           </FinanceButton>
           <FinanceButton size="sm" variant="secondary" onClick={() => onReject(r)} icon={<X className="size-3.5" aria-hidden />}>
-            Reject
+            {t('reviews.reject')}
           </FinanceButton>
-          {blocked && <span className="basis-full text-end text-xs text-warning-ink">Needs a second finance user</span>}
+          {blocked && <span className="basis-full text-end text-xs text-warning-ink">{t('refunds.needsSecond')}</span>}
         </span>
       );
     },
@@ -196,7 +194,8 @@ function actionsColumn(
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function RefundsPage() {
-  useDocumentTitle('Refunds');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('refunds.title'));
   const perms = useFinancePermissions();
   const threshold = useRefundDualApprovalThreshold();
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
@@ -221,23 +220,24 @@ export default function RefundsPage() {
   const [approving, setApproving] = useState<RefundOut | null>(null);
   const [rejecting, setRejecting] = useState<RefundOut | null>(null);
 
+  const exportColumns = useMemo(() => baseColumns(t), [t]);
   const columns = useMemo(
-    () => [...BASE_COLUMNS, actionsColumn(perms, threshold.minor, setApproving, setRejecting)],
-    [perms, threshold.minor],
+    () => [...exportColumns, actionsColumn(t, perms, threshold.minor, setApproving, setRejecting)],
+    [exportColumns, t, perms, threshold.minor],
   );
 
   const c = counts.data;
   const statusOptions: FilterOption<RefundStatus>[] = REFUND_STATUSES.map((s) => ({
     value: s,
-    label: REFUND_STATUS_LABELS[s],
+    label: enumLabel('status', s),
     tone: statusTone(s, 'refund'),
     count: c?.counts[s],
   }));
   const quickItems: QuickFilterItem<QuickValue>[] = [
-    { value: '', label: 'All', count: c?.total },
-    { value: 'requested', label: 'Awaiting approval', count: c?.counts.requested },
-    { value: SECOND_TAB, label: 'Awaiting second approval', count: c?.awaiting_second_approval, tone: 'warning' },
-    ...QUICK_STATUSES.filter((s) => s !== 'requested').map((s) => ({ value: s, label: REFUND_STATUS_LABELS[s], count: c?.counts[s] })),
+    { value: '', label: t('common.all'), count: c?.total },
+    { value: 'requested', label: t('refunds.awaitingApproval'), count: c?.counts.requested },
+    { value: SECOND_TAB, label: t('refunds.awaitingSecond'), count: c?.awaiting_second_approval, tone: 'warning' },
+    ...QUICK_STATUSES.filter((s) => s !== 'requested').map((s) => ({ value: s, label: enumLabel('status', s), count: c?.counts[s] })),
   ];
   const quickValue: QuickValue | '' | null = filters.second
     ? filters.status.length === 0
@@ -252,12 +252,12 @@ export default function RefundsPage() {
   return (
     <div>
       <PageHeader
-        title="Refunds"
-        description="Refund requests are approved before the gateway refund is issued: requested → approved → processing → processed."
+        title={t('refunds.title')}
+        description={t('refunds.description')}
         actions={
           perms.createRefunds && (
             <Button leftIcon={<Plus className="size-4" aria-hidden />} onClick={() => setCreating(true)}>
-              New refund
+              {t('refunds.newRefund')}
             </Button>
           )
         }
@@ -267,7 +267,7 @@ export default function RefundsPage() {
       </div>
       <DataTable
         id="admin.finance.refunds"
-        caption="Refunds"
+        caption={t('refunds.title')}
         table={table}
         columns={columns}
         rows={list.data?.items}
@@ -277,13 +277,13 @@ export default function RefundsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(r) => financePath(`orders/${r.order_id}`)}
-        rowLabel={(r) => `Open order ${r.order_number ?? r.order_id}`}
-        emptyTitle="No refunds yet"
-        emptyDescription="Refunds requested by finance or admins (or created by cancellations) appear here."
+        rowLabel={(r) => t('orders.openOrder', { number: r.order_number ?? r.order_id })}
+        emptyTitle={t('refunds.emptyTitle')}
+        emptyDescription={t('refunds.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Refund status"
+              label={t('refunds.statusLabel')}
               items={quickItems}
               value={quickValue}
               onChange={(v) =>
@@ -294,12 +294,12 @@ export default function RefundsPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Order, booking or patient…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('orders.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="refunds"
-                columns={BASE_COLUMNS}
+                columns={exportColumns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -308,14 +308,14 @@ export default function RefundsPage() {
               />
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('orders.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <AmountRangeFilter
-              label="Amount"
+              label={t('orders.columns.amount')}
               currency="INR"
               value={{ min: filters.min, max: filters.max }}
               onChange={({ min, max }) => setFilters({ min, max })}
             />
-            <DateRangeFilter label="Requested" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('orderDetail.refunds.requested')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />
@@ -325,12 +325,12 @@ export default function RefundsPage() {
       <Modal
         open={approving !== null}
         onClose={() => setApproving(null)}
-        title="Approve refund"
+        title={t('refunds.approveTitle')}
         size="sm"
         footer={
           <>
             <FinanceButton variant="secondary" onClick={() => setApproving(null)} disabled={approve.isPending}>
-              Cancel
+              {t('common.cancel')}
             </FinanceButton>
             <FinanceButton
               loading={approve.isPending}
@@ -338,25 +338,30 @@ export default function RefundsPage() {
                 approving &&
                 approve.mutate(approving.id, {
                   onSuccess: () => {
-                    notifySuccess('Refund approved; the gateway refund has been queued');
+                    notifySuccess(ft('refunds.approved'));
                     setApproving(null);
                   },
-                  onError: (e) => notifyApprovalError(e, 'Could not approve the refund', 'this refund'),
+                  onError: (e) => notifyApprovalError(e, ft('refunds.approveFailed'), 'refund'),
                 })
               }
             >
-              Approve refund
+              {t('refunds.approveTitle')}
             </FinanceButton>
           </>
         }
       >
         {approving && (
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Refund <strong>{formatMoney(approving.amount_minor, approving.currency)}</strong> on order{' '}
-            <strong>{approving.order_number ?? approving.order_id}</strong> to the original payment method. This cannot be
-            undone once the gateway processes it.
+            <Trans
+              t={t}
+              i18nKey="refunds.approveBody"
+              values={{ amount: formatMoney(approving.amount_minor, approving.currency), order: approving.order_number ?? approving.order_id }}
+              components={{ 0: <strong />, 1: <strong /> }}
+            />
             {approving.reason && (
-              <span className="mt-2 block rounded-lg bg-slate-50 p-2 text-xs dark:bg-slate-800">Reason: {approving.reason}</span>
+              <span className="mt-2 block rounded-lg bg-slate-50 p-2 text-xs dark:bg-slate-800">
+                {t('refunds.reasonValue', { reason: approving.reason })}
+              </span>
             )}
           </p>
         )}
@@ -364,9 +369,16 @@ export default function RefundsPage() {
 
       <ReasonDialog
         open={rejecting !== null}
-        title="Reject refund"
-        description={rejecting ? `${formatMoney(rejecting.amount_minor, rejecting.currency)} on ${rejecting.order_number ?? 'order'}` : undefined}
-        confirmLabel="Reject refund"
+        title={t('refunds.rejectTitle')}
+        description={
+          rejecting
+            ? t('refunds.rejectDescription', {
+                amount: formatMoney(rejecting.amount_minor, rejecting.currency),
+                order: rejecting.order_number ?? t('refunds.orderFallback'),
+              })
+            : undefined
+        }
+        confirmLabel={t('refunds.rejectTitle')}
         loading={reject.isPending}
         onClose={() => setRejecting(null)}
         onConfirm={(reason) =>
@@ -375,10 +387,10 @@ export default function RefundsPage() {
             { id: rejecting.id, reason },
             {
               onSuccess: () => {
-                notifySuccess('Refund rejected');
+                notifySuccess(ft('refunds.rejected'));
                 setRejecting(null);
               },
-              onError: (e) => notifyError(e, 'Could not reject the refund'),
+              onError: (e) => notifyError(e, ft('refunds.rejectFailed')),
             },
           )
         }

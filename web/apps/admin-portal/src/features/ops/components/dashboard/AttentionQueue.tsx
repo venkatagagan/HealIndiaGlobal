@@ -20,7 +20,9 @@ import {
 } from 'lucide-react';
 import type { DashboardOverview, UserRole } from '@hig/shared/api';
 import { Skeleton } from '@hig/shared/ui';
-import { cn } from '../../lib/format';
+import type { TFunction } from 'i18next';
+import { useAppTranslation } from '../../../../i18n';
+import { cn, formatNumber } from '../../lib/format';
 import { opsPaths } from '../../lib/paths';
 import { financePath } from '../../../finance/paths';
 import type { FinanceReviewCounts } from '../../../finance/api/queries';
@@ -50,12 +52,12 @@ function dateHoursAgo(hours: number): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-export function opsAttentionDefs(slaHours: number): AttentionDef[] {
+export function opsAttentionDefs(slaHours: number, t: TFunction): AttentionDef[] {
   return [
     {
       key: 'emergency_cases',
-      label: 'Emergency screenings',
-      description: 'Open cases the AI screening flagged as a possible emergency',
+      label: t('dashboard.attention.emergency_cases.label'),
+      description: t('dashboard.attention.emergency_cases.description'),
       tone: 'danger',
       icon: Siren,
       to: `${opsPaths.cases}?urgency=emergency&status=${OPEN_CASE_STATUSES}&sort=created_at`,
@@ -64,8 +66,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'open_sos',
-      label: 'Open SOS alerts',
-      description: 'Patients in India asking for urgent help',
+      label: t('dashboard.attention.open_sos.label'),
+      description: t('dashboard.attention.open_sos.description'),
       tone: 'danger',
       icon: LifeBuoy,
       to: `${opsPaths.travel}?tab=sos&status=open`,
@@ -74,8 +76,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'quotes_overdue',
-      label: 'Quotes past SLA',
-      description: `Enquiries waiting more than ${slaHours} h for the hospital's quote`,
+      label: t('dashboard.attention.quotes_overdue.label'),
+      description: t('dashboard.attention.quotes_overdue.description', { hours: slaHours }),
       tone: 'warning',
       icon: FileClock,
       to: `${opsPaths.cases}?status=enquiry&date_field=created&to=${dateHoursAgo(slaHours)}&sort=created_at`,
@@ -84,8 +86,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'unassigned_enquiries',
-      label: 'Unassigned enquiries',
-      description: 'New enquiries without a coordinator',
+      label: t('dashboard.attention.unassigned_enquiries.label'),
+      description: t('dashboard.attention.unassigned_enquiries.description'),
       tone: 'warning',
       icon: UserPlus,
       to: `${opsPaths.cases}?status=enquiry&coordinator=unassigned&sort=created_at`,
@@ -94,8 +96,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'quotes_awaiting_patient',
-      label: 'Awaiting patient decision',
-      description: 'Quotes sent that the patient has not accepted yet',
+      label: t('dashboard.attention.quotes_awaiting_patient.label'),
+      description: t('dashboard.attention.quotes_awaiting_patient.description'),
       tone: 'info',
       icon: Hourglass,
       to: `${opsPaths.cases}?status=quoted&sort=updated_at`,
@@ -104,8 +106,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'hospitals_pending',
-      label: 'Hospitals to review',
-      description: 'Hospital profiles submitted for approval',
+      label: t('dashboard.attention.hospitals_pending.label'),
+      description: t('dashboard.attention.hospitals_pending.description'),
       tone: 'accent',
       icon: Building2,
       to: `${opsPaths.hospitals}?status=pending_review`,
@@ -114,8 +116,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'agents_pending',
-      label: 'Agents to approve',
-      description: 'Agent sign-ups waiting for approval',
+      label: t('dashboard.attention.agents_pending.label'),
+      description: t('dashboard.attention.agents_pending.description'),
       tone: 'accent',
       icon: BadgeCheck,
       to: `${opsPaths.agents}?status=pending`,
@@ -124,8 +126,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'agent_kyc_pending',
-      label: 'Agent KYC to verify',
-      description: 'Agents whose KYC documents await verification',
+      label: t('dashboard.attention.agent_kyc_pending.label'),
+      description: t('dashboard.attention.agent_kyc_pending.description'),
       tone: 'accent',
       icon: ClipboardCheck,
       to: `${opsPaths.agents}?kyc_status=pending`,
@@ -134,8 +136,8 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
     },
     {
       key: 'payout_accounts_unverified',
-      label: 'Payout accounts to verify',
-      description: 'Bank accounts that need a second finance user to verify',
+      label: t('dashboard.attention.payout_accounts_unverified.label'),
+      description: t('dashboard.attention.payout_accounts_unverified.description'),
       tone: 'warning',
       icon: Landmark,
       to: `${financePath('payout-accounts')}?verified=false`,
@@ -146,15 +148,15 @@ export function opsAttentionDefs(slaHours: number): AttentionDef[] {
 }
 
 /** Finance maker-checker queues (counts from useFinanceReviewCounts; no age available). */
-export const FINANCE_ATTENTION: (Omit<AttentionDef, 'key'> & { key: keyof FinanceReviewCounts })[] = [
-  { key: 'markPaidApprovals', label: 'Bank transfers to approve', description: 'Mark-paid requests awaiting a second finance user', tone: 'warning', icon: ReceiptText, to: `${financePath('reconciliation')}?status=approval`, audience: 'finance' },
-  { key: 'refunds', label: 'Refunds to approve', description: 'Refund requests awaiting approval', tone: 'warning', icon: RotateCcw, to: `${financePath('refunds')}?status=requested`, audience: 'finance' },
-  { key: 'batches', label: 'Settlement batches to approve', description: 'Batches awaiting a second approver', tone: 'warning', icon: Wallet, to: `${financePath('settlements/batches')}?status=pending_approval`, audience: 'finance' },
-  { key: 'payoutConfirmations', label: 'Payouts to confirm', description: 'Payouts with a UTR awaiting a second finance user', tone: 'warning', icon: CheckCircle2, to: `${financePath('settlements/payouts')}?queue=confirm`, audience: 'finance' },
-  { key: 'payoutReversals', label: 'Payout failures to approve', description: 'Failure / reversal requests awaiting a second approver', tone: 'warning', icon: RotateCcw, to: `${financePath('settlements/payouts')}?queue=reversal`, audience: 'finance' },
-  { key: 'payoutReconciliations', label: 'Payouts to reconcile', description: 'Gateway outcome unknown - check the bank statement', tone: 'danger', icon: Scale, to: `${financePath('settlements/payouts')}?queue=reconcile`, audience: 'finance' },
-  { key: 'amountReviews', label: 'Amount differences', description: 'Orders paid with a different amount than requested', tone: 'warning', icon: Scale, to: `${financePath('orders')}?review=amount`, audience: 'finance' },
-  { key: 'adjustments', label: 'Ledger adjustments', description: 'Manual adjustments awaiting approval', tone: 'warning', icon: ClipboardCheck, to: `${financePath('ledger/adjustments')}?status=pending_approval`, audience: 'finance' },
+export const financeAttentionDefs = (t: TFunction): (Omit<AttentionDef, 'key'> & { key: keyof FinanceReviewCounts })[] => [
+  { key: 'markPaidApprovals', label: t('dashboard.attention.markPaidApprovals.label'), description: t('dashboard.attention.markPaidApprovals.description'), tone: 'warning', icon: ReceiptText, to: `${financePath('reconciliation')}?status=approval`, audience: 'finance' },
+  { key: 'refunds', label: t('dashboard.attention.refunds.label'), description: t('dashboard.attention.refunds.description'), tone: 'warning', icon: RotateCcw, to: `${financePath('refunds')}?status=requested`, audience: 'finance' },
+  { key: 'batches', label: t('dashboard.attention.batches.label'), description: t('dashboard.attention.batches.description'), tone: 'warning', icon: Wallet, to: `${financePath('settlements/batches')}?status=pending_approval`, audience: 'finance' },
+  { key: 'payoutConfirmations', label: t('dashboard.attention.payoutConfirmations.label'), description: t('dashboard.attention.payoutConfirmations.description'), tone: 'warning', icon: CheckCircle2, to: `${financePath('settlements/payouts')}?queue=confirm`, audience: 'finance' },
+  { key: 'payoutReversals', label: t('dashboard.attention.payoutReversals.label'), description: t('dashboard.attention.payoutReversals.description'), tone: 'warning', icon: RotateCcw, to: `${financePath('settlements/payouts')}?queue=reversal`, audience: 'finance' },
+  { key: 'payoutReconciliations', label: t('dashboard.attention.payoutReconciliations.label'), description: t('dashboard.attention.payoutReconciliations.description'), tone: 'danger', icon: Scale, to: `${financePath('settlements/payouts')}?queue=reconcile`, audience: 'finance' },
+  { key: 'amountReviews', label: t('dashboard.attention.amountReviews.label'), description: t('dashboard.attention.amountReviews.description'), tone: 'warning', icon: Scale, to: `${financePath('orders')}?review=amount`, audience: 'finance' },
+  { key: 'adjustments', label: t('dashboard.attention.adjustments.label'), description: t('dashboard.attention.adjustments.description'), tone: 'warning', icon: ClipboardCheck, to: `${financePath('ledger/adjustments')}?status=pending_approval`, audience: 'finance' },
 ];
 
 /** Which queues each role works on (super_admin sees everything). */
@@ -187,6 +189,7 @@ interface QueueItem {
 }
 
 function QueueCard({ item }: { item: QueueItem }) {
+  const { t } = useAppTranslation();
   const { def, count, oldestAt } = item;
   const Icon = def.icon;
   const age = ageText(oldestAt);
@@ -195,7 +198,11 @@ function QueueCard({ item }: { item: QueueItem }) {
   return (
     <Link
       to={def.to}
-      aria-label={`${def.label}: ${count ?? 0}${age ? `, oldest waiting ${age}` : ''}`}
+      aria-label={
+        age
+          ? t('dashboard.attention.cardLabelAge', { label: def.label, value: formatNumber(count ?? 0), age })
+          : t('dashboard.attention.cardLabel', { label: def.label, value: formatNumber(count ?? 0) })
+      }
       className={cn(
         'group flex min-w-0 flex-col rounded-xl border border-border bg-surface p-3 shadow-card transition-colors sm:p-4',
         'hover:border-border-strong hover:bg-surface-2/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
@@ -206,9 +213,12 @@ function QueueCard({ item }: { item: QueueItem }) {
         <span className={cn('inline-flex size-9 items-center justify-center rounded-lg', TONE[def.tone].tile)}>
           <Icon className="size-[18px]" aria-hidden />
         </span>
-        <ArrowRight className="size-4 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-fg" aria-hidden />
+        <ArrowRight
+          className="size-4 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-fg rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
+          aria-hidden
+        />
       </div>
-      <p className="mt-3 text-2xl font-semibold leading-none text-fg sm:text-3xl">{count ?? '—'}</p>
+      <p className="mt-3 text-2xl font-semibold leading-none text-fg sm:text-3xl">{count === null ? '—' : formatNumber(count)}</p>
       <p className="mt-2 text-sm font-medium text-fg">{def.label}</p>
       <p className="mt-0.5 line-clamp-2 hidden text-xs text-muted sm:block">{def.description}</p>
       {age && (
@@ -220,8 +230,8 @@ function QueueCard({ item }: { item: QueueItem }) {
           )}
         >
           <Clock className="size-3" aria-hidden />
-          <span className="hidden sm:inline">Oldest waiting</span>
-          <span className="sm:hidden">Oldest</span> {age}
+          <span className="hidden sm:inline">{t('dashboard.attention.oldestWaiting')}</span>
+          <span className="sm:hidden">{t('dashboard.attention.oldest')}</span> {age}
         </p>
         </div>
       )}
@@ -240,14 +250,15 @@ export function AttentionQueue({
   role: UserRole | null | undefined;
   finance: FinanceReviewCounts | undefined;
 }) {
+  const { t } = useAppTranslation();
   const audiences = audiencesFor(role);
   const byKey = new Map((overview?.attention ?? []).map((a) => [a.key, a]));
   const items: QueueItem[] = [
-    ...opsAttentionDefs(overview?.quote_sla_hours ?? 48)
+    ...opsAttentionDefs(overview?.quote_sla_hours ?? 48, t)
       .filter((d) => audiences.includes(d.audience))
       .map((def) => ({ def, count: byKey.get(def.key)?.count ?? (overview ? 0 : null), oldestAt: byKey.get(def.key)?.oldest_at ?? null })),
     ...(audiences.includes('finance')
-      ? FINANCE_ATTENTION.map((def) => ({ def, count: finance ? finance[def.key] : null, oldestAt: null }))
+      ? financeAttentionDefs(t).map((def) => ({ def, count: finance ? finance[def.key] : null, oldestAt: null }))
       : []),
   ];
 
@@ -278,16 +289,16 @@ export function AttentionQueue({
             <CheckCircle2 className="size-5" aria-hidden />
           </span>
           <div>
-            <p className="text-sm font-semibold text-fg">You are all caught up</p>
-            <p className="text-xs text-muted">Nothing in your queues needs action right now.</p>
+            <p className="text-sm font-semibold text-fg">{t('dashboard.attention.caughtUp')}</p>
+            <p className="text-xs text-muted">{t('dashboard.attention.caughtUpHint')}</p>
           </div>
         </div>
       )}
       {clear.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
-          <span className="mr-1 inline-flex items-center gap-1 font-medium text-muted">
+          <span className="me-1 inline-flex items-center gap-1 font-medium text-muted">
             <CheckCircle2 className="size-3.5 text-success-ink" aria-hidden />
-            All clear:
+            {t('dashboard.attention.allClear')}
           </span>
           {clear.map((i) => (
             <Link

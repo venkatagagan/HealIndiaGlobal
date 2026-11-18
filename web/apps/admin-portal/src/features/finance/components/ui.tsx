@@ -16,7 +16,8 @@ import {
 import { createPortal } from 'react-dom';
 import { AlertTriangle, ChevronLeft, ChevronRight, Inbox, Loader2, RefreshCw, X } from 'lucide-react';
 import { errorMessage } from '@hig/shared/api';
-import { cn } from '../lib/shared';
+import { cn, formatNumber } from '../lib/shared';
+import { useFinanceTranslation } from '../lib/i18n';
 
 // ---------------------------------------------------------------------------------------------------------
 // Buttons
@@ -206,7 +207,7 @@ export function Textarea({ className, ...rest }: TextareaHTMLAttributes<HTMLText
 
 export function Select({ className, children, ...rest }: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className={cn(CONTROL, 'h-10 pr-8', className)} {...rest}>
+    <select className={cn(CONTROL, 'h-10 pe-8', className)} {...rest}>
       {children}
     </select>
   );
@@ -230,7 +231,7 @@ export function Field({ label, hint, error, required, className, children }: {
     <div className={cn('space-y-1', className)}>
       <label htmlFor={id} className="block text-sm font-medium text-fg">
         {label}
-        {required && <span className="ml-0.5 text-danger" aria-hidden>*</span>}
+        {required && <span className="ms-0.5 text-danger" aria-hidden>*</span>}
       </label>
       {children({ id, 'aria-describedby': describedBy, 'aria-invalid': error ? true : undefined })}
       {error ? (
@@ -275,6 +276,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
   footer?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
+  const { t } = useFinanceTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const onCloseRef = useRef(onClose);
@@ -353,7 +355,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
             data-modal-close="1"
             onClick={onClose}
             className="rounded-lg p-1 text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="Close dialog"
+            aria-label={t('ui.closeDialog')}
           >
             <X className="size-5" aria-hidden />
           </button>
@@ -373,23 +375,25 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 // ---------------------------------------------------------------------------------------------------------
 // States
 // ---------------------------------------------------------------------------------------------------------
-export function LoadingState({ label = 'Loading…', className }: { label?: string; className?: string }) {
+export function LoadingState({ label, className }: { label?: string; className?: string }) {
+  const { t } = useFinanceTranslation();
   return (
     <div role="status" className={cn('flex items-center justify-center gap-2 p-10 text-sm text-muted', className)}>
       <Loader2 className="size-5 animate-spin" aria-hidden />
-      {label}
+      {label ?? t('ui.loading')}
     </div>
   );
 }
 
 export function ErrorState({ error, onRetry, className }: { error: unknown; onRetry?: () => void; className?: string }) {
+  const { t } = useFinanceTranslation();
   return (
     <div role="alert" className={cn('flex flex-col items-center gap-3 p-10 text-center', className)}>
       <AlertTriangle className="size-8 text-danger" aria-hidden />
       <p className="max-w-md text-sm text-muted">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="secondary" size="sm" onClick={onRetry} icon={<RefreshCw className="size-3.5" aria-hidden />}>
-          Try again
+          {t('ui.tryAgain')}
         </Button>
       )}
     </div>
@@ -460,11 +464,12 @@ export function DataTable<T>({
   footer?: ReactNode;
   rowClassName?: (row: T) => string | undefined;
 }) {
+  const { t } = useFinanceTranslation();
   if (error && !rows?.length) return <ErrorState error={error} onRetry={onRetry} />;
   if (loading && !rows) return <LoadingState />;
-  if (!rows || rows.length === 0) return <>{empty ?? <EmptyState title="Nothing to show" />}</>;
+  if (!rows || rows.length === 0) return <>{empty ?? <EmptyState title={t('ui.nothingToShow')} />}</>;
   const align = (a?: 'left' | 'right' | 'center') =>
-    a === 'right' ? 'text-right' : a === 'center' ? 'text-center' : 'text-left';
+    a === 'right' ? 'text-end' : a === 'center' ? 'text-center' : 'text-start';
   return (
     <div className={cn('overflow-x-auto', loading && 'opacity-60 transition-opacity')}>
       <table className="min-w-full divide-y divide-border text-sm">
@@ -525,14 +530,15 @@ export function Pagination({ page, pages, total, onPage }: {
   total: number;
   onPage: (page: number) => void;
 }) {
+  const { t } = useFinanceTranslation();
   if (total === 0) return null;
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={t('ui.pagination')}
       className="flex items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm text-muted"
     >
       <span>
-        Page {page} of {Math.max(pages, 1)} · {total.toLocaleString()} total
+        {t('ui.pageOf', { page: formatNumber(page), pages: formatNumber(Math.max(pages, 1)), total: formatNumber(total) })}
       </span>
       <div className="flex gap-1">
         <Button
@@ -540,16 +546,16 @@ export function Pagination({ page, pages, total, onPage }: {
           size="sm"
           disabled={page <= 1}
           onClick={() => onPage(page - 1)}
-          aria-label="Previous page"
-          icon={<ChevronLeft className="size-4" aria-hidden />}
+          aria-label={t('ui.previousPage')}
+          icon={<ChevronLeft className="size-4 rtl:-scale-x-100" aria-hidden />}
         />
         <Button
           variant="secondary"
           size="sm"
           disabled={page >= pages}
           onClick={() => onPage(page + 1)}
-          aria-label="Next page"
-          icon={<ChevronRight className="size-4" aria-hidden />}
+          aria-label={t('ui.nextPage')}
+          icon={<ChevronRight className="size-4 rtl:-scale-x-100" aria-hidden />}
         />
       </div>
     </nav>

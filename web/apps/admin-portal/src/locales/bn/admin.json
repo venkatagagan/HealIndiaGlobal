@@ -1,0 +1,1992 @@
+{
+  "cases": {
+    "list": {
+      "title": "কেস",
+      "description": "সব হাসপাতাল ও এজেন্টের প্রতিটি রোগীর কেস — অগ্রগতি দেখুন, কোঅর্ডিনেটর নিযুক্ত করুন এবং আটকে থাকা কাজে ব্যবস্থা নিন।",
+      "age": "{{age}} বছর",
+      "via": "{{agency}}-এর মাধ্যমে",
+      "opened": "খোলা হয়েছে {{date}}",
+      "mobileOpened": "{{number}} · খোলা হয়েছে {{date}}",
+      "noScreening": "কোনো স্ক্রিনিং নেই",
+      "unassigned": "নিযুক্ত নয়",
+      "all": "সব",
+      "showAll": "সব কেস দেখান",
+      "needsCoordinator": "কোঅর্ডিনেটর প্রয়োজন",
+      "rowLabel": "কেস {{number}} খুলুন",
+      "exportSelected": "নির্বাচিতগুলো এক্সপোর্ট করুন",
+      "emptyTitle": "এখনও কোনো কেস নেই",
+      "emptyDescription": "রোগী বা এজেন্ট কোনো হাসপাতালে অনুসন্ধান পাঠালে কেস এখানে দেখা যায়।",
+      "caseStatus": "কেসের স্ট্যাটাস",
+      "searchPlaceholder": "কেস নম্বর বা রোগী…",
+      "columns": {
+        "case": "কেস",
+        "patient": "রোগী",
+        "hospital": "হাসপাতাল",
+        "status": "স্ট্যাটাস",
+        "urgency": "জরুরিতা",
+        "latestQuote": "সর্বশেষ কোটেশন",
+        "coordinator": "কোঅর্ডিনেটর",
+        "updated": "হালনাগাদ",
+        "created": "তৈরি"
+      },
+      "filters": {
+        "agent": "এজেন্ট",
+        "date": "তারিখ"
+      }
+    }
+  },
+  "caseDetail": {
+    "documentTitle": "কেস {{number}}",
+    "eyebrow": "কেস",
+    "back": "কেস",
+    "loading": "কেস লোড হচ্ছে…",
+    "loadingShort": "লোড হচ্ছে…",
+    "cancel": "বাতিল",
+    "statusHistory": "স্ট্যাটাসের ইতিহাস",
+    "documentsDescription": "এই কেসে শেয়ার করা মেডিকেল রিপোর্ট, পরিচয়পত্র ও ইনভয়েস",
+    "hero": {
+      "opened": "খোলা হয়েছে {{date}}",
+      "updated": "হালনাগাদ {{when}}",
+      "messages": "বার্তা",
+      "changeStatus": "স্ট্যাটাস বদলান"
+    },
+    "emergency": {
+      "title": "স্ক্রিনিংয়ে সম্ভাব্য জরুরি অবস্থা হিসেবে চিহ্নিত",
+      "contact": "রোগীর সঙ্গে যোগাযোগ করুন",
+      "acknowledged": "রোগী {{date}} তারিখে জরুরি নির্দেশনা পড়ে নিশ্চিত করেছেন।",
+      "notAcknowledged": "রোগী এখনও জরুরি নির্দেশনা নিশ্চিত করেননি - তিনি নিশ্চিত না করা পর্যন্ত কোটেশন গ্রহণ ও বুকিং বন্ধ থাকবে।",
+      "redFlags": "সতর্ক সংকেত: {{flags}}।"
+    },
+    "tabs": {
+      "label": "কেসের অংশ",
+      "overview": "সারসংক্ষেপ",
+      "screening": "স্ক্রিনিং",
+      "quotes": "কোটেশন",
+      "booking": "বুকিং ও পেমেন্ট",
+      "travel": "ভ্রমণ",
+      "documents": "নথি",
+      "activity": "কার্যকলাপ"
+    },
+    "facts": {
+      "title": "মূল তথ্য",
+      "age_one": "{{count}} বছর",
+      "age_other": "{{count}} বছর",
+      "patient": "রোগী",
+      "hospital": "হাসপাতাল",
+      "city": "শহর",
+      "doctor": "ডাক্তার",
+      "treatment": "চিকিৎসা",
+      "source": "উৎস",
+      "viaAgent": "এজেন্ট · {{agency}}",
+      "direct": "সরাসরি",
+      "latestQuote": "সর্বশেষ কোটেশন",
+      "payment": "পেমেন্ট"
+    },
+    "next": {
+      "assign": "কোঅর্ডিনেটর নিযুক্ত করুন",
+      "assignHint": "এই কেসে এখনও কোনো কোঅর্ডিনেটর নেই - একজন নিযুক্ত করুন, যাতে রোগীর একজনই যোগাযোগকারী থাকেন।",
+      "chaseQuote": "হাসপাতালের কাছে কোটেশন চেয়ে তাগাদা দিন",
+      "chaseQuoteHint": "হাসপাতালের কোটেশনের অপেক্ষায়।",
+      "followUp": "রোগীর সঙ্গে ফলো-আপ করুন",
+      "followUpHint": "কোটেশন পাঠানো হয়েছে - রোগীকে এটি গ্রহণ বা প্রত্যাখ্যান করতে হবে।",
+      "checkPayment": "পেমেন্ট যাচাই করুন",
+      "checkPaymentHint": "কোটেশন গৃহীত - অগ্রিম পরিশোধ হলেই বুকিং নিশ্চিত হবে।",
+      "markAdmitted": "ভর্তি হিসেবে চিহ্নিত করুন",
+      "admissionPlanned": "ভর্তির পরিকল্পিত তারিখ {{date}}।",
+      "markCompleted": "সম্পন্ন হিসেবে চিহ্নিত করুন",
+      "markCompletedHint": "রোগী ছাড়া পাওয়ার পর কেসটি সম্পন্ন করুন।"
+    },
+    "overview": {
+      "quotesSent": "পাঠানো কোটেশন",
+      "latestWhen": "সর্বশেষ {{when}}",
+      "noneYet": "এখনও নেই",
+      "waitingHospital": "হাসপাতালের অপেক্ষায়",
+      "admission": "ভর্তি",
+      "notBooked": "এখনও বুক করা হয়নি",
+      "summary": "কেসের সারসংক্ষেপ",
+      "patient": "রোগী",
+      "nationality": "জাতীয়তা",
+      "specialty": "বিশেষত্ব",
+      "procedure": "প্রক্রিয়া",
+      "opened": "খোলা হয়েছে",
+      "patientNotes": "রোগীর নোট",
+      "medicalSummary": "মেডিকেল সারসংক্ষেপ",
+      "aiGlance": "এক নজরে AI স্ক্রিনিং",
+      "fullScreening": "পূর্ণ স্ক্রিনিং"
+    },
+    "timeline": {
+      "opened": "কেস খোলা হয়েছে"
+    },
+    "screening": {
+      "symptoms": "রোগীর জানানো উপসর্গ",
+      "bodyAreas": "শরীরের অংশ",
+      "painIntensity": "ব্যথার তীব্রতা",
+      "painValue": "{{value}} / 10",
+      "duration": "স্থায়িত্ব",
+      "durationUnits": {
+        "days_one": "{{count}} দিন",
+        "days_other": "{{count}} দিন",
+        "weeks_one": "{{count}} সপ্তাহ",
+        "weeks_other": "{{count}} সপ্তাহ",
+        "months_one": "{{count}} মাস",
+        "months_other": "{{count}} মাস",
+        "years_one": "{{count}} বছর",
+        "years_other": "{{count}} বছর"
+      },
+      "previousTreatment": "আগের চিকিৎসা",
+      "none": "নেই",
+      "homeCountry": "নিজের দেশ",
+      "submitted": "জমা দেওয়া হয়েছে",
+      "notes": "নোট",
+      "aiTriage": "AI ট্রায়াজ",
+      "rulesEngine": "নিয়মভিত্তিক ইঞ্জিন",
+      "suggestedSpecialties": "প্রস্তাবিত বিশেষত্ব",
+      "possibleConditions": "সম্ভাব্য অবস্থা",
+      "recommendedTests": "প্রস্তাবিত পরীক্ষা",
+      "redFlags": "সতর্ক সংকেত",
+      "noAiResult": "কোনো AI ফলাফল নেই",
+      "notProcessed": "স্ক্রিনিং এখনও প্রক্রিয়া করা হয়নি।"
+    },
+    "quotes": {
+      "emptyTitle": "এখনও কোনো কোটেশন নেই",
+      "emptyDescription": "হাসপাতাল এই কেসের জন্য এখনও কোটেশন পাঠায়নি।",
+      "quoteFrom": "{{date}} তারিখের কোটেশন",
+      "sent": "পাঠানো হয়েছে {{date}}",
+      "sentBy": "{{name}} পাঠিয়েছেন {{date}}",
+      "treatmentPlan": "চিকিৎসা পরিকল্পনা",
+      "lineItems": "কোটেশনের আইটেম",
+      "noLineItems": "কোনো আইটেম নেই",
+      "estimatedStay_one": "আনুমানিক অবস্থান: <0>{{count}} দিন</0>",
+      "estimatedStay_other": "আনুমানিক অবস্থান: <0>{{count}} দিন</0>",
+      "estimatedStayUnknown": "আনুমানিক অবস্থান: <0>— দিন</0>",
+      "validUntil": "মেয়াদ: <0>{{date}}</0> পর্যন্ত",
+      "accepted": "গৃহীত: <0>{{date}}</0>",
+      "rejected": "প্রত্যাখ্যাত: {{reason}}",
+      "columns": {
+        "category": "বিভাগ",
+        "description": "বিবরণ",
+        "amount": "পরিমাণ"
+      }
+    },
+    "payment": {
+      "ofTotal": "{{total}}-এর মধ্যে",
+      "balanceDue": "বাকি <0>{{amount}}</0>",
+      "fullyPaid": "সম্পূর্ণ পরিশোধিত",
+      "refunded": "ফেরত {{amount}}"
+    },
+    "orders": {
+      "title": "পেমেন্ট অর্ডার",
+      "description": "এই বুকিংয়ের জন্য তৈরি অগ্রিম, বাকি ও কিস্তি",
+      "rowLabel": "অর্ডার {{number}} খুলুন",
+      "emptyTitle": "এখনও কোনো পেমেন্ট অর্ডার নেই",
+      "columns": {
+        "order": "অর্ডার",
+        "status": "স্ট্যাটাস",
+        "amount": "পরিমাণ",
+        "created": "তৈরি",
+        "paid": "পরিশোধিত",
+        "open": "খুলুন"
+      }
+    },
+    "booking": {
+      "title": "বুকিং",
+      "emptyDescription": "রোগী কোটেশন গ্রহণ করে অগ্রিম পরিশোধ করলে বুকিং তৈরি হয়।",
+      "manage": "বুকিং পরিচালনা করুন",
+      "discharge": "ছাড়পত্র",
+      "paymentOption": "পেমেন্টের ধরন",
+      "package": "প্যাকেজ",
+      "subtotal": "উপমোট",
+      "serviceFeeTax": "সার্ভিস ফি + কর",
+      "discount": "ছাড়",
+      "total": "মোট",
+      "cancelled": "বাতিল: {{reason}}"
+    },
+    "travel": {
+      "visa": "ভিসা",
+      "visaRequests": "ভিসার অনুরোধ",
+      "noVisa": "কোনো ভিসার অনুরোধ নেই",
+      "flights": "ফ্লাইট ও ট্রান্সফার",
+      "travelBookings": "ভ্রমণ বুকিং",
+      "noFlights": "কোনো ফ্লাইট বা ট্রান্সফার নেই",
+      "accommodation": "থাকার ব্যবস্থা",
+      "accommodationBookings": "থাকার বুকিং",
+      "noAccommodation": "কোনো থাকার ব্যবস্থা বুক করা হয়নি",
+      "pnr": "PNR {{pnr}}",
+      "nights_one": "{{count}} রাত",
+      "nights_other": "{{count}} রাত",
+      "guests_one": "{{count}} জন অতিথি",
+      "guests_other": "{{count}} জন অতিথি",
+      "deskLink": "ট্রাভেল ডেস্ক",
+      "columns": {
+        "visaType": "ভিসার ধরন",
+        "status": "স্ট্যাটাস",
+        "reference": "রেফারেন্স",
+        "requested": "অনুরোধের তারিখ",
+        "type": "ধরন",
+        "route": "রুট",
+        "departs": "প্রস্থান",
+        "stay": "থাকা",
+        "dates": "তারিখ",
+        "total": "মোট"
+      }
+    },
+    "audit": {
+      "title": "অডিট ট্রেইল",
+      "description": "এই কেসে রেকর্ড করা প্রতিটি পরিবর্তন",
+      "openInLog": "অডিট লগে খুলুন",
+      "emptyTitle": "কোনো অডিট এন্ট্রি নেই",
+      "user": "ব্যবহারকারী",
+      "system": "সিস্টেম",
+      "columns": {
+        "when": "কখন",
+        "action": "কাজ",
+        "by": "কে",
+        "change": "পরিবর্তন"
+      }
+    },
+    "coordinator": {
+      "title": "কোঅর্ডিনেটর",
+      "assigned": "কোঅর্ডিনেটর নিযুক্ত হয়েছে",
+      "change": "বদলান",
+      "assign": "নিযুক্ত করুন",
+      "owns": "এই কেসের দায়িত্বে",
+      "none": "কোনো কোঅর্ডিনেটর নিযুক্ত নেই",
+      "field": "সাপোর্ট কোঅর্ডিনেটর",
+      "placeholder": "একজন কোঅর্ডিনেটর বেছে নিন"
+    },
+    "status": {
+      "moved": "কেসটি {{status}} স্ট্যাটাসে নেওয়া হয়েছে",
+      "markTitle": "কেসটি {{status}} হিসেবে চিহ্নিত করুন",
+      "changeTitle": "কেসের স্ট্যাটাস বদলান",
+      "moveTo": "{{status}}-এ নিন",
+      "update": "স্ট্যাটাস হালনাগাদ করুন",
+      "current": "বর্তমান স্ট্যাটাস:",
+      "newStatus": "নতুন স্ট্যাটাস",
+      "note": "নোট",
+      "noteRequiredHint": "কারণ লিখুন; রোগী ও হাসপাতালকে জানানো হবে।",
+      "noteOptionalHint": "ঐচ্ছিক, স্ট্যাটাসের ইতিহাসে দেখানো হয়।",
+      "cancelWarning": "কেসে পরিশোধিত বুকিং থাকলে বুকিং পাতা থেকে বুকিংটি বাতিল করুন, যাতে রিফান্ড নীতি প্রয়োগ হয়।"
+    }
+  },
+  "travel": {
+    "common": {
+      "cancel": "বাতিল",
+      "save": "সংরক্ষণ করুন",
+      "loading": "লোড হচ্ছে…"
+    },
+    "desk": {
+      "title": "ট্রাভেল ডেস্ক",
+      "description": "SOS সতর্কতা, মেডিকেল ভিসা, ফ্লাইট, বিমানবন্দর ট্রান্সফার, থাকার ব্যবস্থা ও দেশের ভেতরের সেবা। রোগীর অনুরোধ \"অনুরোধ করা হয়েছে\" স্ট্যাটাস দিয়ে শুরু হয়।",
+      "readOnly": "শুধু দেখার জন্য: ভ্রমণ সংক্রান্ত হালনাগাদ অপারেশনস ও সাপোর্ট কর্মীরা করেন।",
+      "tabs": {
+        "sos": "SOS সতর্কতা",
+        "visa": "ভিসা",
+        "travel": "ফ্লাইট ও ট্রান্সফার",
+        "accommodation": "থাকার ব্যবস্থা",
+        "services": "দোভাষী ও সেবা"
+      }
+    },
+    "list": {
+      "all": "সব",
+      "statusTabs": "{{caption}} স্ট্যাটাস",
+      "searchPlaceholder": "রোগীর নাম…",
+      "status": "স্ট্যাটাস",
+      "caseNumber": "কেস {{number}}",
+      "openCase": "কেস খুলুন"
+    },
+    "sos": {
+      "caption": "SOS সতর্কতা",
+      "resolvedToast": "SOS সতর্কতা সমাধান হয়েছে",
+      "acknowledgedToast": "SOS সতর্কতা গ্রহণ করা হয়েছে",
+      "openIcon": "খোলা",
+      "patientFallback": "রোগী",
+      "noMessage": "কোনো বার্তা নেই",
+      "by": "{{name}} দ্বারা",
+      "acknowledge": "গ্রহণ করুন",
+      "resolve": "সমাধান করুন",
+      "emptyTitle": "কোনো SOS সতর্কতা নেই",
+      "emptyDescription": "অ্যাপ থেকে রোগীদের পাঠানো জরুরি সতর্কতা এখানে সঙ্গে সঙ্গে দেখা যায়।",
+      "columns": {
+        "raised": "পাঠানো হয়েছে",
+        "patient": "রোগী",
+        "message": "বার্তা",
+        "location": "অবস্থান",
+        "status": "স্ট্যাটাস",
+        "actions": "পদক্ষেপ"
+      }
+    },
+    "visa": {
+      "caption": "ভিসার অনুরোধ",
+      "ref": "রেফ {{reference}}",
+      "attached": "সংযুক্ত",
+      "none": "নেই",
+      "rowLabel": "{{name}}-এর ভিসার অনুরোধ সম্পাদনা করুন",
+      "rowLabelNoName": "রোগীর ভিসার অনুরোধ সম্পাদনা করুন",
+      "emptyTitle": "এখনও কোনো ভিসার অনুরোধ নেই",
+      "emptyDescription": "রোগীরা তাঁদের কেস থেকে মেডিকেল ভিসার সাহায্য চান; অনুরোধগুলো এখানে আসে।",
+      "updated": "ভিসার অনুরোধ হালনাগাদ হয়েছে",
+      "modalTitle": "ভিসার অনুরোধ · {{name}}",
+      "columns": {
+        "patient": "রোগী",
+        "type": "ভিসার ধরন",
+        "status": "স্ট্যাটাস",
+        "letter": "আমন্ত্রণপত্র",
+        "reference": "রেফারেন্স",
+        "applied": "আবেদন করা হয়েছে",
+        "requested": "অনুরোধের তারিখ"
+      },
+      "form": {
+        "status": "স্ট্যাটাস",
+        "reference": "আবেদনের রেফারেন্স",
+        "appliedAt": "আবেদনের সময়",
+        "decidedAt": "সিদ্ধান্তের সময়",
+        "autoHint": "স্ট্যাটাস বদলালে স্বয়ংক্রিয়ভাবে বসে যায়।",
+        "letter": "আমন্ত্রণপত্র",
+        "letterHint": "হাসপাতাল কেসে আমন্ত্রণপত্র আপলোড করে (নথির ধরন: আমন্ত্রণপত্র)।",
+        "letterOption": "{{name}} ({{date}})",
+        "notes": "নোট"
+      }
+    },
+    "bookings": {
+      "unassigned": "নিযুক্ত নয়",
+      "inactive": "(নিষ্ক্রিয়)",
+      "modalTitle": "{{kind}} · {{name}}",
+      "columns": {
+        "patient": "রোগী",
+        "type": "ধরন",
+        "route": "রুট",
+        "departs": "প্রস্থান",
+        "pax": "যাত্রী",
+        "price": "মূল্য",
+        "status": "স্ট্যাটাস",
+        "stay": "থাকা",
+        "dates": "তারিখ",
+        "guests": "অতিথি",
+        "total": "মোট",
+        "service": "সেবা",
+        "provider": "সেবাদাতা",
+        "when": "কখন"
+      },
+      "errors": {
+        "price": "সঠিক মূল্য লিখুন।",
+        "passengers": "যাত্রীর সংখ্যা পূর্ণসংখ্যা হতে হবে।",
+        "nightlyRate": "প্রতি রাতের সঠিক ভাড়া লিখুন।",
+        "checkOut": "চেক-আউট অবশ্যই চেক-ইনের পরে হতে হবে।",
+        "guests": "অতিথি কমপক্ষে 1 জন হতে হবে।"
+      },
+      "form": {
+        "from": "কোথা থেকে",
+        "to": "কোথায়",
+        "arrives": "পৌঁছানো",
+        "carrier": "পরিবহনকারী / বিক্রেতা",
+        "flightNumber": "ফ্লাইট নম্বর",
+        "pnr": "PNR / নিশ্চিতকরণ",
+        "passengers": "যাত্রী",
+        "notes": "নোট",
+        "confirmationCode": "নিশ্চিতকরণ কোড",
+        "checkIn": "চেক-ইন",
+        "checkOut": "চেক-আউট",
+        "nights_one": "{{count}} রাত",
+        "nights_other": "{{count}} রাত",
+        "roomType": "রুমের ধরন",
+        "nightlyRate": "প্রতি রাতের ভাড়া",
+        "totalHint": "সংরক্ষণের সময় হিসাব হয়: প্রতি রাতের ভাড়া x রাতের সংখ্যা।",
+        "starts": "শুরু",
+        "ends": "শেষ"
+      },
+      "flights": {
+        "caption": "ফ্লাইট ও ট্রান্সফার",
+        "dateLabel": "প্রস্থান",
+        "fallbackKind": "ভ্রমণ",
+        "rowLabel": "{{name}}-এর {{kind}} সম্পাদনা করুন",
+        "rowLabelNoName": "রোগীর {{kind}} সম্পাদনা করুন",
+        "emptyTitle": "কোনো ফ্লাইট বা ট্রান্সফারের অনুরোধ নেই",
+        "emptyDescription": "রোগীরা তাঁদের কেস থেকে ফ্লাইট ও বিমানবন্দর ট্রান্সফারের অনুরোধ করেন।",
+        "updated": "ভ্রমণ বুকিং হালনাগাদ হয়েছে"
+      },
+      "stays": {
+        "caption": "থাকার ব্যবস্থা",
+        "modalTitle": "থাকা · {{provider}} · {{name}}",
+        "rowLabel": "{{name}}-এর থাকা সম্পাদনা করুন",
+        "rowLabelNoName": "রোগীর থাকা সম্পাদনা করুন",
+        "emptyTitle": "কোনো থাকার বুকিং নেই",
+        "emptyDescription": "রোগীদের অনুরোধ করা হাসপাতালের কাছাকাছি থাকার ব্যবস্থা এখানে দেখা যায়।",
+        "updated": "থাকার বুকিং হালনাগাদ হয়েছে"
+      },
+      "services": {
+        "caption": "দোভাষী ও সেবা",
+        "dateLabel": "সেবার তারিখ",
+        "rowLabel": "{{name}}-এর জন্য {{kind}} সম্পাদনা করুন",
+        "rowLabelNoName": "রোগীর জন্য {{kind}} সম্পাদনা করুন",
+        "emptyTitle": "কোনো সেবার বুকিং নেই",
+        "emptyDescription": "দোভাষী, গাইড, পরিবহন ও বিমার অনুরোধ এখানে দেখা যায়।",
+        "updated": "সেবার বুকিং হালনাগাদ হয়েছে"
+      }
+    }
+  },
+  "hospitals": {
+    "title": "হাসপাতাল",
+    "description": "অংশীদার হাসপাতাল — KYC পর্যালোচনা করুন, নতুন নিবন্ধন অনুমোদন করুন এবং বাণিজ্যিক শর্তাবলি পরিচালনা করুন।",
+    "featured": "বিশেষ",
+    "openRow": "{{name}} খুলুন",
+    "emptyTitle": "এখনও কোনো হাসপাতাল নেই",
+    "emptyDescription": "হাসপাতাল পোর্টালে নিবন্ধন করার সঙ্গে সঙ্গে হাসপাতালগুলো এখানে দেখা যায়।",
+    "searchPlaceholder": "নাম, শহর বা ইমেল…",
+    "defaultCommission": "ডিফল্ট",
+    "moreSpecialties_one": "আরও +{{count}}টি",
+    "moreSpecialties_other": "আরও +{{count}}টি",
+    "quick": {
+      "label": "হাসপাতালের অবস্থা",
+      "all": "সব",
+      "approvalQueue": "অনুমোদনের অপেক্ষায়",
+      "active": "সক্রিয়",
+      "suspended": "স্থগিত",
+      "rejected": "প্রত্যাখ্যাত",
+      "draft": "খসড়া"
+    },
+    "columns": {
+      "hospital": "হাসপাতাল",
+      "location": "অবস্থান",
+      "status": "অবস্থা",
+      "kyc": "KYC",
+      "accreditations": "স্বীকৃতি",
+      "specialties": "বিশেষত্ব",
+      "rating": "রেটিং",
+      "commission": "কমিশন",
+      "registered": "নিবন্ধিত",
+      "updated": "হালনাগাদ"
+    },
+    "filters": {
+      "state": "রাজ্য",
+      "kyc": "KYC",
+      "featuredOnly": "শুধু বিশেষ",
+      "status": "অবস্থা",
+      "city": "শহর",
+      "specialty": "বিশেষত্ব",
+      "accreditation": "স্বীকৃতি"
+    }
+  },
+  "bookings": {
+    "title": "বুকিং",
+    "description": "নিশ্চিত চিকিৎসা — সব হাসপাতালের পেমেন্টের অগ্রগতি, ভর্তি ও ছাড়পত্র।",
+    "payment": {
+      "paid": "সম্পূর্ণ পরিশোধিত",
+      "partial": "আংশিক পরিশোধিত",
+      "unpaid": "অপরিশোধিত"
+    },
+    "bookedOn": "বুক করা হয়েছে {{date}}",
+    "days_one": "{{count}} দিন",
+    "days_other": "{{count}} দিন",
+    "installments_one": "{{count}}টি কিস্তি",
+    "installments_other": "{{count}}টি কিস্তি",
+    "due": "বকেয়া {{amount}}",
+    "columns": {
+      "booking": "বুকিং",
+      "patient": "রোগী",
+      "hospital": "হাসপাতাল",
+      "admission": "ভর্তি",
+      "status": "অবস্থা",
+      "total": "মোট",
+      "paid": "পরিশোধিত",
+      "booked": "বুক করা হয়েছে"
+    },
+    "quickAll": "সব",
+    "quickLabel": "বুকিংয়ের অবস্থা",
+    "openRow": "বুকিং {{number}} খুলুন",
+    "exportSelected": "নির্বাচিতগুলো এক্সপোর্ট করুন",
+    "emptyTitle": "এখনও কোনো বুকিং নেই",
+    "emptyDescription": "কোনো রোগী কোটেশন গ্রহণ করে ভর্তির তারিখ বুক করলে বুকিং এখানে দেখা যায়।",
+    "searchPlaceholder": "বুকিং নম্বর বা রোগী…",
+    "filters": {
+      "total": "মোট",
+      "status": "অবস্থা",
+      "hospital": "হাসপাতাল",
+      "payment": "পেমেন্ট",
+      "date": "তারিখ",
+      "dateAdmission": "ভর্তি",
+      "dateBooked": "বুকিং"
+    },
+    "track": {
+      "booked": "বুক করা হয়েছে",
+      "depositPaid": "জমা পরিশোধিত",
+      "admitted": "ভর্তি হয়েছেন",
+      "completed": "সম্পন্ন",
+      "cancelled": "বাতিল"
+    },
+    "drawer": {
+      "cancelSuccess": "বুকিং বাতিল হয়েছে; ফেরত নীতি অনুযায়ী ফেরতযোগ্য অর্থ হিসাব করা হয়েছে",
+      "markAdmitted": "ভর্তি হিসেবে চিহ্নিত করুন",
+      "markCompleted": "সম্পন্ন হিসেবে চিহ্নিত করুন",
+      "cancelBooking": "বুকিং বাতিল করুন",
+      "cancelDescription": "ফেরতের অর্থ সার্ভার ফেরত নীতি অনুযায়ী হিসাব করে এবং ফাইন্যান্স বিভাগ তা প্রক্রিয়া করে।",
+      "title": "বুকিং",
+      "titleWithNumber": "বুকিং {{number}}",
+      "insuranceClaim": "বিমা দাবি",
+      "admission": "ভর্তি <0>{{date}}</0>",
+      "admissionWithDuration_one": "ভর্তি <0>{{date}}</0> · {{count}} দিন",
+      "admissionWithDuration_other": "ভর্তি <0>{{date}}</0> · {{count}} দিন",
+      "openCase": "কেস খুলুন →",
+      "cancelledAt": "বাতিল হয়েছে {{date}}",
+      "noReason": "কোনো কারণ লেখা হয়নি।",
+      "payment": "পেমেন্ট",
+      "paymentOptionWithInstallments_one": "{{option}} · {{count}}টি মাসিক কিস্তি",
+      "paymentOptionWithInstallments_other": "{{option}} · {{count}}টি মাসিক কিস্তি",
+      "total": "মোট",
+      "paid": "পরিশোধিত",
+      "paidPct": "মোটের {{pct}}%",
+      "balanceDue": "বকেয়া",
+      "refunded": "ফেরত দেওয়া হয়েছে",
+      "subtotal": "উপমোট",
+      "discount": "ছাড়",
+      "serviceFee": "সার্ভিস ফি",
+      "tax": "কর",
+      "deposit": "জমা",
+      "treatment": "চিকিৎসা",
+      "procedure": "প্রক্রিয়া",
+      "package": "প্যাকেজ",
+      "doctor": "ডাক্তার",
+      "admissionDate": "ভর্তি",
+      "discharge": "ছাড়পত্র",
+      "duration": "সময়কাল",
+      "confirmed": "নিশ্চিত",
+      "admitted": "ভর্তি হয়েছেন",
+      "completed": "সম্পন্ন"
+    },
+    "transition": {
+      "admitSuccess": "রোগীকে ভর্তি হিসেবে চিহ্নিত করা হয়েছে",
+      "completeSuccess": "চিকিৎসা সম্পন্ন হিসেবে চিহ্নিত হয়েছে; সেটেলমেন্ট আইটেম তৈরি করা হবে",
+      "admitTitle": "রোগীকে ভর্তি হিসেবে চিহ্নিত করুন",
+      "completeTitle": "চিকিৎসা সম্পন্ন হিসেবে চিহ্নিত করুন",
+      "cancel": "বাতিল",
+      "confirm": "নিশ্চিত করুন",
+      "admitHelp": "সাধারণত হাসপাতাল এটি করে। হাসপাতাল ফোনে ভর্তি নিশ্চিত করলে এটি ব্যবহার করুন।",
+      "completeHelp": "সম্পন্ন করলে রাজস্ব স্বীকৃত হয় এবং হাসপাতাল/এজেন্টের সেটেলমেন্ট আইটেম তৈরি হয়। এটি পূর্বাবস্থায় ফেরানো যায় না।",
+      "dischargeDate": "ছাড়পত্রের তারিখ",
+      "note": "নোট"
+    },
+    "checklist": {
+      "updated": "চেকলিস্ট হালনাগাদ হয়েছে",
+      "title": "আগমনের আগের চেকলিস্ট",
+      "progress": "{{total}}টির মধ্যে {{done}}টি সম্পন্ন",
+      "empty": "এখনও কোনো চেকলিস্ট নেই।",
+      "statusOf": "{{label}}-এর অবস্থা"
+    },
+    "itinerary": {
+      "added": "ভ্রমণসূচির আইটেম যোগ হয়েছে",
+      "removed": "ভ্রমণসূচির আইটেম সরানো হয়েছে",
+      "when": "কখন",
+      "item": "আইটেম",
+      "status": "অবস্থা",
+      "remove": "সরান",
+      "removeItem": "{{title}} সরান",
+      "title": "ভ্রমণসূচি",
+      "addItem": "আইটেম যোগ করুন",
+      "emptyTitle": "ভ্রমণসূচিতে কোনো আইটেম নেই",
+      "emptyDescription": "এই অবস্থানের জন্য পরিকল্পিত অ্যাপয়েন্টমেন্ট, ট্রান্সফার ও চেক-ইন এখানে দেখা যায়।",
+      "addTitle": "ভ্রমণসূচির আইটেম যোগ করুন",
+      "cancel": "বাতিল",
+      "add": "যোগ করুন",
+      "kind": "ধরন",
+      "startsAt": "শুরু",
+      "titleField": "শিরোনাম",
+      "location": "স্থান",
+      "description": "বিবরণ"
+    }
+  },
+  "hospitalDetail": {
+    "documentTitle": "হাসপাতাল",
+    "loading": "হাসপাতাল লোড হচ্ছে…",
+    "back": "হাসপাতাল",
+    "eyebrow": "হাসপাতাল",
+    "featured": "বিশেষ",
+    "kycBadge": "KYC {{status}}",
+    "rating_one": "★ {{rating}} ({{count}}টি রিভিউ)",
+    "rating_other": "★ {{rating}} ({{count}}টি রিভিউ)",
+    "noReviews": "এখনও কোনো রিভিউ নেই",
+    "reasonShared": "{{status}}: কারণটি হাসপাতালকে জানানো হয়েছে",
+    "waitingReview": "আপনার পর্যালোচনার অপেক্ষায়",
+    "days_one": "{{count}} দিন",
+    "days_other": "{{count}} দিন",
+    "toast": {
+      "approved": "হাসপাতাল অনুমোদিত হয়েছে এবং এখন লাইভ",
+      "rejected": "হাসপাতাল প্রত্যাখ্যাত হয়েছে",
+      "suspended": "হাসপাতাল স্থগিত করা হয়েছে",
+      "registrationVerified": "{{name}}-এর নিবন্ধন যাচাই করা হয়েছে",
+      "verificationRemoved": "{{name}}-এর যাচাই সরানো হয়েছে"
+    },
+    "checklist": {
+      "kycUploaded_one": "KYC নথি আপলোড হয়েছে ({{count}})",
+      "kycUploaded_other": "KYC নথি আপলোড হয়েছে ({{count}})",
+      "notVerifiedYet_one": "{{count}}টি এখনও যাচাই হয়নি",
+      "notVerifiedYet_other": "{{count}}টি এখনও যাচাই হয়নি",
+      "doctorsListed_one": "তালিকাভুক্ত ডাক্তার ({{count}})",
+      "doctorsListed_other": "তালিকাভুক্ত ডাক্তার ({{count}})",
+      "doctorsWithoutRegistration_one": "{{count}} জন ডাক্তারের নিবন্ধন নম্বর নেই",
+      "doctorsWithoutRegistration_other": "{{count}} জন ডাক্তারের নিবন্ধন নম্বর নেই",
+      "registrationsOnFile": "ডাক্তারদের নিবন্ধন নথিভুক্ত আছে",
+      "verifiedPayout": "যাচাইকৃত পেআউট অ্যাকাউন্ট",
+      "noVerifiedPayout": "কোনো যাচাইকৃত পেআউট অ্যাকাউন্ট নেই"
+    },
+    "actions": {
+      "suspend": "স্থগিত করুন",
+      "reject": "প্রত্যাখ্যান করুন",
+      "approveHospital": "হাসপাতাল অনুমোদন করুন",
+      "reactivate": "পুনরায় সক্রিয় করুন"
+    },
+    "track": {
+      "drafted": "প্রোফাইল খসড়া হয়েছে",
+      "submitted": "পর্যালোচনার জন্য জমা দেওয়া হয়েছে",
+      "kycVerified": "KYC যাচাইকৃত",
+      "live": "লাইভ"
+    },
+    "tabs": {
+      "label": "হাসপাতালের বিভাগ",
+      "overview": "সংক্ষিপ্ত বিবরণ",
+      "kyc": "KYC ও নথি",
+      "doctors": "ডাক্তার",
+      "team": "টিম",
+      "cases": "কেস",
+      "activity": "কার্যকলাপ"
+    },
+    "kyc": {
+      "title": "KYC নথি",
+      "description": "হাসপাতালের আপলোড করা নিবন্ধন, লাইসেন্স ও কর সংক্রান্ত নথি",
+      "empty": "হাসপাতাল এখনও কোনো KYC নথি আপলোড করেনি।"
+    },
+    "team": {
+      "title": "টিমের সদস্য",
+      "description": "পোর্টাল অ্যাক্সেসসহ হাসপাতালের কর্মী",
+      "empty": "কোনো টিম সদস্য নেই",
+      "name": "নাম",
+      "role": "ভূমিকা",
+      "status": "অবস্থা",
+      "added": "যোগ করা হয়েছে"
+    },
+    "facts": {
+      "title": "মূল তথ্য",
+      "cases": "কেস",
+      "doctors": "ডাক্তার",
+      "commission": "কমিশন",
+      "platformDefault": "প্ল্যাটফর্মের ডিফল্ট",
+      "settlementCycle": "সেটেলমেন্ট চক্র",
+      "approved": "অনুমোদিত"
+    },
+    "payout": {
+      "title": "পেআউট অ্যাকাউন্ট",
+      "empty": "কোনো পেআউট অ্যাকাউন্ট যোগ করা হয়নি।",
+      "verified": "যাচাইকৃত",
+      "unverified": "অযাচাইকৃত",
+      "primary": "প্রধান"
+    },
+    "approveDialog": {
+      "titleApprove": "হাসপাতাল অনুমোদন করবেন?",
+      "titleReactivate": "হাসপাতাল পুনরায় সক্রিয় করবেন?",
+      "message": "<0>{{name}}</0> সর্বজনীনভাবে তালিকাভুক্ত হবে এবং রোগীদের অনুসন্ধান গ্রহণ করতে পারবে।",
+      "noKycWarning": "সতর্কতা: কোনো KYC নথি আপলোড করা হয়নি।",
+      "missingRegistrationWarning_one": "সতর্কতা: {{count}} জন সক্রিয় ডাক্তারের মেডিকেল নিবন্ধন নম্বর নথিভুক্ত নেই।",
+      "missingRegistrationWarning_other": "সতর্কতা: {{count}} জন সক্রিয় ডাক্তারের মেডিকেল নিবন্ধন নম্বর নথিভুক্ত নেই।",
+      "confirm": "অনুমোদন করুন"
+    },
+    "rejectDialog": {
+      "title": "হাসপাতাল প্রত্যাখ্যান করুন",
+      "description": "কারণটি হাসপাতালকে জানানো হয়, যাতে তারা সংশোধন করে আবার জমা দিতে পারে।",
+      "confirm": "প্রত্যাখ্যান করুন"
+    },
+    "suspendDialog": {
+      "title": "হাসপাতাল স্থগিত করুন",
+      "description": "স্থগিত হাসপাতাল রোগীদের কাছে লুকানো থাকে এবং নতুন অনুসন্ধান গ্রহণ করতে পারে না।",
+      "confirm": "স্থগিত করুন"
+    },
+    "profile": {
+      "title": "প্রোফাইল",
+      "legalName": "আইনি নাম",
+      "gstin": "GSTIN",
+      "pan": "PAN",
+      "address": "ঠিকানা",
+      "phone": "ফোন",
+      "email": "ইমেল",
+      "website": "ওয়েবসাইট",
+      "established": "প্রতিষ্ঠাকাল",
+      "beds": "শয্যা",
+      "airportDistance": "বিমানবন্দর থেকে দূরত্ব",
+      "km": "{{distance}} km",
+      "internationalDesk": "আন্তর্জাতিক ডেস্ক",
+      "yes": "হ্যাঁ",
+      "no": "না",
+      "languages": "ভাষা",
+      "specialties": "বিশেষত্ব",
+      "about": "পরিচিতি"
+    },
+    "doctors": {
+      "title": "ডাক্তার",
+      "doctor": "ডাক্তার",
+      "years_one": "{{count}} বছর",
+      "years_other": "{{count}} বছর",
+      "qualifications": "যোগ্যতা",
+      "registration": "নিবন্ধন",
+      "verification": "যাচাই",
+      "inactive": "নিষ্ক্রিয়",
+      "noRegistration": "নিবন্ধন নেই",
+      "verifiedAt": "যাচাই করা হয়েছে {{date}}",
+      "verified": "যাচাইকৃত",
+      "notVerified": "যাচাই হয়নি",
+      "action": "পদক্ষেপ",
+      "unverify": "যাচাই সরান",
+      "verify": "যাচাই করুন",
+      "verifyHelp": "যাচাই করার আগে প্রতিটি নিবন্ধন <0>NMC ইন্ডিয়ান মেডিকেল রেজিস্টার</0>-এ (বা রাজ্য মেডিকেল কাউন্সিলে) মিলিয়ে দেখুন। এই যাচাইয়ের পরেই রোগীরা ব্যাজটি দেখতে পান।",
+      "empty": "এখনও কোনো ডাক্তার যোগ করা হয়নি"
+    },
+    "cases": {
+      "title": "কেস",
+      "description": "সবচেয়ে সাম্প্রতিক হালনাগাদ আগে",
+      "caption": "এই হাসপাতালের কেস",
+      "case": "কেস",
+      "opened": "খোলা হয়েছে {{date}}",
+      "patient": "রোগী",
+      "status": "অবস্থা",
+      "updated": "হালনাগাদ",
+      "openInCases": "কেস বিভাগে খুলুন",
+      "range": "{{total}}টির মধ্যে {{from}}–{{to}}",
+      "previous": "আগের",
+      "next": "পরের",
+      "openRow": "কেস {{number}} খুলুন",
+      "empty": "এখনও কোনো কেস নেই"
+    },
+    "activity": {
+      "title": "অডিট ট্রেইল",
+      "description": "অনুমোদন, প্রোফাইল ও বাণিজ্যিক পরিবর্তন",
+      "openInAudit": "অডিট লগে খুলুন",
+      "when": "কখন",
+      "action": "কাজ",
+      "by": "দ্বারা",
+      "user": "ব্যবহারকারী",
+      "system": "সিস্টেম",
+      "change": "পরিবর্তন",
+      "empty": "কোনো অডিট এন্ট্রি নেই"
+    },
+    "terms": {
+      "title": "বাণিজ্যিক শর্তাবলি",
+      "description": "এই হাসপাতালের কমিশন ও পেআউট চক্র",
+      "updated": "হাসপাতাল হালনাগাদ হয়েছে",
+      "commissionError": "কমিশন অবশ্যই 0 থেকে 100-এর মধ্যে একটি শতাংশ হতে হবে।",
+      "cycleError": "সেটেলমেন্ট চক্র অবশ্যই 1 থেকে 90-এর মধ্যে পূর্ণসংখ্যক দিন হতে হবে।",
+      "commissionRate": "কমিশনের হার (%)",
+      "commissionHint": "ফাঁকা = প্ল্যাটফর্মের ডিফল্ট ({{value}})। নির্দিষ্ট কমিশন নিয়ম (ফাইন্যান্স) অগ্রাধিকার পায়।",
+      "settlementCycle": "সেটেলমেন্ট চক্র (দিন)",
+      "cycleHint": "ফাঁকা = প্ল্যাটফর্মের ডিফল্ট ({{value}} দিন)।",
+      "save": "শর্তাবলি সংরক্ষণ করুন",
+      "featured": "রোগীদের সাইটে বিশেষভাবে প্রদর্শিত"
+    }
+  },
+  "users": {
+    "title": "ব্যবহারকারী",
+    "description": "প্ল্যাটফর্মের সব অ্যাকাউন্ট — রোগী, এজেন্ট, হাসপাতাল টিম ও স্টাফ।",
+    "unnamedUser": "নামহীন ব্যবহারকারী",
+    "guestAccount": "অতিথি অ্যাকাউন্ট",
+    "never": "কখনও না",
+    "openRow": "{{name}} খুলুন",
+    "userFallback": "ব্যবহারকারী",
+    "empty": "এখনও কোনো ব্যবহারকারী নেই",
+    "columns": {
+      "user": "ব্যবহারকারী",
+      "email": "ইমেল",
+      "role": "ভূমিকা",
+      "status": "অবস্থা",
+      "security": "নিরাপত্তা",
+      "country": "দেশ",
+      "lastLogin": "শেষ লগইন",
+      "joined": "যোগদান"
+    },
+    "badges": {
+      "verified": "যাচাইকৃত",
+      "mfa": "MFA",
+      "guest": "অতিথি"
+    },
+    "security": {
+      "verified": "ইমেল যাচাইকৃত",
+      "unverified": "ইমেল যাচাই করা হয়নি",
+      "mfa": "MFA চালু",
+      "noMfa": "MFA বন্ধ",
+      "guest": "অতিথি অ্যাকাউন্ট"
+    },
+    "filters": {
+      "all": "সব",
+      "role": "ভূমিকা",
+      "searchPlaceholder": "নাম, ইমেল বা ফোন…",
+      "security": "নিরাপত্তা",
+      "status": "অবস্থা",
+      "country": "দেশ",
+      "joined": "যোগদান"
+    },
+    "toast": {
+      "updated": "ব্যবহারকারী হালনাগাদ হয়েছে"
+    },
+    "actions": {
+      "activate": "সক্রিয় করুন",
+      "suspend": "স্থগিত করুন",
+      "changeRole": "ভূমিকা পরিবর্তন করুন"
+    },
+    "drawer": {
+      "titleFallback": "ব্যবহারকারী",
+      "joinedOn": "যোগদান {{date}}",
+      "lastLoginOn": "শেষ লগইন {{date}}",
+      "neverLower": "কখনও না",
+      "lockedUntilTitle": "{{date}} পর্যন্ত লক করা",
+      "failedAttempts_one": "{{count}}টি ব্যর্থ সাইন-ইন প্রচেষ্টা।",
+      "failedAttempts_other": "{{count}}টি ব্যর্থ সাইন-ইন প্রচেষ্টা।",
+      "profile": "প্রোফাইল",
+      "email": "ইমেল",
+      "phone": "ফোন",
+      "country": "দেশ",
+      "language": "ভাষা",
+      "agentId": "এজেন্ট আইডি",
+      "patientProfile": "রোগীর প্রোফাইল",
+      "security": "নিরাপত্তা",
+      "lastLogin": "শেষ লগইন",
+      "failedLogins": "ব্যর্থ লগইন",
+      "lockedUntil": "লক থাকবে",
+      "hospitalMemberships": "হাসপাতালের সদস্যপদ",
+      "role": "ভূমিকা",
+      "onlyAdmins": "শুধু অপারেশনস অ্যাডমিনরাই ব্যবহারকারী পরিবর্তন করতে পারেন।",
+      "cannotChangeSelf": "আপনি এখানে নিজের অ্যাকাউন্ট পরিবর্তন করতে পারবেন না।",
+      "onlySuperAdmin": "শুধু একজন সুপার অ্যাডমিনই অন্য সুপার অ্যাডমিনকে পরিবর্তন করতে পারেন।"
+    },
+    "confirm": {
+      "changeRoleTitle": "ভূমিকা পরিবর্তন করবেন?",
+      "suspendTitle": "ব্যবহারকারীকে স্থগিত করবেন?",
+      "activateTitle": "ব্যবহারকারীকে সক্রিয় করবেন?",
+      "changeRoleMessage": "<0>{{name}}</0> এখন <1>{{role}}</1> হবেন (আগে ছিলেন {{previous}})। তাঁর অনুমতি সঙ্গে সঙ্গে বদলে যাবে এবং পরিবর্তনটি অডিট লগে লেখা থাকবে।",
+      "suspendMessage": "<0>{{name}}</0> সাইন আউট হয়ে যাবেন এবং পুনরায় সক্রিয় না করা পর্যন্ত লগইন করতে পারবেন না।",
+      "activateMessage": "<0>{{name}}</0> আবার সাইন ইন করতে পারবেন।"
+    }
+  },
+  "staff": {
+    "title": "স্টাফ",
+    "description": "অপারেশনস, ফাইন্যান্স ও সাপোর্ট ব্যবহারকারী যাঁরা এই কনসোলে কাজ করেন।",
+    "newStaffUser": "নতুন স্টাফ ব্যবহারকারী",
+    "empty": "এখনও কোনো স্টাফ ব্যবহারকারী নেই",
+    "columns": {
+      "name": "নাম",
+      "email": "ইমেল",
+      "role": "ভূমিকা",
+      "phone": "ফোন"
+    },
+    "filters": {
+      "allStaff": "সব স্টাফ",
+      "role": "স্টাফের ভূমিকা",
+      "searchPlaceholder": "নাম, ইমেল বা ফোন…"
+    },
+    "validation": {
+      "passwordLength": "কমপক্ষে ১০টি অক্ষর।",
+      "passwordMix": "একটি অক্ষর ও একটি সংখ্যা থাকতে হবে।",
+      "fullName": "পুরো নাম লিখুন।",
+      "email": "একটি সঠিক ইমেল লিখুন।"
+    },
+    "toast": {
+      "created": "স্টাফ ব্যবহারকারী {{name}} তৈরি হয়েছে"
+    },
+    "form": {
+      "cancel": "বাতিল",
+      "create": "ব্যবহারকারী তৈরি করুন",
+      "fullName": "পুরো নাম",
+      "email": "ইমেল",
+      "role": "ভূমিকা",
+      "password": "অস্থায়ী পাসওয়ার্ড",
+      "passwordHint": "কমপক্ষে ১০টি অক্ষর, যার মধ্যে একটি অক্ষর ও একটি সংখ্যা থাকবে। এটি নিরাপদে শেয়ার করুন; সাইন ইন করার পর ব্যবহারকারীর এটি বদলে নেওয়া উচিত।"
+    }
+  },
+  "agents": {
+    "documentTitle": "এজেন্ট",
+    "title": "এজেন্ট ও ফ্যাসিলিটেটর",
+    "description": "ফ্যাসিলিটেটরদের অনুমোদন দিন, তাঁদের KYC যাচাই করুন এবং টিয়ার ও কমিশন নির্ধারণ করুন।",
+    "default": "ডিফল্ট",
+    "openRow": "{{name}} খুলুন",
+    "empty": {
+      "title": "এখনও কোনো এজেন্ট নেই",
+      "description": "ফ্যাসিলিটেটররা এজেন্ট পোর্টালে নিবন্ধন করলে এখানে দেখা যাবে।"
+    },
+    "quick": {
+      "all": "সব",
+      "approvalQueue": "অনুমোদনের অপেক্ষায়",
+      "active": "সক্রিয়",
+      "suspended": "স্থগিত",
+      "rejected": "প্রত্যাখ্যাত"
+    },
+    "columns": {
+      "agency": "এজেন্সি",
+      "code": "কোড",
+      "status": "অবস্থা",
+      "kyc": "KYC",
+      "tier": "টিয়ার",
+      "location": "অবস্থান",
+      "commission": "কমিশন",
+      "joined": "যোগদান"
+    },
+    "filters": {
+      "agentStatus": "এজেন্টের অবস্থা",
+      "searchPlaceholder": "এজেন্সি, কোড বা ইমেল…",
+      "status": "অবস্থা",
+      "kyc": "KYC",
+      "tier": "টিয়ার",
+      "country": "দেশ"
+    },
+    "toast": {
+      "approved": "এজেন্ট অনুমোদিত হয়েছে",
+      "rejected": "এজেন্ট প্রত্যাখ্যাত হয়েছে",
+      "suspended": "এজেন্ট স্থগিত হয়েছে",
+      "updated": "এজেন্ট হালনাগাদ হয়েছে"
+    },
+    "actions": {
+      "approve": "অনুমোদন দিন",
+      "reactivate": "পুনরায় সক্রিয় করুন",
+      "reject": "প্রত্যাখ্যান করুন",
+      "suspend": "স্থগিত করুন"
+    },
+    "drawer": {
+      "commissionError": "কমিশন ০ থেকে ১০০-এর মধ্যে একটি শতাংশ হতে হবে।",
+      "titleFallback": "এজেন্ট",
+      "kycBadge": "KYC: {{status}}",
+      "locationNotSet": "অবস্থান দেওয়া হয়নি",
+      "joinedOn": "যোগদান {{date}}",
+      "patients": "রোগী",
+      "tier": "টিয়ার",
+      "commission": "কমিশন",
+      "kycDocuments": "KYC নথি",
+      "waitingTitle": "অনুমোদনের অপেক্ষায়",
+      "waitingBody": "নিচের KYC নথিগুলো যাচাই করুন, তারপর এই ফ্যাসিলিটেটরকে অনুমোদন দিন বা প্রত্যাখ্যান করুন।",
+      "rejectedTitle": "প্রত্যাখ্যাত",
+      "suspendedTitle": "স্থগিত",
+      "contact": "যোগাযোগ",
+      "contactPerson": "যোগাযোগের ব্যক্তি",
+      "email": "ইমেল",
+      "phone": "ফোন",
+      "website": "ওয়েবসাইট",
+      "joined": "যোগদান",
+      "approved": "অনুমোদিত",
+      "kycDescription": "এজেন্টকে অনুমোদন দেওয়ার আগে প্রতিটি নথি যাচাই করুন।",
+      "kycEmpty": "কোনো KYC নথি আপলোড করা হয়নি।",
+      "tierCommission": "টিয়ার ও কমিশন",
+      "tierCommissionDescription": "ফাঁকা কমিশন = প্ল্যাটফর্মের ডিফল্ট ({{rate}}), যা প্ল্যাটফর্মের কমিশন থেকে দেওয়া হয়।",
+      "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
+      "commissionPct": "কমিশন (%)"
+    },
+    "confirm": {
+      "approveTitle": "এজেন্টকে অনুমোদন দেবেন?",
+      "approveMessage": "<0>{{name}}</0> রোগী নিবন্ধন করতে, কোটেশন চাইতে এবং কমিশন অর্জন করতে পারবেন।",
+      "rejectTitle": "এজেন্টকে প্রত্যাখ্যান করুন",
+      "rejectDescription": "কারণটি এজেন্টকে জানানো হবে।",
+      "suspendTitle": "এজেন্টকে স্থগিত করুন",
+      "suspendDescription": "স্থগিত এজেন্টরা এজেন্ট পোর্টালে সাইন ইন করতে বা নতুন কেস তৈরি করতে পারবেন না।"
+    }
+  },
+  "audit": {
+    "title": "অডিট লগ",
+    "description": "নিরাপত্তা-সংক্রান্ত ও অবস্থা পরিবর্তনকারী কাজের অপরিবর্তনীয় রেকর্ড।",
+    "openRow": "অডিট ইভেন্ট {{action}} খুলুন",
+    "empty": "এখনও কোনো অডিট ইভেন্ট নেই",
+    "actor": {
+      "user": "ব্যবহারকারী",
+      "system": "সিস্টেম",
+      "automated": "স্বয়ংক্রিয়"
+    },
+    "columns": {
+      "when": "কখন",
+      "action": "কাজ",
+      "entity": "এনটিটি",
+      "actor": "কার্যকারী",
+      "ip": "IP ঠিকানা"
+    },
+    "filters": {
+      "everyAction": "{{group}}-এর সব কাজ",
+      "userWithId": "ব্যবহারকারী {{id}}",
+      "selectedUser": "নির্বাচিত ব্যবহারকারী",
+      "searchPlaceholder": "কাজ, এনটিটি আইডি বা কার্যকারী…",
+      "actorRole": "কার্যকারীর ভূমিকা",
+      "systemAutomated": "সিস্টেম (স্বয়ংক্রিয়)",
+      "action": "কাজ",
+      "entity": "এনটিটি",
+      "actor": "কার্যকারী",
+      "date": "তারিখ",
+      "entityId": "এনটিটি আইডি"
+    },
+    "drawer": {
+      "titleFallback": "অডিট ইভেন্ট",
+      "entity": "এনটিটি",
+      "actor": "কার্যকারী",
+      "actorId": "কার্যকারীর আইডি",
+      "ip": "IP ঠিকানা",
+      "userAgent": "ইউজার এজেন্ট",
+      "sameEntity": "একই এনটিটি",
+      "showAllForEntity": "এই এনটিটির সব ইভেন্ট দেখুন",
+      "changes": "পরিবর্তন"
+    }
+  },
+  "catalog": {
+    "title": "ক্যাটালগ",
+    "description": "বিশেষত্ব, চিকিৎসা-পদ্ধতি এবং রোগীর নিজ দেশের খরচের মানদণ্ড, যা অনুসন্ধান, AI মিলকরণ ও খরচ তুলনার টুলে ব্যবহৃত হয়।",
+    "tabs": {
+      "specialties": "বিশেষত্ব",
+      "procedures": "চিকিৎসা-পদ্ধতি",
+      "benchmarks": "খরচের মানদণ্ড"
+    },
+    "status": {
+      "active": "সক্রিয়",
+      "inactive": "নিষ্ক্রিয়"
+    },
+    "filters": {
+      "status": "অবস্থা",
+      "specialty": "বিশেষত্ব",
+      "procedure": "চিকিৎসা-পদ্ধতি",
+      "country": "দেশ"
+    },
+    "columns": {
+      "status": "অবস্থা",
+      "specialty": "বিশেষত্ব",
+      "procedures": "চিকিৎসা-পদ্ধতি",
+      "savings": "সাশ্রয়",
+      "order": "ক্রম",
+      "procedure": "চিকিৎসা-পদ্ধতি",
+      "indiaPrice": "ভারতে মূল্য",
+      "stayRecovery": "অবস্থান / সেরে ওঠা",
+      "benchmarks": "মানদণ্ড",
+      "country": "দেশ",
+      "homeCost": "নিজ দেশে খরচ",
+      "wait": "অপেক্ষা",
+      "source": "উৎস"
+    },
+    "fields": {
+      "name": "নাম",
+      "slug": "স্লাগ",
+      "slugHint": "ছোট হাতের ইংরেজি অক্ষর, সংখ্যা ও ড্যাশ; পাবলিক URL-এ ব্যবহৃত হয়।",
+      "icon": "আইকন",
+      "iconHint": "Lucide আইকনের নাম, যেমন heart-pulse",
+      "sortOrder": "সাজানোর ক্রম",
+      "savingsMin": "ন্যূনতম সাশ্রয় (%)",
+      "savingsMax": "সর্বোচ্চ সাশ্রয় (%)",
+      "description": "বিবরণ",
+      "active": "সক্রিয়",
+      "specialty": "বিশেষত্ব",
+      "currency": "মুদ্রা",
+      "indiaPriceFrom": "ভারতে মূল্য (থেকে)",
+      "indiaPriceTo": "ভারতে মূল্য (পর্যন্ত)",
+      "hospitalStayDays": "হাসপাতালে থাকা (দিন)",
+      "recoveryDays": "সেরে ওঠা (দিন)",
+      "totalStayDays": "ভারতে মোট অবস্থান (দিন)",
+      "keywords": "কীওয়ার্ড",
+      "keywordsHint": "কমা দিয়ে আলাদা; অনুসন্ধান ও AI নিয়ম ইঞ্জিনে ব্যবহৃত হয়",
+      "bodyAreas": "শরীরের অংশ",
+      "bodyAreasHint": "কমা দিয়ে আলাদা, যেমন knee, hip, lower_back",
+      "procedure": "চিকিৎসা-পদ্ধতি",
+      "countryIso2": "দেশ (ISO-2)",
+      "countryHint": "যেমন US, GB, NG",
+      "homeCostFrom": "নিজ দেশে খরচ (থেকে)",
+      "homeCostTo": "নিজ দেশে খরচ (পর্যন্ত)",
+      "waitTime": "সাধারণ অপেক্ষার সময়",
+      "waitTimeHint": "যেমন ৩–৬ মাস",
+      "source": "উৎস",
+      "sourceHint": "সংখ্যাটি কোথা থেকে এসেছে"
+    },
+    "entities": {
+      "specialty": "বিশেষত্ব",
+      "specialties": "বিশেষত্বসমূহ",
+      "procedure": "চিকিৎসা-পদ্ধতি",
+      "procedures": "চিকিৎসা-পদ্ধতিসমূহ",
+      "benchmark": "খরচের মানদণ্ড",
+      "benchmarks": "খরচের মানদণ্ডসমূহ"
+    },
+    "gaps": {
+      "label": "খরচের মানদণ্ড নেই এমন চিকিৎসা-পদ্ধতি ({{countries}})",
+      "value": "{{total}}টির মধ্যে {{gaps}}টি",
+      "hint": "{{none}}টির কোনো মানদণ্ডই নেই। {{sample}}"
+    },
+    "specialties": {
+      "proceduresCount_one": "{{count}}টি চিকিৎসা-পদ্ধতি",
+      "proceduresCount_other": "{{count}}টি চিকিৎসা-পদ্ধতি"
+    },
+    "procedures": {
+      "stayValue": "{{stay}} / {{recovery}} দিন"
+    },
+    "benchmarks": {
+      "description": "রোগীর নিজ দেশে নিজ খরচে চিকিৎসার সাধারণ ব্যয়; রোগীদের দেখানো সাশ্রয় এর ভিত্তিতে হিসাব করা হয়।"
+    }
+  },
+  "content": {
+    "title": "কনটেন্ট",
+    "description": "রোগীদের জন্য পরামর্শ, অংশীদার থাকার ব্যবস্থা ও সেবা, এবং পেমেন্টের সময় ব্যবহৃত মুদ্রা বিনিময় হার।",
+    "tabs": {
+      "tips": "সাংস্কৃতিক পরামর্শ",
+      "accommodation": "থাকার ব্যবস্থার প্রদানকারী",
+      "services": "সেবা প্রদানকারী",
+      "fx": "বিনিময় হার"
+    },
+    "status": {
+      "active": "সক্রিয়",
+      "inactive": "নিষ্ক্রিয়"
+    },
+    "filters": {
+      "status": "অবস্থা",
+      "category": "বিভাগ",
+      "type": "ধরন",
+      "city": "শহর",
+      "service": "সেবা",
+      "language": "ভাষা"
+    },
+    "columns": {
+      "tip": "পরামর্শ",
+      "category": "বিভাগ",
+      "order": "ক্রম",
+      "status": "অবস্থা",
+      "provider": "প্রদানকারী",
+      "city": "শহর",
+      "nightly": "প্রতি রাত",
+      "amenities": "সুবিধাসমূহ",
+      "contact": "যোগাযোগ",
+      "service": "সেবা",
+      "languages": "ভাষাসমূহ",
+      "rate": "হার",
+      "rating": "রেটিং",
+      "currency": "মুদ্রা",
+      "source": "উৎস",
+      "asOf": "যে সময় অনুযায়ী"
+    },
+    "fields": {
+      "title": "শিরোনাম",
+      "text": "লেখা",
+      "category": "বিভাগ",
+      "categoryHint": "যেমন খাবার, শিষ্টাচার, অর্থ",
+      "sortOrder": "সাজানোর ক্রম",
+      "imageUrl": "ছবির URL",
+      "active": "সক্রিয়",
+      "name": "নাম",
+      "type": "ধরন",
+      "city": "শহর",
+      "starRating": "স্টার রেটিং",
+      "address": "ঠিকানা",
+      "latitude": "অক্ষাংশ",
+      "longitude": "দ্রাঘিমাংশ",
+      "currency": "মুদ্রা",
+      "nightlyRate": "প্রতি রাতের ভাড়া",
+      "phone": "ফোন",
+      "email": "ইমেল",
+      "amenities": "সুবিধাসমূহ",
+      "amenitiesHint": "কমা দিয়ে আলাদা, যেমন wifi, রান্নাঘর, হুইলচেয়ারে প্রবেশযোগ্য",
+      "photoUrls": "ছবির URL",
+      "photoUrlsHint": "কমা দিয়ে আলাদা https URL",
+      "service": "সেবা",
+      "languages": "ভাষাসমূহ",
+      "languagesHint": "কমা দিয়ে আলাদা, যেমন ইংরেজি, আরবি, ফরাসি",
+      "rate": "হার",
+      "rateUnit": "হারের একক",
+      "quoteCurrencyHint": "ISO-4217, যেমন USD",
+      "inrPerUnit": "প্রতি ১ এককে INR",
+      "inrPerUnitHint": "যেমন 83.25 মানে 1 USD = ₹83.25",
+      "source": "উৎস"
+    },
+    "entities": {
+      "tip": "সাংস্কৃতিক পরামর্শ",
+      "tips": "সাংস্কৃতিক পরামর্শসমূহ",
+      "accommodation": "থাকার ব্যবস্থার প্রদানকারী",
+      "accommodationPlural": "থাকার ব্যবস্থার প্রদানকারীরা",
+      "service": "সেবা প্রদানকারী",
+      "servicePlural": "সেবা প্রদানকারীরা",
+      "fx": "বিনিময় হার",
+      "fxPlural": "বিনিময় হারসমূহ"
+    },
+    "fx": {
+      "description": "মূল মুদ্রা INR। পেমেন্টের সময় প্রতিটি পেমেন্ট অর্ডারে হার নির্দিষ্ট করে রাখা হয়; হার বদলালে আগের অর্ডার বদলায় না।"
+    }
+  },
+  "settings": {
+    "documentTitle": "সেটিংস",
+    "title": "প্ল্যাটফর্ম সেটিংস",
+    "description": "পরিবর্তন সঙ্গে সঙ্গে কার্যকর হয় এবং অডিট লগে রেকর্ড হয়। ফিন্যান্স সেটিংস শুধু ফিন্যান্স কর্মী বা সুপার অ্যাডমিন বদলাতে পারেন।",
+    "websiteNotice": "হেল্পলাইন, WhatsApp, সোশ্যাল লিঙ্ক, অ্যানালিটিক্স, সার্চ ইঞ্জিন যাচাই, মার্কেটিং দাবি, চিকিৎসা পর্যালোচক এবং ফুটার সম্পাদনা করা হয় <0>ওয়েবসাইট ও যোগাযোগ</0> পাতায় (সুপার অ্যাডমিন)।",
+    "rawJson": "কাঁচা JSON মান।",
+    "groups": {
+      "commercial": "বাণিজ্যিক",
+      "tax": "কর",
+      "settlements": "নিষ্পত্তি",
+      "payments": "পেমেন্ট",
+      "patientSupport": "রোগী সহায়তা",
+      "other": "অন্যান্য"
+    },
+    "items": {
+      "default_commission_bps": {
+        "label": "ডিফল্ট হাসপাতাল কমিশন",
+        "description": "হাসপাতালের আয়ের উপর প্ল্যাটফর্মের কমিশন, যখন হাসপাতাল-নির্দিষ্ট বা নিয়ম-নির্দিষ্ট কোনো হার প্রযোজ্য নয়।"
+      },
+      "default_agent_commission_bps": {
+        "label": "ডিফল্ট এজেন্ট কমিশন",
+        "description": "প্ল্যাটফর্মের কমিশন থেকে রেফার করা এজেন্টদের দেওয়া হয়।"
+      },
+      "patient_service_fee_bps": {
+        "label": "রোগীর সার্ভিস ফি",
+        "description": "বুকিংয়ের সময় চিকিৎসার মূল্যের উপর যোগ করা হয়।"
+      },
+      "deposit_pct": {
+        "label": "বুকিং ডিপোজিট",
+        "description": "বুকিং নিশ্চিত করতে মোট বুকিং মূল্যের যে অংশ প্রয়োজন (ডিপোজিট বিকল্প)।"
+      },
+      "gst_rate_bps": {
+        "label": "কমিশনের উপর GST",
+        "description": "প্ল্যাটফর্মের কমিশনের উপর ধার্য GST।"
+      },
+      "tds_194o_rate_bps": {
+        "label": "TDS (ধারা 194-O)",
+        "description": "হাসপাতালের মোট অর্থের উপর উৎসে কর্তিত কর।"
+      },
+      "settlement_hold_days": {
+        "label": "নিষ্পত্তি স্থগিত রাখা",
+        "description": "চিকিৎসা শেষ হওয়ার পর কত দিন পরে আইটেমগুলো পেআউটের যোগ্য হয়।"
+      },
+      "settlement_cycle_days": {
+        "label": "ডিফল্ট নিষ্পত্তি চক্র",
+        "description": "স্বয়ংক্রিয় পেআউট ব্যাচের মধ্যে দিনের ব্যবধান (হাসপাতাল বদলাতে পারে)।"
+      },
+      "refund_policy": {
+        "label": "রিফান্ড নীতি",
+        "description": "ভর্তির কত দিন আগে বাতিল করা হয়েছে তার ভিত্তিতে রিফান্ডের শতাংশ। প্রথম মিলে যাওয়া ধাপটি (সবচেয়ে বেশি দিন থেকে শুরু করে) প্রযোজ্য হয়।"
+      },
+      "cancellation_retention_hospital_share_bps": {
+        "label": "বাতিলের সময় রাখা অর্থ: হাসপাতালের অংশ",
+        "description": "বাতিলের সময় রেখে দেওয়া অর্থের যে অংশ হাসপাতাল পায় (100% = সবটাই হাসপাতালের)।"
+      },
+      "agent_tds_rate_bps": {
+        "label": "এজেন্ট TDS (ধারা 194H)",
+        "description": "আবাসিক এজেন্টদের দেওয়া কমিশনের উপর উৎসে কর্তিত কর।"
+      },
+      "agent_nonresident_withholding_bps": {
+        "label": "অনাবাসিক এজেন্টের জন্য কর কর্তন",
+        "description": "অনাবাসিক এজেন্টদের দেওয়া কমিশনের উপর কর কর্তন (CA-এর পরামর্শ / DTAA অনুযায়ী নির্ধারণ করুন)।"
+      },
+      "platform_gstin": {
+        "label": "প্ল্যাটফর্মের GSTIN",
+        "description": "কমিশনের ট্যাক্স ইনভয়েস ও ক্রেডিট নোটে ছাপা সরবরাহকারীর GSTIN।"
+      },
+      "platform_gst_state": {
+        "label": "প্ল্যাটফর্মের GST রাজ্য",
+        "description": "নিবন্ধনের রাজ্য: হাসপাতাল একই রাজ্যে হলে CGST + SGST, অন্যথায় IGST।"
+      },
+      "refund_dual_approval_threshold_minor": {
+        "label": "রিফান্ডে দ্বৈত অনুমোদনের সীমা",
+        "description": "এই অঙ্কের (INR-এ রূপান্তরিত) বেশি রিফান্ড অনুরোধকারী ছাড়া অন্য একজন ফিন্যান্স ব্যবহারকারীকে অনুমোদন করতে হবে। 0 = প্রতিটি রিফান্ডে দ্বিতীয় অনুমোদনকারী লাগবে।"
+      },
+      "fx_rate_max_age_hours": {
+        "label": "বিনিময় হারের সর্বোচ্চ বয়স",
+        "description": "প্রোডাকশনে সংরক্ষিত বিনিময় হার এর চেয়ে পুরোনো হলে বৈদেশিক মুদ্রার অর্ডার প্রত্যাখ্যান করা হয় (fx_rate_unavailable)। 0 দিলে এই যাচাই বন্ধ থাকে।"
+      },
+      "bank_transfer_details": {
+        "label": "ব্যাংক ট্রান্সফারের তথ্য",
+        "description": "যে রোগীরা SWIFT / ব্যাংক ট্রান্সফারে পেমেন্ট করেন তাদের দেখানো হয়।"
+      },
+      "supported_currencies": {
+        "label": "সমর্থিত মুদ্রা",
+        "description": "রোগীরা যে মুদ্রায় পেমেন্ট করতে পারেন তার ISO-4217 কোড।"
+      }
+    },
+    "updated": "{{label}} আপডেট হয়েছে",
+    "financeBadge": "ফিন্যান্স",
+    "defaultBadge": "ডিফল্ট",
+    "updatedAt": "আপডেট: {{date}}",
+    "updatedAtBy": "আপডেট: {{date}}, করেছেন {{name}}",
+    "save": "সংরক্ষণ করুন",
+    "reset": "রিসেট",
+    "readOnly": "আপনার ভূমিকার জন্য শুধু দেখা যাবে",
+    "units": {
+      "days": "দিন",
+      "hours": "ঘণ্টা"
+    },
+    "editors": {
+      "bpsSuffix": "% ({{bps}} bps)",
+      "percentage": "শতাংশ",
+      "percentageError": "0 থেকে 100-এর মধ্যে একটি শতাংশ লিখুন।",
+      "wholeNumberError": "0 থেকে {{max}}-এর মধ্যে একটি পূর্ণসংখ্যা লিখুন।",
+      "amountInr": "INR-এ পরিমাণ",
+      "amountInrError": "রুপিতে একটি পরিমাণ লিখুন (সর্বোচ্চ 2 দশমিক); 0 মানে প্রতিটি রিফান্ডে দ্বিতীয় অনুমোদনকারী লাগবে।",
+      "value": "মান",
+      "valueRequired": "একটি মান লিখুন।"
+    },
+    "refundPolicy": {
+      "invalidTier": "দিন অবশ্যই 0 বা তার বেশি পূর্ণসংখ্যা এবং রিফান্ড 0–100% হতে হবে।",
+      "duplicateDays": "প্রতিটি \"কত দিন আগে\" মান আলাদা হতে হবে।",
+      "noTiers": "অন্তত একটি ধাপ যোগ করুন।",
+      "daysHeader": "ভর্তির অন্তত N দিন আগে",
+      "refundHeader": "রিফান্ড %",
+      "daysBefore": "কত দিন আগে",
+      "refundPercent": "রিফান্ডের শতাংশ",
+      "removeTier": "ধাপ সরান",
+      "addTier": "ধাপ যোগ করুন"
+    },
+    "stringMap": {
+      "keysError": "কী অবশ্যই আলাদা ও খালি নয় এমন হতে হবে।",
+      "key": "কী",
+      "value": "মান",
+      "removeEntry": "এন্ট্রি সরান",
+      "addEntry": "এন্ট্রি যোগ করুন"
+    },
+    "stringList": {
+      "values": "মানসমূহ",
+      "error": "কমা দিয়ে আলাদা করে 3-অক্ষরের ISO মুদ্রা কোড ব্যবহার করুন।"
+    },
+    "json": {
+      "label": "JSON মান",
+      "invalid": "অবৈধ JSON।"
+    }
+  },
+  "websiteSettings": {
+    "title": "ওয়েবসাইট ও যোগাযোগ",
+    "description": "পাবলিক ওয়েবসাইটে যা দেখানো হয়: যোগাযোগের নম্বর, ভাসমান বোতাম, সোশ্যাল লিঙ্ক, অ্যানালিটিক্স, সার্চ ইঞ্জিন যাচাই, মার্কেটিং দাবি, চিকিৎসা পর্যালোচক এবং ফুটার। সংরক্ষিত পরিবর্তন কয়েক সেকেন্ডের মধ্যে ওয়েবসাইটে পৌঁছায় এবং অডিট লগে রেকর্ড হয়। খালি ঘর মানে নির্ধারিত নয়: তখন ওয়েবসাইট ডিপ্লয়মেন্টের ডিফল্ট মান ব্যবহার করে (অথবা আইটেমটি লুকিয়ে রাখে)।",
+    "readOnly": "শুধু দেখা যাবে: কেবল একজন সুপার অ্যাডমিন এই সেটিংস বদলাতে পারেন।",
+    "sections": {
+      "contact": "যোগাযোগ ও হেল্পলাইন",
+      "buttons": "ভাসমান বোতাম",
+      "social": "সোশ্যাল প্রোফাইল",
+      "analytics": "অ্যানালিটিক্স",
+      "search": "সার্চ ইঞ্জিন",
+      "marketing": "মার্কেটিং দাবি",
+      "reviewers": "চিকিৎসা পর্যালোচক",
+      "footer": "ফুটার"
+    },
+    "saved": "{{title}} সংরক্ষিত হয়েছে - কয়েক সেকেন্ডের মধ্যে ওয়েবসাইট আপডেট হবে",
+    "defaultBadge": "ডিফল্ট",
+    "superAdminBadge": "সুপার অ্যাডমিন",
+    "updatedAt": "আপডেট: {{date}}",
+    "updatedAtBy": "আপডেট: {{date}}, করেছেন {{name}}",
+    "save": "সংরক্ষণ করুন",
+    "reset": "রিসেট",
+    "fixErrors": "সংরক্ষণ করতে চিহ্নিত ঘরগুলো ঠিক করুন।",
+    "errors": {
+      "phoneDigits": "{{min}}-15 অঙ্ক ব্যবহার করুন।",
+      "phoneDigitsExample": "{{min}}-15 অঙ্ক ব্যবহার করুন, যেমন +91 98765 43210।",
+      "phoneInternational": "আন্তর্জাতিক ফরম্যাট ব্যবহার করুন: + এবং দেশের কোড।",
+      "httpsUrl": "একটি সম্পূর্ণ https:// URL লিখুন।",
+      "email": "একটি বৈধ ইমেল ঠিকানা লিখুন।",
+      "ga4Format": "G-XXXXXXXXXX ফরম্যাট ব্যবহার করুন।",
+      "ga4Required": "Google Analytics 4-এর জন্য আবশ্যক।",
+      "hostName": "healindiaglobal.com-এর মতো একটি হোস্ট নাম লিখুন।",
+      "verificationCode": "শুধু যাচাই কোডটি পেস্ট করুন (অথবা পুরো {{tag}} ট্যাগ)।",
+      "indexNowKey": "8-128 অক্ষর: অক্ষর, সংখ্যা এবং -।",
+      "wholePercent": "0-100-এর মধ্যে একটি পূর্ণ শতাংশ লিখুন।",
+      "statId": "Id: অক্ষর দিয়ে শুরু; শুধু অক্ষর, সংখ্যা, - এবং _।",
+      "uniqueId": "প্রতিটি id আলাদা হতে হবে।",
+      "statRequired": "লেবেল ও মান আবশ্যক।",
+      "reviewerId": "Id: ছোট হাতের ইংরেজি অক্ষর, সংখ্যা ও হাইফেন (যেমন dr-asha-rao)।",
+      "reviewerPhoto": "ছবি: একটি https:// URL অথবা /brand/reviewers/name.jpg-এর মতো সাইটের পাথ।",
+      "reviewerIncomplete": "সক্রিয় পর্যালোচকের নাম, যোগ্যতা, নিবন্ধন নম্বর ও কাউন্সিল প্রয়োজন।"
+    },
+    "contact": {
+      "placeholderNumber": "নমুনা নম্বর: আসল নম্বর না দেওয়া পর্যন্ত ওয়েবসাইটে লুকানো থাকবে।",
+      "whatsapp": "WhatsApp নম্বর",
+      "whatsappHint": "ভাসমান WhatsApp বোতাম, ফুটার ও যোগাযোগ পাতা। খালি = লুকানো।",
+      "phone": "ফোন / হেল্পলাইন নম্বর",
+      "phoneHint": "ভাসমান কল বোতাম, ফুটার, যোগাযোগ পাতা ও রোগীর অ্যাপ (24/7 হেল্পলাইন)। খালি = লুকানো।",
+      "emergency": "জরুরি নম্বর",
+      "emergencyHint": "যোগাযোগ পাতায় ও রোগীর অ্যাপে দেখানো হয়।",
+      "email": "পাবলিক যোগাযোগ ইমেল",
+      "emailHint": "ফুটার, যোগাযোগ পাতা, অ্যাকাউন্ট মুছে ফেলার পাতা ও Organization ডেটা। খালি = ডিপ্লয়মেন্টের ডিফল্ট।",
+      "supportHours": "সহায়তার সময়",
+      "supportHoursPlaceholder": "24/7, প্রতিদিন",
+      "supportHoursHint": "যোগাযোগ পাতায় দেখানো হয়। খালি = দেখানো হয় না।",
+      "whatsappMessage": "WhatsApp-এর আগে থেকে লেখা বার্তা",
+      "whatsappMessageHint": "দর্শকের WhatsApp যে লেখা নিয়ে খুলবে।"
+    },
+    "buttons": {
+      "showWhatsapp": "WhatsApp বোতাম দেখান",
+      "showCall": "কল বোতাম দেখান",
+      "note": "বোতাম কেবল তখনই দেখানো হয় যখন এটি চালু থাকে এবং এর নম্বর দেওয়া থাকে (নম্বর সংরক্ষিত হয় যোগাযোগ ও হেল্পলাইনে)।",
+      "preview": "প্রিভিউ",
+      "none": "কোনো ভাসমান বোতাম নেই"
+    },
+    "social": {
+      "urlLabel": "{{network}} URL",
+      "note": "ফুটারে আইকন হিসেবে দেখানো হয় এবং Organization স্ট্রাকচার্ড ডেটায় sameAs হিসেবে তালিকাভুক্ত হয়। খালি = দেখানো হয় না।"
+    },
+    "analytics": {
+      "provider": "প্রদানকারী",
+      "providerHint": "কোনোটি নয় = ডিপ্লয়মেন্টের এনভায়রনমেন্ট সেটিং ব্যবহার করা হবে (সেখানে কনফিগার না করলে বন্ধ)। সাইটের Content-Security-Policy এই পছন্দ অনুসরণ করে।",
+      "none": "কোনোটি নয়",
+      "plausible": "Plausible (কুকি ছাড়া, ব্যানার ছাড়া)",
+      "ga4": "Google Analytics 4 (কুকি সম্মতির পরে)",
+      "plausibleDomain": "Plausible ডোমেইন",
+      "plausibleDomainHint": "খালি = ওয়েবসাইটের নিজের হোস্ট।",
+      "plausibleScript": "Plausible স্ক্রিপ্ট URL",
+      "plausibleScriptHint": "খালি = plausible.io। নিজস্ব সার্ভারে রাখা স্ক্রিপ্টও চলবে।",
+      "ga4Id": "GA4 মেজারমেন্ট ID"
+    },
+    "search": {
+      "google": "Google সাইট যাচাই",
+      "googlePlaceholder": "Search Console HTML ট্যাগের কনটেন্ট",
+      "googleHint": "Search Console -> Settings -> Ownership -> HTML tag: content=\"...\" মানটি।",
+      "bing": "Bing সাইট যাচাই",
+      "bingPlaceholder": "msvalidate.01 কনটেন্ট",
+      "bingHint": "Bing Webmaster Tools -> HTML meta ট্যাগের মান।",
+      "indexNow": "IndexNow কী",
+      "indexNowHint": "শুধু সার্ভারে: /indexnow-key.txt-এ পরিবেশিত হয় এবং পরিবর্তিত পাতার কথা Bing ও অন্যদের জানাতে ব্যবহৃত হয়। ওয়েবসাইটের রিভ্যালিডেশন সিক্রেট কনফিগার করা থাকতে হবে।",
+      "generate": "তৈরি করুন"
+    },
+    "marketing": {
+      "intro": "হোম পেজ ও চিকিৎসা-পদ্ধতির পাতায় দেখানো দাবি। উৎস ছাড়া কোনো দাবি \"আনুমানিক সংখ্যা\" পাদটীকা সহ ছাপা হয়; যা প্রমাণ করতে পারবেন না তা বন্ধ করে দিন।",
+      "maxSavings": "সর্বোচ্চ সাশ্রয় (%)",
+      "savingsSource": "সাশ্রয়ের উৎস",
+      "savingsSourcePlaceholder": "যেমন অংশীদার হাসপাতালের মূল্যতালিকা বনাম যুক্তরাষ্ট্রে নিজ খরচে চিকিৎসা, 2026",
+      "showInHero": "হিরো অংশে দেখান",
+      "stats": "হোম পেজের পরিসংখ্যান",
+      "statId": "Id",
+      "statLabel": "লেবেল",
+      "statValue": "মান",
+      "statSource": "উৎস সম্পর্কে নোট",
+      "statShow": "দেখান",
+      "removeStat": "পরিসংখ্যান {{name}} সরান",
+      "addStat": "পরিসংখ্যান যোগ করুন",
+      "indiaWait": "ভারতে সাধারণ অপেক্ষার সময়",
+      "indiaWaitHint": "চিকিৎসা-পদ্ধতির পাতার খরচ ক্যালকুলেটরে দেখানো হয়।",
+      "showTestimonials": "প্রশংসাপত্র দেখান (সবসময় দৃষ্টান্তমূলক হিসেবে চিহ্নিত)",
+      "claimsVerified": "সব দাবি মার্কেটিং / আইন বিভাগ যাচাই করেছে"
+    },
+    "reviewers": {
+      "intro": "যেসব স্বাস্থ্য পাতার ফ্রন্ট ম্যাটারে তাদের নাম থাকে সেখানে কৃতিত্ব দেওয়া হয় (reviewedBy: {{tag}})। শুধু সম্পূর্ণ নিবন্ধনসহ সক্রিয় পর্যালোচকদের সর্বসাধারণকে দেখানো হয়। কোনো বাস্তব ব্যক্তিকে কেবল তাঁর লিখিত সম্মতি এবং যাচাইযোগ্য চিকিৎসা নিবন্ধন থাকলেই যোগ করুন।",
+      "active": "সক্রিয় (ওয়েবসাইটে দেখানো হয়)",
+      "inactive": "নিষ্ক্রিয়",
+      "remove": "সরান",
+      "id": "Id (পাতাগুলো ব্যবহার করে)",
+      "name": "পুরো নাম",
+      "credentials": "যোগ্যতা",
+      "registrationNumber": "নিবন্ধন নম্বর",
+      "registrationCouncil": "নিবন্ধন কাউন্সিল",
+      "registrationCouncilPlaceholder": "যেমন Karnataka Medical Council",
+      "photoUrl": "ছবির URL",
+      "photoUrlPlaceholder": "https://... অথবা /brand/reviewers/name.jpg",
+      "bio": "সংক্ষিপ্ত পরিচিতি",
+      "add": "পর্যালোচক যোগ করুন"
+    },
+    "footer": {
+      "developedBy": "নির্মাতা",
+      "developedByHint": "খালি = কোনো কৃতিত্ব লাইন নেই।",
+      "developerUrl": "নির্মাতার URL",
+      "disclaimer": "দাবিত্যাগ",
+      "disclaimerHint": "ফুটারে সংক্ষিপ্ত দাবিত্যাগ। খালি = অন্তর্নির্মিত লেখা।",
+      "preview": "ফুটারের প্রিভিউ",
+      "disclaimerLabel": "দাবিত্যাগ:",
+      "builtInDisclaimer": "অন্তর্নির্মিত দাবিত্যাগের লেখা",
+      "developedByPreview": "নির্মাতা: <0>{{name}}<1/></0>"
+    }
+  },
+  "shell": {
+    "title": "কর্মী কনসোল",
+    "login": {
+      "title": "কর্মী সাইন-ইন",
+      "subtitle": "Heal India Global অপারেশনস ও ফিন্যান্স কনসোল"
+    },
+    "notFound": {
+      "title": "পৃষ্ঠাটি পাওয়া যায়নি",
+      "description": "আপনি যে পৃষ্ঠাটি খুঁজছেন সেটি নেই অথবা সরানো হয়েছে।"
+    }
+  },
+  "nav": {
+    "groups": {
+      "operations": "রোগী পরিচালনা",
+      "partners": "অংশীদার",
+      "catalog": "ক্যাটালগ ও কনটেন্ট",
+      "people": "ব্যক্তি ও অ্যাক্সেস",
+      "system": "সিস্টেম"
+    },
+    "dashboard": "ড্যাশবোর্ড",
+    "hospitals": "হাসপাতাল",
+    "agents": "এজেন্ট",
+    "cases": "কেস",
+    "bookings": "বুকিং",
+    "travel": "ট্রাভেল ডেস্ক",
+    "messages": "সাপোর্ট ইনবক্স",
+    "users": "ব্যবহারকারী",
+    "staff": "কর্মী",
+    "catalog": "ক্যাটালগ",
+    "content": "কনটেন্ট",
+    "settings": "সেটিংস",
+    "website": "ওয়েবসাইট ও যোগাযোগ",
+    "languages": "ভাষা",
+    "translations": "অনুবাদ",
+    "audit": "অডিট লগ"
+  },
+  "ui": {
+    "loading": "লোড হচ্ছে…",
+    "spinner": "লোড হচ্ছে",
+    "empty": "এখানে এখনও কিছু নেই",
+    "error": {
+      "title": "ডেটা লোড করা যায়নি",
+      "retry": "আবার চেষ্টা করুন"
+    },
+    "table": {
+      "noResults": "কোনো ফলাফল নেই",
+      "noResultsHint": "ফিল্টার পরিবর্তন করে দেখুন।"
+    },
+    "pagination": {
+      "label": "পৃষ্ঠা নির্বাচন",
+      "summary_one": "{{total}}টি ফলাফল · পৃষ্ঠা {{page}} / {{pages}}",
+      "summary_other": "{{total}}টি ফলাফল · পৃষ্ঠা {{page}} / {{pages}}",
+      "previous": "আগের পৃষ্ঠা",
+      "next": "পরের পৃষ্ঠা"
+    },
+    "close": "বন্ধ করুন",
+    "cancel": "বাতিল",
+    "confirm": "নিশ্চিত করুন",
+    "reason": {
+      "label": "কারণ",
+      "tooShort": "অনুগ্রহ করে অন্তত ৩টি অক্ষর লিখুন।"
+    },
+    "track": {
+      "label": "অগ্রগতি",
+      "step": "ধাপ {{step}} / {{total}}",
+      "done": "(সম্পন্ন)",
+      "current": "(বর্তমান)"
+    }
+  },
+  "status": {
+    "active": "সক্রিয়",
+    "approved": "অনুমোদিত",
+    "verified": "যাচাইকৃত",
+    "confirmed": "নিশ্চিত",
+    "completed": "সম্পন্ন",
+    "resolved": "সমাধান হয়েছে",
+    "paid": "পরিশোধিত",
+    "done": "শেষ",
+    "booked": "বুক করা",
+    "accepted": "গৃহীত",
+    "admitted": "ভর্তি",
+    "in_treatment": "চিকিৎসাধীন",
+    "quoted": "কোটেশন পাঠানো হয়েছে",
+    "sent": "পাঠানো হয়েছে",
+    "applied": "আবেদন করা হয়েছে",
+    "invitation_issued": "আমন্ত্রণপত্র দেওয়া হয়েছে",
+    "acknowledged": "গৃহীত হয়েছে",
+    "enquiry": "অনুসন্ধান",
+    "pending": "অপেক্ষমাণ",
+    "pending_review": "পর্যালোচনার অপেক্ষায়",
+    "pending_payment": "পেমেন্টের অপেক্ষায়",
+    "pending_verification": "যাচাইয়ের অপেক্ষায়",
+    "requested": "অনুরোধ করা হয়েছে",
+    "documents_pending": "নথির অপেক্ষায়",
+    "uploaded": "আপলোড হয়েছে",
+    "open": "খোলা",
+    "suspended": "স্থগিত",
+    "rejected": "প্রত্যাখ্যাত",
+    "cancelled": "বাতিল",
+    "declined": "অস্বীকৃত",
+    "deleted": "মুছে ফেলা",
+    "failed": "ব্যর্থ",
+    "draft": "খসড়া",
+    "inactive": "নিষ্ক্রিয়",
+    "expired": "মেয়াদোত্তীর্ণ",
+    "closed": "বন্ধ",
+    "refunded": "ফেরত দেওয়া হয়েছে",
+    "submitted": "জমা দেওয়া হয়েছে",
+    "scheduled": "নির্ধারিত",
+    "processing": "প্রক্রিয়াধীন"
+  },
+  "components": {
+    "crud": {
+      "errors": {
+        "required": "আবশ্যক",
+        "wholeNumber": "একটি পূর্ণসংখ্যা লিখুন",
+        "min": "সর্বনিম্ন {{min}}",
+        "max": "সর্বোচ্চ {{max}}",
+        "number": "একটি সংখ্যা লিখুন",
+        "amount": "একটি সঠিক পরিমাণ লিখুন",
+        "url": "http(s) সহ সম্পূর্ণ URL লিখুন",
+        "email": "একটি সঠিক ইমেল লিখুন"
+      },
+      "deleted": "{{entity}} মুছে ফেলা হয়েছে",
+      "updated": "{{entity}} আপডেট হয়েছে",
+      "created": "{{entity}} তৈরি হয়েছে",
+      "actions": "কার্যক্রম",
+      "editRow": "{{label}} সম্পাদনা করুন",
+      "deleteRow": "{{label}} মুছুন",
+      "add": "{{entity}} যোগ করুন",
+      "empty": "এখনও কোনো {{entities}} নেই",
+      "search": "{{entities}} খুঁজুন…",
+      "readOnly": "শুধু দেখার জন্য: কেবল অপারেশনস অ্যাডমিনরা ক্যাটালগ সম্পাদনা করতে পারেন।",
+      "deleteTitle": "{{entity}} মুছবেন?",
+      "deleteMessage": "<0>{{label}}</0> সরিয়ে ফেলা হবে। এটি অন্য কোথাও ব্যবহৃত হলে সার্ভার অস্বীকার করতে পারে; সেক্ষেত্রে এটি নিষ্ক্রিয় করুন।",
+      "delete": "মুছুন",
+      "editTitle": "{{entity}} সম্পাদনা করুন",
+      "newTitle": "নতুন {{entity}}",
+      "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
+      "create": "তৈরি করুন",
+      "commaSeparated": "কমা দিয়ে আলাদা করুন",
+      "select": "বেছে নিন…"
+    },
+    "documents": {
+      "markedVerified": "নথিটি যাচাইকৃত হিসেবে চিহ্নিত হয়েছে",
+      "markedRejected": "নথিটি প্রত্যাখ্যাত হিসেবে চিহ্নিত হয়েছে",
+      "marked": "নথিটি চিহ্নিত হয়েছে: {{status}}",
+      "empty": "কোনো নথি আপলোড করা হয়নি।",
+      "view": "দেখুন",
+      "download": "ডাউনলোড",
+      "verify": "যাচাই করুন",
+      "reject": "প্রত্যাখ্যান করুন",
+      "rejectTitle": "নথি প্রত্যাখ্যান করুন",
+      "rejectNote": "আপলোডকারীর জন্য নোট",
+      "document": "নথি",
+      "loading": "নথি লোড হচ্ছে…"
+    },
+    "jsonDiff": {
+      "added": "যোগ হয়েছে",
+      "removed": "সরানো হয়েছে",
+      "changed": "পরিবর্তিত",
+      "changedFields_one": "{{value}}টি ফিল্ড পরিবর্তিত",
+      "changedFields_other": "{{value}}টি ফিল্ড পরিবর্তিত",
+      "showUnchanged": "অপরিবর্তিত ফিল্ড দেখান",
+      "rawJson": "মূল JSON",
+      "before": "আগে",
+      "after": "পরে",
+      "field": "ফিল্ড",
+      "noData": "এই ঘটনার জন্য আগে/পরের কোনো ডেটা রেকর্ড করা হয়নি।",
+      "noChanges": "কোনো ফিল্ডে পরিবর্তন নেই।"
+    },
+    "money": {
+      "currency": "মুদ্রা"
+    }
+  },
+  "charts": {
+    "noData": "এই সময়ের জন্য কোনো ডেটা নেই",
+    "noEnquiries": "এই সময়ে কোনো অনুসন্ধান নেই",
+    "stepConversion": "আগের ধাপের {{value}}"
+  },
+  "dashboard": {
+    "title": "ড্যাশবোর্ড",
+    "greeting": {
+      "morning": "সুপ্রভাত, {{name}}",
+      "afternoon": "শুভ অপরাহ্ন, {{name}}",
+      "evening": "শুভ সন্ধ্যা, {{name}}"
+    },
+    "description": "যেসব কাজে পদক্ষেপ দরকার সেগুলো দিয়ে শুরু করুন, তারপর দেখুন প্ল্যাটফর্ম কেমন চলছে।",
+    "refresh": "রিফ্রেশ",
+    "updatedAt": "আপডেট: {{date}}",
+    "attentionTitle": "আপনার মনোযোগ প্রয়োজন",
+    "attentionDescription": "প্রতিটি কার্ড সংশ্লিষ্ট তালিকা খোলে, আগে থেকেই ফিল্টার করা এবং পুরোনোটি আগে সাজানো।",
+    "performance": "পারফরম্যান্স",
+    "range": "{{from}} – {{to}}, তুলনা {{prevFrom}} – {{prevTo}}-এর সাথে",
+    "loading": "লোড হচ্ছে…",
+    "periodLabel": "সময়কাল",
+    "periods": {
+      "7d": {
+        "label": "৭ দিন",
+        "long": "গত ৭ দিন"
+      },
+      "30d": {
+        "label": "৩০ দিন",
+        "long": "গত ৩০ দিন"
+      },
+      "90d": {
+        "label": "৯০ দিন",
+        "long": "গত ৯০ দিন"
+      },
+      "mtd": {
+        "label": "এই মাস",
+        "long": "এই মাস"
+      }
+    },
+    "kpi": {
+      "new_cases": {
+        "label": "অনুসন্ধান",
+        "help": "নতুন অনুসন্ধান: নির্বাচিত সময়ে রোগী, এজেন্ট বা কর্মীদের খোলা কেস।"
+      },
+      "quotes_sent": {
+        "label": "পাঠানো কোটেশন",
+        "help": "নির্বাচিত সময়ে হাসপাতালগুলোর রোগীদের পাঠানো কোটেশন (খসড়া বাদে)।"
+      },
+      "bookings": {
+        "label": "বুকিং",
+        "help": "নিশ্চিত বুকিং: যেসব বুকিংয়ের অগ্রিম বা পুরো পেমেন্ট নির্বাচিত সময়ে পাওয়া গেছে।"
+      },
+      "conversion_rate": {
+        "label": "রূপান্তর",
+        "help": "অনুসন্ধান থেকে বুকিং: এই সময়ে খোলা কেসগুলোর মধ্যে যেগুলো এখন পর্যন্ত \"বুক করা\" (বা তার পরের) ধাপে পৌঁছেছে তার অনুপাত। সাম্প্রতিক কেস এখনও রূপান্তরিত হতে পারে।"
+      },
+      "gmv_minor": {
+        "label": "GMV",
+        "help": "মোট লেনদেন মূল্য: এই সময়ে গৃহীত রোগীদের পেমেন্ট, পেমেন্টের দিনের হারে INR-এ রূপান্তরিত।"
+      },
+      "revenue_minor": {
+        "label": "আয়",
+        "help": "প্ল্যাটফর্মের আয়: এই সময়ে লেজারে স্বীকৃত কমিশন ও সার্ভিস ফি আয়, রিভার্সাল বাদে।"
+      },
+      "about": "{{label}} সম্পর্কে",
+      "previous": "আগের সময়কাল: {{value}}",
+      "vsPrev": "আগের তুলনায়",
+      "forPeriod": "{{period}} সময়ের জন্য"
+    },
+    "funnel": {
+      "title": "কেস ফানেল",
+      "description": "{{period}} সময়ে খোলা কেস, সবচেয়ে দূরের পৌঁছানো ধাপ অনুযায়ী",
+      "conversion": "অনুসন্ধান → বুক করা: <0>{{value}}</0>"
+    },
+    "bySpecialty": {
+      "title": "বিশেষত্ব অনুযায়ী কেস",
+      "description": "{{period}} সময়ে খোলা কেস"
+    },
+    "topHospitals": {
+      "title": "শীর্ষ হাসপাতাল",
+      "description": "{{period}} সময়ে গৃহীত GMV অনুযায়ী",
+      "bookings_one": "{{value}}টি বুকিং",
+      "bookings_other": "{{value}}টি বুকিং",
+      "tooltip_one": "{{name}}: {{value}}টি বুকিং থেকে {{amount}}",
+      "tooltip_other": "{{name}}: {{value}}টি বুকিং থেকে {{amount}}"
+    },
+    "activityAria": "কার্যকলাপ ও প্ল্যাটফর্মের সারসংক্ষেপ",
+    "recentActivity": {
+      "title": "সাম্প্রতিক কার্যকলাপ",
+      "description": "কেস, কোটেশন, বুকিং ও অংশীদারদের সাম্প্রতিক কার্যক্রম",
+      "auditLink": "অডিট লগ"
+    },
+    "snapshot": {
+      "title": "প্ল্যাটফর্মের সারসংক্ষেপ",
+      "description": "এই মুহূর্তে, শুরু থেকে এ পর্যন্ত",
+      "escrow": "এসক্রোতে রোগীদের অর্থ",
+      "pendingSettlements": "অপেক্ষমাণ সেটেলমেন্ট",
+      "activeHospitals": "সক্রিয় হাসপাতাল",
+      "activeAgents": "সক্রিয় এজেন্ট",
+      "openCases": "খোলা কেস",
+      "patients": "নিবন্ধিত রোগী"
+    },
+    "trend": {
+      "metrics": {
+        "gmv": "GMV",
+        "bookings": "বুকিং",
+        "new_cases": "অনুসন্ধান"
+      },
+      "perWeek": "প্রতি সপ্তাহে {{metric}}",
+      "perDay": "প্রতিদিন {{metric}}",
+      "total": "মোট {{value}}",
+      "metricLabel": "মেট্রিক",
+      "showChart": "চার্ট দেখান",
+      "showTable": "টেবিল হিসেবে দেখান",
+      "empty": {
+        "gmv": "এই সময়ে কোনো GMV নেই",
+        "bookings": "এই সময়ে কোনো বুকিং নেই",
+        "new_cases": "এই সময়ে কোনো অনুসন্ধান নেই"
+      },
+      "emptyHint": "প্রবণতা দেখতে উপরে একটি দীর্ঘ সময়কাল বেছে নিন।",
+      "byWeek": "সপ্তাহ অনুযায়ী {{metric}}",
+      "byDay": "দিন অনুযায়ী {{metric}}",
+      "weekOf": "সপ্তাহ শুরু",
+      "day": "দিন",
+      "weekOfDate": "{{date}} থেকে শুরু সপ্তাহ"
+    },
+    "admissions": {
+      "title": "এই সপ্তাহের ভর্তি",
+      "description": "আগামী ৭ দিনে যেসব রোগীর হাসপাতালে আসার কথা",
+      "allBookings": "সব বুকিং",
+      "empty": "আগামী ৭ দিনে কোনো ভর্তি নেই",
+      "patient": "রোগী"
+    },
+    "infoTip": "এই মেট্রিক সম্পর্কে",
+    "delta": {
+      "noChange": "কোনো পরিবর্তন নেই",
+      "new": "নতুন",
+      "points": "{{value}} পয়েন্ট"
+    },
+    "age": {
+      "minutes": "{{value}} মিনিট",
+      "hours": "{{value}} ঘণ্টা",
+      "days": "{{value}} দিন"
+    },
+    "activity": {
+      "error": "সাম্প্রতিক কার্যকলাপ লোড করা যায়নি।",
+      "empty": "এখনও কোনো কার্যকলাপ নেই।",
+      "someone": "একজন ব্যবহারকারী",
+      "system": "সিস্টেম",
+      "caseCreate": "<0>{{who}}</0> কেস {{number}} খুলেছেন",
+      "caseCreateNoNumber": "<0>{{who}}</0> একটি কেস খুলেছেন",
+      "caseStatus": "<0>{{who}}</0> একটি কেস {{status}} ধাপে সরিয়েছেন",
+      "caseStatusUnknown": "<0>{{who}}</0> একটি কেসের স্ট্যাটাস বদলেছেন",
+      "assignCoordinator": "<0>{{who}}</0> একটি কেসে সমন্বয়কারী নিয়োগ করেছেন",
+      "quoteSend": "<0>{{who}}</0> একটি কোটেশন পাঠিয়েছেন",
+      "quoteSendAmount": "<0>{{who}}</0> {{amount}}-এর একটি কোটেশন পাঠিয়েছেন",
+      "quoteAccept": "<0>{{who}}</0> একটি কোটেশন গ্রহণ করেছেন",
+      "bookingConfirm": "<0>{{who}}</0> একটি বুকিং নিশ্চিত করেছেন",
+      "bookingAdmit": "<0>{{who}}</0> একজন রোগীকে ভর্তি করেছেন",
+      "bookingComplete": "<0>{{who}}</0> একটি চিকিৎসা সম্পন্ন করেছেন",
+      "paymentCaptured": "<0>{{who}}</0> একটি পেমেন্ট গ্রহণ করেছেন",
+      "paymentCapturedAmount": "<0>{{who}}</0> {{amount}}-এর একটি পেমেন্ট গ্রহণ করেছেন",
+      "hospitalApprove": "<0>{{who}}</0> একটি হাসপাতাল অনুমোদন করেছেন",
+      "agentApprove": "<0>{{who}}</0> একজন এজেন্ট অনুমোদন করেছেন",
+      "documentUpload": "<0>{{who}}</0> একটি নথি আপলোড করেছেন",
+      "generic": "<0>{{who}}</0>: {{text}}"
+    },
+    "attention": {
+      "cardLabel": "{{label}}: {{value}}",
+      "cardLabelAge": "{{label}}: {{value}}, সবচেয়ে পুরোনো অপেক্ষা {{age}}",
+      "oldestWaiting": "সবচেয়ে পুরোনো অপেক্ষা",
+      "oldest": "সবচেয়ে পুরোনো",
+      "caughtUp": "আপনার সব কাজ শেষ",
+      "caughtUpHint": "এই মুহূর্তে আপনার কোনো তালিকায় পদক্ষেপ দরকার নেই।",
+      "allClear": "সব পরিষ্কার:",
+      "emergency_cases": {
+        "label": "জরুরি স্ক্রিনিং",
+        "description": "খোলা কেস যেগুলোকে AI স্ক্রিনিং সম্ভাব্য জরুরি অবস্থা হিসেবে চিহ্নিত করেছে"
+      },
+      "open_sos": {
+        "label": "খোলা SOS সতর্কতা",
+        "description": "ভারতে থাকা রোগীরা যারা জরুরি সাহায্য চাইছেন"
+      },
+      "quotes_overdue": {
+        "label": "SLA পেরোনো কোটেশন",
+        "description": "যেসব অনুসন্ধান হাসপাতালের কোটেশনের জন্য {{hours}} ঘণ্টার বেশি অপেক্ষা করছে"
+      },
+      "unassigned_enquiries": {
+        "label": "অনির্ধারিত অনুসন্ধান",
+        "description": "সমন্বয়কারী ছাড়া নতুন অনুসন্ধান"
+      },
+      "quotes_awaiting_patient": {
+        "label": "রোগীর সিদ্ধান্তের অপেক্ষায়",
+        "description": "পাঠানো কোটেশন যা রোগী এখনও গ্রহণ করেননি"
+      },
+      "hospitals_pending": {
+        "label": "পর্যালোচনার জন্য হাসপাতাল",
+        "description": "অনুমোদনের জন্য জমা দেওয়া হাসপাতাল প্রোফাইল"
+      },
+      "agents_pending": {
+        "label": "অনুমোদনের জন্য এজেন্ট",
+        "description": "অনুমোদনের অপেক্ষায় থাকা এজেন্ট নিবন্ধন"
+      },
+      "agent_kyc_pending": {
+        "label": "যাচাইয়ের জন্য এজেন্ট KYC",
+        "description": "যেসব এজেন্টের KYC নথি যাচাইয়ের অপেক্ষায়"
+      },
+      "payout_accounts_unverified": {
+        "label": "যাচাইয়ের জন্য পেআউট অ্যাকাউন্ট",
+        "description": "যেসব ব্যাংক অ্যাকাউন্ট দ্বিতীয় একজন ফিন্যান্স ব্যবহারকারীর যাচাই প্রয়োজন"
+      },
+      "markPaidApprovals": {
+        "label": "অনুমোদনের জন্য ব্যাংক ট্রান্সফার",
+        "description": "পরিশোধিত চিহ্নিত করার অনুরোধ, দ্বিতীয় ফিন্যান্স ব্যবহারকারীর অপেক্ষায়"
+      },
+      "refunds": {
+        "label": "অনুমোদনের জন্য রিফান্ড",
+        "description": "অনুমোদনের অপেক্ষায় থাকা রিফান্ড অনুরোধ"
+      },
+      "batches": {
+        "label": "অনুমোদনের জন্য সেটেলমেন্ট ব্যাচ",
+        "description": "দ্বিতীয় অনুমোদনকারীর অপেক্ষায় থাকা ব্যাচ"
+      },
+      "payoutConfirmations": {
+        "label": "নিশ্চিত করার জন্য পেআউট",
+        "description": "UTR সহ পেআউট, দ্বিতীয় ফিন্যান্স ব্যবহারকারীর অপেক্ষায়"
+      },
+      "payoutReversals": {
+        "label": "অনুমোদনের জন্য ব্যর্থ পেআউট",
+        "description": "ব্যর্থতা / রিভার্সালের অনুরোধ, দ্বিতীয় অনুমোদনকারীর অপেক্ষায়"
+      },
+      "payoutReconciliations": {
+        "label": "মিলিয়ে দেখার জন্য পেআউট",
+        "description": "গেটওয়ের ফলাফল অজানা - ব্যাংক স্টেটমেন্ট দেখুন"
+      },
+      "amountReviews": {
+        "label": "পরিমাণের পার্থক্য",
+        "description": "অনুরোধের চেয়ে ভিন্ন পরিমাণে পরিশোধিত অর্ডার"
+      },
+      "adjustments": {
+        "label": "লেজার সমন্বয়",
+        "description": "অনুমোদনের অপেক্ষায় থাকা ম্যানুয়াল সমন্বয়"
+      }
+    }
+  },
+  "languages": {
+    "title": "ভাষা",
+    "description": "অনুবাদ পর্যালোচনা হয়ে গেলে একটি ভাষা চালু করুন। ইংরেজি ডিফল্ট ভাষা এবং সবসময় চালু থাকে। পরিবর্তন প্রায় এক মিনিটের মধ্যে অ্যাপগুলোতে পৌঁছায়।",
+    "toast": {
+      "enabled": "{{name}} চালু করা হয়েছে",
+      "disabled": "{{name}} বন্ধ করা হয়েছে"
+    },
+    "columns": {
+      "language": "ভাষা",
+      "code": "কোড",
+      "direction": "লেখার দিক",
+      "overall": "অনূদিত",
+      "updated": "শেষ পরিবর্তন",
+      "enabled": "চালু"
+    },
+    "rtl": "ডান থেকে বাঁয়ে",
+    "ltr": "বাঁ থেকে ডানে",
+    "overallLabel": "{{name}}: অনূদিত লেখার অংশ",
+    "defaultHint": "ইংরেজি ডিফল্ট ভাষা এবং এটি বন্ধ করা যায় না।",
+    "alwaysOn": "সবসময় চালু",
+    "on": "চালু",
+    "off": "বন্ধ",
+    "empty": "কোনো ভাষা নেই",
+    "readOnly": "শুধু দেখার জন্য: কেবল অ্যাডমিনরা ভাষা চালু বা বন্ধ করতে পারেন।",
+    "byApp": {
+      "title": "অ্যাপ অনুযায়ী সম্পূর্ণতা",
+      "description": "প্রতিটি অ্যাপের ইংরেজি লেখার যে অংশের অনুবাদ আছে (অ্যাপের সাথে দেওয়া বা অ্যাডমিনের সম্পাদিত)। কী বাকি আছে দেখতে একটি মান বেছে নিন, তা <0>অনুবাদ</0> পৃষ্ঠায় খুলবে।",
+      "empty": "শুধু ইংরেজি উপলব্ধ।",
+      "app": "অ্যাপ",
+      "overall": "সব অ্যাপ",
+      "openMissing": "{{app}}-এ {{name}} ভাষায় বাকি লেখা"
+    },
+    "disable": {
+      "title": "{{name}} বন্ধ করবেন?",
+      "message": "{{name}} সব ভাষা নির্বাচক এবং ওয়েবসাইট থেকে সরে যাবে। যারা এটি বেছে নিয়েছিলেন তারা ইংরেজি দেখবেন। অনুবাদ ও আপনার সম্পাদনা সংরক্ষিত থাকবে।",
+      "confirm": "বন্ধ করুন"
+    },
+    "apps": {
+      "patient_web": "রোগীর ওয়েব",
+      "agent": "এজেন্ট পোর্টাল",
+      "hospital": "হাসপাতাল পোর্টাল",
+      "admin": "অ্যাডমিন পোর্টাল",
+      "website": "ওয়েবসাইট",
+      "mobile": "মোবাইল অ্যাপ",
+      "server": "ইমেল, নোটিফিকেশন ও API বার্তা"
+    }
+  },
+  "translations": {
+    "title": "অনুবাদ",
+    "description": "যেকোনো অ্যাপের যেকোনো লেখা যেকোনো ভাষায় পরিবর্তন করুন। পরিবর্তন প্রায় এক মিনিটের মধ্যে চালু হয় এবং অডিট লগে রেকর্ড হয়।",
+    "app": "অ্যাপ",
+    "language": "ভাষা",
+    "languageOff": "{{name}} (বন্ধ)",
+    "placeholdersHint": "{{example1}} বা {{example2}}-এর মতো প্লেসহোল্ডার ঠিক যেমন আছে তেমনই রাখুন - এগুলো আসল মান দিয়ে প্রতিস্থাপিত হয়।",
+    "columns": {
+      "key": "কী",
+      "source": "ইংরেজি",
+      "shipped": "অ্যাপের সাথে দেওয়া অনুবাদ",
+      "override": "পরিবর্তিত লেখা",
+      "actions": "কার্যক্রম"
+    },
+    "missing": "নেই",
+    "updatedBy": "{{name}} · {{date}}",
+    "edit": "সম্পাদনা",
+    "editRow": "{{key}} সম্পাদনা করুন",
+    "clear": "পরিবর্তন মুছুন",
+    "clearRow": "{{key}}-এর পরিবর্তন মুছুন",
+    "toast": {
+      "saved": "পরিবর্তন সংরক্ষিত হয়েছে",
+      "cleared": "পরিবর্তন মুছে ফেলা হয়েছে - অ্যাপের সাথে দেওয়া লেখা ফিরে এসেছে"
+    },
+    "status": {
+      "label": "অনুবাদের অবস্থা",
+      "all": "সব",
+      "missing": "অনুবাদ নেই",
+      "overridden": "পরিবর্তিত",
+      "translated": "অনূদিত"
+    },
+    "searchPlaceholder": "কী, ইংরেজি লেখা বা অনুবাদ খুঁজুন…",
+    "empty": "কোনো লেখা মেলেনি",
+    "readOnly": "শুধু দেখার জন্য: কেবল অ্যাডমিনরা লেখা পরিবর্তন করতে পারেন।",
+    "clearDialog": {
+      "title": "পরিবর্তন মুছবেন?",
+      "message": "লেখাটি অ্যাপের সাথে দেওয়া অনুবাদে ফিরে যাবে (অনুবাদ না থাকলে ইংরেজিতে)।"
+    },
+    "editDialog": {
+      "title": "লেখা সম্পাদনা · {{language}}",
+      "override": "আপনার লেখা",
+      "emptyError": "লেখাটি লিখুন, অথবা অ্যাপের সাথে দেওয়া লেখায় ফিরে যেতে \"পরিবর্তন মুছুন\" ব্যবহার করুন।",
+      "counter_one": "{{value}} / {{max}} অক্ষর",
+      "counter_other": "{{value}} / {{max}} অক্ষর",
+      "save": "সংরক্ষণ করুন",
+      "missingPlaceholders_one": "ইংরেজি লেখার এই প্লেসহোল্ডারটি নেই: {{list}}। এটি ঠিক যেমন আছে তেমনই রাখুন; এটি আসল মান দিয়ে প্রতিস্থাপিত হয়।",
+      "missingPlaceholders_other": "ইংরেজি লেখার এই প্লেসহোল্ডারগুলো নেই: {{list}}। এগুলো ঠিক যেমন আছে তেমনই রাখুন; এগুলো আসল মান দিয়ে প্রতিস্থাপিত হয়।",
+      "tagsNote": "ইংরেজি লেখায় লিংক বা বোল্ড শব্দ <0>…</0>-এর মতো সংখ্যাযুক্ত ট্যাগ দিয়ে চিহ্নিত করা আছে। আপনার লেখা সাধারণ টেক্সট হিসেবে সংরক্ষিত হয়: এই ট্যাগগুলো সরে যায়, ফলে লিংক বা বোল্ড স্টাইল হারিয়ে যায়।",
+      "plainText": "শুধু সাধারণ টেক্সট: সংরক্ষণের সময় HTML সরিয়ে ফেলা হয়। প্রতিটি পরিবর্তন অডিট লগে রেকর্ড হয়।"
+    }
+  }
+}

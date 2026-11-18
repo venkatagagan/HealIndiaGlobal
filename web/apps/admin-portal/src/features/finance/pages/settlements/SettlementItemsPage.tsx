@@ -4,9 +4,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Download, Layers, Lock, Unlock, Users } from 'lucide-react';
 import {
   financeApi,
-  PAYEE_TYPE_LABELS,
   SETTLEMENT_ITEM_STATUSES,
-  SETTLEMENT_ITEM_STATUS_LABELS,
   type PayeeType,
   type SettlementItemListParams,
   type SettlementItemOut,
@@ -36,11 +34,12 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { formatMoney } from '../../lib/shared';
+import { enumLabel, ft, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys, useHoldItem, useReleaseItem } from '../../api/queries';
 import { notifyError, notifySuccess, ReasonDialog } from '../../components/finance';
 import {
   GenerateBatchDialog,
-  PAYEE_TYPE_OPTIONS,
+  payeeTypeOptions,
   PayeeFilter,
   payeeParams,
   SettlementTabs,
@@ -85,7 +84,7 @@ function toApiFilters(f: ItemFilters): ApiFilters {
 }
 
 /** Tab labels: "reversed" items are clawbacks (refund after completion). */
-const STATUS_LABEL: Record<SettlementItemStatus, string> = { ...SETTLEMENT_ITEM_STATUS_LABELS, reversed: 'Clawback / reversed' };
+const statusLabel = (s: SettlementItemStatus) => (s === 'reversed' ? ft('settlementItems.reversedLabel') : enumLabel('status', s));
 const QUICK_STATUSES: SettlementItemStatus[] = ['eligible', 'on_hold', 'pending', 'batched', 'paid', 'reversed'];
 
 // ---------------------------------------------------------------------------------------------------------
@@ -94,32 +93,32 @@ const QUICK_STATUSES: SettlementItemStatus[] = ['eligible', 'on_hold', 'pending'
 const money = (minor: number, currency: string) => fromMinor(minor, currency);
 const signed = (minor: number) => (minor < 0 ? 'text-danger-ink' : undefined);
 
-function baseColumns(): DataTableColumn<SettlementItemOut>[] {
+function baseColumns(t: FinanceT): DataTableColumn<SettlementItemOut>[] {
   return [
     {
       key: 'payee',
-      header: 'Payee',
+      header: t('settlementUi.payee'),
       sticky: true,
       mobile: 'primary',
       className: 'max-w-60',
       cell: (i) => (
         <TextCell
           primary={<span className="font-medium">{i.payee_name ?? `${i.payee_id.slice(0, 8)}…`}</span>}
-          secondary={PAYEE_TYPE_LABELS[i.payee_type]}
+          secondary={enumLabel('payeeType', i.payee_type)}
         />
       ),
       exportValue: (i) => i.payee_name ?? i.payee_id,
     },
     {
       key: 'booking',
-      header: 'Booking',
+      header: t('orders.columns.booking'),
       mobile: 'secondary',
       cell: (i) => <IdCell value={i.booking_number ?? i.booking_id.slice(0, 8)} />,
       exportValue: (i) => i.booking_number ?? i.booking_id,
     },
     {
       key: 'gross',
-      header: 'Gross',
+      header: t('batches.columns.gross'),
       align: 'end',
       sortable: true,
       sortKey: 'gross_minor',
@@ -129,14 +128,14 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'commission',
-      header: 'Commission',
+      header: t('reports.commission'),
       align: 'end',
       cell: (i) => <MoneyCell minor={i.commission_minor} currency={i.currency} className={cnMuted(signed(i.commission_minor))} />,
       exportValue: (i) => money(i.commission_minor, i.currency),
     },
     {
       key: 'tax',
-      header: 'GST',
+      header: t('batchDetail.gst'),
       align: 'end',
       defaultHidden: true,
       cell: (i) => <MoneyCell minor={i.tax_minor} currency={i.currency} className={cnMuted(signed(i.tax_minor))} />,
@@ -144,7 +143,7 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'tds',
-      header: 'TDS',
+      header: t('batchDetail.tds'),
       align: 'end',
       defaultHidden: true,
       cell: (i) => <MoneyCell minor={i.tds_minor} currency={i.currency} className={cnMuted(signed(i.tds_minor))} />,
@@ -152,7 +151,7 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'net',
-      header: 'Net payable',
+      header: t('batches.columns.netPayable'),
       align: 'end',
       sortable: true,
       sortKey: 'net_minor',
@@ -163,12 +162,12 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('orders.columns.status'),
       sortable: true,
       mobile: 'badge',
       cell: (i) => (
         <span className="flex max-w-52 flex-col items-start gap-0.5">
-          <StatusBadgeCell status={i.status} kind="settlementItem" label={STATUS_LABEL[i.status]} />
+          <StatusBadgeCell status={i.status} kind="settlementItem" label={statusLabel(i.status)} />
           {i.hold_reason && i.status === 'on_hold' && (
             <span className="block max-w-full truncate text-xs text-muted" title={i.hold_reason}>
               {i.hold_reason}
@@ -176,18 +175,18 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
           )}
           {i.batch_id && (
             <Link to={financePath(`settlements/batches/${i.batch_id}`)} className="text-xs font-medium text-primary-ink hover:underline">
-              View batch
+              {t('payouts.viewBatch')}
             </Link>
           )}
         </span>
       ),
-      mobileCell: (i) => <StatusBadgeCell status={i.status} kind="settlementItem" label={STATUS_LABEL[i.status]} />,
-      exportValue: (i) => STATUS_LABEL[i.status] ?? i.status,
+      mobileCell: (i) => <StatusBadgeCell status={i.status} kind="settlementItem" label={statusLabel(i.status)} />,
+      exportValue: (i) => statusLabel(i.status),
     },
     {
       key: 'eligible',
-      header: 'Eligible from',
-      title: 'Eligible from',
+      header: t('settlementItems.eligibleFrom'),
+      title: t('settlementItems.eligibleFrom'),
       sortable: true,
       sortKey: 'eligible_at',
       sortDescFirst: true,
@@ -196,7 +195,7 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'batch',
-      header: 'Batch',
+      header: t('batches.columns.batch'),
       defaultHidden: true,
       cell: (i) =>
         i.batch_id ? (
@@ -205,7 +204,7 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
             className="text-sm font-medium text-primary-ink hover:underline"
             onClick={(e) => e.stopPropagation()}
           >
-            View batch
+            {t('payouts.viewBatch')}
           </Link>
         ) : (
           <span className="text-muted">—</span>
@@ -214,7 +213,7 @@ function baseColumns(): DataTableColumn<SettlementItemOut>[] {
     },
     {
       key: 'created',
-      header: 'Created',
+      header: t('orders.columns.created'),
       sortable: true,
       sortKey: 'created_at',
       sortDescFirst: true,
@@ -229,13 +228,12 @@ function cnMuted(extra?: string) {
   return extra ? extra : 'text-muted [&>span]:font-normal';
 }
 
-const EXPORT_COLUMNS = baseColumns();
-
 // ---------------------------------------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function SettlementItemsPage() {
-  useDocumentTitle('Settlement items');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('nav.items.settlementItems'));
   const perms = useFinancePermissions();
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -260,13 +258,14 @@ export default function SettlementItemsPage() {
   const [releasing, setReleasing] = useState<SettlementItemOut | null>(null);
   const [generating, setGenerating] = useState(false);
 
+  const exportColumns = useMemo(() => baseColumns(t), [t]);
   const columns = useMemo<DataTableColumn<SettlementItemOut>[]>(
     () => [
-      ...baseColumns(),
+      ...exportColumns,
       {
         key: 'actions',
-        header: <span className="sr-only">Actions</span>,
-        title: 'Actions',
+        header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+        title: t('orderDetail.actions'),
         align: 'end',
         hideable: false,
         exportable: false,
@@ -276,34 +275,34 @@ export default function SettlementItemsPage() {
           if (i.status === 'pending' || i.status === 'eligible')
             return (
               <Button size="xs" variant="outline" onClick={() => setHolding(i)} leftIcon={<Lock className="size-3.5" aria-hidden />}>
-                Hold
+                {t('settlementItems.hold')}
               </Button>
             );
           if (i.status === 'on_hold')
             return (
               <Button size="xs" variant="outline" onClick={() => setReleasing(i)} leftIcon={<Unlock className="size-3.5" aria-hidden />}>
-                Release
+                {t('settlementItems.release')}
               </Button>
             );
           return null;
         },
       },
     ],
-    [perms.finance],
+    [exportColumns, perms.finance, t],
   );
 
   const c = counts.data;
   const statusOptions: FilterOption<SettlementItemStatus>[] = SETTLEMENT_ITEM_STATUSES.map((s) => ({
     value: s,
-    label: STATUS_LABEL[s],
+    label: statusLabel(s),
     tone: statusTone(s, 'settlementItem'),
     count: c?.counts[s] ?? (c ? 0 : undefined),
   }));
   const quickItems: QuickFilterItem<SettlementItemStatus>[] = [
-    { value: '', label: 'All', count: c?.total },
+    { value: '', label: t('common.all'), count: c?.total },
     ...QUICK_STATUSES.map((s) => ({
       value: s,
-      label: STATUS_LABEL[s],
+      label: statusLabel(s),
       count: c ? (c.counts[s] ?? 0) : undefined,
       tone: s === 'on_hold' ? ('warning' as const) : s === 'reversed' ? ('danger' as const) : undefined,
     })),
@@ -323,12 +322,12 @@ export default function SettlementItemsPage() {
   return (
     <div>
       <PageHeader
-        title="Settlement items"
-        description="Hospital net and agent commission per completed booking. Items become eligible after the hold period and are paid out in approved batches."
+        title={t('nav.items.settlementItems')}
+        description={t('settlementItems.description')}
         actions={
           perms.finance && (
             <Button onClick={() => setGenerating(true)} leftIcon={<Layers className="size-4" aria-hidden />}>
-              Generate batch
+              {t('settlementUi.generate.submit')}
             </Button>
           )
         }
@@ -336,7 +335,7 @@ export default function SettlementItemsPage() {
       <SettlementTabs />
       <DataTable
         id="admin.finance.settlement-items"
-        caption="Settlement items"
+        caption={t('nav.items.settlementItems')}
         table={table}
         columns={columns}
         rows={rows}
@@ -352,28 +351,28 @@ export default function SettlementItemsPage() {
             variant="outline"
             leftIcon={<Download className="size-4" aria-hidden />}
             onClick={() => {
-              exportCsv(selected, EXPORT_COLUMNS, `settlement-items-selected-${today()}`);
+              exportCsv(selected, exportColumns, `settlement-items-selected-${today()}`);
               clear();
             }}
           >
-            Export selected
+            {t('settlementItems.exportSelected')}
           </Button>
         )}
-        emptyTitle="No settlement items yet"
-        emptyDescription="Items are created when bookings complete: the hospital's net amount and the agent's commission."
+        emptyTitle={t('settlementItems.emptyTitle')}
+        emptyDescription={t('settlementItems.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Item status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('settlementItems.statusLabel')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Payee or booking number…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('settlementItems.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="settlement-items"
-                columns={EXPORT_COLUMNS}
+                columns={exportColumns}
                 rows={rows}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -383,29 +382,29 @@ export default function SettlementItemsPage() {
             }
             more={
               <SelectFilter
-                label="Payee type"
+                label={t('settlementUi.payeeType')}
                 icon={<Users className="size-3.5 opacity-70" aria-hidden />}
                 value={filters.payee_type}
                 onChange={(v) => setFilters({ payee_type: v, payee: '' })}
-                options={PAYEE_TYPE_OPTIONS}
+                options={payeeTypeOptions()}
               />
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('orders.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <PayeeFilter value={filters.payee} onChange={(v) => setFilter('payee', v)} payeeType={filters.payee_type} />
             <AmountRangeFilter
-              label="Net amount"
+              label={t('settlementItems.netAmount')}
               currency="INR"
               value={{ min: filters.min, max: filters.max }}
               onChange={({ min, max }) => setFilters({ min, max })}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('orders.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'eligible', label: 'Eligible (hold ends)' },
-                { value: 'created', label: 'Created' },
+                { value: 'eligible', label: t('settlementItems.eligibleHoldEnds') },
+                { value: 'created', label: t('orders.columns.created') },
               ]}
               field={filters.date_field || 'eligible'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}
@@ -415,18 +414,25 @@ export default function SettlementItemsPage() {
       />
       {pageTotals && (
         <p className="mt-2 flex flex-wrap justify-end gap-x-4 gap-y-1 px-1 text-xs text-muted tabular-nums">
-          <span>This page:</span>
-          <span>Gross {formatMoney(pageTotals.gross, currency)}</span>
-          <span>Commission {formatMoney(pageTotals.commission, currency)}</span>
-          <span className="font-semibold text-fg">Net {formatMoney(pageTotals.net, currency)}</span>
+          <span>{t('settlementItems.thisPage')}</span>
+          <span>{t('settlementItems.pageGross', { amount: formatMoney(pageTotals.gross, currency) })}</span>
+          <span>{t('settlementItems.pageCommission', { amount: formatMoney(pageTotals.commission, currency) })}</span>
+          <span className="font-semibold text-fg">{t('settlementItems.pageNet', { amount: formatMoney(pageTotals.net, currency) })}</span>
         </p>
       )}
 
       <ReasonDialog
         open={holding !== null}
-        title="Put item on hold"
-        description={holding ? `${holding.payee_name ?? 'Payee'} · net ${formatMoney(holding.net_minor, holding.currency)}` : undefined}
-        confirmLabel="Hold item"
+        title={t('settlementItems.holdTitle')}
+        description={
+          holding
+            ? t('settlementItems.holdDescription', {
+                payee: holding.payee_name ?? t('reviews.payeeFallback'),
+                amount: formatMoney(holding.net_minor, holding.currency),
+              })
+            : undefined
+        }
+        confirmLabel={t('settlementItems.holdConfirm')}
         loading={hold.isPending}
         onClose={() => setHolding(null)}
         onConfirm={(reason) =>
@@ -435,21 +441,21 @@ export default function SettlementItemsPage() {
             { id: holding.id, reason },
             {
               onSuccess: () => {
-                notifySuccess('Item placed on hold; it will be skipped by batches until released');
+                notifySuccess(ft('settlementItems.held'));
                 setHolding(null);
               },
-              onError: (e) => notifyError(e, 'Could not hold the item'),
+              onError: (e) => notifyError(e, ft('settlementItems.holdFailed')),
             },
           )
         }
       />
       <ReasonDialog
         open={releasing !== null}
-        title="Release hold"
-        description={releasing?.hold_reason ? `Held because: ${releasing.hold_reason}` : undefined}
-        label="Note"
+        title={t('settlementItems.releaseTitle')}
+        description={releasing?.hold_reason ? t('settlementItems.heldBecause', { reason: releasing.hold_reason }) : undefined}
+        label={t('settlementItems.note')}
         required={false}
-        confirmLabel="Release"
+        confirmLabel={t('settlementItems.release')}
         confirmVariant="primary"
         loading={release.isPending}
         onClose={() => setReleasing(null)}
@@ -459,10 +465,10 @@ export default function SettlementItemsPage() {
             { id: releasing.id, reason: reason || undefined },
             {
               onSuccess: () => {
-                notifySuccess('Hold released');
+                notifySuccess(ft('settlementItems.released'));
                 setReleasing(null);
               },
-              onError: (e) => notifyError(e, 'Could not release the item'),
+              onError: (e) => notifyError(e, ft('settlementItems.releaseFailed')),
             },
           )
         }

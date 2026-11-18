@@ -1,0 +1,1077 @@
+{
+  "nav": {
+    "groups": {
+      "payments": "Paiements",
+      "settlements": "Règlements",
+      "accounting": "Comptabilité et rapports"
+    },
+    "items": {
+      "overview": "Vue d'ensemble financière",
+      "orders": "Ordres de paiement",
+      "reconciliation": "Rapprochement bancaire",
+      "refunds": "Remboursements",
+      "settlementItems": "Éléments de règlement",
+      "batches": "Lots",
+      "payouts": "Versements",
+      "documents": "Factures et avoirs",
+      "payoutAccounts": "Comptes de versement",
+      "commissionRules": "Règles de commission",
+      "ledger": "Grand livre",
+      "reports": "Rapports"
+    }
+  },
+  "guard": {
+    "noAccessTitle": "Vous n'avez pas accès à cette page",
+    "noAccessDescription": "Cette page financière est réservée au personnel financier. Si vous avez besoin d'un accès, adressez-vous à un super administrateur."
+  },
+  "ui": {
+    "closeDialog": "Fermer la boîte de dialogue",
+    "loading": "Chargement…",
+    "tryAgain": "Réessayer",
+    "nothingToShow": "Rien à afficher",
+    "pagination": "Pagination",
+    "pageOf": "Page {{page}} sur {{pages}} · {{total}} au total",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante"
+  },
+  "common": {
+    "all": "Tous",
+    "reason": "Motif",
+    "fieldRequired": "{{label}} : champ obligatoire",
+    "charCount": "{{count}}/{{max}}",
+    "cancel": "Annuler"
+  },
+  "ledger": {
+    "tabs": {
+      "label": "Sections du grand livre",
+      "accounts": "Comptes",
+      "journal": "Journal",
+      "trialBalance": "Balance de vérification",
+      "adjustments": "Ajustements"
+    },
+    "txn": {
+      "title": "Écriture comptable",
+      "subtitle": "{{type}} · comptabilisée le {{posted}}",
+      "description": "Description",
+      "reference": "Référence",
+      "idempotencyKey": "Clé d'idempotence",
+      "transactionId": "Identifiant de transaction",
+      "debits": "Débits",
+      "credits": "Crédits",
+      "balanced": "Équilibrée",
+      "unbalanced": "Déséquilibrée"
+    },
+    "entries": {
+      "caption": "Écritures du grand livre",
+      "account": "Compte",
+      "debit": "Débit",
+      "credit": "Crédit"
+    }
+  },
+  "reviews": {
+    "people": {
+      "you": "vous",
+      "youNamed": "vous ({{name}})",
+      "unknownUser": "utilisateur {{id}}…"
+    },
+    "approval": {
+      "differentUser": {
+        "action": "Un autre utilisateur financier doit approuver cette action : vous l'avez demandée, vous ne pouvez donc pas également l'approuver.",
+        "bankTransfer": "Un autre utilisateur financier doit approuver ce virement bancaire : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
+        "payout": "Un autre utilisateur financier doit approuver ce versement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
+        "request": "Un autre utilisateur financier doit approuver cette demande : vous en êtes l'auteur, vous ne pouvez donc pas également l'approuver.",
+        "refund": "Un autre utilisateur financier doit approuver ce remboursement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
+        "adjustment": "Un autre utilisateur financier doit approuver cet ajustement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver."
+      },
+      "requestChanged": "Cette demande a été modifiée depuis que vous l'avez ouverte. Les dernières informations ont été rechargées : veuillez la vérifier à nouveau."
+    },
+    "requestedBy": "Demandé par",
+    "byAt": "{{name}} · {{at}}",
+    "requesterCannotApprove": "Vous êtes à l'origine de cette demande ; un autre utilisateur financier doit l'approuver",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "rejectRequest": "Rejeter la demande",
+    "rejectRequestFailed": "Impossible de rejeter la demande",
+    "approveRequestFailed": "Impossible d'approuver la demande",
+    "payeeFallback": "Bénéficiaire",
+    "markPaid": {
+      "title": "Confirmation de virement bancaire",
+      "awaitingTitle": "En attente d'un second utilisateur financier",
+      "awaitingBody": "La commande reste <0>en attente</0> jusqu'à ce qu'un autre utilisateur financier vérifie le relevé bancaire et approuve cette demande. L'approbation applique l'encaissement (séquestre, reçu, réservation) ; le rejet l'annule.",
+      "reference": "Référence bancaire / UTR",
+      "amountReceived": "Montant reçu",
+      "approvedBy": "Approuvé par",
+      "rejectedBy": "Rejeté par",
+      "approve": "Approuver le paiement",
+      "sameUser": "Vous avez enregistré cette demande, vous ne pouvez donc pas l'approuver (principe des quatre yeux). Demandez à un autre utilisateur financier de l'approuver ; vous pouvez toutefois la rejeter si elle a été saisie par erreur.",
+      "approveTitle": "Approuver le virement bancaire",
+      "approved": "Commande {{number}} marquée comme payée",
+      "approveFailed": "Impossible d'approuver le paiement",
+      "approveBody": "Confirmez que le montant de <0>{{amount}}</0> portant la référence <1>{{reference}}</1> a bien été crédité sur le compte bancaire de la plateforme. La commande est encaissée et comptabilisée dans le grand livre ; cette opération est irréversible, sauf par un remboursement.",
+      "rejectTitle": "Rejeter la demande « marquer comme payé »",
+      "rejected": "Demande « marquer comme payé » rejetée ; la commande reste en attente",
+      "rejectBody": "La commande reste en attente et aucune écriture n'est comptabilisée. Un utilisateur financier pourra enregistrer une nouvelle demande une fois le virement confirmé."
+    },
+    "amount": {
+      "cardTitle": "Vérifications de montant ({{count}})",
+      "expectedReceivedRich": "Attendu <0>{{expected}}</0>, reçu <1>{{received}}</1>",
+      "expectedReceived": "Attendu {{expected}}, reçu {{received}}.",
+      "shortBy": "Manque {{amount}}",
+      "overBy": "Excédent de {{amount}}",
+      "held": "Mis en attente le {{held}} · paiement <0>{{id}}</0>",
+      "decidedBy": "Décidé par {{name}} · {{at}}",
+      "returningNote": "Une restitution intégrale a été lancée, mais la passerelle de paiement ne l'a pas confirmée. Relancez la restitution (l'opération est idempotente).",
+      "retryReturn": "Relancer la restitution",
+      "returnInFull": "Restituer intégralement",
+      "accepted": "Montant reçu accepté",
+      "returned": "Paiement restitué au payeur",
+      "decisionFailed": "Impossible d'enregistrer la décision",
+      "noteLabel": "Note (conservée dans le journal d'audit)",
+      "noteRequired": "Une note est obligatoire",
+      "accept": {
+        "title": "Accepter le montant reçu",
+        "button": "Accepter le montant",
+        "explain": "Le paiement est encaissé pour le montant effectivement reçu et appliqué au prorata : la réservation n'est créditée que de ce montant, et le solde restant demeure dû par le patient."
+      },
+      "return": {
+        "title": "Restituer l'intégralité du paiement",
+        "button": "Restituer le paiement",
+        "explain": "La totalité du paiement est remboursée au payeur via la passerelle de paiement. Aucune écriture n'est comptabilisée et la commande reste impayée : le patient doit donc payer à nouveau le montant exact."
+      }
+    },
+    "refundThreshold": {
+      "title": "Double approbation",
+      "every": "Chaque remboursement doit être approuvé par un utilisateur financier autre que celui qui l'a demandé.",
+      "above": "Les remboursements supérieurs à <0>{{amount}}</0> (convertis en INR) doivent être approuvés par un utilisateur financier autre que celui qui les a demandés. Les remboursements inférieurs peuvent être approuvés par le demandeur.",
+      "defaultSetting": "Seuil par défaut ; l'équipe financière peut le modifier dans <0>Paramètres</0>.",
+      "customSetting": "Seuil défini dans <0>Paramètres</0>."
+    },
+    "payoutPaid": {
+      "utrBy": "UTR <0>{{utr}}</0> saisi par {{name}}",
+      "requesterCannotConfirm": "Vous avez enregistré cet UTR ; un autre utilisateur financier doit le confirmer",
+      "confirmed": "Versement confirmé comme payé",
+      "confirmFailed": "Impossible de confirmer le versement",
+      "confirm": "Confirmer comme payé",
+      "sameUser": "Un autre utilisateur financier doit confirmer.",
+      "rejectTitle": "Rejeter l'UTR enregistré",
+      "rejected": "UTR rejeté ; le versement est remis dans la file d'attente",
+      "rejectFailed": "Impossible de rejeter l'UTR",
+      "rejectBody": "L'UTR enregistré est effacé et le versement reste impayé. Aucune écriture n'est comptabilisée dans le grand livre."
+    },
+    "payoutFailure": {
+      "reversalRequestedBy": "Contre-passation demandée par {{name}} · réf. <0>{{reference}}</0>",
+      "failureRequestedBy": "Échec demandé par {{name}} · réf. <0>{{reference}}</0>",
+      "approveReversal": "Approuver la contre-passation",
+      "approveFailure": "Approuver l'échec",
+      "sameUser": "Vous avez fait cette demande, un autre utilisateur financier doit donc l'approuver.",
+      "approveReversalTitle": "Approuver la contre-passation du versement",
+      "approveFailureTitle": "Approuver l'échec du versement",
+      "reversed": "Versement contre-passé ; ses éléments sont de nouveau éligibles",
+      "failed": "Versement marqué comme échoué",
+      "reference": "Référence bancaire / de la passerelle",
+      "reversalEffect": "Le versement passe à l'état contre-passé, son écriture au grand livre est contre-passée et ses éléments redeviennent éligibles pour le prochain lot.",
+      "failureEffect": "Le versement passe en échec et ses éléments redeviennent éligibles pour le prochain lot.",
+      "checkReference": "Vérifiez d'abord la référence par rapport au relevé bancaire ou au tableau de bord de la passerelle de paiement.",
+      "rejectTitle": "Rejeter la demande d'échec",
+      "rejected": "Demande d'échec rejetée ; le versement reste inchangé"
+    },
+    "queue": {
+      "title": "En attente de revue financière",
+      "openOverview": "Ouvrir la vue d'ensemble financière",
+      "loadFailed": "Impossible de charger les files de revue.",
+      "amountReviews": "Écarts de montant à examiner",
+      "markPaidApprovals": "Virements bancaires en attente de 2e approbation",
+      "refunds": "Remboursements en attente d'approbation",
+      "batches": "Lots de règlement à approuver",
+      "payoutConfirmations": "Versements en attente de confirmation de l'UTR",
+      "payoutReconciliations": "Versements à rapprocher",
+      "payoutReversals": "Échecs de versement en attente de 2e approbation",
+      "adjustments": "Ajustements du grand livre à approuver"
+    }
+  },
+  "settlementUi": {
+    "tabs": {
+      "label": "Sections des règlements",
+      "items": "Éléments",
+      "batches": "Lots",
+      "payouts": "Versements",
+      "documents": "Factures et avoirs",
+      "needAttention": "{{count}} à traiter"
+    },
+    "payee": "Bénéficiaire",
+    "payeeType": "Type de bénéficiaire",
+    "picker": {
+      "chooseTypeFirst": "Choisissez d'abord un type de bénéficiaire",
+      "vendorIdAll": "Identifiant du fournisseur (vide = tous les fournisseurs)",
+      "vendorId": "Identifiant du fournisseur",
+      "searchHospitals": "Rechercher des hôpitaux",
+      "searchAgents": "Rechercher des agents",
+      "searchHospitalsPlaceholder": "Rechercher des hôpitaux…",
+      "searchAgentsPlaceholder": "Rechercher des agents…",
+      "allPayees": "Tous les bénéficiaires",
+      "select": "Sélectionner…",
+      "selected": "Sélectionné ({{id}}…)"
+    },
+    "generate": {
+      "title": "Générer un lot de règlement",
+      "description": "Regroupe les éléments de règlement éligibles (les éléments suspendus sont ignorés ; les éléments de reprise négatifs sont compensés avec les éléments positifs du bénéficiaire) dans un lot qui doit être approuvé par un autre utilisateur financier.",
+      "created": "Lot {{number}} créé : {{items}} éléments, montant net {{net}}",
+      "failed": "Impossible de générer le lot",
+      "chooseType": "Choisissez un type de bénéficiaire",
+      "payeeHint": "Laissez « Tous les bénéficiaires » pour inclure dans le lot tous les bénéficiaires de ce type",
+      "invalidId": "Saisissez un identifiant valide",
+      "periodEnd": "Fin de période",
+      "periodEndHint": "Inclure les éléments devenus éligibles à cette date ou avant",
+      "periodEndFuture": "La fin de période ne peut pas être dans le futur",
+      "makerNote": "Vous serez enregistré comme initiateur du lot. Un autre utilisateur financier ou super administrateur doit l'approuver avant le traitement des versements.",
+      "submit": "Générer le lot"
+    },
+    "payoutPaid": {
+      "titleReconcile": "Enregistrer le transfert Razorpay / l'UTR",
+      "title": "Enregistrer l'UTR du versement",
+      "labelReconcile": "Identifiant de transfert Razorpay (trf_…) ou UTR bancaire",
+      "label": "UTR / référence bancaire",
+      "confirm": "Enregistrer la référence",
+      "recorded": "Référence enregistrée ; un second utilisateur financier doit confirmer le versement",
+      "failed": "Impossible de marquer le versement comme payé",
+      "unknownTitle": "Résultat inconnu côté passerelle",
+      "unknownBody": "L'appel de transfert a expiré ou a renvoyé une réponse ambiguë ; il n'a donc pas été relancé. Recherchez ce versement dans le tableau de bord Razorpay (Route → Transfers) à l'aide de son identifiant (<0>notes.payout_id</0>). Si le transfert existe, saisissez ici son identifiant <1>trf_…</1> ; un autre utilisateur financier le confirmera ensuite. S'il n'existe pas, utilisez plutôt <2>Demander l'échec</2> afin que les éléments soient de nouveau intégrés à un lot.",
+      "body": "Saisissez l'UTR du virement bancaire. Cette action se limite à l'enregistrer : un autre utilisateur financier doit le confirmer avant que le versement ne soit comptabilisé dans le grand livre (dette envers le bénéficiaire → banque)."
+    },
+    "payoutFail": {
+      "requestTitle": "Demander l'échec du versement",
+      "markTitle": "Marquer le versement comme échoué",
+      "reasonRequired": "Un motif est obligatoire",
+      "referenceRequired": "Une référence de retour bancaire ou de la passerelle (au moins 3 caractères) est obligatoire",
+      "requested": "Échec demandé ; un autre utilisateur financier doit l'approuver",
+      "marked": "Versement marqué comme échoué ; ses éléments sont de nouveau éligibles",
+      "serverReferenceRequired": "Une référence bancaire ou de la passerelle est obligatoire pour déclarer ce versement en échec",
+      "failed": "Impossible de marquer le versement comme échoué",
+      "twoPersonTitle": "Contrôle à deux",
+      "dualProcessed": "Ce versement a déjà été marqué comme payé : des fonds ont donc pu quitter la plateforme. Enregistrez la référence du retour bancaire (rejet) ; un autre utilisateur financier doit ensuite approuver la demande avant que le versement ne soit contre-passé et que ses éléments redeviennent éligibles.",
+      "dualUnknown": "Le résultat de ce versement côté passerelle est inconnu : des fonds ont donc pu quitter la plateforme. Enregistrez la référence prouvant qu'aucun transfert n'a été effectué (p. ex. la recherche dans le tableau de bord Razorpay) ; un autre utilisateur financier doit ensuite approuver la demande avant que le versement ne passe en échec et que ses éléments redeviennent éligibles.",
+      "immediate": "Aucun fonds n'a encore été envoyé pour ce versement : il passe donc immédiatement en échec et ses éléments redeviennent éligibles pour le prochain lot.",
+      "referenceHint": "Référence de retour bancaire, identifiant de dossier de la passerelle, etc.",
+      "requestFailure": "Demander l'échec",
+      "markFailed": "Marquer comme échoué"
+    },
+    "rowActions": {
+      "recordTransfer": "Enregistrer le transfert",
+      "markPaid": "Marquer comme payé",
+      "reportBounce": "Signaler un rejet",
+      "reportBounceTitle": "La banque a retourné ce versement : demander une contre-passation"
+    }
+  },
+  "markPaid": {
+    "title": "Marquer la commande {{number}} comme payée",
+    "description": "Enregistrez le virement bancaire après avoir constaté le crédit sur le compte bancaire de la plateforme. Un second utilisateur financier l'approuve ensuite.",
+    "referenceRequired": "Saisissez la référence bancaire / l'UTR",
+    "amountRequired": "Saisissez le montant reçu",
+    "recorded": "Demande enregistrée ; la commande {{number}} reste en attente jusqu'à ce qu'un second utilisateur financier l'approuve",
+    "failed": "Impossible d'enregistrer le paiement",
+    "expected": "Attendu : <0>{{amount}}</0>",
+    "reference": "Référence bancaire / UTR",
+    "amountReceived": "Montant reçu ({{currency}})",
+    "mismatchTitle": "Le montant diffère de celui de la commande",
+    "mismatchBody": "Reçu {{received}} pour {{expected}} attendu. Seul un montant strictement identique peut être marqué comme payé. Demandez au payeur d'envoyer la différence (ou restituez le virement en dehors de la plateforme), puis enregistrez le paiement une fois le montant total reçu.",
+    "requestOnly": "Cette action enregistre uniquement une demande. La commande est encaissée lorsqu'un autre utilisateur financier l'approuve.",
+    "submit": "Enregistrer le paiement"
+  },
+  "refundDialog": {
+    "title": "Créer un remboursement",
+    "description": "Les remboursements sont placés dans la file d'approbation ; le remboursement via la passerelle de paiement est exécuté après approbation.",
+    "findOrder": "Rechercher une commande payée",
+    "findOrderHint": "Recherchez par numéro de commande, payeur ou numéro de réservation",
+    "noOrders": "Aucune commande remboursable trouvée",
+    "noOrdersHint": "Seules les commandes payées ou partiellement remboursées peuvent être remboursées.",
+    "payer": "Payeur",
+    "noBooking": "aucune réservation",
+    "amountRequired": "Saisissez le montant du remboursement",
+    "amountPositive": "Saisissez un montant positif",
+    "amountTooHigh": "Ne peut pas dépasser le montant remboursable de {{amount}}",
+    "reasonRequired": "Un motif est obligatoire",
+    "requested": "Remboursement de {{amount}} demandé",
+    "failed": "Impossible de créer le remboursement",
+    "order": "Commande <0>{{number}}</0>",
+    "chooseAnother": "Choisir une autre commande",
+    "noPayment": "Cette commande ne comporte aucun paiement encaissé pouvant être remboursé.",
+    "payment": "Paiement",
+    "captured": "Encaissé le {{at}}",
+    "refundableLower": "remboursable : {{amount}}",
+    "amount": "Montant ({{currency}})",
+    "refundable": "Remboursable : {{amount}}",
+    "full": "Totalité",
+    "submit": "Demander le remboursement"
+  },
+  "orders": {
+    "title": "Ordres de paiement",
+    "description": "Toutes les tentatives de paiement, toutes passerelles confondues — retrouvez un paiement, vérifiez son statut et ouvrez-le pour gérer paiements, remboursements et vérifications.",
+    "unknownPayer": "Payeur inconnu",
+    "paidBy": "payé par {{name}}",
+    "reviewRequired": "Vérification requise",
+    "openOrder": "Ouvrir la commande {{number}}",
+    "emptyTitle": "Aucun ordre de paiement pour le moment",
+    "emptyDescription": "Les commandes apparaissent lorsque des patients ou des agents lancent un paiement.",
+    "searchPlaceholder": "Commande, réservation ou patient…",
+    "columns": {
+      "order": "Commande",
+      "patient": "Patient",
+      "status": "Statut",
+      "gateway": "Passerelle",
+      "amount": "Montant",
+      "amountInr": "Montant (INR)",
+      "booking": "Réservation",
+      "method": "Mode",
+      "created": "Créée le",
+      "paid": "Payée le"
+    },
+    "filters": {
+      "orderStatus": "Statut de la commande",
+      "purpose": "Objet",
+      "currency": "Devise",
+      "financeReview": "Revue financière",
+      "anyReview": "Toute vérification",
+      "date": "Date"
+    }
+  },
+  "orderDetail": {
+    "title": "Ordre de paiement",
+    "documentTitle": "Commande {{number}}",
+    "actions": "Actions",
+    "purposeVia": "{{purpose}} via {{gateway}}",
+    "replaceMarkPaid": "Remplacer la demande « marquer comme payé »",
+    "payments": {
+      "title": "Paiements",
+      "payment": "Paiement",
+      "base": "Base ({{currency}})",
+      "baseAmount": "Montant en devise de base",
+      "feeTax": "Frais + taxes",
+      "refunded": "Remboursé",
+      "captured": "Encaissé",
+      "refund": "Rembourser",
+      "emptyTitle": "Aucune tentative de paiement pour le moment",
+      "emptyDescription": "Les tentatives de paiement apparaissent lorsque le payeur finalise (ou abandonne) un paiement."
+    },
+    "refunds": {
+      "requested": "Demandé",
+      "gatewayRef": "Réf. passerelle",
+      "processed": "Traité",
+      "emptyTitle": "Aucun remboursement pour cette commande"
+    },
+    "fields": {
+      "baseAmount": "Montant en devise de base ({{currency}})",
+      "fxRate": "Taux de change (FX)",
+      "fxRateValue": "{{rate}} {{base}} par {{currency}}",
+      "paidBy": "Payé par",
+      "paymentMethod": "Moyen de paiement",
+      "gatewayOrderId": "Identifiant de commande de la passerelle",
+      "expires": "Expire le"
+    }
+  },
+  "overview": {
+    "title": "Vue d'ensemble financière",
+    "description": "Situation financière de la plateforme d'après le grand livre en partie double (devise de base : INR). Les soldes sont mis à jour à mesure que les paiements, la reconnaissance du revenu, les remboursements et les versements sont comptabilisés.",
+    "refresh": "Actualiser",
+    "sections": {
+      "cash": "Trésorerie et fonds détenus",
+      "revenue": "Revenus et taxes",
+      "payables": "Dettes et règlements"
+    },
+    "stats": {
+      "escrow": "Séquestre patients",
+      "escrowHint": "Fonds des patients encaissés et conservés jusqu'à la fin du traitement",
+      "gatewayReceivable": "Créance sur la passerelle",
+      "gatewayReceivableHint": "Encaissé mais pas encore transféré vers la banque par la passerelle",
+      "bank": "Banque",
+      "bankHint": "Solde bancaire de la plateforme selon le grand livre",
+      "gmv": "GMV",
+      "gmvHint": "Paiements bruts des patients encaissés",
+      "commissionRevenue": "Revenus de commission",
+      "commissionRevenueHint": "Reconnus à la finalisation de la réservation",
+      "gstPayable": "GST à payer",
+      "gstPayableHint": "GST collectée sur les commissions (TAX:GST_OUTPUT)",
+      "tdsPayable": "TDS à payer (194-O)",
+      "tdsPayableHint": "Retenue sur les versements aux hôpitaux (TAX:TDS_194O)",
+      "hospitalPayables": "Dettes envers les hôpitaux",
+      "hospitalPayablesHint": "Dû aux hôpitaux après commission, GST et TDS",
+      "agentPayables": "Dettes envers les agents",
+      "agentPayablesHint": "Commissions dues aux facilitateurs",
+      "pendingSettlements": "Règlements en attente",
+      "pendingSettlementsHint": "Montant net des éléments de règlement pas encore versés"
+    },
+    "queues": {
+      "title": "Files de travail",
+      "bankTransfers": "Virements bancaires à rapprocher",
+      "batches": "Lots de règlement en attente d'approbation",
+      "checking": "vérification…",
+      "outBy": "Écart de {{amount}}",
+      "unavailable": "Indisponible"
+    },
+    "flow": {
+      "title": "Circulation des fonds",
+      "captureTitle": "Encaissement",
+      "capture": "Un patient paie via la passerelle de paiement (ou par virement bancaire). Débit : créance sur la passerelle / Crédit : séquestre patients ; les frais de passerelle sont passés en charges en contrepartie de la créance.",
+      "revenueTitle": "Reconnaissance du revenu",
+      "revenue": "Lorsque l'hôpital marque la réservation comme terminée, le séquestre est libéré : dette envers l'hôpital (nette), revenus de commission, GST collectée, TDS 194-O et revenus des frais de service. La commission de l'agent est passée en charges en contrepartie de la dette envers l'agent.",
+      "settlementTitle": "Règlement",
+      "settlement": "Les éléments deviennent éligibles après la période de rétention. L'équipe financière génère un lot, un autre utilisateur financier l'approuve (principe des quatre yeux), puis il est traité sous forme de versements (Razorpay Route, virement manuel avec UTR ou simulation).",
+      "payoutTitle": "Versement et transfert automatique",
+      "payout": "Un versement traité débite la dette envers le bénéficiaire et crédite la banque. Le transfert automatique quotidien fait passer les fonds réglés par la passerelle de la créance vers la banque. Les remboursements effectués avant la finalisation contre-passent le séquestre en contrepartie de la créance."
+    },
+    "latest": {
+      "title": "Derniers ordres de paiement",
+      "emptyDescription": "Les commandes apparaissent lorsque des patients lancent un paiement.",
+      "viewAll": "Tout afficher"
+    }
+  },
+  "reconciliation": {
+    "title": "Rapprochement des virements bancaires",
+    "description": "Comparez chaque justificatif téléversé au relevé bancaire et enregistrez-le avec la référence bancaire. Un second utilisateur financier approuve la demande avant l'encaissement de la commande.",
+    "queues": {
+      "pending": {
+        "label": "Justificatif soumis",
+        "emptyTitle": "Rien à rapprocher",
+        "emptyDescription": "Tous les virements bancaires soumis ont été traités."
+      },
+      "approval": {
+        "label": "En attente de 2e approbation",
+        "emptyTitle": "Aucune demande en attente d'approbation",
+        "emptyDescription": "Les demandes « marquer comme payé » enregistrées par un utilisateur financier apparaissent ici pour être approuvées par un second utilisateur."
+      },
+      "created": {
+        "label": "En attente de justificatif",
+        "emptyTitle": "Aucun virement en attente de justificatif",
+        "emptyDescription": "Les paiements par virement bancaire sans justificatif téléversé apparaissent ici."
+      }
+    },
+    "expires": "expire {{when}}",
+    "proof": "Justificatif",
+    "review": "Examiner",
+    "caption": "Virements bancaires : {{queue}}",
+    "rowLabel": "Examiner le virement bancaire {{number}}",
+    "queueLabel": "File de rapprochement",
+    "drawerTitle": "Virement bancaire {{number}}",
+    "drawerTitleEmpty": "Virement bancaire",
+    "drawerDescription": "Vérifiez le justificatif par rapport au relevé bancaire avant d'enregistrer le paiement.",
+    "amountDue": "Montant dû",
+    "baseAt": "<0></0> au taux de {{rate}}",
+    "hospital": "Hôpital",
+    "proofTitle": "Justificatif de paiement",
+    "loadingDocuments": "Chargement des documents…",
+    "documentsFailed": "Impossible de charger les justificatifs.",
+    "noProof": "Aucun justificatif téléversé pour le moment.",
+    "openOrder": "Ouvrir la commande",
+    "reviewRequest": "Examiner la demande",
+    "openFailed": "Impossible d'ouvrir le document",
+    "downloadFailed": "Impossible de télécharger le document",
+    "viewFile": "Afficher {{name}}",
+    "downloadFile": "Télécharger {{name}}"
+  },
+  "refunds": {
+    "title": "Remboursements",
+    "description": "Les demandes de remboursement sont approuvées avant l'émission du remboursement via la passerelle : demandé → approuvé → en cours de traitement → traité.",
+    "unknownPatient": "Patient inconnu",
+    "blockedTitle": "Vous avez demandé ce remboursement et il dépasse {{amount}} : un autre utilisateur financier doit l'approuver",
+    "needsSecond": "Nécessite un second utilisateur financier",
+    "awaitingApproval": "En attente d'approbation",
+    "awaitingSecond": "En attente de seconde approbation",
+    "newRefund": "Nouveau remboursement",
+    "emptyTitle": "Aucun remboursement pour le moment",
+    "emptyDescription": "Les remboursements demandés par l'équipe financière ou les administrateurs (ou créés par des annulations) apparaissent ici.",
+    "statusLabel": "Statut du remboursement",
+    "approveTitle": "Approuver le remboursement",
+    "approved": "Remboursement approuvé ; le remboursement via la passerelle a été mis en file d'attente",
+    "approveFailed": "Impossible d'approuver le remboursement",
+    "approveBody": "Rembourser <0>{{amount}}</0> sur la commande <1>{{order}}</1> vers le moyen de paiement d'origine. Cette opération est irréversible une fois traitée par la passerelle de paiement.",
+    "reasonValue": "Motif : {{reason}}",
+    "rejectTitle": "Rejeter le remboursement",
+    "rejectDescription": "{{amount}} sur {{order}}",
+    "orderFallback": "commande",
+    "rejected": "Remboursement rejeté",
+    "rejectFailed": "Impossible de rejeter le remboursement"
+  },
+  "reports": {
+    "documentTitle": "Rapports financiers",
+    "description": "Revenus reconnus sur les réservations terminées (commissions + frais de service) par rapport au volume brut des transactions (GMV), ainsi que des exports CSV pour la comptabilité.",
+    "presets": {
+      "last12Months": "12 derniers mois",
+      "thisYear": "Cette année",
+      "lastYear": "L'année dernière"
+    },
+    "gmv": "GMV",
+    "revenue": "Revenus",
+    "bookings": "Réservations",
+    "commission": "Commission",
+    "takeRate": "Taux de commission prélevé",
+    "groupLabel": "Regrouper les revenus",
+    "groupBy": {
+      "month": "Par mois",
+      "hospital": "Par hôpital",
+      "specialty": "Par spécialité"
+    },
+    "groupColumn": {
+      "month": "Mois",
+      "hospital": "Hôpital",
+      "specialty": "Spécialité"
+    },
+    "chartTitle": {
+      "month": "GMV et revenus par mois",
+      "hospital": "GMV et revenus par hôpital",
+      "specialty": "GMV et revenus par spécialité"
+    },
+    "tableTitle": {
+      "month": "Revenus par mois",
+      "hospital": "Revenus par hôpital",
+      "specialty": "Revenus par spécialité"
+    },
+    "top12": "(12 premiers par GMV)",
+    "rowCount": "{{rows}} lignes",
+    "period": "Période",
+    "emptyTitle": "Aucun revenu sur cette période",
+    "emptyDescription": "Les revenus sont reconnus lorsque les réservations sont terminées.",
+    "exports": {
+      "title": "Exports CSV",
+      "usesRange": "Utilise la plage de dates ci-dessus",
+      "failed": "Échec de l'export",
+      "bookings": {
+        "title": "Réservations",
+        "description": "Réservations avec montants et statut",
+        "downloaded": "Export des réservations téléchargé"
+      },
+      "payments": {
+        "title": "Paiements",
+        "description": "Commandes, paiements et remboursements",
+        "downloaded": "Export des paiements téléchargé"
+      },
+      "settlements": {
+        "title": "Règlements",
+        "description": "Éléments de règlement et versements",
+        "downloaded": "Export des règlements téléchargé"
+      }
+    }
+  },
+  "ledgerAccounts": {
+    "documentTitle": "Comptes du grand livre",
+    "description": "Grand livre en partie double, immuable, en INR. Les actifs et les charges sont positifs au débit ; les passifs, les produits et les capitaux propres sont positifs au crédit.",
+    "columns": {
+      "name": "Nom",
+      "type": "Type",
+      "owner": "Propriétaire",
+      "normalSide": "Sens normal",
+      "balance": "Solde"
+    },
+    "openAccount": "Ouvrir le compte {{code}}",
+    "emptyTitle": "Aucun compte pour le moment",
+    "emptyDescription": "Les comptes sont créés automatiquement lors de la première écriture.",
+    "accountType": "Type de compte",
+    "searchPlaceholder": "Code ou nom du compte…",
+    "nonZero": "Solde non nul"
+  },
+  "ledgerEntries": {
+    "title": "Compte du grand livre",
+    "documentTitle": "Grand livre · {{code}}",
+    "caption": "Écritures du compte",
+    "columns": {
+      "posted": "Comptabilisée le",
+      "transaction": "Transaction",
+      "balanceEffect": "Effet sur le solde"
+    },
+    "balanceDebitPositive": "Solde (positif au débit)",
+    "balanceCreditPositive": "Solde (positif au crédit)",
+    "openEntry": "Ouvrir l'écriture comptable {{type}}",
+    "emptyTitle": "Aucune écriture comptabilisée sur ce compte pour le moment",
+    "side": "Sens",
+    "transactionType": "Type de transaction"
+  },
+  "journal": {
+    "documentTitle": "Journal du grand livre",
+    "description": "Journal des transactions comptabilisées. Pour chaque transaction, le total des débits est égal au total des crédits (contrôle imposé par la base de données).",
+    "caption": "Transactions du grand livre",
+    "linesSummary": "D {{debits}} · C {{credits}}",
+    "lines": "Lignes",
+    "emptyTitle": "Aucune transaction comptabilisée pour le moment",
+    "emptyDescription": "Les paiements, la reconnaissance du revenu, les remboursements et les versements génèrent ici des écritures comptables équilibrées.",
+    "searchPlaceholder": "Description ou identifiant de référence…"
+  },
+  "trialBalance": {
+    "description": "Balance de vérification : total des débits et des crédits par compte et par type de compte. Un grand livre sain présente toujours un solde net nul.",
+    "cached": "en cache : {{amount}}",
+    "totals": "Débits {{debits}} · Crédits {{credits}}",
+    "difference": "Écart de {{amount}}. Examinez immédiatement les écritures récentes.",
+    "cacheMismatch": "Les soldes de comptes en cache diffèrent des écritures.",
+    "asOf": "au {{at}}",
+    "recalculate": "Recalculer",
+    "outOfBalance": "Déséquilibrée",
+    "caption": "Balance de vérification par compte",
+    "emptyTitle": "Aucune écriture pour le moment",
+    "withPostings": "Avec écritures",
+    "total": "Total",
+    "net": "Net"
+  },
+  "adjustments": {
+    "documentTitle": "Ajustements du grand livre",
+    "description": "Reversements de taxes, écarts de change (FX) et corrections manuelles. Une demande ne génère aucune écriture tant qu'un autre utilisateur financier ne l'a pas approuvée.",
+    "kinds": {
+      "tax_remittance": {
+        "label": "Reversement de taxes",
+        "help": "GST / TDS versées à l'État : débit des comptes TAX:*, crédit de PLATFORM:BANK."
+      },
+      "fx_difference": {
+        "label": "Écart de change (FX)",
+        "help": "Doit utiliser PLATFORM:FX_GAIN_LOSS (débit = perte, crédit = gain) en contrepartie du séquestre, de la banque ou d'une créance sur passerelle."
+      },
+      "manual": {
+        "label": "Correction manuelle",
+        "help": "Doit utiliser PLATFORM:ADJUSTMENTS (charge) ou PLATFORM:EQUITY (apport ou retrait de capital). Les dettes envers les bénéficiaires ne peuvent pas être ajustées ici."
+      }
+    },
+    "statuses": {
+      "pending_approval": "En attente d'approbation",
+      "posted": "Comptabilisé",
+      "rejected": "Rejeté"
+    },
+    "columns": {
+      "adjustment": "Ajustement",
+      "decided": "Décidé le"
+    },
+    "viewEntry": "Voir l'écriture",
+    "ownTitle": "Vous avez demandé cet ajustement ; un autre utilisateur financier doit l'approuver",
+    "newAdjustment": "Nouvel ajustement",
+    "emptyTitle": "Aucun ajustement pour le moment",
+    "emptyDescription": "Les reversements de taxes, écarts de change et corrections manuelles demandés par l'équipe financière apparaissent ici.",
+    "statusLabel": "Statut de l'ajustement",
+    "searchPlaceholder": "Description ou référence…",
+    "kind": "Nature",
+    "requestTitle": "Demander un ajustement du grand livre",
+    "requestDescription": "La demande est validée immédiatement, mais n'est comptabilisée qu'après approbation par un autre utilisateur financier.",
+    "approveTitle": "Approuver et comptabiliser l'ajustement",
+    "posted": "Ajustement comptabilisé dans le grand livre",
+    "approveFailed": "Impossible d'approuver l'ajustement",
+    "approveAndPost": "Approuver et comptabiliser",
+    "approveBody": "{{kind}} de <0>{{amount}}</0> : {{description}}",
+    "permanent": "La comptabilisation est définitive ; toute correction nécessite un nouvel ajustement.",
+    "rejectTitle": "Rejeter l'ajustement",
+    "rejected": "Ajustement rejeté",
+    "rejectFailed": "Impossible de rejeter l'ajustement",
+    "requested": "Ajustement demandé ; un second utilisateur financier doit l'approuver",
+    "requestFailed": "Impossible de demander l'ajustement",
+    "form": {
+      "descriptionError": "Décrivez l'ajustement (au moins 3 caractères)",
+      "externalReference": "Référence externe",
+      "externalReferenceHint": "Challan / référence bancaire (facultatif)",
+      "entries": "Lignes d'écriture (INR)",
+      "entryAccount": "Code de compte de la ligne {{n}}",
+      "entryDirection": "Sens de la ligne {{n}}",
+      "entryAmount": "Montant de la ligne {{n}}",
+      "removeEntry": "Supprimer la ligne {{n}}",
+      "accountPlaceholder": "Code de compte, p. ex. TAX:GST_OUTPUT",
+      "addEntry": "Ajouter une ligne",
+      "totals": "Débits <0>{{debits}}</0> · Crédits <1>{{credits}}</1>",
+      "entriesInvalid": "Chaque ligne doit comporter un code de compte et un montant positif.",
+      "unbalanced": "Le total des débits doit être égal au total des crédits.",
+      "submit": "Demander l'ajustement"
+    }
+  },
+  "batches": {
+    "title": "Lots de règlement",
+    "description": "Les lots passent de « en attente d'approbation » à « approuvé » (par un autre utilisateur financier), puis à « en cours de traitement » et « terminé ». Les lots automatiques nécessitent toujours une approbation humaine.",
+    "singlePayeeLower": "bénéficiaire unique",
+    "allPayeesLower": "tous les bénéficiaires",
+    "singlePayee": "Bénéficiaire unique",
+    "autoNeedsApproval": "Auto · approbation requise",
+    "automatic": "Automatique",
+    "automaticSystem": "Automatique (système)",
+    "system": "Système",
+    "approvedBy": "Approuvé par {{name}}",
+    "notApproved": "Pas encore approuvé",
+    "needsApproval": "Approbation requise",
+    "openBatch": "Ouvrir le lot {{number}}",
+    "emptyTitle": "Aucun lot de règlement pour le moment",
+    "emptyDescription": "Générez un lot à partir des éléments de règlement éligibles, ou attendez le lot automatique quotidien.",
+    "statusLabel": "Statut du lot",
+    "searchPlaceholder": "Numéro de lot ou initiateur…",
+    "createdBy": "Créé par",
+    "originAuto": "Automatique (tâche quotidienne)",
+    "originManual": "Utilisateur financier",
+    "columns": {
+      "batch": "Lot",
+      "payees": "Bénéficiaires",
+      "gross": "Brut",
+      "netPayable": "Net à payer",
+      "makerChecker": "Initiateur · valideur",
+      "makerCheckerTitle": "Initiateur / valideur"
+    }
+  },
+  "batchDetail": {
+    "title": "Lot de règlement",
+    "documentTitle": "Lot {{number}}",
+    "gst": "GST",
+    "tds": "TDS",
+    "utrRef": "UTR / réf. passerelle",
+    "descriptionSingle": "{{type}} : règlement pour un bénéficiaire unique",
+    "descriptionAll": "{{type}} : règlement pour tous les bénéficiaires",
+    "descriptionSinglePeriod": "{{type}} : règlement pour un bénéficiaire unique, période se terminant le {{date}}",
+    "descriptionAllPeriod": "{{type}} : règlement pour tous les bénéficiaires, période se terminant le {{date}}",
+    "makerTitle": "Vous avez créé ce lot ; un autre utilisateur financier doit l'approuver.",
+    "processPayouts": "Traiter les versements",
+    "makerCheckerTitle": "Principe des quatre yeux",
+    "makerCheckerBody": "Vous avez généré ce lot, vous ne pouvez donc pas l'approuver. Demandez à un autre utilisateur financier ou super administrateur de l'examiner et de l'approuver. Vous pouvez toutefois le rejeter.",
+    "autoTitle": "Lot automatique : approbation humaine requise",
+    "autoBody": "La tâche de règlement quotidienne a généré ce lot. Les lots automatiques ne sont jamais approuvés automatiquement : un utilisateur financier doit vérifier les éléments et les bénéficiaires, puis l'approuver (ou le rejeter) avant que les versements puissent être traités.",
+    "partialTitle": "Certains versements ont échoué",
+    "partialBody": "Les éléments des versements en échec redeviennent éligibles : corrigez la cause (par exemple le compte de versement du bénéficiaire), puis générez un nouveau lot pour ces éléments. Un versement en échec avec le motif « compte de versement modifié » a été bloqué car le compte du bénéficiaire différait de celui approuvé dans ce lot.",
+    "itemsCount_one": "{{count}} élément",
+    "itemsCount_other": "{{count}} éléments",
+    "fields": {
+      "maker": "Créé par (initiateur)",
+      "autoMaker": "Lot automatique (système)",
+      "checker": "Approuvé par (valideur)",
+      "approved": "Approuvé le",
+      "notes": "Notes"
+    },
+    "destinations": {
+      "title": "Destinations des versements (figées à la génération)",
+      "body": "Il s'agit des comptes de versement principaux vérifiés relevés lors de la génération du lot ; approuver le lot revient à approuver leur paiement. Si le compte d'un bénéficiaire est modifié avant l'exécution des versements, le versement de ce bénéficiaire échoue avec le motif « compte de versement modifié » et ses éléments redeviennent éligibles afin d'être intégrés à un nouveau lot avec le nouveau compte.",
+      "noSnapshot": "Ce lot ne comporte aucun instantané des comptes (il a été généré avant l'introduction des instantanés de destination). Contrôlez le compte vérifié de chaque bénéficiaire sur la page Comptes de versement avant d'approuver.",
+      "missing_one": "Un bénéficiaire n'avait aucun compte de versement principal vérifié lors de la génération ; ses versements échoueront.",
+      "missing_other": "{{count}} bénéficiaires n'avaient aucun compte de versement principal vérifié lors de la génération ; leurs versements échoueront."
+    },
+    "noPayouts": "Aucun versement pour le moment",
+    "noPayoutsDescription": "Les versements sont créés lors du traitement d'un lot approuvé.",
+    "itemsCaption": "Éléments de règlement du lot",
+    "noItems": "Aucun élément dans ce lot",
+    "approveTitle": "Approuver le lot",
+    "approved": "Lot {{number}} approuvé",
+    "approveFailed": "Impossible d'approuver le lot",
+    "processing": "Lot {{number}} envoyé pour traitement",
+    "processFailed": "Impossible de traiter le lot",
+    "process": "Traiter",
+    "approveBodyNoAccounts": "Vous approuvez <0>{{items}}</0> éléments pour un montant net à payer de <1>{{net}}</1> sur les comptes de versement des bénéficiaires. Vérifiez les éléments, les totaux et les comptes avant d'approuver.",
+    "approveBodyOneAccount": "Vous approuvez <0>{{items}}</0> éléments pour un montant net à payer de <1>{{net}}</1> sur le compte de versement indiqué sous « Destinations des versements ». Vérifiez les éléments, les totaux et les comptes avant d'approuver.",
+    "approveBodyAccounts": "Vous approuvez <0>{{items}}</0> éléments pour un montant net à payer de <1>{{net}}</1> sur les {{accounts}} comptes de versement indiqués sous « Destinations des versements ». Vérifiez les éléments, les totaux et les comptes avant d'approuver.",
+    "missingWarning_one": "{{count}} bénéficiaire n'a aucun compte vérifié ; ses versements échoueront.",
+    "missingWarning_other": "{{count}} bénéficiaires n'ont aucun compte vérifié ; leurs versements échoueront.",
+    "processBody": "Cette action crée des versements pour <0>{{net}}</0> : les comptes Razorpay liés sont payés automatiquement ; les virements bancaires manuels restent en attente jusqu'à ce que vous saisissiez l'UTR.",
+    "rejectTitle": "Rejeter le lot",
+    "rejectDescription": "Les éléments retournent dans le pool des éléments éligibles et peuvent être intégrés à un nouveau lot.",
+    "rejected": "Lot {{number}} rejeté",
+    "rejectFailed": "Impossible de rejeter le lot",
+    "snapshot": {
+      "holder": "Titulaire",
+      "route": "Canal",
+      "missing": "Aucun compte de versement principal vérifié : le versement de ce bénéficiaire échouera."
+    }
+  },
+  "payouts": {
+    "description": "Versements créés à partir des lots traités. Un virement bancaire manuel reste ouvert jusqu'à ce qu'un utilisateur financier enregistre l'UTR et qu'un autre utilisateur financier le confirme.",
+    "awaitingConfirmation": "En attente de confirmation",
+    "reversalPending": "Contre-passation en attente",
+    "failurePending": "Échec en attente",
+    "utrReference": "UTR / référence de la passerelle",
+    "viewBatch": "Voir le lot",
+    "queues": {
+      "reconcile": {
+        "emptyTitle": "Rien à rapprocher",
+        "emptyDescription": "Les versements dont le résultat côté passerelle est inconnu (délais dépassés, réponses ambiguës) apparaissent ici. Ils ne sont jamais renvoyés automatiquement."
+      },
+      "confirm": {
+        "emptyTitle": "Aucun versement en attente de confirmation",
+        "emptyDescription": "Les UTR enregistrés par un utilisateur financier apparaissent ici pour être confirmés par un second utilisateur."
+      },
+      "reversal": {
+        "emptyTitle": "Aucune demande d'échec",
+        "emptyDescription": "Les demandes de mise en échec d'un versement déjà payé ou non rapproché attendent ici l'intervention d'un second utilisateur financier."
+      }
+    },
+    "reconcileTitle": "Résolvez chaque versement manuellement",
+    "reconcileBody": "L'appel Razorpay Route pour ces versements a expiré ou a renvoyé une réponse ambiguë ; la plateforme ne l'a donc pas relancé (une nouvelle tentative pourrait entraîner un double paiement). Recherchez l'identifiant du versement dans le tableau de bord Razorpay. Si le transfert existe, utilisez <0>Enregistrer le transfert</0> avec son identifiant <1>trf_…</1> et faites-le confirmer par un second utilisateur financier. Sinon, utilisez <2>Demander l'échec</2> avec la référence que vous avez vérifiée ; après approbation par un second utilisateur financier, les éléments redeviennent éligibles et sont intégrés à un nouveau lot.",
+    "emptyDescription": "Les versements sont créés lors du traitement d'un lot de règlement approuvé.",
+    "statusLabel": "Statut du versement",
+    "searchPlaceholder": "Bénéficiaire, UTR ou lot…",
+    "queue": "File",
+    "awaitingUtrConfirmation": "En attente de confirmation de l'UTR",
+    "failureReversalPending": "Échec / contre-passation en attente"
+  },
+  "documents": {
+    "description": "Factures de commission (factures fiscales) et avoirs émis aux hôpitaux, et relevés de commission pour les agents. Les avoirs annulent la commission sur les éléments ayant fait l'objet d'une reprise.",
+    "kinds": {
+      "commission_invoice": "Facture de commission",
+      "credit_note": "Avoir",
+      "agent_statement": "Relevé de commission de l'agent"
+    },
+    "kindTabs": {
+      "commission_invoice": "Factures fiscales",
+      "credit_note": "Avoirs",
+      "agent_statement": "Relevés des agents"
+    },
+    "columns": {
+      "document": "Document",
+      "issuedTo": "Émis à",
+      "recipientGstin": "GSTIN du destinataire",
+      "subtotal": "Sous-total",
+      "issued": "Émis le"
+    },
+    "downloadFailed": "Impossible de télécharger le PDF",
+    "downloadPdfLabel": "Télécharger le PDF de {{number}}",
+    "caption": "Documents de règlement",
+    "open": "Ouvrir {{number}}",
+    "emptyTitle": "Aucun document pour le moment",
+    "emptyDescription": "Les documents sont émis lorsque les versements de règlement sont payés.",
+    "kindLabel": "Type de document",
+    "searchPlaceholder": "Numéro de document, GSTIN ou bénéficiaire…",
+    "detailTitle": "Document de règlement",
+    "detail": {
+      "number": "Numéro",
+      "supplierGstin": "GSTIN du fournisseur",
+      "placeOfSupply": "Lieu de fourniture",
+      "downloadPdf": "Télécharger le PDF"
+    },
+    "lines": {
+      "caption": "Lignes",
+      "withholding": "Retenue à la source",
+      "taxable": "Imposable",
+      "netPaid": "Net payé",
+      "taxableValue": "Valeur imposable",
+      "against": "Au titre de {{number}}"
+    }
+  },
+  "settlementItems": {
+    "description": "Montant net de l'hôpital et commission de l'agent pour chaque réservation terminée. Les éléments deviennent éligibles après la période de rétention et sont versés dans des lots approuvés.",
+    "reversedLabel": "Reprise / contre-passé",
+    "eligibleFrom": "Éligible à partir du",
+    "hold": "Suspendre",
+    "release": "Libérer",
+    "exportSelected": "Exporter la sélection",
+    "emptyTitle": "Aucun élément de règlement pour le moment",
+    "emptyDescription": "Les éléments sont créés lorsque les réservations sont terminées : le montant net de l'hôpital et la commission de l'agent.",
+    "statusLabel": "Statut de l'élément",
+    "searchPlaceholder": "Bénéficiaire ou numéro de réservation…",
+    "netAmount": "Montant net",
+    "eligibleHoldEnds": "Éligible (fin de la rétention)",
+    "thisPage": "Cette page :",
+    "pageGross": "Brut {{amount}}",
+    "pageCommission": "Commission {{amount}}",
+    "pageNet": "Net {{amount}}",
+    "holdTitle": "Suspendre l'élément",
+    "holdDescription": "{{payee}} · net {{amount}}",
+    "holdConfirm": "Suspendre l'élément",
+    "held": "Élément suspendu ; il sera ignoré par les lots jusqu'à la levée de la suspension",
+    "holdFailed": "Impossible de suspendre l'élément",
+    "releaseTitle": "Lever la suspension",
+    "heldBecause": "Motif de la suspension : {{reason}}",
+    "note": "Note",
+    "released": "Suspension levée",
+    "releaseFailed": "Impossible de libérer l'élément"
+  },
+  "commissionRules": {
+    "description": "Commission de la plateforme facturée aux hôpitaux et commission des agents prélevée sur celle-ci. La règle active la plus spécifique s'applique : intervention dans un hôpital → hôpital → intervention → spécialité → globale ; en l'absence de règle, les valeurs par défaut de la plateforme s'appliquent.",
+    "allBookings": "Toutes les réservations",
+    "procedureAt": "{{procedure}} à {{hospital}}",
+    "states": {
+      "active": "En vigueur",
+      "scheduled": "Planifiée",
+      "expired": "Expirée",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "appliesTo": "S'applique à",
+      "scope": "Portée",
+      "rate": "Taux",
+      "effective": "Période d'application"
+    },
+    "bps": "{{bps}} pb",
+    "openEnded": "sans date de fin",
+    "edit": "Modifier",
+    "deactivate": "Désactiver",
+    "activate": "Activer",
+    "deactivated": "Règle désactivée",
+    "activated": "Règle activée",
+    "updateFailed": "Impossible de mettre à jour la règle",
+    "newRule": "Nouvelle règle",
+    "emptyTitle": "Aucune règle de commission",
+    "emptyDescription": "Les valeurs par défaut de la plateforme s'appliquent (15 % de commission hôpital, 5 % de commission agent, sauf modification dans les paramètres).",
+    "statusLabel": "Statut de la règle",
+    "searchPlaceholder": "Hôpital, intervention, agent ou taux…",
+    "ruleCount_one": "{{n}} règle",
+    "ruleCount_other": "{{n}} règles",
+    "inEffect": "En vigueur",
+    "newTitle": "Nouvelle règle de commission",
+    "editTitle": "Modifier la règle de commission",
+    "form": {
+      "rateRequired": "Saisissez un taux",
+      "rateInvalid": "Saisissez un pourcentage compris entre 0 et 100 (2 décimales max.)",
+      "chooseHospital": "Choisissez un hôpital",
+      "chooseSpecialty": "Choisissez une spécialité",
+      "chooseProcedure": "Choisissez une intervention",
+      "chooseAgent": "Choisissez un agent",
+      "chooseStart": "Choisissez une date de début",
+      "endBeforeStart": "La date de fin doit être identique ou postérieure à la date de début",
+      "updated": "Règle de commission mise à jour",
+      "created": "Règle de commission créée",
+      "saveFailed": "Impossible d'enregistrer la règle",
+      "rate": "Taux (%)",
+      "basisPoints": "{{bps}} points de base",
+      "rateHint": "p. ex. 15 pour 15 % (1500 pb)",
+      "agentNote": "La commission de l'agent est prélevée sur la commission de la plateforme et plafonnée par celle-ci pour chaque réservation.",
+      "hospitalOptional": "Hôpital (facultatif : intervention dans cet hôpital uniquement)",
+      "anyHospital": "Tout hôpital",
+      "effectiveFrom": "En vigueur à partir du",
+      "effectiveTo": "En vigueur jusqu'au",
+      "effectiveToHint": "Laissez vide pour une durée indéterminée",
+      "saveChanges": "Enregistrer les modifications",
+      "createRule": "Créer la règle",
+      "specialtiesFailed": "Impossible de charger les spécialités",
+      "selectSpecialty": "Sélectionnez une spécialité",
+      "searchProcedures": "Rechercher des interventions",
+      "searchProceduresPlaceholder": "Rechercher des interventions…",
+      "selectProcedure": "Sélectionnez une intervention"
+    }
+  },
+  "payoutAccounts": {
+    "description": "Comptes bancaires enregistrés par les hôpitaux et les agents pour les règlements (numéros de compte chiffrés et masqués). Vérifiez chacun d'eux à l'aide du justificatif bancaire avant qu'il ne reçoive des versements.",
+    "routeAutomatic": "Razorpay Route (automatique)",
+    "verified": "Vérifié",
+    "awaitingVerification": "En attente de vérification",
+    "payoutRoute": "Canal de versement",
+    "manualTransfer": "Virement manuel",
+    "primary": "Principal",
+    "added": "Ajouté le",
+    "verify": "Vérifier",
+    "youSubmitted": "Vous avez soumis ces informations",
+    "emptyTitle": "Aucun compte de versement pour le moment",
+    "emptyDescription": "Les hôpitaux et les agents ajoutent leurs comptes de versement depuis leurs portails.",
+    "verification": "Vérification",
+    "searchPlaceholder": "Titulaire, banque, IFSC, 4 derniers chiffres ou propriétaire…",
+    "ownerType": "Type de propriétaire",
+    "verifyTitle": "Vérifier le compte de versement",
+    "verifyDescription": "Confirmez que les informations du compte correspondent au justificatif bancaire du propriétaire.",
+    "submitterTitle": "Vous avez soumis ces coordonnées bancaires ; un autre utilisateur financier doit les vérifier",
+    "verifiedToast": "Compte de versement vérifié",
+    "verifyFailed": "Impossible de vérifier le compte",
+    "markVerified": "Marquer comme vérifié",
+    "makerCheckerTitle": "Principe des quatre yeux : vous ne pouvez pas vérifier ce compte",
+    "makerCheckerBody": "Ces coordonnées bancaires ont été soumises par {{name}}. La personne qui soumet des coordonnées de versement ne peut pas également les vérifier : demandez à un autre utilisateur financier de contrôler le justificatif bancaire et de procéder à la vérification.",
+    "accountHolder": "Titulaire du compte",
+    "accountNumber": "Numéro de compte",
+    "submittedBy": "Informations soumises par"
+  },
+  "enums": {
+    "status": {
+      "created": "Créé",
+      "pending": "En attente",
+      "paid": "Payé",
+      "captured": "Encaissé",
+      "authorized": "Autorisé",
+      "partially_refunded": "Partiellement remboursé",
+      "refunded": "Remboursé",
+      "failed": "Échoué",
+      "expired": "Expiré",
+      "cancelled": "Annulé",
+      "requested": "Demandé",
+      "approved": "Approuvé",
+      "processing": "En cours de traitement",
+      "processed": "Traité",
+      "rejected": "Rejeté",
+      "eligible": "Éligible",
+      "on_hold": "Suspendu",
+      "batched": "Intégré à un lot",
+      "reversed": "Contre-passé",
+      "draft": "Brouillon",
+      "pending_approval": "En attente d'approbation",
+      "completed": "Terminé",
+      "partially_failed": "Partiellement échoué",
+      "queued": "En file d'attente",
+      "needs_reconciliation": "À rapprocher",
+      "active": "Actif",
+      "disabled": "Désactivé",
+      "due": "Exigible",
+      "overdue": "En retard",
+      "returning": "Restitution en cours",
+      "accepted": "Accepté",
+      "returned": "Restitué",
+      "posted": "Comptabilisé"
+    },
+    "paymentGateway": {
+      "razorpay": "Carte / UPI (Razorpay)",
+      "stripe": "Carte (Stripe)",
+      "bank_transfer": "Virement bancaire (SWIFT)",
+      "mock": "Paiement de test (dev)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "Frais de consultation",
+      "booking_deposit": "Acompte de réservation",
+      "booking_balance": "Solde de réservation",
+      "booking_full": "Réservation (paiement intégral)",
+      "installment": "Échéance",
+      "service": "Service"
+    },
+    "paymentMethod": {
+      "card": "Carte",
+      "upi": "UPI",
+      "netbanking": "Banque en ligne",
+      "bank_transfer": "Virement bancaire",
+      "wallet": "Portefeuille électronique",
+      "emi": "Paiement échelonné (EMI)",
+      "mock": "Simulation"
+    },
+    "ledgerAccountType": {
+      "asset": "Actif",
+      "liability": "Passif",
+      "revenue": "Produit",
+      "expense": "Charge",
+      "equity": "Capitaux propres"
+    },
+    "ledgerOwnerType": {
+      "platform": "Plateforme",
+      "hospital": "Hôpital",
+      "agent": "Agent",
+      "vendor": "Fournisseur",
+      "gateway": "Passerelle",
+      "tax": "Taxes"
+    },
+    "entryDirection": {
+      "debit": "Débit",
+      "credit": "Crédit"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "Paiement encaissé",
+      "gateway_fee": "Frais de passerelle",
+      "revenue_recognition": "Reconnaissance du revenu",
+      "agent_commission": "Commission d'agent",
+      "refund": "Remboursement",
+      "payout": "Versement",
+      "adjustment": "Ajustement",
+      "cancellation_retention": "Retenue sur annulation",
+      "tax_remittance": "Reversement de taxes",
+      "fx_difference": "Écart de change (FX)"
+    },
+    "commissionScope": {
+      "global": "Globale",
+      "hospital": "Hôpital",
+      "specialty": "Spécialité",
+      "procedure": "Intervention",
+      "agent": "Agent"
+    },
+    "payeeType": {
+      "hospital": "Hôpital",
+      "agent": "Agent",
+      "vendor": "Fournisseur"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "Virement bancaire manuel",
+      "mock": "Simulation (dev)"
+    },
+    "invoiceKind": {
+      "patient_receipt": "Reçu patient",
+      "commission_invoice": "Facture de commission",
+      "agent_statement": "Relevé agent",
+      "credit_note": "Avoir"
+    },
+    "reviewKind": {
+      "amount": "Vérification du montant",
+      "mark_paid": "En attente de 2e approbation"
+    }
+  }
+}

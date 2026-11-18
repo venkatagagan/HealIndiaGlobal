@@ -3,9 +3,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Bot, Layers, Users } from 'lucide-react';
 import {
   financeApi,
-  PAYEE_TYPE_LABELS,
   SETTLEMENT_BATCH_STATUSES,
-  SETTLEMENT_BATCH_STATUS_LABELS,
   type PayeeType,
   type SettlementBatchListParams,
   type SettlementBatchOut,
@@ -34,8 +32,9 @@ import {
   type FilterOption,
   type QuickFilterItem,
 } from '@hig/shared/ui';
+import { enumLabel, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys } from '../../api/queries';
-import { GenerateBatchDialog, PAYEE_TYPE_OPTIONS, SettlementTabs } from '../../components/settlements';
+import { GenerateBatchDialog, payeeTypeOptions, SettlementTabs } from '../../components/settlements';
 import { useFinancePermissions } from '../../lib/permissions';
 import { listOrUndefined, minorOrUndefined } from '../../lib/tables';
 import { financePath } from '../../paths';
@@ -80,29 +79,28 @@ const isAuto = (b: SettlementBatchOut) => !b.created_by;
 type QuickValue = SettlementBatchStatus | 'auto_pending';
 const AUTO_PENDING = 'auto_pending';
 const QUICK_STATUSES: SettlementBatchStatus[] = ['pending_approval', 'approved', 'processing', 'completed', 'partially_failed', 'cancelled'];
-const QUICK_LABEL: Partial<Record<SettlementBatchStatus, string>> = { pending_approval: 'Needs approval' };
 
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-function scopeLabel(b: SettlementBatchOut): string {
-  return `${PAYEE_TYPE_LABELS[b.payee_type]} · ${b.payee_id ? (b.payee_name ?? 'single payee') : 'all payees'}`;
+function scopeLabel(t: FinanceT, b: SettlementBatchOut): string {
+  return `${enumLabel('payeeType', b.payee_type)} · ${b.payee_id ? (b.payee_name ?? t('batches.singlePayeeLower')) : t('batches.allPayeesLower')}`;
 }
 
-const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
+const batchColumns = (t: FinanceT): DataTableColumn<SettlementBatchOut>[] => [
   {
     key: 'batch',
-    header: 'Batch',
+    header: t('batches.columns.batch'),
     sortable: true,
     sortKey: 'batch_number',
     sticky: true,
     mobile: 'primary',
-    cell: (b) => <IdCell value={b.batch_number} secondary={scopeLabel(b)} />,
+    cell: (b) => <IdCell value={b.batch_number} secondary={scopeLabel(t, b)} />,
     exportValue: (b) => b.batch_number,
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('orders.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (b) => (
@@ -110,25 +108,30 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
         <StatusBadgeCell status={b.status} kind="settlementBatch" />
         {isAuto(b) && (
           <Badge tone="info" icon={<Bot className="size-3" aria-hidden />}>
-            {b.status === 'pending_approval' ? 'Auto · needs approval' : 'Automatic'}
+            {b.status === 'pending_approval' ? t('batches.autoNeedsApproval') : t('batches.automatic')}
           </Badge>
         )}
       </span>
     ),
     mobileCell: (b) => <StatusBadgeCell status={b.status} kind="settlementBatch" />,
-    exportValue: (b) => SETTLEMENT_BATCH_STATUS_LABELS[b.status] ?? b.status,
+    exportValue: (b) => enumLabel('status', b.status),
   },
   {
     key: 'payees',
-    header: 'Payees',
-    title: 'Payees',
+    header: t('batches.columns.payees'),
+    title: t('batches.columns.payees'),
     defaultHidden: true,
-    cell: (b) => <TextCell primary={b.payee_id ? (b.payee_name ?? 'Single payee') : 'All payees'} secondary={PAYEE_TYPE_LABELS[b.payee_type]} />,
-    exportValue: (b) => (b.payee_id ? (b.payee_name ?? b.payee_id) : 'All payees'),
+    cell: (b) => (
+      <TextCell
+        primary={b.payee_id ? (b.payee_name ?? t('batches.singlePayee')) : t('settlementUi.picker.allPayees')}
+        secondary={enumLabel('payeeType', b.payee_type)}
+      />
+    ),
+    exportValue: (b) => (b.payee_id ? (b.payee_name ?? b.payee_id) : t('settlementUi.picker.allPayees')),
   },
   {
     key: 'period',
-    header: 'Period end',
+    header: t('settlementUi.generate.periodEnd'),
     sortable: true,
     sortKey: 'period_end',
     sortDescFirst: true,
@@ -137,7 +140,7 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
   },
   {
     key: 'items',
-    header: 'Items',
+    header: t('settlementUi.tabs.items'),
     align: 'end',
     sortable: true,
     sortKey: 'items_count',
@@ -147,7 +150,7 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
   },
   {
     key: 'gross',
-    header: 'Gross',
+    header: t('batches.columns.gross'),
     align: 'end',
     defaultHidden: true,
     cell: (b) => <MoneyCell minor={b.total_gross_minor} currency={b.currency} className="text-muted [&>span]:font-normal" />,
@@ -155,7 +158,7 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
   },
   {
     key: 'commission',
-    header: 'Commission',
+    header: t('reports.commission'),
     align: 'end',
     defaultHidden: true,
     cell: (b) => <MoneyCell minor={b.total_commission_minor} currency={b.currency} className="text-muted [&>span]:font-normal" />,
@@ -163,7 +166,7 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
   },
   {
     key: 'net',
-    header: 'Net payable',
+    header: t('batches.columns.netPayable'),
     align: 'end',
     sortable: true,
     sortKey: 'total_net_minor',
@@ -174,20 +177,20 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
   },
   {
     key: 'maker',
-    header: 'Maker · checker',
-    title: 'Maker / checker',
+    header: t('batches.columns.makerChecker'),
+    title: t('batches.columns.makerCheckerTitle'),
     className: 'max-w-52',
     cell: (b) => (
       <TextCell
-        primary={isAuto(b) ? 'Automatic (system)' : (b.created_by_name ?? '—')}
-        secondary={b.approved_by_name ? `Approved by ${b.approved_by_name}` : 'Not approved yet'}
+        primary={isAuto(b) ? t('batches.automaticSystem') : (b.created_by_name ?? '—')}
+        secondary={b.approved_by_name ? t('batches.approvedBy', { name: b.approved_by_name }) : t('batches.notApproved')}
       />
     ),
-    exportValue: (b) => `${isAuto(b) ? 'System' : (b.created_by_name ?? '')} / ${b.approved_by_name ?? ''}`,
+    exportValue: (b) => `${isAuto(b) ? t('batches.system') : (b.created_by_name ?? '')} / ${b.approved_by_name ?? ''}`,
   },
   {
     key: 'created',
-    header: 'Created',
+    header: t('orders.columns.created'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -201,7 +204,9 @@ const COLUMNS: DataTableColumn<SettlementBatchOut>[] = [
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function BatchesPage() {
-  useDocumentTitle('Settlement batches');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('batches.title'));
+  const columns = useMemo(() => batchColumns(t), [t]);
   const perms = useFinancePermissions();
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -224,17 +229,17 @@ export default function BatchesPage() {
   const c = counts.data;
   const statusOptions: FilterOption<SettlementBatchStatus>[] = SETTLEMENT_BATCH_STATUSES.map((s) => ({
     value: s,
-    label: SETTLEMENT_BATCH_STATUS_LABELS[s],
+    label: enumLabel('status', s),
     tone: statusTone(s, 'settlementBatch'),
     count: c ? (c.counts[s] ?? 0) : undefined,
   }));
   const quickItems: QuickFilterItem<QuickValue>[] = [
-    { value: '', label: 'All', count: c?.total },
-    ...QUICK_STATUSES.slice(0, 1).map((s) => ({ value: s, label: QUICK_LABEL[s] ?? s, count: c ? (c.counts[s] ?? 0) : undefined, tone: 'warning' as const })),
-    { value: AUTO_PENDING, label: 'Auto · needs approval', count: c?.auto_pending_approval ?? undefined, tone: 'info' },
+    { value: '', label: t('common.all'), count: c?.total },
+    ...QUICK_STATUSES.slice(0, 1).map((s) => ({ value: s, label: t('batches.needsApproval'), count: c ? (c.counts[s] ?? 0) : undefined, tone: 'warning' as const })),
+    { value: AUTO_PENDING, label: t('batches.autoNeedsApproval'), count: c?.auto_pending_approval ?? undefined, tone: 'info' },
     ...QUICK_STATUSES.slice(1).map((s) => ({
       value: s,
-      label: SETTLEMENT_BATCH_STATUS_LABELS[s],
+      label: enumLabel('status', s),
       count: c ? (c.counts[s] ?? 0) : undefined,
       tone: s === 'partially_failed' ? ('danger' as const) : undefined,
     })),
@@ -254,12 +259,12 @@ export default function BatchesPage() {
   return (
     <div>
       <PageHeader
-        title="Settlement batches"
-        description="Batches move from pending approval to approved (by a different finance user), processing and completed. Automatic batches always need a human approver."
+        title={t('batches.title')}
+        description={t('batches.description')}
         actions={
           perms.finance && (
             <Button onClick={() => setGenerating(true)} leftIcon={<Layers className="size-4" aria-hidden />}>
-              Generate batch
+              {t('settlementUi.generate.submit')}
             </Button>
           )
         }
@@ -267,9 +272,9 @@ export default function BatchesPage() {
       <SettlementTabs />
       <DataTable
         id="admin.finance.settlement-batches"
-        caption="Settlement batches"
+        caption={t('batches.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -277,20 +282,20 @@ export default function BatchesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(b) => financePath(`settlements/batches/${b.id}`)}
-        rowLabel={(b) => `Open batch ${b.batch_number}`}
-        emptyTitle="No settlement batches yet"
-        emptyDescription="Generate a batch from eligible settlement items, or wait for the daily automatic batch."
+        rowLabel={(b) => t('batches.openBatch', { number: b.batch_number })}
+        emptyTitle={t('batches.emptyTitle')}
+        emptyDescription={t('batches.emptyDescription')}
         emptyAction={
           perms.finance ? (
             <Button variant="outline" onClick={() => setGenerating(true)} leftIcon={<Layers className="size-4" aria-hidden />}>
-              Generate batch
+              {t('settlementUi.generate.submit')}
             </Button>
           ) : undefined
         }
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Batch status"
+              label={t('batches.statusLabel')}
               items={quickItems}
               value={quickValue}
               onChange={(v) =>
@@ -303,12 +308,12 @@ export default function BatchesPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Batch number or maker…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('batches.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="settlement-batches"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -319,17 +324,17 @@ export default function BatchesPage() {
             more={
               <>
                 <SelectFilter
-                  label="Created by"
+                  label={t('batches.createdBy')}
                   icon={<Bot className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.origin}
                   onChange={(v) => setFilter('origin', v)}
                   options={[
-                    { value: 'auto', label: 'Automatic (daily job)' },
-                    { value: 'manual', label: 'Finance user' },
+                    { value: 'auto', label: t('batches.originAuto') },
+                    { value: 'manual', label: t('batches.originManual') },
                   ]}
                 />
                 <AmountRangeFilter
-                  label="Net payable"
+                  label={t('batches.columns.netPayable')}
                   currency="INR"
                   value={{ min: filters.min, max: filters.max }}
                   onChange={({ min, max }) => setFilters({ min, max })}
@@ -337,15 +342,15 @@ export default function BatchesPage() {
               </>
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('orders.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <SelectFilter
-              label="Payee type"
+              label={t('settlementUi.payeeType')}
               icon={<Users className="size-3.5 opacity-70" aria-hidden />}
               value={filters.payee_type}
               onChange={(v) => setFilter('payee_type', v)}
-              options={PAYEE_TYPE_OPTIONS}
+              options={payeeTypeOptions()}
             />
-            <DateRangeFilter label="Created" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('orders.columns.created')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />

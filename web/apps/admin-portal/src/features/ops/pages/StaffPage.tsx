@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Phone, UserPlus } from 'lucide-react';
+import type { TFunction } from 'i18next';
 import {
   adminApi,
   fieldErrors,
@@ -23,15 +24,16 @@ import {
   type DataTableColumn,
   type QuickFilterItem,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { Button, Field, Input, Modal, Select } from '../ui';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
 import { useOpsPermissions } from '../lib/session';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function validatePassword(pw: string): string | null {
-  if (pw.length < 10) return 'At least 10 characters.';
-  if (!/[A-Za-z]/.test(pw) || !/\d/.test(pw)) return 'Must contain a letter and a digit.';
+function validatePassword(pw: string, t: TFunction): string | null {
+  if (pw.length < 10) return t('staff.validation.passwordLength');
+  if (!/[A-Za-z]/.test(pw) || !/\d/.test(pw)) return t('staff.validation.passwordMix');
   return null;
 }
 
@@ -44,51 +46,55 @@ const ROLE_TONE: Record<StaffRole, 'accent' | 'success' | 'info' | 'warning'> = 
 
 const FILTERS = { q: filterParam.text(), role: filterParam.oneOf(STAFF_ROLES) };
 
-const COLUMNS: DataTableColumn<StaffMemberOut>[] = [
-  {
-    key: 'full_name',
-    header: 'Name',
-    sortable: true,
-    sticky: true,
-    mobile: 'primary',
-    className: 'max-w-72',
-    cell: (s) => <PersonCell name={s.full_name} secondary={s.email ?? undefined} />,
-    exportValue: (s) => s.full_name,
-  },
-  {
-    key: 'email',
-    header: 'Email',
-    sortable: true,
-    defaultHidden: true,
-    cell: (s) => s.email ?? <span className="text-muted">—</span>,
-    exportValue: (s) => s.email ?? '',
-  },
-  {
-    key: 'role',
-    header: 'Role',
-    sortable: true,
-    mobile: 'badge',
-    sortValue: (s) => USER_ROLE_LABELS[s.role],
-    cell: (s) => <Badge tone={ROLE_TONE[s.role as StaffRole] ?? 'neutral'}>{USER_ROLE_LABELS[s.role] ?? s.role}</Badge>,
-    exportValue: (s) => USER_ROLE_LABELS[s.role] ?? s.role,
-  },
-  {
-    key: 'phone',
-    header: 'Phone',
-    cell: (s) =>
-      s.phone ? (
-        <a href={`tel:${s.phone}`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-primary-ink hover:underline">
-          <Phone className="size-3.5" aria-hidden /> {s.phone}
-        </a>
-      ) : (
-        <span className="text-muted">—</span>
-      ),
-    exportValue: (s) => s.phone ?? '',
-  },
-];
+function staffColumns(t: TFunction): DataTableColumn<StaffMemberOut>[] {
+  return [
+    {
+      key: 'full_name',
+      header: t('staff.columns.name'),
+      sortable: true,
+      sticky: true,
+      mobile: 'primary',
+      className: 'max-w-72',
+      cell: (s) => <PersonCell name={s.full_name} secondary={s.email ?? undefined} />,
+      exportValue: (s) => s.full_name,
+    },
+    {
+      key: 'email',
+      header: t('staff.columns.email'),
+      sortable: true,
+      defaultHidden: true,
+      cell: (s) => s.email ?? <span className="text-muted">—</span>,
+      exportValue: (s) => s.email ?? '',
+    },
+    {
+      key: 'role',
+      header: t('staff.columns.role'),
+      sortable: true,
+      mobile: 'badge',
+      sortValue: (s) => USER_ROLE_LABELS[s.role],
+      cell: (s) => <Badge tone={ROLE_TONE[s.role as StaffRole] ?? 'neutral'}>{USER_ROLE_LABELS[s.role] ?? s.role}</Badge>,
+      exportValue: (s) => USER_ROLE_LABELS[s.role] ?? s.role,
+    },
+    {
+      key: 'phone',
+      header: t('staff.columns.phone'),
+      cell: (s) =>
+        s.phone ? (
+          <a href={`tel:${s.phone}`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-primary-ink hover:underline">
+            <Phone className="size-3.5" aria-hidden /> <span dir="ltr">{s.phone}</span>
+          </a>
+        ) : (
+          <span className="text-muted">—</span>
+        ),
+      exportValue: (s) => s.phone ?? '',
+    },
+  ];
+}
 
 export default function StaffPage() {
-  useDocumentTitle('Staff');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('staff.title'));
+  const columns = useMemo(() => staffColumns(t), [t]);
   const perms = useOpsPermissions();
   const table = useTableState({ filters: FILTERS, defaultSort: 'full_name', defaultPageSize: 25 });
   const { filters, setFilter } = table;
@@ -98,50 +104,50 @@ export default function StaffPage() {
   const searched = useMemo(() => (list.data ?? []).filter(matchesSearch(filters.q, (s) => [s.full_name, s.email, s.phone])), [list.data, filters.q]);
   const rows = useMemo(() => (filters.role ? searched.filter((s) => s.role === filters.role) : searched), [searched, filters.role]);
   const quickItems: QuickFilterItem<StaffRole>[] = [
-    { value: '', label: 'All staff', count: list.data ? searched.length : undefined },
+    { value: '', label: t('staff.filters.allStaff'), count: list.data ? searched.length : undefined },
     ...STAFF_ROLES.map((r) => ({ value: r, label: USER_ROLE_LABELS[r], count: list.data ? searched.filter((s) => s.role === r).length : undefined })),
   ];
 
   return (
     <div>
       <PageHeader
-        title="Staff"
-        description="Operations, finance and support users who work in this console."
+        title={t('staff.title')}
+        description={t('staff.description')}
         actions={
           perms.manageUsers && (
             <UiButton leftIcon={<UserPlus className="size-4" aria-hidden />} onClick={() => setCreating(true)}>
-              New staff user
+              {t('staff.newStaffUser')}
             </UiButton>
           )
         }
       />
       <DataTable
         id="admin.staff"
-        caption="Staff"
+        caption={t('staff.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data ? rows : undefined}
         loading={list.isLoading}
         error={list.error}
         onRetry={() => void list.refetch()}
-        emptyTitle="No staff users yet"
+        emptyTitle={t('staff.empty')}
         emptyAction={
           perms.manageUsers ? (
             <UiButton size="sm" leftIcon={<UserPlus className="size-4" aria-hidden />} onClick={() => setCreating(true)}>
-              New staff user
+              {t('staff.newStaffUser')}
             </UiButton>
           ) : undefined
         }
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Staff role" items={quickItems} value={filters.role} onChange={(r) => setFilter('role', r)} />
+            <QuickFilters label={t('staff.filters.role')} items={quickItems} value={filters.role} onChange={(r) => setFilter('role', r)} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Name, email or phone…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('staff.filters.searchPlaceholder') }}
             onReset={table.resetFilters}
-            actions={<ExportButton filename="staff" columns={COLUMNS} rows={rows} />}
+            actions={<ExportButton filename="staff" columns={columns} rows={rows} />}
           />
         }
       />
@@ -159,11 +165,12 @@ function CreateStaffModal({
   onClose: () => void;
   actorIsSuperAdmin: boolean;
 }) {
+  const { t } = useAppTranslation();
   const [form, setForm] = useState({ full_name: '', email: '', role: 'support' as UserRole, password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const create = useOpsMutation({
     mutationFn: () => adminApi.createStaff({ ...form, email: form.email.trim(), full_name: form.full_name.trim() }),
-    success: (u) => `Staff user ${u.full_name} created`,
+    success: (u) => t('staff.toast.created', { name: u.full_name }),
     invalidate: [opsKeys.staff, opsKeys.users, opsKeys.dashboard],
     onSuccess: () => {
       setForm({ full_name: '', email: '', role: 'support', password: '' });
@@ -178,9 +185,9 @@ function CreateStaffModal({
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const next: Record<string, string> = {};
-    if (form.full_name.trim().length < 2) next.full_name = 'Enter the full name.';
-    if (!EMAIL_RE.test(form.email.trim())) next.email = 'Enter a valid email.';
-    const pw = validatePassword(form.password);
+    if (form.full_name.trim().length < 2) next.full_name = t('staff.validation.fullName');
+    if (!EMAIL_RE.test(form.email.trim())) next.email = t('staff.validation.email');
+    const pw = validatePassword(form.password, t);
     if (pw) next.password = pw;
     setErrors(next);
     if (Object.keys(next).length === 0) create.mutate();
@@ -190,20 +197,20 @@ function CreateStaffModal({
     <Modal
       open={open}
       onClose={onClose}
-      title="New staff user"
+      title={t('staff.newStaffUser')}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('staff.form.cancel')}
           </Button>
           <Button type="submit" form="create-staff-form" loading={create.isPending}>
-            Create user
+            {t('staff.form.create')}
           </Button>
         </>
       }
     >
       <form id="create-staff-form" onSubmit={submit} className="grid gap-3" noValidate>
-        <Field label="Full name" required error={err('full_name')}>
+        <Field label={t('staff.form.fullName')} required error={err('full_name')}>
           {(id) => (
             <Input
               id={id}
@@ -214,7 +221,7 @@ function CreateStaffModal({
             />
           )}
         </Field>
-        <Field label="Email" required error={err('email')}>
+        <Field label={t('staff.form.email')} required error={err('email')}>
           {(id) => (
             <Input
               id={id}
@@ -227,7 +234,7 @@ function CreateStaffModal({
             />
           )}
         </Field>
-        <Field label="Role" required>
+        <Field label={t('staff.form.role')} required>
           {(id) => (
             <Select
               id={id}
@@ -237,12 +244,7 @@ function CreateStaffModal({
             />
           )}
         </Field>
-        <Field
-          label="Temporary password"
-          required
-          error={err('password')}
-          hint="At least 10 characters with a letter and a digit. Share it securely; the user should change it after signing in."
-        >
+        <Field label={t('staff.form.password')} required error={err('password')} hint={t('staff.form.passwordHint')}>
           {(id) => (
             <Input
               id={id}

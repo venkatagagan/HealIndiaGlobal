@@ -4,8 +4,9 @@
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
-import { errorMessage, humanize } from '@hig/shared/api';
+import { errorMessage } from '@hig/shared/api';
 import { cn, formatMoney, useDebouncedValue } from '../lib/shared';
+import { enumLabel, useFinanceTranslation, type FinanceEnumGroup } from '../lib/i18n';
 import { Badge, Button, Field, Input, Modal, Select, Textarea, type Tone } from './ui';
 
 // ---------------------------------------------------------------------------------------------------------
@@ -73,10 +74,11 @@ const STATUS_TONES: Record<string, Tone> = {
 };
 
 export function StatusBadge({ status, className }: { status: string | null | undefined; className?: string }) {
+  useFinanceTranslation(); // re-render on language change
   if (!status) return <span className="text-slate-400">—</span>;
   return (
     <Badge tone={STATUS_TONES[status] ?? 'neutral'} className={className}>
-      {humanize(status)}
+      {enumLabel('status', status)}
     </Badge>
   );
 }
@@ -90,7 +92,8 @@ export function EnumSelect<T extends string>({
   onChange,
   values,
   labels,
-  allLabel = 'All',
+  enumGroup = 'status',
+  allLabel,
   includeAll = true,
   disabled,
   className,
@@ -100,11 +103,14 @@ export function EnumSelect<T extends string>({
   onChange: (value: T | '') => void;
   values: readonly T[];
   labels?: Partial<Record<T, string>>;
+  /** catalog group for values without an explicit label (`enums.<group>.<value>`) */
+  enumGroup?: FinanceEnumGroup;
   allLabel?: string;
   includeAll?: boolean;
   disabled?: boolean;
   className?: string;
 }) {
+  const { t } = useFinanceTranslation();
   return (
     <Select
       id={id}
@@ -113,10 +119,10 @@ export function EnumSelect<T extends string>({
       className={className}
       onChange={(e) => onChange(e.target.value as T | '')}
     >
-      {includeAll && <option value="">{allLabel}</option>}
+      {includeAll && <option value="">{allLabel ?? t('common.all')}</option>}
       {values.map((v) => (
         <option key={v} value={v}>
-          {labels?.[v] ?? humanize(v)}
+          {labels?.[v] ?? enumLabel(enumGroup, v)}
         </option>
       ))}
     </Select>
@@ -130,7 +136,7 @@ export function ReasonDialog({
   open,
   title,
   description,
-  label = 'Reason',
+  label,
   confirmLabel,
   confirmVariant = 'danger',
   required = true,
@@ -157,11 +163,12 @@ export function ReasonDialog({
   /** extra content above the field */
   children?: ReactNode;
 }) {
+  const { t } = useFinanceTranslation();
   return (
     <Modal open={open} onClose={onClose} title={title} description={description} size="sm">
       {open && (
         <ReasonForm
-          label={label}
+          label={label ?? t('common.reason')}
           confirmLabel={confirmLabel}
           confirmVariant={confirmVariant}
           required={required}
@@ -190,10 +197,11 @@ function ReasonForm({ label, confirmLabel, confirmVariant, required, maxLength, 
   singleLine?: boolean;
   children?: ReactNode;
 }) {
+  const { t } = useFinanceTranslation();
   const [reason, setReason] = useState('');
   const [touched, setTouched] = useState(false);
   const trimmed = reason.trim();
-  const error = touched && required && !trimmed ? `${label} is required` : null;
+  const error = touched && required && !trimmed ? t('common.fieldRequired', { label }) : null;
   return (
     <form
       noValidate
@@ -206,7 +214,7 @@ function ReasonForm({ label, confirmLabel, confirmVariant, required, maxLength, 
       }}
     >
       {children}
-      <Field label={label} required={required} error={error} hint={singleLine ? undefined : `${trimmed.length}/${maxLength}`}>
+      <Field label={label} required={required} error={error} hint={singleLine ? undefined : t('common.charCount', { count: trimmed.length, max: maxLength })}>
         {(p) =>
           singleLine ? (
             <Input {...p} value={reason} maxLength={maxLength} autoComplete="off" onChange={(e) => setReason(e.target.value)} />
@@ -223,7 +231,7 @@ function ReasonForm({ label, confirmLabel, confirmVariant, required, maxLength, 
       </Field>
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onCancel} disabled={loading}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" variant={confirmVariant} loading={loading}>
           {confirmLabel}
@@ -264,6 +272,6 @@ export function useSearchBox(committed: string, commit: (value: string) => void,
 }
 
 /** Monospace code / reference text */
-export function Mono({ children, className }: { children: ReactNode; className?: string }) {
+export function Mono({ children, className }: { children?: ReactNode; className?: string }) {
   return <span className={cn('font-mono text-xs text-slate-600 dark:text-slate-300', className)}>{children}</span>;
 }

@@ -4,9 +4,7 @@ import { Scale } from 'lucide-react';
 import {
   financeApi,
   LEDGER_ACCOUNT_TYPES,
-  LEDGER_ACCOUNT_TYPE_LABELS,
   LEDGER_OWNER_TYPES,
-  LEDGER_OWNER_TYPE_LABELS,
   type LedgerAccountListParams,
   type LedgerAccountOut,
   type LedgerAccountType,
@@ -27,6 +25,7 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { cn, formatMoney } from '../../lib/shared';
+import { enumLabel, enumOptions, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys } from '../../api/queries';
 import { Money } from '../../components/finance';
 import { LedgerTabs, NORMAL_BALANCE } from '../../components/ledger';
@@ -58,10 +57,10 @@ const TYPE_TONES: Record<LedgerAccountType, 'info' | 'warning' | 'success' | 'da
   equity: 'accent',
 };
 
-const COLUMNS: DataTableColumn<LedgerAccountOut>[] = [
+const accountColumns = (t: FinanceT): DataTableColumn<LedgerAccountOut>[] => [
   {
     key: 'code',
-    header: 'Account',
+    header: t('ledger.entries.account'),
     sortable: true,
     sticky: true,
     mobile: 'primary',
@@ -71,7 +70,7 @@ const COLUMNS: DataTableColumn<LedgerAccountOut>[] = [
   },
   {
     key: 'name',
-    header: 'Name',
+    header: t('ledgerAccounts.columns.name'),
     sortable: true,
     defaultHidden: true,
     cell: (a) => <TextCell primary={a.name} />,
@@ -79,37 +78,37 @@ const COLUMNS: DataTableColumn<LedgerAccountOut>[] = [
   },
   {
     key: 'type',
-    header: 'Type',
+    header: t('ledgerAccounts.columns.type'),
     sortable: true,
     mobile: 'badge',
     cell: (a) => (
       <Badge tone={TYPE_TONES[a.type]} dot>
-        {LEDGER_ACCOUNT_TYPE_LABELS[a.type]}
+        {enumLabel('ledgerAccountType', a.type)}
       </Badge>
     ),
-    exportValue: (a) => LEDGER_ACCOUNT_TYPE_LABELS[a.type],
+    exportValue: (a) => enumLabel('ledgerAccountType', a.type),
   },
   {
     key: 'owner_type',
-    header: 'Owner',
+    header: t('ledgerAccounts.columns.owner'),
     sortable: true,
     cell: (a) => (
       <TextCell
-        primary={LEDGER_OWNER_TYPE_LABELS[a.owner_type] ?? a.owner_type}
+        primary={enumLabel('ledgerOwnerType', a.owner_type)}
         secondary={a.owner_id ? <span className="font-mono">{a.owner_id.slice(0, 8)}…</span> : undefined}
       />
     ),
-    exportValue: (a) => LEDGER_OWNER_TYPE_LABELS[a.owner_type] ?? a.owner_type,
+    exportValue: (a) => enumLabel('ledgerOwnerType', a.owner_type),
   },
   {
     key: 'normal',
-    header: 'Normal side',
-    cell: (a) => <span className="text-muted">{NORMAL_BALANCE[a.type] === 'debit' ? 'Debit' : 'Credit'}</span>,
+    header: t('ledgerAccounts.columns.normalSide'),
+    cell: (a) => <span className="text-muted">{enumLabel('entryDirection', NORMAL_BALANCE[a.type])}</span>,
     exportValue: (a) => NORMAL_BALANCE[a.type],
   },
   {
     key: 'balance',
-    header: 'Balance',
+    header: t('ledgerAccounts.columns.balance'),
     align: 'end',
     sortable: true,
     sortKey: 'balance_minor',
@@ -124,7 +123,9 @@ const COLUMNS: DataTableColumn<LedgerAccountOut>[] = [
 ];
 
 export default function AccountsPage() {
-  useDocumentTitle('Ledger accounts');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('ledgerAccounts.documentTitle'));
+  const columns = useMemo(() => accountColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: 'code', sortKeys: SORT_KEYS, defaultPageSize: 50 });
   const { filters, setFilter } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -144,39 +145,36 @@ export default function AccountsPage() {
   const s = summary.data;
 
   const quickItems: QuickFilterItem<LedgerAccountType>[] = [
-    { value: '', label: 'All', count: s?.total },
-    ...LEDGER_ACCOUNT_TYPES.map((t) => ({ value: t, label: LEDGER_ACCOUNT_TYPE_LABELS[t], count: s?.counts[t] })),
+    { value: '', label: t('common.all'), count: s?.total },
+    ...LEDGER_ACCOUNT_TYPES.map((type) => ({ value: type, label: enumLabel('ledgerAccountType', type), count: s?.counts[type] })),
   ];
   const quickValue = filters.type.length === 0 ? '' : filters.type.length === 1 ? filters.type[0]! : null;
 
   return (
     <div>
-      <PageHeader
-        title="Ledger"
-        description="Double-entry, immutable ledger in INR. Assets and expenses are debit-positive; liabilities, revenue and equity are credit-positive."
-      />
+      <PageHeader title={t('nav.items.ledger')} description={t('ledgerAccounts.description')} />
       <LedgerTabs />
 
       <dl className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-        {LEDGER_ACCOUNT_TYPES.map((t) => (
+        {LEDGER_ACCOUNT_TYPES.map((type) => (
           <div
-            key={t}
+            key={type}
             className={cn(
               'rounded-xl border bg-surface p-3 shadow-sm',
-              quickValue === t ? 'border-primary ring-1 ring-primary/40' : 'border-border',
+              quickValue === type ? 'border-primary ring-1 ring-primary/40' : 'border-border',
             )}
           >
-            <dt className="text-xs font-medium uppercase tracking-wide text-muted">{LEDGER_ACCOUNT_TYPE_LABELS[t]}</dt>
-            <dd className="mt-1 font-semibold tabular-nums text-fg">{s ? formatMoney(s.balances[t], 'INR') : '…'}</dd>
+            <dt className="text-xs font-medium uppercase tracking-wide text-muted">{enumLabel('ledgerAccountType', type)}</dt>
+            <dd className="mt-1 font-semibold tabular-nums text-fg">{s ? formatMoney(s.balances[type], 'INR') : '…'}</dd>
           </div>
         ))}
       </dl>
 
       <DataTable
         id="admin.finance.ledger.accounts"
-        caption="Ledger accounts"
+        caption={t('ledgerAccounts.documentTitle')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -184,22 +182,22 @@ export default function AccountsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(a) => financePath(`ledger/accounts/${a.id}`)}
-        rowLabel={(a) => `Open account ${a.code}`}
-        emptyTitle="No accounts yet"
-        emptyDescription="Accounts are created automatically on the first posting."
+        rowLabel={(a) => t('ledgerAccounts.openAccount', { code: a.code })}
+        emptyTitle={t('ledgerAccounts.emptyTitle')}
+        emptyDescription={t('ledgerAccounts.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Account type" items={quickItems} value={quickValue} onChange={(t) => setFilter('type', t ? [t] : [])} />
+            <QuickFilters label={t('ledgerAccounts.accountType')} items={quickItems} value={quickValue} onChange={(v) => setFilter('type', v ? [v] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Account code or name…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('ledgerAccounts.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="ledger-accounts"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -209,19 +207,19 @@ export default function AccountsPage() {
             }
           >
             <MultiSelectFilter
-              label="Owner"
+              label={t('ledgerAccounts.columns.owner')}
               value={filters.owner_type}
               onChange={(v) => setFilter('owner_type', v)}
-              options={LEDGER_OWNER_TYPES.map((o) => ({ value: o, label: LEDGER_OWNER_TYPE_LABELS[o] }))}
+              options={enumOptions('ledgerOwnerType', LEDGER_OWNER_TYPES)}
             />
             <MultiSelectFilter
-              label="Type"
+              label={t('ledgerAccounts.columns.type')}
               value={filters.type}
               onChange={(v) => setFilter('type', v)}
-              options={LEDGER_ACCOUNT_TYPES.map((t) => ({ value: t, label: LEDGER_ACCOUNT_TYPE_LABELS[t], count: s?.counts[t], tone: TYPE_TONES[t] }))}
+              options={LEDGER_ACCOUNT_TYPES.map((type) => ({ value: type, label: enumLabel('ledgerAccountType', type), count: s?.counts[type], tone: TYPE_TONES[type] }))}
             />
             <ToggleFilter
-              label="Non-zero balance"
+              label={t('ledgerAccounts.nonZero')}
               icon={<Scale className="size-3.5 opacity-70" aria-hidden />}
               pressed={filters.nonzero === true}
               onChange={(on) => setFilter('nonzero', on || undefined)}

@@ -3,13 +3,9 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { CreditCard, Landmark, ShieldCheck } from 'lucide-react';
 import {
   ORDER_STATUSES,
-  ORDER_STATUS_LABELS,
   PAYMENT_GATEWAYS,
-  PAYMENT_GATEWAY_LABELS,
   PAYMENT_METHODS,
-  PAYMENT_METHOD_LABELS,
   PAYMENT_PURPOSES,
-  PAYMENT_PURPOSE_LABELS,
   paymentsApi,
   type OrderListParams,
   type OrderStatus,
@@ -46,7 +42,8 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { financeKeys } from '../api/queries';
-import { REVIEW_KIND_LABELS, ReviewBadge } from '../components/reviews';
+import { reviewKindLabel, ReviewBadge } from '../components/reviews';
+import { enumLabel, enumOptions, useFinanceTranslation, type FinanceT } from '../lib/i18n';
 import { CURRENCY_OPTIONS, listOrUndefined, minorOrUndefined, orUndefined } from '../lib/tables';
 import { financePath } from '../paths';
 
@@ -101,31 +98,31 @@ const REVIEW_TAB = 'review';
 // ---------------------------------------------------------------------------------------------------------
 const money = (minor: number, currency: string) => `${currency} ${fromMinor(minor, currency)}`;
 
-const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
+const orderColumns = (t: FinanceT): DataTableColumn<PaymentOrderOut>[] => [
   {
     key: 'order',
-    header: 'Order',
+    header: t('orders.columns.order'),
     sortable: true,
     sortKey: 'order_number',
     sticky: true,
     mobile: 'secondary',
-    cell: (o) => <IdCell value={o.order_number} secondary={PAYMENT_PURPOSE_LABELS[o.purpose] ?? o.purpose} />,
+    cell: (o) => <IdCell value={o.order_number} secondary={enumLabel('paymentPurpose', o.purpose)} />,
     mobileCell: (o) => (
       <span className="font-mono text-xs">
-        {o.order_number} · {PAYMENT_PURPOSE_LABELS[o.purpose] ?? o.purpose}
+        {o.order_number} · {enumLabel('paymentPurpose', o.purpose)}
       </span>
     ),
     exportValue: (o) => o.order_number,
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('orders.columns.patient'),
     mobile: 'primary',
     className: 'max-w-56',
     cell: (o) => (
       <PersonCell
-        name={o.patient_name ?? o.payer_name ?? 'Unknown payer'}
-        secondary={[o.booking_number, o.payer_name && o.payer_name !== o.patient_name ? `paid by ${o.payer_name}` : null]
+        name={o.patient_name ?? o.payer_name ?? t('orders.unknownPayer')}
+        secondary={[o.booking_number, o.payer_name && o.payer_name !== o.patient_name ? t('orders.paidBy', { name: o.payer_name }) : null]
           .filter(Boolean)
           .join(' · ') || undefined}
       />
@@ -134,7 +131,7 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('orders.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (o) => (
@@ -144,23 +141,23 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
       </span>
     ),
     mobileCell: (o) => <StatusBadgeCell status={o.status} kind="order" />,
-    exportValue: (o) => ORDER_STATUS_LABELS[o.status] ?? o.status,
+    exportValue: (o) => enumLabel('status', o.status),
   },
   {
     key: 'gateway',
-    header: 'Gateway',
+    header: t('orders.columns.gateway'),
     className: 'max-w-48',
     cell: (o) => (
       <TextCell
-        primary={PAYMENT_GATEWAY_LABELS[o.gateway] ?? o.gateway}
-        secondary={o.payment_method ? PAYMENT_METHOD_LABELS[o.payment_method] : undefined}
+        primary={enumLabel('paymentGateway', o.gateway)}
+        secondary={o.payment_method ? enumLabel('paymentMethod', o.payment_method) : undefined}
       />
     ),
-    exportValue: (o) => PAYMENT_GATEWAY_LABELS[o.gateway] ?? o.gateway,
+    exportValue: (o) => enumLabel('paymentGateway', o.gateway),
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('orders.columns.amount'),
     align: 'end',
     sortable: true,
     sortKey: 'base_amount_minor',
@@ -176,7 +173,7 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
   },
   {
     key: 'base_amount',
-    header: 'Amount (INR)',
+    header: t('orders.columns.amountInr'),
     align: 'end',
     defaultHidden: true,
     cell: (o) => <MoneyCell minor={o.base_amount_minor} currency={o.base_currency} />,
@@ -184,21 +181,21 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
   },
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('orders.columns.booking'),
     defaultHidden: true,
     cell: (o) => <span className="font-mono text-xs">{o.booking_number ?? '—'}</span>,
     exportValue: (o) => o.booking_number ?? '',
   },
   {
     key: 'method',
-    header: 'Method',
+    header: t('orders.columns.method'),
     defaultHidden: true,
-    cell: (o) => (o.payment_method ? PAYMENT_METHOD_LABELS[o.payment_method] : <span className="text-muted">—</span>),
-    exportValue: (o) => (o.payment_method ? PAYMENT_METHOD_LABELS[o.payment_method] : ''),
+    cell: (o) => (o.payment_method ? enumLabel('paymentMethod', o.payment_method) : <span className="text-muted">—</span>),
+    exportValue: (o) => (o.payment_method ? enumLabel('paymentMethod', o.payment_method) : ''),
   },
   {
     key: 'created',
-    header: 'Created',
+    header: t('orders.columns.created'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -207,7 +204,7 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
   },
   {
     key: 'paid',
-    header: 'Paid',
+    header: t('orders.columns.paid'),
     sortable: true,
     sortKey: 'paid_at',
     sortDescFirst: true,
@@ -221,7 +218,9 @@ const ORDER_COLUMNS: DataTableColumn<PaymentOrderOut>[] = [
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function OrdersPage() {
-  useDocumentTitle('Payment orders');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('orders.title'));
+  const columns = useMemo(() => orderColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -241,14 +240,14 @@ export default function OrdersPage() {
   const c = counts.data;
   const statusOptions: FilterOption<OrderStatus>[] = ORDER_STATUSES.map((s) => ({
     value: s,
-    label: ORDER_STATUS_LABELS[s],
+    label: enumLabel('status', s),
     tone: statusTone(s, 'order'),
     count: c?.counts[s],
   }));
   const quickItems: QuickFilterItem<QuickValue>[] = [
-    { value: '', label: 'All', count: c?.total },
-    ...QUICK_STATUSES.map((s) => ({ value: s, label: ORDER_STATUS_LABELS[s], count: c?.counts[s] })),
-    { value: REVIEW_TAB, label: 'Review required', count: c?.review.any, tone: 'warning' },
+    { value: '', label: t('common.all'), count: c?.total },
+    ...QUICK_STATUSES.map((s) => ({ value: s, label: enumLabel('status', s), count: c?.counts[s] })),
+    { value: REVIEW_TAB, label: t('orders.reviewRequired'), count: c?.review.any, tone: 'warning' },
   ];
   const quickValue: QuickValue | '' | null =
     filters.review === 'any' && filters.status.length === 0
@@ -263,15 +262,12 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Payment orders"
-        description="Every checkout attempt across gateways — find a payment, check its status and open it for payments, refunds and reviews."
-      />
+      <PageHeader title={t('orders.title')} description={t('orders.description')} />
       <DataTable
         id="admin.finance.orders"
-        caption="Payment orders"
+        caption={t('orders.title')}
         table={table}
-        columns={ORDER_COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -279,13 +275,13 @@ export default function OrdersPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(o) => financePath(`orders/${o.id}`)}
-        rowLabel={(o) => `Open order ${o.order_number}`}
-        emptyTitle="No payment orders yet"
-        emptyDescription="Orders appear when patients or agents start a checkout."
+        rowLabel={(o) => t('orders.openOrder', { number: o.order_number })}
+        emptyTitle={t('orders.emptyTitle')}
+        emptyDescription={t('orders.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Order status"
+              label={t('orders.filters.orderStatus')}
               items={quickItems}
               value={quickValue}
               onChange={(v) =>
@@ -296,12 +292,12 @@ export default function OrdersPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Order, booking or patient…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('orders.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="payment-orders"
-                columns={ORDER_COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -312,60 +308,60 @@ export default function OrdersPage() {
             more={
               <>
                 <MultiSelectFilter
-                  label="Method"
+                  label={t('orders.columns.method')}
                   icon={<CreditCard className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.method}
                   onChange={(v) => setFilter('method', v)}
-                  options={PAYMENT_METHODS.map((m) => ({ value: m, label: PAYMENT_METHOD_LABELS[m] }))}
+                  options={enumOptions('paymentMethod', PAYMENT_METHODS)}
                 />
                 <MultiSelectFilter
-                  label="Purpose"
+                  label={t('orders.filters.purpose')}
                   value={filters.purpose}
                   onChange={(v) => setFilter('purpose', v)}
-                  options={PAYMENT_PURPOSES.map((p) => ({ value: p, label: PAYMENT_PURPOSE_LABELS[p] }))}
+                  options={enumOptions('paymentPurpose', PAYMENT_PURPOSES)}
                 />
                 <MultiSelectFilter
-                  label="Currency"
+                  label={t('orders.filters.currency')}
                   value={filters.currency}
                   onChange={(v) => setFilter('currency', v)}
                   options={CURRENCY_OPTIONS}
                   searchable
                 />
                 <SelectFilter
-                  label="Finance review"
+                  label={t('orders.filters.financeReview')}
                   icon={<ShieldCheck className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.review}
                   onChange={(v) => setFilter('review', v)}
                   options={[
-                    { value: 'any', label: 'Any review', count: c?.review.any },
-                    { value: 'amount', label: REVIEW_KIND_LABELS.amount, count: c?.review.amount },
-                    { value: 'mark_paid', label: REVIEW_KIND_LABELS.mark_paid, count: c?.review.mark_paid },
+                    { value: 'any', label: t('orders.filters.anyReview'), count: c?.review.any },
+                    { value: 'amount', label: reviewKindLabel('amount'), count: c?.review.amount },
+                    { value: 'mark_paid', label: reviewKindLabel('mark_paid'), count: c?.review.mark_paid },
                   ]}
                 />
               </>
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('orders.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <MultiSelectFilter
-              label="Gateway"
+              label={t('orders.columns.gateway')}
               icon={<Landmark className="size-3.5 opacity-70" aria-hidden />}
               value={filters.gateway}
               onChange={(v) => setFilter('gateway', v)}
-              options={PAYMENT_GATEWAYS.map((g) => ({ value: g, label: PAYMENT_GATEWAY_LABELS[g] }))}
+              options={enumOptions('paymentGateway', PAYMENT_GATEWAYS)}
             />
             <AmountRangeFilter
-              label="Amount"
+              label={t('orders.columns.amount')}
               currency="INR"
               value={{ min: filters.min, max: filters.max }}
               onChange={({ min, max }) => setFilters({ min, max })}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('orders.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Created' },
-                { value: 'paid', label: 'Paid' },
+                { value: 'created', label: t('orders.columns.created') },
+                { value: 'paid', label: t('orders.columns.paid') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}

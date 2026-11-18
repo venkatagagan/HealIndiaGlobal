@@ -1,3 +1,4 @@
+import { useAppTranslation } from '../../../i18n';
 import { Input, Select } from '../ui';
 import { SUPPORTED_CURRENCIES, fromMinor, toMinor } from '../lib/format';
 
@@ -37,6 +38,7 @@ export function MoneyInput({
   invalid?: boolean;
   lockCurrency?: boolean;
 }) {
+  const { t } = useAppTranslation();
   const options = CURRENCY_OPTIONS.some((o) => o.value === value.currency)
     ? CURRENCY_OPTIONS
     : [{ value: value.currency, label: value.currency }, ...CURRENCY_OPTIONS];
@@ -52,7 +54,7 @@ export function MoneyInput({
         onChange={(e) => onChange({ ...value, amount: e.target.value })}
       />
       <Select
-        aria-label="Currency"
+        aria-label={t('components.money.currency')}
         className="w-24 shrink-0"
         value={value.currency}
         disabled={disabled || lockCurrency}

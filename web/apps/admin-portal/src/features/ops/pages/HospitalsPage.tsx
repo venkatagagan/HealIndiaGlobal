@@ -11,7 +11,8 @@ import {
   type HospitalProfileOut,
   type HospitalStatus,
 } from '@hig/shared/api';
-import { fetchAllPages, filterParam, useDocumentTitle, useTableState, type FilterValues } from '@hig/shared/lib';
+import type { TFunction } from 'i18next';
+import { fetchAllPages, filterParam, formatNumber, useDocumentTitle, useTableState, type FilterValues } from '@hig/shared/lib';
 import {
   Badge,
   DataTable,
@@ -34,6 +35,7 @@ import { formatBps } from '../lib/format';
 import { useAdminFacets, useSpecialtyOptions } from '../lib/lookups';
 import { opsKeys } from '../lib/mutations';
 import { opsPaths } from '../lib/paths';
+import { useAppTranslation } from '../../../i18n';
 
 const FILTERS = {
   q: filterParam.text(),
@@ -61,15 +63,16 @@ function toApiFilters(f: HospitalFilters): Omit<AdminHospitalListParams, 'page' 
   };
 }
 
-const QUICK: { value: HospitalStatus; label: string }[] = [
-  { value: 'pending_review', label: 'Approval queue' },
-  { value: 'active', label: 'Active' },
-  { value: 'suspended', label: 'Suspended' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'draft', label: 'Draft' },
+const quickFilters = (t: TFunction): { value: HospitalStatus; label: string }[] => [
+  { value: 'pending_review', label: t('hospitals.quick.approvalQueue') },
+  { value: 'active', label: t('hospitals.quick.active') },
+  { value: 'suspended', label: t('hospitals.quick.suspended') },
+  { value: 'rejected', label: t('hospitals.quick.rejected') },
+  { value: 'draft', label: t('hospitals.quick.draft') },
 ];
 
 function HospitalCell({ h }: { h: HospitalProfileOut }) {
+  const { t } = useAppTranslation();
   return (
     <span className="flex min-w-0 items-center gap-3">
       {h.logo_url ? (
@@ -82,7 +85,7 @@ function HospitalCell({ h }: { h: HospitalProfileOut }) {
       <span className="min-w-0">
         <span className="flex items-center gap-1 truncate font-medium text-fg">
           <span className="truncate">{h.name}</span>
-          {h.is_featured && <Star className="size-3.5 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />}
+          {h.is_featured && <Star className="size-3.5 shrink-0 fill-amber-400 text-amber-400" aria-label={t('hospitals.featured')} />}
         </span>
         <span className="block truncate text-xs text-muted">{h.legal_name ?? h.email ?? h.slug}</span>
       </span>
@@ -90,10 +93,10 @@ function HospitalCell({ h }: { h: HospitalProfileOut }) {
   );
 }
 
-const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
+const hospitalColumns = (t: TFunction): DataTableColumn<HospitalProfileOut>[] => [
   {
     key: 'name',
-    header: 'Hospital',
+    header: t('hospitals.columns.hospital'),
     sortable: true,
     sticky: true,
     mobile: 'primary',
@@ -104,8 +107,8 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
   },
   {
     key: 'city',
-    header: 'Location',
-    title: 'Location',
+    header: t('hospitals.columns.location'),
+    title: t('hospitals.columns.location'),
     sortable: true,
     mobile: 'secondary',
     cell: (h) => <TextCell primary={h.city} secondary={h.state ?? undefined} />,
@@ -114,20 +117,20 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('hospitals.columns.status'),
     mobile: 'badge',
     cell: (h) => <StatusBadgeCell status={h.status} kind="hospital" />,
     exportValue: (h) => HOSPITAL_STATUS_LABELS[h.status],
   },
   {
     key: 'kyc',
-    header: 'KYC',
+    header: t('hospitals.columns.kyc'),
     cell: (h) => <StatusBadgeCell status={h.kyc_status} kind="kyc" />,
     exportValue: (h) => KYC_STATUS_LABELS[h.kyc_status],
   },
   {
     key: 'accreditations',
-    header: 'Accreditations',
+    header: t('hospitals.columns.accreditations'),
     cell: (h) =>
       h.accreditations.length === 0 ? (
         <span className="text-muted">—</span>
@@ -144,15 +147,20 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
   },
   {
     key: 'specialties',
-    header: 'Specialties',
+    header: t('hospitals.columns.specialties'),
     defaultHidden: true,
     className: 'max-w-64',
-    cell: (h) => <TextCell primary={h.specialties.slice(0, 3).join(', ') || '—'} secondary={h.specialties.length > 3 ? `+${h.specialties.length - 3} more` : undefined} />,
+    cell: (h) => (
+      <TextCell
+        primary={h.specialties.slice(0, 3).join(', ') || '—'}
+        secondary={h.specialties.length > 3 ? t('hospitals.moreSpecialties', { count: h.specialties.length - 3 }) : undefined}
+      />
+    ),
     exportValue: (h) => h.specialties.join('; '),
   },
   {
     key: 'rating_avg',
-    header: 'Rating',
+    header: t('hospitals.columns.rating'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -160,7 +168,8 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
     cell: (h) =>
       h.rating_avg != null && h.rating_count > 0 ? (
         <span className="tabular-nums">
-          {Number(h.rating_avg).toFixed(1)} <span className="text-xs text-muted">({h.rating_count})</span>
+          {formatNumber(Number(h.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}{' '}
+          <span className="text-xs text-muted">({formatNumber(h.rating_count)})</span>
         </span>
       ) : (
         <span className="text-muted">—</span>
@@ -169,14 +178,19 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
   },
   {
     key: 'commission',
-    header: 'Commission',
+    header: t('hospitals.columns.commission'),
     align: 'end',
-    cell: (h) => (h.commission_rate_bps == null ? <span className="text-muted">Default</span> : <span className="tabular-nums">{formatBps(h.commission_rate_bps)}</span>),
-    exportValue: (h) => (h.commission_rate_bps == null ? 'Default' : formatBps(h.commission_rate_bps)),
+    cell: (h) =>
+      h.commission_rate_bps == null ? (
+        <span className="text-muted">{t('hospitals.defaultCommission')}</span>
+      ) : (
+        <span className="tabular-nums">{formatBps(h.commission_rate_bps)}</span>
+      ),
+    exportValue: (h) => (h.commission_rate_bps == null ? t('hospitals.defaultCommission') : formatBps(h.commission_rate_bps)),
   },
   {
     key: 'created_at',
-    header: 'Registered',
+    header: t('hospitals.columns.registered'),
     sortable: true,
     sortDescFirst: true,
     cell: (h) => <DateCell value={h.created_at} display="date" />,
@@ -184,7 +198,7 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
   },
   {
     key: 'updated_at',
-    header: 'Updated',
+    header: t('hospitals.columns.updated'),
     sortable: true,
     sortDescFirst: true,
     defaultHidden: true,
@@ -194,7 +208,9 @@ const COLUMNS: DataTableColumn<HospitalProfileOut>[] = [
 ];
 
 export default function HospitalsPage() {
-  useDocumentTitle('Hospitals');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('hospitals.title'));
+  const columns = useMemo(() => hospitalColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -220,8 +236,8 @@ export default function HospitalsPage() {
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<HospitalStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
-    ...QUICK.map((q) => ({ ...q, count: counts.data?.counts[q.value], tone: q.value === 'pending_review' ? ('warning' as const) : undefined })),
+    { value: '', label: t('hospitals.quick.all'), count: counts.data?.total },
+    ...quickFilters(t).map((q) => ({ ...q, count: counts.data?.counts[q.value], tone: q.value === 'pending_review' ? ('warning' as const) : undefined })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 ? filters.status[0]! : null;
   const toOptions = (values: string[] | undefined, upper = false): FilterOption[] =>
@@ -229,15 +245,12 @@ export default function HospitalsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Hospitals"
-        description="Partner hospitals — review KYC, approve new registrations and manage commercial terms."
-      />
+      <PageHeader title={t('hospitals.title')} description={t('hospitals.description')} />
       <DataTable
         id="admin.hospitals"
-        caption="Hospitals"
+        caption={t('hospitals.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -245,22 +258,22 @@ export default function HospitalsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(h) => opsPaths.hospital(h.id)}
-        rowLabel={(h) => `Open ${h.name}`}
-        emptyTitle="No hospitals yet"
-        emptyDescription="Hospitals appear here as soon as they register on the hospital portal."
+        rowLabel={(h) => t('hospitals.openRow', { name: h.name })}
+        emptyTitle={t('hospitals.emptyTitle')}
+        emptyDescription={t('hospitals.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Hospital status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('hospitals.quick.label')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Name, city or email…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('hospitals.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="hospitals"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() => fetchAllPages((page, size) => adminApi.listHospitals({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}
@@ -269,7 +282,7 @@ export default function HospitalsPage() {
             more={
               <>
                 <MultiSelectFilter
-                  label="State"
+                  label={t('hospitals.filters.state')}
                   value={filters.state}
                   onChange={(v) => setFilter('state', v)}
                   options={toOptions(facets.data?.hospital_states)}
@@ -277,13 +290,13 @@ export default function HospitalsPage() {
                   searchable
                 />
                 <MultiSelectFilter
-                  label="KYC"
+                  label={t('hospitals.filters.kyc')}
                   value={filters.kyc_status}
                   onChange={(v) => setFilter('kyc_status', v)}
                   options={KYC_STATUSES.map((k) => ({ value: k, label: KYC_STATUS_LABELS[k], tone: statusTone(k, 'kyc') }))}
                 />
                 <ToggleFilter
-                  label="Featured only"
+                  label={t('hospitals.filters.featuredOnly')}
                   icon={<Star className="size-3.5 opacity-70" aria-hidden />}
                   pressed={filters.featured === true}
                   onChange={(on) => setFilter('featured', on ? true : undefined)}
@@ -291,9 +304,9 @@ export default function HospitalsPage() {
               </>
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('hospitals.filters.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <MultiSelectFilter
-              label="City"
+              label={t('hospitals.filters.city')}
               icon={<MapPin className="size-3.5 opacity-70" aria-hidden />}
               value={filters.city}
               onChange={(v) => setFilter('city', v)}
@@ -302,7 +315,7 @@ export default function HospitalsPage() {
               searchable
             />
             <SelectFilter
-              label="Specialty"
+              label={t('hospitals.filters.specialty')}
               icon={<Stethoscope className="size-3.5 opacity-70" aria-hidden />}
               value={filters.specialty_id}
               onChange={(v) => setFilter('specialty_id', v)}
@@ -311,7 +324,7 @@ export default function HospitalsPage() {
               searchable
             />
             <MultiSelectFilter
-              label="Accreditation"
+              label={t('hospitals.filters.accreditation')}
               icon={<Award className="size-3.5 opacity-70" aria-hidden />}
               value={filters.accreditation}
               onChange={(v) => setFilter('accreditation', v)}

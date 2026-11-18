@@ -7,6 +7,8 @@ import type { ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { ArrowLeft, Check, X } from 'lucide-react';
 import { Tabs, type TabItem } from '@hig/shared/ui';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 
 export { Panel } from '../components/dashboard/widgets';
@@ -40,7 +42,7 @@ export function DetailHero({
         to={back.to}
         className="mb-3 inline-flex items-center gap-1 rounded text-sm font-medium text-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <ArrowLeft className="size-4" aria-hidden /> {back.label}
+        <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden /> {back.label}
       </Link>
       <div className="rounded-xl border border-border bg-surface shadow-card">
         <div className="flex flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-start lg:justify-between">
@@ -84,9 +86,10 @@ export function StatusTrack({
   /** a closed outcome that ended the flow early (cancelled / declined / rejected) */
   terminal?: { label: string; at?: string | null } | null;
 }) {
+  const { t } = useAppTranslation();
   const label = terminal ? terminal.label : steps[current]?.label ?? '';
   return (
-    <nav aria-label="Progress">
+    <nav aria-label={t('ui.track.label')}>
       {/* phones */}
       <div className="sm:hidden">
         <p className="text-xs text-muted">
@@ -94,7 +97,8 @@ export function StatusTrack({
             <span className="font-medium text-danger-ink">{label}</span>
           ) : (
             <>
-              Step {current + 1} of {steps.length} · <span className="font-medium text-fg">{label}</span>
+              {t('ui.track.step', { step: formatNumber(current + 1), total: formatNumber(steps.length) })} ·{' '}
+              <span className="font-medium text-fg">{label}</span>
             </>
           )}
         </p>
@@ -117,7 +121,7 @@ export function StatusTrack({
             <li key={s.key} aria-current={active ? 'step' : undefined} className="relative flex min-w-0 flex-1 flex-col items-center text-center">
               {i > 0 && (
                 <span
-                  className={cn('absolute right-1/2 top-3.5 h-0.5 w-full -translate-y-1/2', i <= current ? 'bg-primary' : 'bg-border')}
+                  className={cn('absolute end-1/2 top-3.5 h-0.5 w-full -translate-y-1/2', i <= current ? 'bg-primary' : 'bg-border')}
                   aria-hidden
                 />
               )}
@@ -130,7 +134,7 @@ export function StatusTrack({
                   !done && !active && !stopped && 'border-border bg-surface text-muted',
                 )}
               >
-                {done ? <Check className="size-3.5" aria-hidden /> : stopped ? <X className="size-3.5" aria-hidden /> : i + 1}
+                {done ? <Check className="size-3.5" aria-hidden /> : stopped ? <X className="size-3.5" aria-hidden /> : formatNumber(i + 1)}
               </span>
               <span className={cn('mt-1.5 px-1 text-xs font-medium', done || active ? 'text-fg' : stopped ? 'text-danger-ink' : 'text-muted')}>
                 {stopped ? terminal.label : s.label}
@@ -138,7 +142,7 @@ export function StatusTrack({
               {(stopped ? terminal.at : s.at) && (
                 <span className="px-1 text-[11px] text-muted">{stopped ? terminal.at : s.at}</span>
               )}
-              <span className="sr-only">{done ? ' (done)' : active ? ' (current)' : ''}</span>
+              <span className="sr-only">{done ? ` ${t('ui.track.done')}` : active ? ` ${t('ui.track.current')}` : ''}</span>
             </li>
           );
         })}
@@ -159,7 +163,7 @@ export function FactList({ items }: { items: readonly { label: string; value: Re
             {f.icon}
             {f.label}
           </dt>
-          <dd className="min-w-0 break-words text-right text-fg">{f.value ?? '—'}</dd>
+          <dd className="min-w-0 break-words text-end text-fg">{f.value ?? '—'}</dd>
         </div>
       ))}
     </dl>

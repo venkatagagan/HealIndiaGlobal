@@ -19,6 +19,7 @@ import {
 } from '@hig/shared/ui';
 import { opsKeys } from '../../lib/mutations';
 import { opsPaths } from '../../lib/paths';
+import { useAppTranslation } from '../../../../i18n';
 
 export interface TravelQuery {
   status?: string[];
@@ -82,6 +83,7 @@ export function TravelListPanel<T extends { id: string }>({
   emptyDescription,
   refetchInterval,
 }: TravelListPanelProps<T>) {
+  const { t } = useAppTranslation();
   const table = useTableState({ filters: FILTERS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(
@@ -116,7 +118,7 @@ export function TravelListPanel<T extends { id: string }>({
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('travel.list.all'), count: counts.data?.total },
     ...quickStatuses.map((s) => ({ value: s, label: statusLabels[s] ?? s, count: counts.data?.counts[s] })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 && quickStatuses.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -140,12 +142,12 @@ export function TravelListPanel<T extends { id: string }>({
       emptyDescription={emptyDescription}
       header={
         <div className="border-b border-border px-2 sm:px-3">
-          <QuickFilters label={`${caption} status`} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+          <QuickFilters label={t('travel.list.statusTabs', { caption })} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
         </div>
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Patient name…' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('travel.list.searchPlaceholder') }}
           onReset={table.resetFilters}
           actions={
             <ExportButton
@@ -157,7 +159,7 @@ export function TravelListPanel<T extends { id: string }>({
             />
           }
         >
-          <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+          <MultiSelectFilter label={t('travel.list.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
           {kinds && (
             <MultiSelectFilter
               label={kinds.label}
@@ -176,6 +178,7 @@ export function TravelListPanel<T extends { id: string }>({
 
 /** Patient name + "Open case" link (stops the row click). */
 export function PatientCaseCell({ name, caseId, caseNumber }: { name: string | null | undefined; caseId: string | null | undefined; caseNumber?: string | null }) {
+  const { t } = useAppTranslation();
   return (
     <span className="block min-w-0">
       <span className="block truncate font-medium text-fg">{name ?? '—'}</span>
@@ -185,7 +188,7 @@ export function PatientCaseCell({ name, caseId, caseNumber }: { name: string | n
           onClick={(e) => e.stopPropagation()}
           className="text-xs text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {caseNumber ? `Case ${caseNumber}` : 'Open case'}
+          {caseNumber ? t('travel.list.caseNumber', { number: caseNumber }) : t('travel.list.openCase')}
         </Link>
       )}
     </span>

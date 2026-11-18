@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { adminApi, CASE_STATUS_LABELS, USER_ROLE_LABELS, type AuditLogOut, type CaseStatus } from '@hig/shared/api';
 import { Skeleton } from '@hig/shared/ui';
+import { Trans } from 'react-i18next';
+import { useAppTranslation } from '../../../../i18n';
 import { cn, formatDateTime, formatRelative } from '../../lib/format';
 import { opsKeys } from '../../lib/mutations';
 import { opsPaths } from '../../lib/paths';
@@ -28,7 +30,9 @@ const HIDDEN = /^(auth\.|consent\.|agent\.patient_consent)/;
 interface Described {
   icon: LucideIcon;
   tone: string;
-  text: string;
+  /** `dashboard.activity.<key>` - a whole sentence with `<0>{{who}}</0>` */
+  key: string;
+  values?: Record<string, string>;
   to?: string;
 }
 
@@ -41,51 +45,56 @@ function describe(l: AuditLogOut): Described {
   const caseTo = l.entity_type === 'case' && l.entity_id ? opsPaths.case(l.entity_id) : undefined;
   const status = str(after.status) as CaseStatus | undefined;
   switch (l.action) {
-    case 'case.create':
-      return { icon: FilePlus2, tone: 'info', text: `opened case ${str(after.case_number) ?? ''}`.trim(), to: caseTo };
+    case 'case.create': {
+      const number = str(after.case_number);
+      return number
+        ? { icon: FilePlus2, tone: 'info', key: 'caseCreate', values: { number }, to: caseTo }
+        : { icon: FilePlus2, tone: 'info', key: 'caseCreateNoNumber', to: caseTo };
+    }
     case 'case.status_change':
-      return {
-        icon: RefreshCw,
-        tone: 'accent',
-        text: `moved a case to ${status ? (CASE_STATUS_LABELS[status] ?? status) : 'a new status'}`,
-        to: caseTo,
-      };
+      return status
+        ? { icon: RefreshCw, tone: 'accent', key: 'caseStatus', values: { status: CASE_STATUS_LABELS[status] ?? status }, to: caseTo }
+        : { icon: RefreshCw, tone: 'accent', key: 'caseStatusUnknown', to: caseTo };
     case 'case.assign_coordinator':
-      return { icon: UserCog, tone: 'neutral', text: 'assigned a coordinator to a case', to: caseTo };
-    case 'quote.send':
-      return {
-        icon: Send,
-        tone: 'info',
-        text: `sent a quote${typeof after.total_minor === 'number' ? ` of ${inrCompact(after.total_minor)}` : ''}`,
-        to: str(after.case_id) ? opsPaths.case(str(after.case_id)!) : undefined,
-      };
+      return { icon: UserCog, tone: 'neutral', key: 'assignCoordinator', to: caseTo };
+    case 'quote.send': {
+      const to = str(after.case_id) ? opsPaths.case(str(after.case_id)!) : undefined;
+      return typeof after.total_minor === 'number'
+        ? { icon: Send, tone: 'info', key: 'quoteSendAmount', values: { amount: inrCompact(after.total_minor) }, to }
+        : { icon: Send, tone: 'info', key: 'quoteSend', to };
+    }
     case 'quote.accept':
-      return { icon: ThumbsUp, tone: 'success', text: 'accepted a quote' };
+      return { icon: ThumbsUp, tone: 'success', key: 'quoteAccept' };
     case 'booking.confirm':
-      return { icon: CalendarCheck, tone: 'success', text: 'confirmed a booking' };
+      return { icon: CalendarCheck, tone: 'success', key: 'bookingConfirm' };
     case 'booking.admit':
-      return { icon: Hospital, tone: 'accent', text: 'admitted a patient' };
+      return { icon: Hospital, tone: 'accent', key: 'bookingAdmit' };
     case 'booking.complete':
-      return { icon: BadgeCheck, tone: 'success', text: 'completed a treatment' };
+      return { icon: BadgeCheck, tone: 'success', key: 'bookingComplete' };
     case 'payment.captured':
-      return {
-        icon: Banknote,
-        tone: 'success',
-        text: `captured a payment${typeof after.base_amount_minor === 'number' ? ` of ${inrCompact(after.base_amount_minor)}` : ''}`,
-      };
+      return typeof after.base_amount_minor === 'number'
+        ? { icon: Banknote, tone: 'success', key: 'paymentCapturedAmount', values: { amount: inrCompact(after.base_amount_minor) } }
+        : { icon: Banknote, tone: 'success', key: 'paymentCaptured' };
     case 'hospital.approve':
-    case 'agent.approve':
       return {
         icon: BadgeCheck,
         tone: 'success',
-        text: `approved ${l.action.startsWith('hospital') ? 'a hospital' : 'an agent'}`,
-        to: l.action.startsWith('hospital') && l.entity_id ? opsPaths.hospital(l.entity_id) : undefined,
+        key: 'hospitalApprove',
+        to: l.entity_id ? opsPaths.hospital(l.entity_id) : undefined,
       };
+    case 'agent.approve':
+      return { icon: BadgeCheck, tone: 'success', key: 'agentApprove' };
     case 'document.upload':
-      return { icon: FileText, tone: 'neutral', text: 'uploaded a document' };
+      return { icon: FileText, tone: 'neutral', key: 'documentUpload' };
     default: {
+      // rare actions: an English phrase built from the action code (the code itself is API data)
       if (/^(travel_booking|visa|accommodation_booking)\./.test(l.action)) {
-        return { icon: Plane, tone: 'info', text: `${l.action.split('.')[1]?.replace(/_/g, ' ') ?? 'updated'} ${l.entity_type.replace(/_/g, ' ')}` };
+        return {
+          icon: Plane,
+          tone: 'info',
+          key: 'generic',
+          values: { text: `${l.action.split('.')[1]?.replace(/_/g, ' ') ?? 'updated'} ${l.entity_type.replace(/_/g, ' ')}` },
+        };
       }
       const [entity = l.entity_type, verb = 'update'] = l.action.split('.');
       const words = verb.split('_');
@@ -94,7 +103,8 @@ function describe(l: AuditLogOut): Described {
       return {
         icon: Activity,
         tone: 'neutral',
-        text: `${PAST[last] ?? last} ${object}`,
+        key: 'generic',
+        values: { text: `${PAST[last] ?? last} ${object}` },
         to: l.entity_type === 'hospital' && l.entity_id ? opsPaths.hospital(l.entity_id) : caseTo,
       };
     }
@@ -125,6 +135,7 @@ const TONE: Record<string, string> = {
 };
 
 export function ActivityFeed({ limit = 8 }: { limit?: number }) {
+  const { t } = useAppTranslation();
   const q = useQuery({
     queryKey: [...opsKeys.audit, 'dashboard-feed'],
     queryFn: () => adminApi.auditLogs({ page_size: 60 }),
@@ -139,15 +150,15 @@ export function ActivityFeed({ limit = 8 }: { limit?: number }) {
       </div>
     );
   }
-  if (q.isError) return <p className="py-4 text-sm text-danger-ink">Could not load recent activity.</p>;
+  if (q.isError) return <p className="py-4 text-sm text-danger-ink">{t('dashboard.activity.error')}</p>;
   const rows = (q.data?.items ?? []).filter((l) => !HIDDEN.test(l.action)).slice(0, limit);
-  if (rows.length === 0) return <p className="py-6 text-center text-sm text-muted">No activity yet.</p>;
+  if (rows.length === 0) return <p className="py-6 text-center text-sm text-muted">{t('dashboard.activity.empty')}</p>;
   return (
     <ol className="space-y-1">
       {rows.map((l) => {
         const d = describe(l);
         const Icon = d.icon;
-        const who = l.actor_name ?? (l.actor_user_id ? 'A user' : 'System');
+        const who = l.actor_name ?? (l.actor_user_id ? t('dashboard.activity.someone') : t('dashboard.activity.system'));
         const role = l.actor_role ? USER_ROLE_LABELS[l.actor_role] : null;
         const body = (
           <>
@@ -156,7 +167,12 @@ export function ActivityFeed({ limit = 8 }: { limit?: number }) {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm text-fg">
-                <span className="font-medium">{who}</span> {d.text}
+                <Trans
+                  t={t}
+                  i18nKey={`dashboard.activity.${d.key}`}
+                  values={{ ...d.values, who }}
+                  components={{ 0: <span className="font-medium" /> }}
+                />
               </span>
               <span className="block truncate text-xs text-muted">
                 {role ? `${role} · ` : ''}

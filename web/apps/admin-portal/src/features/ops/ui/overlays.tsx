@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 import { Button, Field, Textarea } from './primitives';
 
@@ -73,6 +74,7 @@ export interface ModalProps {
 }
 
 export function Modal({ open, onClose, title, children, footer, size = 'md' }: ModalProps) {
+  const { t } = useAppTranslation();
   const panelRef = useOverlay(open, onClose);
   const titleId = useId();
   if (!open) return null;
@@ -100,7 +102,7 @@ export function Modal({ open, onClose, title, children, footer, size = 'md' }: M
             type="button"
             onClick={onClose}
             className="rounded-md p-1 text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="Close"
+            aria-label={t('ui.close')}
           >
             <X className="size-4" />
           </button>
@@ -128,6 +130,7 @@ export interface DrawerProps {
 }
 
 export function Drawer({ open, onClose, title, subtitle, children, footer, width = 'lg' }: DrawerProps) {
+  const { t } = useAppTranslation();
   const panelRef = useOverlay(open, onClose);
   const titleId = useId();
   if (!open) return null;
@@ -157,7 +160,7 @@ export function Drawer({ open, onClose, title, subtitle, children, footer, width
             type="button"
             onClick={onClose}
             className="rounded-md p-1 text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="Close"
+            aria-label={t('ui.close')}
           >
             <X className="size-4" />
           </button>
@@ -189,12 +192,13 @@ export function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = 'Confirm',
+  confirmLabel,
   tone = 'primary',
   loading,
   onConfirm,
   onClose,
 }: ConfirmDialogProps) {
+  const { t } = useAppTranslation();
   return (
     <Modal
       open={open}
@@ -204,10 +208,10 @@ export function ConfirmDialog({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('ui.cancel')}
           </Button>
           <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} loading={loading} data-autofocus>
-            {confirmLabel}
+            {confirmLabel ?? t('ui.confirm')}
           </Button>
         </>
       }
@@ -235,14 +239,15 @@ export function ReasonDialog({
   open,
   title,
   description,
-  label = 'Reason',
-  confirmLabel = 'Confirm',
+  label,
+  confirmLabel,
   required = true,
   tone = 'danger',
   loading,
   onConfirm,
   onClose,
 }: ReasonDialogProps) {
+  const { t } = useAppTranslation();
   const [reason, setReason] = useState('');
   const [touched, setTouched] = useState(false);
   useEffect(() => {
@@ -261,7 +266,7 @@ export function ReasonDialog({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('ui.cancel')}
           </Button>
           <Button
             variant={tone === 'danger' ? 'danger' : 'primary'}
@@ -271,13 +276,17 @@ export function ReasonDialog({
               if (!invalid) onConfirm(reason.trim());
             }}
           >
-            {confirmLabel}
+            {confirmLabel ?? t('ui.confirm')}
           </Button>
         </>
       }
     >
       {description && <div className="mb-3 text-sm text-muted">{description}</div>}
-      <Field label={label} required={required} error={touched && invalid ? 'Please enter at least 3 characters.' : null}>
+      <Field
+        label={label ?? t('ui.reason.label')}
+        required={required}
+        error={touched && invalid ? t('ui.reason.tooShort') : null}
+      >
         {(id) => (
           <Textarea
             id={id}

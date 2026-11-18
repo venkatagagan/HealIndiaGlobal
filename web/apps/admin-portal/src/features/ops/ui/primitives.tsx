@@ -8,6 +8,7 @@ import {
   type TextareaHTMLAttributes,
 } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 
 // ---------------------------------------------------------------------------------------------------------
@@ -110,7 +111,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   ref,
 ) {
   return (
-    <select ref={ref} className={cn(controlBase, 'h-9 pr-8', className)} {...rest}>
+    <select ref={ref} className={cn(controlBase, 'h-9 pe-8', className)} {...rest}>
       {placeholder !== undefined && <option value="">{placeholder}</option>}
       {options.map((o) => (
         <option key={o.value} value={o.value}>
@@ -137,7 +138,7 @@ export function Field({ label, hint, error, required, className, children }: Fie
     <div className={cn('flex flex-col gap-1', className)}>
       <label htmlFor={id} className="text-xs font-medium text-fg">
         {label}
-        {required && <span className="ml-0.5 text-danger">*</span>}
+        {required && <span className="ms-0.5 text-danger">*</span>}
       </label>
       {children(id)}
       {error ? (
@@ -180,7 +181,7 @@ export function Switch({
         <span
           className={cn(
             'inline-block size-4 rounded-full bg-white shadow transition-transform',
-            checked ? 'translate-x-4' : 'translate-x-0.5',
+            checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5',
           )}
         />
       </button>
@@ -277,18 +278,24 @@ const STATUS_TONES: Record<string, Tone> = {
   failed: 'red',
 };
 
-/** Colored badge for any enum status value; label = humanized value unless given. */
+/**
+ * Colored badge for any enum status value; label = the translated status (`admin:status.<value>`) unless given,
+ * falling back to the humanized value for statuses without a catalog entry.
+ */
 export function StatusBadge({ status, label }: { status: string | null | undefined; label?: string }) {
+  const { t } = useAppTranslation();
   if (!status) return <span className="text-muted">—</span>;
-  const text = label ?? status.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+  const humanized = status.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+  const text = label ?? t(`status.${status}`, { defaultValue: humanized });
   return <Badge tone={STATUS_TONES[status] ?? 'neutral'}>{text}</Badge>;
 }
 
-export function Spinner({ className, label = 'Loading' }: { className?: string; label?: string }) {
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <span role="status" className="inline-flex items-center">
       <Loader2 className={cn('size-5 animate-spin text-primary', className)} aria-hidden />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('ui.spinner')}</span>
     </span>
   );
 }

@@ -9,6 +9,7 @@ import {
   errorMessage,
   type DocumentOut,
 } from '@hig/shared/api';
+import { useAppTranslation } from '../../../i18n';
 import { Button, EmptyState, ErrorState, LoadingState, Modal, ReasonDialog, StatusBadge } from '../ui';
 import { formatBytes, formatDateTime } from '../lib/format';
 import { useOpsMutation } from '../lib/mutations';
@@ -23,13 +24,14 @@ export function DocumentList({
   documents,
   canVerify,
   invalidate = [],
-  emptyText = 'No documents uploaded.',
+  emptyText,
 }: {
   documents: readonly DocumentOut[];
   canVerify: boolean;
   invalidate?: readonly QueryKey[];
   emptyText?: string;
 }) {
+  const { t } = useAppTranslation();
   const [preview, setPreview] = useState<DocumentOut | null>(null);
   const [rejecting, setRejecting] = useState<DocumentOut | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -37,7 +39,12 @@ export function DocumentList({
   const verify = useOpsMutation({
     mutationFn: (v: { id: string; status: 'verified' | 'rejected'; note?: string }) =>
       documentsApi.verify(v.id, { status: v.status, note: v.note }),
-    success: (d) => `Document marked ${d.status}`,
+    success: (d) =>
+      d.status === 'verified'
+        ? t('components.documents.markedVerified')
+        : d.status === 'rejected'
+          ? t('components.documents.markedRejected')
+          : t('components.documents.marked', { status: d.status }),
     invalidate,
     onSuccess: () => setRejecting(null),
   });
@@ -53,7 +60,8 @@ export function DocumentList({
     }
   };
 
-  if (documents.length === 0) return <EmptyState title={emptyText} icon={<FileText className="size-6" />} />;
+  if (documents.length === 0)
+    return <EmptyState title={emptyText ?? t('components.documents.empty')} icon={<FileText className="size-6" />} />;
 
   return (
     <>
@@ -72,7 +80,7 @@ export function DocumentList({
             <div className="flex gap-1">
               {PREVIEWABLE.test(doc.content_type) && (
                 <Button variant="ghost" size="sm" icon={<Eye className="size-3.5" />} onClick={() => setPreview(doc)}>
-                  View
+                  {t('components.documents.view')}
                 </Button>
               )}
               <Button
@@ -82,7 +90,7 @@ export function DocumentList({
                 loading={downloading === doc.id}
                 onClick={() => void download(doc)}
               >
-                Download
+                {t('components.documents.download')}
               </Button>
               {canVerify && doc.status !== 'verified' && (
                 <Button
@@ -93,7 +101,7 @@ export function DocumentList({
                   disabled={verify.isPending}
                   onClick={() => verify.mutate({ id: doc.id, status: 'verified' })}
                 >
-                  Verify
+                  {t('components.documents.verify')}
                 </Button>
               )}
               {canVerify && doc.status !== 'rejected' && (
@@ -104,7 +112,7 @@ export function DocumentList({
                   icon={<XCircle className="size-3.5" />}
                   onClick={() => setRejecting(doc)}
                 >
-                  Reject
+                  {t('components.documents.reject')}
                 </Button>
               )}
             </div>
@@ -114,10 +122,10 @@ export function DocumentList({
       <DocumentPreview doc={preview} onClose={() => setPreview(null)} />
       <ReasonDialog
         open={!!rejecting}
-        title="Reject document"
+        title={t('components.documents.rejectTitle')}
         description={rejecting?.file_name}
-        label="Note for the uploader"
-        confirmLabel="Reject"
+        label={t('components.documents.rejectNote')}
+        confirmLabel={t('components.documents.reject')}
         loading={verify.isPending}
         onClose={() => setRejecting(null)}
         onConfirm={(note) => rejecting && verify.mutate({ id: rejecting.id, status: 'rejected', note })}
@@ -127,6 +135,7 @@ export function DocumentList({
 }
 
 function DocumentPreview({ doc, onClose }: { doc: DocumentOut | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
   const q = useQuery({
     queryKey: ['documents', 'blob', doc?.id],
@@ -154,16 +163,20 @@ function DocumentPreview({ doc, onClose }: { doc: DocumentOut | null; onClose: (
 
   const isPdf = (q.data?.contentType ?? doc?.content_type ?? '').includes('pdf');
   return (
-    <Modal open={!!doc} onClose={onClose} title={doc?.file_name ?? 'Document'} size="xl">
+    <Modal open={!!doc} onClose={onClose} title={doc?.file_name ?? t('components.documents.document')} size="xl">
       {q.isLoading ? (
-        <LoadingState label="Loading document…" />
+        <LoadingState label={t('components.documents.loading')} />
       ) : q.error ? (
         <ErrorState error={q.error} onRetry={() => void q.refetch()} />
       ) : url ? (
         isPdf ? (
-          <iframe title={doc?.file_name ?? 'Document'} src={url} className="h-[70vh] w-full rounded-lg border-0 bg-white" />
+          <iframe
+            title={doc?.file_name ?? t('components.documents.document')}
+            src={url}
+            className="h-[70vh] w-full rounded-lg border-0 bg-white"
+          />
         ) : (
-          <img src={url} alt={doc?.file_name ?? 'Document'} className="mx-auto max-h-[70vh] rounded-lg object-contain" />
+          <img src={url} alt={doc?.file_name ?? t('components.documents.document')} className="mx-auto max-h-[70vh] rounded-lg object-contain" />
         )
       ) : null}
     </Modal>

@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Pencil, Plus } from 'lucide-react';
 import {
   COMMISSION_SCOPES,
-  COMMISSION_SCOPE_LABELS,
   financeApi,
   type CommissionRuleIn,
   type CommissionRuleOut,
@@ -26,7 +25,8 @@ import {
   type DataTableColumn,
   type QuickFilterItem,
 } from '@hig/shared/ui';
-import { formatBps, formatDate, todayIsoDate, useDocumentTitle } from '../lib/shared';
+import { formatBps, formatDate, formatNumber, todayIsoDate, useDocumentTitle } from '../lib/shared';
+import { enumLabel, ft, useFinanceTranslation, type FinanceT } from '../lib/i18n';
 import { financeKeys, useProcedureLookup, useSaveCommissionRule, useSpecialtyLookup, useToggleCommissionRule } from '../api/queries';
 import { EnumSelect, notifyError, notifySuccess, useSearchBox } from '../components/finance';
 import { PayeePicker } from '../components/settlements';
@@ -34,18 +34,21 @@ import { useFinancePermissions } from '../lib/permissions';
 import { bpsToPercentText, percentToBps } from '../lib/rates';
 import { Button, Callout, Field, Input, Modal, Select } from '../components/ui';
 
+/** What a rule applies to, in the current UI language (call at render time). */
 function scopeTarget(r: CommissionRuleOut): string {
   switch (r.scope) {
     case 'global':
-      return 'All bookings';
+      return ft('commissionRules.allBookings');
     case 'hospital':
       return r.hospital_name ?? r.hospital_id ?? '—';
     case 'specialty':
       return r.specialty_name ?? r.specialty_id ?? '—';
-    case 'procedure':
-      return [r.procedure_name ?? r.procedure_id, r.hospital_id ? `at ${r.hospital_name ?? r.hospital_id}` : null]
-        .filter(Boolean)
-        .join(' ');
+    case 'procedure': {
+      const procedure = r.procedure_name ?? r.procedure_id ?? '';
+      return r.hospital_id
+        ? ft('commissionRules.procedureAt', { procedure, hospital: r.hospital_name ?? r.hospital_id })
+        : procedure;
+    }
     case 'agent':
       return r.agent_name ?? r.agent_id ?? '—';
     default:
@@ -56,10 +59,11 @@ function scopeTarget(r: CommissionRuleOut): string {
 // ---------------------------------------------------------------------------------------------------------
 // State: inactive (switched off) / scheduled (starts later) / expired (ended) / active (in effect today)
 // ---------------------------------------------------------------------------------------------------------
+/** Catalog: commissionRules.states.<state> */
 const STATES = ['active', 'scheduled', 'expired', 'inactive'] as const;
 type RuleState = (typeof STATES)[number];
-const STATE_LABELS: Record<RuleState, string> = { active: 'In effect', scheduled: 'Scheduled', expired: 'Expired', inactive: 'Inactive' };
 const STATE_TONES = { active: 'success', scheduled: 'warning', expired: 'neutral', inactive: 'neutral' } as const;
+const stateLabel = (s: RuleState) => ft(`commissionRules.states.${s}`);
 
 function ruleState(r: CommissionRuleOut, today: string): RuleState {
   if (!r.is_active) return 'inactive';
@@ -87,31 +91,31 @@ const SORT_KEYS = ['scope', 'target', 'rate', 'effective', 'created'] as const;
 // ---------------------------------------------------------------------------------------------------------
 // Columns (client-side sorting: the whole rule set is loaded at once)
 // ---------------------------------------------------------------------------------------------------------
-function baseColumns(today: string): DataTableColumn<CommissionRuleOut>[] {
+function baseColumns(t: FinanceT, today: string): DataTableColumn<CommissionRuleOut>[] {
   return [
     {
       key: 'target',
-      header: 'Applies to',
+      header: t('commissionRules.columns.appliesTo'),
       sortable: true,
       sortValue: (r) => scopeTarget(r),
       sticky: true,
       mobile: 'primary',
       className: 'max-w-72',
-      cell: (r) => <TextCell primary={<span className="font-medium">{scopeTarget(r)}</span>} secondary={COMMISSION_SCOPE_LABELS[r.scope]} />,
+      cell: (r) => <TextCell primary={<span className="font-medium">{scopeTarget(r)}</span>} secondary={enumLabel('commissionScope', r.scope)} />,
       exportValue: (r) => scopeTarget(r),
     },
     {
       key: 'scope',
-      header: 'Scope',
+      header: t('commissionRules.columns.scope'),
       sortable: true,
       sortValue: (r) => COMMISSION_SCOPES.indexOf(r.scope),
       mobile: 'badge',
-      cell: (r) => <Badge tone={r.scope === 'agent' ? 'accent' : 'info'}>{COMMISSION_SCOPE_LABELS[r.scope]}</Badge>,
-      exportValue: (r) => COMMISSION_SCOPE_LABELS[r.scope],
+      cell: (r) => <Badge tone={r.scope === 'agent' ? 'accent' : 'info'}>{enumLabel('commissionScope', r.scope)}</Badge>,
+      exportValue: (r) => enumLabel('commissionScope', r.scope),
     },
     {
       key: 'rate',
-      header: 'Rate',
+      header: t('commissionRules.columns.rate'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -120,42 +124,42 @@ function baseColumns(today: string): DataTableColumn<CommissionRuleOut>[] {
       cell: (r) => (
         <span className="block text-end tabular-nums">
           <span className="font-semibold">{formatBps(r.rate_bps)}</span>
-          <span className="block text-xs text-muted">{r.rate_bps} bps</span>
+          <span className="block text-xs text-muted">{t('commissionRules.bps', { bps: formatNumber(r.rate_bps) })}</span>
         </span>
       ),
       exportValue: (r) => r.rate_bps / 100,
     },
     {
       key: 'effective',
-      header: 'Effective',
+      header: t('commissionRules.columns.effective'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (r) => r.effective_from,
       cell: (r) => (
         <span className="block whitespace-nowrap tabular-nums">
-          {formatDate(r.effective_from)} <span className="text-muted">→</span>{' '}
-          {r.effective_to ? formatDate(r.effective_to) : <span className="text-muted">open-ended</span>}
+          {formatDate(r.effective_from)} <span className="inline-block text-muted rtl:-scale-x-100">→</span>{' '}
+          {r.effective_to ? formatDate(r.effective_to) : <span className="text-muted">{t('commissionRules.openEnded')}</span>}
         </span>
       ),
       exportValue: (r) => `${r.effective_from} - ${r.effective_to ?? ''}`,
     },
     {
       key: 'state',
-      header: 'Status',
+      header: t('orders.columns.status'),
       mobile: 'badge',
       cell: (r) => {
         const s = ruleState(r, today);
         return (
           <Badge tone={STATE_TONES[s]} dot>
-            {STATE_LABELS[s]}
+            {stateLabel(s)}
           </Badge>
         );
       },
-      exportValue: (r) => STATE_LABELS[ruleState(r, today)],
+      exportValue: (r) => stateLabel(ruleState(r, today)),
     },
     {
       key: 'created',
-      header: 'Created',
+      header: t('orders.columns.created'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (r) => r.created_at,
@@ -167,7 +171,8 @@ function baseColumns(today: string): DataTableColumn<CommissionRuleOut>[] {
 }
 
 export default function CommissionRulesPage() {
-  useDocumentTitle('Commission rules');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('nav.items.commissionRules'));
   const perms = useFinancePermissions();
   const table = useTableState({ filters: FILTERS, defaultSort: '-effective', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -183,10 +188,12 @@ export default function CommissionRulesPage() {
   const base = useMemo(
     () =>
       (rules.data ?? [])
-        .filter(matchesSearch(filters.q, (r) => [scopeTarget(r), COMMISSION_SCOPE_LABELS[r.scope], formatBps(r.rate_bps)]))
+        .filter(matchesSearch(filters.q, (r) => [scopeTarget(r), enumLabel('commissionScope', r.scope), formatBps(r.rate_bps)]))
         .filter((r) => !filters.scope.length || filters.scope.includes(r.scope))
         .filter((r) => overlaps(r, filters.from, filters.to)),
-    [rules.data, filters.q, filters.scope, filters.from, filters.to],
+    // `t` changes with the language: the searchable labels are translated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rules.data, filters.q, filters.scope, filters.from, filters.to, t],
   );
   const stateCounts = useMemo(() => {
     const out: Record<RuleState, number> = { active: 0, scheduled: 0, expired: 0, inactive: 0 };
@@ -201,11 +208,11 @@ export default function CommissionRulesPage() {
   }, [rules.data]);
 
   const columns: DataTableColumn<CommissionRuleOut>[] = [
-    ...baseColumns(today),
+    ...baseColumns(t, today),
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+      title: t('orderDetail.actions'),
       align: 'end',
       hideable: false,
       exportable: false,
@@ -214,7 +221,7 @@ export default function CommissionRulesPage() {
         perms.editCommissionRules ? (
           <span className="flex justify-end gap-1.5">
             <UiButton size="xs" variant="outline" onClick={() => setEditing(r)} leftIcon={<Pencil className="size-3.5" aria-hidden />}>
-              Edit
+              {t('commissionRules.edit')}
             </UiButton>
             <UiButton
               size="xs"
@@ -224,13 +231,13 @@ export default function CommissionRulesPage() {
                 toggle.mutate(
                   { id: r.id, is_active: !r.is_active },
                   {
-                    onSuccess: () => notifySuccess(r.is_active ? 'Rule deactivated' : 'Rule activated'),
-                    onError: (e) => notifyError(e, 'Could not update the rule'),
+                    onSuccess: () => notifySuccess(r.is_active ? ft('commissionRules.deactivated') : ft('commissionRules.activated')),
+                    onError: (e) => notifyError(e, ft('commissionRules.updateFailed')),
                   },
                 )
               }
             >
-              {r.is_active ? 'Deactivate' : 'Activate'}
+              {r.is_active ? t('commissionRules.deactivate') : t('commissionRules.activate')}
             </UiButton>
           </span>
         ) : null,
@@ -238,26 +245,26 @@ export default function CommissionRulesPage() {
   ];
 
   const quickItems: QuickFilterItem<RuleState>[] = [
-    { value: '', label: 'All', count: rules.data ? base.length : undefined },
-    ...STATES.map((s) => ({ value: s, label: STATE_LABELS[s], count: rules.data ? stateCounts[s] : undefined })),
+    { value: '', label: t('common.all'), count: rules.data ? base.length : undefined },
+    ...STATES.map((s) => ({ value: s, label: stateLabel(s), count: rules.data ? stateCounts[s] : undefined })),
   ];
 
   return (
     <div>
       <PageHeader
-        title="Commission rules"
-        description="Platform commission charged to hospitals and agent commission paid out of it. The most specific active rule wins: procedure at a hospital → hospital → procedure → specialty → global; without a rule the platform defaults apply."
+        title={t('nav.items.commissionRules')}
+        description={t('commissionRules.description')}
         actions={
           perms.editCommissionRules && (
             <UiButton onClick={() => setEditing('new')} leftIcon={<Plus className="size-4" aria-hidden />}>
-              New rule
+              {t('commissionRules.newRule')}
             </UiButton>
           )
         }
       />
       <DataTable
         id="admin.finance.commission-rules"
-        caption="Commission rules"
+        caption={t('nav.items.commissionRules')}
         table={table}
         columns={columns}
         rows={rules.data ? rows : undefined}
@@ -265,42 +272,42 @@ export default function CommissionRulesPage() {
         fetching={rules.isFetching && !rules.isLoading}
         error={rules.error}
         onRetry={() => void rules.refetch()}
-        emptyTitle="No commission rules"
-        emptyDescription="Platform defaults apply (15% hospital commission, 5% agent commission unless changed in settings)."
+        emptyTitle={t('commissionRules.emptyTitle')}
+        emptyDescription={t('commissionRules.emptyDescription')}
         emptyAction={
           perms.editCommissionRules ? (
             <UiButton variant="outline" onClick={() => setEditing('new')} leftIcon={<Plus className="size-4" aria-hidden />}>
-              New rule
+              {t('commissionRules.newRule')}
             </UiButton>
           ) : undefined
         }
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Rule status" items={quickItems} value={filters.state} onChange={(s) => setFilter('state', s)} />
+            <QuickFilters label={t('commissionRules.statusLabel')} items={quickItems} value={filters.state} onChange={(s) => setFilter('state', s)} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Hospital, procedure, agent or rate…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('commissionRules.searchPlaceholder') }}
             onReset={table.resetFilters}
             resultCount={rules.data ? rows.length : undefined}
-            resultLabel={(n) => `${n.toLocaleString()} ${n === 1 ? 'rule' : 'rules'}`}
+            resultLabel={(n) => t('commissionRules.ruleCount', { count: n, n: formatNumber(n) })}
             actions={<ExportButton filename="commission-rules" columns={columns} rows={rows} />}
           >
             <MultiSelectFilter
-              label="Scope"
+              label={t('commissionRules.columns.scope')}
               value={filters.scope}
               onChange={(v) => setFilter('scope', v)}
-              options={COMMISSION_SCOPES.map((s) => ({ value: s, label: COMMISSION_SCOPE_LABELS[s], count: rules.data ? (scopeCounts[s] ?? 0) : undefined }))}
+              options={COMMISSION_SCOPES.map((s) => ({ value: s, label: enumLabel('commissionScope', s), count: rules.data ? (scopeCounts[s] ?? 0) : undefined }))}
             />
-            <DateRangeFilter label="In effect" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('commissionRules.inEffect')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />
       <Modal
         open={editing !== null}
         onClose={() => setEditing(null)}
-        title={editing === 'new' ? 'New commission rule' : 'Edit commission rule'}
+        title={editing === 'new' ? t('commissionRules.newTitle') : t('commissionRules.editTitle')}
         size="lg"
       >
         {editing !== null && (
@@ -313,6 +320,7 @@ export default function CommissionRulesPage() {
 
 
 function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: () => void }) {
+  const { t } = useFinanceTranslation();
   const save = useSaveCommissionRule();
   const [scope, setScope] = useState<CommissionScope>(rule?.scope ?? 'hospital');
   const [hospitalId, setHospitalId] = useState<string>(rule?.hospital_id ?? '');
@@ -327,13 +335,13 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
 
   const bps = percentToBps(percent);
   const errors: Record<string, string | null> = {
-    rate: percent.trim() === '' ? (submitted ? 'Enter a rate' : null) : bps === null ? 'Enter a percentage between 0 and 100 (max 2 decimals)' : null,
-    hospital: submitted && scope === 'hospital' && !hospitalId ? 'Choose a hospital' : null,
-    specialty: submitted && scope === 'specialty' && !specialtyId ? 'Choose a specialty' : null,
-    procedure: submitted && scope === 'procedure' && !procedureId ? 'Choose a procedure' : null,
-    agent: submitted && scope === 'agent' && !agentId ? 'Choose an agent' : null,
-    from: submitted && !from ? 'Choose a start date' : null,
-    to: to && from && to < from ? 'End date must be on or after the start date' : null,
+    rate: percent.trim() === '' ? (submitted ? t('commissionRules.form.rateRequired') : null) : bps === null ? t('commissionRules.form.rateInvalid') : null,
+    hospital: submitted && scope === 'hospital' && !hospitalId ? t('commissionRules.form.chooseHospital') : null,
+    specialty: submitted && scope === 'specialty' && !specialtyId ? t('commissionRules.form.chooseSpecialty') : null,
+    procedure: submitted && scope === 'procedure' && !procedureId ? t('commissionRules.form.chooseProcedure') : null,
+    agent: submitted && scope === 'agent' && !agentId ? t('commissionRules.form.chooseAgent') : null,
+    from: submitted && !from ? t('commissionRules.form.chooseStart') : null,
+    to: to && from && to < from ? t('commissionRules.form.endBeforeStart') : null,
   };
 
   const submit = () => {
@@ -359,10 +367,10 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
       { id: rule?.id, body },
       {
         onSuccess: () => {
-          notifySuccess(rule ? 'Commission rule updated' : 'Commission rule created');
+          notifySuccess(rule ? ft('commissionRules.form.updated') : ft('commissionRules.form.created'));
           onDone();
         },
-        onError: (e) => notifyError(e, 'Could not save the rule'),
+        onError: (e) => notifyError(e, ft('commissionRules.form.saveFailed')),
       },
     );
   };
@@ -377,34 +385,32 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
       }}
     >
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Scope" required>
+        <Field label={t('commissionRules.columns.scope')} required>
           {(p) => (
-            <EnumSelect id={p.id} value={scope} values={COMMISSION_SCOPES} labels={COMMISSION_SCOPE_LABELS} includeAll={false}
+            <EnumSelect id={p.id} value={scope} values={COMMISSION_SCOPES} enumGroup="commissionScope" includeAll={false}
               onChange={(v) => v && setScope(v)} />
           )}
         </Field>
         <Field
-          label="Rate (%)"
+          label={t('commissionRules.form.rate')}
           required
           error={errors.rate}
-          hint={bps !== null ? `${bps} basis points` : 'e.g. 15 for 15% (1500 bps)'}
+          hint={bps !== null ? t('commissionRules.form.basisPoints', { bps: formatNumber(bps) }) : t('commissionRules.form.rateHint')}
         >
           {(p) => (
             <div className="relative">
-              <Input {...p} inputMode="decimal" value={percent} onChange={(e) => setPercent(e.target.value)} className="pr-8" placeholder="15" />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">%</span>
+              <Input {...p} inputMode="decimal" value={percent} onChange={(e) => setPercent(e.target.value)} className="pe-8" placeholder="15" />
+              <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">%</span>
             </div>
           )}
         </Field>
       </div>
 
-      {scope === 'agent' && (
-        <Callout tone="info">Agent commission is paid out of the platform commission and is capped by it on each booking.</Callout>
-      )}
+      {scope === 'agent' && <Callout tone="info">{t('commissionRules.form.agentNote')}</Callout>}
 
       {(scope === 'hospital' || scope === 'procedure') && (
         <Field
-          label={scope === 'procedure' ? 'Hospital (optional: procedure at this hospital only)' : 'Hospital'}
+          label={scope === 'procedure' ? t('commissionRules.form.hospitalOptional') : t('reconciliation.hospital')}
           required={scope === 'hospital'}
           error={errors.hospital}
         >
@@ -415,24 +421,24 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
               value={hospitalId}
               onChange={setHospitalId}
               allowAll={scope === 'procedure'}
-              allLabel="Any hospital"
+              allLabel={t('commissionRules.form.anyHospital')}
               selectedLabel={rule?.hospital_name}
             />
           )}
         </Field>
       )}
       {scope === 'specialty' && (
-        <Field label="Specialty" required error={errors.specialty}>
+        <Field label={enumLabel('commissionScope', 'specialty')} required error={errors.specialty}>
           {(p) => <SpecialtyPicker id={p.id} value={specialtyId} onChange={setSpecialtyId} />}
         </Field>
       )}
       {scope === 'procedure' && (
-        <Field label="Procedure" required error={errors.procedure}>
+        <Field label={enumLabel('commissionScope', 'procedure')} required error={errors.procedure}>
           {(p) => <ProcedurePicker id={p.id} value={procedureId} onChange={setProcedureId} selectedLabel={rule?.procedure_name} />}
         </Field>
       )}
       {scope === 'agent' && (
-        <Field label="Agent" required error={errors.agent}>
+        <Field label={enumLabel('commissionScope', 'agent')} required error={errors.agent}>
           {(p) => (
             <PayeePicker id={p.id} payeeType="agent" value={agentId} onChange={setAgentId} allowAll={false} selectedLabel={rule?.agent_name} />
           )}
@@ -440,25 +446,25 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Effective from" required error={errors.from}>
+        <Field label={t('commissionRules.form.effectiveFrom')} required error={errors.from}>
           {(p) => <Input {...p} type="date" value={from} onChange={(e) => setFrom(e.target.value)} />}
         </Field>
-        <Field label="Effective to" hint="Leave empty for open-ended" error={errors.to}>
+        <Field label={t('commissionRules.form.effectiveTo')} hint={t('commissionRules.form.effectiveToHint')} error={errors.to}>
           {(p) => <Input {...p} type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} />}
         </Field>
       </div>
 
       <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
         <input type="checkbox" className="size-4 accent-green-600" checked={active} onChange={(e) => setActive(e.target.checked)} />
-        Active
+        {enumLabel('status', 'active')}
       </label>
 
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onDone} disabled={save.isPending}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" loading={save.isPending}>
-          {rule ? 'Save changes' : 'Create rule'}
+          {rule ? t('commissionRules.form.saveChanges') : t('commissionRules.form.createRule')}
         </Button>
       </div>
     </form>
@@ -466,11 +472,16 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
 }
 
 function SpecialtyPicker({ id, value, onChange }: { id: string; value: string; onChange: (v: string) => void }) {
+  const { t } = useFinanceTranslation();
   const specialties = useSpecialtyLookup();
   return (
     <Select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
       <option value="" disabled>
-        {specialties.isLoading ? 'Loading…' : specialties.isError ? 'Could not load specialties' : 'Select a specialty'}
+        {specialties.isLoading
+          ? t('ui.loading')
+          : specialties.isError
+            ? t('commissionRules.form.specialtiesFailed')
+            : t('commissionRules.form.selectSpecialty')}
       </option>
       {(specialties.data ?? []).map((s) => (
         <option key={s.id} value={s.id}>
@@ -487,6 +498,7 @@ function ProcedurePicker({ id, value, onChange, selectedLabel }: {
   onChange: (v: string) => void;
   selectedLabel?: string | null;
 }) {
+  const { t } = useFinanceTranslation();
   const [committed, setCommitted] = useState('');
   const [text, setText] = useSearchBox(committed, setCommitted, 300);
   const procedures = useProcedureLookup(committed);
@@ -494,12 +506,18 @@ function ProcedurePicker({ id, value, onChange, selectedLabel }: {
   const missing = value && !options.some((p) => p.id === value);
   return (
     <div className="flex flex-col gap-1.5 sm:flex-row">
-      <Input aria-label="Search procedures" placeholder="Search procedures…" value={text} onChange={(e) => setText(e.target.value)} className="sm:w-44" />
+      <Input
+        aria-label={t('commissionRules.form.searchProcedures')}
+        placeholder={t('commissionRules.form.searchProceduresPlaceholder')}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        className="sm:w-44"
+      />
       <Select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="sm:min-w-56">
         <option value="" disabled>
-          {procedures.isLoading ? 'Loading…' : 'Select a procedure'}
+          {procedures.isLoading ? t('ui.loading') : t('commissionRules.form.selectProcedure')}
         </option>
-        {missing && <option value={value}>{selectedLabel ?? `Selected (${value.slice(0, 8)}…)`}</option>}
+        {missing && <option value={value}>{selectedLabel ?? t('settlementUi.picker.selected', { id: value.slice(0, 8) })}</option>}
         {options.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name} · {p.specialty.name}

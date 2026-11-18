@@ -23,7 +23,8 @@ export {
   toDate,
 } from '@hig/shared/lib';
 export { useDebouncedValue, useDocumentTitle } from '@hig/shared/lib';
-export { cn } from '@hig/shared/lib';
+export { cn, formatNumber, intlLocale } from '@hig/shared/lib';
+import { formatNumber } from '@hig/shared/lib';
 
 /** "1500" bps -> "15" (string for a percent input) */
 export function bpsToPctInput(bps: number | null | undefined): string {
@@ -40,10 +41,10 @@ export function pctInputToBps(value: string): number | null | undefined {
   return Math.round(n * 100);
 }
 
-/** Bytes -> "1.2 MB" */
+/** Bytes -> "1.2 MB" (number in the UI language; units stay as they are) */
 export function formatBytes(bytes: number | null | undefined): string {
   if (bytes === null || bytes === undefined) return '—';
-  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024) return `${formatNumber(bytes, { useGrouping: false })} B`;
   const units = ['KB', 'MB', 'GB'];
   let value = bytes / 1024;
   let i = 0;
@@ -51,7 +52,8 @@ export function formatBytes(bytes: number | null | undefined): string {
     value /= 1024;
     i += 1;
   }
-  return `${value.toFixed(value < 10 ? 1 : 0)} ${units[i]}`;
+  const digits = value < 10 ? 1 : 0;
+  return `${formatNumber(value, { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: false })} ${units[i]}`;
 }
 
 /** Comma separated text -> trimmed non-empty list */

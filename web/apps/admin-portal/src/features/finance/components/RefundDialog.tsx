@@ -4,9 +4,11 @@
  * Without an `orderId` the dialog first lets finance search for the order.
  */
 import { useMemo, useState } from 'react';
+import { Trans } from 'react-i18next';
 import { Search } from 'lucide-react';
-import { PAYMENT_METHOD_LABELS, type PaymentOut, type RefundOut, type Uuid } from '@hig/shared/api';
+import { type PaymentOut, type RefundOut, type Uuid } from '@hig/shared/api';
 import { currencyExponent, formatDateTime, formatMoney, fromMinor, toMinor, useDebouncedValue } from '../lib/shared';
+import { enumLabel, ft, useFinanceTranslation } from '../lib/i18n';
 import { useCreateRefund, useOrder, useOrders } from '../api/queries';
 import { Money, notifyError, notifySuccess, StatusBadge } from './finance';
 import { RefundThresholdNote } from './reviews';
@@ -31,6 +33,7 @@ export function RefundDialog({ open, onClose, orderId, paymentId }: {
   orderId?: Uuid | null;
   paymentId?: Uuid | null;
 }) {
+  const { t } = useFinanceTranslation();
   const [pickedOrder, setPickedOrder] = useState<Uuid | null>(null);
   const activeOrderId = orderId ?? pickedOrder;
   const close = () => {
@@ -41,8 +44,8 @@ export function RefundDialog({ open, onClose, orderId, paymentId }: {
     <Modal
       open={open}
       onClose={close}
-      title="Create refund"
-      description="Refunds go to the approval queue; the gateway refund runs after approval."
+      title={t('refundDialog.title')}
+      description={t('refundDialog.description')}
       size="lg"
     >
       {activeOrderId ? (
@@ -61,6 +64,7 @@ export function RefundDialog({ open, onClose, orderId, paymentId }: {
 }
 
 function OrderPicker({ onPick }: { onPick: (id: Uuid) => void }) {
+  const { t } = useFinanceTranslation();
   const [q, setQ] = useState('');
   const debounced = useDebouncedValue(q.trim(), 300);
   const orders = useOrders({ q: debounced || undefined, status: 'paid', page_size: 10 });
@@ -68,11 +72,11 @@ function OrderPicker({ onPick }: { onPick: (id: Uuid) => void }) {
   const rows = [...(orders.data?.items ?? []), ...(partial.data?.items ?? [])];
   return (
     <div className="space-y-3">
-      <Field label="Find a paid order" hint="Search by order number, payer or booking number">
+      <Field label={t('refundDialog.findOrder')} hint={t('refundDialog.findOrderHint')}>
         {(p) => (
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" aria-hidden />
-            <Input {...p} className="pl-9" value={q} onChange={(e) => setQ(e.target.value)} placeholder="HIG-P-…" autoFocus />
+            <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" aria-hidden />
+            <Input {...p} className="ps-9" value={q} onChange={(e) => setQ(e.target.value)} placeholder="HIG-P-…" autoFocus />
           </div>
         )}
       </Field>
@@ -81,7 +85,7 @@ function OrderPicker({ onPick }: { onPick: (id: Uuid) => void }) {
       ) : orders.isError ? (
         <ErrorState error={orders.error} onRetry={() => void orders.refetch()} />
       ) : rows.length === 0 ? (
-        <EmptyState title="No refundable orders found" description="Only paid or partially refunded orders can be refunded." />
+        <EmptyState title={t('refundDialog.noOrders')} description={t('refundDialog.noOrdersHint')} />
       ) : (
         <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-700">
           {rows.map((o) => (
@@ -89,12 +93,12 @@ function OrderPicker({ onPick }: { onPick: (id: Uuid) => void }) {
               <button
                 type="button"
                 onClick={() => onPick(o.id)}
-                className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none dark:hover:bg-slate-800/60"
+                className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-start text-sm hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none dark:hover:bg-slate-800/60"
               >
                 <span className="min-w-0">
                   <span className="block font-medium text-slate-900 dark:text-slate-100">{o.order_number}</span>
                   <span className="block truncate text-xs text-slate-500">
-                    {o.payer_name ?? 'Payer'} · {o.booking_number ?? 'no booking'} · {formatDateTime(o.paid_at)}
+                    {o.payer_name ?? t('refundDialog.payer')} · {o.booking_number ?? t('refundDialog.noBooking')} · {formatDateTime(o.paid_at)}
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
@@ -116,6 +120,7 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
   onDone: () => void;
   onBack?: () => void;
 }) {
+  const { t } = useFinanceTranslation();
   const order = useOrder(orderId);
   const create = useCreateRefund();
   const payments = useMemo(() => (order.data?.payments ?? []).filter(isRefundablePayment), [order.data]);
@@ -134,11 +139,11 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
 
   let amountError: string | null = null;
   if (submitted || amount) {
-    if (!amount.trim()) amountError = 'Enter the refund amount';
-    else if (parsed === null || parsed <= 0) amountError = 'Enter a positive amount';
-    else if (parsed > refundable) amountError = `Cannot exceed the refundable ${formatMoney(refundable, currency)}`;
+    if (!amount.trim()) amountError = t('refundDialog.amountRequired');
+    else if (parsed === null || parsed <= 0) amountError = t('refundDialog.amountPositive');
+    else if (parsed > refundable) amountError = t('refundDialog.amountTooHigh', { amount: formatMoney(refundable, currency) });
   }
-  const reasonError = submitted && !reason.trim() ? 'A reason is required' : null;
+  const reasonError = submitted && !reason.trim() ? t('refundDialog.reasonRequired') : null;
 
   const submit = () => {
     setSubmitted(true);
@@ -147,10 +152,10 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
       { payment_id: selected.id, amount_minor: parsed, reason: reason.trim() },
       {
         onSuccess: (r) => {
-          notifySuccess(`Refund of ${formatMoney(r.amount_minor, r.currency)} requested`);
+          notifySuccess(ft('refundDialog.requested', { amount: formatMoney(r.amount_minor, r.currency) }));
           onDone();
         },
-        onError: (e) => notifyError(e, 'Could not create the refund'),
+        onError: (e) => notifyError(e, ft('refundDialog.failed')),
       },
     );
   };
@@ -166,21 +171,23 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
     >
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <span>
-          Order <strong>{order.data.order_number}</strong> · <Money minor={order.data.amount_minor} currency={order.data.currency} />{' '}
+          <Trans t={t} i18nKey="refundDialog.order" values={{ number: order.data.order_number }} components={{ 0: <strong /> }} />
+          {' · '}
+          <Money minor={order.data.amount_minor} currency={order.data.currency} />{' '}
           <StatusBadge status={order.data.status} />
         </span>
         {onBack && (
           <Button variant="ghost" size="sm" onClick={onBack}>
-            Choose another order
+            {t('refundDialog.chooseAnother')}
           </Button>
         )}
       </div>
 
       {payments.length === 0 ? (
-        <Callout tone="warning">This order has no captured payment that can be refunded.</Callout>
+        <Callout tone="warning">{t('refundDialog.noPayment')}</Callout>
       ) : (
         <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-slate-700 dark:text-slate-200">Payment</legend>
+          <legend className="text-sm font-medium text-slate-700 dark:text-slate-200">{t('refundDialog.payment')}</legend>
           {payments.map((p) => {
             const left = refundableMinor(p, order.data.refunds);
             return (
@@ -198,14 +205,14 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
                   />
                   <span>
                     <span className="block font-medium">
-                      {p.method ? PAYMENT_METHOD_LABELS[p.method] : p.gateway} · {p.gateway_payment_id ?? p.id.slice(0, 8)}
+                      {p.method ? enumLabel('paymentMethod', p.method) : p.gateway} · {p.gateway_payment_id ?? p.id.slice(0, 8)}
                     </span>
-                    <span className="block text-xs text-slate-500">Captured {formatDateTime(p.captured_at)}</span>
+                    <span className="block text-xs text-slate-500">{t('refundDialog.captured', { at: formatDateTime(p.captured_at) })}</span>
                   </span>
                 </span>
-                <span className="text-right">
+                <span className="text-end">
                   <Money minor={p.amount_minor} currency={p.currency} />
-                  <span className="block text-xs text-slate-500">refundable {formatMoney(left, p.currency)}</span>
+                  <span className="block text-xs text-slate-500">{t('refundDialog.refundableLower', { amount: formatMoney(left, p.currency) })}</span>
                 </span>
               </label>
             );
@@ -216,10 +223,10 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
       {selected && (
         <>
           <Field
-            label={`Amount (${currency})`}
+            label={t('refundDialog.amount', { currency })}
             required
             error={amountError}
-            hint={`Refundable: ${formatMoney(refundable, currency)}`}
+            hint={t('refundDialog.refundable', { amount: formatMoney(refundable, currency) })}
           >
             {(p) => (
               <div className="flex gap-2">
@@ -235,12 +242,12 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
                   onClick={() => setAmount(fromMinor(refundable, currency).toFixed(currencyExponent(currency)))}
                   disabled={refundable <= 0}
                 >
-                  Full
+                  {t('refundDialog.full')}
                 </Button>
               </div>
             )}
           </Field>
-          <Field label="Reason" required error={reasonError}>
+          <Field label={t('common.reason')} required error={reasonError}>
             {(p) => (
               <Textarea {...p} value={reason} maxLength={500} onChange={(e) => setReason(e.target.value)} />
             )}
@@ -251,10 +258,10 @@ function RefundForm({ orderId, initialPaymentId, onDone, onBack }: {
 
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onDone} disabled={create.isPending}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" variant="danger" loading={create.isPending} disabled={!selected || refundable <= 0}>
-          Request refund
+          {t('refundDialog.submit')}
         </Button>
       </div>
     </form>

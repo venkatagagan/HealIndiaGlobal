@@ -1,0 +1,2052 @@
+{
+  "cases": {
+    "list": {
+      "title": "Обращения",
+      "description": "Все обращения пациентов по всем больницам и агентам — следите за ходом работы, назначайте координаторов и решайте, что застряло.",
+      "age": "{{age}} л.",
+      "via": "через {{agency}}",
+      "opened": "Открыто {{date}}",
+      "mobileOpened": "{{number}} · открыто {{date}}",
+      "noScreening": "Нет скрининга",
+      "unassigned": "Не назначен",
+      "all": "Все",
+      "showAll": "Показать все обращения",
+      "needsCoordinator": "Нужен координатор",
+      "rowLabel": "Открыть обращение {{number}}",
+      "exportSelected": "Экспортировать выбранные",
+      "emptyTitle": "Обращений пока нет",
+      "emptyDescription": "Обращения появляются здесь, когда пациенты или агенты отправляют запрос в больницу.",
+      "caseStatus": "Статус обращения",
+      "searchPlaceholder": "Номер обращения или пациент…",
+      "columns": {
+        "case": "Обращение",
+        "patient": "Пациент",
+        "hospital": "Больница",
+        "status": "Статус",
+        "urgency": "Срочность",
+        "latestQuote": "Последнее предложение",
+        "coordinator": "Координатор",
+        "updated": "Обновлено",
+        "created": "Создано"
+      },
+      "filters": {
+        "agent": "Агент",
+        "date": "Дата"
+      }
+    }
+  },
+  "caseDetail": {
+    "documentTitle": "Обращение {{number}}",
+    "eyebrow": "Обращение",
+    "back": "Обращения",
+    "loading": "Загрузка обращения…",
+    "loadingShort": "Загрузка…",
+    "cancel": "Отмена",
+    "statusHistory": "История статусов",
+    "documentsDescription": "Медицинские заключения, документы и счета, загруженные в это обращение",
+    "hero": {
+      "opened": "Открыто {{date}}",
+      "updated": "обновлено {{when}}",
+      "messages": "Сообщения",
+      "changeStatus": "Изменить статус"
+    },
+    "emergency": {
+      "title": "Скрининг указывает на возможную экстренную ситуацию",
+      "contact": "Связаться с пациентом",
+      "acknowledged": "Пациент подтвердил ознакомление с экстренными рекомендациями {{date}}.",
+      "notAcknowledged": "Пациент ещё не подтвердил ознакомление с экстренными рекомендациями - принятие предложения и бронирование заблокированы до подтверждения.",
+      "redFlags": "Тревожные признаки: {{flags}}."
+    },
+    "tabs": {
+      "label": "Разделы обращения",
+      "overview": "Обзор",
+      "screening": "Скрининг",
+      "quotes": "Предложения",
+      "booking": "Бронирование и платежи",
+      "travel": "Поездка",
+      "documents": "Документы",
+      "activity": "Активность"
+    },
+    "facts": {
+      "title": "Основные сведения",
+      "age_one": "{{count}} год",
+      "age_few": "{{count}} года",
+      "age_many": "{{count}} лет",
+      "age_other": "{{count}} года",
+      "patient": "Пациент",
+      "hospital": "Больница",
+      "city": "Город",
+      "doctor": "Врач",
+      "treatment": "Лечение",
+      "source": "Источник",
+      "viaAgent": "Агент · {{agency}}",
+      "direct": "Напрямую",
+      "latestQuote": "Последнее предложение",
+      "payment": "Оплата"
+    },
+    "next": {
+      "assign": "Назначить координатора",
+      "assignHint": "У этого обращения пока нет координатора - назначьте его, чтобы у пациента было одно контактное лицо.",
+      "chaseQuote": "Запросить предложение у больницы",
+      "chaseQuoteHint": "Ожидаем предложение от больницы.",
+      "followUp": "Связаться с пациентом",
+      "followUpHint": "Предложение отправлено - пациенту нужно принять или отклонить его.",
+      "checkPayment": "Проверить оплату",
+      "checkPaymentHint": "Предложение принято - бронирование подтверждается после оплаты депозита.",
+      "markAdmitted": "Отметить госпитализацию",
+      "admissionPlanned": "Госпитализация запланирована на {{date}}.",
+      "markCompleted": "Отметить как завершённое",
+      "markCompletedHint": "Завершите обращение после выписки пациента."
+    },
+    "overview": {
+      "quotesSent": "Отправлено предложений",
+      "latestWhen": "Последнее {{when}}",
+      "noneYet": "Пока нет",
+      "waitingHospital": "Ожидаем больницу",
+      "admission": "Госпитализация",
+      "notBooked": "Ещё не забронировано",
+      "summary": "Сводка по обращению",
+      "patient": "Пациент",
+      "nationality": "Гражданство",
+      "specialty": "Специализация",
+      "procedure": "Процедура",
+      "opened": "Открыто",
+      "patientNotes": "Заметки пациента",
+      "medicalSummary": "Медицинская сводка",
+      "aiGlance": "Кратко о скрининге ИИ",
+      "fullScreening": "Полный скрининг"
+    },
+    "timeline": {
+      "opened": "Обращение открыто"
+    },
+    "screening": {
+      "symptoms": "Симптомы со слов пациента",
+      "bodyAreas": "Области тела",
+      "painIntensity": "Интенсивность боли",
+      "painValue": "{{value}} / 10",
+      "duration": "Длительность",
+      "durationUnits": {
+        "days_one": "{{count}} день",
+        "days_few": "{{count}} дня",
+        "days_many": "{{count}} дней",
+        "days_other": "{{count}} дня",
+        "weeks_one": "{{count}} неделя",
+        "weeks_few": "{{count}} недели",
+        "weeks_many": "{{count}} недель",
+        "weeks_other": "{{count}} недели",
+        "months_one": "{{count}} месяц",
+        "months_few": "{{count}} месяца",
+        "months_many": "{{count}} месяцев",
+        "months_other": "{{count}} месяца",
+        "years_one": "{{count}} год",
+        "years_few": "{{count}} года",
+        "years_many": "{{count}} лет",
+        "years_other": "{{count}} года"
+      },
+      "previousTreatment": "Предыдущее лечение",
+      "none": "Нет",
+      "homeCountry": "Страна проживания",
+      "submitted": "Отправлено",
+      "notes": "Заметки",
+      "aiTriage": "Сортировка ИИ",
+      "rulesEngine": "Механизм правил",
+      "suggestedSpecialties": "Предлагаемые специализации",
+      "possibleConditions": "Возможные состояния",
+      "recommendedTests": "Рекомендуемые обследования",
+      "redFlags": "Тревожные признаки",
+      "noAiResult": "Нет результата ИИ",
+      "notProcessed": "Скрининг ещё не обработан."
+    },
+    "quotes": {
+      "emptyTitle": "Предложения пока нет",
+      "emptyDescription": "Больница ещё не отправила предложение по этому обращению.",
+      "quoteFrom": "Предложение от {{date}}",
+      "sent": "Отправлено {{date}}",
+      "sentBy": "Отправлено {{date}}, отправитель: {{name}}",
+      "treatmentPlan": "План лечения",
+      "lineItems": "Позиции предложения",
+      "noLineItems": "Нет позиций",
+      "estimatedStay_one": "Ориентировочное пребывание: <0>{{count}} день</0>",
+      "estimatedStay_few": "Ориентировочное пребывание: <0>{{count}} дня</0>",
+      "estimatedStay_many": "Ориентировочное пребывание: <0>{{count}} дней</0>",
+      "estimatedStay_other": "Ориентировочное пребывание: <0>{{count}} дня</0>",
+      "estimatedStayUnknown": "Ориентировочное пребывание: <0>— дней</0>",
+      "validUntil": "Действительно до: <0>{{date}}</0>",
+      "accepted": "Принято: <0>{{date}}</0>",
+      "rejected": "Отклонено: {{reason}}",
+      "columns": {
+        "category": "Категория",
+        "description": "Описание",
+        "amount": "Сумма"
+      }
+    },
+    "payment": {
+      "ofTotal": "из {{total}}",
+      "balanceDue": "К доплате <0>{{amount}}</0>",
+      "fullyPaid": "Оплачено полностью",
+      "refunded": "возвращено {{amount}}"
+    },
+    "orders": {
+      "title": "Платёжные поручения",
+      "description": "Депозиты, остатки и платежи по рассрочке, выставленные по этому бронированию",
+      "rowLabel": "Открыть поручение {{number}}",
+      "emptyTitle": "Платёжных поручений пока нет",
+      "columns": {
+        "order": "Поручение",
+        "status": "Статус",
+        "amount": "Сумма",
+        "created": "Создано",
+        "paid": "Оплачено",
+        "open": "Открыть"
+      }
+    },
+    "booking": {
+      "title": "Бронирование",
+      "emptyDescription": "Бронирование создаётся, когда пациент принимает предложение и оплачивает депозит.",
+      "manage": "Управлять бронированием",
+      "discharge": "Выписка",
+      "paymentOption": "Способ оплаты",
+      "package": "Пакет",
+      "subtotal": "Промежуточный итог",
+      "serviceFeeTax": "Сервисный сбор + налог",
+      "discount": "Скидка",
+      "total": "Итого",
+      "cancelled": "Отменено: {{reason}}"
+    },
+    "travel": {
+      "visa": "Виза",
+      "visaRequests": "Запросы на визу",
+      "noVisa": "Нет запроса на визу",
+      "flights": "Перелёты и трансферы",
+      "travelBookings": "Бронирования поездок",
+      "noFlights": "Нет перелётов и трансферов",
+      "accommodation": "Проживание",
+      "accommodationBookings": "Бронирования проживания",
+      "noAccommodation": "Проживание не забронировано",
+      "pnr": "PNR {{pnr}}",
+      "nights_one": "{{count}} ночь",
+      "nights_few": "{{count}} ночи",
+      "nights_many": "{{count}} ночей",
+      "nights_other": "{{count}} ночи",
+      "guests_one": "{{count}} гость",
+      "guests_few": "{{count}} гостя",
+      "guests_many": "{{count}} гостей",
+      "guests_other": "{{count}} гостя",
+      "deskLink": "Служба поездок",
+      "columns": {
+        "visaType": "Тип визы",
+        "status": "Статус",
+        "reference": "Номер",
+        "requested": "Запрошено",
+        "type": "Тип",
+        "route": "Маршрут",
+        "departs": "Отправление",
+        "stay": "Проживание",
+        "dates": "Даты",
+        "total": "Итого"
+      }
+    },
+    "audit": {
+      "title": "Журнал изменений",
+      "description": "Все изменения, записанные по этому обращению",
+      "openInLog": "Открыть в журнале аудита",
+      "emptyTitle": "Записей аудита нет",
+      "user": "Пользователь",
+      "system": "Система",
+      "columns": {
+        "when": "Когда",
+        "action": "Действие",
+        "by": "Кто",
+        "change": "Изменение"
+      }
+    },
+    "coordinator": {
+      "title": "Координатор",
+      "assigned": "Координатор назначен",
+      "change": "Изменить",
+      "assign": "Назначить",
+      "owns": "Ведёт это обращение",
+      "none": "Координатор не назначен",
+      "field": "Координатор поддержки",
+      "placeholder": "Выберите координатора"
+    },
+    "status": {
+      "moved": "Обращение переведено в статус «{{status}}»",
+      "markTitle": "Отметить обращение: {{status}}",
+      "changeTitle": "Изменить статус обращения",
+      "moveTo": "Перевести в «{{status}}»",
+      "update": "Обновить статус",
+      "current": "Текущий статус:",
+      "newStatus": "Новый статус",
+      "note": "Примечание",
+      "noteRequiredHint": "Объясните причину; пациент и больница получат уведомление.",
+      "noteOptionalHint": "Необязательно, отображается в истории статусов.",
+      "cancelWarning": "Если по обращению есть оплаченное бронирование, отмените его в разделе «Бронирования», чтобы применилась политика возврата."
+    }
+  },
+  "travel": {
+    "common": {
+      "cancel": "Отмена",
+      "save": "Сохранить",
+      "loading": "Загрузка…"
+    },
+    "desk": {
+      "title": "Служба поездок",
+      "description": "SOS-сигналы, медицинские визы, перелёты, трансферы из аэропорта, проживание и услуги в стране. Запросы пациентов начинаются со статуса «Запрошено».",
+      "readOnly": "Только просмотр: поездками занимаются сотрудники операционного отдела и поддержки.",
+      "tabs": {
+        "sos": "SOS-сигналы",
+        "visa": "Виза",
+        "travel": "Перелёты и трансферы",
+        "accommodation": "Проживание",
+        "services": "Переводчики и услуги"
+      }
+    },
+    "list": {
+      "all": "Все",
+      "statusTabs": "Статус: {{caption}}",
+      "searchPlaceholder": "Имя пациента…",
+      "status": "Статус",
+      "caseNumber": "Обращение {{number}}",
+      "openCase": "Открыть обращение"
+    },
+    "sos": {
+      "caption": "SOS-сигналы",
+      "resolvedToast": "SOS-сигнал закрыт",
+      "acknowledgedToast": "SOS-сигнал принят",
+      "openIcon": "Открыт",
+      "patientFallback": "Пациент",
+      "noMessage": "Нет сообщения",
+      "by": "принял: {{name}}",
+      "acknowledge": "Принять",
+      "resolve": "Закрыть",
+      "emptyTitle": "SOS-сигналов нет",
+      "emptyDescription": "Экстренные сигналы, отправленные пациентами из приложения, появляются здесь в реальном времени.",
+      "columns": {
+        "raised": "Отправлен",
+        "patient": "Пациент",
+        "message": "Сообщение",
+        "location": "Местоположение",
+        "status": "Статус",
+        "actions": "Действия"
+      }
+    },
+    "visa": {
+      "caption": "Запросы на визу",
+      "ref": "№ {{reference}}",
+      "attached": "Прикреплено",
+      "none": "Нет",
+      "rowLabel": "Изменить запрос на визу: {{name}}",
+      "rowLabelNoName": "Изменить запрос на визу пациента",
+      "emptyTitle": "Запросов на визу пока нет",
+      "emptyDescription": "Пациенты запрашивают помощь с медицинской визой из своего обращения; запросы появляются здесь.",
+      "updated": "Запрос на визу обновлён",
+      "modalTitle": "Запрос на визу · {{name}}",
+      "columns": {
+        "patient": "Пациент",
+        "type": "Тип визы",
+        "status": "Статус",
+        "letter": "Приглашение",
+        "reference": "Номер",
+        "applied": "Подано",
+        "requested": "Запрошено"
+      },
+      "form": {
+        "status": "Статус",
+        "reference": "Номер заявления",
+        "appliedAt": "Дата подачи",
+        "decidedAt": "Дата решения",
+        "autoHint": "Заполняется автоматически при смене статуса.",
+        "letter": "Приглашение",
+        "letterHint": "Приглашения загружает больница в обращение (тип документа: приглашение).",
+        "letterOption": "{{name}} ({{date}})",
+        "notes": "Заметки"
+      }
+    },
+    "bookings": {
+      "unassigned": "Не назначен",
+      "inactive": "(неактивен)",
+      "modalTitle": "{{kind}} · {{name}}",
+      "columns": {
+        "patient": "Пациент",
+        "type": "Тип",
+        "route": "Маршрут",
+        "departs": "Отправление",
+        "pax": "Пасс.",
+        "price": "Цена",
+        "status": "Статус",
+        "stay": "Проживание",
+        "dates": "Даты",
+        "guests": "Гости",
+        "total": "Итого",
+        "service": "Услуга",
+        "provider": "Поставщик",
+        "when": "Когда"
+      },
+      "errors": {
+        "price": "Введите корректную цену.",
+        "passengers": "Количество пассажиров должно быть целым числом.",
+        "nightlyRate": "Введите корректную стоимость за ночь.",
+        "checkOut": "Дата выезда должна быть позже даты заезда.",
+        "guests": "Гостей должно быть не меньше 1."
+      },
+      "form": {
+        "from": "Откуда",
+        "to": "Куда",
+        "arrives": "Прибытие",
+        "carrier": "Перевозчик / поставщик",
+        "flightNumber": "Номер рейса",
+        "pnr": "PNR / подтверждение",
+        "passengers": "Пассажиры",
+        "notes": "Заметки",
+        "confirmationCode": "Код подтверждения",
+        "checkIn": "Заезд",
+        "checkOut": "Выезд",
+        "nights_one": "{{count}} ночь",
+        "nights_few": "{{count}} ночи",
+        "nights_many": "{{count}} ночей",
+        "nights_other": "{{count}} ночи",
+        "roomType": "Тип номера",
+        "nightlyRate": "Стоимость за ночь",
+        "totalHint": "Рассчитывается при сохранении: стоимость за ночь x количество ночей.",
+        "starts": "Начало",
+        "ends": "Окончание"
+      },
+      "flights": {
+        "caption": "Перелёты и трансферы",
+        "dateLabel": "Отправление",
+        "fallbackKind": "Поездка",
+        "rowLabel": "Изменить: {{kind}}, {{name}}",
+        "rowLabelNoName": "Изменить: {{kind}}, пациент",
+        "emptyTitle": "Нет запросов на перелёты или трансферы",
+        "emptyDescription": "Пациенты запрашивают перелёты и трансферы из аэропорта из своего обращения.",
+        "updated": "Бронирование поездки обновлено"
+      },
+      "stays": {
+        "caption": "Проживание",
+        "modalTitle": "Проживание · {{provider}} · {{name}}",
+        "rowLabel": "Изменить проживание: {{name}}",
+        "rowLabelNoName": "Изменить проживание пациента",
+        "emptyTitle": "Нет бронирований проживания",
+        "emptyDescription": "Здесь появляется проживание рядом с больницей, запрошенное пациентами.",
+        "updated": "Бронирование проживания обновлено"
+      },
+      "services": {
+        "caption": "Переводчики и услуги",
+        "dateLabel": "Дата услуги",
+        "rowLabel": "Изменить: {{kind}}, {{name}}",
+        "rowLabelNoName": "Изменить: {{kind}}, пациент",
+        "emptyTitle": "Нет бронирований услуг",
+        "emptyDescription": "Здесь появляются запросы на переводчика, гида, транспорт и страхование.",
+        "updated": "Бронирование услуги обновлено"
+      }
+    }
+  },
+  "hospitals": {
+    "title": "Больницы",
+    "description": "Больницы-партнёры — проверяйте KYC, одобряйте новые регистрации и управляйте коммерческими условиями.",
+    "featured": "Рекомендуемая",
+    "openRow": "Открыть {{name}}",
+    "emptyTitle": "Больниц пока нет",
+    "emptyDescription": "Больницы появляются здесь сразу после регистрации на портале больниц.",
+    "searchPlaceholder": "Название, город или эл. почта…",
+    "defaultCommission": "По умолчанию",
+    "moreSpecialties_one": "ещё +{{count}}",
+    "moreSpecialties_few": "ещё +{{count}}",
+    "moreSpecialties_many": "ещё +{{count}}",
+    "moreSpecialties_other": "ещё +{{count}}",
+    "quick": {
+      "label": "Статус больницы",
+      "all": "Все",
+      "approvalQueue": "Очередь на одобрение",
+      "active": "Активные",
+      "suspended": "Приостановленные",
+      "rejected": "Отклонённые",
+      "draft": "Черновики"
+    },
+    "columns": {
+      "hospital": "Больница",
+      "location": "Местоположение",
+      "status": "Статус",
+      "kyc": "KYC",
+      "accreditations": "Аккредитации",
+      "specialties": "Специальности",
+      "rating": "Рейтинг",
+      "commission": "Комиссия",
+      "registered": "Зарегистрирована",
+      "updated": "Обновлено"
+    },
+    "filters": {
+      "state": "Штат",
+      "kyc": "KYC",
+      "featuredOnly": "Только рекомендуемые",
+      "status": "Статус",
+      "city": "Город",
+      "specialty": "Специальность",
+      "accreditation": "Аккредитация"
+    }
+  },
+  "bookings": {
+    "title": "Бронирования",
+    "description": "Подтверждённое лечение — ход оплаты, госпитализации и выписки во всех больницах.",
+    "payment": {
+      "paid": "Оплачено полностью",
+      "partial": "Оплачено частично",
+      "unpaid": "Не оплачено"
+    },
+    "bookedOn": "Забронировано {{date}}",
+    "days_one": "{{count}} день",
+    "days_few": "{{count}} дня",
+    "days_many": "{{count}} дней",
+    "days_other": "{{count}} дня",
+    "installments_one": "{{count}} платёж",
+    "installments_few": "{{count}} платежа",
+    "installments_many": "{{count}} платежей",
+    "installments_other": "{{count}} платежа",
+    "due": "К оплате {{amount}}",
+    "columns": {
+      "booking": "Бронирование",
+      "patient": "Пациент",
+      "hospital": "Больница",
+      "admission": "Госпитализация",
+      "status": "Статус",
+      "total": "Итого",
+      "paid": "Оплачено",
+      "booked": "Забронировано"
+    },
+    "quickAll": "Все",
+    "quickLabel": "Статус бронирования",
+    "openRow": "Открыть бронирование {{number}}",
+    "exportSelected": "Экспортировать выбранное",
+    "emptyTitle": "Бронирований пока нет",
+    "emptyDescription": "Бронирования появляются здесь, когда пациент принимает предложение и выбирает дату госпитализации.",
+    "searchPlaceholder": "Номер бронирования или пациент…",
+    "filters": {
+      "total": "Итого",
+      "status": "Статус",
+      "hospital": "Больница",
+      "payment": "Оплата",
+      "date": "Дата",
+      "dateAdmission": "Госпитализация",
+      "dateBooked": "Бронирование"
+    },
+    "track": {
+      "booked": "Забронировано",
+      "depositPaid": "Предоплата внесена",
+      "admitted": "Госпитализирован",
+      "completed": "Завершено",
+      "cancelled": "Отменено"
+    },
+    "drawer": {
+      "cancelSuccess": "Бронирование отменено; сумма к возврату рассчитана по правилам возврата",
+      "markAdmitted": "Отметить госпитализацию",
+      "markCompleted": "Отметить завершение",
+      "cancelBooking": "Отменить бронирование",
+      "cancelDescription": "Возвраты рассчитываются сервером по правилам возврата и обрабатываются финансовым отделом.",
+      "title": "Бронирование",
+      "titleWithNumber": "Бронирование {{number}}",
+      "insuranceClaim": "Страховое требование",
+      "admission": "Госпитализация <0>{{date}}</0>",
+      "admissionWithDuration_one": "Госпитализация <0>{{date}}</0> · {{count}} день",
+      "admissionWithDuration_few": "Госпитализация <0>{{date}}</0> · {{count}} дня",
+      "admissionWithDuration_many": "Госпитализация <0>{{date}}</0> · {{count}} дней",
+      "admissionWithDuration_other": "Госпитализация <0>{{date}}</0> · {{count}} дня",
+      "openCase": "Открыть случай →",
+      "cancelledAt": "Отменено {{date}}",
+      "noReason": "Причина не указана.",
+      "payment": "Оплата",
+      "paymentOptionWithInstallments_one": "{{option}} · {{count}} ежемесячный платёж",
+      "paymentOptionWithInstallments_few": "{{option}} · {{count}} ежемесячных платежа",
+      "paymentOptionWithInstallments_many": "{{option}} · {{count}} ежемесячных платежей",
+      "paymentOptionWithInstallments_other": "{{option}} · {{count}} ежемесячного платежа",
+      "total": "Итого",
+      "paid": "Оплачено",
+      "paidPct": "{{pct}}% от суммы",
+      "balanceDue": "Остаток к оплате",
+      "refunded": "Возвращено",
+      "subtotal": "Промежуточный итог",
+      "discount": "Скидка",
+      "serviceFee": "Сервисный сбор",
+      "tax": "Налог",
+      "deposit": "Предоплата",
+      "treatment": "Лечение",
+      "procedure": "Процедура",
+      "package": "Пакет",
+      "doctor": "Врач",
+      "admissionDate": "Госпитализация",
+      "discharge": "Выписка",
+      "duration": "Длительность",
+      "confirmed": "Подтверждено",
+      "admitted": "Госпитализирован",
+      "completed": "Завершено"
+    },
+    "transition": {
+      "admitSuccess": "Пациент отмечен как госпитализированный",
+      "completeSuccess": "Лечение отмечено как завершённое; будут созданы позиции взаиморасчётов",
+      "admitTitle": "Отметить госпитализацию пациента",
+      "completeTitle": "Отметить завершение лечения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить",
+      "admitHelp": "Обычно это делает больница. Используйте, когда больница подтверждает госпитализацию по телефону.",
+      "completeHelp": "Завершение признаёт выручку и создаёт позиции взаиморасчётов с больницей и агентом. Это действие нельзя отменить.",
+      "dischargeDate": "Дата выписки",
+      "note": "Примечание"
+    },
+    "checklist": {
+      "updated": "Чек-лист обновлён",
+      "title": "Чек-лист перед прибытием",
+      "progress": "Выполнено {{done}} из {{total}}",
+      "empty": "Чек-листа пока нет.",
+      "statusOf": "Статус: {{label}}"
+    },
+    "itinerary": {
+      "added": "Пункт маршрута добавлен",
+      "removed": "Пункт маршрута удалён",
+      "when": "Когда",
+      "item": "Пункт",
+      "status": "Статус",
+      "remove": "Удалить",
+      "removeItem": "Удалить {{title}}",
+      "title": "Маршрут",
+      "addItem": "Добавить пункт",
+      "emptyTitle": "Пунктов маршрута нет",
+      "emptyDescription": "Здесь появляются запланированные на это пребывание приёмы, трансферы и заселения.",
+      "addTitle": "Добавить пункт маршрута",
+      "cancel": "Отмена",
+      "add": "Добавить",
+      "kind": "Тип",
+      "startsAt": "Начало",
+      "titleField": "Название",
+      "location": "Место",
+      "description": "Описание"
+    }
+  },
+  "hospitalDetail": {
+    "documentTitle": "Больница",
+    "loading": "Загрузка больницы…",
+    "back": "Больницы",
+    "eyebrow": "Больница",
+    "featured": "Рекомендуемая",
+    "kycBadge": "KYC: {{status}}",
+    "rating_one": "★ {{rating}} ({{count}} отзыв)",
+    "rating_few": "★ {{rating}} ({{count}} отзыва)",
+    "rating_many": "★ {{rating}} ({{count}} отзывов)",
+    "rating_other": "★ {{rating}} ({{count}} отзыва)",
+    "noReviews": "Отзывов пока нет",
+    "reasonShared": "{{status}}: причина сообщена больнице",
+    "waitingReview": "Ожидает вашей проверки",
+    "days_one": "{{count}} день",
+    "days_few": "{{count}} дня",
+    "days_many": "{{count}} дней",
+    "days_other": "{{count}} дня",
+    "toast": {
+      "approved": "Больница одобрена и опубликована",
+      "rejected": "Больница отклонена",
+      "suspended": "Работа больницы приостановлена",
+      "registrationVerified": "Регистрация подтверждена: {{name}}",
+      "verificationRemoved": "Подтверждение снято: {{name}}"
+    },
+    "checklist": {
+      "kycUploaded_one": "Документы KYC загружены ({{count}})",
+      "kycUploaded_few": "Документы KYC загружены ({{count}})",
+      "kycUploaded_many": "Документы KYC загружены ({{count}})",
+      "kycUploaded_other": "Документы KYC загружены ({{count}})",
+      "notVerifiedYet_one": "{{count}} ещё не проверен",
+      "notVerifiedYet_few": "{{count}} ещё не проверены",
+      "notVerifiedYet_many": "{{count}} ещё не проверены",
+      "notVerifiedYet_other": "{{count}} ещё не проверены",
+      "doctorsListed_one": "Врачи добавлены ({{count}})",
+      "doctorsListed_few": "Врачи добавлены ({{count}})",
+      "doctorsListed_many": "Врачи добавлены ({{count}})",
+      "doctorsListed_other": "Врачи добавлены ({{count}})",
+      "doctorsWithoutRegistration_one": "{{count}} врач без регистрационного номера",
+      "doctorsWithoutRegistration_few": "{{count}} врача без регистрационного номера",
+      "doctorsWithoutRegistration_many": "{{count}} врачей без регистрационного номера",
+      "doctorsWithoutRegistration_other": "{{count}} врача без регистрационного номера",
+      "registrationsOnFile": "Регистрации врачей внесены",
+      "verifiedPayout": "Подтверждённый счёт для выплат",
+      "noVerifiedPayout": "Нет подтверждённого счёта для выплат"
+    },
+    "actions": {
+      "suspend": "Приостановить",
+      "reject": "Отклонить",
+      "approveHospital": "Одобрить больницу",
+      "reactivate": "Возобновить"
+    },
+    "track": {
+      "drafted": "Профиль создан",
+      "submitted": "Отправлено на проверку",
+      "kycVerified": "KYC подтверждён",
+      "live": "Опубликована"
+    },
+    "tabs": {
+      "label": "Разделы больницы",
+      "overview": "Обзор",
+      "kyc": "KYC и документы",
+      "doctors": "Врачи",
+      "team": "Команда",
+      "cases": "Случаи",
+      "activity": "Активность"
+    },
+    "kyc": {
+      "title": "Документы KYC",
+      "description": "Регистрационные документы, лицензии и налоговые документы, загруженные больницей",
+      "empty": "Больница ещё не загрузила документы KYC."
+    },
+    "team": {
+      "title": "Сотрудники",
+      "description": "Сотрудники больницы с доступом к порталу",
+      "empty": "Сотрудников нет",
+      "name": "Имя",
+      "role": "Роль",
+      "status": "Статус",
+      "added": "Добавлен"
+    },
+    "facts": {
+      "title": "Основные данные",
+      "cases": "Случаи",
+      "doctors": "Врачи",
+      "commission": "Комиссия",
+      "platformDefault": "По умолчанию платформы",
+      "settlementCycle": "Цикл расчётов",
+      "approved": "Одобрена"
+    },
+    "payout": {
+      "title": "Счета для выплат",
+      "empty": "Счёт для выплат не добавлен.",
+      "verified": "Подтверждён",
+      "unverified": "Не подтверждён",
+      "primary": "Основной"
+    },
+    "approveDialog": {
+      "titleApprove": "Одобрить больницу?",
+      "titleReactivate": "Возобновить работу больницы?",
+      "message": "<0>{{name}}</0> будет опубликована и сможет получать обращения пациентов.",
+      "noKycWarning": "Внимание: документы KYC не загружены.",
+      "missingRegistrationWarning_one": "Внимание: у {{count}} активного врача нет номера медицинской регистрации.",
+      "missingRegistrationWarning_few": "Внимание: у {{count}} активных врачей нет номера медицинской регистрации.",
+      "missingRegistrationWarning_many": "Внимание: у {{count}} активных врачей нет номера медицинской регистрации.",
+      "missingRegistrationWarning_other": "Внимание: у {{count}} активного врача нет номера медицинской регистрации.",
+      "confirm": "Одобрить"
+    },
+    "rejectDialog": {
+      "title": "Отклонить больницу",
+      "description": "Причина будет сообщена больнице, чтобы она могла исправить данные и отправить их повторно.",
+      "confirm": "Отклонить"
+    },
+    "suspendDialog": {
+      "title": "Приостановить работу больницы",
+      "description": "Приостановленные больницы скрыты от пациентов и не могут получать новые обращения.",
+      "confirm": "Приостановить"
+    },
+    "profile": {
+      "title": "Профиль",
+      "legalName": "Юридическое название",
+      "gstin": "GSTIN",
+      "pan": "PAN",
+      "address": "Адрес",
+      "phone": "Телефон",
+      "email": "Эл. почта",
+      "website": "Сайт",
+      "established": "Год основания",
+      "beds": "Койки",
+      "airportDistance": "Расстояние до аэропорта",
+      "km": "{{distance}} км",
+      "internationalDesk": "Международный отдел",
+      "yes": "Да",
+      "no": "Нет",
+      "languages": "Языки",
+      "specialties": "Специальности",
+      "about": "О больнице"
+    },
+    "doctors": {
+      "title": "Врачи",
+      "doctor": "Врач",
+      "years_one": "{{count}} год",
+      "years_few": "{{count}} года",
+      "years_many": "{{count}} лет",
+      "years_other": "{{count}} года",
+      "qualifications": "Квалификация",
+      "registration": "Регистрация",
+      "verification": "Проверка",
+      "inactive": "Неактивен",
+      "noRegistration": "Нет регистрации",
+      "verifiedAt": "Подтверждено {{date}}",
+      "verified": "Подтверждено",
+      "notVerified": "Не подтверждено",
+      "action": "Действие",
+      "unverify": "Снять подтверждение",
+      "verify": "Подтвердить",
+      "verifyHelp": "Перед подтверждением проверьте каждую регистрацию в <0>Индийском медицинском реестре NMC</0> (или в медицинском совете штата). Пациенты видят значок только после этой проверки.",
+      "empty": "Врачи ещё не добавлены"
+    },
+    "cases": {
+      "title": "Случаи",
+      "description": "Сначала недавно обновлённые",
+      "caption": "Случаи в этой больнице",
+      "case": "Случай",
+      "opened": "Открыт {{date}}",
+      "patient": "Пациент",
+      "status": "Статус",
+      "updated": "Обновлено",
+      "openInCases": "Открыть в разделе «Случаи»",
+      "range": "{{from}}–{{to}} из {{total}}",
+      "previous": "Назад",
+      "next": "Далее",
+      "openRow": "Открыть случай {{number}}",
+      "empty": "Случаев пока нет"
+    },
+    "activity": {
+      "title": "Журнал аудита",
+      "description": "Одобрения, изменения профиля и коммерческих условий",
+      "openInAudit": "Открыть в журнале аудита",
+      "when": "Когда",
+      "action": "Действие",
+      "by": "Кем",
+      "user": "Пользователь",
+      "system": "Система",
+      "change": "Изменение",
+      "empty": "Записей аудита нет"
+    },
+    "terms": {
+      "title": "Коммерческие условия",
+      "description": "Комиссия и цикл выплат для этой больницы",
+      "updated": "Больница обновлена",
+      "commissionError": "Комиссия должна быть в процентах от 0 до 100.",
+      "cycleError": "Цикл расчётов должен быть целым числом дней от 1 до 90.",
+      "commissionRate": "Ставка комиссии (%)",
+      "commissionHint": "Пусто = значение платформы по умолчанию ({{value}}). Специальные правила комиссии (Финансы) имеют приоритет.",
+      "settlementCycle": "Цикл расчётов (дней)",
+      "cycleHint": "Пусто = значение платформы по умолчанию ({{value}} дн.).",
+      "save": "Сохранить условия",
+      "featured": "Рекомендуется на сайте для пациентов"
+    }
+  },
+  "users": {
+    "title": "Пользователи",
+    "description": "Все учётные записи платформы — пациенты, агенты, команды больниц и сотрудники.",
+    "unnamedUser": "Пользователь без имени",
+    "guestAccount": "Гостевая учётная запись",
+    "never": "Никогда",
+    "openRow": "Открыть {{name}}",
+    "userFallback": "пользователя",
+    "empty": "Пользователей пока нет",
+    "columns": {
+      "user": "Пользователь",
+      "email": "Эл. почта",
+      "role": "Роль",
+      "status": "Статус",
+      "security": "Безопасность",
+      "country": "Страна",
+      "lastLogin": "Последний вход",
+      "joined": "Регистрация"
+    },
+    "badges": {
+      "verified": "Подтверждён",
+      "mfa": "MFA",
+      "guest": "Гость"
+    },
+    "security": {
+      "verified": "Эл. почта подтверждена",
+      "unverified": "Эл. почта не подтверждена",
+      "mfa": "MFA включена",
+      "noMfa": "MFA выключена",
+      "guest": "Гостевые учётные записи"
+    },
+    "filters": {
+      "all": "Все",
+      "role": "Роль",
+      "searchPlaceholder": "Имя, эл. почта или телефон…",
+      "security": "Безопасность",
+      "status": "Статус",
+      "country": "Страна",
+      "joined": "Регистрация"
+    },
+    "toast": {
+      "updated": "Пользователь обновлён"
+    },
+    "actions": {
+      "activate": "Активировать",
+      "suspend": "Заблокировать",
+      "changeRole": "Изменить роль"
+    },
+    "drawer": {
+      "titleFallback": "Пользователь",
+      "joinedOn": "Зарегистрирован {{date}}",
+      "lastLoginOn": "Последний вход: {{date}}",
+      "neverLower": "никогда",
+      "lockedUntilTitle": "Заблокирован до {{date}}",
+      "failedAttempts_one": "{{count}} неудачная попытка входа.",
+      "failedAttempts_few": "{{count}} неудачные попытки входа.",
+      "failedAttempts_many": "{{count}} неудачных попыток входа.",
+      "failedAttempts_other": "{{count}} неудачной попытки входа.",
+      "profile": "Профиль",
+      "email": "Эл. почта",
+      "phone": "Телефон",
+      "country": "Страна",
+      "language": "Язык",
+      "agentId": "ID агента",
+      "patientProfile": "Профиль пациента",
+      "security": "Безопасность",
+      "lastLogin": "Последний вход",
+      "failedLogins": "Неудачные входы",
+      "lockedUntil": "Заблокирован до",
+      "hospitalMemberships": "Участие в больницах",
+      "role": "Роль",
+      "onlyAdmins": "Изменять пользователей могут только администраторы операций.",
+      "cannotChangeSelf": "Здесь нельзя изменить собственную учётную запись.",
+      "onlySuperAdmin": "Изменить другого суперадминистратора может только суперадминистратор."
+    },
+    "confirm": {
+      "changeRoleTitle": "Изменить роль?",
+      "suspendTitle": "Заблокировать пользователя?",
+      "activateTitle": "Активировать пользователя?",
+      "changeRoleMessage": "<0>{{name}}</0> получит роль <1>{{role}}</1> (ранее: {{previous}}). Права изменятся сразу, а изменение будет записано в журнал аудита.",
+      "suspendMessage": "<0>{{name}}</0> будет выведен из системы и не сможет войти до повторной активации.",
+      "activateMessage": "<0>{{name}}</0> снова сможет войти в систему."
+    }
+  },
+  "staff": {
+    "title": "Сотрудники",
+    "description": "Сотрудники операций, финансов и поддержки, работающие в этой консоли.",
+    "newStaffUser": "Новый сотрудник",
+    "empty": "Сотрудников пока нет",
+    "columns": {
+      "name": "Имя",
+      "email": "Эл. почта",
+      "role": "Роль",
+      "phone": "Телефон"
+    },
+    "filters": {
+      "allStaff": "Все сотрудники",
+      "role": "Роль сотрудника",
+      "searchPlaceholder": "Имя, эл. почта или телефон…"
+    },
+    "validation": {
+      "passwordLength": "Не менее 10 символов.",
+      "passwordMix": "Должен содержать букву и цифру.",
+      "fullName": "Введите полное имя.",
+      "email": "Введите корректный адрес эл. почты."
+    },
+    "toast": {
+      "created": "Сотрудник {{name}} создан"
+    },
+    "form": {
+      "cancel": "Отмена",
+      "create": "Создать пользователя",
+      "fullName": "Полное имя",
+      "email": "Эл. почта",
+      "role": "Роль",
+      "password": "Временный пароль",
+      "passwordHint": "Не менее 10 символов, включая букву и цифру. Передайте его безопасным способом; пользователю следует сменить его после входа."
+    }
+  },
+  "agents": {
+    "documentTitle": "Агенты",
+    "title": "Агенты и посредники",
+    "description": "Одобряйте посредников, проверяйте их KYC, задавайте уровень и комиссию.",
+    "default": "По умолчанию",
+    "openRow": "Открыть {{name}}",
+    "empty": {
+      "title": "Агентов пока нет",
+      "description": "Посредники появляются здесь после регистрации на портале агентов."
+    },
+    "quick": {
+      "all": "Все",
+      "approvalQueue": "Ожидают одобрения",
+      "active": "Активные",
+      "suspended": "Заблокированные",
+      "rejected": "Отклонённые"
+    },
+    "columns": {
+      "agency": "Агентство",
+      "code": "Код",
+      "status": "Статус",
+      "kyc": "KYC",
+      "tier": "Уровень",
+      "location": "Местоположение",
+      "commission": "Комиссия",
+      "joined": "Регистрация"
+    },
+    "filters": {
+      "agentStatus": "Статус агента",
+      "searchPlaceholder": "Агентство, код или эл. почта…",
+      "status": "Статус",
+      "kyc": "KYC",
+      "tier": "Уровень",
+      "country": "Страна"
+    },
+    "toast": {
+      "approved": "Агент одобрен",
+      "rejected": "Агент отклонён",
+      "suspended": "Агент заблокирован",
+      "updated": "Агент обновлён"
+    },
+    "actions": {
+      "approve": "Одобрить",
+      "reactivate": "Активировать снова",
+      "reject": "Отклонить",
+      "suspend": "Заблокировать"
+    },
+    "drawer": {
+      "commissionError": "Комиссия должна быть в процентах от 0 до 100.",
+      "titleFallback": "Агент",
+      "kycBadge": "KYC: {{status}}",
+      "locationNotSet": "Местоположение не указано",
+      "joinedOn": "Зарегистрирован {{date}}",
+      "patients": "Пациенты",
+      "tier": "Уровень",
+      "commission": "Комиссия",
+      "kycDocuments": "Документы KYC",
+      "waitingTitle": "Ожидает одобрения",
+      "waitingBody": "Проверьте документы KYC ниже, затем одобрите или отклоните этого посредника.",
+      "rejectedTitle": "Отклонён",
+      "suspendedTitle": "Заблокирован",
+      "contact": "Контакты",
+      "contactPerson": "Контактное лицо",
+      "email": "Эл. почта",
+      "phone": "Телефон",
+      "website": "Сайт",
+      "joined": "Регистрация",
+      "approved": "Одобрен",
+      "kycDescription": "Проверьте каждый документ перед одобрением агента.",
+      "kycEmpty": "Документы KYC не загружены.",
+      "tierCommission": "Уровень и комиссия",
+      "tierCommissionDescription": "Пустая комиссия = значение платформы по умолчанию ({{rate}}), выплачивается из комиссии платформы.",
+      "saveChanges": "Сохранить изменения",
+      "commissionPct": "Комиссия (%)"
+    },
+    "confirm": {
+      "approveTitle": "Одобрить агента?",
+      "approveMessage": "<0>{{name}}</0> сможет регистрировать пациентов, запрашивать предложения и получать комиссию.",
+      "rejectTitle": "Отклонить агента",
+      "rejectDescription": "Причина будет сообщена агенту.",
+      "suspendTitle": "Заблокировать агента",
+      "suspendDescription": "Заблокированные агенты не могут входить на портал агентов и создавать новые случаи."
+    }
+  },
+  "audit": {
+    "title": "Журнал аудита",
+    "description": "Неизменяемый журнал действий, связанных с безопасностью и изменением состояния.",
+    "openRow": "Открыть событие аудита {{action}}",
+    "empty": "Событий аудита пока нет",
+    "actor": {
+      "user": "Пользователь",
+      "system": "Система",
+      "automated": "Автоматически"
+    },
+    "columns": {
+      "when": "Когда",
+      "action": "Действие",
+      "entity": "Объект",
+      "actor": "Исполнитель",
+      "ip": "IP-адрес"
+    },
+    "filters": {
+      "everyAction": "Все действия {{group}}",
+      "userWithId": "Пользователь {{id}}",
+      "selectedUser": "Выбранный пользователь",
+      "searchPlaceholder": "Действие, ID объекта или исполнитель…",
+      "actorRole": "Роль исполнителя",
+      "systemAutomated": "Система (автоматически)",
+      "action": "Действие",
+      "entity": "Объект",
+      "actor": "Исполнитель",
+      "date": "Дата",
+      "entityId": "ID объекта"
+    },
+    "drawer": {
+      "titleFallback": "Событие аудита",
+      "entity": "Объект",
+      "actor": "Исполнитель",
+      "actorId": "ID исполнителя",
+      "ip": "IP-адрес",
+      "userAgent": "User agent",
+      "sameEntity": "Тот же объект",
+      "showAllForEntity": "Показать все события этого объекта",
+      "changes": "Изменения"
+    }
+  },
+  "catalog": {
+    "title": "Каталог",
+    "description": "Специальности, процедуры и ориентиры стоимости в стране пациента, которые используются поиском, подбором с помощью ИИ и инструментом сравнения стоимости.",
+    "tabs": {
+      "specialties": "Специальности",
+      "procedures": "Процедуры",
+      "benchmarks": "Ориентиры стоимости"
+    },
+    "status": {
+      "active": "Активно",
+      "inactive": "Неактивно"
+    },
+    "filters": {
+      "status": "Статус",
+      "specialty": "Специальность",
+      "procedure": "Процедура",
+      "country": "Страна"
+    },
+    "columns": {
+      "status": "Статус",
+      "specialty": "Специальность",
+      "procedures": "Процедуры",
+      "savings": "Экономия",
+      "order": "Порядок",
+      "procedure": "Процедура",
+      "indiaPrice": "Цена в Индии",
+      "stayRecovery": "Пребывание / восстановление",
+      "benchmarks": "Ориентиры",
+      "country": "Страна",
+      "homeCost": "Стоимость на родине",
+      "wait": "Ожидание",
+      "source": "Источник"
+    },
+    "fields": {
+      "name": "Название",
+      "slug": "Слаг",
+      "slugHint": "Строчные латинские буквы, цифры и дефисы; используется в публичных URL.",
+      "icon": "Значок",
+      "iconHint": "Название значка Lucide, например heart-pulse",
+      "sortOrder": "Порядок сортировки",
+      "savingsMin": "Экономия мин. (%)",
+      "savingsMax": "Экономия макс. (%)",
+      "description": "Описание",
+      "active": "Активно",
+      "specialty": "Специальность",
+      "currency": "Валюта",
+      "indiaPriceFrom": "Цена в Индии от",
+      "indiaPriceTo": "Цена в Индии до",
+      "hospitalStayDays": "Пребывание в больнице (дни)",
+      "recoveryDays": "Восстановление (дни)",
+      "totalStayDays": "Всего в Индии (дни)",
+      "keywords": "Ключевые слова",
+      "keywordsHint": "Через запятую; используются поиском и движком правил ИИ",
+      "bodyAreas": "Области тела",
+      "bodyAreasHint": "Через запятую, например knee, hip, lower_back",
+      "procedure": "Процедура",
+      "countryIso2": "Страна (ISO-2)",
+      "countryHint": "например US, GB, NG",
+      "homeCostFrom": "Стоимость на родине от",
+      "homeCostTo": "Стоимость на родине до",
+      "waitTime": "Обычный срок ожидания",
+      "waitTimeHint": "например 3–6 месяцев",
+      "source": "Источник",
+      "sourceHint": "Откуда взята цифра"
+    },
+    "entities": {
+      "specialty": "специальность",
+      "specialties": "специальности",
+      "procedure": "процедура",
+      "procedures": "процедуры",
+      "benchmark": "ориентир стоимости",
+      "benchmarks": "ориентиры стоимости"
+    },
+    "gaps": {
+      "label": "Процедуры без ориентиров стоимости ({{countries}})",
+      "value": "{{gaps}} из {{total}}",
+      "hint": "Совсем без ориентиров: {{none}}. {{sample}}"
+    },
+    "specialties": {
+      "proceduresCount_one": "{{count}} процедура",
+      "proceduresCount_few": "{{count}} процедуры",
+      "proceduresCount_many": "{{count}} процедур",
+      "proceduresCount_other": "{{count}} процедуры"
+    },
+    "procedures": {
+      "stayValue": "{{stay}} / {{recovery}} дн."
+    },
+    "benchmarks": {
+      "description": "Обычная стоимость лечения за свой счёт в стране пациента; на её основе рассчитывается экономия, которую видят пациенты."
+    }
+  },
+  "content": {
+    "title": "Контент",
+    "description": "Советы для пациентов, партнёрское жильё и услуги, а также курсы валют, применяемые при оплате.",
+    "tabs": {
+      "tips": "Культурные советы",
+      "accommodation": "Поставщики жилья",
+      "services": "Поставщики услуг",
+      "fx": "Курсы валют"
+    },
+    "status": {
+      "active": "Активно",
+      "inactive": "Неактивно"
+    },
+    "filters": {
+      "status": "Статус",
+      "category": "Категория",
+      "type": "Тип",
+      "city": "Город",
+      "service": "Услуга",
+      "language": "Язык"
+    },
+    "columns": {
+      "tip": "Совет",
+      "category": "Категория",
+      "order": "Порядок",
+      "status": "Статус",
+      "provider": "Поставщик",
+      "city": "Город",
+      "nightly": "За ночь",
+      "amenities": "Удобства",
+      "contact": "Контакты",
+      "service": "Услуга",
+      "languages": "Языки",
+      "rate": "Тариф",
+      "rating": "Рейтинг",
+      "currency": "Валюта",
+      "source": "Источник",
+      "asOf": "По состоянию на"
+    },
+    "fields": {
+      "title": "Заголовок",
+      "text": "Текст",
+      "category": "Категория",
+      "categoryHint": "например еда, этикет, деньги",
+      "sortOrder": "Порядок сортировки",
+      "imageUrl": "URL изображения",
+      "active": "Активно",
+      "name": "Название",
+      "type": "Тип",
+      "city": "Город",
+      "starRating": "Звёздность",
+      "address": "Адрес",
+      "latitude": "Широта",
+      "longitude": "Долгота",
+      "currency": "Валюта",
+      "nightlyRate": "Цена за ночь",
+      "phone": "Телефон",
+      "email": "Эл. почта",
+      "amenities": "Удобства",
+      "amenitiesHint": "Через запятую, например wifi, кухня, доступ для инвалидной коляски",
+      "photoUrls": "URL фотографий",
+      "photoUrlsHint": "URL с https через запятую",
+      "service": "Услуга",
+      "languages": "Языки",
+      "languagesHint": "Через запятую, например английский, арабский, французский",
+      "rate": "Тариф",
+      "rateUnit": "Единица тарифа",
+      "quoteCurrencyHint": "ISO-4217, например USD",
+      "inrPerUnit": "INR за 1 единицу",
+      "inrPerUnitHint": "например 83,25 означает 1 USD = ₹83,25",
+      "source": "Источник"
+    },
+    "entities": {
+      "tip": "культурный совет",
+      "tips": "культурные советы",
+      "accommodation": "поставщик жилья",
+      "accommodationPlural": "поставщики жилья",
+      "service": "поставщик услуг",
+      "servicePlural": "поставщики услуг",
+      "fx": "курс валюты",
+      "fxPlural": "курсы валют"
+    },
+    "fx": {
+      "description": "Базовая валюта — INR. Курс фиксируется в каждом платёжном поручении при оплате; изменение курса не влияет на существующие заказы."
+    }
+  },
+  "settings": {
+    "documentTitle": "Настройки",
+    "title": "Настройки платформы",
+    "description": "Изменения вступают в силу сразу и записываются в журнал аудита. Финансовые настройки могут изменять только сотрудники финансового отдела или суперадминистратор.",
+    "websiteNotice": "Телефоны поддержки, WhatsApp, ссылки на соцсети, аналитика, подтверждение в поисковых системах, маркетинговые заявления, медицинские рецензенты и подвал сайта редактируются в разделе <0>Сайт и контакты</0> (суперадминистратор).",
+    "rawJson": "Исходное значение JSON.",
+    "groups": {
+      "commercial": "Коммерческие",
+      "tax": "Налоги",
+      "settlements": "Расчёты",
+      "payments": "Платежи",
+      "patientSupport": "Поддержка пациентов",
+      "other": "Прочее"
+    },
+    "items": {
+      "default_commission_bps": {
+        "label": "Комиссия больницы по умолчанию",
+        "description": "Комиссия платформы с выручки больницы, если не применяется ставка больницы или правила."
+      },
+      "default_agent_commission_bps": {
+        "label": "Комиссия агента по умолчанию",
+        "description": "Выплачивается агентам, направившим пациента, из комиссии платформы."
+      },
+      "patient_service_fee_bps": {
+        "label": "Сервисный сбор с пациента",
+        "description": "Добавляется к стоимости лечения при бронировании."
+      },
+      "deposit_pct": {
+        "label": "Депозит при бронировании",
+        "description": "Доля суммы бронирования, необходимая для его подтверждения (вариант с депозитом)."
+      },
+      "gst_rate_bps": {
+        "label": "GST с комиссии",
+        "description": "GST, начисляемый на комиссию платформы."
+      },
+      "tds_194o_rate_bps": {
+        "label": "TDS (раздел 194-O)",
+        "description": "Налог, удерживаемый у источника с валовой суммы больницы."
+      },
+      "settlement_hold_days": {
+        "label": "Удержание расчётов",
+        "description": "Количество дней после завершения лечения, по истечении которых позиции становятся доступны для выплаты."
+      },
+      "settlement_cycle_days": {
+        "label": "Цикл расчётов по умолчанию",
+        "description": "Количество дней между автоматическими пакетами выплат (больницы могут изменить)."
+      },
+      "refund_policy": {
+        "label": "Политика возврата",
+        "description": "Процент возврата в зависимости от числа дней до госпитализации. Применяется первый подходящий уровень (начиная с наибольшего числа дней)."
+      },
+      "cancellation_retention_hospital_share_bps": {
+        "label": "Удержание при отмене: доля больницы",
+        "description": "Доля суммы, удержанной при отмене, которая переходит больнице (100% = всё больнице)."
+      },
+      "agent_tds_rate_bps": {
+        "label": "TDS агента (раздел 194H)",
+        "description": "Налог, удерживаемый у источника с комиссии, выплачиваемой агентам-резидентам."
+      },
+      "agent_nonresident_withholding_bps": {
+        "label": "Удержание для агентов-нерезидентов",
+        "description": "Удержание с комиссии, выплачиваемой агентам-нерезидентам (по рекомендации CA / согласно DTAA)."
+      },
+      "platform_gstin": {
+        "label": "GSTIN платформы",
+        "description": "GSTIN поставщика, указываемый в налоговых счетах на комиссию и кредит-нотах."
+      },
+      "platform_gst_state": {
+        "label": "Штат регистрации GST платформы",
+        "description": "Штат регистрации: CGST + SGST, если больница в том же штате, иначе IGST."
+      },
+      "refund_dual_approval_threshold_minor": {
+        "label": "Порог двойного одобрения возврата",
+        "description": "Возвраты сверх этой суммы (в пересчёте на INR) должен одобрить сотрудник финансового отдела, не являющийся инициатором. 0 = любой возврат требует второго одобрения."
+      },
+      "fx_rate_max_age_hours": {
+        "label": "Максимальный возраст курса валют",
+        "description": "Заказы в иностранной валюте отклоняются (fx_rate_unavailable) в рабочей среде, если сохранённый курс старше этого значения. 0 отключает проверку."
+      },
+      "bank_transfer_details": {
+        "label": "Реквизиты для банковского перевода",
+        "description": "Показываются пациентам, которые платят через SWIFT / банковским переводом."
+      },
+      "supported_currencies": {
+        "label": "Поддерживаемые валюты",
+        "description": "Коды ISO-4217 валют, в которых могут платить пациенты."
+      }
+    },
+    "updated": "{{label}}: обновлено",
+    "financeBadge": "Финансы",
+    "defaultBadge": "По умолчанию",
+    "updatedAt": "Обновлено {{date}}",
+    "updatedAtBy": "Обновлено {{date}}, автор: {{name}}",
+    "save": "Сохранить",
+    "reset": "Сбросить",
+    "readOnly": "Только просмотр для вашей роли",
+    "units": {
+      "days": "дн.",
+      "hours": "ч"
+    },
+    "editors": {
+      "bpsSuffix": "% ({{bps}} б.п.)",
+      "percentage": "Процент",
+      "percentageError": "Введите процент от 0 до 100.",
+      "wholeNumberError": "Введите целое число от 0 до {{max}}.",
+      "amountInr": "Сумма в INR",
+      "amountInrError": "Введите сумму в рупиях (не более 2 знаков после запятой); 0 означает, что любой возврат требует второго одобрения.",
+      "value": "Значение",
+      "valueRequired": "Введите значение."
+    },
+    "refundPolicy": {
+      "invalidTier": "Дни должны быть целыми числами ≥ 0, а возврат — от 0 до 100%.",
+      "duplicateDays": "Каждое значение «дней до» должно быть уникальным.",
+      "noTiers": "Добавьте хотя бы один уровень.",
+      "daysHeader": "Не менее N дней до госпитализации",
+      "refundHeader": "Возврат, %",
+      "daysBefore": "Дней до",
+      "refundPercent": "Процент возврата",
+      "removeTier": "Удалить уровень",
+      "addTier": "Добавить уровень"
+    },
+    "stringMap": {
+      "keysError": "Ключи должны быть уникальными и непустыми.",
+      "key": "Ключ",
+      "value": "Значение",
+      "removeEntry": "Удалить запись",
+      "addEntry": "Добавить запись"
+    },
+    "stringList": {
+      "values": "Значения",
+      "error": "Используйте трёхбуквенные коды валют ISO через запятую."
+    },
+    "json": {
+      "label": "Значение JSON",
+      "invalid": "Недопустимый JSON."
+    }
+  },
+  "websiteSettings": {
+    "title": "Сайт и контакты",
+    "description": "Что показывает публичный сайт: контактные номера, плавающие кнопки, ссылки на соцсети, аналитика, подтверждение в поисковых системах, маркетинговые заявления, медицинские рецензенты и подвал. Сохранённые изменения появляются на сайте за несколько секунд и записываются в журнал аудита. Пустое поле означает «не задано»: тогда сайт использует значение по умолчанию из развёртывания (или скрывает элемент).",
+    "readOnly": "Только просмотр: изменять эти настройки может только суперадминистратор.",
+    "sections": {
+      "contact": "Контакты и телефоны поддержки",
+      "buttons": "Плавающие кнопки",
+      "social": "Профили в соцсетях",
+      "analytics": "Аналитика",
+      "search": "Поисковые системы",
+      "marketing": "Маркетинговые заявления",
+      "reviewers": "Медицинские рецензенты",
+      "footer": "Подвал"
+    },
+    "saved": "{{title}}: сохранено - сайт обновится в течение нескольких секунд",
+    "defaultBadge": "По умолчанию",
+    "superAdminBadge": "Суперадминистратор",
+    "updatedAt": "Обновлено {{date}}",
+    "updatedAtBy": "Обновлено {{date}}, автор: {{name}}",
+    "save": "Сохранить",
+    "reset": "Сбросить",
+    "fixErrors": "Исправьте выделенные поля, чтобы сохранить.",
+    "errors": {
+      "phoneDigits": "Используйте от {{min}} до 15 цифр.",
+      "phoneDigitsExample": "Используйте от {{min}} до 15 цифр, например +91 98765 43210.",
+      "phoneInternational": "Используйте международный формат: + и код страны.",
+      "httpsUrl": "Введите полный URL, начинающийся с https://.",
+      "email": "Введите действительный адрес эл. почты.",
+      "ga4Format": "Используйте формат G-XXXXXXXXXX.",
+      "ga4Required": "Обязательно для Google Analytics 4.",
+      "hostName": "Введите имя хоста, например healindiaglobal.com.",
+      "verificationCode": "Вставьте только код подтверждения (или весь тег {{tag}}).",
+      "indexNowKey": "8–128 символов: буквы, цифры и -.",
+      "wholePercent": "Введите целый процент от 0 до 100.",
+      "statId": "Id: начинается с буквы; только буквы, цифры, - и _.",
+      "uniqueId": "Каждый id должен быть уникальным.",
+      "statRequired": "Подпись и значение обязательны.",
+      "reviewerId": "Id: строчные латинские буквы, цифры и дефисы (например dr-asha-rao).",
+      "reviewerPhoto": "Фото: URL с https:// или путь на сайте, например /brand/reviewers/name.jpg.",
+      "reviewerIncomplete": "Для активного рецензента нужны имя, квалификация, регистрационный номер и медицинский совет."
+    },
+    "contact": {
+      "placeholderNumber": "Номер-заглушка: не показывается на сайте, пока вы не введёте настоящий.",
+      "whatsapp": "Номер WhatsApp",
+      "whatsappHint": "Плавающая кнопка WhatsApp, подвал и страница контактов. Пусто = скрыто.",
+      "phone": "Телефон / номер поддержки",
+      "phoneHint": "Плавающая кнопка звонка, подвал, страница контактов и приложение пациента (круглосуточная поддержка). Пусто = скрыто.",
+      "emergency": "Экстренный номер",
+      "emergencyHint": "Показывается на странице контактов и в приложении пациента.",
+      "email": "Публичный адрес эл. почты",
+      "emailHint": "Подвал, страница контактов, страница удаления аккаунта и данные Organization. Пусто = значение по умолчанию из развёртывания.",
+      "supportHours": "Часы поддержки",
+      "supportHoursPlaceholder": "Круглосуточно, без выходных",
+      "supportHoursHint": "Показывается на странице контактов. Пусто = не показывается.",
+      "whatsappMessage": "Готовое сообщение WhatsApp",
+      "whatsappMessageHint": "Текст, с которым у посетителя откроется WhatsApp."
+    },
+    "buttons": {
+      "showWhatsapp": "Показывать кнопку WhatsApp",
+      "showCall": "Показывать кнопку звонка",
+      "note": "Кнопка показывается, только если она включена и для неё задан номер (номера сохраняются в разделе «Контакты и телефоны поддержки»).",
+      "preview": "Предпросмотр",
+      "none": "Нет плавающих кнопок"
+    },
+    "social": {
+      "urlLabel": "URL {{network}}",
+      "note": "Показываются значками в подвале и указываются как sameAs в структурированных данных Organization. Пусто = не показывается."
+    },
+    "analytics": {
+      "provider": "Сервис",
+      "providerHint": "Нет = использовать настройку окружения развёртывания (выключено, если там не настроено). Content-Security-Policy сайта следует этому выбору.",
+      "none": "Нет",
+      "plausible": "Plausible (без cookie, без баннера)",
+      "ga4": "Google Analytics 4 (после согласия на cookie)",
+      "plausibleDomain": "Домен Plausible",
+      "plausibleDomainHint": "Пусто = собственный хост сайта.",
+      "plausibleScript": "URL скрипта Plausible",
+      "plausibleScriptHint": "Пусто = plausible.io. Подойдёт и скрипт на собственном сервере.",
+      "ga4Id": "Идентификатор потока GA4"
+    },
+    "search": {
+      "google": "Подтверждение сайта в Google",
+      "googlePlaceholder": "Содержимое HTML-тега Search Console",
+      "googleHint": "Search Console -> Настройки -> Права собственности -> HTML-тег: значение content=\"...\".",
+      "bing": "Подтверждение сайта в Bing",
+      "bingPlaceholder": "Содержимое msvalidate.01",
+      "bingHint": "Bing Webmaster Tools -> значение HTML-метатега.",
+      "indexNow": "Ключ IndexNow",
+      "indexNowHint": "Только на сервере: отдаётся по адресу /indexnow-key.txt и используется для уведомления Bing и других об изменённых страницах. Требуется настроенный секрет ревалидации сайта.",
+      "generate": "Сгенерировать"
+    },
+    "marketing": {
+      "intro": "Заявления на главной странице и страницах процедур. Заявление без источника выводится со сноской «ориентировочная цифра»; отключите всё, что не можете подтвердить.",
+      "maxSavings": "Максимальная экономия (%)",
+      "savingsSource": "Источник данных об экономии",
+      "savingsSourcePlaceholder": "например прайс-листы партнёрских больниц в сравнении с оплатой за свой счёт в США, 2026",
+      "showInHero": "Показывать в главном блоке",
+      "stats": "Статистика на главной странице",
+      "statId": "Id",
+      "statLabel": "Подпись",
+      "statValue": "Значение",
+      "statSource": "Примечание об источнике",
+      "statShow": "Показывать",
+      "removeStat": "Удалить показатель {{name}}",
+      "addStat": "Добавить показатель",
+      "indiaWait": "Обычный срок ожидания в Индии",
+      "indiaWaitHint": "Показывается в калькуляторе стоимости на страницах процедур.",
+      "showTestimonials": "Показывать отзывы (всегда с пометкой «для иллюстрации»)",
+      "claimsVerified": "Все заявления проверены отделом маркетинга / юристами"
+    },
+    "reviewers": {
+      "intro": "Указываются на страницах о здоровье, в заголовке которых они названы (reviewedBy: {{tag}}). Публично показываются только активные рецензенты с полной регистрацией. Добавляйте реального человека только с его письменного согласия и при наличии проверяемой медицинской регистрации.",
+      "active": "Активен (показывается на сайте)",
+      "inactive": "Неактивен",
+      "remove": "Удалить",
+      "id": "Id (используется страницами)",
+      "name": "Полное имя",
+      "credentials": "Квалификация",
+      "registrationNumber": "Регистрационный номер",
+      "registrationCouncil": "Медицинский совет регистрации",
+      "registrationCouncilPlaceholder": "например Karnataka Medical Council",
+      "photoUrl": "URL фото",
+      "photoUrlPlaceholder": "https://... или /brand/reviewers/name.jpg",
+      "bio": "Краткая биография",
+      "add": "Добавить рецензента"
+    },
+    "footer": {
+      "developedBy": "Разработчик",
+      "developedByHint": "Пусто = без упоминания.",
+      "developerUrl": "URL разработчика",
+      "disclaimer": "Отказ от ответственности",
+      "disclaimerHint": "Краткий отказ от ответственности в подвале. Пусто = встроенный текст.",
+      "preview": "Предпросмотр подвала",
+      "disclaimerLabel": "Отказ от ответственности:",
+      "builtInDisclaimer": "Встроенный текст отказа от ответственности",
+      "developedByPreview": "Разработчик: <0>{{name}}<1/></0>"
+    }
+  },
+  "shell": {
+    "title": "Консоль сотрудников",
+    "login": {
+      "title": "Вход для сотрудников",
+      "subtitle": "Консоль операций и финансов Heal India Global"
+    },
+    "notFound": {
+      "title": "Страница не найдена",
+      "description": "Страница, которую вы ищете, не существует или была перемещена."
+    }
+  },
+  "nav": {
+    "groups": {
+      "operations": "Работа с пациентами",
+      "partners": "Партнёры",
+      "catalog": "Каталог и контент",
+      "people": "Люди и доступ",
+      "system": "Система"
+    },
+    "dashboard": "Панель",
+    "hospitals": "Больницы",
+    "agents": "Агенты",
+    "cases": "Обращения",
+    "bookings": "Бронирования",
+    "travel": "Отдел поездок",
+    "messages": "Входящие поддержки",
+    "users": "Пользователи",
+    "staff": "Сотрудники",
+    "catalog": "Каталог",
+    "content": "Контент",
+    "settings": "Настройки",
+    "website": "Сайт и контакты",
+    "languages": "Языки",
+    "translations": "Переводы",
+    "audit": "Журнал аудита"
+  },
+  "ui": {
+    "loading": "Загрузка…",
+    "spinner": "Загрузка",
+    "empty": "Здесь пока ничего нет",
+    "error": {
+      "title": "Не удалось загрузить данные",
+      "retry": "Повторить"
+    },
+    "table": {
+      "noResults": "Нет результатов",
+      "noResultsHint": "Попробуйте изменить фильтры."
+    },
+    "pagination": {
+      "label": "Постраничная навигация",
+      "summary_one": "{{total}} результат · страница {{page}} из {{pages}}",
+      "summary_few": "{{total}} результата · страница {{page}} из {{pages}}",
+      "summary_many": "{{total}} результатов · страница {{page}} из {{pages}}",
+      "summary_other": "{{total}} результата · страница {{page}} из {{pages}}",
+      "previous": "Предыдущая страница",
+      "next": "Следующая страница"
+    },
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "reason": {
+      "label": "Причина",
+      "tooShort": "Введите не менее 3 символов."
+    },
+    "track": {
+      "label": "Ход выполнения",
+      "step": "Шаг {{step}} из {{total}}",
+      "done": "(выполнен)",
+      "current": "(текущий)"
+    }
+  },
+  "status": {
+    "active": "Активен",
+    "approved": "Одобрен",
+    "verified": "Проверен",
+    "confirmed": "Подтверждён",
+    "completed": "Завершён",
+    "resolved": "Решён",
+    "paid": "Оплачен",
+    "done": "Готово",
+    "booked": "Забронирован",
+    "accepted": "Принят",
+    "admitted": "Госпитализирован",
+    "in_treatment": "На лечении",
+    "quoted": "Расчёт отправлен",
+    "sent": "Отправлен",
+    "applied": "Заявка подана",
+    "invitation_issued": "Приглашение выдано",
+    "acknowledged": "Принято в работу",
+    "enquiry": "Запрос",
+    "pending": "Ожидает",
+    "pending_review": "Ожидает проверки",
+    "pending_payment": "Ожидает оплаты",
+    "pending_verification": "Ожидает подтверждения",
+    "requested": "Запрошен",
+    "documents_pending": "Ожидаются документы",
+    "uploaded": "Загружен",
+    "open": "Открыт",
+    "suspended": "Приостановлен",
+    "rejected": "Отклонён",
+    "cancelled": "Отменён",
+    "declined": "Отказано",
+    "deleted": "Удалён",
+    "failed": "Ошибка",
+    "draft": "Черновик",
+    "inactive": "Неактивен",
+    "expired": "Истёк",
+    "closed": "Закрыт",
+    "refunded": "Возвращён",
+    "submitted": "Отправлен на рассмотрение",
+    "scheduled": "Запланирован",
+    "processing": "Обрабатывается"
+  },
+  "components": {
+    "crud": {
+      "errors": {
+        "required": "Обязательно",
+        "wholeNumber": "Введите целое число",
+        "min": "Минимум {{min}}",
+        "max": "Максимум {{max}}",
+        "number": "Введите число",
+        "amount": "Введите корректную сумму",
+        "url": "Введите полный URL с http(s)",
+        "email": "Введите корректный e-mail"
+      },
+      "deleted": "{{entity}}: удалено",
+      "updated": "{{entity}}: обновлено",
+      "created": "{{entity}}: создано",
+      "actions": "Действия",
+      "editRow": "Изменить: {{label}}",
+      "deleteRow": "Удалить: {{label}}",
+      "add": "Добавить: {{entity}}",
+      "empty": "Пока нет записей ({{entities}})",
+      "search": "Поиск: {{entities}}…",
+      "readOnly": "Только просмотр: изменять каталог могут только администраторы операций.",
+      "deleteTitle": "Удалить: {{entity}}?",
+      "deleteMessage": "<0>{{label}}</0> будет удалено. Если запись используется в другом месте, сервер может отказать; в этом случае деактивируйте её.",
+      "delete": "Удалить",
+      "editTitle": "Изменить: {{entity}}",
+      "newTitle": "Новая запись: {{entity}}",
+      "saveChanges": "Сохранить изменения",
+      "create": "Создать",
+      "commaSeparated": "Через запятую",
+      "select": "Выберите…"
+    },
+    "documents": {
+      "markedVerified": "Документ отмечен как проверенный",
+      "markedRejected": "Документ отмечен как отклонённый",
+      "marked": "Статус документа: {{status}}",
+      "empty": "Документы не загружены.",
+      "view": "Просмотр",
+      "download": "Скачать",
+      "verify": "Подтвердить",
+      "reject": "Отклонить",
+      "rejectTitle": "Отклонить документ",
+      "rejectNote": "Комментарий для загрузившего",
+      "document": "Документ",
+      "loading": "Загрузка документа…"
+    },
+    "jsonDiff": {
+      "added": "добавлено",
+      "removed": "удалено",
+      "changed": "изменено",
+      "changedFields_one": "{{value}} поле изменено",
+      "changedFields_few": "{{value}} поля изменено",
+      "changedFields_many": "{{value}} полей изменено",
+      "changedFields_other": "{{value}} поля изменено",
+      "showUnchanged": "Показать неизменённые",
+      "rawJson": "Исходный JSON",
+      "before": "До",
+      "after": "После",
+      "field": "Поле",
+      "noData": "Для этого события данные «до/после» не записаны.",
+      "noChanges": "Поля не изменились."
+    },
+    "money": {
+      "currency": "Валюта"
+    }
+  },
+  "charts": {
+    "noData": "Нет данных за этот период",
+    "noEnquiries": "Нет запросов за этот период",
+    "stepConversion": "{{value}} от предыдущего этапа"
+  },
+  "dashboard": {
+    "title": "Панель",
+    "greeting": {
+      "morning": "Доброе утро, {{name}}",
+      "afternoon": "Добрый день, {{name}}",
+      "evening": "Добрый вечер, {{name}}"
+    },
+    "description": "Начните с очередей, которые требуют действий, затем посмотрите динамику платформы.",
+    "refresh": "Обновить",
+    "updatedAt": "Обновлено {{date}}",
+    "attentionTitle": "Требует вашего внимания",
+    "attentionDescription": "Каждая карточка открывает нужный список, уже отфильтрованный и отсортированный от самых старых.",
+    "performance": "Показатели",
+    "range": "{{from}} – {{to}} в сравнении с {{prevFrom}} – {{prevTo}}",
+    "loading": "Загрузка…",
+    "periodLabel": "Период",
+    "periods": {
+      "7d": {
+        "label": "7 дней",
+        "long": "последние 7 дней"
+      },
+      "30d": {
+        "label": "30 дней",
+        "long": "последние 30 дней"
+      },
+      "90d": {
+        "label": "90 дней",
+        "long": "последние 90 дней"
+      },
+      "mtd": {
+        "label": "Этот месяц",
+        "long": "этот месяц"
+      }
+    },
+    "kpi": {
+      "new_cases": {
+        "label": "Запросы",
+        "help": "Новые запросы: обращения, открытые пациентами, агентами или сотрудниками за выбранный период."
+      },
+      "quotes_sent": {
+        "label": "Отправленные расчёты",
+        "help": "Расчёты стоимости, отправленные больницами пациентам (без черновиков) за выбранный период."
+      },
+      "bookings": {
+        "label": "Бронирования",
+        "help": "Подтверждённые бронирования: бронирования, по которым за выбранный период получен депозит или полная оплата."
+      },
+      "conversion_rate": {
+        "label": "Конверсия",
+        "help": "От запроса к бронированию: доля обращений, открытых за этот период, которые к настоящему моменту дошли до статуса «Забронировано» (или дальше). Недавние обращения ещё могут сконвертироваться."
+      },
+      "gmv_minor": {
+        "label": "GMV",
+        "help": "Валовой объём продаж: платежи пациентов, полученные за период, в пересчёте в INR по курсу на день платежа."
+      },
+      "revenue_minor": {
+        "label": "Выручка",
+        "help": "Выручка платформы: комиссии и сервисные сборы, признанные в главной книге за период, за вычетом сторно."
+      },
+      "about": "О показателе «{{label}}»",
+      "previous": "Предыдущий период: {{value}}",
+      "vsPrev": "к пред. периоду",
+      "forPeriod": "за {{period}}"
+    },
+    "funnel": {
+      "title": "Воронка обращений",
+      "description": "Обращения, открытые за {{period}}, по самому дальнему достигнутому этапу",
+      "conversion": "Запрос → бронирование: <0>{{value}}</0>"
+    },
+    "bySpecialty": {
+      "title": "Обращения по специальностям",
+      "description": "Обращения, открытые за {{period}}"
+    },
+    "topHospitals": {
+      "title": "Лидеры среди больниц",
+      "description": "По GMV, полученному за {{period}}",
+      "bookings_one": "{{value}} бронирование",
+      "bookings_few": "{{value}} бронирования",
+      "bookings_many": "{{value}} бронирований",
+      "bookings_other": "{{value}} бронирования",
+      "tooltip_one": "{{name}}: {{amount}} за {{value}} бронирование",
+      "tooltip_few": "{{name}}: {{amount}} за {{value}} бронирования",
+      "tooltip_many": "{{name}}: {{amount}} за {{value}} бронирований",
+      "tooltip_other": "{{name}}: {{amount}} за {{value}} бронирования"
+    },
+    "activityAria": "Активность и сводка платформы",
+    "recentActivity": {
+      "title": "Последние действия",
+      "description": "Последние действия по обращениям, расчётам, бронированиям и партнёрам",
+      "auditLink": "Журнал аудита"
+    },
+    "snapshot": {
+      "title": "Сводка платформы",
+      "description": "Сейчас, за всё время",
+      "escrow": "Средства пациентов на эскроу",
+      "pendingSettlements": "Ожидающие расчёты с партнёрами",
+      "activeHospitals": "Активные больницы",
+      "activeAgents": "Активные агенты",
+      "openCases": "Открытые обращения",
+      "patients": "Зарегистрированные пациенты"
+    },
+    "trend": {
+      "metrics": {
+        "gmv": "GMV",
+        "bookings": "Бронирования",
+        "new_cases": "Запросы"
+      },
+      "perWeek": "{{metric}} в неделю",
+      "perDay": "{{metric}} в день",
+      "total": "Всего {{value}}",
+      "metricLabel": "Показатель",
+      "showChart": "Показать график",
+      "showTable": "Показать таблицей",
+      "empty": {
+        "gmv": "Нет GMV за этот период",
+        "bookings": "Нет бронирований за этот период",
+        "new_cases": "Нет запросов за этот период"
+      },
+      "emptyHint": "Выберите период подлиннее выше, чтобы увидеть динамику.",
+      "byWeek": "{{metric}} по неделям",
+      "byDay": "{{metric}} по дням",
+      "weekOf": "Неделя с",
+      "day": "День",
+      "weekOfDate": "Неделя с {{date}}"
+    },
+    "admissions": {
+      "title": "Госпитализации на этой неделе",
+      "description": "Пациенты, которых ждут в больнице в ближайшие 7 дней",
+      "allBookings": "Все бронирования",
+      "empty": "Нет госпитализаций в ближайшие 7 дней",
+      "patient": "Пациент"
+    },
+    "infoTip": "Об этом показателе",
+    "delta": {
+      "noChange": "Без изменений",
+      "new": "Новое",
+      "points": "{{value}} п. п."
+    },
+    "age": {
+      "minutes": "{{value}} мин",
+      "hours": "{{value}} ч",
+      "days": "{{value}} дн."
+    },
+    "activity": {
+      "error": "Не удалось загрузить последние действия.",
+      "empty": "Действий пока нет.",
+      "someone": "Пользователь",
+      "system": "Система",
+      "caseCreate": "<0>{{who}}</0>: открыто обращение {{number}}",
+      "caseCreateNoNumber": "<0>{{who}}</0>: открыто обращение",
+      "caseStatus": "<0>{{who}}</0>: обращение переведено в статус «{{status}}»",
+      "caseStatusUnknown": "<0>{{who}}</0>: обращение переведено в новый статус",
+      "assignCoordinator": "<0>{{who}}</0>: назначен координатор обращения",
+      "quoteSend": "<0>{{who}}</0>: отправлен расчёт",
+      "quoteSendAmount": "<0>{{who}}</0>: отправлен расчёт на {{amount}}",
+      "quoteAccept": "<0>{{who}}</0>: принят расчёт",
+      "bookingConfirm": "<0>{{who}}</0>: подтверждено бронирование",
+      "bookingAdmit": "<0>{{who}}</0>: пациент госпитализирован",
+      "bookingComplete": "<0>{{who}}</0>: лечение завершено",
+      "paymentCaptured": "<0>{{who}}</0>: получен платёж",
+      "paymentCapturedAmount": "<0>{{who}}</0>: получен платёж на {{amount}}",
+      "hospitalApprove": "<0>{{who}}</0>: одобрена больница",
+      "agentApprove": "<0>{{who}}</0>: одобрен агент",
+      "documentUpload": "<0>{{who}}</0>: загружен документ",
+      "generic": "<0>{{who}}</0>: {{text}}"
+    },
+    "attention": {
+      "cardLabel": "{{label}}: {{value}}",
+      "cardLabelAge": "{{label}}: {{value}}, самое долгое ожидание {{age}}",
+      "oldestWaiting": "Самое долгое ожидание",
+      "oldest": "Дольше всех",
+      "caughtUp": "Все задачи выполнены",
+      "caughtUpHint": "Сейчас в ваших очередях нет задач, требующих действий.",
+      "allClear": "Всё в порядке:",
+      "emergency_cases": {
+        "label": "Экстренные предварительные оценки",
+        "description": "Открытые обращения, которые ИИ-оценка отметила как возможный экстренный случай"
+      },
+      "open_sos": {
+        "label": "Открытые сигналы SOS",
+        "description": "Пациенты в Индии, которым срочно нужна помощь"
+      },
+      "quotes_overdue": {
+        "label": "Расчёты с нарушением SLA",
+        "description": "Запросы, которые ждут расчёта от больницы дольше {{hours}} ч"
+      },
+      "unassigned_enquiries": {
+        "label": "Запросы без координатора",
+        "description": "Новые запросы, которым не назначен координатор"
+      },
+      "quotes_awaiting_patient": {
+        "label": "Ждут решения пациента",
+        "description": "Отправленные расчёты, которые пациент ещё не принял"
+      },
+      "hospitals_pending": {
+        "label": "Больницы на проверку",
+        "description": "Профили больниц, отправленные на одобрение"
+      },
+      "agents_pending": {
+        "label": "Агенты на одобрение",
+        "description": "Регистрации агентов, ожидающие одобрения"
+      },
+      "agent_kyc_pending": {
+        "label": "KYC агентов на проверку",
+        "description": "Агенты, чьи документы KYC ожидают проверки"
+      },
+      "payout_accounts_unverified": {
+        "label": "Счета для выплат на проверку",
+        "description": "Банковские счета, которые должен проверить второй сотрудник финансового отдела"
+      },
+      "markPaidApprovals": {
+        "label": "Банковские переводы на одобрение",
+        "description": "Запросы на отметку об оплате, ожидающие второго сотрудника финансового отдела"
+      },
+      "refunds": {
+        "label": "Возвраты на одобрение",
+        "description": "Запросы на возврат, ожидающие одобрения"
+      },
+      "batches": {
+        "label": "Пакеты расчётов на одобрение",
+        "description": "Пакеты, ожидающие второго утверждающего"
+      },
+      "payoutConfirmations": {
+        "label": "Выплаты на подтверждение",
+        "description": "Выплаты с UTR, ожидающие второго сотрудника финансового отдела"
+      },
+      "payoutReversals": {
+        "label": "Сбои выплат на одобрение",
+        "description": "Запросы о сбое или сторно, ожидающие второго утверждающего"
+      },
+      "payoutReconciliations": {
+        "label": "Выплаты на сверку",
+        "description": "Результат платёжного шлюза неизвестен - проверьте банковскую выписку"
+      },
+      "amountReviews": {
+        "label": "Расхождения в суммах",
+        "description": "Заказы, оплаченные суммой, отличной от запрошенной"
+      },
+      "adjustments": {
+        "label": "Корректировки главной книги",
+        "description": "Ручные корректировки, ожидающие одобрения"
+      }
+    }
+  },
+  "languages": {
+    "title": "Языки",
+    "description": "Включайте язык после проверки его переводов. Английский — язык по умолчанию и включён всегда. Изменения доходят до приложений примерно за минуту.",
+    "toast": {
+      "enabled": "Язык «{{name}}» включён",
+      "disabled": "Язык «{{name}}» выключен"
+    },
+    "columns": {
+      "language": "Язык",
+      "code": "Код",
+      "direction": "Направление письма",
+      "overall": "Переведено",
+      "updated": "Последнее изменение",
+      "enabled": "Включён"
+    },
+    "rtl": "Справа налево",
+    "ltr": "Слева направо",
+    "overallLabel": "{{name}}: доля переведённого текста",
+    "defaultHint": "Английский — язык по умолчанию, его нельзя выключить.",
+    "alwaysOn": "Всегда включён",
+    "on": "Вкл.",
+    "off": "Выкл.",
+    "empty": "Нет языков",
+    "readOnly": "Только просмотр: включать и выключать языки могут только администраторы.",
+    "byApp": {
+      "title": "Полнота перевода по приложениям",
+      "description": "Доля английского текста каждого приложения, у которой есть перевод (поставляемый или изменённый администратором). Выберите значение, чтобы увидеть недостающее в разделе <0>Переводы</0>.",
+      "empty": "Доступен только английский.",
+      "app": "Приложение",
+      "overall": "Все приложения",
+      "openMissing": "Недостающий текст ({{name}}) в приложении «{{app}}»"
+    },
+    "disable": {
+      "title": "Выключить язык «{{name}}»?",
+      "message": "Язык «{{name}}» исчезнет из всех переключателей языка и с сайта. Те, кто его выбрал, увидят английский. Переводы и ваши правки сохранятся.",
+      "confirm": "Выключить"
+    },
+    "apps": {
+      "patient_web": "Сайт для пациентов",
+      "agent": "Портал агентов",
+      "hospital": "Портал больниц",
+      "admin": "Портал администратора",
+      "website": "Публичный сайт",
+      "mobile": "Мобильное приложение",
+      "server": "Письма, уведомления и сообщения API"
+    }
+  },
+  "translations": {
+    "title": "Переводы",
+    "description": "Изменяйте любой текст любого приложения на любом языке. Изменения вступают в силу примерно через минуту и записываются в журнал аудита.",
+    "app": "Приложение",
+    "language": "Язык",
+    "languageOff": "{{name}} (выключен)",
+    "placeholdersHint": "Сохраняйте подстановки вроде {{example1}} или {{example2}} в точности как есть — вместо них подставляются реальные значения.",
+    "columns": {
+      "key": "Ключ",
+      "source": "Английский",
+      "shipped": "Поставляемый перевод",
+      "override": "Изменённый текст",
+      "actions": "Действия"
+    },
+    "missing": "Нет перевода",
+    "updatedBy": "{{name}} · {{date}}",
+    "edit": "Изменить",
+    "editRow": "Изменить {{key}}",
+    "clear": "Сбросить изменение",
+    "clearRow": "Сбросить изменение для {{key}}",
+    "toast": {
+      "saved": "Изменение сохранено",
+      "cleared": "Изменение сброшено — возвращён поставляемый текст"
+    },
+    "status": {
+      "label": "Состояние перевода",
+      "all": "Все",
+      "missing": "Без перевода",
+      "overridden": "Изменённые",
+      "translated": "Переведённые"
+    },
+    "searchPlaceholder": "Поиск по ключу, английскому тексту или переводу…",
+    "empty": "Подходящих текстов нет",
+    "readOnly": "Только просмотр: изменять тексты могут только администраторы.",
+    "clearDialog": {
+      "title": "Сбросить изменение?",
+      "message": "Текст вернётся к поставляемому переводу (или к английскому, если перевода нет)."
+    },
+    "editDialog": {
+      "title": "Изменить текст · {{language}}",
+      "override": "Ваш текст",
+      "emptyError": "Введите текст или нажмите «Сбросить изменение», чтобы вернуться к поставляемому тексту.",
+      "counter_one": "{{value}} / {{max}} символ",
+      "counter_few": "{{value}} / {{max}} символа",
+      "counter_many": "{{value}} / {{max}} символов",
+      "counter_other": "{{value}} / {{max}} символа",
+      "save": "Сохранить",
+      "missingPlaceholders_one": "Не хватает подстановки из английского текста: {{list}}. Сохраните её в точности как есть — вместо неё подставляется реальное значение.",
+      "missingPlaceholders_few": "Не хватает подстановок из английского текста: {{list}}. Сохраните их в точности как есть — вместо них подставляются реальные значения.",
+      "missingPlaceholders_many": "Не хватает подстановок из английского текста: {{list}}. Сохраните их в точности как есть — вместо них подставляются реальные значения.",
+      "missingPlaceholders_other": "Не хватает подстановок из английского текста: {{list}}. Сохраните их в точности как есть — вместо них подставляются реальные значения.",
+      "tagsNote": "В английском тексте ссылки и выделенные жирным слова отмечены нумерованными тегами вида <0>…</0>. Ваш текст сохраняется как обычный текст: эти теги удаляются, и ссылка или выделение теряются.",
+      "plainText": "Только обычный текст: HTML удаляется при сохранении. Каждое изменение записывается в журнал аудита."
+    }
+  }
+}

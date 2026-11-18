@@ -4,13 +4,13 @@
  */
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
+import { Trans } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Building2, FileText, Layers, ListChecks, Send } from 'lucide-react';
 import {
   adminApi,
   isReferenceRequired,
   PAYEE_TYPES,
-  PAYEE_TYPE_LABELS,
   type PayeeType,
   type PayoutOut,
   type Uuid,
@@ -30,14 +30,15 @@ import { EnumSelect, notifyError, notifySuccess, ReasonDialog, useSearchBox } fr
 import { Callout, Field, Input, Modal, Select, Button, Textarea } from './ui';
 import { isPayoutAwaitingConfirmation, isPayoutReversalPending, PayoutConfirmationActions, PayoutReversalActions } from './reviews';
 import { useFinancePermissions } from '../lib/permissions';
+import { enumLabel, enumOptions, ft, useFinanceTranslation } from '../lib/i18n';
 
 type TabKey = 'items' | 'batches' | 'payouts' | 'documents';
 
-const TABS: { key: TabKey; to: string; label: string; end: boolean; icon: typeof Layers }[] = [
-  { key: 'items', to: financePath('settlements'), label: 'Items', end: true, icon: ListChecks },
-  { key: 'batches', to: financePath('settlements/batches'), label: 'Batches', end: false, icon: Layers },
-  { key: 'payouts', to: financePath('settlements/payouts'), label: 'Payouts', end: false, icon: Send },
-  { key: 'documents', to: financePath('settlements/documents'), label: 'Invoices & credit notes', end: false, icon: FileText },
+const TABS: { key: TabKey; to: string; labelKey: string; end: boolean; icon: typeof Layers }[] = [
+  { key: 'items', to: financePath('settlements'), labelKey: 'settlementUi.tabs.items', end: true, icon: ListChecks },
+  { key: 'batches', to: financePath('settlements/batches'), labelKey: 'settlementUi.tabs.batches', end: false, icon: Layers },
+  { key: 'payouts', to: financePath('settlements/payouts'), labelKey: 'settlementUi.tabs.payouts', end: false, icon: Send },
+  { key: 'documents', to: financePath('settlements/documents'), labelKey: 'settlementUi.tabs.documents', end: false, icon: FileText },
 ];
 
 /**
@@ -45,6 +46,7 @@ const TABS: { key: TabKey; to: string; label: string; end: boolean; icon: typeof
  * approve; payouts waiting for reconciliation or a second finance user) from the finance review counts.
  */
 export function SettlementTabs() {
+  const { t } = useFinanceTranslation();
   const perms = useFinancePermissions();
   const review = useFinanceReviewCounts(perms.finance);
   const d = review.data;
@@ -55,16 +57,16 @@ export function SettlementTabs() {
       }
     : {};
   return (
-    <nav aria-label="Settlement sections" className="-mt-2 mb-5 overflow-x-auto [scrollbar-width:none]">
+    <nav aria-label={t('settlementUi.tabs.label')} className="-mt-2 mb-5 overflow-x-auto [scrollbar-width:none]">
       <div className="inline-flex min-w-max items-center gap-1 rounded-xl border border-border bg-surface-2/70 p-1">
-        {TABS.map((t) => {
-          const Icon = t.icon;
-          const count = attention[t.key];
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const count = attention[tab.key];
           return (
             <NavLink
-              key={t.to}
-              to={t.to}
-              end={t.end}
+              key={tab.to}
+              to={tab.to}
+              end={tab.end}
               className={({ isActive }) =>
                 cn(
                   'inline-flex h-8 items-center gap-2 rounded-lg px-3 text-sm font-medium whitespace-nowrap transition-colors',
@@ -74,11 +76,11 @@ export function SettlementTabs() {
               }
             >
               <Icon className="size-4 opacity-70" aria-hidden />
-              {t.label}
+              {t(tab.labelKey)}
               {count ? (
                 <span
                   className="min-w-5 rounded-full bg-warning-soft px-1.5 text-center text-xs leading-5 font-semibold text-warning-ink tabular-nums"
-                  aria-label={`${count} need attention`}
+                  aria-label={t('settlementUi.tabs.needAttention', { count })}
                 >
                   {count}
                 </span>
@@ -114,10 +116,14 @@ export function payeeParams(payee: string, payeeType: PayeeType | ''): { payee_t
   return { payee_type: payeeType || undefined };
 }
 
-export const PAYEE_TYPE_OPTIONS: FilterOption<PayeeType>[] = PAYEE_TYPES.map((t) => ({ value: t, label: PAYEE_TYPE_LABELS[t] }));
+/** Payee type filter options in the current UI language (call at render time). */
+export function payeeTypeOptions(): FilterOption<PayeeType>[] {
+  return enumOptions('payeeType', PAYEE_TYPES);
+}
 
 /** Hospitals and agents (first 100 each by name) as filter options keyed "type:id". */
 function usePayeeOptions(types: readonly PayeeType[]) {
+  useFinanceTranslation(); // re-render on language change
   const wantHospitals = types.includes('hospital');
   const wantAgents = types.includes('agent');
   const hospitals = useQuery({
@@ -136,29 +142,30 @@ function usePayeeOptions(types: readonly PayeeType[]) {
     ...(wantHospitals ? (hospitals.data?.items ?? []) : []).map((h) => ({
       value: `hospital:${h.id}`,
       label: h.name,
-      description: ['Hospital', h.city].filter(Boolean).join(' · '),
+      description: [enumLabel('payeeType', 'hospital'), h.city].filter(Boolean).join(' · '),
     })),
     ...(wantAgents ? (agents.data?.items ?? []) : []).map((a) => ({
       value: `agent:${a.id}`,
       label: a.agency_name,
-      description: `Agent · ${a.agent_code}`,
+      description: `${enumLabel('payeeType', 'agent')} · ${a.agent_code}`,
     })),
   ];
   return { options, loading: (wantHospitals && hospitals.isLoading) || (wantAgents && agents.isLoading) };
 }
 
 /** Searchable "Payee" pill (hospitals + agents, or only the chosen payee type). */
-export function PayeeFilter({ value, onChange, payeeType, label = 'Payee' }: {
+export function PayeeFilter({ value, onChange, payeeType, label }: {
   value: string;
   onChange: (value: string) => void;
   payeeType?: PayeeType | '';
   label?: string;
 }) {
+  const { t } = useFinanceTranslation();
   const types: PayeeType[] = payeeType ? [payeeType] : ['hospital', 'agent'];
   const { options, loading } = usePayeeOptions(types);
   return (
     <SelectFilter
-      label={label}
+      label={label ?? t('settlementUi.payee')}
       icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
       value={value}
       onChange={onChange}
@@ -174,7 +181,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /**
  * Pick a hospital / agent (searchable) or enter a vendor id. `value` is the payee id or '' (= all payees).
  */
-export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, allLabel = 'All payees', selectedLabel }: {
+export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, allLabel, selectedLabel }: {
   payeeType: PayeeType | '';
   value: string;
   onChange: (payeeId: string) => void;
@@ -184,6 +191,7 @@ export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, a
   /** label for the current value when it is not in the loaded search results (edit forms) */
   selectedLabel?: string | null;
 }) {
+  const { t } = useFinanceTranslation();
   const [debounced, setDebounced] = useState('');
   const [text, setText] = useSearchBox(debounced, setDebounced, 300);
   const hospitals = useHospitalLookup(debounced, payeeType === 'hospital');
@@ -192,7 +200,7 @@ export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, a
   if (!payeeType) {
     return (
       <Select id={id} disabled value="">
-        <option value="">Choose a payee type first</option>
+        <option value="">{t('settlementUi.picker.chooseTypeFirst')}</option>
       </Select>
     );
   }
@@ -202,7 +210,7 @@ export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, a
       <Input
         id={id}
         className="font-mono"
-        placeholder={allowAll ? 'Vendor id (blank = all vendors)' : 'Vendor id'}
+        placeholder={allowAll ? t('settlementUi.picker.vendorIdAll') : t('settlementUi.picker.vendorId')}
         value={value}
         aria-invalid={invalid || undefined}
         onChange={(e) => onChange(e.target.value.trim())}
@@ -220,8 +228,10 @@ export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, a
   return (
     <div className="flex flex-col gap-1.5 sm:flex-row">
       <Input
-        aria-label={`Search ${PAYEE_TYPE_LABELS[payeeType].toLowerCase()}s`}
-        placeholder={`Search ${PAYEE_TYPE_LABELS[payeeType].toLowerCase()}s…`}
+        aria-label={payeeType === 'hospital' ? t('settlementUi.picker.searchHospitals') : t('settlementUi.picker.searchAgents')}
+        placeholder={
+          payeeType === 'hospital' ? t('settlementUi.picker.searchHospitalsPlaceholder') : t('settlementUi.picker.searchAgentsPlaceholder')
+        }
         value={text}
         onChange={(e) => {
           setText(e.target.value);
@@ -229,9 +239,15 @@ export function PayeePicker({ payeeType, value, onChange, id, allowAll = true, a
         className="sm:w-44"
       />
       <Select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="sm:min-w-56">
-        {allowAll ? <option value="">{allLabel}</option> : <option value="" disabled>Select…</option>}
-        {selectedMissing && <option value={value}>{selectedLabel ?? `Selected (${value.slice(0, 8)}…)`}</option>}
-        {query.isLoading && <option disabled>Loading…</option>}
+        {allowAll ? (
+          <option value="">{allLabel ?? t('settlementUi.picker.allPayees')}</option>
+        ) : (
+          <option value="" disabled>
+            {t('settlementUi.picker.select')}
+          </option>
+        )}
+        {selectedMissing && <option value={value}>{selectedLabel ?? t('settlementUi.picker.selected', { id: value.slice(0, 8) })}</option>}
+        {query.isLoading && <option disabled>{t('ui.loading')}</option>}
         {options.map((o) => (
           <option key={o.id} value={o.id}>
             {o.label}
@@ -247,12 +263,13 @@ export function GenerateBatchDialog({ open, onClose, defaultPayeeType }: {
   onClose: () => void;
   defaultPayeeType?: PayeeType;
 }) {
+  const { t } = useFinanceTranslation();
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title="Generate settlement batch"
-      description="Collects eligible settlement items (on-hold items are skipped; negative clawback items net against the payee's positive items) into a batch that needs approval by a different finance user."
+      title={t('settlementUi.generate.title')}
+      description={t('settlementUi.generate.description')}
       size="lg"
     >
       {open && <GenerateBatchForm onDone={onClose} defaultPayeeType={defaultPayeeType} />}
@@ -261,6 +278,7 @@ export function GenerateBatchDialog({ open, onClose, defaultPayeeType }: {
 }
 
 function GenerateBatchForm({ onDone, defaultPayeeType }: { onDone: () => void; defaultPayeeType?: PayeeType }) {
+  const { t } = useFinanceTranslation();
   const navigate = useNavigate();
   const create = useCreateBatch();
   const [payeeType, setPayeeType] = useState<PayeeType | ''>(defaultPayeeType ?? 'hospital');
@@ -278,12 +296,16 @@ function GenerateBatchForm({ onDone, defaultPayeeType }: { onDone: () => void; d
       {
         onSuccess: (batch) => {
           notifySuccess(
-            `Batch ${batch.batch_number} created: ${batch.items_count} items, net ${formatMoney(batch.total_net_minor, batch.currency)}`,
+            ft('settlementUi.generate.created', {
+              number: batch.batch_number,
+              items: batch.items_count,
+              net: formatMoney(batch.total_net_minor, batch.currency),
+            }),
           );
           onDone();
           navigate(financePath(`settlements/batches/${batch.id}`));
         },
-        onError: (e) => notifyError(e, 'Could not generate the batch'),
+        onError: (e) => notifyError(e, ft('settlementUi.generate.failed')),
       },
     );
   };
@@ -297,13 +319,13 @@ function GenerateBatchForm({ onDone, defaultPayeeType }: { onDone: () => void; d
         submit();
       }}
     >
-      <Field label="Payee type" required error={submitted && !payeeType ? 'Choose a payee type' : null}>
+      <Field label={t('settlementUi.payeeType')} required error={submitted && !payeeType ? t('settlementUi.generate.chooseType') : null}>
         {(p) => (
           <EnumSelect
             id={p.id}
             value={payeeType}
             values={PAYEE_TYPES}
-            labels={PAYEE_TYPE_LABELS}
+            enumGroup="payeeType"
             includeAll={false}
             onChange={(v) => {
               setPayeeType(v);
@@ -312,23 +334,20 @@ function GenerateBatchForm({ onDone, defaultPayeeType }: { onDone: () => void; d
           />
         )}
       </Field>
-      <Field label="Payee" hint="Leave as “All payees” to batch every payee of this type" error={payeeInvalid ? 'Enter a valid id' : null}>
+      <Field label={t('settlementUi.payee')} hint={t('settlementUi.generate.payeeHint')} error={payeeInvalid ? t('settlementUi.generate.invalidId') : null}>
         {(p) => <PayeePicker id={p.id} payeeType={payeeType} value={payeeId} onChange={setPayeeId} />}
       </Field>
-      <Field label="Period end" hint="Include items that became eligible on or before this date"
-        error={periodInvalid ? 'Period end cannot be in the future' : null}>
+      <Field label={t('settlementUi.generate.periodEnd')} hint={t('settlementUi.generate.periodEndHint')}
+        error={periodInvalid ? t('settlementUi.generate.periodEndFuture') : null}>
         {(p) => <Input {...p} type="date" max={todayIsoDate()} value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />}
       </Field>
-      <Callout tone="info">
-        You will be recorded as the batch maker. Another finance or super-admin user must approve it before payouts are
-        processed.
-      </Callout>
+      <Callout tone="info">{t('settlementUi.generate.makerNote')}</Callout>
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onDone} disabled={create.isPending}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" loading={create.isPending}>
-          Generate batch
+          {t('settlementUi.generate.submit')}
         </Button>
       </div>
     </form>
@@ -346,17 +365,18 @@ export function PayoutActionDialogs({ payout, action, onClose }: {
   action: 'paid' | 'failed' | null;
   onClose: () => void;
 }) {
+  const { t } = useFinanceTranslation();
   const markPaid = useMarkPayoutPaid();
-  const label = payout ? `${payout.payee_name ?? 'Payee'} · ${formatMoney(payout.amount_minor, payout.currency)}` : undefined;
+  const label = payout ? `${payout.payee_name ?? t('reviews.payeeFallback')} · ${formatMoney(payout.amount_minor, payout.currency)}` : undefined;
   const reconciling = payout?.status === 'needs_reconciliation';
   return (
     <>
       <ReasonDialog
         open={payout !== null && action === 'paid'}
-        title={reconciling ? 'Record Razorpay transfer / UTR' : 'Record payout UTR'}
+        title={reconciling ? t('settlementUi.payoutPaid.titleReconcile') : t('settlementUi.payoutPaid.title')}
         description={label}
-        label={reconciling ? 'Razorpay transfer id (trf_…) or bank UTR' : 'UTR / bank reference'}
-        confirmLabel="Record reference"
+        label={reconciling ? t('settlementUi.payoutPaid.labelReconcile') : t('settlementUi.payoutPaid.label')}
+        confirmLabel={t('settlementUi.payoutPaid.confirm')}
         confirmVariant="primary"
         singleLine
         maxLength={64}
@@ -368,33 +388,30 @@ export function PayoutActionDialogs({ payout, action, onClose }: {
             { id: payout.id, utr },
             {
               onSuccess: () => {
-                notifySuccess('Reference recorded; a second finance user must confirm the payout');
+                notifySuccess(ft('settlementUi.payoutPaid.recorded'));
                 onClose();
               },
-              onError: (e) => notifyError(e, 'Could not mark the payout paid'),
+              onError: (e) => notifyError(e, ft('settlementUi.payoutPaid.failed')),
             },
           )
         }
       >
         {reconciling ? (
-          <Callout tone="warning" title="Gateway outcome unknown">
-            The transfer call timed out or returned an unclear answer, so it was not retried. Search the Razorpay
-            dashboard (Route → Transfers) for this payout id (<span className="font-mono">notes.payout_id</span>). If
-            the transfer exists, enter its <span className="font-mono">trf_…</span> id here; a different finance user
-            then confirms it. If it does not exist, use <strong>Request failure</strong> instead so the items are
-            batched again.
+          <Callout tone="warning" title={t('settlementUi.payoutPaid.unknownTitle')}>
+            <Trans
+              t={t}
+              i18nKey="settlementUi.payoutPaid.unknownBody"
+              components={{ 0: <span className="font-mono" />, 1: <span className="font-mono" />, 2: <strong /> }}
+            />
           </Callout>
         ) : (
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Enter the UTR from the bank transfer. This records it only: a different finance user must confirm it before
-            the payout is posted to the ledger (payee payable → bank).
-          </p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">{t('settlementUi.payoutPaid.body')}</p>
         )}
       </ReasonDialog>
       <Modal
         open={payout !== null && action === 'failed'}
         onClose={onClose}
-        title={payout && payoutFailureNeedsSecondApprover(payout) ? 'Request payout failure' : 'Mark payout failed'}
+        title={payout && payoutFailureNeedsSecondApprover(payout) ? t('settlementUi.payoutFail.requestTitle') : t('settlementUi.payoutFail.markTitle')}
         description={label}
         size="md"
       >
@@ -405,6 +422,7 @@ export function PayoutActionDialogs({ payout, action, onClose }: {
 }
 
 function PayoutFailForm({ payout, onDone }: { payout: PayoutOut; onDone: () => void }) {
+  const { t } = useFinanceTranslation();
   const markFailed = useMarkPayoutFailed();
   const dual = payoutFailureNeedsSecondApprover(payout);
   const [reason, setReason] = useState('');
@@ -413,10 +431,10 @@ function PayoutFailForm({ payout, onDone }: { payout: PayoutOut; onDone: () => v
   const [serverRefError, setServerRefError] = useState<string | null>(null);
   const r = reason.trim();
   const ref = reference.trim();
-  const reasonError = submitted && !r ? 'A reason is required' : null;
+  const reasonError = submitted && !r ? t('settlementUi.payoutFail.reasonRequired') : null;
   const refError =
     serverRefError ??
-    (submitted && dual && ref.length < 3 ? 'A bank return or gateway reference (at least 3 characters) is required' : null);
+    (submitted && dual && ref.length < 3 ? t('settlementUi.payoutFail.referenceRequired') : null);
 
   return (
     <form
@@ -431,40 +449,29 @@ function PayoutFailForm({ payout, onDone }: { payout: PayoutOut; onDone: () => v
           { id: payout.id, reason: r, reference: ref || undefined },
           {
             onSuccess: () => {
-              notifySuccess(
-                dual
-                  ? 'Failure requested; a different finance user must approve it'
-                  : 'Payout marked as failed; its items are eligible again',
-              );
+              notifySuccess(dual ? ft('settlementUi.payoutFail.requested') : ft('settlementUi.payoutFail.marked'));
               onDone();
             },
             onError: (err) => {
               if (isReferenceRequired(err)) {
-                setServerRefError('A bank or gateway reference is required to fail this payout');
+                setServerRefError(ft('settlementUi.payoutFail.serverReferenceRequired'));
                 return;
               }
-              notifyError(err, 'Could not mark the payout failed');
+              notifyError(err, ft('settlementUi.payoutFail.failed'));
             },
           },
         );
       }}
     >
       {dual ? (
-        <Callout tone="warning" title="Two-person control">
-          {payout.status === 'processed'
-            ? 'This payout was already marked paid, so money may have left the platform. Record the bank return (bounce) reference; '
-            : 'The gateway outcome of this payout is unknown, so money may have left the platform. Record the reference that proves no transfer was made (e.g. the Razorpay dashboard search); '}
-          a different finance user must then approve the request before the payout{' '}
-          {payout.status === 'processed' ? 'is reversed' : 'fails'} and its items return to eligible.
+        <Callout tone="warning" title={t('settlementUi.payoutFail.twoPersonTitle')}>
+          {payout.status === 'processed' ? t('settlementUi.payoutFail.dualProcessed') : t('settlementUi.payoutFail.dualUnknown')}
         </Callout>
       ) : (
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          No money has been sent for this payout yet, so it fails immediately and its items return to eligible for the
-          next batch.
-        </p>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{t('settlementUi.payoutFail.immediate')}</p>
       )}
       {dual && (
-        <Field label="Bank / gateway reference" required error={refError} hint="Bank return reference, gateway case id, etc.">
+        <Field label={t('reviews.payoutFailure.reference')} required error={refError} hint={t('settlementUi.payoutFail.referenceHint')}>
           {(p) => (
             <Input
               {...p}
@@ -479,15 +486,15 @@ function PayoutFailForm({ payout, onDone }: { payout: PayoutOut; onDone: () => v
           )}
         </Field>
       )}
-      <Field label="Reason" required error={reasonError} hint={`${r.length}/500`}>
+      <Field label={t('common.reason')} required error={reasonError} hint={t('common.charCount', { count: r.length, max: 500 })}>
         {(p) => <Textarea {...p} value={reason} maxLength={500} onChange={(e) => setReason(e.target.value)} />}
       </Field>
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onDone} disabled={markFailed.isPending}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" variant="danger" loading={markFailed.isPending}>
-          {dual ? 'Request failure' : 'Mark failed'}
+          {dual ? t('settlementUi.payoutFail.requestFailure') : t('settlementUi.payoutFail.markFailed')}
         </Button>
       </div>
     </form>
@@ -504,6 +511,7 @@ export function PayoutRowActions({ payout, onAction }: {
   payout: PayoutOut;
   onAction: (action: 'paid' | 'failed') => void;
 }) {
+  const { t } = useFinanceTranslation();
   const perms = useFinancePermissions();
   if (!perms.finance) return null;
   if (isPayoutReversalPending(payout)) return <PayoutReversalActions payout={payout} />;
@@ -513,18 +521,18 @@ export function PayoutRowActions({ payout, onAction }: {
     return (
       <div className="flex justify-end gap-1.5">
         <Button size="sm" onClick={() => onAction('paid')}>
-          {reconciling ? 'Record transfer' : 'Mark paid'}
+          {reconciling ? t('settlementUi.rowActions.recordTransfer') : t('settlementUi.rowActions.markPaid')}
         </Button>
         <Button size="sm" variant="secondary" onClick={() => onAction('failed')}>
-          {reconciling ? 'Request failure' : 'Mark failed'}
+          {reconciling ? t('settlementUi.payoutFail.requestFailure') : t('settlementUi.payoutFail.markFailed')}
         </Button>
       </div>
     );
   }
   if (payout.status === 'processed') {
     return (
-      <Button size="sm" variant="ghost" onClick={() => onAction('failed')} title="The bank returned this payout: request a reversal">
-        Report bounce
+      <Button size="sm" variant="ghost" onClick={() => onAction('failed')} title={t('settlementUi.rowActions.reportBounceTitle')}>
+        {t('settlementUi.rowActions.reportBounce')}
       </Button>
     );
   }

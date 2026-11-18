@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { addDays, endOfYear, format, startOfYear, subYears } from 'date-fns';
-import { EXPORT_TYPES, REPORT_GROUP_BY, humanize, type ExportType, type ReportGroupBy, type RevenueReportRow } from '@hig/shared/api';
-import { filterParam, useTableState } from '@hig/shared/lib';
+import { EXPORT_TYPES, REPORT_GROUP_BY, type ExportType, type ReportGroupBy, type RevenueReportRow } from '@hig/shared/api';
+import { filterParam, formatPercent, useTableState } from '@hig/shared/lib';
 import {
   DataTable,
   DateRangeFilter,
@@ -15,7 +15,19 @@ import {
   type DataTableColumn,
   type DatePreset,
 } from '@hig/shared/ui';
-import { formatDate, formatMoney, formatMonth, fromMinor, isoDateFromToday, todayIsoDate, toMinor, useDocumentTitle, useTheme } from '../lib/shared';
+import {
+  formatDate,
+  formatMoney,
+  formatMonth,
+  formatNumber,
+  fromMinor,
+  isoDateFromToday,
+  todayIsoDate,
+  toMinor,
+  useDocumentTitle,
+  useTheme,
+} from '../lib/shared';
+import { ft, useFinanceTranslation } from '../lib/i18n';
 import { useExportCsv, useRevenueReport } from '../api/queries';
 import { notifyError, notifySuccess } from '../components/finance';
 import { Button, Card, EmptyState, ErrorState, LoadingState, PageHeader } from '../components/ui';
@@ -27,13 +39,28 @@ const FILTERS = {
 };
 
 const iso = (d: Date) => format(d, 'yyyy-MM-dd');
+/** Labels are getters so they follow the UI language (read at render time). */
 const REPORT_PRESETS: readonly DatePreset[] = [
   ...DEFAULT_DATE_PRESETS.filter((p) => p.id !== 'today'),
-  { id: '12m', label: 'Last 12 months', range: () => ({ from: iso(addDays(new Date(), -365)), to: iso(new Date()) }) },
-  { id: 'year', label: 'This year', range: () => ({ from: iso(startOfYear(new Date())), to: iso(new Date()) }) },
+  {
+    id: '12m',
+    get label() {
+      return ft('reports.presets.last12Months');
+    },
+    range: () => ({ from: iso(addDays(new Date(), -365)), to: iso(new Date()) }),
+  },
+  {
+    id: 'year',
+    get label() {
+      return ft('reports.presets.thisYear');
+    },
+    range: () => ({ from: iso(startOfYear(new Date())), to: iso(new Date()) }),
+  },
   {
     id: 'last-year',
-    label: 'Last year',
+    get label() {
+      return ft('reports.presets.lastYear');
+    },
     range: () => {
       const d = subYears(new Date(), 1);
       return { from: iso(startOfYear(d)), to: iso(endOfYear(d)) };
@@ -47,10 +74,9 @@ const SERIES_COLORS = {
   dark: { gmv: '#8B5CF6', revenue: '#16A34A', grid: '#2A3340', axis: '#94A3B8' },
 } as const;
 
-const GROUP_LABELS: Record<ReportGroupBy, string> = { month: 'By month', hospital: 'By hospital', specialty: 'By specialty' };
-
 export default function ReportsPage() {
-  useDocumentTitle('Finance reports');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('reports.documentTitle'));
   const table = useTableState({ filters: FILTERS, defaultSort: 'key', defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const groupBy: ReportGroupBy = filters.group_by || 'month';
@@ -65,6 +91,8 @@ export default function ReportsPage() {
   const currency = data?.currency ?? 'INR';
   const rows = data?.rows;
   const label = (r: RevenueReportRow) => (groupBy === 'month' ? formatMonth(r.key) : r.label || r.key);
+  const gmvName = t('reports.gmv');
+  const revenueName = t('reports.revenue');
 
   const chartRows = useMemo(() => {
     const list = (rows ?? []).map((r) => ({
@@ -91,7 +119,7 @@ export default function ReportsPage() {
   const columns: DataTableColumn<RevenueReportRow>[] = [
     {
       key: 'key',
-      header: humanize(groupBy),
+      header: t(`reports.groupColumn.${groupBy}`),
       sortable: true,
       sticky: true,
       mobile: 'primary',
@@ -99,10 +127,17 @@ export default function ReportsPage() {
       cell: (r) => <span className="font-medium text-fg">{label(r)}</span>,
       exportValue: (r) => label(r),
     },
-    { key: 'bookings', header: 'Bookings', align: 'end', sortable: true, sortDescFirst: true, cell: (r) => <span className="tabular-nums">{r.bookings.toLocaleString()}</span> },
+    {
+      key: 'bookings',
+      header: t('reports.bookings'),
+      align: 'end',
+      sortable: true,
+      sortDescFirst: true,
+      cell: (r) => <span className="tabular-nums">{formatNumber(r.bookings)}</span>,
+    },
     {
       key: 'gmv_minor',
-      header: 'GMV',
+      header: gmvName,
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -111,7 +146,7 @@ export default function ReportsPage() {
     },
     {
       key: 'revenue_minor',
-      header: 'Revenue',
+      header: revenueName,
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -123,7 +158,7 @@ export default function ReportsPage() {
       ? [
           {
             key: 'commission_minor',
-            header: 'Commission',
+            header: t('reports.commission'),
             align: 'end' as const,
             sortable: true,
             sortDescFirst: true,
@@ -137,7 +172,7 @@ export default function ReportsPage() {
       ? [
           {
             key: 'refunds_minor',
-            header: 'Refunds',
+            header: t('nav.items.refunds'),
             align: 'end' as const,
             sortable: true,
             sortDescFirst: true,
@@ -149,12 +184,12 @@ export default function ReportsPage() {
       : []),
     {
       key: 'take',
-      header: 'Take rate',
+      header: t('reports.takeRate'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
       sortValue: (r) => (r.gmv_minor > 0 ? r.revenue_minor / r.gmv_minor : 0),
-      cell: (r) => <span className="tabular-nums">{r.gmv_minor > 0 ? `${((r.revenue_minor / r.gmv_minor) * 100).toFixed(1)}%` : '—'}</span>,
+      cell: (r) => <span className="tabular-nums">{r.gmv_minor > 0 ? formatPercent(r.revenue_minor / r.gmv_minor, 1) : '—'}</span>,
       exportValue: (r) => (r.gmv_minor > 0 ? `${((r.revenue_minor / r.gmv_minor) * 100).toFixed(1)}%` : ''),
     },
   ];
@@ -163,23 +198,20 @@ export default function ReportsPage() {
     exporter.mutate(
       { type, from, to },
       {
-        onSuccess: () => notifySuccess(`${humanize(type)} export downloaded`),
-        onError: (e) => notifyError(e, 'Export failed'),
+        onSuccess: () => notifySuccess(ft(`reports.exports.${type}.downloaded`)),
+        onError: (e) => notifyError(e, ft('reports.exports.failed')),
       },
     );
 
   return (
     <div>
-      <PageHeader
-        title="Reports"
-        description="Revenue recognised from completed bookings (commission + service fees) against gross merchandise value, plus CSV exports for accounting."
-      />
+      <PageHeader title={t('nav.items.reports')} description={t('reports.description')} />
 
       <Card className="mb-4">
         <div className="border-b border-border px-2 sm:px-3">
           <QuickFilters
-            label="Group revenue"
-            items={REPORT_GROUP_BY.map((g) => ({ value: g, label: GROUP_LABELS[g] }))}
+            label={t('reports.groupLabel')}
+            items={REPORT_GROUP_BY.map((g) => ({ value: g, label: t(`reports.groupBy.${g}`) }))}
             value={groupBy}
             onChange={(g) => setFilter('group_by', g || 'month')}
           />
@@ -190,10 +222,10 @@ export default function ReportsPage() {
           actions={<ExportButton filename={`revenue-${groupBy}`} columns={columns} rows={rows} />}
         >
           <DateRangeFilter
-            label="Period"
+            label={t('reports.period')}
             presets={REPORT_PRESETS}
             value={{ from: filters.from, to: filters.to }}
-            onChange={({ from: f, to: t }) => setFilters({ from: f, to: t })}
+            onChange={({ from: f, to: tt }) => setFilters({ from: f, to: tt })}
           />
           <span className="text-xs text-muted">
             {formatDate(from)} – {formatDate(to)}
@@ -205,18 +237,18 @@ export default function ReportsPage() {
         ) : report.isError && !data ? (
           <ErrorState error={report.error} onRetry={() => void report.refetch()} />
         ) : !rows || rows.length === 0 ? (
-          <EmptyState title="No revenue in this period" description="Revenue is recognised when bookings are completed." />
+          <EmptyState title={t('reports.emptyTitle')} description={t('reports.emptyDescription')} />
         ) : (
           <>
             <div className="grid grid-cols-1 gap-3 border-b border-border p-4 sm:grid-cols-3">
-              <Headline label="GMV" value={formatMoney(totals.gmv_minor, currency)} />
-              <Headline label="Revenue" value={formatMoney(totals.revenue_minor, currency)} />
-              <Headline label="Bookings" value={totals.bookings.toLocaleString()} />
+              <Headline label={gmvName} value={formatMoney(totals.gmv_minor, currency)} />
+              <Headline label={revenueName} value={formatMoney(totals.revenue_minor, currency)} />
+              <Headline label={t('reports.bookings')} value={formatNumber(totals.bookings)} />
             </div>
             <figure className="p-4">
               <figcaption className="mb-2 text-sm font-medium text-fg">
-                GMV and revenue {GROUP_LABELS[groupBy].toLowerCase()}
-                {groupBy !== 'month' && rows.length > 12 && <span className="font-normal text-muted"> (top 12 by GMV)</span>}
+                {t(`reports.chartTitle.${groupBy}`)}
+                {groupBy !== 'month' && rows.length > 12 && <span className="font-normal text-muted"> {t('reports.top12')}</span>}
               </figcaption>
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -242,12 +274,12 @@ export default function ReportsPage() {
                       }}
                       formatter={(_value, name, item) => {
                         const p = item.payload as { gmv_minor: number; revenue_minor: number };
-                        return [formatMoney(name === 'GMV' ? p.gmv_minor : p.revenue_minor, currency), name];
+                        return [formatMoney(item.dataKey === 'gmv' ? p.gmv_minor : p.revenue_minor, currency), name];
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} iconType="square" />
-                    <Bar dataKey="gmv" name="GMV" fill={palette.gmv} radius={[4, 4, 0, 0]} maxBarSize={28} />
-                    <Bar dataKey="revenue" name="Revenue" fill={palette.revenue} radius={[4, 4, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="gmv" name={gmvName} fill={palette.gmv} radius={[4, 4, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="revenue" name={revenueName} fill={palette.revenue} radius={[4, 4, 0, 0]} maxBarSize={28} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -260,7 +292,7 @@ export default function ReportsPage() {
         <DataTable
           id="admin.finance.reports.revenue"
           className="mb-4"
-          caption={`Revenue ${GROUP_LABELS[groupBy].toLowerCase()}`}
+          caption={t(`reports.tableTitle.${groupBy}`)}
           table={table}
           columns={columns}
           rows={rows}
@@ -268,22 +300,20 @@ export default function ReportsPage() {
           fetching={report.isFetching && !report.isLoading}
           header={
             <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
-              <h2 className="text-sm font-semibold text-fg">Revenue {GROUP_LABELS[groupBy].toLowerCase()}</h2>
-              <span className="text-xs text-muted">{rows.length.toLocaleString()} rows</span>
+              <h2 className="text-sm font-semibold text-fg">{t(`reports.tableTitle.${groupBy}`)}</h2>
+              <span className="text-xs text-muted">{t('reports.rowCount', { rows: formatNumber(rows.length) })}</span>
             </div>
           }
         />
       )}
 
-      <Card title="CSV exports" actions={<span className="text-xs text-slate-500">Uses the date range above</span>}>
+      <Card title={t('reports.exports.title')} actions={<span className="text-xs text-slate-500">{t('reports.exports.usesRange')}</span>}>
         <div className="grid gap-3 p-4 sm:grid-cols-3">
           {EXPORT_TYPES.map((type) => (
             <div key={type} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{humanize(type)}</p>
-                <p className="text-xs text-slate-500">
-                  {type === 'bookings' ? 'Bookings with amounts and status' : type === 'payments' ? 'Orders, payments and refunds' : 'Settlement items and payouts'}
-                </p>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{t(`reports.exports.${type}.title`)}</p>
+                <p className="text-xs text-slate-500">{t(`reports.exports.${type}.description`)}</p>
               </div>
               <Button
                 size="sm"

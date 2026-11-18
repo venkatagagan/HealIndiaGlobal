@@ -48,6 +48,9 @@ import {
 import { useCoordinatorOptions, useHospitalOptions } from '../lib/lookups';
 import { opsKeys } from '../lib/mutations';
 import { opsPaths } from '../lib/paths';
+import { useAppTranslation } from '../../../i18n';
+
+type T = ReturnType<typeof useAppTranslation>['t'];
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state: every filter, the sort and the page live in the query string (?status=quoted,booked&sort=-updated_at)
@@ -94,47 +97,47 @@ const QUICK_STATUSES: CaseStatus[] = ['enquiry', 'quoted', 'accepted', 'booked',
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-function patientLine(c: CaseOut): string {
-  return [c.patient.nationality, c.patient.age != null ? `${c.patient.age}y` : null, c.agent ? `via ${c.agent.agency_name}` : null]
+function patientLine(t: T, c: CaseOut): string {
+  return [c.patient.nationality, c.patient.age != null ? t('cases.list.age', { age: c.patient.age }) : null, c.agent ? t('cases.list.via', { agency: c.agent.agency_name }) : null]
     .filter(Boolean)
     .join(' · ');
 }
 
-const COLUMNS: DataTableColumn<CaseOut>[] = [
+const caseColumns = (t: T): DataTableColumn<CaseOut>[] => [
   {
     key: 'case',
-    header: 'Case',
+    header: t('cases.list.columns.case'),
     sortable: true,
     sortKey: 'case_number',
     sticky: true,
     mobile: 'secondary',
-    cell: (c) => <IdCell value={c.case_number} secondary={`Opened ${formatDate(c.created_at)}`} />,
+    cell: (c) => <IdCell value={c.case_number} secondary={t('cases.list.opened', { date: formatDate(c.created_at) })} />,
     mobileCell: (c) => (
       <span className="font-mono text-xs">
-        {c.case_number} · opened {formatDate(c.created_at)}
+        {t('cases.list.mobileOpened', { number: c.case_number, date: formatDate(c.created_at) })}
       </span>
     ),
     exportValue: (c) => c.case_number,
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('cases.list.columns.patient'),
     mobile: 'primary',
     className: 'max-w-52',
-    cell: (c) => <PersonCell name={c.patient.full_name} secondary={patientLine(c) || undefined} />,
+    cell: (c) => <PersonCell name={c.patient.full_name} secondary={patientLine(t, c) || undefined} />,
     exportValue: (c) => c.patient.full_name,
   },
   {
     key: 'hospital',
-    header: 'Hospital',
-    title: 'Hospital',
+    header: t('cases.list.columns.hospital'),
+    title: t('cases.list.columns.hospital'),
     className: 'max-w-52',
     cell: (c) => <TextCell primary={c.hospital.name} secondary={c.procedure?.name ?? c.specialty?.name ?? c.hospital.city} />,
     exportValue: (c) => c.hospital.name,
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('cases.list.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (c) => (
@@ -148,14 +151,14 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'urgency',
-    header: 'Urgency',
+    header: t('cases.list.columns.urgency'),
     mobile: 'badge',
     defaultHidden: true,
     cell: (c) =>
       c.urgency ? (
         <StatusBadge status={c.urgency} kind="urgency" dot />
       ) : (
-        <span className="text-muted" aria-label="No screening">
+        <span className="text-muted" aria-label={t('cases.list.noScreening')}>
           —
         </span>
       ),
@@ -164,7 +167,7 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'quote',
-    header: 'Latest quote',
+    header: t('cases.list.columns.latestQuote'),
     align: 'end',
     cell: (c) => (
       <MoneyCell
@@ -177,20 +180,20 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'coordinator',
-    header: 'Coordinator',
+    header: t('cases.list.columns.coordinator'),
     cell: (c) =>
       c.coordinator ? (
         <PersonCell name={c.coordinator.full_name} />
       ) : (
         <Badge tone="warning" dot>
-          Unassigned
+          {t('cases.list.unassigned')}
         </Badge>
       ),
-    exportValue: (c) => c.coordinator?.full_name ?? 'Unassigned',
+    exportValue: (c) => c.coordinator?.full_name ?? t('cases.list.unassigned'),
   },
   {
     key: 'updated',
-    header: 'Updated',
+    header: t('cases.list.columns.updated'),
     sortable: true,
     sortKey: 'updated_at',
     sortDescFirst: true,
@@ -199,7 +202,7 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'created',
-    header: 'Created',
+    header: t('cases.list.columns.created'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -213,7 +216,9 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function CasesPage() {
-  useDocumentTitle('Cases');
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => caseColumns(t), [t]);
+  useDocumentTitle(t('cases.list.title'));
   const table = useTableState({ filters: FILTERS, defaultSort: '-updated_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -252,11 +257,11 @@ export default function CasesPage() {
     count: counts.data?.counts[s],
   }));
   const coordinatorOptions: FilterOption[] = [
-    { value: UNASSIGNED, label: 'Unassigned', tone: 'warning' },
+    { value: UNASSIGNED, label: t('cases.list.unassigned'), tone: 'warning' },
     ...(coordinators.data ?? []).map((u) => ({ value: u.id, label: u.full_name, description: u.email ?? undefined })),
   ];
   const quickItems: QuickFilterItem<CaseStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('cases.list.all'), count: counts.data?.total },
     ...QUICK_STATUSES.map((s) => ({ value: s, label: CASE_STATUS_LABELS[s], count: counts.data?.counts[s] })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 && QUICK_STATUSES.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -265,8 +270,8 @@ export default function CasesPage() {
   return (
     <div>
       <PageHeader
-        title="Cases"
-        description="Every patient case across hospitals and agents — track progress, assign coordinators and act on what is stuck."
+        title={t('cases.list.title')}
+        description={t('cases.list.description')}
         actions={
           <Button
             variant={showingUnassigned ? 'outline' : 'primary'}
@@ -275,7 +280,7 @@ export default function CasesPage() {
               showingUnassigned ? setFilters({ coordinator: '', status: [] }) : setFilters({ coordinator: UNASSIGNED, status: OPEN_STATUSES })
             }
           >
-            {showingUnassigned ? 'Show all cases' : 'Needs a coordinator'}
+            {showingUnassigned ? t('cases.list.showAll') : t('cases.list.needsCoordinator')}
             {!showingUnassigned && unassigned.data !== undefined && (
               <span className="rounded-full bg-primary-fg/15 px-1.5 text-xs font-semibold tabular-nums">{unassigned.data}</span>
             )}
@@ -284,9 +289,9 @@ export default function CasesPage() {
       />
       <DataTable
         id="admin.cases"
-        caption="Cases"
+        caption={t('cases.list.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -294,7 +299,7 @@ export default function CasesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(c) => opsPaths.case(c.id)}
-        rowLabel={(c) => `Open case ${c.case_number}`}
+        rowLabel={(c) => t('cases.list.rowLabel', { number: c.case_number })}
         selectable
         bulkActions={(selected, clear) => (
           <Button
@@ -302,19 +307,19 @@ export default function CasesPage() {
             variant="outline"
             leftIcon={<Download className="size-4" aria-hidden />}
             onClick={() => {
-              exportCsv(selected, COLUMNS, `cases-selected-${new Date().toISOString().slice(0, 10)}`);
+              exportCsv(selected, columns, `cases-selected-${new Date().toISOString().slice(0, 10)}`);
               clear();
             }}
           >
-            Export selected
+            {t('cases.list.exportSelected')}
           </Button>
         )}
-        emptyTitle="No cases yet"
-        emptyDescription="Cases appear here when patients or agents send an enquiry to a hospital."
+        emptyTitle={t('cases.list.emptyTitle')}
+        emptyDescription={t('cases.list.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Case status"
+              label={t('cases.list.caseStatus')}
               items={quickItems}
               value={quickValue}
               onChange={(s) => setFilter('status', s ? [s] : [])}
@@ -323,12 +328,12 @@ export default function CasesPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Case number or patient…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('cases.list.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="cases"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -339,7 +344,7 @@ export default function CasesPage() {
             more={
               <>
                 <SelectFilter
-                  label="Agent"
+                  label={t('cases.list.filters.agent')}
                   value={filters.agent_id}
                   onChange={(v) => setFilter('agent_id', v)}
                   options={agents.data ?? []}
@@ -347,7 +352,7 @@ export default function CasesPage() {
                   searchable
                 />
                 <MultiSelectFilter
-                  label="Urgency"
+                  label={t('cases.list.columns.urgency')}
                   icon={<ShieldAlert className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.urgency}
                   onChange={(v) => setFilter('urgency', v)}
@@ -356,9 +361,9 @@ export default function CasesPage() {
               </>
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('cases.list.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <SelectFilter
-              label="Hospital"
+              label={t('cases.list.columns.hospital')}
               icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.hospital_id}
               onChange={(v) => setFilter('hospital_id', v)}
@@ -367,19 +372,19 @@ export default function CasesPage() {
               searchable
             />
             <SelectFilter
-              label="Coordinator"
+              label={t('cases.list.columns.coordinator')}
               value={filters.coordinator}
               onChange={(v) => setFilter('coordinator', v)}
               options={coordinatorOptions}
               loading={coordinators.isLoading}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('cases.list.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Created' },
-                { value: 'updated', label: 'Updated' },
+                { value: 'created', label: t('cases.list.columns.created') },
+                { value: 'updated', label: t('cases.list.columns.updated') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}
