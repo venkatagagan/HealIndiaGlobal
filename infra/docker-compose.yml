@@ -83,6 +83,8 @@ x-backend-env: &backend-env
   VOICE_RETAIN_AUDIO: ${VOICE_RETAIN_AUDIO:-false}
   STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
   STORAGE_LOCAL_DIR: /app/storage
+  # ENV=production refuses local storage unless this acknowledges the single host + backed-up `storage` volume.
+  STORAGE_LOCAL_IN_PRODUCTION: ${STORAGE_LOCAL_IN_PRODUCTION:-false}
   MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-15}
   S3_BUCKET: ${S3_BUCKET:-}
   S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}

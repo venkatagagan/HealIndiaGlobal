@@ -291,7 +291,7 @@ def test_settings_validation_production_and_jwt(monkeypatch) -> None:
         Settings(_env_file=None, ENV="development", STAFF_ALLOWED_IPS="not-an-ip")
 
 
-def test_settings_production_startup_checks(monkeypatch, caplog) -> None:
+def test_settings_production_startup_checks(monkeypatch) -> None:
     monkeypatch.delenv("WEB_CONCURRENCY", raising=False)
     ok = {
         "ENV": "production",
@@ -309,6 +309,7 @@ def test_settings_production_startup_checks(monkeypatch, caplog) -> None:
         "DATABASE_URL": "postgresql+asyncpg://app:pw@db.abc.us-east-2.rds.amazonaws.com:5432/healindia",
         "DATABASE_SSLMODE": "require",
         "ANTHROPIC_API_KEY": "sk-test",
+        "AI_ENABLED": True,
         "CORS_ORIGINS": "",
     }
     assert Settings(_env_file=None, **ok).is_production
@@ -354,14 +355,15 @@ def test_settings_production_startup_checks(monkeypatch, caplog) -> None:
         DATABASE_SSLMODE="prefer",
     )
     # AI key: a warning, not a refusal
-    caplog.clear()
-    with caplog.at_level("WARNING", logger="app.core.config"):
-        assert Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": ""}).is_production
-    assert "ANTHROPIC_API_KEY is empty" in caplog.text
-    caplog.clear()
-    with caplog.at_level("WARNING", logger="app.core.config"):
-        Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": "", "AI_ENABLED": False})
-    assert "ANTHROPIC_API_KEY" not in caplog.text
+    from app.core import config as config_module
+
+    warnings: list[str] = []
+    monkeypatch.setattr(config_module.logger, "warning", lambda msg, *a, **k: warnings.append(msg))
+    assert Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": ""}).is_production
+    assert any("ANTHROPIC_API_KEY is empty" in w for w in warnings)
+    warnings.clear()
+    Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": "", "AI_ENABLED": False})
+    assert warnings == []
 
 
 # --------------------------------------------------------------------------------------- client IP (#20)
