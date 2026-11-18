@@ -581,6 +581,9 @@ export interface HospitalCard {
   accreditations: string[];
   rating_avg: number | null;
   rating_count: number;
+  /** published patient reviews only (`rating_avg` may be a curated value for hospitals without reviews) */
+  published_rating_avg?: number | null;
+  published_review_count?: number;
   logo_url: string | null;
   cover_image_url: string | null;
   /** specialty names */
@@ -753,6 +756,9 @@ export interface DoctorCard {
   success_rate_pct: number | null;
   rating_avg: number | null;
   rating_count: number;
+  /** published patient reviews only (`rating_avg` may be a curated value for hospitals without reviews) */
+  published_rating_avg?: number | null;
+  published_review_count?: number;
   consultation_fee_minor: number | null;
   currency: CurrencyCode;
   teleconsult_available: boolean;
@@ -867,6 +873,9 @@ export interface CostSavings {
   currency: CurrencyCode;
   pct_min: number;
   pct_max: number;
+  /** Legal price-claim rule: only when true may the saving be shown as a claim ("save X", % badge). Requires a
+   * medium/high-confidence, sourced benchmark and India cheaper at both ends of the range. */
+  claim_allowed?: boolean;
 }
 
 /** How the home country was chosen; `country_used` differs from `requested_country` when no benchmark exists
@@ -885,6 +894,8 @@ export interface CostComparison extends HomeCountryInfo {
   india: CostIndia;
   savings: CostSavings;
   itemized: { category: QuoteLineCategory | (string & {}); amount_minor: number; currency: CurrencyCode }[];
+  /** same as `savings.claim_allowed` */
+  claim_allowed?: boolean;
 }
 
 export interface CostComparisonParams {
@@ -903,6 +914,8 @@ export interface CostHighlights extends HomeCountryInfo {
     home: CostHome;
     india: CostIndia;
     savings: CostSavings;
+    /** same as `savings.claim_allowed`; claim-allowed items come first, then the shortest India wait */
+    claim_allowed?: boolean;
   }[];
 }
 
@@ -1083,6 +1096,8 @@ export interface HospitalMemberInviteIn {
   email: string;
   full_name: string;
   member_role: HospitalMemberRole;
+  /** language of the invitation for a new account (en | ar | fr | bn | ru); default: the inviter's language */
+  language?: string | null;
 }
 export interface HospitalMemberUpdateIn {
   member_role: HospitalMemberRole;
@@ -1250,6 +1265,9 @@ export interface MatchSavings {
   home_currency: CurrencyCode;
   pct_min: number;
   pct_max: number;
+  /** Legal price-claim rule: only when true may the saving be shown as a claim ("save X", % badge). Requires a
+   * medium/high-confidence, sourced benchmark and India cheaper at both ends of the range. */
+  claim_allowed?: boolean;
 }
 
 export interface MatchOut {

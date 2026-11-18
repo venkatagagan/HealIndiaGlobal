@@ -67,6 +67,8 @@ TASK_NAME = "catalog.revalidate_website"
 CATALOG_TAG = "catalog"
 # Website & contact settings (app/core/site_settings.py): every page's layout reads them with this fetch tag.
 SITE_TAG = "site"
+# Published patient reviews (lists, ratings): sent with hospital:<slug> / doctor:<slug> on publish or hide.
+REVIEWS_TAG = "reviews"
 MAX_TAGS = 100  # the website's limit; above it a single "catalog" tag is sent (e.g. a bulk import)
 MAX_BODY_BYTES = 15_000  # the website refuses bodies over 16 KB
 _SLUG_TAG = re.compile(r"^(hospital|doctor|procedure|specialty):[a-z0-9-]{1,160}$")
@@ -151,6 +153,19 @@ def request_site_revalidation(db: AsyncSession) -> None:
         return
     pending = db.sync_session.info.setdefault(_INFO_KEY, _new_pending())
     pending["tags"].add(SITE_TAG)
+
+
+def request_review_revalidation(db: AsyncSession, hospital_slug: str | None, doctor_slug: str | None) -> None:
+    """A review was published or hidden: revalidate ``reviews`` plus the hospital's (and doctor's) pages when
+    the current transaction commits (same outbox path as catalogue changes)."""
+    if not catalog_settings.revalidation_enabled:
+        return
+    pending = db.sync_session.info.setdefault(_INFO_KEY, _new_pending())
+    pending["tags"].add(REVIEWS_TAG)
+    if hospital_slug:
+        pending["tags"].add(f"hospital:{hospital_slug}")
+    if doctor_slug:
+        pending["tags"].add(f"doctor:{doctor_slug}")
 
 
 def build_payload(pending: dict[str, set[str]]) -> dict[str, list[str]]:
@@ -243,7 +258,7 @@ async def resolve_tags(db: AsyncSession, payload: dict[str, Any]) -> list[str]:
         tags.update(f"procedure:{slug}" for slug in rows.scalars())
     site = SITE_TAG in tags
     explicit_catalog = CATALOG_TAG in tags
-    tags = {t for t in tags if _SLUG_TAG.match(t)}
+    tags = {t for t in tags if _SLUG_TAG.match(t) or t == REVIEWS_TAG}
     # A settings-only change ("site") does not need the whole catalogue re-fetched.
     if tags or explicit_catalog or not site:
         tags.add(CATALOG_TAG)

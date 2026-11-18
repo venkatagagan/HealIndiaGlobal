@@ -362,3 +362,50 @@ async def test_public_doctor_card_shows_registration_flag(client, db):
     assert card["registration_verified"] is True
     assert "registration_number" not in card
     assert "experience_years" in card and "qualifications" in card
+
+
+async def test_published_aggregate_and_website_revalidation(client, db, auth_headers, make_user, monkeypatch):
+    """Cards/details expose the PUBLISHED review aggregate (not the curated rating); publishing or hiding a
+    review revalidates the website (``reviews``, ``hospital:<slug>``, ``doctor:<slug>``)."""
+    from app.core.enums import JobStatus  # noqa: F401
+    from app.models import BackgroundJob
+    from app.modules.catalog import revalidate
+    from app.modules.catalog.settings import catalog_settings
+
+    monkeypatch.setattr(catalog_settings, "REVALIDATE_SECRET", "test-revalidate-secret-value-123")
+    monkeypatch.setattr(catalog_settings, "WEBSITE_REVALIDATE_URL", "http://website.test/api/revalidate")
+    w = await make_world(db)
+    # a curated rating that is not backed by reviews
+    w.hospital.rating_avg = Decimal("4.8")
+    w.hospital.rating_count = 120
+    await db.commit()
+    await invalidate_catalog_cache()
+    hospital_slug, doctor_slug, doctor_id = w.hospital.slug, w.doctor.slug, w.doctor.id
+    detail = (await client.get(f"{API}/hospitals/{hospital_slug}")).json()
+    assert detail["rating_avg"] == 4.8
+    assert detail["published_rating_avg"] is None and detail["published_review_count"] == 0
+
+    h = auth_headers(w.patient_user)
+    booking = await _completed_booking(db, w)
+    rid = (await client.post(f"{API}/reviews", headers=h, json=_body(w, booking, rating=4))).json()["id"]
+    ah = auth_headers(await make_user(role="admin"))
+    r = await client.patch(f"{API}/admin/reviews/{rid}", headers=ah, json={"status": "published"})
+    assert r.status_code == 200, r.text
+    db.expire_all()
+    jobs = (
+        (await db.execute(select(BackgroundJob).where(BackgroundJob.task_name == revalidate.TASK_NAME)))
+        .scalars()
+        .all()
+    )
+    tags = set().union(*(set(j.payload.get("tags") or []) for j in jobs))
+    assert {"reviews", f"hospital:{hospital_slug}", f"doctor:{doctor_slug}"} <= tags
+    assert "reviews" in await revalidate.resolve_tags(db, {"tags": ["reviews"]})
+
+    await invalidate_catalog_cache()
+    detail = (await client.get(f"{API}/hospitals/{hospital_slug}")).json()
+    assert detail["published_rating_avg"] == 4.0 and detail["published_review_count"] == 1
+    doctor = (await client.get(f"{API}/doctors/{doctor_id}")).json()
+    assert doctor["published_rating_avg"] == 4.0 and doctor["published_review_count"] == 1
+    cards = (await client.get(f"{API}/hospitals")).json()
+    card = next(c for c in cards["items"] if c["slug"] == hospital_slug)
+    assert card["published_review_count"] == 1

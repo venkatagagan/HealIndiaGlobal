@@ -38,6 +38,7 @@ from app.models import (
     User,
 )
 from app.modules.catalog import service as catalog
+from app.modules.catalog.revalidate import request_review_revalidation
 from app.modules.catalog.schemas import IdSlugName
 from app.modules.hospitals.service import recompute_ratings
 from app.modules.trust.schemas import (
@@ -371,6 +372,17 @@ async def moderate_review(
         review.published_at = now
     await db.flush()
     await recompute_ratings(db, [review.hospital_id])
+    if target in (ReviewStatus.PUBLISHED, ReviewStatus.HIDDEN):
+        # the public website caches reviews and ratings: refresh them on commit
+        hospital_slug = (
+            await db.execute(select(Hospital.slug).where(Hospital.id == review.hospital_id))
+        ).scalar_one_or_none()
+        doctor_slug = (
+            (await db.execute(select(Doctor.slug).where(Doctor.id == review.doctor_id))).scalar_one_or_none()
+            if review.doctor_id
+            else None
+        )
+        request_review_revalidation(db, hospital_slug, doctor_slug)
     await audit_log(
         db,
         actor=actor,
