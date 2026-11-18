@@ -2246,6 +2246,144 @@ class OverridableLocalizations extends AppLocalizations {
     'inviteMissingArrival' => inviteMissingArrival,
     'inviteMissingDuration' => inviteMissingDuration,
     'inviteMissingTreatment' => inviteMissingTreatment,
+    'whatsappTitle' => whatsappTitle,
+    'whatsappTileSubtitle' => whatsappTileSubtitle,
+    'whatsappIntro' => whatsappIntro,
+    'whatsappPrivacyNote' => whatsappPrivacyNote,
+    'whatsappStopNote' => whatsappStopNote,
+    'whatsappUnavailable' => whatsappUnavailable,
+    'whatsappStatusOn' => whatsappStatusOn,
+    'whatsappStatusOff' => whatsappStatusOff,
+    'whatsappStatusPending' => whatsappStatusPending,
+    'whatsappActiveTitle' => whatsappActiveTitle,
+    'whatsappPhoneLabel' => whatsappPhoneLabel,
+    'whatsappPhoneHint' => whatsappPhoneHint,
+    'whatsappPhoneHelper' => whatsappPhoneHelper,
+    'whatsappPhoneInvalid' => whatsappPhoneInvalid,
+    'whatsappSendCode' => whatsappSendCode,
+    'whatsappCodeSent' => whatsappCodeSent,
+    'whatsappCodeLabel' => whatsappCodeLabel,
+    'whatsappCodeInvalid' => whatsappCodeInvalid,
+    'whatsappConfirmCode' => whatsappConfirmCode,
+    'whatsappResendCode' => whatsappResendCode,
+    'whatsappChangeNumber' => whatsappChangeNumber,
+    'whatsappTurnOff' => whatsappTurnOff,
+    'whatsappTurnOffConfirmTitle' => whatsappTurnOffConfirmTitle,
+    'whatsappTurnOffConfirmBody' => whatsappTurnOffConfirmBody,
+    'whatsappTurnedOn' => whatsappTurnedOn,
+    'whatsappTurnedOff' => whatsappTurnedOff,
+    'whatsappErrorCodeExpired' => whatsappErrorCodeExpired,
+    'whatsappErrorTooManyAttempts' => whatsappErrorTooManyAttempts,
+    'whatsappErrorNoPendingCode' => whatsappErrorNoPendingCode,
+    'dischargeTitle' => dischargeTitle,
+    'dischargeListTitle' => dischargeListTitle,
+    'dischargeTileSubtitle' => dischargeTileSubtitle,
+    'dischargeEmptyTitle' => dischargeEmptyTitle,
+    'dischargeEmptyMessage' => dischargeEmptyMessage,
+    'dischargeStatusDraft' => dischargeStatusDraft,
+    'dischargeStatusFinal' => dischargeStatusFinal,
+    'dischargeStatusSuperseded' => dischargeStatusSuperseded,
+    'dischargeSupersededNote' => dischargeSupersededNote,
+    'dischargeRedFlagsTitle' => dischargeRedFlagsTitle,
+    'dischargeRedFlagsEmergency' => dischargeRedFlagsEmergency,
+    'dischargeSectionDiagnosis' => dischargeSectionDiagnosis,
+    'dischargeSectionStay' => dischargeSectionStay,
+    'dischargeAdmissionDate' => dischargeAdmissionDate,
+    'dischargeDischargeDate' => dischargeDischargeDate,
+    'dischargeSectionProcedure' => dischargeSectionProcedure,
+    'dischargeProcedureCode' => dischargeProcedureCode,
+    'dischargeProcedureDate' => dischargeProcedureDate,
+    'dischargeDoctor' => dischargeDoctor,
+    'dischargeDoctorRegistration' => dischargeDoctorRegistration,
+    'dischargeSectionHospitalCourse' => dischargeSectionHospitalCourse,
+    'dischargeSectionMedications' => dischargeSectionMedications,
+    'dischargeNoMedications' => dischargeNoMedications,
+    'dischargeMedicationOngoing' => dischargeMedicationOngoing,
+    'dischargeSectionFollowUp' => dischargeSectionFollowUp,
+    'dischargeSectionAllergies' => dischargeSectionAllergies,
+    'dischargeSectionInvestigations' => dischargeSectionInvestigations,
+    'dischargeSectionAttachments' => dischargeSectionAttachments,
+    'dischargeDownloadPdf' => dischargeDownloadPdf,
+    'dischargeDownloadFhir' => dischargeDownloadFhir,
+    'dischargeFhirHint' => dischargeFhirHint,
+    'dischargeConfidential' => dischargeConfidential,
+    'dischargeShareWithDoctor' => dischargeShareWithDoctor,
+    'dischargeShareIntro' => dischargeShareIntro,
+    'dischargeShareDoctorEmail' => dischargeShareDoctorEmail,
+    'dischargeShareDoctorEmailInvalid' => dischargeShareDoctorEmailInvalid,
+    'dischargeShareDoctorName' => dischargeShareDoctorName,
+    'dischargeShareDocuments' => dischargeShareDocuments,
+    'dischargeShareDocumentsHint' => dischargeShareDocumentsHint,
+    'dischargeShareFromHospital' => dischargeShareFromHospital,
+    'dischargeShareYourDocuments' => dischargeShareYourDocuments,
+    'dischargeShareNoDocuments' => dischargeShareNoDocuments,
+    'dischargeShareValidity' => dischargeShareValidity,
+    'dischargeShareLanguage' => dischargeShareLanguage,
+    'dischargeShareConsent' => dischargeShareConsent,
+    'dischargeShareConsentRequired' => dischargeShareConsentRequired,
+    'dischargeShareSend' => dischargeShareSend,
+    'dischargeShareSentTitle' => dischargeShareSentTitle,
+    'dischargeShareLinkOnce' => dischargeShareLinkOnce,
+    'dischargeShareCopy' => dischargeShareCopy,
+    'dischargeShareCopied' => dischargeShareCopied,
+    'dischargeSharesTitle' => dischargeSharesTitle,
+    'dischargeSharesEmpty' => dischargeSharesEmpty,
+    'dischargeShareExpired' => dischargeShareExpired,
+    'dischargeShareRevoked' => dischargeShareRevoked,
+    'dischargeShareRevoke' => dischargeShareRevoke,
+    'dischargeShareRevokeTitle' => dischargeShareRevokeTitle,
+    'dischargeShareRevokeBody' => dischargeShareRevokeBody,
+    'dischargeShareRevokedSnack' => dischargeShareRevokedSnack,
+    'dischargeRemindersTitle' => dischargeRemindersTitle,
+    'dischargeRemindersSwitch' => dischargeRemindersSwitch,
+    'dischargeRemindersHint' => dischargeRemindersHint,
+    'dischargeRemindersTime' => dischargeRemindersTime,
+    'dischargeRemindersOn' => dischargeRemindersOn,
+    'dischargeRemindersOff' => dischargeRemindersOff,
+    'dischargeHpMoreSubtitle' => dischargeHpMoreSubtitle,
+    'dischargeHpEmpty' => dischargeHpEmpty,
+    'dischargeHpEmptyAll' => dischargeHpEmptyAll,
+    'dischargeHpStart' => dischargeHpStart,
+    'dischargeHpDraftExists' => dischargeHpDraftExists,
+    'dischargeHpFinalExists' => dischargeHpFinalExists,
+    'dischargeHpEditorTitle' => dischargeHpEditorTitle,
+    'dischargeHpDoctorSection' => dischargeHpDoctorSection,
+    'dischargeHpChooseDoctor' => dischargeHpChooseDoctor,
+    'dischargeHpDoctorName' => dischargeHpDoctorName,
+    'dischargeHpDoctorRegistration' => dischargeHpDoctorRegistration,
+    'dischargeHpPickDate' => dischargeHpPickDate,
+    'dischargeHpDiagnosisCode' => dischargeHpDiagnosisCode,
+    'dischargeHpProcedureCode' => dischargeHpProcedureCode,
+    'dischargeHpCodeInvalid' => dischargeHpCodeInvalid,
+    'dischargeHpRequiredToFinalize' => dischargeHpRequiredToFinalize,
+    'dischargeHpRedFlagsLabel' => dischargeHpRedFlagsLabel,
+    'dischargeHpRedFlagsHint' => dischargeHpRedFlagsHint,
+    'dischargeHpAddMedication' => dischargeHpAddMedication,
+    'dischargeHpEditMedication' => dischargeHpEditMedication,
+    'dischargeHpMedName' => dischargeHpMedName,
+    'dischargeHpMedDose' => dischargeHpMedDose,
+    'dischargeHpMedFrequency' => dischargeHpMedFrequency,
+    'dischargeHpMedDuration' => dischargeHpMedDuration,
+    'dischargeHpMedRoute' => dischargeHpMedRoute,
+    'dischargeHpMedInstructions' => dischargeHpMedInstructions,
+    'dischargeHpMedNameRequired' => dischargeHpMedNameRequired,
+    'dischargeHpMedDurationInvalid' => dischargeHpMedDurationInvalid,
+    'dischargeHpAttachmentsHint' => dischargeHpAttachmentsHint,
+    'dischargeHpNoDocuments' => dischargeHpNoDocuments,
+    'dischargeHpSaveDraft' => dischargeHpSaveDraft,
+    'dischargeHpSaved' => dischargeHpSaved,
+    'dischargeHpFinalize' => dischargeHpFinalize,
+    'dischargeHpFinalizeTitle' => dischargeHpFinalizeTitle,
+    'dischargeHpFinalizeBody' => dischargeHpFinalizeBody,
+    'dischargeHpFinalized' => dischargeHpFinalized,
+    'dischargeHpDiscard' => dischargeHpDiscard,
+    'dischargeHpDiscardTitle' => dischargeHpDiscardTitle,
+    'dischargeHpDiscardBody' => dischargeHpDiscardBody,
+    'dischargeHpDiscarded' => dischargeHpDiscarded,
+    'dischargeHpNewVersion' => dischargeHpNewVersion,
+    'dischargeHpNewVersionTitle' => dischargeHpNewVersionTitle,
+    'dischargeHpDatesInvalid' => dischargeHpDatesInvalid,
+    'dischargeHpLockedNote' => dischargeHpLockedNote,
     _ => null,
   };
 
@@ -9886,6 +10024,474 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
+
+  @override
+  String get whatsappTitle => _t('whatsappTitle') ?? base.whatsappTitle;
+
+  @override
+  String get whatsappTileSubtitle => _t('whatsappTileSubtitle') ?? base.whatsappTileSubtitle;
+
+  @override
+  String get whatsappIntro => _t('whatsappIntro') ?? base.whatsappIntro;
+
+  @override
+  String get whatsappPrivacyNote => _t('whatsappPrivacyNote') ?? base.whatsappPrivacyNote;
+
+  @override
+  String get whatsappStopNote => _t('whatsappStopNote') ?? base.whatsappStopNote;
+
+  @override
+  String get whatsappUnavailable => _t('whatsappUnavailable') ?? base.whatsappUnavailable;
+
+  @override
+  String get whatsappStatusOn => _t('whatsappStatusOn') ?? base.whatsappStatusOn;
+
+  @override
+  String get whatsappStatusOff => _t('whatsappStatusOff') ?? base.whatsappStatusOff;
+
+  @override
+  String get whatsappStatusPending => _t('whatsappStatusPending') ?? base.whatsappStatusPending;
+
+  @override
+  String get whatsappActiveTitle => _t('whatsappActiveTitle') ?? base.whatsappActiveTitle;
+
+  @override
+  String whatsappActiveNumber(String phone) => _f('whatsappActiveNumber', {'phone': phone}) ?? base.whatsappActiveNumber(phone);
+
+  @override
+  String whatsappVerifiedOn(String date) => _f('whatsappVerifiedOn', {'date': date}) ?? base.whatsappVerifiedOn(date);
+
+  @override
+  String whatsappOptedOutNote(String date) => _f('whatsappOptedOutNote', {'date': date}) ?? base.whatsappOptedOutNote(date);
+
+  @override
+  String get whatsappPhoneLabel => _t('whatsappPhoneLabel') ?? base.whatsappPhoneLabel;
+
+  @override
+  String get whatsappPhoneHint => _t('whatsappPhoneHint') ?? base.whatsappPhoneHint;
+
+  @override
+  String get whatsappPhoneHelper => _t('whatsappPhoneHelper') ?? base.whatsappPhoneHelper;
+
+  @override
+  String get whatsappPhoneInvalid => _t('whatsappPhoneInvalid') ?? base.whatsappPhoneInvalid;
+
+  @override
+  String get whatsappSendCode => _t('whatsappSendCode') ?? base.whatsappSendCode;
+
+  @override
+  String get whatsappCodeSent => _t('whatsappCodeSent') ?? base.whatsappCodeSent;
+
+  @override
+  String whatsappCodeSentTo(String phone) => _f('whatsappCodeSentTo', {'phone': phone}) ?? base.whatsappCodeSentTo(phone);
+
+  @override
+  String whatsappCodeExpiresAt(String time) => _f('whatsappCodeExpiresAt', {'time': time}) ?? base.whatsappCodeExpiresAt(time);
+
+  @override
+  String get whatsappCodeLabel => _t('whatsappCodeLabel') ?? base.whatsappCodeLabel;
+
+  @override
+  String get whatsappCodeInvalid => _t('whatsappCodeInvalid') ?? base.whatsappCodeInvalid;
+
+  @override
+  String get whatsappConfirmCode => _t('whatsappConfirmCode') ?? base.whatsappConfirmCode;
+
+  @override
+  String get whatsappResendCode => _t('whatsappResendCode') ?? base.whatsappResendCode;
+
+  @override
+  String get whatsappChangeNumber => _t('whatsappChangeNumber') ?? base.whatsappChangeNumber;
+
+  @override
+  String get whatsappTurnOff => _t('whatsappTurnOff') ?? base.whatsappTurnOff;
+
+  @override
+  String get whatsappTurnOffConfirmTitle => _t('whatsappTurnOffConfirmTitle') ?? base.whatsappTurnOffConfirmTitle;
+
+  @override
+  String get whatsappTurnOffConfirmBody => _t('whatsappTurnOffConfirmBody') ?? base.whatsappTurnOffConfirmBody;
+
+  @override
+  String get whatsappTurnedOn => _t('whatsappTurnedOn') ?? base.whatsappTurnedOn;
+
+  @override
+  String get whatsappTurnedOff => _t('whatsappTurnedOff') ?? base.whatsappTurnedOff;
+
+  @override
+  String whatsappErrorInvalidCode(int count) => _f('whatsappErrorInvalidCode', {'count': count}) ?? base.whatsappErrorInvalidCode(count);
+
+  @override
+  String get whatsappErrorCodeExpired => _t('whatsappErrorCodeExpired') ?? base.whatsappErrorCodeExpired;
+
+  @override
+  String get whatsappErrorTooManyAttempts => _t('whatsappErrorTooManyAttempts') ?? base.whatsappErrorTooManyAttempts;
+
+  @override
+  String get whatsappErrorNoPendingCode => _t('whatsappErrorNoPendingCode') ?? base.whatsappErrorNoPendingCode;
+
+  @override
+  String get dischargeTitle => _t('dischargeTitle') ?? base.dischargeTitle;
+
+  @override
+  String get dischargeListTitle => _t('dischargeListTitle') ?? base.dischargeListTitle;
+
+  @override
+  String get dischargeTileSubtitle => _t('dischargeTileSubtitle') ?? base.dischargeTileSubtitle;
+
+  @override
+  String get dischargeEmptyTitle => _t('dischargeEmptyTitle') ?? base.dischargeEmptyTitle;
+
+  @override
+  String get dischargeEmptyMessage => _t('dischargeEmptyMessage') ?? base.dischargeEmptyMessage;
+
+  @override
+  String dischargeVersion(int version) => _f('dischargeVersion', {'version': version}) ?? base.dischargeVersion(version);
+
+  @override
+  String get dischargeStatusDraft => _t('dischargeStatusDraft') ?? base.dischargeStatusDraft;
+
+  @override
+  String get dischargeStatusFinal => _t('dischargeStatusFinal') ?? base.dischargeStatusFinal;
+
+  @override
+  String get dischargeStatusSuperseded => _t('dischargeStatusSuperseded') ?? base.dischargeStatusSuperseded;
+
+  @override
+  String get dischargeSupersededNote => _t('dischargeSupersededNote') ?? base.dischargeSupersededNote;
+
+  @override
+  String dischargeFinalizedOn(String date) => _f('dischargeFinalizedOn', {'date': date}) ?? base.dischargeFinalizedOn(date);
+
+  @override
+  String dischargeDischargedOn(String date) => _f('dischargeDischargedOn', {'date': date}) ?? base.dischargeDischargedOn(date);
+
+  @override
+  String get dischargeRedFlagsTitle => _t('dischargeRedFlagsTitle') ?? base.dischargeRedFlagsTitle;
+
+  @override
+  String get dischargeRedFlagsEmergency => _t('dischargeRedFlagsEmergency') ?? base.dischargeRedFlagsEmergency;
+
+  @override
+  String get dischargeSectionDiagnosis => _t('dischargeSectionDiagnosis') ?? base.dischargeSectionDiagnosis;
+
+  @override
+  String dischargeCode(String code) => _f('dischargeCode', {'code': code}) ?? base.dischargeCode(code);
+
+  @override
+  String get dischargeSectionStay => _t('dischargeSectionStay') ?? base.dischargeSectionStay;
+
+  @override
+  String get dischargeAdmissionDate => _t('dischargeAdmissionDate') ?? base.dischargeAdmissionDate;
+
+  @override
+  String get dischargeDischargeDate => _t('dischargeDischargeDate') ?? base.dischargeDischargeDate;
+
+  @override
+  String get dischargeSectionProcedure => _t('dischargeSectionProcedure') ?? base.dischargeSectionProcedure;
+
+  @override
+  String get dischargeProcedureCode => _t('dischargeProcedureCode') ?? base.dischargeProcedureCode;
+
+  @override
+  String get dischargeProcedureDate => _t('dischargeProcedureDate') ?? base.dischargeProcedureDate;
+
+  @override
+  String get dischargeDoctor => _t('dischargeDoctor') ?? base.dischargeDoctor;
+
+  @override
+  String get dischargeDoctorRegistration => _t('dischargeDoctorRegistration') ?? base.dischargeDoctorRegistration;
+
+  @override
+  String get dischargeSectionHospitalCourse => _t('dischargeSectionHospitalCourse') ?? base.dischargeSectionHospitalCourse;
+
+  @override
+  String get dischargeSectionMedications => _t('dischargeSectionMedications') ?? base.dischargeSectionMedications;
+
+  @override
+  String get dischargeNoMedications => _t('dischargeNoMedications') ?? base.dischargeNoMedications;
+
+  @override
+  String dischargeMedicationDuration(int days) => _f('dischargeMedicationDuration', {'days': days}) ?? base.dischargeMedicationDuration(days);
+
+  @override
+  String get dischargeMedicationOngoing => _t('dischargeMedicationOngoing') ?? base.dischargeMedicationOngoing;
+
+  @override
+  String dischargeReminderUntil(String date) => _f('dischargeReminderUntil', {'date': date}) ?? base.dischargeReminderUntil(date);
+
+  @override
+  String get dischargeSectionFollowUp => _t('dischargeSectionFollowUp') ?? base.dischargeSectionFollowUp;
+
+  @override
+  String get dischargeSectionAllergies => _t('dischargeSectionAllergies') ?? base.dischargeSectionAllergies;
+
+  @override
+  String get dischargeSectionInvestigations => _t('dischargeSectionInvestigations') ?? base.dischargeSectionInvestigations;
+
+  @override
+  String get dischargeSectionAttachments => _t('dischargeSectionAttachments') ?? base.dischargeSectionAttachments;
+
+  @override
+  String get dischargeDownloadPdf => _t('dischargeDownloadPdf') ?? base.dischargeDownloadPdf;
+
+  @override
+  String get dischargeDownloadFhir => _t('dischargeDownloadFhir') ?? base.dischargeDownloadFhir;
+
+  @override
+  String get dischargeFhirHint => _t('dischargeFhirHint') ?? base.dischargeFhirHint;
+
+  @override
+  String get dischargeConfidential => _t('dischargeConfidential') ?? base.dischargeConfidential;
+
+  @override
+  String get dischargeShareWithDoctor => _t('dischargeShareWithDoctor') ?? base.dischargeShareWithDoctor;
+
+  @override
+  String get dischargeShareIntro => _t('dischargeShareIntro') ?? base.dischargeShareIntro;
+
+  @override
+  String get dischargeShareDoctorEmail => _t('dischargeShareDoctorEmail') ?? base.dischargeShareDoctorEmail;
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => _t('dischargeShareDoctorEmailInvalid') ?? base.dischargeShareDoctorEmailInvalid;
+
+  @override
+  String get dischargeShareDoctorName => _t('dischargeShareDoctorName') ?? base.dischargeShareDoctorName;
+
+  @override
+  String get dischargeShareDocuments => _t('dischargeShareDocuments') ?? base.dischargeShareDocuments;
+
+  @override
+  String get dischargeShareDocumentsHint => _t('dischargeShareDocumentsHint') ?? base.dischargeShareDocumentsHint;
+
+  @override
+  String get dischargeShareFromHospital => _t('dischargeShareFromHospital') ?? base.dischargeShareFromHospital;
+
+  @override
+  String get dischargeShareYourDocuments => _t('dischargeShareYourDocuments') ?? base.dischargeShareYourDocuments;
+
+  @override
+  String get dischargeShareNoDocuments => _t('dischargeShareNoDocuments') ?? base.dischargeShareNoDocuments;
+
+  @override
+  String get dischargeShareValidity => _t('dischargeShareValidity') ?? base.dischargeShareValidity;
+
+  @override
+  String dischargeShareDays(int days) => _f('dischargeShareDays', {'days': days}) ?? base.dischargeShareDays(days);
+
+  @override
+  String get dischargeShareLanguage => _t('dischargeShareLanguage') ?? base.dischargeShareLanguage;
+
+  @override
+  String get dischargeShareConsent => _t('dischargeShareConsent') ?? base.dischargeShareConsent;
+
+  @override
+  String get dischargeShareConsentRequired => _t('dischargeShareConsentRequired') ?? base.dischargeShareConsentRequired;
+
+  @override
+  String get dischargeShareSend => _t('dischargeShareSend') ?? base.dischargeShareSend;
+
+  @override
+  String get dischargeShareSentTitle => _t('dischargeShareSentTitle') ?? base.dischargeShareSentTitle;
+
+  @override
+  String dischargeShareSentBody(String email, String date) => _f('dischargeShareSentBody', {'email': email, 'date': date}) ?? base.dischargeShareSentBody(email, date);
+
+  @override
+  String get dischargeShareLinkOnce => _t('dischargeShareLinkOnce') ?? base.dischargeShareLinkOnce;
+
+  @override
+  String get dischargeShareCopy => _t('dischargeShareCopy') ?? base.dischargeShareCopy;
+
+  @override
+  String get dischargeShareCopied => _t('dischargeShareCopied') ?? base.dischargeShareCopied;
+
+  @override
+  String get dischargeSharesTitle => _t('dischargeSharesTitle') ?? base.dischargeSharesTitle;
+
+  @override
+  String get dischargeSharesEmpty => _t('dischargeSharesEmpty') ?? base.dischargeSharesEmpty;
+
+  @override
+  String dischargeShareExpires(String date) => _f('dischargeShareExpires', {'date': date}) ?? base.dischargeShareExpires(date);
+
+  @override
+  String get dischargeShareExpired => _t('dischargeShareExpired') ?? base.dischargeShareExpired;
+
+  @override
+  String get dischargeShareRevoked => _t('dischargeShareRevoked') ?? base.dischargeShareRevoked;
+
+  @override
+  String dischargeShareViews(int count) => _f('dischargeShareViews', {'count': count}) ?? base.dischargeShareViews(count);
+
+  @override
+  String get dischargeShareRevoke => _t('dischargeShareRevoke') ?? base.dischargeShareRevoke;
+
+  @override
+  String get dischargeShareRevokeTitle => _t('dischargeShareRevokeTitle') ?? base.dischargeShareRevokeTitle;
+
+  @override
+  String get dischargeShareRevokeBody => _t('dischargeShareRevokeBody') ?? base.dischargeShareRevokeBody;
+
+  @override
+  String get dischargeShareRevokedSnack => _t('dischargeShareRevokedSnack') ?? base.dischargeShareRevokedSnack;
+
+  @override
+  String get dischargeRemindersTitle => _t('dischargeRemindersTitle') ?? base.dischargeRemindersTitle;
+
+  @override
+  String get dischargeRemindersSwitch => _t('dischargeRemindersSwitch') ?? base.dischargeRemindersSwitch;
+
+  @override
+  String get dischargeRemindersHint => _t('dischargeRemindersHint') ?? base.dischargeRemindersHint;
+
+  @override
+  String get dischargeRemindersTime => _t('dischargeRemindersTime') ?? base.dischargeRemindersTime;
+
+  @override
+  String get dischargeRemindersOn => _t('dischargeRemindersOn') ?? base.dischargeRemindersOn;
+
+  @override
+  String get dischargeRemindersOff => _t('dischargeRemindersOff') ?? base.dischargeRemindersOff;
+
+  @override
+  String get dischargeHpMoreSubtitle => _t('dischargeHpMoreSubtitle') ?? base.dischargeHpMoreSubtitle;
+
+  @override
+  String get dischargeHpEmpty => _t('dischargeHpEmpty') ?? base.dischargeHpEmpty;
+
+  @override
+  String get dischargeHpEmptyAll => _t('dischargeHpEmptyAll') ?? base.dischargeHpEmptyAll;
+
+  @override
+  String get dischargeHpStart => _t('dischargeHpStart') ?? base.dischargeHpStart;
+
+  @override
+  String get dischargeHpDraftExists => _t('dischargeHpDraftExists') ?? base.dischargeHpDraftExists;
+
+  @override
+  String get dischargeHpFinalExists => _t('dischargeHpFinalExists') ?? base.dischargeHpFinalExists;
+
+  @override
+  String get dischargeHpEditorTitle => _t('dischargeHpEditorTitle') ?? base.dischargeHpEditorTitle;
+
+  @override
+  String get dischargeHpDoctorSection => _t('dischargeHpDoctorSection') ?? base.dischargeHpDoctorSection;
+
+  @override
+  String get dischargeHpChooseDoctor => _t('dischargeHpChooseDoctor') ?? base.dischargeHpChooseDoctor;
+
+  @override
+  String get dischargeHpDoctorName => _t('dischargeHpDoctorName') ?? base.dischargeHpDoctorName;
+
+  @override
+  String get dischargeHpDoctorRegistration => _t('dischargeHpDoctorRegistration') ?? base.dischargeHpDoctorRegistration;
+
+  @override
+  String get dischargeHpPickDate => _t('dischargeHpPickDate') ?? base.dischargeHpPickDate;
+
+  @override
+  String get dischargeHpDiagnosisCode => _t('dischargeHpDiagnosisCode') ?? base.dischargeHpDiagnosisCode;
+
+  @override
+  String get dischargeHpProcedureCode => _t('dischargeHpProcedureCode') ?? base.dischargeHpProcedureCode;
+
+  @override
+  String get dischargeHpCodeInvalid => _t('dischargeHpCodeInvalid') ?? base.dischargeHpCodeInvalid;
+
+  @override
+  String get dischargeHpRequiredToFinalize => _t('dischargeHpRequiredToFinalize') ?? base.dischargeHpRequiredToFinalize;
+
+  @override
+  String get dischargeHpRedFlagsLabel => _t('dischargeHpRedFlagsLabel') ?? base.dischargeHpRedFlagsLabel;
+
+  @override
+  String get dischargeHpRedFlagsHint => _t('dischargeHpRedFlagsHint') ?? base.dischargeHpRedFlagsHint;
+
+  @override
+  String get dischargeHpAddMedication => _t('dischargeHpAddMedication') ?? base.dischargeHpAddMedication;
+
+  @override
+  String get dischargeHpEditMedication => _t('dischargeHpEditMedication') ?? base.dischargeHpEditMedication;
+
+  @override
+  String get dischargeHpMedName => _t('dischargeHpMedName') ?? base.dischargeHpMedName;
+
+  @override
+  String get dischargeHpMedDose => _t('dischargeHpMedDose') ?? base.dischargeHpMedDose;
+
+  @override
+  String get dischargeHpMedFrequency => _t('dischargeHpMedFrequency') ?? base.dischargeHpMedFrequency;
+
+  @override
+  String get dischargeHpMedDuration => _t('dischargeHpMedDuration') ?? base.dischargeHpMedDuration;
+
+  @override
+  String get dischargeHpMedRoute => _t('dischargeHpMedRoute') ?? base.dischargeHpMedRoute;
+
+  @override
+  String get dischargeHpMedInstructions => _t('dischargeHpMedInstructions') ?? base.dischargeHpMedInstructions;
+
+  @override
+  String get dischargeHpMedNameRequired => _t('dischargeHpMedNameRequired') ?? base.dischargeHpMedNameRequired;
+
+  @override
+  String get dischargeHpMedDurationInvalid => _t('dischargeHpMedDurationInvalid') ?? base.dischargeHpMedDurationInvalid;
+
+  @override
+  String get dischargeHpAttachmentsHint => _t('dischargeHpAttachmentsHint') ?? base.dischargeHpAttachmentsHint;
+
+  @override
+  String get dischargeHpNoDocuments => _t('dischargeHpNoDocuments') ?? base.dischargeHpNoDocuments;
+
+  @override
+  String get dischargeHpSaveDraft => _t('dischargeHpSaveDraft') ?? base.dischargeHpSaveDraft;
+
+  @override
+  String get dischargeHpSaved => _t('dischargeHpSaved') ?? base.dischargeHpSaved;
+
+  @override
+  String get dischargeHpFinalize => _t('dischargeHpFinalize') ?? base.dischargeHpFinalize;
+
+  @override
+  String get dischargeHpFinalizeTitle => _t('dischargeHpFinalizeTitle') ?? base.dischargeHpFinalizeTitle;
+
+  @override
+  String get dischargeHpFinalizeBody => _t('dischargeHpFinalizeBody') ?? base.dischargeHpFinalizeBody;
+
+  @override
+  String get dischargeHpFinalized => _t('dischargeHpFinalized') ?? base.dischargeHpFinalized;
+
+  @override
+  String dischargeHpMissing(String fields) => _f('dischargeHpMissing', {'fields': fields}) ?? base.dischargeHpMissing(fields);
+
+  @override
+  String get dischargeHpDiscard => _t('dischargeHpDiscard') ?? base.dischargeHpDiscard;
+
+  @override
+  String get dischargeHpDiscardTitle => _t('dischargeHpDiscardTitle') ?? base.dischargeHpDiscardTitle;
+
+  @override
+  String get dischargeHpDiscardBody => _t('dischargeHpDiscardBody') ?? base.dischargeHpDiscardBody;
+
+  @override
+  String get dischargeHpDiscarded => _t('dischargeHpDiscarded') ?? base.dischargeHpDiscarded;
+
+  @override
+  String get dischargeHpNewVersion => _t('dischargeHpNewVersion') ?? base.dischargeHpNewVersion;
+
+  @override
+  String get dischargeHpNewVersionTitle => _t('dischargeHpNewVersionTitle') ?? base.dischargeHpNewVersionTitle;
+
+  @override
+  String dischargeHpNewVersionBody(int version, int next) => _f('dischargeHpNewVersionBody', {'version': version, 'next': next}) ?? base.dischargeHpNewVersionBody(version, next);
+
+  @override
+  String get dischargeHpDatesInvalid => _t('dischargeHpDatesInvalid') ?? base.dischargeHpDatesInvalid;
+
+  @override
+  String get dischargeHpLockedNote => _t('dischargeHpLockedNote') ?? base.dischargeHpLockedNote;
 }
 
 /// Every ARB key, in template order.
@@ -12436,4 +13042,160 @@ const List<String> kL10nKeys = [
   'inviteMissingArrival',
   'inviteMissingDuration',
   'inviteMissingTreatment',
+  'whatsappTitle',
+  'whatsappTileSubtitle',
+  'whatsappIntro',
+  'whatsappPrivacyNote',
+  'whatsappStopNote',
+  'whatsappUnavailable',
+  'whatsappStatusOn',
+  'whatsappStatusOff',
+  'whatsappStatusPending',
+  'whatsappActiveTitle',
+  'whatsappActiveNumber',
+  'whatsappVerifiedOn',
+  'whatsappOptedOutNote',
+  'whatsappPhoneLabel',
+  'whatsappPhoneHint',
+  'whatsappPhoneHelper',
+  'whatsappPhoneInvalid',
+  'whatsappSendCode',
+  'whatsappCodeSent',
+  'whatsappCodeSentTo',
+  'whatsappCodeExpiresAt',
+  'whatsappCodeLabel',
+  'whatsappCodeInvalid',
+  'whatsappConfirmCode',
+  'whatsappResendCode',
+  'whatsappChangeNumber',
+  'whatsappTurnOff',
+  'whatsappTurnOffConfirmTitle',
+  'whatsappTurnOffConfirmBody',
+  'whatsappTurnedOn',
+  'whatsappTurnedOff',
+  'whatsappErrorInvalidCode',
+  'whatsappErrorCodeExpired',
+  'whatsappErrorTooManyAttempts',
+  'whatsappErrorNoPendingCode',
+  'dischargeTitle',
+  'dischargeListTitle',
+  'dischargeTileSubtitle',
+  'dischargeEmptyTitle',
+  'dischargeEmptyMessage',
+  'dischargeVersion',
+  'dischargeStatusDraft',
+  'dischargeStatusFinal',
+  'dischargeStatusSuperseded',
+  'dischargeSupersededNote',
+  'dischargeFinalizedOn',
+  'dischargeDischargedOn',
+  'dischargeRedFlagsTitle',
+  'dischargeRedFlagsEmergency',
+  'dischargeSectionDiagnosis',
+  'dischargeCode',
+  'dischargeSectionStay',
+  'dischargeAdmissionDate',
+  'dischargeDischargeDate',
+  'dischargeSectionProcedure',
+  'dischargeProcedureCode',
+  'dischargeProcedureDate',
+  'dischargeDoctor',
+  'dischargeDoctorRegistration',
+  'dischargeSectionHospitalCourse',
+  'dischargeSectionMedications',
+  'dischargeNoMedications',
+  'dischargeMedicationDuration',
+  'dischargeMedicationOngoing',
+  'dischargeReminderUntil',
+  'dischargeSectionFollowUp',
+  'dischargeSectionAllergies',
+  'dischargeSectionInvestigations',
+  'dischargeSectionAttachments',
+  'dischargeDownloadPdf',
+  'dischargeDownloadFhir',
+  'dischargeFhirHint',
+  'dischargeConfidential',
+  'dischargeShareWithDoctor',
+  'dischargeShareIntro',
+  'dischargeShareDoctorEmail',
+  'dischargeShareDoctorEmailInvalid',
+  'dischargeShareDoctorName',
+  'dischargeShareDocuments',
+  'dischargeShareDocumentsHint',
+  'dischargeShareFromHospital',
+  'dischargeShareYourDocuments',
+  'dischargeShareNoDocuments',
+  'dischargeShareValidity',
+  'dischargeShareDays',
+  'dischargeShareLanguage',
+  'dischargeShareConsent',
+  'dischargeShareConsentRequired',
+  'dischargeShareSend',
+  'dischargeShareSentTitle',
+  'dischargeShareSentBody',
+  'dischargeShareLinkOnce',
+  'dischargeShareCopy',
+  'dischargeShareCopied',
+  'dischargeSharesTitle',
+  'dischargeSharesEmpty',
+  'dischargeShareExpires',
+  'dischargeShareExpired',
+  'dischargeShareRevoked',
+  'dischargeShareViews',
+  'dischargeShareRevoke',
+  'dischargeShareRevokeTitle',
+  'dischargeShareRevokeBody',
+  'dischargeShareRevokedSnack',
+  'dischargeRemindersTitle',
+  'dischargeRemindersSwitch',
+  'dischargeRemindersHint',
+  'dischargeRemindersTime',
+  'dischargeRemindersOn',
+  'dischargeRemindersOff',
+  'dischargeHpMoreSubtitle',
+  'dischargeHpEmpty',
+  'dischargeHpEmptyAll',
+  'dischargeHpStart',
+  'dischargeHpDraftExists',
+  'dischargeHpFinalExists',
+  'dischargeHpEditorTitle',
+  'dischargeHpDoctorSection',
+  'dischargeHpChooseDoctor',
+  'dischargeHpDoctorName',
+  'dischargeHpDoctorRegistration',
+  'dischargeHpPickDate',
+  'dischargeHpDiagnosisCode',
+  'dischargeHpProcedureCode',
+  'dischargeHpCodeInvalid',
+  'dischargeHpRequiredToFinalize',
+  'dischargeHpRedFlagsLabel',
+  'dischargeHpRedFlagsHint',
+  'dischargeHpAddMedication',
+  'dischargeHpEditMedication',
+  'dischargeHpMedName',
+  'dischargeHpMedDose',
+  'dischargeHpMedFrequency',
+  'dischargeHpMedDuration',
+  'dischargeHpMedRoute',
+  'dischargeHpMedInstructions',
+  'dischargeHpMedNameRequired',
+  'dischargeHpMedDurationInvalid',
+  'dischargeHpAttachmentsHint',
+  'dischargeHpNoDocuments',
+  'dischargeHpSaveDraft',
+  'dischargeHpSaved',
+  'dischargeHpFinalize',
+  'dischargeHpFinalizeTitle',
+  'dischargeHpFinalizeBody',
+  'dischargeHpFinalized',
+  'dischargeHpMissing',
+  'dischargeHpDiscard',
+  'dischargeHpDiscardTitle',
+  'dischargeHpDiscardBody',
+  'dischargeHpDiscarded',
+  'dischargeHpNewVersion',
+  'dischargeHpNewVersionTitle',
+  'dischargeHpNewVersionBody',
+  'dischargeHpDatesInvalid',
+  'dischargeHpLockedNote',
 ];

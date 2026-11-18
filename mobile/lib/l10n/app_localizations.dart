@@ -15376,6 +15376,942 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Treatment'**
   String get inviteMissingTreatment;
+
+  /// Title of the WhatsApp updates screen and its profile tile.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp updates'**
+  String get whatsappTitle;
+
+  /// Profile tile subtitle for WhatsApp updates.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking, travel and appointment updates on WhatsApp'**
+  String get whatsappTileSubtitle;
+
+  /// Intro text of the WhatsApp screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Get short updates about your bookings, travel and appointments on WhatsApp.'**
+  String get whatsappIntro;
+
+  /// Privacy promise: no medical details on WhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp messages only carry general updates. Medical details are never sent on WhatsApp; open the app to read them.'**
+  String get whatsappPrivacyNote;
+
+  /// How to opt out (keep the word STOP in Latin capitals: it is the keyword the system recognises).
+  ///
+  /// In en, this message translates to:
+  /// **'You can stop at any time here, or by replying STOP to any of our WhatsApp messages.'**
+  String get whatsappStopNote;
+
+  /// Shown when WhatsApp is not configured on the server; the controls are disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp updates are not available yet. We will let you know when you can turn them on.'**
+  String get whatsappUnavailable;
+
+  /// Status badge: WhatsApp updates active.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get whatsappStatusOn;
+
+  /// Status badge: WhatsApp updates not active.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get whatsappStatusOff;
+
+  /// Status badge: a verification code was sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for code'**
+  String get whatsappStatusPending;
+
+  /// Heading when WhatsApp updates are active.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp updates are on'**
+  String get whatsappActiveTitle;
+
+  /// Masked number receiving WhatsApp updates.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates go to {phone}.'**
+  String whatsappActiveNumber(String phone);
+
+  /// When the WhatsApp number was verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Number verified on {date}.'**
+  String whatsappVerifiedOn(String date);
+
+  /// Shown after opting out (also via STOP).
+  ///
+  /// In en, this message translates to:
+  /// **'You turned off WhatsApp updates on {date}.'**
+  String whatsappOptedOutNote(String date);
+
+  /// Phone field label.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp number'**
+  String get whatsappPhoneLabel;
+
+  /// Example phone number in international format (keep digits as they are).
+  ///
+  /// In en, this message translates to:
+  /// **'+234 803 123 4567'**
+  String get whatsappPhoneHint;
+
+  /// Helper under the phone field.
+  ///
+  /// In en, this message translates to:
+  /// **'Include the country code, starting with +.'**
+  String get whatsappPhoneHelper;
+
+  /// Phone validation error.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your WhatsApp number with the country code, e.g. +234 803 123 4567.'**
+  String get whatsappPhoneInvalid;
+
+  /// Button: send the verification code on WhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get whatsappSendCode;
+
+  /// Snack after sending the code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code sent. Check WhatsApp.'**
+  String get whatsappCodeSent;
+
+  /// Shown while a code is pending.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {phone} on WhatsApp.'**
+  String whatsappCodeSentTo(String phone);
+
+  /// Expiry time of the pending code.
+  ///
+  /// In en, this message translates to:
+  /// **'The code expires at {time}.'**
+  String whatsappCodeExpiresAt(String time);
+
+  /// Code field label.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get whatsappCodeLabel;
+
+  /// Code validation error.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6 digits from the WhatsApp message.'**
+  String get whatsappCodeInvalid;
+
+  /// Button: confirm the verification code.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm code'**
+  String get whatsappConfirmCode;
+
+  /// Button: request another code.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a new code'**
+  String get whatsappResendCode;
+
+  /// Button: enter another phone number.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different number'**
+  String get whatsappChangeNumber;
+
+  /// Button / confirm action: opt out.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off WhatsApp updates'**
+  String get whatsappTurnOff;
+
+  /// Confirm dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off WhatsApp updates?'**
+  String get whatsappTurnOffConfirmTitle;
+
+  /// Confirm dialog body.
+  ///
+  /// In en, this message translates to:
+  /// **'You will still get updates in the app and by email.'**
+  String get whatsappTurnOffConfirmBody;
+
+  /// Snack after confirming the code.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp updates are on.'**
+  String get whatsappTurnedOn;
+
+  /// Snack after opting out.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp updates are off.'**
+  String get whatsappTurnedOff;
+
+  /// Wrong code; count = attempts left.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{The code is not correct. Ask for a new code.} =1{The code is not correct. 1 attempt left.} other{The code is not correct. {count} attempts left.}}'**
+  String whatsappErrorInvalidCode(int count);
+
+  /// Error: code expired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired. Ask for a new code.'**
+  String get whatsappErrorCodeExpired;
+
+  /// Error: too many attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong codes. Ask for a new code.'**
+  String get whatsappErrorTooManyAttempts;
+
+  /// Error: no verification pending.
+  ///
+  /// In en, this message translates to:
+  /// **'No code is waiting. Ask for a new code.'**
+  String get whatsappErrorNoPendingCode;
+
+  /// Title of one discharge summary / entry links.
+  ///
+  /// In en, this message translates to:
+  /// **'Discharge summary'**
+  String get dischargeTitle;
+
+  /// List title.
+  ///
+  /// In en, this message translates to:
+  /// **'Discharge summaries'**
+  String get dischargeListTitle;
+
+  /// Entry tile subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hospital\'s summary, medicines and warning signs'**
+  String get dischargeTileSubtitle;
+
+  /// Empty list title.
+  ///
+  /// In en, this message translates to:
+  /// **'No discharge summary yet'**
+  String get dischargeEmptyTitle;
+
+  /// Empty list message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hospital adds the discharge summary when you leave the hospital. We will notify you.'**
+  String get dischargeEmptyMessage;
+
+  /// Version number of a summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String dischargeVersion(int version);
+
+  /// Status: draft (hospital only).
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get dischargeStatusDraft;
+
+  /// Status: finalized.
+  ///
+  /// In en, this message translates to:
+  /// **'Final'**
+  String get dischargeStatusFinal;
+
+  /// Status: replaced by a newer version.
+  ///
+  /// In en, this message translates to:
+  /// **'Older version'**
+  String get dischargeStatusSuperseded;
+
+  /// Banner on an older version.
+  ///
+  /// In en, this message translates to:
+  /// **'A newer version of this summary exists. Open the list to see the latest one.'**
+  String get dischargeSupersededNote;
+
+  /// When the summary was finalized.
+  ///
+  /// In en, this message translates to:
+  /// **'Finalized on {date}'**
+  String dischargeFinalizedOn(String date);
+
+  /// Discharge date in a list.
+  ///
+  /// In en, this message translates to:
+  /// **'Discharged {date}'**
+  String dischargeDischargedOn(String date);
+
+  /// Heading of the red-flag (warning signs) card.
+  ///
+  /// In en, this message translates to:
+  /// **'Get medical help straight away if you notice:'**
+  String get dischargeRedFlagsTitle;
+
+  /// Emergency advice under the warning signs.
+  ///
+  /// In en, this message translates to:
+  /// **'In an emergency, call your local emergency number first.'**
+  String get dischargeRedFlagsEmergency;
+
+  /// Section / field: diagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnosis'**
+  String get dischargeSectionDiagnosis;
+
+  /// Diagnosis code (ICD-10).
+  ///
+  /// In en, this message translates to:
+  /// **'Code: {code}'**
+  String dischargeCode(String code);
+
+  /// Section: dates, procedure and doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital stay'**
+  String get dischargeSectionStay;
+
+  /// Field: admission date.
+  ///
+  /// In en, this message translates to:
+  /// **'Admission date'**
+  String get dischargeAdmissionDate;
+
+  /// Field: discharge date.
+  ///
+  /// In en, this message translates to:
+  /// **'Discharge date'**
+  String get dischargeDischargeDate;
+
+  /// Field: procedure performed.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure'**
+  String get dischargeSectionProcedure;
+
+  /// Field: procedure code.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure code'**
+  String get dischargeProcedureCode;
+
+  /// Field: procedure date.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure date'**
+  String get dischargeProcedureDate;
+
+  /// Field: treating doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Treating doctor'**
+  String get dischargeDoctor;
+
+  /// Field: doctor's medical registration number.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration no.'**
+  String get dischargeDoctorRegistration;
+
+  /// Section: hospital course.
+  ///
+  /// In en, this message translates to:
+  /// **'Treatment in hospital'**
+  String get dischargeSectionHospitalCourse;
+
+  /// Section: medicines at discharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines'**
+  String get dischargeSectionMedications;
+
+  /// No medicines.
+  ///
+  /// In en, this message translates to:
+  /// **'No medicines were prescribed at discharge.'**
+  String get dischargeNoMedications;
+
+  /// How long to take a medicine.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{For 1 day} other{For {days} days}}'**
+  String dischargeMedicationDuration(int days);
+
+  /// Medicine without an end date.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get dischargeMedicationOngoing;
+
+  /// Last reminder day of a medicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Until {date}'**
+  String dischargeReminderUntil(String date);
+
+  /// Section / field: follow-up instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up instructions'**
+  String get dischargeSectionFollowUp;
+
+  /// Section: allergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get dischargeSectionAllergies;
+
+  /// Section: investigations summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Test results'**
+  String get dischargeSectionInvestigations;
+
+  /// Section: attached documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Attached documents'**
+  String get dischargeSectionAttachments;
+
+  /// Button: download the summary PDF.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get dischargeDownloadPdf;
+
+  /// Button: download the HL7 FHIR JSON file.
+  ///
+  /// In en, this message translates to:
+  /// **'Download FHIR file'**
+  String get dischargeDownloadFhir;
+
+  /// Explains the FHIR file.
+  ///
+  /// In en, this message translates to:
+  /// **'A standard medical record file (HL7 FHIR) that doctors\' systems can import.'**
+  String get dischargeFhirHint;
+
+  /// Confidentiality note.
+  ///
+  /// In en, this message translates to:
+  /// **'This summary contains confidential medical information. Share it only with doctors you trust.'**
+  String get dischargeConfidential;
+
+  /// Button / heading: share with the home doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with my doctor'**
+  String get dischargeShareWithDoctor;
+
+  /// Explains sharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Send your doctor at home a secure link to this summary. They can open it without an account until the link expires.'**
+  String get dischargeShareIntro;
+
+  /// Field: doctor's email.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s email'**
+  String get dischargeShareDoctorEmail;
+
+  /// Email validation error.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get dischargeShareDoctorEmailInvalid;
+
+  /// Field: doctor's name.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s name (optional)'**
+  String get dischargeShareDoctorName;
+
+  /// Heading: documents to share.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents to include'**
+  String get dischargeShareDocuments;
+
+  /// Hint: the PDF is always shared.
+  ///
+  /// In en, this message translates to:
+  /// **'The summary PDF is always included.'**
+  String get dischargeShareDocumentsHint;
+
+  /// Group: documents attached by the hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'From the hospital'**
+  String get dischargeShareFromHospital;
+
+  /// Group: the patient's own documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Your documents'**
+  String get dischargeShareYourDocuments;
+
+  /// No own documents to add.
+  ///
+  /// In en, this message translates to:
+  /// **'No other documents.'**
+  String get dischargeShareNoDocuments;
+
+  /// Field: link validity.
+  ///
+  /// In en, this message translates to:
+  /// **'Link valid for'**
+  String get dischargeShareValidity;
+
+  /// Number of days.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
+  String dischargeShareDays(int days);
+
+  /// Field: language of the email to the doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Email language'**
+  String get dischargeShareLanguage;
+
+  /// Consent checkbox to share medical data with a doctor (legal).
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to share this discharge summary and the selected documents with this doctor. I understand the doctor can open them until the link expires, and that every view is recorded.'**
+  String get dischargeShareConsent;
+
+  /// Consent not given.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tick the box to agree before sharing.'**
+  String get dischargeShareConsentRequired;
+
+  /// Button: create and email the link.
+  ///
+  /// In en, this message translates to:
+  /// **'Send link'**
+  String get dischargeShareSend;
+
+  /// Dialog title after sharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Link sent'**
+  String get dischargeShareSentTitle;
+
+  /// Dialog body after sharing.
+  ///
+  /// In en, this message translates to:
+  /// **'We emailed a link to {email}. It works until {date}.'**
+  String dischargeShareSentBody(String email, String date);
+
+  /// The link is shown once.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also copy the link now. It is shown only once.'**
+  String get dischargeShareLinkOnce;
+
+  /// Button: copy the link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get dischargeShareCopy;
+
+  /// Snack after copying.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get dischargeShareCopied;
+
+  /// Heading of the list of share links.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with'**
+  String get dischargeSharesTitle;
+
+  /// No share links.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not shared this summary yet.'**
+  String get dischargeSharesEmpty;
+
+  /// Expiry date of a link.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String dischargeShareExpires(String date);
+
+  /// Link status: expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get dischargeShareExpired;
+
+  /// Link status: revoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoked'**
+  String get dischargeShareRevoked;
+
+  /// How often the doctor opened the link.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Not opened yet} =1{Opened once} other{Opened {count} times}}'**
+  String dischargeShareViews(int count);
+
+  /// Button: revoke a link.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get dischargeShareRevoke;
+
+  /// Confirm revoke title.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke this link?'**
+  String get dischargeShareRevokeTitle;
+
+  /// Confirm revoke body.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor will no longer be able to open the summary with this link.'**
+  String get dischargeShareRevokeBody;
+
+  /// Snack after revoking.
+  ///
+  /// In en, this message translates to:
+  /// **'Link revoked'**
+  String get dischargeShareRevokedSnack;
+
+  /// Section: medicine reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine reminders'**
+  String get dischargeRemindersTitle;
+
+  /// Switch label.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder'**
+  String get dischargeRemindersSwitch;
+
+  /// Explains the reminders (medical caution).
+  ///
+  /// In en, this message translates to:
+  /// **'One notification a day while your medicines are due. Always follow your doctor\'s instructions on dose and timing.'**
+  String get dischargeRemindersHint;
+
+  /// Hour picker label.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get dischargeRemindersTime;
+
+  /// Snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine reminders are on.'**
+  String get dischargeRemindersOn;
+
+  /// Snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine reminders are off.'**
+  String get dischargeRemindersOff;
+
+  /// Hospital More link subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Write, finalize and update patients\' discharge summaries'**
+  String get dischargeHpMoreSubtitle;
+
+  /// Empty list for a case.
+  ///
+  /// In en, this message translates to:
+  /// **'No discharge summary for this patient yet.'**
+  String get dischargeHpEmpty;
+
+  /// Empty list of the hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'No discharge summaries yet.'**
+  String get dischargeHpEmptyAll;
+
+  /// Button: create a prefilled draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Start discharge summary'**
+  String get dischargeHpStart;
+
+  /// Draft already exists.
+  ///
+  /// In en, this message translates to:
+  /// **'A draft already exists. Opening it.'**
+  String get dischargeHpDraftExists;
+
+  /// Final already exists.
+  ///
+  /// In en, this message translates to:
+  /// **'This case already has a final summary. Open it and choose \"Edit as new version\".'**
+  String get dischargeHpFinalExists;
+
+  /// Editor title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit discharge summary'**
+  String get dischargeHpEditorTitle;
+
+  /// Editor section: doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get dischargeHpDoctorSection;
+
+  /// Button / sheet title: pick a doctor of the hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a doctor'**
+  String get dischargeHpChooseDoctor;
+
+  /// Field: doctor's name.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s name'**
+  String get dischargeHpDoctorName;
+
+  /// Field: registration number.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical registration number'**
+  String get dischargeHpDoctorRegistration;
+
+  /// Date tile placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get dischargeHpPickDate;
+
+  /// Field: ICD-10 code.
+  ///
+  /// In en, this message translates to:
+  /// **'ICD-10 code (optional)'**
+  String get dischargeHpDiagnosisCode;
+
+  /// Field: procedure code.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure code (optional)'**
+  String get dischargeHpProcedureCode;
+
+  /// Code validation error.
+  ///
+  /// In en, this message translates to:
+  /// **'Use letters, digits, dots or dashes (max 20).'**
+  String get dischargeHpCodeInvalid;
+
+  /// Helper on required fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Required to finalize'**
+  String get dischargeHpRequiredToFinalize;
+
+  /// Field: red-flag symptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning signs (red flags)'**
+  String get dischargeHpRedFlagsLabel;
+
+  /// Helper for red-flag symptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptoms that mean the patient must get medical help straight away'**
+  String get dischargeHpRedFlagsHint;
+
+  /// Button: add a medicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add medicine'**
+  String get dischargeHpAddMedication;
+
+  /// Dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit medicine'**
+  String get dischargeHpEditMedication;
+
+  /// Field.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine name'**
+  String get dischargeHpMedName;
+
+  /// Field: dose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get dischargeHpMedDose;
+
+  /// Field: frequency.
+  ///
+  /// In en, this message translates to:
+  /// **'How often'**
+  String get dischargeHpMedFrequency;
+
+  /// Field: duration in days.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of days (empty = ongoing)'**
+  String get dischargeHpMedDuration;
+
+  /// Field: route of administration.
+  ///
+  /// In en, this message translates to:
+  /// **'Route (e.g. oral)'**
+  String get dischargeHpMedRoute;
+
+  /// Field: instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get dischargeHpMedInstructions;
+
+  /// Validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the medicine name.'**
+  String get dischargeHpMedNameRequired;
+
+  /// Validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number of days from 1 to 3650.'**
+  String get dischargeHpMedDurationInvalid;
+
+  /// Attachments helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents of this case to attach to the summary.'**
+  String get dischargeHpAttachmentsHint;
+
+  /// No documents.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents on this case yet.'**
+  String get dischargeHpNoDocuments;
+
+  /// Button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get dischargeHpSaveDraft;
+
+  /// Snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft saved'**
+  String get dischargeHpSaved;
+
+  /// Button: finalize.
+  ///
+  /// In en, this message translates to:
+  /// **'Finalize'**
+  String get dischargeHpFinalize;
+
+  /// Confirm title.
+  ///
+  /// In en, this message translates to:
+  /// **'Finalize this summary?'**
+  String get dischargeHpFinalizeTitle;
+
+  /// Confirm body.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be locked, a PDF is created and the patient is notified. Later changes create a new version.'**
+  String get dischargeHpFinalizeBody;
+
+  /// Snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary finalized and sent to the patient'**
+  String get dischargeHpFinalized;
+
+  /// Missing required fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in before finalizing: {fields}'**
+  String dischargeHpMissing(String fields);
+
+  /// Button.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard draft'**
+  String get dischargeHpDiscard;
+
+  /// Confirm title.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this draft?'**
+  String get dischargeHpDiscardTitle;
+
+  /// Confirm body.
+  ///
+  /// In en, this message translates to:
+  /// **'The draft is deleted. Final versions are not affected.'**
+  String get dischargeHpDiscardBody;
+
+  /// Snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft discarded'**
+  String get dischargeHpDiscarded;
+
+  /// Button: create a new draft version from a final summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit as new version'**
+  String get dischargeHpNewVersion;
+
+  /// Confirm title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new version?'**
+  String get dischargeHpNewVersionTitle;
+
+  /// Confirm body.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} stays as it is. Your changes go into a new draft, version {next}, which you finalize when ready.'**
+  String dischargeHpNewVersionBody(int version, int next);
+
+  /// Date validation.
+  ///
+  /// In en, this message translates to:
+  /// **'The discharge date cannot be before the admission date.'**
+  String get dischargeHpDatesInvalid;
+
+  /// Note on a final summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Final summaries are locked. To change this one, create a new version.'**
+  String get dischargeHpLockedNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

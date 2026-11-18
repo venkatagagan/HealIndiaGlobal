@@ -27,6 +27,9 @@ abstract final class Routes {
   static const companions = '/profile/companions';
   static const saved = '/profile/saved';
 
+  /// WhatsApp updates (verify a number, turn off).
+  static const whatsapp = '/profile/whatsapp';
+
   // screening & matches
   static const screeningNew = '/screening/new';
   static const compare = '/compare';
@@ -50,6 +53,15 @@ abstract final class Routes {
   static const visaGuidePath = '/visa-guide';
   static const freeConsultation = '/free-consultation';
   static const freeConsultationStatus = '/free-consultation/status';
+
+  // discharge summaries (also the `data.link` of `discharge_summary.finalized` / medication reminders)
+  static const dischargeSummaries = '/discharge-summaries';
+
+  /// `/discharge-summaries?case=<id>`
+  static String dischargeSummariesFor({String? caseId}) => _q(dischargeSummaries, {'case': caseId});
+
+  /// `/discharge-summaries/:id`
+  static String dischargeSummary(String id) => '$dischargeSummaries/$id';
 
   /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
   static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
@@ -228,4 +240,7 @@ abstract final class RouteNames {
   static const visaGuide = 'visa-guide';
   static const freeConsultation = 'free-consultation';
   static const freeConsultationStatus = 'free-consultation-status';
+  static const whatsapp = 'whatsapp';
+  static const dischargeSummaries = 'discharge-summaries';
+  static const dischargeSummary = 'discharge-summary';
 }

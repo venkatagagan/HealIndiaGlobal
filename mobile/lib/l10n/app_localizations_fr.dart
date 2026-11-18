@@ -8785,4 +8785,545 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Traitement';
+
+  @override
+  String get whatsappTitle => 'Mises à jour WhatsApp';
+
+  @override
+  String get whatsappTileSubtitle => 'Réservations, voyage et rendez-vous sur WhatsApp';
+
+  @override
+  String get whatsappIntro =>
+      'Recevez de courtes mises à jour sur vos réservations, votre voyage et vos rendez-vous sur WhatsApp.';
+
+  @override
+  String get whatsappPrivacyNote =>
+      'Les messages WhatsApp ne contiennent que des informations générales. Les détails médicaux ne sont jamais envoyés sur WhatsApp ; ouvrez l\'application pour les consulter.';
+
+  @override
+  String get whatsappStopNote =>
+      'Vous pouvez arrêter à tout moment ici, ou en répondant STOP à l\'un de nos messages WhatsApp.';
+
+  @override
+  String get whatsappUnavailable =>
+      'Les mises à jour WhatsApp ne sont pas encore disponibles. Nous vous préviendrons dès que vous pourrez les activer.';
+
+  @override
+  String get whatsappStatusOn => 'Activé';
+
+  @override
+  String get whatsappStatusOff => 'Désactivé';
+
+  @override
+  String get whatsappStatusPending => 'Code en attente';
+
+  @override
+  String get whatsappActiveTitle => 'Les mises à jour WhatsApp sont activées';
+
+  @override
+  String whatsappActiveNumber(String phone) {
+    return 'Les mises à jour sont envoyées au $phone.';
+  }
+
+  @override
+  String whatsappVerifiedOn(String date) {
+    return 'Numéro vérifié le $date.';
+  }
+
+  @override
+  String whatsappOptedOutNote(String date) {
+    return 'Vous avez désactivé les mises à jour WhatsApp le $date.';
+  }
+
+  @override
+  String get whatsappPhoneLabel => 'Numéro WhatsApp';
+
+  @override
+  String get whatsappPhoneHint => '+234 803 123 4567';
+
+  @override
+  String get whatsappPhoneHelper => 'Indiquez l\'indicatif du pays, en commençant par +.';
+
+  @override
+  String get whatsappPhoneInvalid =>
+      'Saisissez votre numéro WhatsApp avec l\'indicatif du pays, par ex. +234 803 123 4567.';
+
+  @override
+  String get whatsappSendCode => 'Envoyer le code';
+
+  @override
+  String get whatsappCodeSent => 'Code envoyé. Consultez WhatsApp.';
+
+  @override
+  String whatsappCodeSentTo(String phone) {
+    return 'Nous avons envoyé un code à 6 chiffres au $phone sur WhatsApp.';
+  }
+
+  @override
+  String whatsappCodeExpiresAt(String time) {
+    return 'Le code expire à $time.';
+  }
+
+  @override
+  String get whatsappCodeLabel => 'Code à 6 chiffres';
+
+  @override
+  String get whatsappCodeInvalid => 'Saisissez les 6 chiffres reçus dans le message WhatsApp.';
+
+  @override
+  String get whatsappConfirmCode => 'Confirmer le code';
+
+  @override
+  String get whatsappResendCode => 'Envoyer un nouveau code';
+
+  @override
+  String get whatsappChangeNumber => 'Utiliser un autre numéro';
+
+  @override
+  String get whatsappTurnOff => 'Désactiver les mises à jour WhatsApp';
+
+  @override
+  String get whatsappTurnOffConfirmTitle => 'Désactiver les mises à jour WhatsApp ?';
+
+  @override
+  String get whatsappTurnOffConfirmBody => 'Vous recevrez toujours les mises à jour dans l\'application et par e-mail.';
+
+  @override
+  String get whatsappTurnedOn => 'Les mises à jour WhatsApp sont activées.';
+
+  @override
+  String get whatsappTurnedOff => 'Les mises à jour WhatsApp sont désactivées.';
+
+  @override
+  String whatsappErrorInvalidCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Le code est incorrect. Il reste $count essais.',
+      one: 'Le code est incorrect. Il reste 1 essai.',
+      zero: 'Le code est incorrect. Demandez un nouveau code.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatsappErrorCodeExpired => 'Ce code a expiré. Demandez un nouveau code.';
+
+  @override
+  String get whatsappErrorTooManyAttempts => 'Trop de codes incorrects. Demandez un nouveau code.';
+
+  @override
+  String get whatsappErrorNoPendingCode => 'Aucun code en attente. Demandez un nouveau code.';
+
+  @override
+  String get dischargeTitle => 'Compte rendu de sortie';
+
+  @override
+  String get dischargeListTitle => 'Comptes rendus de sortie';
+
+  @override
+  String get dischargeTileSubtitle => 'Le compte rendu de l\'hôpital, vos médicaments et les signes d\'alerte';
+
+  @override
+  String get dischargeEmptyTitle => 'Pas encore de compte rendu de sortie';
+
+  @override
+  String get dischargeEmptyMessage =>
+      'L\'hôpital ajoute le compte rendu de sortie à votre départ. Nous vous préviendrons.';
+
+  @override
+  String dischargeVersion(int version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get dischargeStatusDraft => 'Brouillon';
+
+  @override
+  String get dischargeStatusFinal => 'Définitif';
+
+  @override
+  String get dischargeStatusSuperseded => 'Ancienne version';
+
+  @override
+  String get dischargeSupersededNote =>
+      'Une version plus récente de ce compte rendu existe. Ouvrez la liste pour voir la dernière.';
+
+  @override
+  String dischargeFinalizedOn(String date) {
+    return 'Finalisé le $date';
+  }
+
+  @override
+  String dischargeDischargedOn(String date) {
+    return 'Sortie le $date';
+  }
+
+  @override
+  String get dischargeRedFlagsTitle => 'Consultez immédiatement un médecin si vous remarquez :';
+
+  @override
+  String get dischargeRedFlagsEmergency => 'En cas d\'urgence, appelez d\'abord le numéro d\'urgence local.';
+
+  @override
+  String get dischargeSectionDiagnosis => 'Diagnostic';
+
+  @override
+  String dischargeCode(String code) {
+    return 'Code : $code';
+  }
+
+  @override
+  String get dischargeSectionStay => 'Séjour à l\'hôpital';
+
+  @override
+  String get dischargeAdmissionDate => 'Date d\'admission';
+
+  @override
+  String get dischargeDischargeDate => 'Date de sortie';
+
+  @override
+  String get dischargeSectionProcedure => 'Intervention';
+
+  @override
+  String get dischargeProcedureCode => 'Code de l\'intervention';
+
+  @override
+  String get dischargeProcedureDate => 'Date de l\'intervention';
+
+  @override
+  String get dischargeDoctor => 'Médecin traitant';
+
+  @override
+  String get dischargeDoctorRegistration => 'N° d\'enregistrement';
+
+  @override
+  String get dischargeSectionHospitalCourse => 'Traitement à l\'hôpital';
+
+  @override
+  String get dischargeSectionMedications => 'Médicaments';
+
+  @override
+  String get dischargeNoMedications => 'Aucun médicament n\'a été prescrit à la sortie.';
+
+  @override
+  String dischargeMedicationDuration(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Pendant $days jours',
+      one: 'Pendant 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeMedicationOngoing => 'En continu';
+
+  @override
+  String dischargeReminderUntil(String date) {
+    return 'Jusqu\'au $date';
+  }
+
+  @override
+  String get dischargeSectionFollowUp => 'Consignes de suivi';
+
+  @override
+  String get dischargeSectionAllergies => 'Allergies';
+
+  @override
+  String get dischargeSectionInvestigations => 'Résultats d\'examens';
+
+  @override
+  String get dischargeSectionAttachments => 'Documents joints';
+
+  @override
+  String get dischargeDownloadPdf => 'Télécharger le PDF';
+
+  @override
+  String get dischargeDownloadFhir => 'Télécharger le fichier FHIR';
+
+  @override
+  String get dischargeFhirHint =>
+      'Un fichier de dossier médical standard (HL7 FHIR) que les logiciels des médecins peuvent importer.';
+
+  @override
+  String get dischargeConfidential =>
+      'Ce compte rendu contient des informations médicales confidentielles. Ne le partagez qu\'avec des médecins de confiance.';
+
+  @override
+  String get dischargeShareWithDoctor => 'Partager avec mon médecin';
+
+  @override
+  String get dischargeShareIntro =>
+      'Envoyez à votre médecin un lien sécurisé vers ce compte rendu. Il peut l\'ouvrir sans compte jusqu\'à l\'expiration du lien.';
+
+  @override
+  String get dischargeShareDoctorEmail => 'E-mail du médecin';
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => 'Saisissez une adresse e-mail valide.';
+
+  @override
+  String get dischargeShareDoctorName => 'Nom du médecin (facultatif)';
+
+  @override
+  String get dischargeShareDocuments => 'Documents à inclure';
+
+  @override
+  String get dischargeShareDocumentsHint => 'Le PDF du compte rendu est toujours inclus.';
+
+  @override
+  String get dischargeShareFromHospital => 'De l\'hôpital';
+
+  @override
+  String get dischargeShareYourDocuments => 'Vos documents';
+
+  @override
+  String get dischargeShareNoDocuments => 'Aucun autre document.';
+
+  @override
+  String get dischargeShareValidity => 'Lien valable';
+
+  @override
+  String dischargeShareDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days jours', one: '1 jour');
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareLanguage => 'Langue de l\'e-mail';
+
+  @override
+  String get dischargeShareConsent =>
+      'J\'accepte de partager ce compte rendu de sortie et les documents sélectionnés avec ce médecin. Je comprends que le médecin peut les ouvrir jusqu\'à l\'expiration du lien et que chaque consultation est enregistrée.';
+
+  @override
+  String get dischargeShareConsentRequired => 'Veuillez cocher la case pour donner votre accord avant de partager.';
+
+  @override
+  String get dischargeShareSend => 'Envoyer le lien';
+
+  @override
+  String get dischargeShareSentTitle => 'Lien envoyé';
+
+  @override
+  String dischargeShareSentBody(String email, String date) {
+    return 'Nous avons envoyé un lien à $email. Il fonctionne jusqu\'au $date.';
+  }
+
+  @override
+  String get dischargeShareLinkOnce =>
+      'Vous pouvez aussi copier le lien maintenant. Il n\'est affiché qu\'une seule fois.';
+
+  @override
+  String get dischargeShareCopy => 'Copier le lien';
+
+  @override
+  String get dischargeShareCopied => 'Lien copié';
+
+  @override
+  String get dischargeSharesTitle => 'Partagé avec';
+
+  @override
+  String get dischargeSharesEmpty => 'Vous n\'avez pas encore partagé ce compte rendu.';
+
+  @override
+  String dischargeShareExpires(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String get dischargeShareExpired => 'Expiré';
+
+  @override
+  String get dischargeShareRevoked => 'Révoqué';
+
+  @override
+  String dischargeShareViews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ouvert $count fois',
+      one: 'Ouvert une fois',
+      zero: 'Pas encore ouvert',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareRevoke => 'Révoquer';
+
+  @override
+  String get dischargeShareRevokeTitle => 'Révoquer ce lien ?';
+
+  @override
+  String get dischargeShareRevokeBody => 'Le médecin ne pourra plus ouvrir le compte rendu avec ce lien.';
+
+  @override
+  String get dischargeShareRevokedSnack => 'Lien révoqué';
+
+  @override
+  String get dischargeRemindersTitle => 'Rappels de médicaments';
+
+  @override
+  String get dischargeRemindersSwitch => 'Rappel quotidien';
+
+  @override
+  String get dischargeRemindersHint =>
+      'Une notification par jour tant que vous devez prendre vos médicaments. Suivez toujours les consignes de votre médecin pour la dose et l\'heure.';
+
+  @override
+  String get dischargeRemindersTime => 'Heure du rappel';
+
+  @override
+  String get dischargeRemindersOn => 'Les rappels de médicaments sont activés.';
+
+  @override
+  String get dischargeRemindersOff => 'Les rappels de médicaments sont désactivés.';
+
+  @override
+  String get dischargeHpMoreSubtitle => 'Rédiger, finaliser et mettre à jour les comptes rendus de sortie';
+
+  @override
+  String get dischargeHpEmpty => 'Pas encore de compte rendu de sortie pour ce patient.';
+
+  @override
+  String get dischargeHpEmptyAll => 'Aucun compte rendu de sortie pour le moment.';
+
+  @override
+  String get dischargeHpStart => 'Commencer le compte rendu de sortie';
+
+  @override
+  String get dischargeHpDraftExists => 'Un brouillon existe déjà. Ouverture.';
+
+  @override
+  String get dischargeHpFinalExists =>
+      'Ce dossier a déjà un compte rendu définitif. Ouvrez-le et choisissez « Modifier en nouvelle version ».';
+
+  @override
+  String get dischargeHpEditorTitle => 'Modifier le compte rendu de sortie';
+
+  @override
+  String get dischargeHpDoctorSection => 'Médecin';
+
+  @override
+  String get dischargeHpChooseDoctor => 'Choisir un médecin';
+
+  @override
+  String get dischargeHpDoctorName => 'Nom du médecin';
+
+  @override
+  String get dischargeHpDoctorRegistration => 'Numéro d\'enregistrement médical';
+
+  @override
+  String get dischargeHpPickDate => 'Choisir une date';
+
+  @override
+  String get dischargeHpDiagnosisCode => 'Code CIM-10 (facultatif)';
+
+  @override
+  String get dischargeHpProcedureCode => 'Code de l\'intervention (facultatif)';
+
+  @override
+  String get dischargeHpCodeInvalid => 'Utilisez des lettres, chiffres, points ou tirets (20 max).';
+
+  @override
+  String get dischargeHpRequiredToFinalize => 'Obligatoire pour finaliser';
+
+  @override
+  String get dischargeHpRedFlagsLabel => 'Signes d\'alerte';
+
+  @override
+  String get dischargeHpRedFlagsHint => 'Symptômes pour lesquels le patient doit consulter immédiatement';
+
+  @override
+  String get dischargeHpAddMedication => 'Ajouter un médicament';
+
+  @override
+  String get dischargeHpEditMedication => 'Modifier le médicament';
+
+  @override
+  String get dischargeHpMedName => 'Nom du médicament';
+
+  @override
+  String get dischargeHpMedDose => 'Dose';
+
+  @override
+  String get dischargeHpMedFrequency => 'Fréquence';
+
+  @override
+  String get dischargeHpMedDuration => 'Nombre de jours (vide = en continu)';
+
+  @override
+  String get dischargeHpMedRoute => 'Voie (ex. orale)';
+
+  @override
+  String get dischargeHpMedInstructions => 'Instructions';
+
+  @override
+  String get dischargeHpMedNameRequired => 'Saisissez le nom du médicament.';
+
+  @override
+  String get dischargeHpMedDurationInvalid => 'Saisissez un nombre de jours entre 1 et 3650.';
+
+  @override
+  String get dischargeHpAttachmentsHint => 'Documents de ce dossier à joindre au compte rendu.';
+
+  @override
+  String get dischargeHpNoDocuments => 'Aucun document dans ce dossier pour le moment.';
+
+  @override
+  String get dischargeHpSaveDraft => 'Enregistrer le brouillon';
+
+  @override
+  String get dischargeHpSaved => 'Brouillon enregistré';
+
+  @override
+  String get dischargeHpFinalize => 'Finaliser';
+
+  @override
+  String get dischargeHpFinalizeTitle => 'Finaliser ce compte rendu ?';
+
+  @override
+  String get dischargeHpFinalizeBody =>
+      'Il sera verrouillé, un PDF sera créé et le patient sera prévenu. Toute modification ultérieure créera une nouvelle version.';
+
+  @override
+  String get dischargeHpFinalized => 'Compte rendu finalisé et envoyé au patient';
+
+  @override
+  String dischargeHpMissing(String fields) {
+    return 'À remplir avant de finaliser : $fields';
+  }
+
+  @override
+  String get dischargeHpDiscard => 'Supprimer le brouillon';
+
+  @override
+  String get dischargeHpDiscardTitle => 'Supprimer ce brouillon ?';
+
+  @override
+  String get dischargeHpDiscardBody => 'Le brouillon est supprimé. Les versions définitives ne changent pas.';
+
+  @override
+  String get dischargeHpDiscarded => 'Brouillon supprimé';
+
+  @override
+  String get dischargeHpNewVersion => 'Modifier en nouvelle version';
+
+  @override
+  String get dischargeHpNewVersionTitle => 'Créer une nouvelle version ?';
+
+  @override
+  String dischargeHpNewVersionBody(int version, int next) {
+    return 'La version $version reste inchangée. Vos modifications vont dans un nouveau brouillon, la version $next, que vous finaliserez quand il sera prêt.';
+  }
+
+  @override
+  String get dischargeHpDatesInvalid => 'La date de sortie ne peut pas précéder la date d\'admission.';
+
+  @override
+  String get dischargeHpLockedNote =>
+      'Les comptes rendus définitifs sont verrouillés. Pour modifier celui-ci, créez une nouvelle version.';
 }

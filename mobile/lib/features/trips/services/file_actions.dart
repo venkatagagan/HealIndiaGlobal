@@ -50,6 +50,29 @@ Future<bool> saveBytes({required String fileName, required Uint8List bytes, Stri
   return uri != null;
 }
 
+/// Fetches a file with [load] (an authorized download), saves it through the platform "save as" flow and
+/// opens it with the system viewer when the platform allows it ([open]); otherwise confirms the save.
+Future<void> saveAndOpenBytes(
+  BuildContext context, {
+  required Future<Uint8List> Function() load,
+  required String fileName,
+  required String mimeType,
+  bool open = true,
+}) async {
+  try {
+    final bytes = await load();
+    final uri = await FilePicker.saveFile(fileName: fileName, bytes: bytes, mimeType: mimeType);
+    if (uri == null) return;
+    var opened = false;
+    if (open && (uri.scheme == 'file' || uri.scheme == 'content')) {
+      opened = await launchUrl(uri).catchError((_) => false);
+    }
+    if (!opened && context.mounted) showInfoSnack(context, context.l10n.documentsSaved(fileName));
+  } catch (e) {
+    if (context.mounted) showErrorSnack(context, e);
+  }
+}
+
 /// Downloads a document through the authorized endpoint and saves it.
 Future<void> downloadDocument(BuildContext context, DocumentRepository repo, AppDocument doc) async {
   try {

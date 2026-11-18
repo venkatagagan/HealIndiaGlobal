@@ -4,6 +4,7 @@ import '../../core/router/routes.dart';
 import 'hospital_shell.dart';
 import 'screens/hospital_bookings_screens.dart';
 import 'screens/hospital_cases_screens.dart';
+import 'screens/hospital_discharge_screens.dart';
 import 'screens/hospital_more_screens.dart';
 
 /// Locations inside the hospital shell. Everything stays under `/hospital` — the role redirect sends
@@ -28,6 +29,15 @@ abstract final class HospitalRoutes {
   static const visas = '$home/visas';
   static const doctors = '$home/doctors';
   static const priceList = '$home/price-list';
+
+  /// `/hospital/discharge-summaries?case=&booking=` — all summaries, or one case's with "Start".
+  static String dischargeSummaries({String? caseId, String? bookingId}) {
+    final q = {'case': ?caseId, 'booking': ?bookingId};
+    return Uri(path: '$home/discharge-summaries', queryParameters: q.isEmpty ? null : q).toString();
+  }
+
+  /// `/hospital/discharge-summaries/:id` — draft editor or final (read-only) view.
+  static String dischargeSummary(String id) => '$home/discharge-summaries/$id';
 }
 
 /// Route tree of the hospital shell, mounted by `core/router/app_router.dart` under [Routes.hospitalHome].
@@ -55,6 +65,19 @@ List<RouteBase> hospitalPortalRoutes() => [
       GoRoute(path: 'visas', builder: (_, _) => const VisaRequestsScreen()),
       GoRoute(path: 'doctors', builder: (_, _) => const HospitalDoctorsScreen()),
       GoRoute(path: 'price-list', builder: (_, _) => const PriceListScreen()),
+      GoRoute(
+        path: 'discharge-summaries',
+        builder: (_, s) => HospitalDischargeListScreen(
+          caseId: s.uri.queryParameters['case'],
+          bookingId: s.uri.queryParameters['booking'],
+        ),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (_, s) => HospitalDischargeEditorScreen(summaryId: s.pathParameters['id']!),
+          ),
+        ],
+      ),
     ],
   ),
 ];

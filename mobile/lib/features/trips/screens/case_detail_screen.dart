@@ -14,6 +14,7 @@ import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../booking/logic/booking_gates.dart';
+import '../../discharge/screens/discharge_screens.dart';
 import '../services/file_actions.dart';
 import '../services/journey_actions.dart';
 import '../widgets/case_widgets.dart';
@@ -115,6 +116,12 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
           ),
         ],
         if (booking != null) ...[SectionTitle(l10n.bookingLabel), _bookingCard(c, booking)],
+        if (c.status == CaseStatus.completed ||
+            booking?.status == BookingStatus.completed ||
+            booking?.status == BookingStatus.admitted) ...[
+          const SizedBox(height: 10),
+          DischargeEntryCard(onTap: () => context.push(Routes.dischargeSummariesFor(caseId: c.id))),
+        ],
         SectionTitle(l10n.caseQuotesSection),
         if (quotes.isEmpty)
           AppCard(

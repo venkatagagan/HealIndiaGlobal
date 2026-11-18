@@ -108,10 +108,18 @@ class ProfileScreen extends ConsumerWidget {
                       color: AppColors.cyan,
                       onTap: () => context.push(Routes.aftercare),
                     ),
+                    SettingsTile(
+                      key: const Key('profile-discharge-summaries'),
+                      icon: Icons.summarize_outlined,
+                      title: l10n.dischargeListTitle,
+                      subtitle: l10n.dischargeTileSubtitle,
+                      color: AppColors.violet,
+                      onTap: () => context.push(Routes.dischargeSummaries),
+                    ),
                   ],
                 ),
               ],
-              const _PreferencesGroup(),
+              _PreferencesGroup(showWhatsApp: full),
               if (full) _SecurityGroup(user: user),
               if (auth.hasSession) PrivacyGroup(showAccessLog: full),
               SettingsGroup(
@@ -360,7 +368,9 @@ class _PersonalInfoCard extends ConsumerWidget {
 }
 
 class _PreferencesGroup extends ConsumerWidget {
-  const _PreferencesGroup();
+  const _PreferencesGroup({this.showWhatsApp = false});
+
+  final bool showWhatsApp;
 
   Future<void> _pickCurrency(BuildContext context, WidgetRef ref) async {
     final current = ref.read(preferredCurrencyProvider);
@@ -430,6 +440,16 @@ class _PreferencesGroup extends ConsumerWidget {
           trailing: _Value(_themeLabel(l10n, theme)),
           onTap: () => _pickTheme(context, ref),
         ),
+        // WhatsApp updates need a full account (guests are asked to register first).
+        if (showWhatsApp)
+          SettingsTile(
+            key: const Key('profile-whatsapp'),
+            icon: Icons.chat_rounded,
+            title: l10n.whatsappTitle,
+            subtitle: l10n.whatsappTileSubtitle,
+            color: AppColors.primaryStrong,
+            onTap: () => context.push(Routes.whatsapp),
+          ),
       ],
     );
   }

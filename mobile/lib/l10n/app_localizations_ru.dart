@@ -8937,4 +8937,555 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Лечение';
+
+  @override
+  String get whatsappTitle => 'Уведомления в WhatsApp';
+
+  @override
+  String get whatsappTileSubtitle => 'Бронирования, поездка и приёмы в WhatsApp';
+
+  @override
+  String get whatsappIntro => 'Получайте короткие уведомления о бронированиях, поездке и приёмах в WhatsApp.';
+
+  @override
+  String get whatsappPrivacyNote =>
+      'В сообщениях WhatsApp только общие уведомления. Медицинские сведения никогда не отправляются в WhatsApp; чтобы их прочитать, откройте приложение.';
+
+  @override
+  String get whatsappStopNote =>
+      'Вы можете отключить уведомления здесь в любой момент или ответить STOP на любое наше сообщение в WhatsApp.';
+
+  @override
+  String get whatsappUnavailable =>
+      'Уведомления в WhatsApp пока недоступны. Мы сообщим, когда их можно будет включить.';
+
+  @override
+  String get whatsappStatusOn => 'Вкл.';
+
+  @override
+  String get whatsappStatusOff => 'Выкл.';
+
+  @override
+  String get whatsappStatusPending => 'Ожидается код';
+
+  @override
+  String get whatsappActiveTitle => 'Уведомления в WhatsApp включены';
+
+  @override
+  String whatsappActiveNumber(String phone) {
+    return 'Уведомления приходят на номер $phone.';
+  }
+
+  @override
+  String whatsappVerifiedOn(String date) {
+    return 'Номер подтверждён: $date.';
+  }
+
+  @override
+  String whatsappOptedOutNote(String date) {
+    return 'Вы отключили уведомления в WhatsApp: $date.';
+  }
+
+  @override
+  String get whatsappPhoneLabel => 'Номер WhatsApp';
+
+  @override
+  String get whatsappPhoneHint => '+234 803 123 4567';
+
+  @override
+  String get whatsappPhoneHelper => 'Укажите код страны, начиная с +.';
+
+  @override
+  String get whatsappPhoneInvalid => 'Введите номер WhatsApp с кодом страны, например +234 803 123 4567.';
+
+  @override
+  String get whatsappSendCode => 'Отправить код';
+
+  @override
+  String get whatsappCodeSent => 'Код отправлен. Проверьте WhatsApp.';
+
+  @override
+  String whatsappCodeSentTo(String phone) {
+    return 'Мы отправили 6-значный код на номер $phone в WhatsApp.';
+  }
+
+  @override
+  String whatsappCodeExpiresAt(String time) {
+    return 'Код действует до $time.';
+  }
+
+  @override
+  String get whatsappCodeLabel => '6-значный код';
+
+  @override
+  String get whatsappCodeInvalid => 'Введите 6 цифр из сообщения WhatsApp.';
+
+  @override
+  String get whatsappConfirmCode => 'Подтвердить код';
+
+  @override
+  String get whatsappResendCode => 'Отправить новый код';
+
+  @override
+  String get whatsappChangeNumber => 'Указать другой номер';
+
+  @override
+  String get whatsappTurnOff => 'Отключить уведомления в WhatsApp';
+
+  @override
+  String get whatsappTurnOffConfirmTitle => 'Отключить уведомления в WhatsApp?';
+
+  @override
+  String get whatsappTurnOffConfirmBody => 'Уведомления в приложении и по электронной почте продолжат приходить.';
+
+  @override
+  String get whatsappTurnedOn => 'Уведомления в WhatsApp включены.';
+
+  @override
+  String get whatsappTurnedOff => 'Уведомления в WhatsApp отключены.';
+
+  @override
+  String whatsappErrorInvalidCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Неверный код. Осталось $count попытки.',
+      many: 'Неверный код. Осталось $count попыток.',
+      few: 'Неверный код. Осталось $count попытки.',
+      one: 'Неверный код. Осталась $count попытка.',
+      zero: 'Неверный код. Запросите новый код.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatsappErrorCodeExpired => 'Срок действия кода истёк. Запросите новый код.';
+
+  @override
+  String get whatsappErrorTooManyAttempts => 'Слишком много неверных кодов. Запросите новый код.';
+
+  @override
+  String get whatsappErrorNoPendingCode => 'Нет ожидающего кода. Запросите новый код.';
+
+  @override
+  String get dischargeTitle => 'Выписной эпикриз';
+
+  @override
+  String get dischargeListTitle => 'Выписные эпикризы';
+
+  @override
+  String get dischargeTileSubtitle => 'Эпикриз больницы, лекарства и тревожные признаки';
+
+  @override
+  String get dischargeEmptyTitle => 'Выписного эпикриза пока нет';
+
+  @override
+  String get dischargeEmptyMessage => 'Больница добавит эпикриз при выписке. Мы пришлём уведомление.';
+
+  @override
+  String dischargeVersion(int version) {
+    return 'Версия $version';
+  }
+
+  @override
+  String get dischargeStatusDraft => 'Черновик';
+
+  @override
+  String get dischargeStatusFinal => 'Окончательный';
+
+  @override
+  String get dischargeStatusSuperseded => 'Старая версия';
+
+  @override
+  String get dischargeSupersededNote =>
+      'Есть более новая версия этого эпикриза. Откройте список, чтобы увидеть последнюю.';
+
+  @override
+  String dischargeFinalizedOn(String date) {
+    return 'Утверждён: $date';
+  }
+
+  @override
+  String dischargeDischargedOn(String date) {
+    return 'Выписка: $date';
+  }
+
+  @override
+  String get dischargeRedFlagsTitle => 'Немедленно обратитесь за медицинской помощью, если заметите:';
+
+  @override
+  String get dischargeRedFlagsEmergency =>
+      'В экстренной ситуации сначала звоните по местному номеру экстренной помощи.';
+
+  @override
+  String get dischargeSectionDiagnosis => 'Диагноз';
+
+  @override
+  String dischargeCode(String code) {
+    return 'Код: $code';
+  }
+
+  @override
+  String get dischargeSectionStay => 'Пребывание в больнице';
+
+  @override
+  String get dischargeAdmissionDate => 'Дата госпитализации';
+
+  @override
+  String get dischargeDischargeDate => 'Дата выписки';
+
+  @override
+  String get dischargeSectionProcedure => 'Процедура';
+
+  @override
+  String get dischargeProcedureCode => 'Код процедуры';
+
+  @override
+  String get dischargeProcedureDate => 'Дата процедуры';
+
+  @override
+  String get dischargeDoctor => 'Лечащий врач';
+
+  @override
+  String get dischargeDoctorRegistration => 'Рег. номер';
+
+  @override
+  String get dischargeSectionHospitalCourse => 'Лечение в больнице';
+
+  @override
+  String get dischargeSectionMedications => 'Лекарства';
+
+  @override
+  String get dischargeNoMedications => 'При выписке лекарства не назначены.';
+
+  @override
+  String dischargeMedicationDuration(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дня',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeMedicationOngoing => 'Постоянно';
+
+  @override
+  String dischargeReminderUntil(String date) {
+    return 'До $date';
+  }
+
+  @override
+  String get dischargeSectionFollowUp => 'Рекомендации по наблюдению';
+
+  @override
+  String get dischargeSectionAllergies => 'Аллергии';
+
+  @override
+  String get dischargeSectionInvestigations => 'Результаты обследований';
+
+  @override
+  String get dischargeSectionAttachments => 'Приложенные документы';
+
+  @override
+  String get dischargeDownloadPdf => 'Скачать PDF';
+
+  @override
+  String get dischargeDownloadFhir => 'Скачать файл FHIR';
+
+  @override
+  String get dischargeFhirHint =>
+      'Стандартный файл медицинской записи (HL7 FHIR), который могут загрузить системы врачей.';
+
+  @override
+  String get dischargeConfidential =>
+      'Этот эпикриз содержит конфиденциальные медицинские сведения. Передавайте его только врачам, которым доверяете.';
+
+  @override
+  String get dischargeShareWithDoctor => 'Отправить своему врачу';
+
+  @override
+  String get dischargeShareIntro =>
+      'Отправьте своему врачу дома защищённую ссылку на этот эпикриз. Он сможет открыть его без учётной записи, пока ссылка действует.';
+
+  @override
+  String get dischargeShareDoctorEmail => 'Эл. почта врача';
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => 'Введите корректный адрес эл. почты.';
+
+  @override
+  String get dischargeShareDoctorName => 'Имя врача (необязательно)';
+
+  @override
+  String get dischargeShareDocuments => 'Какие документы приложить';
+
+  @override
+  String get dischargeShareDocumentsHint => 'PDF эпикриза прикладывается всегда.';
+
+  @override
+  String get dischargeShareFromHospital => 'От больницы';
+
+  @override
+  String get dischargeShareYourDocuments => 'Ваши документы';
+
+  @override
+  String get dischargeShareNoDocuments => 'Других документов нет.';
+
+  @override
+  String get dischargeShareValidity => 'Срок действия ссылки';
+
+  @override
+  String dischargeShareDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дня',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareLanguage => 'Язык письма';
+
+  @override
+  String get dischargeShareConsent =>
+      'Я согласен(-на) передать этот выписной эпикриз и выбранные документы этому врачу. Я понимаю, что врач сможет открывать их, пока действует ссылка, и что каждый просмотр записывается.';
+
+  @override
+  String get dischargeShareConsentRequired => 'Отметьте флажок, чтобы дать согласие перед отправкой.';
+
+  @override
+  String get dischargeShareSend => 'Отправить ссылку';
+
+  @override
+  String get dischargeShareSentTitle => 'Ссылка отправлена';
+
+  @override
+  String dischargeShareSentBody(String email, String date) {
+    return 'Мы отправили ссылку на $email. Она действует до $date.';
+  }
+
+  @override
+  String get dischargeShareLinkOnce => 'Вы также можете скопировать ссылку сейчас. Она показывается только один раз.';
+
+  @override
+  String get dischargeShareCopy => 'Копировать ссылку';
+
+  @override
+  String get dischargeShareCopied => 'Ссылка скопирована';
+
+  @override
+  String get dischargeSharesTitle => 'Кому отправлено';
+
+  @override
+  String get dischargeSharesEmpty => 'Вы ещё не отправляли этот эпикриз.';
+
+  @override
+  String dischargeShareExpires(String date) {
+    return 'Действует до $date';
+  }
+
+  @override
+  String get dischargeShareExpired => 'Истекла';
+
+  @override
+  String get dischargeShareRevoked => 'Отозвана';
+
+  @override
+  String dischargeShareViews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Открыта $count раза',
+      many: 'Открыта $count раз',
+      few: 'Открыта $count раза',
+      one: 'Открыта $count раз',
+      zero: 'Ещё не открывали',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareRevoke => 'Отозвать';
+
+  @override
+  String get dischargeShareRevokeTitle => 'Отозвать эту ссылку?';
+
+  @override
+  String get dischargeShareRevokeBody => 'Врач больше не сможет открыть эпикриз по этой ссылке.';
+
+  @override
+  String get dischargeShareRevokedSnack => 'Ссылка отозвана';
+
+  @override
+  String get dischargeRemindersTitle => 'Напоминания о лекарствах';
+
+  @override
+  String get dischargeRemindersSwitch => 'Ежедневное напоминание';
+
+  @override
+  String get dischargeRemindersHint =>
+      'Одно уведомление в день, пока нужно принимать лекарства. Всегда следуйте указаниям врача о дозе и времени приёма.';
+
+  @override
+  String get dischargeRemindersTime => 'Время напоминания';
+
+  @override
+  String get dischargeRemindersOn => 'Напоминания о лекарствах включены.';
+
+  @override
+  String get dischargeRemindersOff => 'Напоминания о лекарствах отключены.';
+
+  @override
+  String get dischargeHpMoreSubtitle => 'Составление, утверждение и обновление выписных эпикризов';
+
+  @override
+  String get dischargeHpEmpty => 'Для этого пациента эпикриза пока нет.';
+
+  @override
+  String get dischargeHpEmptyAll => 'Выписных эпикризов пока нет.';
+
+  @override
+  String get dischargeHpStart => 'Создать выписной эпикриз';
+
+  @override
+  String get dischargeHpDraftExists => 'Черновик уже есть. Открываем его.';
+
+  @override
+  String get dischargeHpFinalExists =>
+      'У этого случая уже есть окончательный эпикриз. Откройте его и выберите «Изменить как новую версию».';
+
+  @override
+  String get dischargeHpEditorTitle => 'Редактирование эпикриза';
+
+  @override
+  String get dischargeHpDoctorSection => 'Врач';
+
+  @override
+  String get dischargeHpChooseDoctor => 'Выбрать врача';
+
+  @override
+  String get dischargeHpDoctorName => 'Имя врача';
+
+  @override
+  String get dischargeHpDoctorRegistration => 'Номер медицинской регистрации';
+
+  @override
+  String get dischargeHpPickDate => 'Выберите дату';
+
+  @override
+  String get dischargeHpDiagnosisCode => 'Код МКБ-10 (необязательно)';
+
+  @override
+  String get dischargeHpProcedureCode => 'Код процедуры (необязательно)';
+
+  @override
+  String get dischargeHpCodeInvalid => 'Используйте буквы, цифры, точки или дефисы (не более 20).';
+
+  @override
+  String get dischargeHpRequiredToFinalize => 'Обязательно для утверждения';
+
+  @override
+  String get dischargeHpRedFlagsLabel => 'Тревожные признаки';
+
+  @override
+  String get dischargeHpRedFlagsHint => 'Симптомы, при которых пациент должен немедленно обратиться за помощью';
+
+  @override
+  String get dischargeHpAddMedication => 'Добавить лекарство';
+
+  @override
+  String get dischargeHpEditMedication => 'Изменить лекарство';
+
+  @override
+  String get dischargeHpMedName => 'Название лекарства';
+
+  @override
+  String get dischargeHpMedDose => 'Доза';
+
+  @override
+  String get dischargeHpMedFrequency => 'Как часто';
+
+  @override
+  String get dischargeHpMedDuration => 'Количество дней (пусто = постоянно)';
+
+  @override
+  String get dischargeHpMedRoute => 'Способ приёма (например, внутрь)';
+
+  @override
+  String get dischargeHpMedInstructions => 'Указания';
+
+  @override
+  String get dischargeHpMedNameRequired => 'Введите название лекарства.';
+
+  @override
+  String get dischargeHpMedDurationInvalid => 'Введите число дней от 1 до 3650.';
+
+  @override
+  String get dischargeHpAttachmentsHint => 'Документы этого случая, которые нужно приложить к эпикризу.';
+
+  @override
+  String get dischargeHpNoDocuments => 'В этом случае пока нет документов.';
+
+  @override
+  String get dischargeHpSaveDraft => 'Сохранить черновик';
+
+  @override
+  String get dischargeHpSaved => 'Черновик сохранён';
+
+  @override
+  String get dischargeHpFinalize => 'Утвердить';
+
+  @override
+  String get dischargeHpFinalizeTitle => 'Утвердить этот эпикриз?';
+
+  @override
+  String get dischargeHpFinalizeBody =>
+      'Эпикриз будет заблокирован, будет создан PDF, а пациент получит уведомление. Последующие изменения создадут новую версию.';
+
+  @override
+  String get dischargeHpFinalized => 'Эпикриз утверждён и отправлен пациенту';
+
+  @override
+  String dischargeHpMissing(String fields) {
+    return 'Заполните перед утверждением: $fields';
+  }
+
+  @override
+  String get dischargeHpDiscard => 'Удалить черновик';
+
+  @override
+  String get dischargeHpDiscardTitle => 'Удалить этот черновик?';
+
+  @override
+  String get dischargeHpDiscardBody => 'Черновик будет удалён. Окончательные версии не изменятся.';
+
+  @override
+  String get dischargeHpDiscarded => 'Черновик удалён';
+
+  @override
+  String get dischargeHpNewVersion => 'Изменить как новую версию';
+
+  @override
+  String get dischargeHpNewVersionTitle => 'Создать новую версию?';
+
+  @override
+  String dischargeHpNewVersionBody(int version, int next) {
+    return 'Версия $version останется без изменений. Ваши правки попадут в новый черновик, версию $next, который вы утвердите, когда он будет готов.';
+  }
+
+  @override
+  String get dischargeHpDatesInvalid => 'Дата выписки не может быть раньше даты госпитализации.';
+
+  @override
+  String get dischargeHpLockedNote =>
+      'Окончательные эпикризы заблокированы. Чтобы изменить этот, создайте новую версию.';
 }

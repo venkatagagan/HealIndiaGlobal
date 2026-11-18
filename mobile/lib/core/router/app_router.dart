@@ -18,6 +18,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/booking/screens/book_screen.dart';
 import '../../features/booking/screens/payment_screen.dart';
+import '../../features/discharge/screens/discharge_screens.dart';
 import '../../features/documents_ai/screens/report_analysis_screen.dart';
 import '../../features/documents_ai/screens/report_capture_screen.dart';
 import '../../features/home/screens/home_screen.dart';
@@ -33,6 +34,7 @@ import '../../features/profile/screens/companions_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/saved_screen.dart';
+import '../../features/profile/screens/whatsapp_screen.dart';
 import '../../features/screening/screens/screening_processing_screen.dart';
 import '../../features/screening/screens/screening_start_screen.dart';
 import '../../features/screening/screens/screening_step_screen.dart';
@@ -186,6 +188,12 @@ List<RouteBase> buildAppRoutes() => [
                 name: RouteNames.saved,
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (_, _) => const SavedScreen(),
+              ),
+              GoRoute(
+                path: 'whatsapp',
+                name: RouteNames.whatsapp,
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (_, _) => const WhatsAppScreen(),
               ),
             ],
           ),
@@ -346,6 +354,18 @@ List<RouteBase> buildAppRoutes() => [
     ],
   ),
   GoRoute(path: Routes.aftercare, name: RouteNames.aftercare, builder: (_, _) => const AftercareScreen()),
+  GoRoute(
+    path: Routes.dischargeSummaries,
+    name: RouteNames.dischargeSummaries,
+    builder: (_, s) => DischargeListScreen(caseId: s.uri.queryParameters['case']),
+    routes: [
+      GoRoute(
+        path: ':id',
+        name: RouteNames.dischargeSummary,
+        builder: (_, s) => DischargeDetailScreen(summaryId: s.pathParameters['id']!),
+      ),
+    ],
+  ),
   GoRoute(
     path: Routes.visaGuidePath,
     name: RouteNames.visaGuide,

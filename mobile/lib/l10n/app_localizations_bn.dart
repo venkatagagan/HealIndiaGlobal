@@ -8673,4 +8673,531 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'চিকিৎসা';
+
+  @override
+  String get whatsappTitle => 'হোয়াটসঅ্যাপ আপডেট';
+
+  @override
+  String get whatsappTileSubtitle => 'বুকিং, ভ্রমণ ও অ্যাপয়েন্টমেন্টের আপডেট হোয়াটসঅ্যাপে';
+
+  @override
+  String get whatsappIntro => 'আপনার বুকিং, ভ্রমণ ও অ্যাপয়েন্টমেন্ট সম্পর্কে ছোট আপডেট হোয়াটসঅ্যাপে পান।';
+
+  @override
+  String get whatsappPrivacyNote =>
+      'হোয়াটসঅ্যাপ বার্তায় শুধু সাধারণ আপডেট থাকে। কোনো চিকিৎসা-সংক্রান্ত তথ্য কখনো হোয়াটসঅ্যাপে পাঠানো হয় না; তা পড়তে অ্যাপটি খুলুন।';
+
+  @override
+  String get whatsappStopNote =>
+      'আপনি যেকোনো সময় এখান থেকে বন্ধ করতে পারেন, অথবা আমাদের যেকোনো হোয়াটসঅ্যাপ বার্তার উত্তরে STOP লিখে।';
+
+  @override
+  String get whatsappUnavailable => 'হোয়াটসঅ্যাপ আপডেট এখনো চালু হয়নি। কখন চালু করতে পারবেন, আমরা আপনাকে জানাব।';
+
+  @override
+  String get whatsappStatusOn => 'চালু';
+
+  @override
+  String get whatsappStatusOff => 'বন্ধ';
+
+  @override
+  String get whatsappStatusPending => 'কোডের অপেক্ষায়';
+
+  @override
+  String get whatsappActiveTitle => 'হোয়াটসঅ্যাপ আপডেট চালু আছে';
+
+  @override
+  String whatsappActiveNumber(String phone) {
+    return 'আপডেট যাবে এই নম্বরে: $phone।';
+  }
+
+  @override
+  String whatsappVerifiedOn(String date) {
+    return 'নম্বর যাচাই হয়েছে: $date।';
+  }
+
+  @override
+  String whatsappOptedOutNote(String date) {
+    return 'আপনি হোয়াটসঅ্যাপ আপডেট বন্ধ করেছেন: $date।';
+  }
+
+  @override
+  String get whatsappPhoneLabel => 'হোয়াটসঅ্যাপ নম্বর';
+
+  @override
+  String get whatsappPhoneHint => '+234 803 123 4567';
+
+  @override
+  String get whatsappPhoneHelper => 'দেশের কোডসহ লিখুন, শুরুতে + দিয়ে।';
+
+  @override
+  String get whatsappPhoneInvalid => 'দেশের কোডসহ আপনার হোয়াটসঅ্যাপ নম্বর লিখুন, যেমন +234 803 123 4567।';
+
+  @override
+  String get whatsappSendCode => 'কোড পাঠান';
+
+  @override
+  String get whatsappCodeSent => 'কোড পাঠানো হয়েছে। হোয়াটসঅ্যাপ দেখুন।';
+
+  @override
+  String whatsappCodeSentTo(String phone) {
+    return 'আমরা হোয়াটসঅ্যাপে $phone নম্বরে ৬ সংখ্যার একটি কোড পাঠিয়েছি।';
+  }
+
+  @override
+  String whatsappCodeExpiresAt(String time) {
+    return 'কোডের মেয়াদ শেষ হবে $time-এ।';
+  }
+
+  @override
+  String get whatsappCodeLabel => '৬ সংখ্যার কোড';
+
+  @override
+  String get whatsappCodeInvalid => 'হোয়াটসঅ্যাপ বার্তার ৬টি সংখ্যা লিখুন।';
+
+  @override
+  String get whatsappConfirmCode => 'কোড নিশ্চিত করুন';
+
+  @override
+  String get whatsappResendCode => 'নতুন কোড পাঠান';
+
+  @override
+  String get whatsappChangeNumber => 'অন্য নম্বর ব্যবহার করুন';
+
+  @override
+  String get whatsappTurnOff => 'হোয়াটসঅ্যাপ আপডেট বন্ধ করুন';
+
+  @override
+  String get whatsappTurnOffConfirmTitle => 'হোয়াটসঅ্যাপ আপডেট বন্ধ করবেন?';
+
+  @override
+  String get whatsappTurnOffConfirmBody => 'আপনি অ্যাপে ও ইমেইলে আপডেট পেতে থাকবেন।';
+
+  @override
+  String get whatsappTurnedOn => 'হোয়াটসঅ্যাপ আপডেট চালু হয়েছে।';
+
+  @override
+  String get whatsappTurnedOff => 'হোয়াটসঅ্যাপ আপডেট বন্ধ হয়েছে।';
+
+  @override
+  String whatsappErrorInvalidCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'কোডটি সঠিক নয়। আর $count বার চেষ্টা করতে পারবেন।',
+      zero: 'কোডটি সঠিক নয়। নতুন কোড চান।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatsappErrorCodeExpired => 'এই কোডের মেয়াদ শেষ। নতুন কোড চান।';
+
+  @override
+  String get whatsappErrorTooManyAttempts => 'অনেকবার ভুল কোড দেওয়া হয়েছে। নতুন কোড চান।';
+
+  @override
+  String get whatsappErrorNoPendingCode => 'কোনো কোড অপেক্ষমাণ নেই। নতুন কোড চান।';
+
+  @override
+  String get dischargeTitle => 'ডিসচার্জ সারাংশ';
+
+  @override
+  String get dischargeListTitle => 'ডিসচার্জ সারাংশ';
+
+  @override
+  String get dischargeTileSubtitle => 'হাসপাতালের সারাংশ, ওষুধ ও সতর্কতার লক্ষণ';
+
+  @override
+  String get dischargeEmptyTitle => 'এখনো কোনো ডিসচার্জ সারাংশ নেই';
+
+  @override
+  String get dischargeEmptyMessage => 'হাসপাতাল ছাড়ার সময় হাসপাতাল ডিসচার্জ সারাংশ যোগ করে। আমরা আপনাকে জানাব।';
+
+  @override
+  String dischargeVersion(int version) {
+    return 'সংস্করণ $version';
+  }
+
+  @override
+  String get dischargeStatusDraft => 'খসড়া';
+
+  @override
+  String get dischargeStatusFinal => 'চূড়ান্ত';
+
+  @override
+  String get dischargeStatusSuperseded => 'পুরোনো সংস্করণ';
+
+  @override
+  String get dischargeSupersededNote => 'এই সারাংশের একটি নতুন সংস্করণ আছে। সর্বশেষটি দেখতে তালিকা খুলুন।';
+
+  @override
+  String dischargeFinalizedOn(String date) {
+    return 'চূড়ান্ত হয়েছে: $date';
+  }
+
+  @override
+  String dischargeDischargedOn(String date) {
+    return 'ডিসচার্জ: $date';
+  }
+
+  @override
+  String get dischargeRedFlagsTitle => 'নিচের কোনোটি দেখলে সঙ্গে সঙ্গে চিকিৎসা সহায়তা নিন:';
+
+  @override
+  String get dischargeRedFlagsEmergency => 'জরুরি অবস্থায় প্রথমে স্থানীয় জরুরি নম্বরে ফোন করুন।';
+
+  @override
+  String get dischargeSectionDiagnosis => 'রোগনির্ণয়';
+
+  @override
+  String dischargeCode(String code) {
+    return 'কোড: $code';
+  }
+
+  @override
+  String get dischargeSectionStay => 'হাসপাতালে থাকা';
+
+  @override
+  String get dischargeAdmissionDate => 'ভর্তির তারিখ';
+
+  @override
+  String get dischargeDischargeDate => 'ডিসচার্জের তারিখ';
+
+  @override
+  String get dischargeSectionProcedure => 'চিকিৎসা-প্রক্রিয়া';
+
+  @override
+  String get dischargeProcedureCode => 'প্রক্রিয়ার কোড';
+
+  @override
+  String get dischargeProcedureDate => 'প্রক্রিয়ার তারিখ';
+
+  @override
+  String get dischargeDoctor => 'চিকিৎসক';
+
+  @override
+  String get dischargeDoctorRegistration => 'রেজিস্ট্রেশন নং';
+
+  @override
+  String get dischargeSectionHospitalCourse => 'হাসপাতালে চিকিৎসা';
+
+  @override
+  String get dischargeSectionMedications => 'ওষুধ';
+
+  @override
+  String get dischargeNoMedications => 'ডিসচার্জের সময় কোনো ওষুধ দেওয়া হয়নি।';
+
+  @override
+  String dischargeMedicationDuration(int days) {
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days দিন', one: '১ দিন');
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeMedicationOngoing => 'চলমান';
+
+  @override
+  String dischargeReminderUntil(String date) {
+    return '$date পর্যন্ত';
+  }
+
+  @override
+  String get dischargeSectionFollowUp => 'ফলো-আপ নির্দেশনা';
+
+  @override
+  String get dischargeSectionAllergies => 'অ্যালার্জি';
+
+  @override
+  String get dischargeSectionInvestigations => 'পরীক্ষার ফলাফল';
+
+  @override
+  String get dischargeSectionAttachments => 'সংযুক্ত নথি';
+
+  @override
+  String get dischargeDownloadPdf => 'PDF ডাউনলোড করুন';
+
+  @override
+  String get dischargeDownloadFhir => 'FHIR ফাইল ডাউনলোড করুন';
+
+  @override
+  String get dischargeFhirHint =>
+      'একটি মানসম্মত মেডিকেল রেকর্ড ফাইল (HL7 FHIR), যা ডাক্তারদের সিস্টেমে ইমপোর্ট করা যায়।';
+
+  @override
+  String get dischargeConfidential => 'এই সারাংশে গোপনীয় চিকিৎসা তথ্য আছে। শুধু বিশ্বস্ত ডাক্তারদের সাথে শেয়ার করুন।';
+
+  @override
+  String get dischargeShareWithDoctor => 'আমার ডাক্তারের সাথে শেয়ার করুন';
+
+  @override
+  String get dischargeShareIntro =>
+      'দেশে আপনার ডাক্তারকে এই সারাংশের একটি নিরাপদ লিংক পাঠান। লিংকের মেয়াদ শেষ না হওয়া পর্যন্ত তিনি অ্যাকাউন্ট ছাড়াই এটি খুলতে পারবেন।';
+
+  @override
+  String get dischargeShareDoctorEmail => 'ডাক্তারের ইমেইল';
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => 'একটি সঠিক ইমেইল ঠিকানা লিখুন।';
+
+  @override
+  String get dischargeShareDoctorName => 'ডাক্তারের নাম (ঐচ্ছিক)';
+
+  @override
+  String get dischargeShareDocuments => 'যে নথিগুলো যুক্ত করবেন';
+
+  @override
+  String get dischargeShareDocumentsHint => 'সারাংশের PDF সবসময় যুক্ত থাকে।';
+
+  @override
+  String get dischargeShareFromHospital => 'হাসপাতাল থেকে';
+
+  @override
+  String get dischargeShareYourDocuments => 'আপনার নথি';
+
+  @override
+  String get dischargeShareNoDocuments => 'আর কোনো নথি নেই।';
+
+  @override
+  String get dischargeShareValidity => 'লিংকের মেয়াদ';
+
+  @override
+  String dischargeShareDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days দিন', one: '১ দিন');
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareLanguage => 'ইমেইলের ভাষা';
+
+  @override
+  String get dischargeShareConsent =>
+      'আমি এই ডিসচার্জ সারাংশ ও নির্বাচিত নথিগুলো এই ডাক্তারের সাথে শেয়ার করতে সম্মত। আমি বুঝি যে লিংকের মেয়াদ শেষ না হওয়া পর্যন্ত ডাক্তার এগুলো খুলতে পারবেন এবং প্রতিবার দেখা রেকর্ড করা হয়।';
+
+  @override
+  String get dischargeShareConsentRequired => 'শেয়ার করার আগে সম্মতি দিতে বাক্সে টিক দিন।';
+
+  @override
+  String get dischargeShareSend => 'লিংক পাঠান';
+
+  @override
+  String get dischargeShareSentTitle => 'লিংক পাঠানো হয়েছে';
+
+  @override
+  String dischargeShareSentBody(String email, String date) {
+    return 'আমরা $email ঠিকানায় একটি লিংক ইমেইল করেছি। এটি $date পর্যন্ত কাজ করবে।';
+  }
+
+  @override
+  String get dischargeShareLinkOnce => 'চাইলে এখনই লিংকটি কপি করতে পারেন। এটি শুধু একবারই দেখানো হয়।';
+
+  @override
+  String get dischargeShareCopy => 'লিংক কপি করুন';
+
+  @override
+  String get dischargeShareCopied => 'লিংক কপি হয়েছে';
+
+  @override
+  String get dischargeSharesTitle => 'যাঁদের সাথে শেয়ার করেছেন';
+
+  @override
+  String get dischargeSharesEmpty => 'আপনি এখনো এই সারাংশ শেয়ার করেননি।';
+
+  @override
+  String dischargeShareExpires(String date) {
+    return 'মেয়াদ শেষ: $date';
+  }
+
+  @override
+  String get dischargeShareExpired => 'মেয়াদোত্তীর্ণ';
+
+  @override
+  String get dischargeShareRevoked => 'বাতিল';
+
+  @override
+  String dischargeShareViews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count বার খোলা হয়েছে',
+      one: 'একবার খোলা হয়েছে',
+      zero: 'এখনো খোলা হয়নি',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareRevoke => 'বাতিল করুন';
+
+  @override
+  String get dischargeShareRevokeTitle => 'এই লিংকটি বাতিল করবেন?';
+
+  @override
+  String get dischargeShareRevokeBody => 'ডাক্তার আর এই লিংক দিয়ে সারাংশটি খুলতে পারবেন না।';
+
+  @override
+  String get dischargeShareRevokedSnack => 'লিংক বাতিল হয়েছে';
+
+  @override
+  String get dischargeRemindersTitle => 'ওষুধের রিমাইন্ডার';
+
+  @override
+  String get dischargeRemindersSwitch => 'প্রতিদিনের রিমাইন্ডার';
+
+  @override
+  String get dischargeRemindersHint =>
+      'ওষুধ খাওয়ার সময়কালে দিনে একটি নোটিফিকেশন। ডোজ ও সময়ের ব্যাপারে সবসময় ডাক্তারের নির্দেশনা মেনে চলুন।';
+
+  @override
+  String get dischargeRemindersTime => 'রিমাইন্ডারের সময়';
+
+  @override
+  String get dischargeRemindersOn => 'ওষুধের রিমাইন্ডার চালু হয়েছে।';
+
+  @override
+  String get dischargeRemindersOff => 'ওষুধের রিমাইন্ডার বন্ধ হয়েছে।';
+
+  @override
+  String get dischargeHpMoreSubtitle => 'রোগীদের ডিসচার্জ সারাংশ লিখুন, চূড়ান্ত করুন ও হালনাগাদ করুন';
+
+  @override
+  String get dischargeHpEmpty => 'এই রোগীর এখনো কোনো ডিসচার্জ সারাংশ নেই।';
+
+  @override
+  String get dischargeHpEmptyAll => 'এখনো কোনো ডিসচার্জ সারাংশ নেই।';
+
+  @override
+  String get dischargeHpStart => 'ডিসচার্জ সারাংশ শুরু করুন';
+
+  @override
+  String get dischargeHpDraftExists => 'একটি খসড়া আগে থেকেই আছে। সেটি খোলা হচ্ছে।';
+
+  @override
+  String get dischargeHpFinalExists =>
+      'এই কেসের একটি চূড়ান্ত সারাংশ আগে থেকেই আছে। সেটি খুলে \"নতুন সংস্করণ হিসেবে সম্পাদনা\" বেছে নিন।';
+
+  @override
+  String get dischargeHpEditorTitle => 'ডিসচার্জ সারাংশ সম্পাদনা';
+
+  @override
+  String get dischargeHpDoctorSection => 'ডাক্তার';
+
+  @override
+  String get dischargeHpChooseDoctor => 'একজন ডাক্তার বেছে নিন';
+
+  @override
+  String get dischargeHpDoctorName => 'ডাক্তারের নাম';
+
+  @override
+  String get dischargeHpDoctorRegistration => 'মেডিকেল রেজিস্ট্রেশন নম্বর';
+
+  @override
+  String get dischargeHpPickDate => 'একটি তারিখ বেছে নিন';
+
+  @override
+  String get dischargeHpDiagnosisCode => 'ICD-10 কোড (ঐচ্ছিক)';
+
+  @override
+  String get dischargeHpProcedureCode => 'প্রক্রিয়ার কোড (ঐচ্ছিক)';
+
+  @override
+  String get dischargeHpCodeInvalid => 'অক্ষর, সংখ্যা, বিন্দু বা ড্যাশ ব্যবহার করুন (সর্বোচ্চ ২০)।';
+
+  @override
+  String get dischargeHpRequiredToFinalize => 'চূড়ান্ত করতে আবশ্যক';
+
+  @override
+  String get dischargeHpRedFlagsLabel => 'সতর্কতার লক্ষণ (রেড ফ্ল্যাগ)';
+
+  @override
+  String get dischargeHpRedFlagsHint => 'যে উপসর্গ দেখা দিলে রোগীকে সঙ্গে সঙ্গে চিকিৎসা নিতে হবে';
+
+  @override
+  String get dischargeHpAddMedication => 'ওষুধ যোগ করুন';
+
+  @override
+  String get dischargeHpEditMedication => 'ওষুধ সম্পাদনা';
+
+  @override
+  String get dischargeHpMedName => 'ওষুধের নাম';
+
+  @override
+  String get dischargeHpMedDose => 'ডোজ';
+
+  @override
+  String get dischargeHpMedFrequency => 'কতবার';
+
+  @override
+  String get dischargeHpMedDuration => 'দিনের সংখ্যা (ফাঁকা = চলমান)';
+
+  @override
+  String get dischargeHpMedRoute => 'সেবনের পথ (যেমন মুখে)';
+
+  @override
+  String get dischargeHpMedInstructions => 'নির্দেশনা';
+
+  @override
+  String get dischargeHpMedNameRequired => 'ওষুধের নাম লিখুন।';
+
+  @override
+  String get dischargeHpMedDurationInvalid => '১ থেকে ৩৬৫০-এর মধ্যে দিনের সংখ্যা লিখুন।';
+
+  @override
+  String get dischargeHpAttachmentsHint => 'এই কেসের যে নথিগুলো সারাংশের সাথে যুক্ত করবেন।';
+
+  @override
+  String get dischargeHpNoDocuments => 'এই কেসে এখনো কোনো নথি নেই।';
+
+  @override
+  String get dischargeHpSaveDraft => 'খসড়া সংরক্ষণ';
+
+  @override
+  String get dischargeHpSaved => 'খসড়া সংরক্ষিত হয়েছে';
+
+  @override
+  String get dischargeHpFinalize => 'চূড়ান্ত করুন';
+
+  @override
+  String get dischargeHpFinalizeTitle => 'এই সারাংশ চূড়ান্ত করবেন?';
+
+  @override
+  String get dischargeHpFinalizeBody =>
+      'এটি লক হয়ে যাবে, একটি PDF তৈরি হবে এবং রোগীকে জানানো হবে। পরে কোনো পরিবর্তন করলে নতুন সংস্করণ তৈরি হবে।';
+
+  @override
+  String get dischargeHpFinalized => 'সারাংশ চূড়ান্ত করে রোগীকে পাঠানো হয়েছে';
+
+  @override
+  String dischargeHpMissing(String fields) {
+    return 'চূড়ান্ত করার আগে পূরণ করুন: $fields';
+  }
+
+  @override
+  String get dischargeHpDiscard => 'খসড়া বাতিল করুন';
+
+  @override
+  String get dischargeHpDiscardTitle => 'এই খসড়া বাতিল করবেন?';
+
+  @override
+  String get dischargeHpDiscardBody => 'খসড়াটি মুছে যাবে। চূড়ান্ত সংস্করণে কোনো প্রভাব পড়বে না।';
+
+  @override
+  String get dischargeHpDiscarded => 'খসড়া বাতিল হয়েছে';
+
+  @override
+  String get dischargeHpNewVersion => 'নতুন সংস্করণ হিসেবে সম্পাদনা';
+
+  @override
+  String get dischargeHpNewVersionTitle => 'নতুন সংস্করণ তৈরি করবেন?';
+
+  @override
+  String dischargeHpNewVersionBody(int version, int next) {
+    return 'সংস্করণ $version যেমন আছে তেমনই থাকবে। আপনার পরিবর্তনগুলো নতুন খসড়া, সংস্করণ $next-এ যাবে, যা প্রস্তুত হলে আপনি চূড়ান্ত করবেন।';
+  }
+
+  @override
+  String get dischargeHpDatesInvalid => 'ডিসচার্জের তারিখ ভর্তির তারিখের আগে হতে পারে না।';
+
+  @override
+  String get dischargeHpLockedNote => 'চূড়ান্ত সারাংশ লক করা থাকে। এটি বদলাতে নতুন সংস্করণ তৈরি করুন।';
 }

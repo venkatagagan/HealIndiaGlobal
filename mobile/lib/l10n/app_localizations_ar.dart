@@ -8961,4 +8961,547 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'العلاج';
+
+  @override
+  String get whatsappTitle => 'تحديثات واتساب';
+
+  @override
+  String get whatsappTileSubtitle => 'تحديثات الحجز والسفر والمواعيد على واتساب';
+
+  @override
+  String get whatsappIntro => 'احصل على تحديثات قصيرة عن حجوزاتك وسفرك ومواعيدك على واتساب.';
+
+  @override
+  String get whatsappPrivacyNote =>
+      'رسائل واتساب تحمل تحديثات عامة فقط. لا نرسل أي تفاصيل طبية عبر واتساب أبدًا؛ افتح التطبيق لقراءتها.';
+
+  @override
+  String get whatsappStopNote => 'يمكنك الإيقاف في أي وقت من هنا، أو بالرد بكلمة STOP على أي رسالة منا على واتساب.';
+
+  @override
+  String get whatsappUnavailable => 'تحديثات واتساب غير متاحة بعد. سنخبرك عندما يمكنك تفعيلها.';
+
+  @override
+  String get whatsappStatusOn => 'مفعّل';
+
+  @override
+  String get whatsappStatusOff => 'متوقف';
+
+  @override
+  String get whatsappStatusPending => 'بانتظار الرمز';
+
+  @override
+  String get whatsappActiveTitle => 'تحديثات واتساب مفعّلة';
+
+  @override
+  String whatsappActiveNumber(String phone) {
+    return 'تُرسل التحديثات إلى $phone.';
+  }
+
+  @override
+  String whatsappVerifiedOn(String date) {
+    return 'تم التحقق من الرقم في $date.';
+  }
+
+  @override
+  String whatsappOptedOutNote(String date) {
+    return 'لقد أوقفت تحديثات واتساب في $date.';
+  }
+
+  @override
+  String get whatsappPhoneLabel => 'رقم واتساب';
+
+  @override
+  String get whatsappPhoneHint => '+234 803 123 4567';
+
+  @override
+  String get whatsappPhoneHelper => 'أدخل رمز الدولة مبتدئًا بعلامة +.';
+
+  @override
+  String get whatsappPhoneInvalid => 'أدخل رقم واتساب مع رمز الدولة، مثل +234 803 123 4567.';
+
+  @override
+  String get whatsappSendCode => 'إرسال الرمز';
+
+  @override
+  String get whatsappCodeSent => 'تم إرسال الرمز. تحقق من واتساب.';
+
+  @override
+  String whatsappCodeSentTo(String phone) {
+    return 'أرسلنا رمزًا من 6 أرقام إلى $phone على واتساب.';
+  }
+
+  @override
+  String whatsappCodeExpiresAt(String time) {
+    return 'تنتهي صلاحية الرمز في الساعة $time.';
+  }
+
+  @override
+  String get whatsappCodeLabel => 'الرمز المكوّن من 6 أرقام';
+
+  @override
+  String get whatsappCodeInvalid => 'أدخل الأرقام الستة الموجودة في رسالة واتساب.';
+
+  @override
+  String get whatsappConfirmCode => 'تأكيد الرمز';
+
+  @override
+  String get whatsappResendCode => 'إرسال رمز جديد';
+
+  @override
+  String get whatsappChangeNumber => 'استخدام رقم آخر';
+
+  @override
+  String get whatsappTurnOff => 'إيقاف تحديثات واتساب';
+
+  @override
+  String get whatsappTurnOffConfirmTitle => 'هل تريد إيقاف تحديثات واتساب؟';
+
+  @override
+  String get whatsappTurnOffConfirmBody => 'ستظل تصلك التحديثات في التطبيق وعبر البريد الإلكتروني.';
+
+  @override
+  String get whatsappTurnedOn => 'تم تفعيل تحديثات واتساب.';
+
+  @override
+  String get whatsappTurnedOff => 'تم إيقاف تحديثات واتساب.';
+
+  @override
+  String whatsappErrorInvalidCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'الرمز غير صحيح. بقيت $count محاولة.',
+      few: 'الرمز غير صحيح. بقيت $count محاولات.',
+      two: 'الرمز غير صحيح. بقيت محاولتان.',
+      one: 'الرمز غير صحيح. بقيت محاولة واحدة.',
+      zero: 'الرمز غير صحيح. اطلب رمزًا جديدًا.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whatsappErrorCodeExpired => 'انتهت صلاحية هذا الرمز. اطلب رمزًا جديدًا.';
+
+  @override
+  String get whatsappErrorTooManyAttempts => 'أُدخلت رموز خاطئة كثيرة. اطلب رمزًا جديدًا.';
+
+  @override
+  String get whatsappErrorNoPendingCode => 'لا يوجد رمز بانتظار التأكيد. اطلب رمزًا جديدًا.';
+
+  @override
+  String get dischargeTitle => 'ملخص الخروج';
+
+  @override
+  String get dischargeListTitle => 'ملخصات الخروج';
+
+  @override
+  String get dischargeTileSubtitle => 'ملخص المستشفى والأدوية وعلامات الخطر';
+
+  @override
+  String get dischargeEmptyTitle => 'لا يوجد ملخص خروج بعد';
+
+  @override
+  String get dischargeEmptyMessage => 'يضيف المستشفى ملخص الخروج عند مغادرتك. سنرسل لك إشعارًا.';
+
+  @override
+  String dischargeVersion(int version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get dischargeStatusDraft => 'مسودة';
+
+  @override
+  String get dischargeStatusFinal => 'نهائي';
+
+  @override
+  String get dischargeStatusSuperseded => 'إصدار أقدم';
+
+  @override
+  String get dischargeSupersededNote => 'يوجد إصدار أحدث من هذا الملخص. افتح القائمة لعرض الأحدث.';
+
+  @override
+  String dischargeFinalizedOn(String date) {
+    return 'اعتُمد في $date';
+  }
+
+  @override
+  String dischargeDischargedOn(String date) {
+    return 'تاريخ الخروج $date';
+  }
+
+  @override
+  String get dischargeRedFlagsTitle => 'اطلب المساعدة الطبية فورًا إذا لاحظت ما يلي:';
+
+  @override
+  String get dischargeRedFlagsEmergency => 'في حالة الطوارئ، اتصل أولًا برقم الطوارئ المحلي.';
+
+  @override
+  String get dischargeSectionDiagnosis => 'التشخيص';
+
+  @override
+  String dischargeCode(String code) {
+    return 'الرمز: $code';
+  }
+
+  @override
+  String get dischargeSectionStay => 'الإقامة في المستشفى';
+
+  @override
+  String get dischargeAdmissionDate => 'تاريخ الدخول';
+
+  @override
+  String get dischargeDischargeDate => 'تاريخ الخروج';
+
+  @override
+  String get dischargeSectionProcedure => 'الإجراء الطبي';
+
+  @override
+  String get dischargeProcedureCode => 'رمز الإجراء';
+
+  @override
+  String get dischargeProcedureDate => 'تاريخ الإجراء';
+
+  @override
+  String get dischargeDoctor => 'الطبيب المعالج';
+
+  @override
+  String get dischargeDoctorRegistration => 'رقم التسجيل';
+
+  @override
+  String get dischargeSectionHospitalCourse => 'العلاج في المستشفى';
+
+  @override
+  String get dischargeSectionMedications => 'الأدوية';
+
+  @override
+  String get dischargeNoMedications => 'لم توصف أي أدوية عند الخروج.';
+
+  @override
+  String dischargeMedicationDuration(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'لمدة $days يومًا',
+      few: 'لمدة $days أيام',
+      two: 'لمدة يومين',
+      one: 'لمدة يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeMedicationOngoing => 'مستمر';
+
+  @override
+  String dischargeReminderUntil(String date) {
+    return 'حتى $date';
+  }
+
+  @override
+  String get dischargeSectionFollowUp => 'تعليمات المتابعة';
+
+  @override
+  String get dischargeSectionAllergies => 'الحساسية';
+
+  @override
+  String get dischargeSectionInvestigations => 'نتائج الفحوصات';
+
+  @override
+  String get dischargeSectionAttachments => 'المستندات المرفقة';
+
+  @override
+  String get dischargeDownloadPdf => 'تنزيل PDF';
+
+  @override
+  String get dischargeDownloadFhir => 'تنزيل ملف FHIR';
+
+  @override
+  String get dischargeFhirHint => 'ملف سجل طبي قياسي (HL7 FHIR) يمكن لأنظمة الأطباء استيراده.';
+
+  @override
+  String get dischargeConfidential => 'يحتوي هذا الملخص على معلومات طبية سرية. شاركه فقط مع أطباء تثق بهم.';
+
+  @override
+  String get dischargeShareWithDoctor => 'المشاركة مع طبيبي';
+
+  @override
+  String get dischargeShareIntro =>
+      'أرسل إلى طبيبك في بلدك رابطًا آمنًا لهذا الملخص. يمكنه فتحه دون حساب حتى تنتهي صلاحية الرابط.';
+
+  @override
+  String get dischargeShareDoctorEmail => 'البريد الإلكتروني للطبيب';
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => 'أدخل عنوان بريد إلكتروني صحيحًا.';
+
+  @override
+  String get dischargeShareDoctorName => 'اسم الطبيب (اختياري)';
+
+  @override
+  String get dischargeShareDocuments => 'المستندات المرفقة بالمشاركة';
+
+  @override
+  String get dischargeShareDocumentsHint => 'يُرفق ملف PDF للملخص دائمًا.';
+
+  @override
+  String get dischargeShareFromHospital => 'من المستشفى';
+
+  @override
+  String get dischargeShareYourDocuments => 'مستنداتك';
+
+  @override
+  String get dischargeShareNoDocuments => 'لا توجد مستندات أخرى.';
+
+  @override
+  String get dischargeShareValidity => 'صلاحية الرابط';
+
+  @override
+  String dischargeShareDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days يومًا',
+      few: '$days أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareLanguage => 'لغة البريد الإلكتروني';
+
+  @override
+  String get dischargeShareConsent =>
+      'أوافق على مشاركة ملخص الخروج هذا والمستندات المختارة مع هذا الطبيب. أفهم أن الطبيب يمكنه فتحها حتى تنتهي صلاحية الرابط، وأن كل مشاهدة تُسجَّل.';
+
+  @override
+  String get dischargeShareConsentRequired => 'يرجى وضع علامة في المربع للموافقة قبل المشاركة.';
+
+  @override
+  String get dischargeShareSend => 'إرسال الرابط';
+
+  @override
+  String get dischargeShareSentTitle => 'تم إرسال الرابط';
+
+  @override
+  String dischargeShareSentBody(String email, String date) {
+    return 'أرسلنا رابطًا بالبريد الإلكتروني إلى $email. يعمل الرابط حتى $date.';
+  }
+
+  @override
+  String get dischargeShareLinkOnce => 'يمكنك أيضًا نسخ الرابط الآن. لن يظهر إلا مرة واحدة.';
+
+  @override
+  String get dischargeShareCopy => 'نسخ الرابط';
+
+  @override
+  String get dischargeShareCopied => 'تم نسخ الرابط';
+
+  @override
+  String get dischargeSharesTitle => 'تمت المشاركة مع';
+
+  @override
+  String get dischargeSharesEmpty => 'لم تشارك هذا الملخص بعد.';
+
+  @override
+  String dischargeShareExpires(String date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String get dischargeShareExpired => 'منتهي الصلاحية';
+
+  @override
+  String get dischargeShareRevoked => 'ملغى';
+
+  @override
+  String dischargeShareViews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'فُتح $count مرة',
+      few: 'فُتح $count مرات',
+      two: 'فُتح مرتين',
+      one: 'فُتح مرة واحدة',
+      zero: 'لم يُفتح بعد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dischargeShareRevoke => 'إلغاء';
+
+  @override
+  String get dischargeShareRevokeTitle => 'هل تريد إلغاء هذا الرابط؟';
+
+  @override
+  String get dischargeShareRevokeBody => 'لن يتمكن الطبيب بعد الآن من فتح الملخص بهذا الرابط.';
+
+  @override
+  String get dischargeShareRevokedSnack => 'تم إلغاء الرابط';
+
+  @override
+  String get dischargeRemindersTitle => 'تذكيرات الأدوية';
+
+  @override
+  String get dischargeRemindersSwitch => 'تذكير يومي';
+
+  @override
+  String get dischargeRemindersHint =>
+      'إشعار واحد يوميًا طوال مدة أدويتك. اتبع دائمًا تعليمات طبيبك بشأن الجرعة والتوقيت.';
+
+  @override
+  String get dischargeRemindersTime => 'وقت التذكير';
+
+  @override
+  String get dischargeRemindersOn => 'تم تفعيل تذكيرات الأدوية.';
+
+  @override
+  String get dischargeRemindersOff => 'تم إيقاف تذكيرات الأدوية.';
+
+  @override
+  String get dischargeHpMoreSubtitle => 'كتابة ملخصات خروج المرضى واعتمادها وتحديثها';
+
+  @override
+  String get dischargeHpEmpty => 'لا يوجد ملخص خروج لهذا المريض بعد.';
+
+  @override
+  String get dischargeHpEmptyAll => 'لا توجد ملخصات خروج بعد.';
+
+  @override
+  String get dischargeHpStart => 'بدء ملخص الخروج';
+
+  @override
+  String get dischargeHpDraftExists => 'توجد مسودة بالفعل. جارٍ فتحها.';
+
+  @override
+  String get dischargeHpFinalExists => 'لهذه الحالة ملخص نهائي بالفعل. افتحه واختر \"تعديل كإصدار جديد\".';
+
+  @override
+  String get dischargeHpEditorTitle => 'تعديل ملخص الخروج';
+
+  @override
+  String get dischargeHpDoctorSection => 'الطبيب';
+
+  @override
+  String get dischargeHpChooseDoctor => 'اختر طبيبًا';
+
+  @override
+  String get dischargeHpDoctorName => 'اسم الطبيب';
+
+  @override
+  String get dischargeHpDoctorRegistration => 'رقم التسجيل الطبي';
+
+  @override
+  String get dischargeHpPickDate => 'اختر تاريخًا';
+
+  @override
+  String get dischargeHpDiagnosisCode => 'رمز ICD-10 (اختياري)';
+
+  @override
+  String get dischargeHpProcedureCode => 'رمز الإجراء (اختياري)';
+
+  @override
+  String get dischargeHpCodeInvalid => 'استخدم حروفًا أو أرقامًا أو نقاطًا أو شرطات (20 حدًا أقصى).';
+
+  @override
+  String get dischargeHpRequiredToFinalize => 'مطلوب للاعتماد';
+
+  @override
+  String get dischargeHpRedFlagsLabel => 'علامات الخطر';
+
+  @override
+  String get dischargeHpRedFlagsHint => 'أعراض تعني أن على المريض طلب المساعدة الطبية فورًا';
+
+  @override
+  String get dischargeHpAddMedication => 'إضافة دواء';
+
+  @override
+  String get dischargeHpEditMedication => 'تعديل الدواء';
+
+  @override
+  String get dischargeHpMedName => 'اسم الدواء';
+
+  @override
+  String get dischargeHpMedDose => 'الجرعة';
+
+  @override
+  String get dischargeHpMedFrequency => 'عدد المرات';
+
+  @override
+  String get dischargeHpMedDuration => 'عدد الأيام (فارغ = مستمر)';
+
+  @override
+  String get dischargeHpMedRoute => 'طريقة الإعطاء (مثل: بالفم)';
+
+  @override
+  String get dischargeHpMedInstructions => 'التعليمات';
+
+  @override
+  String get dischargeHpMedNameRequired => 'أدخل اسم الدواء.';
+
+  @override
+  String get dischargeHpMedDurationInvalid => 'أدخل عدد أيام من 1 إلى 3650.';
+
+  @override
+  String get dischargeHpAttachmentsHint => 'مستندات هذه الحالة لإرفاقها بالملخص.';
+
+  @override
+  String get dischargeHpNoDocuments => 'لا توجد مستندات في هذه الحالة بعد.';
+
+  @override
+  String get dischargeHpSaveDraft => 'حفظ المسودة';
+
+  @override
+  String get dischargeHpSaved => 'تم حفظ المسودة';
+
+  @override
+  String get dischargeHpFinalize => 'اعتماد';
+
+  @override
+  String get dischargeHpFinalizeTitle => 'هل تريد اعتماد هذا الملخص؟';
+
+  @override
+  String get dischargeHpFinalizeBody =>
+      'سيُقفل الملخص ويُنشأ ملف PDF ويُبلَّغ المريض. أي تعديل لاحق يُنشئ إصدارًا جديدًا.';
+
+  @override
+  String get dischargeHpFinalized => 'تم اعتماد الملخص وإرساله إلى المريض';
+
+  @override
+  String dischargeHpMissing(String fields) {
+    return 'املأ قبل الاعتماد: $fields';
+  }
+
+  @override
+  String get dischargeHpDiscard => 'تجاهل المسودة';
+
+  @override
+  String get dischargeHpDiscardTitle => 'هل تريد تجاهل هذه المسودة؟';
+
+  @override
+  String get dischargeHpDiscardBody => 'ستُحذف المسودة. لن تتأثر الإصدارات النهائية.';
+
+  @override
+  String get dischargeHpDiscarded => 'تم تجاهل المسودة';
+
+  @override
+  String get dischargeHpNewVersion => 'تعديل كإصدار جديد';
+
+  @override
+  String get dischargeHpNewVersionTitle => 'هل تريد إنشاء إصدار جديد؟';
+
+  @override
+  String dischargeHpNewVersionBody(int version, int next) {
+    return 'يبقى الإصدار $version كما هو. تُحفظ تعديلاتك في مسودة جديدة، الإصدار $next، تعتمدها عندما تكون جاهزة.';
+  }
+
+  @override
+  String get dischargeHpDatesInvalid => 'لا يمكن أن يكون تاريخ الخروج قبل تاريخ الدخول.';
+
+  @override
+  String get dischargeHpLockedNote => 'الملخصات النهائية مقفلة. لتغيير هذا الملخص، أنشئ إصدارًا جديدًا.';
 }

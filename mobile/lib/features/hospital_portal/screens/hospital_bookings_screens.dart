@@ -301,6 +301,13 @@ class _HospitalBookingDetailScreenState extends ConsumerState<HospitalBookingDet
                 icon: const Icon(Icons.folder_shared_outlined),
                 label: Text(l10n.hpOpenCase),
               ),
+              if (b.status == BookingStatus.admitted || b.status == BookingStatus.completed)
+                TextButton.icon(
+                  key: const ValueKey('hospital-booking-discharge-summary'),
+                  onPressed: () => context.push(HospitalRoutes.dischargeSummaries(caseId: b.caseId, bookingId: b.id)),
+                  icon: const Icon(Icons.summarize_outlined),
+                  label: Text(l10n.dischargeTitle),
+                ),
               SectionTitle(l10n.hpItinerary),
               _ItineraryList(booking: b, busy: _busy, guard: _guard),
             ],

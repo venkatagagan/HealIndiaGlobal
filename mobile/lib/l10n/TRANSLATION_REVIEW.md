@@ -120,3 +120,16 @@ per action may read better.
 - **ru**: `paymentWalletFallback` ("кошельке") only fits the sentence "Завершите оплату в {wallet}".
 - Keys that insert a lower-cased status label into a sentence (`hpListingOtherStatus` and some `{status}` /
   `{service}` keys in booking and trips) read mechanically; consider rephrasing.
+
+## WhatsApp updates and discharge summaries (added 2026-11)
+
+| Keys | Why |
+|---|---|
+| `dischargeRedFlagsTitle`, `dischargeRedFlagsEmergency`, `dischargeHpRedFlagsLabel`, `dischargeHpRedFlagsHint` | Warning signs after discharge and emergency advice; must say "get medical help straight away" and must not imply an ambulance is coming (highest priority) |
+| `dischargeSectionDiagnosis`, `dischargeSectionHospitalCourse`, `dischargeSectionFollowUp`, `dischargeSectionAllergies`, `dischargeSectionInvestigations`, `dischargeSectionProcedure`, `dischargeProcedure*`, `dischargeAdmissionDate`, `dischargeDischargeDate`, `dischargeDoctor*`, `dischargeHpDiagnosisCode`, `dischargeHpDoctorRegistration`, `dischargeTitle`, `dischargeListTitle` | Clinical document terminology (ru "Выписной эпикриз", fr "Compte rendu de sortie", ICD-10 = МКБ-10 / CIM-10) |
+| `dischargeSectionMedications`, `dischargeNoMedications`, `dischargeMedicationDuration`, `dischargeMedicationOngoing`, `dischargeHpMed*`, `dischargeReminderUntil`, `dischargeReminders*` | Medicines, dose, frequency, route and duration; reminders must defer to the doctor's instructions |
+| `dischargeShareConsent`, `dischargeShareConsentRequired`, `dischargeShareIntro`, `dischargeShareDocumentsHint`, `dischargeShareLinkOnce`, `dischargeShareRevokeBody` | Consent to share medical records with a doctor without an account; access recording and link expiry (legal) |
+| `dischargeConfidential`, `dischargeFhirHint` | Confidentiality of medical information; HL7 FHIR export |
+| `dischargeHpFinalizeBody`, `dischargeHpNewVersionBody`, `dischargeHpLockedNote`, `dischargeHpDiscardBody` | Finalized summaries are locked; edits create a new version |
+| `whatsappPrivacyNote`, `whatsappStopNote`, `whatsappIntro`, `whatsappTurnOffConfirmBody` | Promise that WhatsApp never carries medical details; opt-out by replying STOP (the keyword stays in Latin capitals in every language) |
+| `whatsappErrorInvalidCode`, `dischargeShareViews`, `dischargeShareDays` | Plural forms (ar `=2`/`few`, ru `one`/`few`/`many`) |

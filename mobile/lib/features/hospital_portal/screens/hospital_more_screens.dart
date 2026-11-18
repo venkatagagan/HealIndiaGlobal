@@ -89,6 +89,13 @@ class HospitalMoreScreen extends ConsumerWidget {
             HospitalRoutes.visas,
             key: const ValueKey('hospital-more-visas'),
           ),
+          link(
+            Icons.summarize_outlined,
+            l10n.dischargeListTitle,
+            l10n.dischargeHpMoreSubtitle,
+            HospitalRoutes.dischargeSummaries(),
+            key: const ValueKey('hospital-more-discharge'),
+          ),
           link(Icons.badge_outlined, l10n.hpDoctorsTitle, l10n.hpMoreDoctorsSubtitle, HospitalRoutes.doctors),
           link(
             Icons.price_change_outlined,
