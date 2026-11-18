@@ -292,3 +292,20 @@ write the number as a word (ar "يوم واحد", "مرتين"). French says "co
 - `whatsapp.description`, `whatsapp.log.description` (message text is never stored), `whatsapp.provider.secretsNote`
   (secrets are never shown), `whatsapp.notConfigured`. Technical names (Webhook, Graph API, Meta Business Manager,
   STOP) stay in Latin script.
+
+### Server (`backend/app/i18n/<lng>.json`, section `discharge.*`) and WhatsApp templates
+
+- Medical: `discharge.pdf.*`, the labels of the discharge summary PDF read by doctors. Check the clinical terms:
+  `hospital_course` (fr "Évolution pendant l'hospitalisation", ru "Течение госпитализации"), `red_flags`,
+  `med_frequency`, `med_instructions` ("Route / instructions"), `no_known_allergies`. Also check
+  `discharge.notifications.medication_reminder.*` and `discharge.notifications.checkin_due.*`.
+- Legal / privacy: `discharge.share_email.*`, the e-mail to the home doctor (confidential health information,
+  do not forward, every view is logged). Review `discharge.pdf.footer` too.
+- Grammar: ru `discharge.share_email.subject`/`body` use "поделился(-ась)" because the patient's gender is not
+  known.
+- WhatsApp template bodies: `backend/app/modules/messaging/whatsapp_templates/templates.json` (also printed in
+  `docs/integrations/WHATSAPP.md` section 6). They are submitted to Meta **verbatim**, so review them before
+  submission: once approved, a change needs re-approval. Keep `{{1}}`.. placeholders, never start or end a
+  body with a placeholder, and keep "Heal India Global" and "SOS" in Latin script. The `name_fallback`
+  greeting words ("there", "عزيزنا المريض", "à vous", "বন্ধু", "уважаемый пациент") are used when a patient
+  has no first name.
