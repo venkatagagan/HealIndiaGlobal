@@ -42,6 +42,9 @@ import { useHospitalOptions } from '../../lib/lookups';
 import { qk } from '../../lib/queries';
 import { fetchAllPages, filterParam, fromMinor, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
 import { useAppTranslation, type AppT } from '../../i18n';
+import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
+import type { CaseWithDeadline } from '../../lib/phase1Api';
+import { QuoteDeadline } from './QuoteDeadline';
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state
@@ -58,7 +61,7 @@ const FILTERS = {
   from: filterParam.date(),
   to: filterParam.date(),
 };
-const SORT_KEYS = ['updated_at', 'created_at', 'case_number', 'status'] as const;
+const SORT_KEYS = ['updated_at', 'created_at', 'case_number', 'status', 'quote_due_at'] as const;
 const QUICK_STATUSES: CaseStatus[] = ['enquiry', 'quoted', 'accepted', 'booked', 'in_treatment', 'completed'];
 
 type CaseFilters = FilterValues<typeof FILTERS>;
@@ -133,15 +136,24 @@ const columns = (t: AppT): DataTableColumn<CaseOut>[] => [
     key: 'quote',
     header: t('cases.columns.latestQuote'),
     align: 'end',
+    // GET /cases?sort=quote_due_at lists the cases still waiting for a quote first, soonest deadline first
+    sortable: true,
+    sortKey: 'quote_due_at',
     cell: (c) =>
       c.latest_quote ? (
-        <MoneyCell
-          minor={c.latest_quote.total_minor}
-          currency={c.latest_quote.currency}
-          secondary={<StatusBadge status={c.latest_quote.status} kind="quote" dot={false} className="bg-transparent px-0" />}
-        />
+        <span className="inline-flex flex-col items-end">
+          <MoneyCell
+            minor={c.latest_quote.total_minor}
+            currency={c.latest_quote.currency}
+            secondary={<StatusBadge status={c.latest_quote.status} kind="quote" dot={false} className="bg-transparent px-0" />}
+          />
+          <ApproxMoney display={c.latest_quote.display_total} original={c.latest_quote.currency} />
+        </span>
       ) : (
-        <span className="text-xs text-muted">{t('cases.awaitingQuote')}</span>
+        <span className="inline-flex flex-col items-end gap-1">
+          <span className="text-xs text-muted">{t('cases.awaitingQuote')}</span>
+          {c.status === 'enquiry' && <QuoteDeadline dueAt={(c as CaseWithDeadline).quote_due_at} overdue={(c as CaseWithDeadline).quote_overdue} />}
+        </span>
       ),
     exportValue: (c) => (c.latest_quote ? `${c.latest_quote.currency} ${fromMinor(c.latest_quote.total_minor, c.latest_quote.currency)}` : ''),
   },
@@ -196,7 +208,14 @@ export function CasesPage() {
   const table = useTableState({ filters: FILTERS, defaultSort: '-updated_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
-  const listParams: CaseListParams = { ...apiFilters, sort: table.sortParam, page: table.page, page_size: table.pageSize };
+  const currency = useDisplayCurrency();
+  const listParams: CaseListParams & { currency: string } = {
+    ...apiFilters,
+    sort: table.sortParam,
+    page: table.page,
+    page_size: table.pageSize,
+    currency,
+  };
 
   const list = useQuery({
     queryKey: qk.cases(listParams),

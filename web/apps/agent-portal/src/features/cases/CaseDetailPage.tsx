@@ -28,11 +28,14 @@ import {
   StatusBadge,
 } from '../../components/ui';
 import { qk } from '../../lib/queries';
+import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
+import { phase1Api } from '../../lib/phase1Api';
 import { formatDate, formatDateTime, useDocumentTitle } from '../../lib/shared';
 import { useAppTranslation } from '../../i18n';
 import { DocumentList, DocumentUploader } from '../documents/Documents';
 import { EmergencyAckPanel, PatientUpgradeRequiredNotice, needsEmergencyAck } from '@hig/shared/ui';
 import { AcceptQuoteDialog, QuoteDetails, RejectQuoteDialog, isQuoteActionable, type CareGate } from './quotes';
+import { QuoteDeadline } from './QuoteDeadline';
 
 const CANCELLABLE: CaseDetail['status'][] = ['enquiry', 'quoted', 'accepted', 'booked'];
 
@@ -40,7 +43,8 @@ export function CaseDetailPage() {
   const { t } = useAppTranslation();
   const { caseId = '' } = useParams();
   const queryClient = useQueryClient();
-  const query = useQuery({ queryKey: qk.case(caseId), queryFn: () => casesApi.get(caseId) });
+  const currency = useDisplayCurrency();
+  const query = useQuery({ queryKey: [...qk.case(caseId), { currency }], queryFn: () => phase1Api.getCase(caseId, currency) });
   const c = query.data;
   useDocumentTitle(c ? c.case_number : t('caseDetail.fallbackTitle'));
 
@@ -116,6 +120,11 @@ export function CaseDetailPage() {
             <ButtonLink to={`/messages?case=${c.id}`} variant="outline" icon={<MessageSquare className="h-4 w-4" aria-hidden />}>
               {t('caseDetail.messages')}
             </ButtonLink>
+            {c.quote_group_id && (
+              <ButtonLink variant="outline" to={`/cases/quote-groups/${c.quote_group_id}`}>
+                {t('caseDetail.quoteGroup')}
+              </ButtonLink>
+            )}
             {relatedSiblings.some((s) => s.latest_quote) && c.latest_quote && (
               <ButtonLink
                 variant="outline"
@@ -153,7 +162,12 @@ export function CaseDetailPage() {
               description={quotes.length ? undefined : t('caseDetail.noQuoteYet')}
             />
             {quotes.length === 0 ? (
-              <EmptyState title={t('caseDetail.awaitingQuote')} description={t('caseDetail.replyTime')} className="py-8" />
+              <EmptyState
+                title={t('caseDetail.awaitingQuote')}
+                description={t('caseDetail.replyTime')}
+                action={c.quote_due_at ? <QuoteDeadline dueAt={c.quote_due_at} overdue={c.quote_overdue} /> : undefined}
+                className="py-8"
+              />
             ) : (
               <div className="divide-y divide-border">
                 {quotes.map((q) => (
@@ -335,12 +349,14 @@ function BookingCard({ booking, onCancel }: { booking: BookingOut; onCancel: () 
         </Stat>
         <Stat label={t('caseDetail.booking.total')}>
           <Money minor={booking.total_minor} currency={booking.currency} className="font-semibold" />
+          <ApproxMoney display={booking.display_total} original={booking.currency} block />
         </Stat>
         <Stat label={t('caseDetail.booking.paid')}>
           <Money minor={booking.amount_paid_minor - booking.amount_refunded_minor} currency={booking.currency} />
         </Stat>
         <Stat label={t('caseDetail.booking.balanceDue')}>
           <Money minor={booking.balance_due_minor} currency={booking.currency} className={booking.balance_due_minor > 0 ? 'font-semibold text-danger' : ''} />
+          <ApproxMoney display={booking.display_balance_due} original={booking.currency} block />
         </Stat>
       </dl>
     </Card>

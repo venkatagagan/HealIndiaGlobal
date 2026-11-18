@@ -221,7 +221,8 @@
       "total": "Total",
       "paid": "Payé",
       "balanceDue": "Solde dû"
-    }
+    },
+    "quoteGroup": "Tous les devis de cette demande"
   },
   "quotes": {
     "columns": {
@@ -404,7 +405,10 @@
     "message": "Message aux hôpitaux",
     "messageHint": "Résumé de l’état de santé, attentes, dates souhaitées",
     "consent": "Le patient consent au partage de ses informations avec ces hôpitaux",
-    "consentHint": "Son profil, son évaluation et ses comptes rendus téléversés sont partagés uniquement avec les hôpitaux sélectionnés."
+    "consentHint": "Son profil, son évaluation et ses comptes rendus téléversés sont partagés uniquement avec les hôpitaux sélectionnés.",
+    "shareReports": "Partager des comptes rendus avec les hôpitaux",
+    "shareReportsHint": "Facultatif. Les comptes rendus sélectionnés sont envoyés à chaque hôpital de cette demande ({{max}} au maximum).",
+    "groupedHint": "Les hôpitaux sont sollicités ensemble. Chacun a un délai pour répondre ; vous pouvez suivre le compte à rebours et comparer les devis côte à côte."
   },
   "compare": {
     "title": "Comparer les devis",
@@ -526,7 +530,8 @@
     "notifications": "Notifications",
     "account": "Compte",
     "profileKyc": "Profil et KYC",
-    "referral": "Programme de parrainage"
+    "referral": "Programme de parrainage",
+    "aftercare": "Suivi post-traitement"
   },
   "layout": {
     "subtitle": "Portail agent",
@@ -1337,5 +1342,97 @@
     "pctRange": "{{min}}–{{max}} %",
     "compareCaption": "Comparer les hôpitaux et médecins proposés",
     "matchColumn": "Correspondance"
+  },
+  "displayCurrency": {
+    "label": "Devise d'affichage",
+    "hint": "Les prix sont aussi affichés approximativement dans cette devise. Les paiements utilisent toujours la devise d'origine.",
+    "approxTitle": "Montant approximatif en {{currency}}. Les taux de change varient ; l'hôpital est payé dans la devise d'origine.",
+    "approxSr": "(approximatif)"
+  },
+  "quoteDeadline": {
+    "dueAt": "Devis attendu avant le {{date}}",
+    "overdue": "Devis en retard",
+    "leftDays": "Devis attendu dans {{days}} j {{hours}} h",
+    "leftHours": "Devis attendu dans {{hours}} h {{minutes}} min",
+    "leftMinutes": "Devis attendu dans {{minutes}} min"
+  },
+  "quoteGroup": {
+    "title": "Demande de devis",
+    "back": "Dossiers",
+    "generalEnquiry": "Demande générale",
+    "description": "{{patient}} · {{treatment}} · envoyée le {{date}}",
+    "compareDetail": "Comparer en détail",
+    "waiting_one": "En attente de la réponse de {{count}} hôpital.",
+    "waiting_other": "En attente de la réponse de {{count}} hôpitaux.",
+    "allAnswered": "Tous les hôpitaux ont répondu.",
+    "empty": "Aucun hôpital dans cette demande.",
+    "lowest": "Le moins cher",
+    "total": "Total du devis",
+    "sentAt": "Envoyé le {{date}}",
+    "awaiting": "En attente du devis de l'hôpital.",
+    "noQuote": "Aucun devis pour cette demande.",
+    "openCase": "Ouvrir le dossier"
+  },
+  "aftercare": {
+    "title": "Suivi post-traitement",
+    "description": "Bilans de rétablissement et consultations vidéo de suivi pour vos patients après le traitement.",
+    "emptyTitle": "Aucun patient en suivi post-traitement",
+    "emptyDescription": "Les patients apparaissent ici dès le début de leur traitement. Les bilans et les consultations de suivi sont planifiés à leur sortie de l'hôpital.",
+    "dueTitle": "Bilans à remplir maintenant",
+    "dueHint": "Répondez avec le patient. Une fièvre, des difficultés à respirer, un problème de plaie ou une douleur intense alertent l'hôpital et le coordinateur.",
+    "noneDue": "Aucun bilan à remplir.",
+    "followupsTitle": "Consultations de suivi",
+    "followupsHint": "Appels vidéo avec l'hôpital qui a traité le patient. L'hôpital confirme l'heure exacte.",
+    "noFollowups": "Aucune consultation de suivi prévue.",
+    "upcomingTitle": "Prochains bilans",
+    "noUpcoming": "Aucun bilan à venir.",
+    "casesTitle": "Patients en suivi post-traitement",
+    "history": "Bilans",
+    "historyTitle": "Réponses aux bilans",
+    "noAnswers": "Aucun bilan rempli pour l'instant.",
+    "dischargedUntil": "Sorti(e) le {{discharged}} · suivi jusqu'au {{until}}",
+    "inTreatment": "En cours de traitement",
+    "checkinDay": "Bilan du jour {{day}}",
+    "dueOn": "À remplir le {{date}}",
+    "answer": "Répondre",
+    "followupDay": "Suivi du jour {{day}}",
+    "followup": "Consultation de suivi",
+    "scheduledFor": "Prévue le {{date}}",
+    "dueAround": "Prévue vers le {{date}}",
+    "awaitingTime": "En attente de l'horaire fixé par l'hôpital",
+    "join": "Rejoindre l'appel",
+    "status": {
+      "scheduled": "Planifiée",
+      "requested": "Demandée"
+    },
+    "redFlags": {
+      "fever": "Fièvre",
+      "breathlessness": "Difficultés à respirer",
+      "severe_pain": "Douleur intense",
+      "wound_concerns": "Problème de plaie"
+    },
+    "form": {
+      "title": "Bilan du jour {{day}}",
+      "intro": "Demandez au patient comment il se sent aujourd'hui et notez ses réponses. Chaque bilan ne peut être rempli qu'une seule fois.",
+      "pain": "Douleur en ce moment",
+      "painHint": "0 = aucune douleur, 10 = pire douleur imaginable",
+      "painValue": "Douleur {{value}} sur 10",
+      "fever": "Fièvre",
+      "wound": "Problème au niveau de la plaie",
+      "woundHint": "Rougeur, gonflement, écoulement, saignement ou plaie qui s'ouvre",
+      "breathless": "Essoufflement",
+      "medication": "Médicaments prescrits",
+      "adherence": {
+        "all": "Toutes les doses prises",
+        "some": "Quelques doses oubliées",
+        "none": "Ne les prend pas"
+      },
+      "notes": "Autre chose (facultatif)",
+      "redFlagWarning": "Ces réponses alertent l'hôpital et le coordinateur. Si les symptômes du patient sont graves ou s'aggravent, en cas de douleur thoracique ou de difficultés à respirer, appelez immédiatement les services d'urgence locaux.",
+      "cancel": "Annuler",
+      "submit": "Envoyer les réponses",
+      "sent": "Bilan envoyé.",
+      "sentFlagged": "Bilan envoyé. L'hôpital et le coordinateur ont été alertés."
+    }
   }
 }

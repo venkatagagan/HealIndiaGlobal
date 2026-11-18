@@ -27,6 +27,8 @@ const CasesPage = page(() => import('./features/cases/CasesPage'), 'CasesPage');
 const CaseDetailPage = page(() => import('./features/cases/CaseDetailPage'), 'CaseDetailPage');
 const NewEnquiryPage = page(() => import('./features/cases/NewEnquiryPage'), 'NewEnquiryPage');
 const QuoteComparePage = page(() => import('./features/cases/QuoteComparePage'), 'QuoteComparePage');
+const QuoteGroupPage = page(() => import('./features/cases/QuoteGroupPage'), 'QuoteGroupPage');
+const AftercarePage = page(() => import('./features/aftercare/AftercarePage'), 'AftercarePage');
 const BookCasePage = page(() => import('./features/cases/BookCasePage'), 'BookCasePage');
 const BookingsPage = page(() => import('./features/cases/BookingsPage'), 'BookingsPage');
 const PayBookingPage = page(() => import('./features/payments/PayBookingPage'), 'PayBookingPage');
@@ -78,9 +80,11 @@ export const router = createBrowserRouter([
       { path: 'cases', element: withSuspense(CasesPage) },
       { path: 'cases/new', element: withSuspense(NewEnquiryPage) },
       { path: 'cases/compare', element: withSuspense(QuoteComparePage) },
+      { path: 'cases/quote-groups/:groupId', element: withSuspense(QuoteGroupPage) },
       { path: 'cases/:caseId', element: withSuspense(CaseDetailPage) },
       { path: 'cases/:caseId/book', element: withSuspense(BookCasePage) },
       { path: 'bookings', element: withSuspense(BookingsPage) },
+      { path: 'aftercare', element: withSuspense(AftercarePage) },
       { path: 'bookings/:bookingId/pay', element: withSuspense(PayBookingPage) },
       { path: 'hospitals', element: withSuspense(HospitalsPage) },
       { path: 'hospitals/:slug', element: withSuspense(HospitalDetailPage) },

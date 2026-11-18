@@ -24,6 +24,7 @@ import { qk, useSpecialties } from '../../lib/queries';
 import { formatDate, formatMoney, formatNumber, useDebouncedValue, useDocumentTitle } from '../../lib/shared';
 import { Trans } from 'react-i18next';
 import { useAppTranslation } from '../../i18n';
+import { approxText, useDisplayCurrency } from '../../lib/displayCurrency';
 import { PatientPicker } from '../patients/PatientPicker';
 import { EnquiryDialog, type EnquiryTarget } from './EnquiryDialog';
 
@@ -61,14 +62,16 @@ export function NewEnquiryPage() {
     queryFn: () => screeningsApi.list({ patient_id: currentPatient?.id, status: 'completed', page_size: 20 }),
     enabled: Boolean(currentPatient),
   });
+  const currency = useDisplayCurrency();
   const hospitals = useQuery({
-    queryKey: qk.hospitals({ q, specialty, procedure: procedureSlug, page_size: 12 }),
+    queryKey: qk.hospitals({ q, specialty, procedure: procedureSlug, page_size: 12, currency }),
     queryFn: () =>
       catalogApi.listHospitals({
         q: q || undefined,
         specialty: specialty || undefined,
         procedure: procedureSlug || undefined,
         page_size: 12,
+        currency,
       }),
   });
 
@@ -235,6 +238,7 @@ export function NewEnquiryPage() {
                         {h.city}
                         {h.state ? `, ${h.state}` : ''}
                         {h.starting_price_minor != null ? ` · ${t('newEnquiry.fromPrice', { price: formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true }) })}` : ''}
+                        {approxText(h.display_starting_price, h.currency) ? ` (${approxText(h.display_starting_price, h.currency)})` : ''}
                       </p>
                       <div className="mt-1 flex flex-wrap gap-1">
                         {h.accreditations.map((a) => (

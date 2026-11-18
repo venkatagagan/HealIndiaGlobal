@@ -9,6 +9,7 @@ import {
   ClipboardList,
   FilePlus2,
   Gift,
+  HeartPulse,
   Landmark,
   LayoutDashboard,
   MessageSquare,
@@ -26,6 +27,7 @@ import { qk, useAgentProfile, useUnreadCount } from '../lib/queries';
 import { useRealtimeEvent } from '../lib/realtime';
 import { cn } from '../lib/shared';
 import { useAppTranslation, type AppT } from '../i18n';
+import { DisplayCurrencySelect } from '../lib/displayCurrency';
 
 function CountBadge({ count }: { count: number }) {
   return (
@@ -49,6 +51,7 @@ function buildNav(unread: number, t: AppT): NavItem[] {
         { to: '/screenings', label: t('nav.screenings'), icon: ClipboardList },
         { to: '/cases', label: t('nav.casesAndQuotes'), icon: Briefcase },
         { to: '/bookings', label: t('nav.bookings'), icon: CalendarCheck },
+        { to: '/aftercare', label: t('nav.aftercare'), icon: HeartPulse },
       ],
     },
     {
@@ -179,7 +182,12 @@ export function AgentLayout() {
           </Link>
         </>
       }
-      topbarExtra={<NotificationBell to="/notifications" count={unread} />}
+      topbarExtra={
+        <>
+          <DisplayCurrencySelect />
+          <NotificationBell to="/notifications" count={unread} />
+        </>
+      }
     >
       <div className="mx-auto w-full max-w-7xl">
         <KycBanner />

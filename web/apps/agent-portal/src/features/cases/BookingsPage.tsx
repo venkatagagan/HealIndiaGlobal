@@ -6,6 +6,7 @@ import {
   BOOKING_STATUS_LABELS,
   PAYMENT_OPTION_LABELS,
   bookingsApi,
+  type BookingListParams,
   type BookingOut,
   type BookingStatus,
 } from '@hig/shared/api';
@@ -34,6 +35,7 @@ import { UPCOMING_DATE_PRESETS, inDateRange, optionsFromRows } from '../../lib/l
 import { qk } from '../../lib/queries';
 import { fetchAllPages, filterParam, formatNumber, fromMinor, matchesSearch, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
 import { useAppTranslation, type AppT } from '../../i18n';
+import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
 
 // ---------------------------------------------------------------------------------------------------------
 // Payment state (derived from the booking amounts)
@@ -163,7 +165,12 @@ const columns = (t: AppT): DataTableColumn<BookingOut>[] => [
     sortable: true,
     sortDescFirst: true,
     sortValue: (b) => b.total_minor,
-    cell: (b) => <MoneyCell minor={b.total_minor} currency={b.currency} />,
+    cell: (b) => (
+      <span className="inline-flex flex-col items-end">
+        <MoneyCell minor={b.total_minor} currency={b.currency} />
+        <ApproxMoney display={b.display_total} original={b.currency} />
+      </span>
+    ),
     exportValue: (b) => money(b.total_minor, b.currency),
   },
   {
@@ -175,7 +182,10 @@ const columns = (t: AppT): DataTableColumn<BookingOut>[] => [
     sortValue: (b) => b.balance_due_minor,
     cell: (b) =>
       b.balance_due_minor > 0 ? (
-        <MoneyCell minor={b.balance_due_minor} currency={b.currency} className="text-danger" />
+        <span className="inline-flex flex-col items-end">
+          <MoneyCell minor={b.balance_due_minor} currency={b.currency} className="text-danger" />
+          <ApproxMoney display={b.display_balance_due} original={b.currency} />
+        </span>
       ) : (
         <span className="text-xs text-muted">{t('bookings.nothingDue')}</span>
       ),
@@ -219,9 +229,10 @@ export function BookingsPage() {
   const table = useTableState({ filters: FILTERS, defaultSort: '-admission', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
 
+  const currency = useDisplayCurrency();
   const query = useQuery({
-    queryKey: qk.bookings({ all: true }),
-    queryFn: () => fetchAllPages((page, size) => bookingsApi.list({ page, page_size: size })),
+    queryKey: qk.bookings({ all: true, currency }),
+    queryFn: () => fetchAllPages((page, size) => bookingsApi.list({ page, page_size: size, currency } as BookingListParams)),
   });
   const all = useMemo(() => query.data ?? [], [query.data]);
   const rows = useMemo(() => applyFilters(all, filters), [all, filters]);
