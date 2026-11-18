@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { Check, Hourglass, LoaderCircle } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { errorMessage } from '@hig/shared/api';
+import { errorMessage, isGuestAiLimitError } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
 import { qk, useRerunScreening, useScreening } from '../../api/queries';
 import { useRealtimeEvent } from '../../lib/realtime';
@@ -81,7 +81,9 @@ export function ProcessingPage() {
                   onClick={() =>
                     rerun.mutate(undefined, {
                       onSuccess: () => setTick(0),
-                      onError: (err) => toast.error(errorMessage(err)),
+                      onError: (err) => {
+                        if (!isGuestAiLimitError(err)) toast.error(errorMessage(err));
+                      },
                     })
                   }
                 >

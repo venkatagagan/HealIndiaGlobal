@@ -8,6 +8,7 @@ import { useDocumentTitle } from '../../lib/shared';
 import { EmptyState, ErrorState, PageHeader, Skeleton, Tabs } from '../../ui/primitives';
 import { DeleteAccountSection } from './DeleteAccountSection';
 import { AccessLogCard, DownloadMyDataCard, NomineeCard, PrivacyRequestsCard } from './PrivacyDataSection';
+import { GuardianStatusCard } from '../../components/GuardianConsent';
 import { CompanionsSection, ConsentsSection, SecuritySection } from './ProfileExtras';
 import { EmergencyForm, PassportForm, PersonalForm, PreferencesForm } from './ProfileForms';
 
@@ -62,6 +63,7 @@ export function ProfilePage() {
           {tab === 'preferences' ? <PreferencesForm profile={profile.data} /> : null}
           {tab === 'privacy' ? (
             <div className="space-y-6">
+              {isGuest ? null : <GuardianStatusCard />}
               <ConsentsSection />
               <DownloadMyDataCard />
               {isGuest ? null : <NomineeCard />}

@@ -86,7 +86,7 @@ function viewOf(item: SavedItemOut, t: TFunction): View {
       ...base,
       title: p.name,
       subtitle: p.specialty.name,
-      href: `/procedures/${p.slug}`,
+      href: paths.procedure(p.slug),
       specialties: [p.specialty.name],
       extra:
         p.india_price_min_minor != null ? (

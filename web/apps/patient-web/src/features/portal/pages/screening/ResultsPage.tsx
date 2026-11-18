@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router';
+import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { AlertOctagon, Award, Bot, ClipboardList, Info, MapPin, Siren, Sparkles, Star } from 'lucide-react';
 import { errorMessage, LIKELIHOOD_LABELS, type MatchOut, type Urgency } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useMatches, useSavedItems, useScreening, useToggleSaved } from '../../api/queries';
+import { FreeCallBanner } from '../../components/Prompts';
 import { CostComparisonPanel } from '../../components/CostComparisonPanel';
 import { BackLink, StatusBadge } from '../../components/common';
 import { HelplineList } from '../../components/SupportDialogs';
@@ -80,6 +82,7 @@ const URGENCY_COPY: Record<Urgency, { tone: 'green' | 'blue' | 'amber' | 'red'; 
 };
 
 export function ResultsPage() {
+  const { t } = useAppTranslation();
   const { id = '' } = useParams();
   useDocumentTitle('Your top matches');
   const navigate = useNavigate();
@@ -201,6 +204,8 @@ export function ResultsPage() {
         }
       />
 
+      {!emergency ? <FreeCallBanner className="mb-6" screeningId={s.id} /> : null}
+
       {urgency ? (
         emergency ? (
           <div role="alert" className="mb-6 rounded-2xl border-2 border-danger bg-danger-soft p-5">
@@ -289,7 +294,9 @@ export function ResultsPage() {
                     <ul className="mt-2 space-y-1 text-sm">
                       {ai.recommended_procedures.map((p) => (
                         <li key={p.slug}>
-                          <span className="font-medium">{p.name}</span>
+                          <Link to={paths.procedure(p.slug)} className="font-medium text-primary-ink hover:underline">
+                            {p.name}
+                          </Link>
                           {p.rationale ? <span className="text-muted"> - {p.rationale}</span> : null}
                         </li>
                       ))}
@@ -471,14 +478,32 @@ export function ResultsPage() {
             <span className="text-sm font-medium">
               {selected.length}/{MAX_COMPARE} selected for comparison
             </span>
-            <Button
-              variant="danger"
-              size="sm"
-              disabled={selected.length < 2}
-              onClick={() => navigate(paths.screeningCompare(id, selected))}
-            >
-              Compare
-            </Button>
+            <span className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={selected.length < 1}
+                onClick={() =>
+                  navigate(
+                    paths.quickQuote({
+                      hospitals: [...new Set(all.filter((m) => selected.includes(m.id)).map((m) => m.hospital.id))],
+                      procedure: activeProcedure ?? undefined,
+                      screening: id,
+                    }),
+                  )
+                }
+              >
+                {t('screening.results.requestQuotes')}
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                disabled={selected.length < 2}
+                onClick={() => navigate(paths.screeningCompare(id, selected))}
+              >
+                Compare
+              </Button>
+            </span>
           </div>
         </div>
       ) : null}

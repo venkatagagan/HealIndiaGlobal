@@ -17,6 +17,7 @@ import {
   type DataTableColumn,
 } from '@hig/shared/ui';
 import { useAppTranslation } from '../../../../i18n';
+import { ApproxMoney } from '../../components/phase1';
 import { useBookings } from '../../api/queries';
 import { Money } from '../../components/common';
 import { PatientStatus, TableTabs, countBy, inDateRange, patientStatusLabel, quickValue } from '../../components/listing';
@@ -44,7 +45,7 @@ function PaymentProgress({ b }: { b: BookingOut }) {
   return (
     <span className="block min-w-36 text-end">
       <span className="block font-medium tabular-nums">
-        <Money minor={b.total_minor} currency={b.currency} />
+        <ApproxMoney minor={b.total_minor} currency={b.currency} display={b.display_total} className="items-end" />
       </span>
       <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-surface-2" aria-hidden>
         <span className={cn('block h-full rounded-full', pct >= 100 ? 'bg-success' : 'bg-primary')} style={{ width: `${pct}%` }} />

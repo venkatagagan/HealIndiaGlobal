@@ -1,9 +1,11 @@
 import { BadgeCheck, Bookmark, BookmarkCheck, CirclePlus, CircleCheck, MapPin } from 'lucide-react';
 import type { MatchOut } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
+import { Link } from 'react-router';
 import { Accreditations, Avatar, Money, Rating } from '../../components/common';
+import { EarliestChips } from '../../components/phase1';
 import { paths } from '../../lib/paths';
-import { cn, formatMoneyRange, formatNumber } from '../../lib/shared';
+import { cn, formatNumber } from '../../lib/shared';
 import { Badge, Button, ButtonLink, Card } from '../../ui/primitives';
 
 export function MatchCard({
@@ -52,8 +54,16 @@ export function MatchCard({
           </div>
           <p className="mt-1 flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300">
             <MapPin className="h-3.5 w-3.5 text-slate-400" aria-hidden />
-            {match.hospital.name}, {match.hospital.city}
+            <Link to={paths.hospital(match.hospital.slug)} className="hover:underline">
+              {match.hospital.name}
+            </Link>
+            , {match.hospital.city}
           </p>
+          <EarliestChips
+            className="mt-2"
+            consultation={match.next_available_consultation ?? doctor?.next_available_consultation}
+            admission={match.next_available_admission ?? match.hospital.next_available_admission}
+          />
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <Accreditations values={match.hospital.accreditations} />
             {doctor?.qualifications.slice(0, 3).map((q) => (
@@ -94,14 +104,12 @@ export function MatchCard({
               t('screening.match.onRequest')
             )}
           </p>
-          {match.savings ? (
-            <p className="text-xs font-medium text-green-600 dark:text-green-400">
-              {t('screening.match.savingsVsHome', {
-                min: formatNumber(match.savings.pct_min),
-                max: formatNumber(match.savings.pct_max),
-                range: formatMoneyRange(match.savings.home_min_minor, match.savings.home_max_minor, match.savings.home_currency),
-              })}
-            </p>
+          {/* No saving claim here: match savings carry no benchmark confidence (legal display rule) - the
+              procedure page shows the checked home-vs-India comparison. */}
+          {match.procedure ? (
+            <Link to={paths.procedure(match.procedure.slug)} className="text-xs font-medium text-primary-ink hover:underline">
+              {t('screening.match.compareHome')}
+            </Link>
           ) : null}
           {match.package ? <p className="text-xs text-slate-500">{t('screening.match.package', { name: match.package.name })}</p> : null}
         </div>
@@ -127,11 +135,11 @@ export function MatchCard({
               {t('screening.match.compare')}
             </Button>
             {doctor ? (
-              <ButtonLink to={paths.doctor(doctor.id)} variant="outline" size="sm" target="_blank" rel="noopener">
+              <ButtonLink to={paths.doctor(doctor.id)} variant="outline" size="sm">
                 {t('screening.match.viewDetails')}
               </ButtonLink>
             ) : (
-              <ButtonLink to={paths.hospital(match.hospital.slug)} variant="outline" size="sm" target="_blank" rel="noopener">
+              <ButtonLink to={paths.hospital(match.hospital.slug)} variant="outline" size="sm">
                 {t('screening.match.viewHospital')}
               </ButtonLink>
             )}

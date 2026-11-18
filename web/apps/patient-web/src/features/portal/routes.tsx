@@ -27,6 +27,18 @@ const MessagesPage = lazy(() => import('./pages/MessagesPage').then((m) => ({ de
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage').then((m) => ({ default: m.NotificationsPage })));
 const ProfilePage = lazy(() => import('./pages/profile/ProfilePage').then((m) => ({ default: m.ProfilePage })));
 const SavedPage = lazy(() => import('./pages/SavedPage').then((m) => ({ default: m.SavedPage })));
+const ProcedurePage = lazy(() => import('./pages/catalog/ProcedurePage').then((m) => ({ default: m.ProcedurePage })));
+const HospitalPage = lazy(() => import('./pages/catalog/HospitalPage').then((m) => ({ default: m.HospitalPage })));
+const DoctorPage = lazy(() => import('./pages/catalog/DoctorPage').then((m) => ({ default: m.DoctorPage })));
+const BrowsePage = lazy(() => import('./pages/catalog/BrowsePage').then((m) => ({ default: m.BrowsePage })));
+const QuickQuotePage = lazy(() => import('./pages/quotes/QuickQuotePage').then((m) => ({ default: m.QuickQuotePage })));
+const QuoteGroupPage = lazy(() => import('./pages/quotes/QuoteGroupPage').then((m) => ({ default: m.QuoteGroupPage })));
+const VisaGuidePage = lazy(() => import('./pages/trip/VisaGuidePage').then((m) => ({ default: m.VisaGuidePage })));
+const MyReviewsPage = lazy(() => import('./pages/reviews/MyReviewsPage').then((m) => ({ default: m.MyReviewsPage })));
+const ReviewFormPage = lazy(() => import('./pages/reviews/ReviewFormPage').then((m) => ({ default: m.ReviewFormPage })));
+const AftercarePage = lazy(() => import('./pages/aftercare/AftercarePage').then((m) => ({ default: m.AftercarePage })));
+const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
+const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
 
 /** Child routes, relative to the portal mount point (/app). */
 export const portalChildRoutes: RouteObject[] = [
@@ -55,6 +67,19 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'notifications', element: <NotificationsPage /> },
   { path: 'profile', element: <ProfilePage /> },
   { path: 'saved', element: <SavedPage /> },
+  { path: 'procedures/:slug', element: <ProcedurePage /> },
+  { path: 'hospitals/:slug', element: <HospitalPage /> },
+  { path: 'doctors/:id', element: <DoctorPage /> },
+  { path: 'browse', element: <BrowsePage /> },
+  { path: 'quotes/new', element: <QuickQuotePage /> },
+  { path: 'quotes/:groupId', element: <QuoteGroupPage /> },
+  { path: 'visa-guide', element: <VisaGuidePage /> },
+  { path: 'reviews', element: <MyReviewsPage /> },
+  { path: 'reviews/new', element: <ReviewFormPage /> },
+  { path: 'reviews/:reviewId/edit', element: <ReviewFormPage /> },
+  { path: 'aftercare', element: <AftercarePage /> },
+  { path: 'free-call', element: <FreeCallPage /> },
+  { path: 'free-call/status', element: <FreeCallStatusPage /> },
   { path: '*', element: <Navigate to={PORTAL_BASE} replace /> },
 ];
 

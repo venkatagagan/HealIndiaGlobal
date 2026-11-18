@@ -1,6 +1,6 @@
 import { Fragment, useMemo, useState, type ReactNode } from 'react';
 import { Trans } from 'react-i18next';
-import { Navigate, useParams, useSearchParams } from 'react-router';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router';
 import { BadgeCheck, Check, Minus, Trophy } from 'lucide-react';
 import { PACKAGE_TIER_LABELS, type MatchOut } from '@hig/shared/api';
 import { Switch } from '@hig/shared/ui';
@@ -8,8 +8,9 @@ import { useAppTranslation } from '../../../../i18n';
 import { useMatches, useScreening } from '../../api/queries';
 import { Accreditations, Avatar, BackLink, Money, Rating } from '../../components/common';
 import { paths } from '../../lib/paths';
-import { cn, formatMoney, formatMoneyRange, formatNumber, useDocumentTitle } from '../../lib/shared';
-import { Badge, Button, EmptyState, ErrorState, PageHeader, SkeletonList } from '../../ui/primitives';
+import { cn, formatMoney, formatNumber, useDocumentTitle } from '../../lib/shared';
+import { EarliestChips } from '../../components/phase1';
+import { Badge, Button, ButtonLink, EmptyState, ErrorState, PageHeader, SkeletonList } from '../../ui/primitives';
 import { RequestQuoteDialog } from './RequestQuoteDialog';
 
 type T = ReturnType<typeof useAppTranslation>['t'];
@@ -32,13 +33,6 @@ interface Group {
 
 const num = (v: number | string | null | undefined) => (v === null || v === undefined || v === '' ? null : Number(v));
 const dash = <span className="text-muted">—</span>;
-
-/** Mid-point estimate of what the patient saves vs the home-country price. */
-function savingMinor(m: MatchOut): number | null {
-  if (!m.savings || m.estimated_cost_minor == null || m.savings.home_currency !== m.currency) return null;
-  const home = (m.savings.home_min_minor + m.savings.home_max_minor) / 2;
-  return Math.max(0, Math.round(home - m.estimated_cost_minor));
-}
 
 function buildGroups(t: T): Group[] {
   /** "Included" / "Not included", or "3 nights" when a count is given with its catalog key. */
@@ -75,39 +69,23 @@ function buildGroups(t: T): Group[] {
             ),
         },
         {
-          id: 'homeCost',
-          label: t('screening.compare.rows.homeCost'),
-          value: (m) => (m.savings ? (m.savings.home_min_minor + m.savings.home_max_minor) / 2 : null),
-          render: (m) =>
-            m.savings ? (
-              <span className="tabular-nums">
-                {formatMoneyRange(m.savings.home_min_minor, m.savings.home_max_minor, m.savings.home_currency)}
-                <span className="block text-xs text-muted">{t('screening.compare.inCountry', { country: m.savings.home_country })}</span>
-              </span>
-            ) : (
-              dash
-            ),
-        },
-        {
-          id: 'youSave',
-          label: t('screening.compare.rows.youSave'),
-          value: (m) => savingMinor(m) ?? (m.savings ? m.savings.pct_max : null),
-          best: 'max',
-          render: (m) => {
-            const saved = savingMinor(m);
-            return m.savings ? (
-              <span className="font-semibold text-success-ink">
-                {t('screening.compare.pctRange', { min: formatNumber(m.savings.pct_min), max: formatNumber(m.savings.pct_max) })}
-                {saved ? (
-                  <span className="block text-xs font-normal text-muted">
-                    {t('screening.compare.about', { amount: formatMoney(saved, m.currency, undefined, { trimZeros: true }) })}
-                  </span>
-                ) : null}
-              </span>
-            ) : (
-              dash
-            );
+          // no home-price / saving rows: match savings carry no benchmark confidence (legal display rule)
+          id: 'earliest',
+          label: t('screening.compare.rows.earliest'),
+          value: (m) => {
+            const d = m.next_available_admission ?? m.hospital.next_available_admission;
+            return d ? Math.floor(Date.parse(`${d}T00:00:00Z`) / 86_400_000) : null;
           },
+          best: 'min',
+          render: (m) =>
+            m.next_available_admission || m.hospital.next_available_admission || m.next_available_consultation ? (
+              <EarliestChips
+                consultation={m.next_available_consultation ?? m.doctor?.next_available_consultation}
+                admission={m.next_available_admission ?? m.hospital.next_available_admission}
+              />
+            ) : (
+              <span className="text-muted">{t('procedure.datesOnRequest')}</span>
+            ),
         },
         {
           id: 'package',
@@ -346,7 +324,19 @@ export function ComparePage() {
             ) : (
               <span />
             )}
-            <Switch checked={onlyDiff} onChange={setOnlyDiff} label={t('screening.compare.onlyDifferences')} />
+            <span className="flex flex-wrap items-center gap-3">
+              <Switch checked={onlyDiff} onChange={setOnlyDiff} label={t('screening.compare.onlyDifferences')} />
+              <ButtonLink
+                size="sm"
+                to={paths.quickQuote({
+                  hospitals: [...new Set(chosen.map((m) => m.hospital.id))],
+                  procedure: chosen.find((m) => m.procedure)?.procedure?.slug,
+                  screening: id,
+                })}
+              >
+                {t('screening.results.requestQuotes')}
+              </ButtonLink>
+            </span>
           </div>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
@@ -380,7 +370,12 @@ export function ComparePage() {
                             <div className="flex items-center gap-3">
                               <Avatar name={nameOf(m)} src={m.doctor?.photo_url ?? m.hospital.logo_url} size={44} />
                               <div className="min-w-0">
-                                <p className="truncate font-semibold text-fg">{nameOf(m)}</p>
+                                <Link
+                                  to={m.doctor ? paths.doctor(m.doctor.id) : paths.hospital(m.hospital.slug)}
+                                  className="block truncate font-semibold text-fg hover:underline"
+                                >
+                                  {nameOf(m)}
+                                </Link>
                                 <p className="truncate text-xs text-muted">{m.doctor ? m.hospital.name : m.hospital.city}</p>
                               </div>
                             </div>

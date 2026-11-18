@@ -22,7 +22,9 @@ import type { ChecklistItemOut } from '@hig/shared/api';
 import { heroActionClass, PageHero } from '@hig/shared/layout';
 import { useAppTranslation } from '../../../i18n';
 import { useDashboard } from '../api/queries';
+import { CostHighlightsBlock } from '../components/CostHighlights';
 import { GuestBanner } from '../components/GuestUpgrade';
+import { FreeCallBanner, ReviewPromptBanner } from '../components/Prompts';
 import { SpecialtyTile } from '../components/SpecialtyIcon';
 import { EmergencyContactsDialog, PreArrivalGuideDialog } from '../components/SupportDialogs';
 import { StatusBadge } from '../components/common';
@@ -146,6 +148,10 @@ export function DashboardPage() {
           ) : null
         }
       />
+
+      {me.data?.is_guest ? <FreeCallBanner className="mb-6" /> : <ReviewPromptBanner className="mb-6" />}
+
+      <CostHighlightsBlock className="mb-6" />
 
       {dashboard.isPending ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
