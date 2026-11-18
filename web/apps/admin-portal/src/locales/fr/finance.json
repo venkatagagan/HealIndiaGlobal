@@ -81,7 +81,8 @@
         "payout": "Un autre utilisateur financier doit approuver ce versement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
         "request": "Un autre utilisateur financier doit approuver cette demande : vous en êtes l'auteur, vous ne pouvez donc pas également l'approuver.",
         "refund": "Un autre utilisateur financier doit approuver ce remboursement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
-        "adjustment": "Un autre utilisateur financier doit approuver cet ajustement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver."
+        "adjustment": "Un autre utilisateur financier doit approuver cet ajustement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
+        "refundPayout": "Un autre utilisateur financier doit confirmer ce versement de remboursement : vous l'avez saisi, vous ne pouvez donc pas également le confirmer."
       },
       "requestChanged": "Cette demande a été modifiée depuis que vous l'avez ouverte. Les dernières informations ont été rechargées : veuillez la vérifier à nouveau."
     },
@@ -186,7 +187,8 @@
       "payoutConfirmations": "Versements en attente de confirmation de l'UTR",
       "payoutReconciliations": "Versements à rapprocher",
       "payoutReversals": "Échecs de versement en attente de 2e approbation",
-      "adjustments": "Ajustements du grand livre à approuver"
+      "adjustments": "Ajustements du grand livre à approuver",
+      "refundPayouts": "Remboursements bancaires en attente de versement"
     }
   },
   "settlementUi": {
@@ -489,6 +491,54 @@
     "orderFallback": "commande",
     "rejected": "Remboursement rejeté",
     "rejectFailed": "Impossible de rejeter le remboursement"
+  },
+  "refundPayout": {
+    "queueTab": "En attente de versement",
+    "record": "Saisir le versement",
+    "edit": "Modifier le versement",
+    "confirm": "Confirmer le versement",
+    "reject": "Rejeter le versement",
+    "recordedBy": "Réf. <0>{{reference}}</0> saisie par {{name}}",
+    "recordedByLabel": "Saisi par",
+    "someone": "un autre utilisateur",
+    "sameUser": "Vous avez saisi ce versement : un autre utilisateur financier doit le confirmer.",
+    "recordTitle": "Saisir le versement bancaire",
+    "recordHint": "Effectuez d'abord le remboursement depuis la banque, puis saisissez la référence bancaire. Un autre utilisateur financier la confirme d'après le relevé bancaire ; ce n'est qu'alors que le remboursement est marqué comme traité et comptabilisé dans le grand livre.",
+    "reference": "Référence bancaire (UTR)",
+    "referenceHint": "Telle qu'indiquée sur le relevé ou l'avis de virement.",
+    "referenceRequired": "Saisissez la référence bancaire.",
+    "paidOn": "Payé le",
+    "proof": "Justificatif de paiement",
+    "proofHint": "Facultatif : avis de virement ou capture d'écran (PDF, JPEG, PNG ou WebP).",
+    "proofKept": "Le justificatif déjà joint est conservé, sauf si vous choisissez un nouveau fichier.",
+    "note": "Note",
+    "recordSubmit": "Saisir le versement",
+    "recorded": "Versement saisi ; un deuxième utilisateur financier doit le confirmer",
+    "recordFailed": "Impossible de saisir le versement",
+    "uploadFailed": "Impossible de téléverser le justificatif de paiement",
+    "confirmTitle": "Confirmer le versement bancaire",
+    "confirmHint": "Vérifiez le versement sur le relevé bancaire avant de confirmer. La confirmation marque le remboursement comme traité, le comptabilise dans le grand livre et prévient le patient.",
+    "amount": "Montant",
+    "patient": "Patient",
+    "downloadProof": "Télécharger le justificatif",
+    "noProof": "Aucun justificatif joint",
+    "proofFailed": "Impossible de télécharger le justificatif",
+    "retypeReference": "Saisissez la référence bancaire que vous avez vérifiée",
+    "referenceMismatch": "La référence ne correspond pas au versement saisi.",
+    "confirmSubmit": "Confirmer le versement",
+    "confirmed": "Versement confirmé ; le remboursement est traité",
+    "confirmFailed": "Impossible de confirmer le versement",
+    "rejectTitle": "Rejeter le versement saisi",
+    "rejectBody": "La référence saisie est effacée et le remboursement reste en attente de versement. Rien n'est comptabilisé dans le grand livre.",
+    "rejected": "Saisie du versement rejetée ; le remboursement revient dans la file des versements",
+    "rejectFailed": "Impossible de rejeter la saisie du versement",
+    "errors": {
+      "referenceUsed": "Cette référence bancaire a déjà été utilisée pour un autre remboursement.",
+      "futureDate": "La date du versement ne peut pas être dans le futur.",
+      "changed": "Le versement saisi a changé depuis son ouverture. Rechargez la liste et vérifiez-le à nouveau.",
+      "notRecorded": "Aucun versement n'a encore été saisi pour ce remboursement.",
+      "state": "Ce remboursement n'est plus en attente de versement."
+    }
   },
   "reports": {
     "documentTitle": "Rapports financiers",
@@ -989,7 +1039,8 @@
       "returning": "Restitution en cours",
       "accepted": "Accepté",
       "returned": "Restitué",
-      "posted": "Comptabilisé"
+      "posted": "Comptabilisé",
+      "awaiting_payout": "En attente de versement"
     },
     "paymentGateway": {
       "razorpay": "Carte / UPI (Razorpay)",

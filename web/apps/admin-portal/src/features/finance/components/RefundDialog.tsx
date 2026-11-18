@@ -14,7 +14,7 @@ import { Money, notifyError, notifySuccess, StatusBadge } from './finance';
 import { RefundThresholdNote } from './reviews';
 import { Button, Callout, EmptyState, ErrorState, Field, Input, LoadingState, Modal, Textarea } from './ui';
 
-const IN_FLIGHT = new Set(['requested', 'approved', 'processing']);
+const IN_FLIGHT = new Set(['requested', 'approved', 'processing', 'awaiting_payout']);
 
 export function refundableMinor(payment: PaymentOut, refunds: RefundOut[] | undefined): number {
   const pending = (refunds ?? [])

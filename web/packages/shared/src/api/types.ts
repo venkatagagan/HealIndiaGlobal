@@ -2296,6 +2296,32 @@ export interface RefundOut {
   order_number?: string | null;
   /** staff lists */
   patient_name?: string | null;
+  /** SEC-010 bank-transfer refunds (`awaiting_payout`): the recorded bank payout (maker) and its confirmation */
+  payout_reference?: string | null;
+  /** YYYY-MM-DD value date of the payout */
+  payout_date?: IsoDate | null;
+  payout_note?: string | null;
+  payout_proof_document_id?: Uuid | null;
+  payout_recorded_by?: Uuid | null;
+  payout_recorded_by_name?: string | null;
+  payout_recorded_at?: IsoDateTime | null;
+  payout_confirmed_by?: Uuid | null;
+  payout_confirmed_by_name?: string | null;
+}
+
+/** `POST /payments/refunds/{id}/payout` (finance maker): record or replace the bank payout of a manual refund. */
+export interface RefundPayoutIn {
+  /** bank reference / UTR, 1-100 characters */
+  reference: string;
+  /** YYYY-MM-DD, not in the future */
+  paid_on: IsoDate;
+  proof_document_id?: Uuid | null;
+  note?: string | null;
+}
+
+/** `POST /payments/refunds/{id}/payout/confirm` (a different finance user): the reference reviewed. */
+export interface RefundPayoutConfirmIn {
+  reference: string;
 }
 
 export interface RefundCreateIn {

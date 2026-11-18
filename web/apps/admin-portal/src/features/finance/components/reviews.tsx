@@ -58,7 +58,7 @@ export function useStaffName(): (id: Uuid | null | undefined) => string {
 }
 
 /** What a maker-checker error refers to (one full sentence per target in the catalog). */
-export type ApprovalTarget = 'action' | 'bankTransfer' | 'payout' | 'request' | 'refund' | 'adjustment';
+export type ApprovalTarget = 'action' | 'bankTransfer' | 'payout' | 'request' | 'refund' | 'refundPayout' | 'adjustment';
 
 /** Error toast that spells out the maker-checker rule for 403 `second_approver_required`. */
 export function notifyApprovalError(error: unknown, fallback: string, what: ApprovalTarget = 'action'): void {
@@ -630,6 +630,7 @@ const REVIEW_ROWS: { key: keyof FinanceReviewCounts; labelKey: string; to: strin
   { key: 'amountReviews', labelKey: 'reviews.queue.amountReviews', to: `${financePath('orders')}?review=amount` },
   { key: 'markPaidApprovals', labelKey: 'reviews.queue.markPaidApprovals', to: `${financePath('reconciliation')}?status=approval` },
   { key: 'refunds', labelKey: 'reviews.queue.refunds', to: `${financePath('refunds')}?status=requested` },
+  { key: 'refundPayouts', labelKey: 'reviews.queue.refundPayouts', to: `${financePath('refunds')}?status=awaiting_payout` },
   { key: 'batches', labelKey: 'reviews.queue.batches', to: `${financePath('settlements/batches')}?status=pending_approval` },
   { key: 'payoutConfirmations', labelKey: 'reviews.queue.payoutConfirmations', to: `${financePath('settlements/payouts')}?queue=confirm` },
   { key: 'payoutReconciliations', labelKey: 'reviews.queue.payoutReconciliations', to: `${financePath('settlements/payouts')}?queue=reconcile` },

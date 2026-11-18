@@ -265,3 +265,16 @@ the breach register and the PHI access log. All are legal texts; review them bef
 - PHI access log: `privacyTools.access.description`, `actions.*` (`break_glass` = emergency access).
 - Break-glass (support staff opening a document outside their cases): `breakGlass.warning` (the reason is
   recorded, shown in the patient's access log and admins are notified), `breakGlass.reasonHint`.
+
+## Bank-transfer refund payouts (finance console, added 2026-11-18, SEC-010)
+
+Money texts - review before switching a language on:
+
+- `finance:refundPayout.*` (new section, 45 keys): recording and confirming the bank payout of a bank-transfer
+  refund (maker-checker). Priority: `recordHint`, `confirmHint` (confirming posts the refund to the ledger and
+  notifies the patient), `rejectBody`, `sameUser`, `errors.*`. "UTR" is kept as-is. Terms: payout = fr "versement",
+  ar "الصرف", ru "выплата", bn "পরিশোধ"; ledger = fr "grand livre", ar "دفتر الأستاذ", ru "главная книга",
+  bn "লেজার" (as in the rest of the finance catalog).
+- `finance:enums.status.awaiting_payout`, `finance:reviews.queue.refundPayouts`,
+  `finance:reviews.approval.differentUser.refundPayout`; shared `common:enums.refundStatus.awaiting_payout`
+  ("Awaiting payout", shown wherever a refund status badge appears).

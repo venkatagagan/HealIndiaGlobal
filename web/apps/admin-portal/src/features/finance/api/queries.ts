@@ -28,6 +28,7 @@ import {
   type PageParams,
   type PayoutAccountListParams,
   type PayoutListParams,
+  type RefundPayoutIn,
   type RefundCreateIn,
   type RefundListParams,
   type RevenueReportParams,
@@ -225,6 +226,8 @@ export interface FinanceReviewCounts {
   amountReviews: number | null;
   markPaidApprovals: number | null;
   refunds: number | null;
+  /** bank-transfer refunds waiting for the bank payout to be recorded / confirmed (SEC-010) */
+  refundPayouts: number | null;
   batches: number | null;
   /** payouts with a recorded UTR awaiting a second finance user */
   payoutConfirmations: number | null;
@@ -263,10 +266,11 @@ export const useFinanceReviewCounts = (enabled = true) =>
     enabled,
     refetchInterval: 60_000,
     queryFn: async (): Promise<FinanceReviewCounts> => {
-      const [amountReviews, markPaidApprovals, refunds, batches, payouts, adjustments] = await Promise.all([
+      const [amountReviews, markPaidApprovals, refunds, refundPayouts, batches, payouts, adjustments] = await Promise.all([
         totalOf(paymentsApi.listOrders({ review: 'amount', page_size: 1 })),
         totalOf(paymentsApi.listOrders({ review: 'mark_paid', page_size: 1 })),
         totalOf(paymentsApi.listRefunds({ status: 'requested', page_size: 1 })),
+        totalOf(paymentsApi.listRefunds({ status: 'awaiting_payout', page_size: 1 })),
         totalOf(financeApi.listBatches({ status: 'pending_approval', page_size: 1 })),
         payoutSummaryCounts(),
         totalOf(financeApi.listAdjustments({ status: 'pending_approval', page_size: 1 })),
@@ -275,6 +279,7 @@ export const useFinanceReviewCounts = (enabled = true) =>
         amountReviews,
         markPaidApprovals,
         refunds,
+        refundPayouts,
         batches,
         payoutConfirmations: payouts.confirm,
         payoutReconciliations: payouts.reconcile,
@@ -444,6 +449,33 @@ export function useRejectRefund() {
   const invalidate = useInvalidateFinance();
   return useMutation({
     mutationFn: ({ id, reason }: { id: Uuid; reason: string }) => paymentsApi.rejectRefund(id, { reason }),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010 bank-transfer refunds: record the bank payout (maker). */
+export function useRecordRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: Uuid } & RefundPayoutIn) => paymentsApi.recordRefundPayout(id, body),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010: a different finance user confirms the recorded payout (the refund becomes processed). */
+export function useConfirmRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, reference }: { id: Uuid; reference: string }) => paymentsApi.confirmRefundPayout(id, { reference }),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010: clear a recorded payout (the refund stays awaiting payout). */
+export function useRejectRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: Uuid; reason: string }) => paymentsApi.rejectRefundPayout(id, { reason }),
     onSuccess: invalidate,
   });
 }

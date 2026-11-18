@@ -8,6 +8,7 @@ import { useOrder } from '../api/queries';
 import { Mono, Money, StatusBadge } from '../components/finance';
 import { isRefundablePayment, RefundDialog, refundableMinor } from '../components/RefundDialog';
 import { MarkPaidDialog } from '../components/MarkPaidDialog';
+import { RefundPayoutActions } from '../components/RefundPayout';
 import { AmountReviewPanel, MarkPaidRequestPanel, ReviewBadge } from '../components/reviews';
 import { useFinancePermissions } from '../lib/permissions';
 import {
@@ -168,7 +169,12 @@ export default function OrderDetailPage() {
     { key: 'status', header: t('orders.columns.status'), sortable: true, mobile: 'badge', accessor: (r) => r.status, cell: (r) => <StatusBadgeCell status={r.status} kind="refund" /> },
     { key: 'reason', header: t('common.reason'), className: 'max-w-64', cell: (r) => <TextCell primary={r.reason ?? '—'} /> },
     { key: 'approved', header: t('reviews.markPaid.approvedBy'), cell: (r) => <TextCell primary={r.approved_by_name ?? '—'} /> },
-    { key: 'gw', header: t('orderDetail.refunds.gatewayRef'), cell: (r) => (r.gateway_refund_id ? <IdCell value={r.gateway_refund_id} /> : <span className="text-muted">—</span>) },
+    {
+      key: 'gw',
+      header: t('orderDetail.refunds.gatewayRef'),
+      cell: (r) =>
+        r.gateway_refund_id || r.payout_reference ? <IdCell value={(r.gateway_refund_id ?? r.payout_reference)!} /> : <span className="text-muted">—</span>,
+    },
     {
       key: 'processed',
       header: t('orderDetail.refunds.processed'),
@@ -176,6 +182,16 @@ export default function OrderDetailPage() {
       sortDescFirst: true,
       sortValue: (r) => r.processed_at ?? '',
       cell: (r) => <DateCell value={r.processed_at} display="datetime" />,
+    },
+    {
+      key: 'payout',
+      header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+      title: t('orderDetail.actions'),
+      align: 'end',
+      hideable: false,
+      exportable: false,
+      mobile: 'meta',
+      cell: (r) => <RefundPayoutActions refund={r} />,
     },
   ];
 

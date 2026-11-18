@@ -81,7 +81,8 @@
         "payout": "A different finance user must approve this payout: you requested it, so you cannot also approve it.",
         "request": "A different finance user must approve this request: you requested it, so you cannot also approve it.",
         "refund": "A different finance user must approve this refund: you requested it, so you cannot also approve it.",
-        "adjustment": "A different finance user must approve this adjustment: you requested it, so you cannot also approve it."
+        "adjustment": "A different finance user must approve this adjustment: you requested it, so you cannot also approve it.",
+        "refundPayout": "A different finance user must confirm this refund payout: you recorded it, so you cannot also confirm it."
       },
       "requestChanged": "This request changed after you opened it. The latest details have been reloaded: please review it again."
     },
@@ -186,7 +187,8 @@
       "payoutConfirmations": "Payouts awaiting UTR confirmation",
       "payoutReconciliations": "Payouts needing reconciliation",
       "payoutReversals": "Payout failures awaiting 2nd approval",
-      "adjustments": "Ledger adjustments to approve"
+      "adjustments": "Ledger adjustments to approve",
+      "refundPayouts": "Bank refunds awaiting payout"
     }
   },
   "settlementUi": {
@@ -489,6 +491,54 @@
     "orderFallback": "order",
     "rejected": "Refund rejected",
     "rejectFailed": "Could not reject the refund"
+  },
+  "refundPayout": {
+    "queueTab": "Awaiting payout",
+    "record": "Record payout",
+    "edit": "Edit payout",
+    "confirm": "Confirm payout",
+    "reject": "Reject payout",
+    "recordedBy": "Ref <0>{{reference}}</0> recorded by {{name}}",
+    "recordedByLabel": "Recorded by",
+    "someone": "another user",
+    "sameUser": "You recorded this payout: another finance user must confirm it.",
+    "recordTitle": "Record bank payout",
+    "recordHint": "Pay the refund from the bank first, then record the bank reference. A different finance user confirms it against the bank statement; only then is the refund marked processed and posted to the ledger.",
+    "reference": "Bank reference (UTR)",
+    "referenceHint": "As shown on the bank statement or payment advice.",
+    "referenceRequired": "Enter the bank reference.",
+    "paidOn": "Paid on",
+    "proof": "Proof of payment",
+    "proofHint": "Optional: bank advice or screenshot (PDF, JPEG, PNG or WebP).",
+    "proofKept": "The proof already attached is kept unless you choose a new file.",
+    "note": "Note",
+    "recordSubmit": "Record payout",
+    "recorded": "Payout recorded; a second finance user must confirm it",
+    "recordFailed": "Could not record the payout",
+    "uploadFailed": "Could not upload the proof of payment",
+    "confirmTitle": "Confirm bank payout",
+    "confirmHint": "Check the payout against the bank statement before you confirm. Confirming marks the refund as processed, posts it to the ledger and notifies the patient.",
+    "amount": "Amount",
+    "patient": "Patient",
+    "downloadProof": "Download proof",
+    "noProof": "No proof attached",
+    "proofFailed": "Could not download the proof",
+    "retypeReference": "Type the bank reference you checked",
+    "referenceMismatch": "The reference does not match the recorded payout.",
+    "confirmSubmit": "Confirm payout",
+    "confirmed": "Payout confirmed; the refund is processed",
+    "confirmFailed": "Could not confirm the payout",
+    "rejectTitle": "Reject recorded payout",
+    "rejectBody": "The recorded reference is cleared and the refund keeps waiting for its payout. Nothing is posted to the ledger.",
+    "rejected": "Payout record rejected; the refund is back in the payout queue",
+    "rejectFailed": "Could not reject the payout record",
+    "errors": {
+      "referenceUsed": "This bank reference has already been used for another refund.",
+      "futureDate": "The payout date cannot be in the future.",
+      "changed": "The recorded payout changed after you opened it. Reload the list and check it again.",
+      "notRecorded": "No payout has been recorded for this refund yet.",
+      "state": "This refund is no longer waiting for a payout."
+    }
   },
   "reports": {
     "documentTitle": "Finance reports",
@@ -989,7 +1039,8 @@
       "returning": "Returning",
       "accepted": "Accepted",
       "returned": "Returned",
-      "posted": "Posted"
+      "posted": "Posted",
+      "awaiting_payout": "Awaiting payout"
     },
     "paymentGateway": {
       "razorpay": "Card / UPI (Razorpay)",

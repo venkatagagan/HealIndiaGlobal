@@ -640,6 +640,7 @@
       "requested": "Запрошен",
       "approved": "Одобрен",
       "processing": "Обрабатывается",
+      "awaiting_payout": "Ожидает выплаты",
       "processed": "Выполнен",
       "failed": "Ошибка",
       "rejected": "Отклонён"

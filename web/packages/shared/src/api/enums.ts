@@ -386,7 +386,9 @@ export const PAYMENT_METHODS = ['card', 'upi', 'netbanking', 'bank_transfer', 'w
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 export const PAYMENT_METHOD_LABELS = labelsFor('paymentMethod', PAYMENT_METHODS, { upi: 'UPI', emi: 'EMI', netbanking: 'Net banking' });
 
-export const REFUND_STATUSES = ['requested', 'approved', 'processing', 'processed', 'failed', 'rejected'] as const;
+/** `awaiting_payout` (SEC-010): an approved bank-transfer refund waits for finance to record and a second finance
+ * user to confirm the bank payout. */
+export const REFUND_STATUSES = ['requested', 'approved', 'processing', 'awaiting_payout', 'processed', 'failed', 'rejected'] as const;
 export type RefundStatus = (typeof REFUND_STATUSES)[number];
 export const REFUND_STATUS_LABELS = labelsFor('refundStatus', REFUND_STATUSES);
 
