@@ -2545,5 +2545,8 @@
   "inviteMissingDoctor": "الطبيب المعالج",
   "inviteMissingArrival": "تاريخ الوصول",
   "inviteMissingDuration": "مدة الإقامة",
-  "inviteMissingTreatment": "العلاج"
+  "inviteMissingTreatment": "العلاج",
+  "reportSheetTitleReview": "الإبلاغ عن هذا التقييم",
+  "reportSheetIntroReview": "أخبرنا بالمشكلة في هذا التقييم، مثل الرسائل المزعجة أو الإساءة أو الادعاءات الكاذبة أو البيانات الشخصية لأحد الأشخاص. سيراجعه فريق الإشراف لدينا. لن يُبلَّغ كاتب التقييم بهوية من أبلغ.",
+  "reviewReportAction": "الإبلاغ عن التقييم"
 }

@@ -12393,5 +12393,17 @@
   "inviteMissingTreatment": "Treatment",
   "@inviteMissingTreatment": {
     "description": "Missing detail: treatment."
+  },
+  "reportSheetTitleReview": "Report this review",
+  "@reportSheetTitleReview": {
+    "description": "Title of the report sheet opened from a published hospital or doctor review"
+  },
+  "reportSheetIntroReview": "Tell us what is wrong with this review, for example spam, abuse, false claims or someone's personal details. Our moderation team will check it. The author is not told who reported it.",
+  "@reportSheetIntroReview": {
+    "description": "Intro of the report sheet for a review: what to report and that moderators check it; the author is not told who reported it"
+  },
+  "reviewReportAction": "Report review",
+  "@reviewReportAction": {
+    "description": "Tooltip / semantics label of the flag button on a published review"
   }
 }

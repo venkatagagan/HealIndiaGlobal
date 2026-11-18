@@ -2545,5 +2545,8 @@
   "inviteMissingDoctor": "Médecin traitant",
   "inviteMissingArrival": "Date d'arrivée",
   "inviteMissingDuration": "Durée du séjour",
-  "inviteMissingTreatment": "Traitement"
+  "inviteMissingTreatment": "Traitement",
+  "reportSheetTitleReview": "Signaler cet avis",
+  "reportSheetIntroReview": "Dites-nous ce qui ne va pas avec cet avis, par exemple du spam, des propos abusifs, de fausses affirmations ou les données personnelles de quelqu'un. Notre équipe de modération l'examinera. L'auteur ne saura pas qui l'a signalé.",
+  "reviewReportAction": "Signaler l'avis"
 }

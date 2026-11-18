@@ -2545,5 +2545,8 @@
   "inviteMissingDoctor": "Лечащий врач",
   "inviteMissingArrival": "Дата прибытия",
   "inviteMissingDuration": "Срок пребывания",
-  "inviteMissingTreatment": "Лечение"
+  "inviteMissingTreatment": "Лечение",
+  "reportSheetTitleReview": "Пожаловаться на отзыв",
+  "reportSheetIntroReview": "Расскажите, что не так с этим отзывом: например, спам, оскорбления, ложные утверждения или чьи-то личные данные. Наши модераторы его проверят. Автор не узнает, кто пожаловался.",
+  "reviewReportAction": "Пожаловаться на отзыв"
 }
