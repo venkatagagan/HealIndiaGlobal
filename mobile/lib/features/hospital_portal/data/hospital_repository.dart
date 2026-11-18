@@ -29,10 +29,36 @@ class HospitalPortalRepository {
   Future<HospitalListing> listing() async =>
       HospitalListing.fromJson(asJsonMap(await _get('/hospital-portal/profile')));
 
-  /// `GET /cases?hospital_id=&status=&q=`
-  Future<Paged<MedicalCase>> cases({CaseStatus? status, String? q, int pageSize = 50}) async => Paged.fromJson(
-    await _get('/cases', {'hospital_id': hospitalId, 'status': status?.json, 'q': q, 'page': 1, 'page_size': pageSize}),
-    MedicalCase.fromJson,
+  /// `GET /cases?hospital_id=&status=&q=&sort=` — new enquiries sorted by their quote due time
+  /// (`sort=quote_due_at`: cases still waiting for a quote first, soonest due first).
+  Future<Paged<MedicalCase>> cases({CaseStatus? status, String? q, String? sort, int pageSize = 50}) async =>
+      Paged.fromJson(
+        await _get('/cases', {
+          'hospital_id': hospitalId,
+          'status': status?.json,
+          'q': q,
+          'sort': sort ?? (status == CaseStatus.enquiry ? 'quote_due_at' : null),
+          'page': 1,
+          'page_size': pageSize,
+        }),
+        MedicalCase.fromJson,
+      );
+
+  /// `GET /aftercare/checkins?case_id=` — the patient's recovery check-ins (red flags highlighted).
+  Future<List<AftercareCheckin>> checkins(String caseId) async =>
+      parseList(await _get('/aftercare/checkins', {'case_id': caseId}), AftercareCheckin.fromJson);
+
+  /// `POST /hospital-portal/visa-requests/{id}/invitation-letter/generate` — (re)create the draft letter.
+  Future<InvitationLetterResult> generateInvitationLetter(String visaId, InvitationLetterDraft draft) async =>
+      InvitationLetterResult.fromJson(
+        asJsonMap(
+          await _send('POST', '/hospital-portal/visa-requests/$visaId/invitation-letter/generate', draft.toJson()),
+        ),
+      );
+
+  /// `POST /hospital-portal/visa-requests/{id}/invitation-letter/approve` — attach and send to the patient.
+  Future<InvitationLetterResult> approveInvitationLetter(String visaId) async => InvitationLetterResult.fromJson(
+    asJsonMap(await _send('POST', '/hospital-portal/visa-requests/$visaId/invitation-letter/approve')),
   );
 
   /// `GET /cases/{id}`
@@ -156,6 +182,11 @@ final hospitalCasesProvider = FutureProvider.autoDispose.family<Paged<MedicalCas
 
 final hospitalCaseDetailProvider = FutureProvider.autoDispose.family<MedicalCaseDetail, String>(
   (ref, id) => ref.watch(hospitalRepositoryProvider).caseDetail(id),
+);
+
+/// Recovery check-ins of one case (hospital view).
+final hospitalCheckinsProvider = FutureProvider.autoDispose.family<List<AftercareCheckin>, String>(
+  (ref, caseId) => ref.watch(hospitalRepositoryProvider).checkins(caseId),
 );
 
 /// Bookings of the hospital by status (null = all).

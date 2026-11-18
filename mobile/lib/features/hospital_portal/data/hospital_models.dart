@@ -80,9 +80,13 @@ class HospitalVisaRequest {
     this.applicationReference,
     this.notes,
     this.createdAt,
+    this.invitationLetterDraftDocumentId,
+    this.invitationLetterGeneratedAt,
   });
 
   factory HospitalVisaRequest.fromJson(JsonMap j) => HospitalVisaRequest(
+    invitationLetterDraftDocumentId: jStrOrNull(j, 'invitation_letter_draft_document_id'),
+    invitationLetterGeneratedAt: jDate(j, 'invitation_letter_generated_at'),
     id: jStr(j, 'id'),
     caseId: jStr(j, 'case_id'),
     visaType: VisaType.fromJson(j['visa_type']),
@@ -105,6 +109,10 @@ class HospitalVisaRequest {
   final String? applicationReference;
   final String? notes;
   final DateTime? createdAt;
+
+  /// A generated invitation letter waiting for the hospital's approval.
+  final String? invitationLetterDraftDocumentId;
+  final DateTime? invitationLetterGeneratedAt;
 
   bool get needsInvitation =>
       invitationLetterDocumentId == null && (status == VisaStatus.notStarted || status == VisaStatus.documentsPending);

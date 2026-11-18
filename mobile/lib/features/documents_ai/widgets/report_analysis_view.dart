@@ -7,6 +7,7 @@ import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../data/document_analysis_repository.dart';
 import '../models/document_analysis.dart';
 import 'report_analysis_card.dart';
@@ -113,14 +114,11 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Discard this reading?'),
-        content: const Text(
-          'The AI reading will not be used for your screening or shared with hospitals. '
-          'Your uploaded report itself is kept.',
-        ),
+        title: Text(ctx.l10n.reportViewDiscardTitle),
+        content: Text(ctx.l10n.reportViewDiscardBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep reviewing')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Discard')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.reportViewKeepReviewing)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.reportViewDiscard)),
         ],
       ),
     );
@@ -130,6 +128,7 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
   @override
   Widget build(BuildContext context) {
     final a = _a;
+    final l10n = context.l10n;
     if (a == null) {
       return _loadError != null
           ? ErrorView(
@@ -139,15 +138,15 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
                 unawaited(_load());
               },
             )
-          : const LoadingView(message: 'Loading…');
+          : LoadingView(message: l10n.commonLoading);
     }
     if (a.status.isPending) return const _ReadingView();
     if (a.status == AnalysisStatus.failed) {
       return _Problem(
         icon: Icons.error_outline_rounded,
-        title: 'We could not read this report',
-        message: a.error ?? 'Something went wrong while reading your report.',
-        actionLabel: 'Try again',
+        title: l10n.reportViewFailedTitle,
+        message: a.error ?? l10n.reportViewFailedMessage,
+        actionLabel: l10n.commonTryAgain,
         busy: _busy,
         onAction: () => _run(() => _repo.retry(a.id)),
       );
@@ -155,11 +154,8 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
     if (a.status == AnalysisStatus.unsupported) {
       return _Problem(
         icon: Icons.block_rounded,
-        title: 'This file type cannot be read',
-        message:
-            a.error ??
-            'Scans such as DICOM images cannot be read automatically. Please upload the radiologist\'s written '
-                'report or a clear photo of each page instead.',
+        title: l10n.reportViewUnsupportedTitle,
+        message: a.error ?? l10n.reportViewUnsupportedMessage,
       );
     }
     if (a.isConfirmed || a.isRejected) {
@@ -170,7 +166,7 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
-                'You discarded this reading. It is not used for screening or shared with hospitals.',
+                l10n.reportViewDiscarded,
                 style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
               ),
             ),
@@ -183,11 +179,12 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
   }
 
   Widget _review(BuildContext context, DocumentAnalysis a) {
+    final l10n = context.l10n;
     return Column(
       children: [
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 24),
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
@@ -199,27 +196,22 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
                   children: [
                     const Icon(Icons.fact_check_outlined, color: AppColors.violet),
                     const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Please check what the AI read. Correct anything that is wrong, then tap Confirm. '
-                        'Only confirmed information is used.',
-                        style: context.text.bodySmall,
-                      ),
-                    ),
+                    Expanded(child: Text(l10n.reportViewCheckIntro, style: context.text.bodySmall)),
                   ],
                 ),
               ),
               if (!a.quality.legible || a.quality.issues.isNotEmpty) ...[
                 const SizedBox(height: 10),
                 Text(
-                  'Image quality: ${a.quality.issues.isEmpty ? 'parts may be hard to read' : a.quality.issues.join(', ')}. '
-                  'A clearer photo gives better results.',
+                  l10n.reportViewImageQuality(
+                    a.quality.issues.isEmpty ? l10n.reportViewQualityHardToRead : a.quality.issues.join(', '),
+                  ),
                   style: context.text.bodySmall?.copyWith(color: AppColors.warning),
                 ),
               ],
               if (a.redFlags.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                ReportAlertBanner(title: 'Please contact a doctor soon', lines: a.redFlags),
+                ReportAlertBanner(title: l10n.reportViewContactDoctor, lines: a.redFlags),
               ],
               ReportReviewForm(
                 initial: a.data,
@@ -240,12 +232,12 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
         SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 12),
             child: Row(
               children: [
                 Expanded(
                   child: SecondaryButton(
-                    label: 'Discard',
+                    label: l10n.reportViewDiscard,
                     onPressed: _busy ? null : _discard,
                     foregroundColor: context.colors.onSurface,
                   ),
@@ -254,7 +246,7 @@ class _ReportAnalysisViewState extends ConsumerState<ReportAnalysisView> {
                 Expanded(
                   flex: 2,
                   child: PrimaryButton(
-                    label: 'Confirm',
+                    label: l10n.commonConfirm,
                     icon: Icons.check_rounded,
                     loading: _busy,
                     onPressed: _busy ? null : _confirm,
@@ -309,13 +301,13 @@ class _ReadingViewState extends State<_ReadingView> with SingleTickerProviderSta
             Semantics(
               liveRegion: true,
               child: Text(
-                'Reading your report…',
+                context.l10n.reportViewReading,
                 style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'This usually takes less than a minute. You will review everything before it is used.',
+              context.l10n.reportViewReadingHint,
               textAlign: TextAlign.center,
               style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
             ),
@@ -434,7 +426,7 @@ class _ReportResultButton extends StatelessWidget {
         style: TextButton.styleFrom(foregroundColor: context.palette.textSecondary),
         onPressed: () => showReportSheet(context, type: ReportTargetType.documentAnalysis, targetId: analysisId),
         icon: const Icon(Icons.flag_outlined, size: 16),
-        label: const Text('Report this result'),
+        label: Text(context.l10n.reportSheetTitleResult),
       ),
     );
   }

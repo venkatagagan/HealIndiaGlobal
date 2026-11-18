@@ -1,6 +1,7 @@
 /// Barrel file: `import 'package:heal_india_global/core/models/models.dart';`
 library;
 
+export 'aftercare.dart';
 export 'booking.dart';
 export 'case.dart';
 export 'checklist.dart';
@@ -9,6 +10,8 @@ export 'conversation.dart';
 export 'doctor.dart';
 export 'document.dart';
 export 'enums.dart';
+export 'guardian.dart';
+export 'guest.dart';
 export 'hospital.dart';
 export 'itinerary.dart';
 export 'json.dart';
@@ -21,8 +24,11 @@ export 'patient.dart';
 export 'payment.dart';
 export 'procedure.dart';
 export 'quote.dart';
+export 'quote_group.dart';
 export 'refs.dart';
 export 'screening.dart';
 export 'specialty.dart';
 export 'travel.dart';
+export 'trust.dart';
 export 'user.dart';
+export 'visa_guide.dart';

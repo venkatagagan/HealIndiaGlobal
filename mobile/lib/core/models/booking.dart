@@ -1,5 +1,6 @@
 import 'enums.dart';
 import 'json.dart';
+import 'money.dart';
 import 'package.dart';
 import 'refs.dart';
 
@@ -53,6 +54,10 @@ class Booking {
     this.cancelledAt,
     this.cancelReason,
     this.refundPolicy = const [],
+    this.displayTotal,
+    this.displayDeposit,
+    this.displayAmountPaid,
+    this.displayBalanceDue,
   });
 
   factory Booking.fromJson(JsonMap j) => Booking(
@@ -93,6 +98,10 @@ class Booking {
     cancelledAt: jDate(j, 'cancelled_at'),
     cancelReason: jStrOrNull(j, 'cancel_reason'),
     refundPolicy: jList(j, 'refund_policy', RefundTier.fromJson)..sort((a, b) => b.daysBefore.compareTo(a.daysBefore)),
+    displayTotal: DisplayMoney.read(j, 'display_total'),
+    displayDeposit: DisplayMoney.read(j, 'display_deposit'),
+    displayAmountPaid: DisplayMoney.read(j, 'display_amount_paid'),
+    displayBalanceDue: DisplayMoney.read(j, 'display_balance_due'),
   );
 
   final String id;
@@ -133,6 +142,12 @@ class Booking {
   /// Cancellation refund tiers snapshotted at confirmation (highest `days_before` first); empty before
   /// confirmation, when the platform's current policy applies.
   final List<RefundTier> refundPolicy;
+
+  /// Amounts in the viewer's currency (approximate; payments use [currency]).
+  final DisplayMoney? displayTotal;
+  final DisplayMoney? displayDeposit;
+  final DisplayMoney? displayAmountPaid;
+  final DisplayMoney? displayBalanceDue;
 
   bool get isPendingPayment => status == BookingStatus.pendingPayment;
   bool get isCancellable => status == BookingStatus.pendingPayment || status == BookingStatus.confirmed;
@@ -194,11 +209,19 @@ class Consultation {
     this.currency = 'INR',
     this.notes,
     this.createdAt,
+    this.kind = 'standard',
+    this.dueAt,
+    this.followupDay,
+    this.hospitalName,
   });
 
   factory Consultation.fromJson(JsonMap j) => Consultation(
     id: jStr(j, 'id'),
     caseId: jStr(j, 'case_id'),
+    kind: jStr(j, 'kind', 'standard'),
+    dueAt: jDate(j, 'due_at'),
+    followupDay: jIntOrNull(j, 'followup_day'),
+    hospitalName: jStrOrNull(jMap(j, 'hospital'), 'name'),
     doctorId: jStrOrNull(jMap(j, 'doctor'), 'id'),
     doctorName: jStrOrNull(jMap(j, 'doctor'), 'full_name'),
     patientId: jStrOrNull(jMap(j, 'patient'), 'id'),
@@ -232,9 +255,22 @@ class Consultation {
   final String? notes;
   final DateTime? createdAt;
 
+  /// `standard | followup` (aftercare video follow-up).
+  final String kind;
+
+  /// Follow-ups: roughly when the call should happen (the hospital confirms [scheduledAt]).
+  final DateTime? dueAt;
+
+  /// Follow-ups: day after discharge (7, 30, 90).
+  final int? followupDay;
+  final String? hospitalName;
+
+  bool get isFollowup => kind == 'followup';
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'case_id': caseId,
+    'kind': kind,
     'case_number': caseNumber,
     'doctor': doctorId == null && doctorName == null ? null : {'id': doctorId, 'full_name': doctorName},
     'patient': patientId == null && patientName == null ? null : {'id': patientId, 'full_name': patientName},

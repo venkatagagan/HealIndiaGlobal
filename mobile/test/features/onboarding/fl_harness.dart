@@ -13,6 +13,8 @@ import 'package:heal_india_global/core/config/app_preferences.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/network/api_client.dart';
 import 'package:heal_india_global/core/repositories/catalog_repository.dart';
+import 'package:heal_india_global/core/repositories/privacy_repository.dart';
+import 'package:heal_india_global/core/repositories/trust_repository.dart';
 import 'package:heal_india_global/core/theme/app_theme.dart';
 import 'package:heal_india_global/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -171,9 +173,40 @@ class FakeCatalogRepository extends CatalogRepository {
     String? language,
     Gender? gender,
     String? procedure,
+    String? sort,
     int page = 1,
     int pageSize = 20,
   }) async => Paged(items: doctorItems, total: doctorItems.length, page: 1, pageSize: pageSize, pages: 1);
+
+  /// Answer of [costHighlights] (empty list by default).
+  CostHighlights highlights = const CostHighlights(
+    country: HomeCountryInfo(countryUsed: 'US'),
+    currency: 'USD',
+  );
+  final List<String?> highlightCountries = [];
+
+  @override
+  Future<CostHighlights> costHighlights({String? country, String? currency, int limit = 6}) async {
+    highlightCountries.add(country);
+    return highlights;
+  }
+
+  /// Answer of [procedureEarliest].
+  ProcedureEarliest? earliest;
+
+  @override
+  Future<ProcedureEarliest> procedureEarliest(String slug, {int limit = 20}) async =>
+      earliest ?? ProcedureEarliest(procedure: EntityRef(id: 'p-$slug', slug: slug, name: slug));
+
+  final List<Review> reviewItems = [];
+
+  @override
+  Future<Paged<Review>> hospitalReviews(String slugOrId, {int page = 1, int pageSize = 20}) async =>
+      Paged(items: reviewItems, total: reviewItems.length, page: 1, pageSize: pageSize, pages: 1);
+
+  @override
+  Future<Paged<Review>> doctorReviews(String id, {int page = 1, int pageSize = 20}) async =>
+      Paged(items: reviewItems, total: reviewItems.length, page: 1, pageSize: pageSize, pages: 1);
 
   @override
   Future<List<Procedure>> procedures({String? specialty, String? q}) async => procedureItems;
@@ -193,6 +226,16 @@ class FakeCatalogRepository extends CatalogRepository {
     String? doctorId,
   }) async => [];
 }
+
+/// Empty answers for the phase-1 side panels (guardian status, reviews to write, home cost highlights) so
+/// screens that show them never reach the network in tests.
+List<Override> quietPhase1Overrides({CostHighlights? highlights}) => [
+  guardianStatusProvider.overrideWith((ref) async => const GuardianStatus()),
+  eligibleReviewsProvider.overrideWith((ref) async => const <ReviewableBooking>[]),
+  costHighlightsProvider.overrideWith(
+    (ref) async => highlights ?? const CostHighlights(country: HomeCountryInfo(countryUsed: 'US'), currency: 'USD'),
+  ),
+];
 
 /// Text shown by the placeholder for every route other than the screen under test.
 String routeLabel(String location) => 'route:$location';

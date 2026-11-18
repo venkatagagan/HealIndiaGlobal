@@ -6852,4 +6852,1825 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get reportNone => 'কিছু নেই';
+
+  @override
+  String get authContinueWithGoogle => 'Google দিয়ে চালিয়ে যান';
+
+  @override
+  String get authContinueWithApple => 'Apple দিয়ে চালিয়ে যান';
+
+  @override
+  String get authCreateAccountWithEmail => 'ইমেল দিয়ে অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get authSignUpWithEmail => 'ইমেল দিয়ে সাইন আপ করুন';
+
+  @override
+  String get authContinueBrowsingAsGuest => 'অতিথি হিসেবে ব্রাউজ চালিয়ে যান';
+
+  @override
+  String get authBrowseAsGuest => 'অতিথি হিসেবে ব্রাউজ করুন';
+
+  @override
+  String get authPartnerHint =>
+      'আপনি কি ফ্যাসিলিটেটর বা হাসপাতাল দলের সদস্য? ইমেল দিয়ে সাইন আপ করে আপনার ভূমিকা বেছে নিন, অথবা লগ ইন করুন।';
+
+  @override
+  String get authAlreadyHaveAccount => 'আগে থেকেই অ্যাকাউন্ট আছে?';
+
+  @override
+  String get authEmailLabel => 'ইমেল';
+
+  @override
+  String get authOr => 'অথবা';
+
+  @override
+  String get authBackTooltip => 'পেছনে';
+
+  @override
+  String get authPasswordLabel => 'পাসওয়ার্ড';
+
+  @override
+  String get authShowPassword => 'পাসওয়ার্ড দেখান';
+
+  @override
+  String get authHidePassword => 'পাসওয়ার্ড লুকান';
+
+  @override
+  String authTermsContinue(String terms, String privacy) {
+    return 'চালিয়ে গেলে আপনি আমাদের $terms ও $privacy-তে সম্মত হচ্ছেন।';
+  }
+
+  @override
+  String authTermsAgree(String terms, String privacy) {
+    return 'আমি $terms ও $privacy-তে সম্মত।';
+  }
+
+  @override
+  String get authTermsLink => 'শর্তাবলি';
+
+  @override
+  String get authPrivacyLink => 'গোপনীয়তা নীতি';
+
+  @override
+  String authCouldNotOpen(String url) {
+    return '$url খোলা যায়নি';
+  }
+
+  @override
+  String get authAgeAdultConfirm => 'আমি নিশ্চিত করছি যে আমার বয়স ১৮ বা তার বেশি।';
+
+  @override
+  String get authAgeAdult => 'আমার বয়স ১৮ বা তার বেশি';
+
+  @override
+  String get authAgeMinor => 'আমার বয়স ১৮-এর কম এবং আমার চিকিৎসার জন্য একজন অভিভাবক সম্মতি দেবেন';
+
+  @override
+  String get authAgeRequired => 'অনুগ্রহ করে আপনার বয়স নিশ্চিত করুন';
+
+  @override
+  String get authAgeQuestion => 'আপনার বয়স';
+
+  @override
+  String get authAgeDialogTitle => 'আপনার বয়স নিশ্চিত করুন';
+
+  @override
+  String get authAgeDialogAdultOnly => 'এই ধরনের অ্যাকাউন্ট শুধু প্রাপ্তবয়স্কদের জন্য।';
+
+  @override
+  String get authAgeDialogNeeded => 'আপনার অ্যাকাউন্ট তৈরির আগে আমাদের এটি জানা দরকার।';
+
+  @override
+  String get loginSubtitle => 'আবার স্বাগতম। আপনার চিকিৎসা যাত্রা চালিয়ে যেতে লগ ইন করুন।';
+
+  @override
+  String get loginOtpPrompt => 'আপনার অথেনটিকেটর অ্যাপের ৬ অঙ্কের কোডটি লিখুন।';
+
+  @override
+  String get loginOtpLabel => 'যাচাইকরণ কোড';
+
+  @override
+  String get loginForgotPassword => 'পাসওয়ার্ড ভুলে গেছেন?';
+
+  @override
+  String get loginVerifyAndLogIn => 'যাচাই করে লগ ইন করুন';
+
+  @override
+  String get loginSocialPatientsOnly => 'Google ও Apple দিয়ে সাইন ইন শুধু রোগীদের জন্য।';
+
+  @override
+  String get loginNoAccount => 'অ্যাকাউন্ট নেই?';
+
+  @override
+  String get loginSignUp => 'সাইন আপ';
+
+  @override
+  String get registerConflict => 'এই ইমেল দিয়ে আগে থেকেই একটি অ্যাকাউন্ট আছে। এর বদলে লগ ইন করে দেখুন।';
+
+  @override
+  String get registerCreateAccount => 'অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get registerCreateAccountKeepProgress => 'অ্যাকাউন্ট তৈরি করুন ও আমার অগ্রগতি রাখুন';
+
+  @override
+  String get registerIntroGuest =>
+      'আপনার স্ক্রিনিং ও ম্যাচ সংরক্ষণ করুন, কোটেশন চান এবং চিকিৎসা বুক করুন। অতিথি হিসেবে আপনি যা করেছেন সবকিছু রাখা থাকবে।';
+
+  @override
+  String get registerIntroAgent =>
+      'ফ্যাসিলিটেটর ও এজেন্সির জন্য: রোগী নিবন্ধন করুন, হাসপাতালের কোটেশন তুলনা করুন এবং কমিশন দেখুন। নতুন এজেন্ট অ্যাকাউন্ট আমাদের দল যাচাই করে।';
+
+  @override
+  String get registerIntroHospital =>
+      'হাসপাতাল দলের জন্য: রোগীর জিজ্ঞাসা গ্রহণ করুন, বিস্তারিত কোটেশন পাঠান এবং ভর্তি পরিচালনা করুন। তালিকাভুক্ত হওয়ার আগে আপনার হাসপাতাল আমাদের দল যাচাই করে।';
+
+  @override
+  String get registerIntroPatient =>
+      'স্বীকৃত ভারতীয় হাসপাতালের সাথে ম্যাচ পান এবং আপনার পুরো চিকিৎসা যাত্রা অনুসরণ করুন।';
+
+  @override
+  String get registerFullNamePassport => 'পুরো নাম (পাসপোর্ট অনুযায়ী)';
+
+  @override
+  String get registerYourFullName => 'আপনার পুরো নাম';
+
+  @override
+  String registerPasswordHelper(int min) {
+    return 'কমপক্ষে $minটি অক্ষর, একটি বর্ণ ও একটি সংখ্যাসহ';
+  }
+
+  @override
+  String get registerAgencyName => 'এজেন্সির নাম';
+
+  @override
+  String get registerEnterAgencyName => 'আপনার এজেন্সির নাম লিখুন';
+
+  @override
+  String get registerHospitalName => 'হাসপাতালের নাম';
+
+  @override
+  String get registerEnterHospitalName => 'হাসপাতালের নাম লিখুন';
+
+  @override
+  String get registerCityOptional => 'শহর (ঐচ্ছিক)';
+
+  @override
+  String get registerPhoneOptional => 'ফোন / WhatsApp (ঐচ্ছিক)';
+
+  @override
+  String get registerCountryOfResidenceOptional => 'বসবাসের দেশ (ঐচ্ছিক)';
+
+  @override
+  String get registerCountryOptional => 'দেশ (ঐচ্ছিক)';
+
+  @override
+  String get registerReferralCodeOptional => 'ফ্যাসিলিটেটরের রেফারেল কোড (ঐচ্ছিক)';
+
+  @override
+  String get registerAcceptTermsError => 'অনুগ্রহ করে শর্তাবলি ও গোপনীয়তা নীতি গ্রহণ করুন';
+
+  @override
+  String get apiErrorTimeout => 'সার্ভার উত্তর দিতে অনেক সময় নিয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+
+  @override
+  String get apiErrorCancelled => 'অনুরোধ বাতিল হয়েছে।';
+
+  @override
+  String get apiErrorNoConnection => 'সংযোগ নেই। ইন্টারনেট পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get apiErrorSecureConnection => 'নিরাপদ সংযোগ ব্যর্থ হয়েছে।';
+
+  @override
+  String get apiErrorBadRequest => 'অনুরোধটি প্রক্রিয়া করা যায়নি।';
+
+  @override
+  String get apiErrorSignIn => 'চালিয়ে যেতে অনুগ্রহ করে সাইন ইন করুন।';
+
+  @override
+  String get apiErrorPayment => 'পেমেন্ট সম্পন্ন করা যায়নি।';
+
+  @override
+  String get apiErrorForbidden => 'এটিতে আপনার প্রবেশাধিকার নেই।';
+
+  @override
+  String get apiErrorNotFound => 'পাওয়া যায়নি।';
+
+  @override
+  String get apiErrorConflict => 'অন্য কেউ এটি পরিবর্তন করেছেন। অনুগ্রহ করে রিফ্রেশ করুন।';
+
+  @override
+  String get apiErrorValidation => 'অনুগ্রহ করে চিহ্নিত ঘরগুলো দেখুন।';
+
+  @override
+  String get apiErrorRateLimited => 'অনেকবার চেষ্টা করা হয়েছে। একটু অপেক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get apiErrorServer => 'আমাদের দিকে কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+
+  @override
+  String apiErrorUnexpected(int status) {
+    return 'অপ্রত্যাশিত ত্রুটি ($status)।';
+  }
+
+  @override
+  String get apiErrorGeneric => 'কিছু একটা সমস্যা হয়েছে।';
+
+  @override
+  String get conversationFallbackTitle => 'কথোপকথন';
+
+  @override
+  String get pushPromptTitle => 'নোটিফিকেশন চালু করবেন?';
+
+  @override
+  String get pushPromptBody =>
+      'আপনার কেস, বার্তা ও পেমেন্টের আপডেট পান। আমরা কখনও নোটিফিকেশনে স্বাস্থ্য-সংক্রান্ত তথ্য রাখি না।';
+
+  @override
+  String get pushPromptNotNow => 'এখন নয়';
+
+  @override
+  String get pushPromptTurnOn => 'চালু করুন';
+
+  @override
+  String get reportSheetThanks => 'ধন্যবাদ। আমাদের দল এই রিপোর্টটি পর্যালোচনা করবে।';
+
+  @override
+  String get reportSheetTitleMessage => 'এই বার্তাটি রিপোর্ট করুন';
+
+  @override
+  String get reportSheetTitleResult => 'এই ফলাফলটি রিপোর্ট করুন';
+
+  @override
+  String get reportSheetIntroMessage =>
+      'এই বার্তায় কী সমস্যা তা আমাদের জানান। আমাদের দল এটি দেখবে। প্রেরককে জানানো হয় না কে রিপোর্ট করেছে।';
+
+  @override
+  String get reportSheetIntroResult =>
+      'এই AI ফলাফলে কী ভুল তা আমাদের জানান। আমাদের দল এটি দেখবে এবং ফলাফল উন্নত করতে ব্যবহার করবে।';
+
+  @override
+  String get reportSheetRateLimited => 'আপনি অনেক রিপোর্ট পাঠিয়েছেন। অনুগ্রহ করে পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get reportSheetNoteLabel => 'একটি নোট যোগ করুন (ঐচ্ছিক)';
+
+  @override
+  String get reportSheetNoteHint => 'যা কিছু আমাদের দলকে সমস্যাটি বুঝতে সাহায্য করবে';
+
+  @override
+  String get reportSheetSend => 'রিপোর্ট পাঠান';
+
+  @override
+  String get reportReasonSpam => 'স্প্যাম';
+
+  @override
+  String get reportReasonAbusive => 'অপমানজনক বা হয়রানিমূলক';
+
+  @override
+  String get reportReasonInappropriate => 'অনুপযুক্ত';
+
+  @override
+  String get reportReasonInaccurate => 'ভুল তথ্য';
+
+  @override
+  String get reportReasonPrivacy => 'গোপনীয়তা নিয়ে উদ্বেগ';
+
+  @override
+  String get reportReasonOther => 'অন্যান্য';
+
+  @override
+  String get chatTitleFallback => 'চ্যাট';
+
+  @override
+  String chatParticipantWithRole(String name, String role) {
+    return '$name ($role)';
+  }
+
+  @override
+  String get chatRoleHospital => 'হাসপাতাল';
+
+  @override
+  String get chatRoleCareTeam => 'কেয়ার টিম';
+
+  @override
+  String get chatRoleAgent => 'এজেন্ট';
+
+  @override
+  String get chatRolePatient => 'রোগী';
+
+  @override
+  String get chatEmptyTitle => 'হ্যালো বলুন';
+
+  @override
+  String get chatEmptyMessage => 'আপনার সমন্বয়কারী সাধারণত কয়েক ঘণ্টার মধ্যে উত্তর দেন।';
+
+  @override
+  String get chatLoadingMore => 'লোড হচ্ছে...';
+
+  @override
+  String get chatLoadEarlier => 'আগের বার্তা লোড করুন';
+
+  @override
+  String get chatToday => 'আজ';
+
+  @override
+  String get chatUploading => 'আপলোড হচ্ছে...';
+
+  @override
+  String get chatAttachTooltip => 'একটি ডকুমেন্ট সংযুক্ত করুন';
+
+  @override
+  String get chatInputHint => 'একটি বার্তা লিখুন';
+
+  @override
+  String get chatSendTooltip => 'পাঠান';
+
+  @override
+  String chatSharedFile(String fileName) {
+    return '$fileName শেয়ার করা হয়েছে';
+  }
+
+  @override
+  String chatSharedFiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি ফাইল শেয়ার করা হয়েছে',
+      one: '$countটি ফাইল শেয়ার করা হয়েছে',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatCopyText => 'টেক্সট কপি করুন';
+
+  @override
+  String get chatReportMessage => 'বার্তা রিপোর্ট করুন';
+
+  @override
+  String get chatMessageCopied => 'বার্তা কপি হয়েছে।';
+
+  @override
+  String get chatHiddenByModerators => 'মডারেটররা লুকিয়ে রেখেছেন';
+
+  @override
+  String get chatAttachmentUnavailable => 'সংযুক্তি পাওয়া যাচ্ছে না';
+
+  @override
+  String get chatAttachment => 'সংযুক্তি';
+
+  @override
+  String get matchesListTitle => 'আপনার সেরা ম্যাচ';
+
+  @override
+  String matchesListCompareLimit(int max) {
+    return 'আপনি সর্বোচ্চ $maxটি ম্যাচ তুলনা করতে পারেন।';
+  }
+
+  @override
+  String get matchesListFinishFirst => 'আগে আপনার স্ক্রিনিং শেষ করুন';
+
+  @override
+  String get matchesListStillFinding => 'এখনও আপনার ম্যাচ খোঁজা হচ্ছে';
+
+  @override
+  String get matchesListCompleteQuestionnaire => 'ম্যাচ হওয়া ডাক্তারদের দেখতে প্রশ্নাবলি পূরণ করুন।';
+
+  @override
+  String get matchesListUsuallyQuick => 'এতে সাধারণত এক মিনিটের কম সময় লাগে।';
+
+  @override
+  String get matchesListSortTooltip => 'সাজান';
+
+  @override
+  String get matchesListFilterTooltip => 'ফিল্টার';
+
+  @override
+  String get matchesListLoading => 'আপনার ম্যাচ লোড হচ্ছে...';
+
+  @override
+  String get matchesListIntro => 'আপনার প্রোফাইল অনুযায়ী, এগুলো আপনার সেরা ম্যাচ।';
+
+  @override
+  String matchesListSaveVsHome(int min, int max) {
+    return 'নিজের দেশে চিকিৎসার তুলনায় $min-$max% সাশ্রয়';
+  }
+
+  @override
+  String get matchesListCompareCosts => 'নিজের দেশের সাথে খরচ তুলনা করুন';
+
+  @override
+  String get matchesListNoMatches => 'এখনও কোনো ম্যাচ নেই';
+
+  @override
+  String get matchesListNoMatchesMessage =>
+      'এই উত্তরগুলোর জন্য আমরা ডাক্তার খুঁজে পাইনি। আবার চেষ্টা করুন বা নিজে হাসপাতাল খুঁজুন।';
+
+  @override
+  String get matchesListRunAgain => 'আবার ম্যাচ খুঁজুন';
+
+  @override
+  String get matchesListBrowseHospitals => 'হাসপাতাল দেখুন';
+
+  @override
+  String get matchesListNoFilterMatches => 'এই ফিল্টারগুলোর জন্য কোনো ম্যাচ নেই';
+
+  @override
+  String get matchesListClearFilters => 'ফিল্টার মুছুন';
+
+  @override
+  String matchesListSelectedForComparison(int count, int max) {
+    return 'তুলনার জন্য $count/$max নির্বাচিত';
+  }
+
+  @override
+  String get matchesListCompare => 'তুলনা করুন';
+
+  @override
+  String get matchesListEmergency =>
+      'আপনার উত্তর থেকে মনে হচ্ছে আপনার জরুরি চিকিৎসার প্রয়োজন হতে পারে। ভ্রমণের পরিকল্পনার আগে অনুগ্রহ করে স্থানীয় জরুরি চিকিৎসা নিন।';
+
+  @override
+  String get matchesListGuidanceAcknowledged => 'নির্দেশনা পড়া হয়েছে';
+
+  @override
+  String get matchesListReadGuidance => 'নির্দেশনা পড়ুন';
+
+  @override
+  String get aiSummaryUrgencySoon => 'শিগগির একজন ডাক্তার দেখান';
+
+  @override
+  String get aiSummaryDisclaimer =>
+      'ডাক্তার বেছে নিতে আপনাকে সাহায্য করার জন্য এই সারাংশটি আপনার উত্তর থেকে তৈরি। এটি কোনো চিকিৎসা নির্ণয় নয়। একজন যোগ্য ডাক্তার আপনার কেস পর্যালোচনা করবেন।';
+
+  @override
+  String get aiSummaryTitleAi => 'AI সারাংশ';
+
+  @override
+  String get aiSummaryTitleRules => 'স্ক্রিনিং সারাংশ';
+
+  @override
+  String get aiSummaryMoreDetails => 'আরও বিস্তারিত';
+
+  @override
+  String get aiSummaryPossibleConditions => 'আলোচনার জন্য সম্ভাব্য অবস্থা';
+
+  @override
+  String aiSummaryConditionLikelihood(String name, String likelihood) {
+    String _temp0 = intl.Intl.selectLogic(likelihood, {
+      'low': '$name (কম সম্ভাবনা)',
+      'medium': '$name (মাঝারি সম্ভাবনা)',
+      'high': '$name (বেশি সম্ভাবনা)',
+      'other': '$name',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get aiSummaryTests => 'যে পরীক্ষাগুলো সাহায্য করতে পারে';
+
+  @override
+  String get aiSummaryQuestions => 'আপনার ডাক্তারের জন্য প্রশ্ন';
+
+  @override
+  String get aiSummaryTravelAdvice => 'ভ্রমণ পরামর্শ';
+
+  @override
+  String aiSummaryBullet(String item) {
+    return '•  $item';
+  }
+
+  @override
+  String get reportViewDiscardTitle => 'এই পাঠটি বাদ দেবেন?';
+
+  @override
+  String get reportViewDiscardBody =>
+      'AI পাঠটি আপনার স্ক্রিনিংয়ে ব্যবহার হবে না এবং হাসপাতালের সাথে শেয়ার হবে না। আপনার আপলোড করা রিপোর্টটি রাখা থাকবে।';
+
+  @override
+  String get reportViewKeepReviewing => 'পর্যালোচনা চালিয়ে যান';
+
+  @override
+  String get reportViewDiscard => 'বাদ দিন';
+
+  @override
+  String get reportViewFailedTitle => 'আমরা এই রিপোর্টটি পড়তে পারিনি';
+
+  @override
+  String get reportViewFailedMessage => 'আপনার রিপোর্ট পড়ার সময় কিছু সমস্যা হয়েছে।';
+
+  @override
+  String get reportViewUnsupportedTitle => 'এই ধরনের ফাইল পড়া যায় না';
+
+  @override
+  String get reportViewUnsupportedMessage =>
+      'DICOM-এর মতো স্ক্যান ছবি স্বয়ংক্রিয়ভাবে পড়া যায় না। এর বদলে রেডিওলজিস্টের লিখিত রিপোর্ট বা প্রতিটি পৃষ্ঠার স্পষ্ট ছবি আপলোড করুন।';
+
+  @override
+  String get reportViewDiscarded =>
+      'আপনি এই পাঠটি বাদ দিয়েছেন। এটি স্ক্রিনিংয়ে ব্যবহার হয় না বা হাসপাতালের সাথে শেয়ার হয় না।';
+
+  @override
+  String get reportViewCheckIntro =>
+      'AI যা পড়েছে তা দেখে নিন। কিছু ভুল থাকলে ঠিক করুন, তারপর নিশ্চিত করুন চাপুন। শুধু নিশ্চিত করা তথ্যই ব্যবহার হয়।';
+
+  @override
+  String get reportViewQualityHardToRead => 'কিছু অংশ পড়তে কঠিন হতে পারে';
+
+  @override
+  String reportViewImageQuality(String issues) {
+    return 'ছবির মান: $issues। স্পষ্ট ছবি দিলে ভালো ফল পাওয়া যায়।';
+  }
+
+  @override
+  String get reportViewContactDoctor => 'অনুগ্রহ করে শিগগির একজন ডাক্তারের সাথে যোগাযোগ করুন';
+
+  @override
+  String get reportViewReading => 'আপনার রিপোর্ট পড়া হচ্ছে…';
+
+  @override
+  String get reportViewReadingHint => 'এতে সাধারণত এক মিনিটের কম সময় লাগে। ব্যবহারের আগে আপনি সবকিছু দেখে নেবেন।';
+
+  @override
+  String get agentScreeningNew => 'নতুন স্ক্রিনিং';
+
+  @override
+  String agentScreeningForPatient(String name) {
+    return 'স্ক্রিনিং · $name';
+  }
+
+  @override
+  String get agentScreeningNeedHelp => 'রোগীর কোন বিষয়ে সাহায্য দরকার?';
+
+  @override
+  String get agentScreeningHowLong => 'কতদিন ধরে?';
+
+  @override
+  String get agentScreeningImpact => 'দৈনন্দিন জীবনে প্রভাব';
+
+  @override
+  String get agentScreeningPreviousTreatments => 'আগের চিকিৎসা (কমা দিয়ে আলাদা করুন)';
+
+  @override
+  String get agentScreeningNotes => 'মেডিক্যাল দলের জন্য নোট';
+
+  @override
+  String get agentScreeningSubmit => 'মানানসই হাসপাতাল খুঁজুন';
+
+  @override
+  String agentScreeningQuotesRequested(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি হাসপাতাল থেকে কোটেশন চাওয়া হয়েছে',
+      one: '$countটি হাসপাতাল থেকে কোটেশন চাওয়া হয়েছে',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get agentScreeningResultTitle => 'স্ক্রিনিং ফলাফল';
+
+  @override
+  String get agentScreeningNotSubmitted => 'স্ক্রিনিং জমা দেওয়া হয়নি';
+
+  @override
+  String get agentScreeningRunNew => 'রোগীর পৃষ্ঠা থেকে নতুন স্ক্রিনিং শুরু করুন।';
+
+  @override
+  String get agentScreeningAnalysing => 'অবস্থা বিশ্লেষণ ও বিশেষজ্ঞ খোঁজা হচ্ছে…';
+
+  @override
+  String get agentScreeningFailed => 'স্ক্রিনিং প্রক্রিয়া করা যায়নি';
+
+  @override
+  String get agentScreeningPleaseTryAgain => 'অনুগ্রহ করে আবার চেষ্টা করুন।';
+
+  @override
+  String get agentScreeningAiTriage => 'AI ট্রায়াজ';
+
+  @override
+  String get agentScreeningMatchedHospitals => 'মানানসই হাসপাতাল';
+
+  @override
+  String get agentScreeningMatchedHospitalsHint => 'বিস্তারিত কোটেশন চাইতে হাসপাতাল নির্বাচন করুন';
+
+  @override
+  String get agentScreeningNoMatches => 'এখনও কোনো ম্যাচ নেই';
+
+  @override
+  String get agentScreeningCompareQuotes => 'পাওয়া কোটেশন তুলনা করুন';
+
+  @override
+  String get agentScreeningSelectHospitals => 'হাসপাতাল নির্বাচন করুন';
+
+  @override
+  String agentScreeningRequestQuotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি কোটেশন চান',
+      one: '$countটি কোটেশন চান',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String agentScreeningEstimate(String amount) {
+    return 'আনুমানিক $amount';
+  }
+
+  @override
+  String get agentScreeningRequested => 'অনুরোধ করা হয়েছে';
+
+  @override
+  String doctorYearsOfExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count বছরের অভিজ্ঞতা',
+      one: '$count বছরের অভিজ্ঞতা',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String privacyAccessLine(String who, String role, String action, String record) {
+    return '$who ($role) $record $action';
+  }
+
+  @override
+  String get privacyRoleHospital => 'হাসপাতাল';
+
+  @override
+  String get privacyRoleAgent => 'আপনার এজেন্ট';
+
+  @override
+  String get privacyRoleSupport => 'কেয়ার সমন্বয়কারী';
+
+  @override
+  String get privacyRoleFinance => 'ফাইন্যান্স দল';
+
+  @override
+  String get privacyRoleStaff => 'Heal India Global-এর কর্মী';
+
+  @override
+  String get privacyRoleSomeone => 'কেউ একজন';
+
+  @override
+  String get privacyActionDownloaded => 'ডাউনলোড করেছেন';
+
+  @override
+  String get privacyActionListed => 'তালিকায় দেখেছেন';
+
+  @override
+  String get privacyActionEmergency => 'জরুরি অবস্থায় খুলেছেন';
+
+  @override
+  String get privacyActionViewed => 'দেখেছেন';
+
+  @override
+  String get privacyRecordDocument => 'একটি ডকুমেন্ট';
+
+  @override
+  String get privacyRecordScreening => 'একটি স্ক্রিনিং';
+
+  @override
+  String get privacyRecordReportReading => 'একটি AI রিপোর্ট পাঠ';
+
+  @override
+  String get privacyRecordVoice => 'একটি ভয়েস ট্রান্সক্রিপ্ট';
+
+  @override
+  String get privacyRecordHistory => 'আপনার চিকিৎসা ইতিহাস';
+
+  @override
+  String get privacyRecordOther => 'একটি রেকর্ড';
+
+  @override
+  String get privacyGroupTitle => 'গোপনীয়তা';
+
+  @override
+  String get privacyDownloadTitle => 'আমার ডেটা ডাউনলোড করুন';
+
+  @override
+  String get privacyDownloadSubtitle => 'আপনার ও আপনার ডকুমেন্ট সম্পর্কে আমাদের কাছে থাকা সবকিছুর একটি ZIP ফাইল';
+
+  @override
+  String get privacyDownloadSaved => 'আপনার ডেটা সংরক্ষণ করা হয়েছে';
+
+  @override
+  String get privacyAccessLogTitle => 'কারা আমার রেকর্ড দেখেছেন';
+
+  @override
+  String get privacyAccessLogSubtitle => 'যে হাসপাতাল, এজেন্ট ও কর্মীরা আপনার স্বাস্থ্য রেকর্ড খুলেছেন';
+
+  @override
+  String get privacyAccessLogError => 'আমরা তালিকাটি লোড করতে পারিনি।';
+
+  @override
+  String get privacyAccessLogEmpty => 'এখনও অন্য কেউ আপনার রেকর্ড দেখেননি।';
+
+  @override
+  String privacyAccessLogReason(String reason) {
+    return 'কারণ: $reason';
+  }
+
+  @override
+  String priceApproxSemantics(String approx, String original) {
+    return 'প্রায় $approx। হাসপাতাল নেয় $original।';
+  }
+
+  @override
+  String priceOriginalAmount(String amount) {
+    return 'হাসপাতালে $amount';
+  }
+
+  @override
+  String trustAccreditationVerifiedSemantics(String body) {
+    return '$body স্বীকৃতি, যাচাই করা';
+  }
+
+  @override
+  String earliestConsultation(String date) {
+    return 'সবচেয়ে আগের পরামর্শ: $date';
+  }
+
+  @override
+  String earliestAdmission(String date) {
+    return 'সবচেয়ে আগের ভর্তি: $date';
+  }
+
+  @override
+  String get earliestToday => 'আজ';
+
+  @override
+  String get earliestTomorrow => 'আগামীকাল';
+
+  @override
+  String quoteTimeLeft(int days, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days দিন $time বাকি',
+      one: '$days দিন $time বাকি',
+      zero: '$time বাকি',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quoteDueBy(String time) {
+    return 'কোটেশনের সময়সীমা: $time';
+  }
+
+  @override
+  String quoteRespondBy(String time) {
+    return 'উত্তর দেওয়ার সময়সীমা: $time';
+  }
+
+  @override
+  String get quoteOverduePatient => 'সময় পেরিয়েছে — আমরা হাসপাতালের সাথে যোগাযোগ করছি';
+
+  @override
+  String get quoteOverdueHospital => 'সময় পেরিয়েছে';
+
+  @override
+  String get guestAiLimitReached =>
+      'আপনি আজকের ৩টি বিনামূল্যের স্ক্যান ব্যবহার করে ফেলেছেন — চালিয়ে যেতে একটি বিনামূল্যের অ্যাকাউন্ট তৈরি করুন।';
+
+  @override
+  String get guestCreateFreeAccount => 'বিনামূল্যে অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get guardianConsentRequiredMessage =>
+      'আপনার বয়স ১৮-এর কম হওয়ায় আগে একজন অভিভাবক বা আইনি অভিভাবককে সম্মতি দিতে হবে।';
+
+  @override
+  String get filtersSortSoonest => 'সবচেয়ে আগে পাওয়া যায়';
+
+  @override
+  String get trustAccreditationsTitle => 'যাচাই করা স্বীকৃতি';
+
+  @override
+  String get trustAccreditationVerified => 'যাচাই করা';
+
+  @override
+  String trustAccreditationVerifiedUntil(String date) {
+    return 'যাচাই করা · $date পর্যন্ত বৈধ';
+  }
+
+  @override
+  String get trustRegistrationVerified => 'নিবন্ধন যাচাই করা';
+
+  @override
+  String trustRegistrationVerifiedSemantics(String council) {
+    return 'চিকিৎসা নিবন্ধন যাচাই করা $council';
+  }
+
+  @override
+  String reviewStarsSemantics(int rating) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rating,
+      locale: localeName,
+      other: '৫-এর মধ্যে $rating তারা রেটিং',
+      one: '৫-এর মধ্যে $rating তারা রেটিং',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewVerifiedPatient => 'যাচাই করা রোগী';
+
+  @override
+  String reviewVerifiedPatientFor(String treatment) {
+    return 'যাচাই করা রোগী · $treatment';
+  }
+
+  @override
+  String reviewByPatient(String name) {
+    return '- $name';
+  }
+
+  @override
+  String get reviewsTitle => 'রোগীদের রিভিউ';
+
+  @override
+  String get reviewsEmptyTitle => 'এখনও কোনো রিভিউ নেই';
+
+  @override
+  String get reviewsEmptyMessage => 'রোগীরা চিকিৎসা শেষ করার পর এখানে রিভিউ দেখা যায়।';
+
+  @override
+  String reviewsSeeAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'সব $countটি রিভিউ দেখুন',
+      one: 'রিভিউটি দেখুন',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeBrowseSpecialties => 'বিশেষত্ব অনুযায়ী দেখুন';
+
+  @override
+  String get costHomeTitle => 'আপনার দেশ বনাম ভারত';
+
+  @override
+  String costHomePricesFor(String country) {
+    return '$country-এর দাম';
+  }
+
+  @override
+  String costHomeFallback(String country) {
+    return '$country-এর দাম দেখানো হচ্ছে — আপনার দেশ বেছে নিন';
+  }
+
+  @override
+  String get costHomeChange => 'পরিবর্তন';
+
+  @override
+  String get costHomeCountryPickerTitle => 'দামের তুলনা করুন';
+
+  @override
+  String costHomeShowMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'আরও $countটি দেখান',
+      one: 'আরও $countটি দেখান',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get costHomeShowLess => 'কম দেখান';
+
+  @override
+  String costHomeSave(String pct) {
+    return '$pct সাশ্রয়';
+  }
+
+  @override
+  String costHomeInCountry(String country) {
+    return '$country-এ';
+  }
+
+  @override
+  String get costHomeInIndia => 'ভারতে';
+
+  @override
+  String costHomeWaitAtHome(String wait) {
+    return 'নিজের দেশে অপেক্ষা: $wait';
+  }
+
+  @override
+  String get costHomeOftenUnavailable => 'প্রায়ই দীর্ঘ অপেক্ষা বা স্থানীয়ভাবে পাওয়া যায় না';
+
+  @override
+  String costHomeIndiaEarliest(String date) {
+    return 'ভারত: সবচেয়ে আগের ভর্তি $date';
+  }
+
+  @override
+  String costHomeIndiaWait(String wait) {
+    return 'ভারত: $wait';
+  }
+
+  @override
+  String get costHomeEstimate => 'আনুমানিক';
+
+  @override
+  String costHomeEstimateSource(String source) {
+    return 'আনুমানিক · $source';
+  }
+
+  @override
+  String get costHomeSeeHospitals => 'হাসপাতাল';
+
+  @override
+  String get costConfidenceHigh => 'বেশি';
+
+  @override
+  String get costConfidenceMedium => 'মাঝারি';
+
+  @override
+  String get costConfidenceLow => 'কম';
+
+  @override
+  String get costSourceTitle => 'এই অনুমান সম্পর্কে';
+
+  @override
+  String costSourceIntro(String country) {
+    return '$country-এর সাধারণ দাম প্রকাশিত উৎস থেকে নেওয়া। আপনার নিজের খরচ ভিন্ন হতে পারে।';
+  }
+
+  @override
+  String get costSourceLabel => 'উৎস';
+
+  @override
+  String get costSourceYear => 'দামের বছর';
+
+  @override
+  String get costSourceConfidence => 'নির্ভরযোগ্যতা';
+
+  @override
+  String get costSourceWait => 'অপেক্ষার সময়ের উৎস';
+
+  @override
+  String get costSourceNone => 'এই অনুমানের কোনো প্রকাশিত উৎস নথিভুক্ত নেই।';
+
+  @override
+  String get costSourceDisclaimer =>
+      'এটি একটি অনুমান, কোটেশন নয়। সিদ্ধান্ত নেওয়ার আগে হাসপাতাল আপনাকে সঠিক দাম পাঠাবে।';
+
+  @override
+  String get costSourceOpen => 'উৎস খুলুন';
+
+  @override
+  String get countryPickerTitle => 'আপনার দেশ বেছে নিন';
+
+  @override
+  String get countryPickerSearch => 'দেশ খুঁজুন';
+
+  @override
+  String get countryPickerAuto => 'স্বয়ংক্রিয়ভাবে শনাক্ত করুন';
+
+  @override
+  String get earliestScreenTitle => 'সবচেয়ে আগের তারিখ';
+
+  @override
+  String get earliestIntro =>
+      'যে হাসপাতালগুলো এই চিকিৎসা দেয়, সবচেয়ে আগে যেটি পাওয়া যায় সেটি প্রথমে। সর্বোচ্চ ৩টি বেছে নিয়ে সবার কাছে কোটেশন চান।';
+
+  @override
+  String get earliestCompareCosts => 'নিজের দেশের সাথে খরচ তুলনা করুন';
+
+  @override
+  String get earliestEmptyTitle => 'এখনও কোনো হাসপাতাল তালিকাভুক্ত নেই';
+
+  @override
+  String get earliestEmptyMessage => 'চিকিৎসাটি খুঁজুন অথবা আমাদের সমন্বয়কারীকে আপনার জন্য হাসপাতাল খুঁজে দিতে বলুন।';
+
+  @override
+  String get earliestAskCoordinator => 'অনুরোধে তারিখ জানানো হবে';
+
+  @override
+  String earliestSelectSemantics(String hospital) {
+    return '$hospital-এর কাছে কোটেশন চান';
+  }
+
+  @override
+  String quickQuoteMaxHospitals(int max) {
+    return 'আপনি একবারে সর্বোচ্চ $maxটি হাসপাতালকে জিজ্ঞাসা করতে পারেন।';
+  }
+
+  @override
+  String quickQuoteRequestFrom(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি হাসপাতাল থেকে কোটেশন চান',
+      one: 'কোটেশন চান',
+      zero: 'একটি হাসপাতাল বেছে নিন',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String quickQuoteSendTo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি হাসপাতালে পাঠান',
+      one: 'অনুরোধ পাঠান',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickQuoteSlaNote =>
+      'হাসপাতাল ৪৮ ঘণ্টার মধ্যে লিখিত কোটেশন দিয়ে উত্তর দেয়। আপনি পাশাপাশি তুলনা করতে পারবেন।';
+
+  @override
+  String quickQuoteHospitals(int count, int max) {
+    return 'হাসপাতাল ($maxটির মধ্যে $countটি)';
+  }
+
+  @override
+  String get quickQuoteAddHospital => 'একটি হাসপাতাল যোগ করুন';
+
+  @override
+  String quickQuoteRemoveHospital(String hospital) {
+    return '$hospital সরান';
+  }
+
+  @override
+  String get quickQuoteSearchHospitals => 'হাসপাতাল খুঁজুন';
+
+  @override
+  String get quickQuoteNoMoreHospitals => 'আর কোনো হাসপাতাল পাওয়া যায়নি।';
+
+  @override
+  String get quickQuoteReports => 'মেডিক্যাল রিপোর্ট';
+
+  @override
+  String get quickQuoteReportsHint => 'আপনার রিপোর্ট পেলে হাসপাতাল দ্রুত ও আরও সঠিক কোটেশন দেয়।';
+
+  @override
+  String get quickQuoteUpload => 'একটি রিপোর্ট আপলোড করুন';
+
+  @override
+  String quickQuoteConsentMany(String hospitals) {
+    return 'কোটেশন তৈরির জন্য আমার তথ্য ও নির্বাচিত রিপোর্ট $hospitals-এর সাথে শেয়ার করতে আমি সম্মত।';
+  }
+
+  @override
+  String get quoteGroupTitle => 'কোটেশন তুলনা করুন';
+
+  @override
+  String get quoteGroupCompare => 'সব কোটেশন তুলনা করুন';
+
+  @override
+  String quoteGroupReplied(int answered, int total) {
+    return '$totalটির মধ্যে $answeredটি হাসপাতাল উত্তর দিয়েছে';
+  }
+
+  @override
+  String get quoteGroupCheapest => 'সর্বনিম্ন দাম';
+
+  @override
+  String quoteGroupStay(int days) {
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days দিনের থাকা', one: '$days দিনের থাকা');
+    return '$_temp0';
+  }
+
+  @override
+  String quoteGroupCurrencyNote(String currency) {
+    return '$currency-তে মোট পরিমাণগুলো আনুমানিক। আপনি হাসপাতালকে প্রতিটি মোটের নিচে দেখানো দাম দেবেন।';
+  }
+
+  @override
+  String quoteGroupAcceptConfirm(String hospital) {
+    return '$hospital-এর কোটেশন গ্রহণ করবেন? তারপর আপনি ভর্তির তারিখ বেছে নিতে পারবেন।';
+  }
+
+  @override
+  String get guardianTitle => 'অভিভাবকের সম্মতি';
+
+  @override
+  String get guardianIntro =>
+      'আপনার বয়স ১৮-এর কম। AI দিয়ে রিপোর্ট পড়া, ভয়েস নোট রেকর্ড করা বা চিকিৎসা বুক করার আগে একজন অভিভাবক বা আইনি অভিভাবককে সম্মতি দিতে হবে। কিছু চালিয়ে যাওয়ার আগে আমাদের দল অভিভাবককে যাচাই করে।';
+
+  @override
+  String get guardianAddConsent => 'অভিভাবকের সম্মতি যোগ করুন';
+
+  @override
+  String get guardianName => 'অভিভাবকের পুরো নাম';
+
+  @override
+  String get guardianNameRequired => 'অভিভাবকের নাম লিখুন';
+
+  @override
+  String get guardianRelationship => 'আপনার সাথে সম্পর্ক';
+
+  @override
+  String get guardianRelationshipParent => 'বাবা/মা';
+
+  @override
+  String get guardianRelationshipLawful => 'আইনি অভিভাবক';
+
+  @override
+  String get guardianEmail => 'অভিভাবকের ইমেল';
+
+  @override
+  String get guardianEmailInvalid => 'একটি সঠিক ইমেল ঠিকানা লিখুন';
+
+  @override
+  String get guardianPhone => 'অভিভাবকের ফোন (দেশের কোডসহ)';
+
+  @override
+  String get guardianContactRequired => 'অভিভাবকের ইমেল বা ফোন নম্বর দিন।';
+
+  @override
+  String get guardianDob => 'অভিভাবকের জন্মতারিখ';
+
+  @override
+  String guardianDobValue(String date) {
+    return 'জন্ম $date';
+  }
+
+  @override
+  String get guardianDobRequired => 'অভিভাবকের জন্মতারিখ বেছে নিন।';
+
+  @override
+  String get guardianVerification => 'আমরা কীভাবে অভিভাবককে যাচাই করব';
+
+  @override
+  String get guardianVerifyVideo => 'সংক্ষিপ্ত ভিডিও কল';
+
+  @override
+  String get guardianVerifyId => 'পরিচয়পত্রের ছবি';
+
+  @override
+  String get guardianVerifyDigilocker => 'DigiLocker (ভারত)';
+
+  @override
+  String get guardianVerifyInPerson => 'হাসপাতালে সরাসরি';
+
+  @override
+  String get guardianDeclaration =>
+      'আমি এই রোগীর বাবা/মা বা আইনি অভিভাবক, আমার বয়স ১৮ বা তার বেশি, এবং আমি তার স্বাস্থ্য তথ্য প্রক্রিয়াকরণ ও চিকিৎসার ব্যবস্থা করতে সম্মতি দিচ্ছি।';
+
+  @override
+  String get guardianDeclarationRequired => 'অভিভাবককে ঘোষণায় টিক দিতে হবে।';
+
+  @override
+  String get guardianSubmit => 'যাচাইয়ের জন্য পাঠান';
+
+  @override
+  String get guardianAfterSubmit => 'যাচাইয়ের জন্য আমরা অভিভাবকের সাথে যোগাযোগ করব। কাজ শেষ হলে আপনাকে জানানো হবে।';
+
+  @override
+  String get guardianSent => 'ধন্যবাদ। আমরা শিগগির অভিভাবককে যাচাই করব।';
+
+  @override
+  String get aftercareFlagFever => 'জ্বর';
+
+  @override
+  String get aftercareFlagBreathlessness => 'শ্বাসকষ্ট';
+
+  @override
+  String get aftercareFlagSeverePain => 'তীব্র ব্যথা';
+
+  @override
+  String get aftercareFlagWound => 'ক্ষতে সমস্যা';
+
+  @override
+  String get aftercareMedsAll => 'সব ওষুধ';
+
+  @override
+  String get aftercareMedsSome => 'কিছু ওষুধ';
+
+  @override
+  String get aftercareMedsNone => 'কোনো ওষুধ নয়';
+
+  @override
+  String aftercareCheckinDay(int day) {
+    return 'দিন $day-এর চেক-ইন';
+  }
+
+  @override
+  String aftercarePainValue(int pain) {
+    return 'ব্যথা $pain/১০';
+  }
+
+  @override
+  String aftercareMedsValue(String value) {
+    return 'ওষুধ: $value';
+  }
+
+  @override
+  String get aftercareAnswerNow => 'এখন উত্তর দিন';
+
+  @override
+  String get aftercareNotAnswered => 'এখনও উত্তর দেওয়া হয়নি';
+
+  @override
+  String get aftercareCheckinsTitle => 'সেরে ওঠার চেক-ইন';
+
+  @override
+  String get aftercareHospitalCheckinsHint => 'ছাড়ার পর রোগীর উত্তর। বিপদসংকেতগুলো আগে দেখানো হয়।';
+
+  @override
+  String get aftercareNoCheckins => 'এখনও কোনো চেক-ইন নেই।';
+
+  @override
+  String aftercareRedFlagCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'বিপদসংকেতসহ $countটি চেক-ইন',
+      one: 'বিপদসংকেতসহ $countটি চেক-ইন',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewBannerEyebrow => 'আপনার চিকিৎসা কেমন ছিল?';
+
+  @override
+  String reviewBannerTitle(String hospital) {
+    return '$hospital-কে রেটিং দিন';
+  }
+
+  @override
+  String get reviewBannerSubtitle => 'আপনার রিভিউ অন্য রোগীদের বেছে নিতে সাহায্য করে';
+
+  @override
+  String get guestFreeEyebrow => 'নিবন্ধনের আগে বিনামূল্যে';
+
+  @override
+  String get guestFreeTitle => 'বিনামূল্যে ১৫ মিনিটের ভিডিও পরামর্শ';
+
+  @override
+  String get guestFreeSubtitle => 'আপনার বিকল্পগুলো নিয়ে একজন মেডিক্যাল সমন্বয়কারীর সাথে কথা বলুন';
+
+  @override
+  String get reviewFormTitle => 'আপনার হাসপাতালকে রেটিং দিন';
+
+  @override
+  String get reviewFormEditTitle => 'আপনার রিভিউ সম্পাদনা করুন';
+
+  @override
+  String get reviewFormRatingLabel => 'আপনার রেটিং';
+
+  @override
+  String get reviewFormRatingRequired => '১ থেকে ৫টি তারা বেছে নিন।';
+
+  @override
+  String reviewFormAboutDoctor(String doctor) {
+    return 'এই রিভিউটি $doctor সম্পর্কেও';
+  }
+
+  @override
+  String get reviewFormTitleLabel => 'শিরোনাম (ঐচ্ছিক)';
+
+  @override
+  String get reviewFormBodyLabel => 'আপনার অভিজ্ঞতা (ঐচ্ছিক)';
+
+  @override
+  String get reviewFormBodyHint => 'সেবা, যোগাযোগ, পরিচ্ছন্নতা, ভ্রমণে সাহায্য…';
+
+  @override
+  String get reviewFormModerationNote =>
+      'প্রকাশের আগে রিভিউ যাচাই করা হয়। মেডিক্যাল রেকর্ড নম্বর বা অন্যের ব্যক্তিগত তথ্য লিখবেন না।';
+
+  @override
+  String get reviewFormSubmit => 'রিভিউ পাঠান';
+
+  @override
+  String get reviewFormThanks => 'ধন্যবাদ! দ্রুত যাচাইয়ের পর আপনার রিভিউ দেখা যাবে।';
+
+  @override
+  String get reviewFormUpdated => 'রিভিউ আপডেট হয়েছে।';
+
+  @override
+  String get reviewFormNotEligibleTitle => 'রিভিউ দেওয়ার মতো কিছু নেই';
+
+  @override
+  String get reviewFormNotEligibleMessage =>
+      'হাসপাতালে চিকিৎসা শেষ হওয়ার পর প্রতিটি বুকিংয়ের জন্য একবার রিভিউ দিতে পারবেন।';
+
+  @override
+  String get myReviewsTitle => 'আমার রিভিউ';
+
+  @override
+  String get myReviewsSubtitle => 'চিকিৎসার পর হাসপাতালকে রেটিং দিন';
+
+  @override
+  String get myReviewsToWrite => 'আপনার রিভিউয়ের অপেক্ষায়';
+
+  @override
+  String get myReviewsWritten => 'আপনার রিভিউ';
+
+  @override
+  String get myReviewsEmpty => 'আপনি এখনও কোনো রিভিউ লেখেননি।';
+
+  @override
+  String get myReviewsPending => 'যাচাইয়ের অপেক্ষায়';
+
+  @override
+  String get myReviewsPublished => 'প্রকাশিত';
+
+  @override
+  String get myReviewsHidden => 'প্রকাশিত হয়নি';
+
+  @override
+  String myReviewsHiddenReason(String reason) {
+    return 'কারণ: $reason';
+  }
+
+  @override
+  String get myReviewsDeleteTitle => 'এই রিভিউটি মুছবেন?';
+
+  @override
+  String get myReviewsDeleteBody => 'পরে একই চিকিৎসার জন্য নতুন রিভিউ লিখতে পারবেন।';
+
+  @override
+  String get aftercareTitle => 'চিকিৎসা-পরবর্তী সেবা';
+
+  @override
+  String get aftercareLinkSubtitle => 'ফলো-আপ ভিডিও কল ও সেরে ওঠার চেক-ইন';
+
+  @override
+  String get aftercareEmptyTitle => 'এখনও কোনো চিকিৎসা-পরবর্তী সেবা নেই';
+
+  @override
+  String get aftercareEmptyMessage => 'চিকিৎসার পর আপনার ফলো-আপ ভিডিও কল ও সেরে ওঠার চেক-ইন এখানে দেখা যাবে।';
+
+  @override
+  String get aftercareDueTitle => 'উত্তর দেওয়ার মতো চেক-ইন';
+
+  @override
+  String get aftercareDueHint => 'কয়েকটি ছোট প্রশ্ন আপনার ডাক্তারকে আপনার সেরে ওঠা অনুসরণ করতে সাহায্য করে।';
+
+  @override
+  String get aftercareFollowupsTitle => 'ফলো-আপ ভিডিও কল';
+
+  @override
+  String get aftercareNoFollowups => 'এই মুহূর্তে কোনো ফলো-আপ কল পরিকল্পিত নেই।';
+
+  @override
+  String get aftercareFollowup => 'ফলো-আপ কল';
+
+  @override
+  String aftercareFollowupDay(int day) {
+    return 'দিন $day-এর ফলো-আপ';
+  }
+
+  @override
+  String get aftercareTimeToConfirm => 'সময় হাসপাতাল নিশ্চিত করবে';
+
+  @override
+  String aftercareAround(String date) {
+    return 'প্রায় $date — সময় হাসপাতাল নিশ্চিত করবে';
+  }
+
+  @override
+  String get aftercareJoinCall => 'ভিডিও কলে যোগ দিন';
+
+  @override
+  String get aftercareLinkLater => 'সময় নিশ্চিত হলে ভিডিও লিংক এখানে দেখা যাবে।';
+
+  @override
+  String get aftercareCouldNotOpen => 'ভিডিও কলের লিংক খোলা যায়নি।';
+
+  @override
+  String aftercareDischarged(String date) {
+    return 'ছাড়া হয়েছে $date';
+  }
+
+  @override
+  String aftercareUntil(String date) {
+    return '$date পর্যন্ত ফলো-আপ কল পাওয়া যাবে';
+  }
+
+  @override
+  String get aftercareRequestFollowup => 'একটি ফলো-আপ কল চান';
+
+  @override
+  String get aftercarePreferredTime => 'পছন্দের তারিখ ও সময় (ঐচ্ছিক)';
+
+  @override
+  String get aftercareFollowupNotes => 'আপনি কী নিয়ে কথা বলতে চান? (ঐচ্ছিক)';
+
+  @override
+  String get aftercareSendRequest => 'অনুরোধ পাঠান';
+
+  @override
+  String get aftercareFollowupRequested => 'অনুরোধ পাঠানো হয়েছে। হাসপাতাল সময় নিশ্চিত করবে।';
+
+  @override
+  String get aftercareUpcomingTitle => 'আসন্ন চেক-ইন';
+
+  @override
+  String get aftercareCheckinIntro =>
+      'আজ আপনি কেমন বোধ করছেন? আপনার উত্তর আপনার হাসপাতাল ও কেয়ার সমন্বয়কারীর কাছে যায়।';
+
+  @override
+  String get aftercareQFever => 'আপনার কি জ্বর আছে?';
+
+  @override
+  String get aftercareQBreathless => 'আপনার কি শ্বাসকষ্ট হচ্ছে?';
+
+  @override
+  String get aftercareQWound => 'আপনার ক্ষতে কি কোনো সমস্যা আছে?';
+
+  @override
+  String get aftercareQWoundHint => 'লাল হওয়া, ফোলা, পুঁজ বা তরল বের হওয়া, রক্তপাত বা ক্ষত খুলে যাওয়া';
+
+  @override
+  String get aftercareQMeds => 'আপনি কি নির্দেশমতো ওষুধ খাচ্ছেন?';
+
+  @override
+  String get aftercareQNotes => 'আর কিছু? (ঐচ্ছিক)';
+
+  @override
+  String get aftercareCheckinSend => 'চেক-ইন পাঠান';
+
+  @override
+  String get aftercareCheckinThanks => 'ধন্যবাদ। আপনার উত্তর পাঠানো হয়েছে।';
+
+  @override
+  String get aftercareEmergencyNote => 'খুব অসুস্থ বোধ করলে অপেক্ষা করবেন না: স্থানীয় জরুরি নম্বরে ফোন করুন।';
+
+  @override
+  String get aftercareUrgentTitle => 'অনুগ্রহ করে চিকিৎসা সহায়তা নিন';
+
+  @override
+  String get aftercareUrgentBody =>
+      'আপনার উত্তরে সতর্কসংকেত আছে। আপনার হাসপাতাল ও কেয়ার সমন্বয়কারীকে জানানো হয়েছে এবং তাঁরা আপনার সাথে যোগাযোগ করবেন। খুব অসুস্থ বোধ করলে এখনই জরুরি পরিষেবায় ফোন করুন।';
+
+  @override
+  String get aftercareUrgentOk => 'বুঝেছি';
+
+  @override
+  String get aftercareUrgentSos => 'SOS / জরুরি';
+
+  @override
+  String get visaGuideTitle => 'ভিসা নির্দেশিকা';
+
+  @override
+  String get visaGuideLinkSubtitle => 'আপনার কোন ভিসা লাগবে, কী কাগজপত্র ও কত সময়';
+
+  @override
+  String get visaGuidePickNationality => 'আপনার জাতীয়তা বেছে নিন';
+
+  @override
+  String get visaGuidePickMessage => 'কোন ভিসা লাগবে তা আপনার পাসপোর্টের ওপর নির্ভর করে।';
+
+  @override
+  String visaGuideFor(String country) {
+    return '$country-এর পাসপোর্টধারীদের জন্য';
+  }
+
+  @override
+  String get visaGuideRouteEvisa => 'e-Medical ভিসা (অনলাইনে আবেদন)';
+
+  @override
+  String get visaGuideRouteEvisaBody =>
+      'হাসপাতালের আমন্ত্রণপত্রসহ ভারতের সরকারি e-Visa ওয়েবসাইটে আবেদন করুন। সঙ্গীরা e-Medical Attendant ভিসার জন্য আবেদন করেন।';
+
+  @override
+  String get visaGuideRouteRegular => 'ভারতীয় দূতাবাস থেকে মেডিক্যাল ভিসা';
+
+  @override
+  String get visaGuideRouteRegularBody =>
+      'হাসপাতালের আমন্ত্রণপত্রসহ ভারতীয় দূতাবাস বা কনস্যুলেটে আবেদন করুন। আগে থেকে শুরু করুন: এতে e-Visa-র চেয়ে বেশি সময় লাগে।';
+
+  @override
+  String get visaGuideRouteNone => 'ভিসা লাগবে না';
+
+  @override
+  String get visaGuideRouteNoneBody =>
+      'চিকিৎসার জন্য আপনি ভিসা ছাড়াই ভারতে যেতে পারেন। পাসপোর্ট বা জাতীয় পরিচয়পত্র এবং হাসপাতালের চিঠি সঙ্গে রাখুন।';
+
+  @override
+  String get visaGuideDefaultNote =>
+      'এই দেশের জন্য আমাদের এখনও আলাদা নির্দেশিকা নেই, তাই দূতাবাসের সাধারণ পদ্ধতি দেখানো হচ্ছে। অনুগ্রহ করে সরকারি ওয়েবসাইট দেখুন।';
+
+  @override
+  String visaGuideProcessing(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'প্রক্রিয়া করতে সাধারণত $days দিন লাগে',
+      one: 'প্রক্রিয়া করতে সাধারণত $days দিন লাগে',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String visaGuideAttendants(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'সর্বোচ্চ $count জন সঙ্গী আপনার সাথে যেতে পারবেন',
+      one: 'সর্বোচ্চ $count জন সঙ্গী আপনার সাথে যেতে পারবেন',
+      zero: 'এই ভিসায় কোনো সঙ্গী যেতে পারবেন না',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get visaGuideOfficial => 'সরকারি ভিসা ওয়েবসাইট';
+
+  @override
+  String get visaGuideChecklist => 'আপনার চেকলিস্ট';
+
+  @override
+  String visaGuideChecklistProgress(int done, int total) {
+    return '$totalটির মধ্যে $doneটি প্রস্তুত';
+  }
+
+  @override
+  String get visaGuideOptional => 'ঐচ্ছিক';
+
+  @override
+  String get visaGuideDisclaimer => 'ভিসার নিয়ম বদলায়। আবেদনের আগে সবসময় সরকারি ওয়েবসাইট দেখে নিন।';
+
+  @override
+  String get guestFreeIntro =>
+      'আমাদের একজন মেডিক্যাল সমন্বয়কারীর সাথে বিনামূল্যে ১৫ মিনিট ভিডিওতে কথা বলুন। তাঁরা আপনার বিকল্প, খরচ ও পরবর্তী ধাপ বুঝতে সাহায্য করবেন। এটি চিকিৎসা নির্ণয় নয়।';
+
+  @override
+  String get guestFreeAfterResults => 'একজন মেডিক্যাল সমন্বয়কারীর সাথে আপনার ফলাফল দেখে নিন';
+
+  @override
+  String get guestNameLabel => 'আপনার পুরো নাম';
+
+  @override
+  String get guestContactIntro => '৬ অঙ্কের কোড ও আপনার কলের বিস্তারিত কোথায় পাঠাব?';
+
+  @override
+  String get guestChannelEmail => 'ইমেল';
+
+  @override
+  String get guestChannelPhone => 'ফোন';
+
+  @override
+  String get guestEmailLabel => 'ইমেল ঠিকানা';
+
+  @override
+  String get guestPhoneLabel => 'দেশের কোডসহ ফোন নম্বর';
+
+  @override
+  String get guestEmailInvalid => 'একটি সঠিক ইমেল ঠিকানা লিখুন।';
+
+  @override
+  String get guestPhoneInvalid => 'দেশের কোডসহ আপনার ফোন নম্বর লিখুন, যেমন +234 803 123 4567।';
+
+  @override
+  String get guestSendCode => 'কোড পাঠান';
+
+  @override
+  String get guestSmsUnavailable => 'এসএমএস এখনও চালু নেই — অনুগ্রহ করে আপনার ইমেল ঠিকানা ব্যবহার করুন।';
+
+  @override
+  String guestCodeIntro(String contact) {
+    return '$contact-এ পাঠানো ৬ অঙ্কের কোডটি লিখুন।';
+  }
+
+  @override
+  String get guestCodeLabel => '৬ অঙ্কের কোড';
+
+  @override
+  String get guestVerify => 'যাচাই করুন';
+
+  @override
+  String get guestResendCode => 'নতুন কোড পাঠান';
+
+  @override
+  String get guestCodeInvalid => 'কোডটি সঠিক নয়।';
+
+  @override
+  String guestCodeInvalidLeft(int left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      left,
+      locale: localeName,
+      other: 'কোডটি সঠিক নয়। আর $leftবার চেষ্টা করতে পারবেন।',
+      one: 'কোডটি সঠিক নয়। আর $leftবার চেষ্টা করতে পারবেন।',
+      zero: 'কোডটি সঠিক নয়। নতুন কোড চান।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guestCodeExpired => 'এই কোডের মেয়াদ শেষ। নতুন কোড পাঠান।';
+
+  @override
+  String get guestCodeTooMany => 'অনেকবার ভুল কোড দেওয়া হয়েছে। নতুন কোড পাঠান।';
+
+  @override
+  String get guestVerifyAgain => 'অনুগ্রহ করে আবার আপনার ইমেল বা ফোন যাচাই করুন।';
+
+  @override
+  String get guestDetailsIntro =>
+      'কখন কল চান? সময়গুলো আপনার টাইম জোন অনুযায়ী; সঠিক সময় একজন সমন্বয়কারী নিশ্চিত করবেন।';
+
+  @override
+  String guestPreferredDay(String date) {
+    return 'দিন: $date';
+  }
+
+  @override
+  String guestFrom(String time) {
+    return '$time থেকে';
+  }
+
+  @override
+  String guestTo(String time) {
+    return '$time পর্যন্ত';
+  }
+
+  @override
+  String guestTimezone(String zone) {
+    return 'আপনার টাইম জোন: $zone';
+  }
+
+  @override
+  String get guestQuestionLabel => 'আপনার প্রশ্ন (ঐচ্ছিক)';
+
+  @override
+  String get guestQuestionHint => 'যেমন: আমার কি হাঁটু প্রতিস্থাপন সম্ভব, আর কত তাড়াতাড়ি?';
+
+  @override
+  String get guestAttachScreening => 'আমার AI স্ক্রিনিংয়ের ফলাফল শেয়ার করুন';
+
+  @override
+  String get guestBookCall => 'আমার বিনামূল্যের কল বুক করুন';
+
+  @override
+  String get guestNotEmergency => 'জরুরি অবস্থার জন্য নয়। জরুরি সাহায্য দরকার হলে স্থানীয় জরুরি নম্বরে ফোন করুন।';
+
+  @override
+  String get guestAlreadyUsedTitle => 'বিনামূল্যের কল আগেই ব্যবহার হয়েছে';
+
+  @override
+  String get guestAlreadyUsed =>
+      'বিনামূল্যের পরামর্শ প্রতি ব্যক্তি ও প্রতি ডিভাইসে একবার ব্যবহার করা যায়। ডাক্তারের সাথে আরও কল বুক করতে একটি বিনামূল্যের অ্যাকাউন্ট তৈরি করুন।';
+
+  @override
+  String get guestSeeMyCall => 'আমার কল দেখুন';
+
+  @override
+  String get guestNoCallTitle => 'এখনও কোনো কল বুক করা হয়নি';
+
+  @override
+  String get guestStatusRequested => 'অনুরোধ পাওয়া গেছে';
+
+  @override
+  String get guestStatusScheduled => 'আপনার কল বুক হয়েছে';
+
+  @override
+  String get guestStatusCompleted => 'কল সম্পন্ন';
+
+  @override
+  String get guestStatusCancelled => 'কল বাতিল';
+
+  @override
+  String guestScheduledAt(String time, int minutes) {
+    return '$time · $minutes মিনিট';
+  }
+
+  @override
+  String guestPreferredWindow(String from, String to) {
+    return 'আপনি চেয়েছেন $from – $to';
+  }
+
+  @override
+  String guestCoordinator(String name) {
+    return 'সমন্বয়কারী: $name';
+  }
+
+  @override
+  String guestWeWillContact(String contact) {
+    return 'আমরা বিস্তারিত $contact-এ পাঠাব।';
+  }
+
+  @override
+  String get guestLinkLater => 'একজন সমন্বয়কারী সময় নিশ্চিত করবেন, তারপর ভিডিও লিংক এখানে দেখা যাবে।';
+
+  @override
+  String get guestAccountTitle => 'সবকিছু এক জায়গায় রাখুন';
+
+  @override
+  String get guestAccountBody =>
+      'আপনার ফলাফল সংরক্ষণ, হাসপাতাল থেকে কোটেশন চাওয়া এবং চিকিৎসা বুক করতে একটি বিনামূল্যের অ্যাকাউন্ট তৈরি করুন।';
+
+  @override
+  String get guardianStatusTitle => 'অভিভাবকের সম্মতি';
+
+  @override
+  String guardianStatusVerified(String name) {
+    return 'যাচাই করা · $name';
+  }
+
+  @override
+  String guardianStatusPending(String name) {
+    return 'যাচাইয়ের অপেক্ষায় · $name';
+  }
+
+  @override
+  String get guardianStatusNeeded => 'আপনার বয়স ১৮-এর কম হওয়ায় প্রয়োজন — যোগ করতে চাপুন';
+
+  @override
+  String get inviteTitle => 'আমন্ত্রণপত্র';
+
+  @override
+  String get inviteIntro =>
+      'সব ঘর ঐচ্ছিক: আমরা বুকিং, ডাক্তার ও রোগীর সঙ্গীদের তথ্য পূরণ করি। তৈরি করুন, খসড়া দেখুন, তারপর রোগীকে পাঠাতে অনুমোদন দিন।';
+
+  @override
+  String get inviteGenerate => 'আমন্ত্রণপত্র তৈরি করুন';
+
+  @override
+  String get inviteRegenerate => 'আবার তৈরি করুন';
+
+  @override
+  String get inviteReview => 'আমন্ত্রণপত্র দেখুন';
+
+  @override
+  String get invitePreview => 'খসড়া দেখুন';
+
+  @override
+  String get inviteApprove => 'অনুমোদন দিয়ে পাঠান';
+
+  @override
+  String get inviteApproved => 'চিঠিটি অনুমোদিত হয়েছে এবং রোগীকে পাঠানো হয়েছে।';
+
+  @override
+  String get inviteArrival => 'আনুমানিক পৌঁছানোর তারিখ';
+
+  @override
+  String inviteArrivalValue(String date) {
+    return 'পৌঁছানো: $date';
+  }
+
+  @override
+  String get inviteDuration => 'ভারতে আনুমানিক থাকার সময় (দিন)';
+
+  @override
+  String get inviteAttendant => 'সঙ্গী';
+
+  @override
+  String get inviteAttendantName => 'পুরো নাম (পাসপোর্ট অনুযায়ী)';
+
+  @override
+  String get inviteAttendantRelationship => 'রোগীর সাথে সম্পর্ক';
+
+  @override
+  String get inviteAttendantPassport => 'পাসপোর্ট নম্বর';
+
+  @override
+  String get inviteAddAttendant => 'একজন সঙ্গী যোগ করুন';
+
+  @override
+  String get inviteContactName => 'হাসপাতালের যোগাযোগকারীর নাম';
+
+  @override
+  String get inviteContactPhone => 'যোগাযোগের ফোন';
+
+  @override
+  String get inviteContactEmail => 'যোগাযোগের ইমেল';
+
+  @override
+  String get inviteMissingTitle => 'চিঠিতে যা নেই:';
+
+  @override
+  String get inviteMissingPassport => 'রোগীর পাসপোর্ট নম্বর';
+
+  @override
+  String get inviteMissingDob => 'রোগীর জন্মতারিখ';
+
+  @override
+  String get inviteMissingNationality => 'রোগীর জাতীয়তা';
+
+  @override
+  String get inviteMissingDoctor => 'চিকিৎসক';
+
+  @override
+  String get inviteMissingArrival => 'পৌঁছানোর তারিখ';
+
+  @override
+  String get inviteMissingDuration => 'থাকার সময়';
+
+  @override
+  String get inviteMissingTreatment => 'চিকিৎসা';
 }

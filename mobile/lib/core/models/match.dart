@@ -56,9 +56,13 @@ class ScreeningMatch {
     this.procedure,
     this.package,
     this.savings,
+    this.nextAvailableConsultation,
+    this.nextAvailableAdmission,
   });
 
   factory ScreeningMatch.fromJson(JsonMap j) => ScreeningMatch(
+    nextAvailableConsultation: jDay(j, 'next_available_consultation'),
+    nextAvailableAdmission: jDay(j, 'next_available_admission'),
     id: jStr(j, 'id'),
     rank: jInt(j, 'rank'),
     matchScore: jDouble(j, 'match_score'),
@@ -85,6 +89,10 @@ class ScreeningMatch {
   final int estimatedCostMinor;
   final String currency;
   final MatchSavings? savings;
+
+  /// Earliest free consultation / admission day for this match.
+  final DateTime? nextAvailableConsultation;
+  final DateTime? nextAvailableAdmission;
 
   /// `95% Match`
   String get matchLabel => L10n.current.coreMatchScore(matchScore.round());

@@ -9,10 +9,12 @@ enum MatchSort {
   bestMatch,
   lowestCost,
   highestRating,
-  mostExperience;
+  mostExperience,
+  soonest;
 
   /// Label in the app's language.
   String localizedLabel(AppLocalizations l) => switch (this) {
+    MatchSort.soonest => l.filtersSortSoonest,
     MatchSort.bestMatch => l.matchSortBestMatch,
     MatchSort.lowestCost => l.matchSortLowestCost,
     MatchSort.highestRating => l.matchSortHighestRating,
@@ -68,6 +70,9 @@ List<ScreeningMatch> applyMatchView(List<ScreeningMatch> matches, MatchSort sort
   final out = matches.where(filters.accepts).toList();
   int byRank(ScreeningMatch a, ScreeningMatch b) => a.rank.compareTo(b.rank);
   double rating(ScreeningMatch m) => m.doctor?.ratingAvg ?? m.hospital.ratingAvg ?? 0;
+  // Earliest admission (else consultation) day; unknown dates last.
+  DateTime soonest(ScreeningMatch m) =>
+      m.nextAvailableAdmission ?? m.nextAvailableConsultation ?? DateTime(9999);
   out.sort(
     (a, b) => switch (sort) {
       MatchSort.bestMatch =>
@@ -81,6 +86,7 @@ List<ScreeningMatch> applyMatchView(List<ScreeningMatch> matches, MatchSort sort
         (b.doctor?.experienceYears ?? 0).compareTo(a.doctor?.experienceYears ?? 0) != 0
             ? (b.doctor?.experienceYears ?? 0).compareTo(a.doctor?.experienceYears ?? 0)
             : byRank(a, b),
+      MatchSort.soonest => soonest(a).compareTo(soonest(b)) != 0 ? soonest(a).compareTo(soonest(b)) : byRank(a, b),
     },
   );
   return out;

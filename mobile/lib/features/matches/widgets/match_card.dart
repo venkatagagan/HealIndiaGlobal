@@ -125,6 +125,10 @@ class MatchCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   RatingStars(rating: rating, count: ratingCount, size: 15),
                 ],
+                if (m.nextAvailableConsultation != null || m.nextAvailableAdmission != null) ...[
+                  const SizedBox(height: 10),
+                  EarliestDates(consultation: m.nextAvailableConsultation, admission: m.nextAvailableAdmission),
+                ],
                 const Divider(height: 24),
                 Text(
                   l10n.matchCardEstimatedTotalCost,

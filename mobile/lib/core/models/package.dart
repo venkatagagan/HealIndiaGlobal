@@ -1,6 +1,7 @@
 import '../../l10n/l10n.dart';
 import 'enums.dart';
 import 'json.dart';
+import 'money.dart';
 import 'refs.dart';
 
 /// `includes{}` of a treatment package.
@@ -64,6 +65,8 @@ class TreatmentPackage {
     this.originalPriceMinor,
     this.description,
     this.includes = const PackageIncludes(),
+    this.displayPrice,
+    this.displayOriginalPrice,
   });
 
   factory TreatmentPackage.fromJson(JsonMap j) => TreatmentPackage(
@@ -75,6 +78,8 @@ class TreatmentPackage {
     currency: jStr(j, 'currency', 'INR'),
     description: jStrOrNull(j, 'description'),
     includes: PackageIncludes.fromJson(jMap(j, 'includes')),
+    displayPrice: DisplayMoney.read(j, 'display_price'),
+    displayOriginalPrice: DisplayMoney.read(j, 'display_original_price'),
   );
 
   final String id;
@@ -85,6 +90,10 @@ class TreatmentPackage {
   final String currency;
   final String? description;
   final PackageIncludes includes;
+
+  /// [priceMinor] / [originalPriceMinor] in the viewer's currency (approximate).
+  final DisplayMoney? displayPrice;
+  final DisplayMoney? displayOriginalPrice;
 
   /// Discount versus [originalPriceMinor] ("Save $500"), or 0.
   int get savingsMinor {
@@ -118,6 +127,10 @@ class HospitalProcedure {
     this.inclusions = const [],
     this.exclusions = const [],
     this.packages = const [],
+    this.displayPriceMin,
+    this.displayPriceMax,
+    this.nextAvailableConsultation,
+    this.nextAvailableAdmission,
   });
 
   factory HospitalProcedure.fromJson(JsonMap j) => HospitalProcedure(
@@ -132,6 +145,10 @@ class HospitalProcedure {
     inclusions: jStrList(j, 'inclusions'),
     exclusions: jStrList(j, 'exclusions'),
     packages: jList(j, 'packages', TreatmentPackage.fromJson),
+    displayPriceMin: DisplayMoney.read(j, 'display_price_min'),
+    displayPriceMax: DisplayMoney.read(j, 'display_price_max'),
+    nextAvailableConsultation: jDay(j, 'next_available_consultation'),
+    nextAvailableAdmission: jDay(j, 'next_available_admission'),
   );
 
   final String id;
@@ -145,6 +162,12 @@ class HospitalProcedure {
   final List<String> inclusions;
   final List<String> exclusions;
   final List<TreatmentPackage> packages;
+
+  /// Price range in the viewer's currency (approximate).
+  final DisplayMoney? displayPriceMin;
+  final DisplayMoney? displayPriceMax;
+  final DateTime? nextAvailableConsultation;
+  final DateTime? nextAvailableAdmission;
 
   Map<String, dynamic> toJson() => {
     'id': id,

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/l10n.dart';
 import '../models/json.dart';
 import '../network/api_client.dart';
 
@@ -14,19 +15,31 @@ enum ReportTargetType {
   final String json;
 }
 
-/// Why it is reported (`POST /reports` `reason`), with the plain-English label shown to the user.
+/// Why it is reported (`POST /reports` `reason`), with the label shown to the user.
 enum ReportReason {
-  spam('spam', 'Spam'),
-  abusive('abusive', 'Abusive or harassing'),
-  inappropriate('inappropriate', 'Inappropriate'),
-  inaccurate('inaccurate', 'Inaccurate'),
-  privacy('privacy', 'Privacy concern'),
-  other('other', 'Other');
+  spam('spam'),
+  abusive('abusive'),
+  inappropriate('inappropriate'),
+  inaccurate('inaccurate'),
+  privacy('privacy'),
+  other('other');
 
-  const ReportReason(this.json, this.label);
+  const ReportReason(this.json);
 
   final String json;
-  final String label;
+
+  /// Label in the current language.
+  String get label => labelIn(L10n.current);
+
+  /// Label in [l].
+  String labelIn(AppLocalizations l) => switch (this) {
+    spam => l.reportReasonSpam,
+    abusive => l.reportReasonAbusive,
+    inappropriate => l.reportReasonInappropriate,
+    inaccurate => l.reportReasonInaccurate,
+    privacy => l.reportReasonPrivacy,
+    other => l.reportReasonOther,
+  };
 
   /// Reasons offered for a chat message.
   static const forMessage = [spam, abusive, inappropriate, privacy, other];

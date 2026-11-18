@@ -11,6 +11,7 @@ import '../../../core/router/routes.dart';
 import '../return_path.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../validators.dart';
 import '../widgets/auth_widgets.dart';
 import 'auth_screen.dart' show googleSignInAvailableProvider;
@@ -116,18 +117,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final googleAvailable = ref.watch(googleSignInAvailableProvider).value ?? false;
     final appleAvailable = ref.watch(appleSignInAvailableProvider).value ?? false;
+    final l10n = context.l10n;
     return AuthScaffold(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 24),
         child: AutofillGroup(
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AuthBrandHeader(subtitle: 'Welcome back. Log in to continue your treatment journey.'),
+                AuthBrandHeader(subtitle: l10n.loginSubtitle),
                 const SizedBox(height: 28),
-                Text('Log in', style: context.text.headlineSmall),
+                Text(l10n.authLogIn, style: context.text.headlineSmall),
                 const SizedBox(height: 16),
                 if (_error != null) ...[FormErrorBanner(message: _error!), const SizedBox(height: 12)],
                 TextFormField(
@@ -139,7 +141,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   enabled: !_needsOtp,
                   validator: AuthValidators.email,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: l10n.authEmailLabel,
                     prefixIcon: const Icon(Icons.mail_outline_rounded),
                     errorText: _fieldErrors['email'],
                   ),
@@ -155,7 +157,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (_needsOtp) ...[
                   const SizedBox(height: 12),
                   Text(
-                    'Enter the 6-digit code from your authenticator app.',
+                    l10n.loginOtpPrompt,
                     style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                   ),
                   const SizedBox(height: 8),
@@ -167,22 +169,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     maxLength: 10,
                     validator: AuthValidators.otp,
                     onFieldSubmitted: (_) => _submit(),
-                    decoration: const InputDecoration(
-                      labelText: 'Authentication code',
-                      prefixIcon: Icon(Icons.shield_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.loginOtpLabel,
+                      prefixIcon: const Icon(Icons.shield_outlined),
                       counterText: '',
                     ),
                   ),
                 ],
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: AlignmentDirectional.centerEnd,
                   child: TextButton(
                     onPressed: () => context.push(Routes.forgotPassword),
-                    child: const Text('Forgot password?'),
+                    child: Text(l10n.loginForgotPassword),
                   ),
                 ),
                 const SizedBox(height: 4),
-                PrimaryButton(label: _needsOtp ? 'Verify & log in' : 'Log in', loading: _loading, onPressed: _submit),
+                PrimaryButton(
+                  label: _needsOtp ? l10n.loginVerifyAndLogIn : l10n.authLogIn,
+                  loading: _loading,
+                  onPressed: _submit,
+                ),
                 if ((googleAvailable || appleAvailable) && !_needsOtp) ...[
                   const SizedBox(height: 16),
                   Row(
@@ -190,7 +196,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Expanded(child: Divider()),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('or', style: context.text.bodySmall),
+                        child: Text(l10n.authOr, style: context.text.bodySmall),
                       ),
                       const Expanded(child: Divider()),
                     ],
@@ -198,7 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 16),
                   if (googleAvailable)
                     AuthChoiceButton(
-                      label: 'Continue with Google',
+                      label: l10n.authContinueWithGoogle,
                       icon: const GoogleMark(),
                       color: AppColors.info,
                       loading: _googleLoading,
@@ -207,7 +213,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   if (googleAvailable && appleAvailable) const SizedBox(height: 12),
                   if (appleAvailable)
                     AuthChoiceButton(
-                      label: 'Continue with Apple',
+                      label: l10n.authContinueWithApple,
                       icon: Icon(Icons.apple, size: 20, color: context.colors.onSurface),
                       color: context.colors.onSurface,
                       loading: _googleLoading,
@@ -215,7 +221,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   const SizedBox(height: 8),
                   Text(
-                    'Google and Apple sign-in are for patients.',
+                    l10n.loginSocialPatientsOnly,
                     textAlign: TextAlign.center,
                     style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
                   ),
@@ -224,10 +230,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account?", style: context.text.bodySmall),
+                    Text(l10n.loginNoAccount, style: context.text.bodySmall),
                     TextButton(
                       onPressed: () => context.pushReplacement(Routes.registerFrom(_target)),
-                      child: const Text('Sign up'),
+                      child: Text(l10n.loginSignUp),
                     ),
                   ],
                 ),

@@ -1,19 +1,29 @@
 import 'enums.dart';
 import 'json.dart';
+import 'money.dart';
 
 /// `line_items[]` entry of a quote.
 class QuoteLineItem {
-  const QuoteLineItem({required this.category, required this.description, required this.amountMinor});
+  const QuoteLineItem({
+    required this.category,
+    required this.description,
+    required this.amountMinor,
+    this.displayAmount,
+  });
 
   factory QuoteLineItem.fromJson(JsonMap j) => QuoteLineItem(
     category: QuoteLineCategory.fromJson(j['category']),
     description: jStr(j, 'description'),
     amountMinor: jInt(j, 'amount_minor'),
+    displayAmount: DisplayMoney.read(j, 'display_amount'),
   );
 
   final QuoteLineCategory category;
   final String description;
   final int amountMinor;
+
+  /// [amountMinor] in the viewer's currency (approximate).
+  final DisplayMoney? displayAmount;
 
   Map<String, dynamic> toJson() => {'category': category.json, 'description': description, 'amount_minor': amountMinor};
 }
@@ -33,6 +43,7 @@ class Quote {
     this.preparedByName,
     this.createdAt,
     this.acceptedAt,
+    this.displayTotal,
   });
 
   factory Quote.fromJson(JsonMap j) => Quote(
@@ -48,6 +59,7 @@ class Quote {
     preparedByName: jStrOrNull(j, 'prepared_by_name'),
     createdAt: jDate(j, 'created_at'),
     acceptedAt: jDate(j, 'accepted_at'),
+    displayTotal: DisplayMoney.read(j, 'display_total'),
   );
 
   final String id;
@@ -62,6 +74,9 @@ class Quote {
   final String? preparedByName;
   final DateTime? createdAt;
   final DateTime? acceptedAt;
+
+  /// [totalMinor] in the viewer's currency (approximate; the hospital is paid in [currency]).
+  final DisplayMoney? displayTotal;
 
   /// A sent quote that has not expired can be accepted / rejected by the patient.
   bool get isActionable {

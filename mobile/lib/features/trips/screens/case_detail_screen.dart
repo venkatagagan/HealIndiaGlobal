@@ -83,6 +83,20 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
         _header(c),
+        if (c.awaitingQuote) ...[
+          const SizedBox(height: 10),
+          QuoteCountdown(key: const ValueKey('case-quote-countdown'), dueAt: c.quoteDueAt!, overdue: c.quoteOverdue),
+        ],
+        if (c.quoteGroupId != null)
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              key: const ValueKey('case-compare-quotes'),
+              icon: const Icon(Icons.compare_arrows_rounded),
+              label: Text(l10n.quoteGroupCompare),
+              onPressed: () => context.push(Routes.quoteGroup(c.quoteGroupId!)),
+            ),
+          ),
         if (caseNextStep(c, l10n) case final next?) ...[
           const SizedBox(height: 10),
           AppCard(
@@ -250,13 +264,25 @@ class _CaseDetailScreenState extends ConsumerState<CaseDetailScreen> {
           if (b.admissionDate != null) row(l10n.caseBookingAdmission, Text(Dates.day(b.admissionDate))),
           if (b.durationDays != null) row(l10n.caseBookingDuration, Text(l10n.caseDurationDays(b.durationDays!))),
           row(l10n.caseBookingPaymentPlan, Text(_planLabel(l10n, b))),
-          row(l10n.paymentTotal, MoneyText(b.totalMinor, b.currency)),
+          row(
+            l10n.paymentTotal,
+            PriceText(
+              b.totalMinor,
+              b.currency,
+              display: b.displayTotal,
+              estimateWhenMissing: false,
+              crossAxisAlignment: CrossAxisAlignment.end,
+            ),
+          ),
           row(l10n.caseBookingPaid, MoneyText(b.amountPaidMinor - b.amountRefundedMinor, b.currency)),
           row(
             l10n.paymentBalance,
-            MoneyText(
+            PriceText(
               b.balanceDueMinor,
               b.currency,
+              display: b.displayBalanceDue,
+              estimateWhenMissing: false,
+              crossAxisAlignment: CrossAxisAlignment.end,
               style: TextStyle(fontWeight: FontWeight.w800, color: b.balanceDueMinor > 0 ? AppColors.violet : null),
             ),
           ),

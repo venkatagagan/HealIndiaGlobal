@@ -208,7 +208,7 @@ class _ScreeningProcessingScreenState extends ConsumerState<ScreeningProcessingS
                             child: Column(
                               children: [
                                 Text(
-                                  Brand.name,
+                                  context.l10n.appName,
                                   textAlign: TextAlign.center,
                                   style: context.text.titleMedium?.copyWith(
                                     color: Colors.white,

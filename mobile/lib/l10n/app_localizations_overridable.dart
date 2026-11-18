@@ -1824,6 +1824,428 @@ class OverridableLocalizations extends AppLocalizations {
     'reportAddProcedure' => reportAddProcedure,
     'reportAddRecommendation' => reportAddRecommendation,
     'reportNone' => reportNone,
+    'authContinueWithGoogle' => authContinueWithGoogle,
+    'authContinueWithApple' => authContinueWithApple,
+    'authCreateAccountWithEmail' => authCreateAccountWithEmail,
+    'authSignUpWithEmail' => authSignUpWithEmail,
+    'authContinueBrowsingAsGuest' => authContinueBrowsingAsGuest,
+    'authBrowseAsGuest' => authBrowseAsGuest,
+    'authPartnerHint' => authPartnerHint,
+    'authAlreadyHaveAccount' => authAlreadyHaveAccount,
+    'authEmailLabel' => authEmailLabel,
+    'authOr' => authOr,
+    'authBackTooltip' => authBackTooltip,
+    'authPasswordLabel' => authPasswordLabel,
+    'authShowPassword' => authShowPassword,
+    'authHidePassword' => authHidePassword,
+    'authTermsLink' => authTermsLink,
+    'authPrivacyLink' => authPrivacyLink,
+    'authAgeAdultConfirm' => authAgeAdultConfirm,
+    'authAgeAdult' => authAgeAdult,
+    'authAgeMinor' => authAgeMinor,
+    'authAgeRequired' => authAgeRequired,
+    'authAgeQuestion' => authAgeQuestion,
+    'authAgeDialogTitle' => authAgeDialogTitle,
+    'authAgeDialogAdultOnly' => authAgeDialogAdultOnly,
+    'authAgeDialogNeeded' => authAgeDialogNeeded,
+    'loginSubtitle' => loginSubtitle,
+    'loginOtpPrompt' => loginOtpPrompt,
+    'loginOtpLabel' => loginOtpLabel,
+    'loginForgotPassword' => loginForgotPassword,
+    'loginVerifyAndLogIn' => loginVerifyAndLogIn,
+    'loginSocialPatientsOnly' => loginSocialPatientsOnly,
+    'loginNoAccount' => loginNoAccount,
+    'loginSignUp' => loginSignUp,
+    'registerConflict' => registerConflict,
+    'registerCreateAccount' => registerCreateAccount,
+    'registerCreateAccountKeepProgress' => registerCreateAccountKeepProgress,
+    'registerIntroGuest' => registerIntroGuest,
+    'registerIntroAgent' => registerIntroAgent,
+    'registerIntroHospital' => registerIntroHospital,
+    'registerIntroPatient' => registerIntroPatient,
+    'registerFullNamePassport' => registerFullNamePassport,
+    'registerYourFullName' => registerYourFullName,
+    'registerAgencyName' => registerAgencyName,
+    'registerEnterAgencyName' => registerEnterAgencyName,
+    'registerHospitalName' => registerHospitalName,
+    'registerEnterHospitalName' => registerEnterHospitalName,
+    'registerCityOptional' => registerCityOptional,
+    'registerPhoneOptional' => registerPhoneOptional,
+    'registerCountryOfResidenceOptional' => registerCountryOfResidenceOptional,
+    'registerCountryOptional' => registerCountryOptional,
+    'registerReferralCodeOptional' => registerReferralCodeOptional,
+    'registerAcceptTermsError' => registerAcceptTermsError,
+    'apiErrorTimeout' => apiErrorTimeout,
+    'apiErrorCancelled' => apiErrorCancelled,
+    'apiErrorNoConnection' => apiErrorNoConnection,
+    'apiErrorSecureConnection' => apiErrorSecureConnection,
+    'apiErrorBadRequest' => apiErrorBadRequest,
+    'apiErrorSignIn' => apiErrorSignIn,
+    'apiErrorPayment' => apiErrorPayment,
+    'apiErrorForbidden' => apiErrorForbidden,
+    'apiErrorNotFound' => apiErrorNotFound,
+    'apiErrorConflict' => apiErrorConflict,
+    'apiErrorValidation' => apiErrorValidation,
+    'apiErrorRateLimited' => apiErrorRateLimited,
+    'apiErrorServer' => apiErrorServer,
+    'apiErrorGeneric' => apiErrorGeneric,
+    'conversationFallbackTitle' => conversationFallbackTitle,
+    'pushPromptTitle' => pushPromptTitle,
+    'pushPromptBody' => pushPromptBody,
+    'pushPromptNotNow' => pushPromptNotNow,
+    'pushPromptTurnOn' => pushPromptTurnOn,
+    'reportSheetThanks' => reportSheetThanks,
+    'reportSheetTitleMessage' => reportSheetTitleMessage,
+    'reportSheetTitleResult' => reportSheetTitleResult,
+    'reportSheetIntroMessage' => reportSheetIntroMessage,
+    'reportSheetIntroResult' => reportSheetIntroResult,
+    'reportSheetRateLimited' => reportSheetRateLimited,
+    'reportSheetNoteLabel' => reportSheetNoteLabel,
+    'reportSheetNoteHint' => reportSheetNoteHint,
+    'reportSheetSend' => reportSheetSend,
+    'reportReasonSpam' => reportReasonSpam,
+    'reportReasonAbusive' => reportReasonAbusive,
+    'reportReasonInappropriate' => reportReasonInappropriate,
+    'reportReasonInaccurate' => reportReasonInaccurate,
+    'reportReasonPrivacy' => reportReasonPrivacy,
+    'reportReasonOther' => reportReasonOther,
+    'chatTitleFallback' => chatTitleFallback,
+    'chatRoleHospital' => chatRoleHospital,
+    'chatRoleCareTeam' => chatRoleCareTeam,
+    'chatRoleAgent' => chatRoleAgent,
+    'chatRolePatient' => chatRolePatient,
+    'chatEmptyTitle' => chatEmptyTitle,
+    'chatEmptyMessage' => chatEmptyMessage,
+    'chatLoadingMore' => chatLoadingMore,
+    'chatLoadEarlier' => chatLoadEarlier,
+    'chatToday' => chatToday,
+    'chatUploading' => chatUploading,
+    'chatAttachTooltip' => chatAttachTooltip,
+    'chatInputHint' => chatInputHint,
+    'chatSendTooltip' => chatSendTooltip,
+    'chatCopyText' => chatCopyText,
+    'chatReportMessage' => chatReportMessage,
+    'chatMessageCopied' => chatMessageCopied,
+    'chatHiddenByModerators' => chatHiddenByModerators,
+    'chatAttachmentUnavailable' => chatAttachmentUnavailable,
+    'chatAttachment' => chatAttachment,
+    'matchesListTitle' => matchesListTitle,
+    'matchesListFinishFirst' => matchesListFinishFirst,
+    'matchesListStillFinding' => matchesListStillFinding,
+    'matchesListCompleteQuestionnaire' => matchesListCompleteQuestionnaire,
+    'matchesListUsuallyQuick' => matchesListUsuallyQuick,
+    'matchesListSortTooltip' => matchesListSortTooltip,
+    'matchesListFilterTooltip' => matchesListFilterTooltip,
+    'matchesListLoading' => matchesListLoading,
+    'matchesListIntro' => matchesListIntro,
+    'matchesListCompareCosts' => matchesListCompareCosts,
+    'matchesListNoMatches' => matchesListNoMatches,
+    'matchesListNoMatchesMessage' => matchesListNoMatchesMessage,
+    'matchesListRunAgain' => matchesListRunAgain,
+    'matchesListBrowseHospitals' => matchesListBrowseHospitals,
+    'matchesListNoFilterMatches' => matchesListNoFilterMatches,
+    'matchesListClearFilters' => matchesListClearFilters,
+    'matchesListCompare' => matchesListCompare,
+    'matchesListEmergency' => matchesListEmergency,
+    'matchesListGuidanceAcknowledged' => matchesListGuidanceAcknowledged,
+    'matchesListReadGuidance' => matchesListReadGuidance,
+    'aiSummaryUrgencySoon' => aiSummaryUrgencySoon,
+    'aiSummaryDisclaimer' => aiSummaryDisclaimer,
+    'aiSummaryTitleAi' => aiSummaryTitleAi,
+    'aiSummaryTitleRules' => aiSummaryTitleRules,
+    'aiSummaryMoreDetails' => aiSummaryMoreDetails,
+    'aiSummaryPossibleConditions' => aiSummaryPossibleConditions,
+    'aiSummaryTests' => aiSummaryTests,
+    'aiSummaryQuestions' => aiSummaryQuestions,
+    'aiSummaryTravelAdvice' => aiSummaryTravelAdvice,
+    'reportViewDiscardTitle' => reportViewDiscardTitle,
+    'reportViewDiscardBody' => reportViewDiscardBody,
+    'reportViewKeepReviewing' => reportViewKeepReviewing,
+    'reportViewDiscard' => reportViewDiscard,
+    'reportViewFailedTitle' => reportViewFailedTitle,
+    'reportViewFailedMessage' => reportViewFailedMessage,
+    'reportViewUnsupportedTitle' => reportViewUnsupportedTitle,
+    'reportViewUnsupportedMessage' => reportViewUnsupportedMessage,
+    'reportViewDiscarded' => reportViewDiscarded,
+    'reportViewCheckIntro' => reportViewCheckIntro,
+    'reportViewQualityHardToRead' => reportViewQualityHardToRead,
+    'reportViewContactDoctor' => reportViewContactDoctor,
+    'reportViewReading' => reportViewReading,
+    'reportViewReadingHint' => reportViewReadingHint,
+    'agentScreeningNew' => agentScreeningNew,
+    'agentScreeningNeedHelp' => agentScreeningNeedHelp,
+    'agentScreeningHowLong' => agentScreeningHowLong,
+    'agentScreeningImpact' => agentScreeningImpact,
+    'agentScreeningPreviousTreatments' => agentScreeningPreviousTreatments,
+    'agentScreeningNotes' => agentScreeningNotes,
+    'agentScreeningSubmit' => agentScreeningSubmit,
+    'agentScreeningResultTitle' => agentScreeningResultTitle,
+    'agentScreeningNotSubmitted' => agentScreeningNotSubmitted,
+    'agentScreeningRunNew' => agentScreeningRunNew,
+    'agentScreeningAnalysing' => agentScreeningAnalysing,
+    'agentScreeningFailed' => agentScreeningFailed,
+    'agentScreeningPleaseTryAgain' => agentScreeningPleaseTryAgain,
+    'agentScreeningAiTriage' => agentScreeningAiTriage,
+    'agentScreeningMatchedHospitals' => agentScreeningMatchedHospitals,
+    'agentScreeningMatchedHospitalsHint' => agentScreeningMatchedHospitalsHint,
+    'agentScreeningNoMatches' => agentScreeningNoMatches,
+    'agentScreeningCompareQuotes' => agentScreeningCompareQuotes,
+    'agentScreeningSelectHospitals' => agentScreeningSelectHospitals,
+    'agentScreeningRequested' => agentScreeningRequested,
+    'privacyRoleHospital' => privacyRoleHospital,
+    'privacyRoleAgent' => privacyRoleAgent,
+    'privacyRoleSupport' => privacyRoleSupport,
+    'privacyRoleFinance' => privacyRoleFinance,
+    'privacyRoleStaff' => privacyRoleStaff,
+    'privacyRoleSomeone' => privacyRoleSomeone,
+    'privacyActionDownloaded' => privacyActionDownloaded,
+    'privacyActionListed' => privacyActionListed,
+    'privacyActionEmergency' => privacyActionEmergency,
+    'privacyActionViewed' => privacyActionViewed,
+    'privacyRecordDocument' => privacyRecordDocument,
+    'privacyRecordScreening' => privacyRecordScreening,
+    'privacyRecordReportReading' => privacyRecordReportReading,
+    'privacyRecordVoice' => privacyRecordVoice,
+    'privacyRecordHistory' => privacyRecordHistory,
+    'privacyRecordOther' => privacyRecordOther,
+    'privacyGroupTitle' => privacyGroupTitle,
+    'privacyDownloadTitle' => privacyDownloadTitle,
+    'privacyDownloadSubtitle' => privacyDownloadSubtitle,
+    'privacyDownloadSaved' => privacyDownloadSaved,
+    'privacyAccessLogTitle' => privacyAccessLogTitle,
+    'privacyAccessLogSubtitle' => privacyAccessLogSubtitle,
+    'privacyAccessLogError' => privacyAccessLogError,
+    'privacyAccessLogEmpty' => privacyAccessLogEmpty,
+    'earliestToday' => earliestToday,
+    'earliestTomorrow' => earliestTomorrow,
+    'quoteOverduePatient' => quoteOverduePatient,
+    'quoteOverdueHospital' => quoteOverdueHospital,
+    'guestAiLimitReached' => guestAiLimitReached,
+    'guestCreateFreeAccount' => guestCreateFreeAccount,
+    'guardianConsentRequiredMessage' => guardianConsentRequiredMessage,
+    'filtersSortSoonest' => filtersSortSoonest,
+    'trustAccreditationsTitle' => trustAccreditationsTitle,
+    'trustAccreditationVerified' => trustAccreditationVerified,
+    'trustRegistrationVerified' => trustRegistrationVerified,
+    'reviewVerifiedPatient' => reviewVerifiedPatient,
+    'reviewsTitle' => reviewsTitle,
+    'reviewsEmptyTitle' => reviewsEmptyTitle,
+    'reviewsEmptyMessage' => reviewsEmptyMessage,
+    'homeBrowseSpecialties' => homeBrowseSpecialties,
+    'costHomeTitle' => costHomeTitle,
+    'costHomeChange' => costHomeChange,
+    'costHomeCountryPickerTitle' => costHomeCountryPickerTitle,
+    'costHomeShowLess' => costHomeShowLess,
+    'costHomeInIndia' => costHomeInIndia,
+    'costHomeOftenUnavailable' => costHomeOftenUnavailable,
+    'costHomeEstimate' => costHomeEstimate,
+    'costHomeSeeHospitals' => costHomeSeeHospitals,
+    'costConfidenceHigh' => costConfidenceHigh,
+    'costConfidenceMedium' => costConfidenceMedium,
+    'costConfidenceLow' => costConfidenceLow,
+    'costSourceTitle' => costSourceTitle,
+    'costSourceLabel' => costSourceLabel,
+    'costSourceYear' => costSourceYear,
+    'costSourceConfidence' => costSourceConfidence,
+    'costSourceWait' => costSourceWait,
+    'costSourceNone' => costSourceNone,
+    'costSourceDisclaimer' => costSourceDisclaimer,
+    'costSourceOpen' => costSourceOpen,
+    'countryPickerTitle' => countryPickerTitle,
+    'countryPickerSearch' => countryPickerSearch,
+    'countryPickerAuto' => countryPickerAuto,
+    'earliestScreenTitle' => earliestScreenTitle,
+    'earliestIntro' => earliestIntro,
+    'earliestCompareCosts' => earliestCompareCosts,
+    'earliestEmptyTitle' => earliestEmptyTitle,
+    'earliestEmptyMessage' => earliestEmptyMessage,
+    'earliestAskCoordinator' => earliestAskCoordinator,
+    'quickQuoteSlaNote' => quickQuoteSlaNote,
+    'quickQuoteAddHospital' => quickQuoteAddHospital,
+    'quickQuoteSearchHospitals' => quickQuoteSearchHospitals,
+    'quickQuoteNoMoreHospitals' => quickQuoteNoMoreHospitals,
+    'quickQuoteReports' => quickQuoteReports,
+    'quickQuoteReportsHint' => quickQuoteReportsHint,
+    'quickQuoteUpload' => quickQuoteUpload,
+    'quoteGroupTitle' => quoteGroupTitle,
+    'quoteGroupCompare' => quoteGroupCompare,
+    'quoteGroupCheapest' => quoteGroupCheapest,
+    'guardianTitle' => guardianTitle,
+    'guardianIntro' => guardianIntro,
+    'guardianAddConsent' => guardianAddConsent,
+    'guardianName' => guardianName,
+    'guardianNameRequired' => guardianNameRequired,
+    'guardianRelationship' => guardianRelationship,
+    'guardianRelationshipParent' => guardianRelationshipParent,
+    'guardianRelationshipLawful' => guardianRelationshipLawful,
+    'guardianEmail' => guardianEmail,
+    'guardianEmailInvalid' => guardianEmailInvalid,
+    'guardianPhone' => guardianPhone,
+    'guardianContactRequired' => guardianContactRequired,
+    'guardianDob' => guardianDob,
+    'guardianDobRequired' => guardianDobRequired,
+    'guardianVerification' => guardianVerification,
+    'guardianVerifyVideo' => guardianVerifyVideo,
+    'guardianVerifyId' => guardianVerifyId,
+    'guardianVerifyDigilocker' => guardianVerifyDigilocker,
+    'guardianVerifyInPerson' => guardianVerifyInPerson,
+    'guardianDeclaration' => guardianDeclaration,
+    'guardianDeclarationRequired' => guardianDeclarationRequired,
+    'guardianSubmit' => guardianSubmit,
+    'guardianAfterSubmit' => guardianAfterSubmit,
+    'guardianSent' => guardianSent,
+    'aftercareFlagFever' => aftercareFlagFever,
+    'aftercareFlagBreathlessness' => aftercareFlagBreathlessness,
+    'aftercareFlagSeverePain' => aftercareFlagSeverePain,
+    'aftercareFlagWound' => aftercareFlagWound,
+    'aftercareMedsAll' => aftercareMedsAll,
+    'aftercareMedsSome' => aftercareMedsSome,
+    'aftercareMedsNone' => aftercareMedsNone,
+    'aftercareAnswerNow' => aftercareAnswerNow,
+    'aftercareNotAnswered' => aftercareNotAnswered,
+    'aftercareCheckinsTitle' => aftercareCheckinsTitle,
+    'aftercareHospitalCheckinsHint' => aftercareHospitalCheckinsHint,
+    'aftercareNoCheckins' => aftercareNoCheckins,
+    'reviewBannerEyebrow' => reviewBannerEyebrow,
+    'reviewBannerSubtitle' => reviewBannerSubtitle,
+    'guestFreeEyebrow' => guestFreeEyebrow,
+    'guestFreeTitle' => guestFreeTitle,
+    'guestFreeSubtitle' => guestFreeSubtitle,
+    'reviewFormTitle' => reviewFormTitle,
+    'reviewFormEditTitle' => reviewFormEditTitle,
+    'reviewFormRatingLabel' => reviewFormRatingLabel,
+    'reviewFormRatingRequired' => reviewFormRatingRequired,
+    'reviewFormTitleLabel' => reviewFormTitleLabel,
+    'reviewFormBodyLabel' => reviewFormBodyLabel,
+    'reviewFormBodyHint' => reviewFormBodyHint,
+    'reviewFormModerationNote' => reviewFormModerationNote,
+    'reviewFormSubmit' => reviewFormSubmit,
+    'reviewFormThanks' => reviewFormThanks,
+    'reviewFormUpdated' => reviewFormUpdated,
+    'reviewFormNotEligibleTitle' => reviewFormNotEligibleTitle,
+    'reviewFormNotEligibleMessage' => reviewFormNotEligibleMessage,
+    'myReviewsTitle' => myReviewsTitle,
+    'myReviewsSubtitle' => myReviewsSubtitle,
+    'myReviewsToWrite' => myReviewsToWrite,
+    'myReviewsWritten' => myReviewsWritten,
+    'myReviewsEmpty' => myReviewsEmpty,
+    'myReviewsPending' => myReviewsPending,
+    'myReviewsPublished' => myReviewsPublished,
+    'myReviewsHidden' => myReviewsHidden,
+    'myReviewsDeleteTitle' => myReviewsDeleteTitle,
+    'myReviewsDeleteBody' => myReviewsDeleteBody,
+    'aftercareTitle' => aftercareTitle,
+    'aftercareLinkSubtitle' => aftercareLinkSubtitle,
+    'aftercareEmptyTitle' => aftercareEmptyTitle,
+    'aftercareEmptyMessage' => aftercareEmptyMessage,
+    'aftercareDueTitle' => aftercareDueTitle,
+    'aftercareDueHint' => aftercareDueHint,
+    'aftercareFollowupsTitle' => aftercareFollowupsTitle,
+    'aftercareNoFollowups' => aftercareNoFollowups,
+    'aftercareFollowup' => aftercareFollowup,
+    'aftercareTimeToConfirm' => aftercareTimeToConfirm,
+    'aftercareJoinCall' => aftercareJoinCall,
+    'aftercareLinkLater' => aftercareLinkLater,
+    'aftercareCouldNotOpen' => aftercareCouldNotOpen,
+    'aftercareRequestFollowup' => aftercareRequestFollowup,
+    'aftercarePreferredTime' => aftercarePreferredTime,
+    'aftercareFollowupNotes' => aftercareFollowupNotes,
+    'aftercareSendRequest' => aftercareSendRequest,
+    'aftercareFollowupRequested' => aftercareFollowupRequested,
+    'aftercareUpcomingTitle' => aftercareUpcomingTitle,
+    'aftercareCheckinIntro' => aftercareCheckinIntro,
+    'aftercareQFever' => aftercareQFever,
+    'aftercareQBreathless' => aftercareQBreathless,
+    'aftercareQWound' => aftercareQWound,
+    'aftercareQWoundHint' => aftercareQWoundHint,
+    'aftercareQMeds' => aftercareQMeds,
+    'aftercareQNotes' => aftercareQNotes,
+    'aftercareCheckinSend' => aftercareCheckinSend,
+    'aftercareCheckinThanks' => aftercareCheckinThanks,
+    'aftercareEmergencyNote' => aftercareEmergencyNote,
+    'aftercareUrgentTitle' => aftercareUrgentTitle,
+    'aftercareUrgentBody' => aftercareUrgentBody,
+    'aftercareUrgentOk' => aftercareUrgentOk,
+    'aftercareUrgentSos' => aftercareUrgentSos,
+    'visaGuideTitle' => visaGuideTitle,
+    'visaGuideLinkSubtitle' => visaGuideLinkSubtitle,
+    'visaGuidePickNationality' => visaGuidePickNationality,
+    'visaGuidePickMessage' => visaGuidePickMessage,
+    'visaGuideRouteEvisa' => visaGuideRouteEvisa,
+    'visaGuideRouteEvisaBody' => visaGuideRouteEvisaBody,
+    'visaGuideRouteRegular' => visaGuideRouteRegular,
+    'visaGuideRouteRegularBody' => visaGuideRouteRegularBody,
+    'visaGuideRouteNone' => visaGuideRouteNone,
+    'visaGuideRouteNoneBody' => visaGuideRouteNoneBody,
+    'visaGuideDefaultNote' => visaGuideDefaultNote,
+    'visaGuideOfficial' => visaGuideOfficial,
+    'visaGuideChecklist' => visaGuideChecklist,
+    'visaGuideOptional' => visaGuideOptional,
+    'visaGuideDisclaimer' => visaGuideDisclaimer,
+    'guestFreeIntro' => guestFreeIntro,
+    'guestFreeAfterResults' => guestFreeAfterResults,
+    'guestNameLabel' => guestNameLabel,
+    'guestContactIntro' => guestContactIntro,
+    'guestChannelEmail' => guestChannelEmail,
+    'guestChannelPhone' => guestChannelPhone,
+    'guestEmailLabel' => guestEmailLabel,
+    'guestPhoneLabel' => guestPhoneLabel,
+    'guestEmailInvalid' => guestEmailInvalid,
+    'guestPhoneInvalid' => guestPhoneInvalid,
+    'guestSendCode' => guestSendCode,
+    'guestSmsUnavailable' => guestSmsUnavailable,
+    'guestCodeLabel' => guestCodeLabel,
+    'guestVerify' => guestVerify,
+    'guestResendCode' => guestResendCode,
+    'guestCodeInvalid' => guestCodeInvalid,
+    'guestCodeExpired' => guestCodeExpired,
+    'guestCodeTooMany' => guestCodeTooMany,
+    'guestVerifyAgain' => guestVerifyAgain,
+    'guestDetailsIntro' => guestDetailsIntro,
+    'guestQuestionLabel' => guestQuestionLabel,
+    'guestQuestionHint' => guestQuestionHint,
+    'guestAttachScreening' => guestAttachScreening,
+    'guestBookCall' => guestBookCall,
+    'guestNotEmergency' => guestNotEmergency,
+    'guestAlreadyUsedTitle' => guestAlreadyUsedTitle,
+    'guestAlreadyUsed' => guestAlreadyUsed,
+    'guestSeeMyCall' => guestSeeMyCall,
+    'guestNoCallTitle' => guestNoCallTitle,
+    'guestStatusRequested' => guestStatusRequested,
+    'guestStatusScheduled' => guestStatusScheduled,
+    'guestStatusCompleted' => guestStatusCompleted,
+    'guestStatusCancelled' => guestStatusCancelled,
+    'guestLinkLater' => guestLinkLater,
+    'guestAccountTitle' => guestAccountTitle,
+    'guestAccountBody' => guestAccountBody,
+    'guardianStatusTitle' => guardianStatusTitle,
+    'guardianStatusNeeded' => guardianStatusNeeded,
+    'inviteTitle' => inviteTitle,
+    'inviteIntro' => inviteIntro,
+    'inviteGenerate' => inviteGenerate,
+    'inviteRegenerate' => inviteRegenerate,
+    'inviteReview' => inviteReview,
+    'invitePreview' => invitePreview,
+    'inviteApprove' => inviteApprove,
+    'inviteApproved' => inviteApproved,
+    'inviteArrival' => inviteArrival,
+    'inviteDuration' => inviteDuration,
+    'inviteAttendant' => inviteAttendant,
+    'inviteAttendantName' => inviteAttendantName,
+    'inviteAttendantRelationship' => inviteAttendantRelationship,
+    'inviteAttendantPassport' => inviteAttendantPassport,
+    'inviteAddAttendant' => inviteAddAttendant,
+    'inviteContactName' => inviteContactName,
+    'inviteContactPhone' => inviteContactPhone,
+    'inviteContactEmail' => inviteContactEmail,
+    'inviteMissingTitle' => inviteMissingTitle,
+    'inviteMissingPassport' => inviteMissingPassport,
+    'inviteMissingDob' => inviteMissingDob,
+    'inviteMissingNationality' => inviteMissingNationality,
+    'inviteMissingDoctor' => inviteMissingDoctor,
+    'inviteMissingArrival' => inviteMissingArrival,
+    'inviteMissingDuration' => inviteMissingDuration,
+    'inviteMissingTreatment' => inviteMissingTreatment,
     _ => null,
   };
 
@@ -7943,6 +8365,1527 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get reportNone => _t('reportNone') ?? base.reportNone;
+
+  @override
+  String get authContinueWithGoogle => _t('authContinueWithGoogle') ?? base.authContinueWithGoogle;
+
+  @override
+  String get authContinueWithApple => _t('authContinueWithApple') ?? base.authContinueWithApple;
+
+  @override
+  String get authCreateAccountWithEmail => _t('authCreateAccountWithEmail') ?? base.authCreateAccountWithEmail;
+
+  @override
+  String get authSignUpWithEmail => _t('authSignUpWithEmail') ?? base.authSignUpWithEmail;
+
+  @override
+  String get authContinueBrowsingAsGuest => _t('authContinueBrowsingAsGuest') ?? base.authContinueBrowsingAsGuest;
+
+  @override
+  String get authBrowseAsGuest => _t('authBrowseAsGuest') ?? base.authBrowseAsGuest;
+
+  @override
+  String get authPartnerHint => _t('authPartnerHint') ?? base.authPartnerHint;
+
+  @override
+  String get authAlreadyHaveAccount => _t('authAlreadyHaveAccount') ?? base.authAlreadyHaveAccount;
+
+  @override
+  String get authEmailLabel => _t('authEmailLabel') ?? base.authEmailLabel;
+
+  @override
+  String get authOr => _t('authOr') ?? base.authOr;
+
+  @override
+  String get authBackTooltip => _t('authBackTooltip') ?? base.authBackTooltip;
+
+  @override
+  String get authPasswordLabel => _t('authPasswordLabel') ?? base.authPasswordLabel;
+
+  @override
+  String get authShowPassword => _t('authShowPassword') ?? base.authShowPassword;
+
+  @override
+  String get authHidePassword => _t('authHidePassword') ?? base.authHidePassword;
+
+  @override
+  String authTermsContinue(String terms, String privacy) => _f('authTermsContinue', {'terms': terms, 'privacy': privacy}) ?? base.authTermsContinue(terms, privacy);
+
+  @override
+  String authTermsAgree(String terms, String privacy) => _f('authTermsAgree', {'terms': terms, 'privacy': privacy}) ?? base.authTermsAgree(terms, privacy);
+
+  @override
+  String get authTermsLink => _t('authTermsLink') ?? base.authTermsLink;
+
+  @override
+  String get authPrivacyLink => _t('authPrivacyLink') ?? base.authPrivacyLink;
+
+  @override
+  String authCouldNotOpen(String url) => _f('authCouldNotOpen', {'url': url}) ?? base.authCouldNotOpen(url);
+
+  @override
+  String get authAgeAdultConfirm => _t('authAgeAdultConfirm') ?? base.authAgeAdultConfirm;
+
+  @override
+  String get authAgeAdult => _t('authAgeAdult') ?? base.authAgeAdult;
+
+  @override
+  String get authAgeMinor => _t('authAgeMinor') ?? base.authAgeMinor;
+
+  @override
+  String get authAgeRequired => _t('authAgeRequired') ?? base.authAgeRequired;
+
+  @override
+  String get authAgeQuestion => _t('authAgeQuestion') ?? base.authAgeQuestion;
+
+  @override
+  String get authAgeDialogTitle => _t('authAgeDialogTitle') ?? base.authAgeDialogTitle;
+
+  @override
+  String get authAgeDialogAdultOnly => _t('authAgeDialogAdultOnly') ?? base.authAgeDialogAdultOnly;
+
+  @override
+  String get authAgeDialogNeeded => _t('authAgeDialogNeeded') ?? base.authAgeDialogNeeded;
+
+  @override
+  String get loginSubtitle => _t('loginSubtitle') ?? base.loginSubtitle;
+
+  @override
+  String get loginOtpPrompt => _t('loginOtpPrompt') ?? base.loginOtpPrompt;
+
+  @override
+  String get loginOtpLabel => _t('loginOtpLabel') ?? base.loginOtpLabel;
+
+  @override
+  String get loginForgotPassword => _t('loginForgotPassword') ?? base.loginForgotPassword;
+
+  @override
+  String get loginVerifyAndLogIn => _t('loginVerifyAndLogIn') ?? base.loginVerifyAndLogIn;
+
+  @override
+  String get loginSocialPatientsOnly => _t('loginSocialPatientsOnly') ?? base.loginSocialPatientsOnly;
+
+  @override
+  String get loginNoAccount => _t('loginNoAccount') ?? base.loginNoAccount;
+
+  @override
+  String get loginSignUp => _t('loginSignUp') ?? base.loginSignUp;
+
+  @override
+  String get registerConflict => _t('registerConflict') ?? base.registerConflict;
+
+  @override
+  String get registerCreateAccount => _t('registerCreateAccount') ?? base.registerCreateAccount;
+
+  @override
+  String get registerCreateAccountKeepProgress => _t('registerCreateAccountKeepProgress') ?? base.registerCreateAccountKeepProgress;
+
+  @override
+  String get registerIntroGuest => _t('registerIntroGuest') ?? base.registerIntroGuest;
+
+  @override
+  String get registerIntroAgent => _t('registerIntroAgent') ?? base.registerIntroAgent;
+
+  @override
+  String get registerIntroHospital => _t('registerIntroHospital') ?? base.registerIntroHospital;
+
+  @override
+  String get registerIntroPatient => _t('registerIntroPatient') ?? base.registerIntroPatient;
+
+  @override
+  String get registerFullNamePassport => _t('registerFullNamePassport') ?? base.registerFullNamePassport;
+
+  @override
+  String get registerYourFullName => _t('registerYourFullName') ?? base.registerYourFullName;
+
+  @override
+  String registerPasswordHelper(int min) => _f('registerPasswordHelper', {'min': min}) ?? base.registerPasswordHelper(min);
+
+  @override
+  String get registerAgencyName => _t('registerAgencyName') ?? base.registerAgencyName;
+
+  @override
+  String get registerEnterAgencyName => _t('registerEnterAgencyName') ?? base.registerEnterAgencyName;
+
+  @override
+  String get registerHospitalName => _t('registerHospitalName') ?? base.registerHospitalName;
+
+  @override
+  String get registerEnterHospitalName => _t('registerEnterHospitalName') ?? base.registerEnterHospitalName;
+
+  @override
+  String get registerCityOptional => _t('registerCityOptional') ?? base.registerCityOptional;
+
+  @override
+  String get registerPhoneOptional => _t('registerPhoneOptional') ?? base.registerPhoneOptional;
+
+  @override
+  String get registerCountryOfResidenceOptional => _t('registerCountryOfResidenceOptional') ?? base.registerCountryOfResidenceOptional;
+
+  @override
+  String get registerCountryOptional => _t('registerCountryOptional') ?? base.registerCountryOptional;
+
+  @override
+  String get registerReferralCodeOptional => _t('registerReferralCodeOptional') ?? base.registerReferralCodeOptional;
+
+  @override
+  String get registerAcceptTermsError => _t('registerAcceptTermsError') ?? base.registerAcceptTermsError;
+
+  @override
+  String get apiErrorTimeout => _t('apiErrorTimeout') ?? base.apiErrorTimeout;
+
+  @override
+  String get apiErrorCancelled => _t('apiErrorCancelled') ?? base.apiErrorCancelled;
+
+  @override
+  String get apiErrorNoConnection => _t('apiErrorNoConnection') ?? base.apiErrorNoConnection;
+
+  @override
+  String get apiErrorSecureConnection => _t('apiErrorSecureConnection') ?? base.apiErrorSecureConnection;
+
+  @override
+  String get apiErrorBadRequest => _t('apiErrorBadRequest') ?? base.apiErrorBadRequest;
+
+  @override
+  String get apiErrorSignIn => _t('apiErrorSignIn') ?? base.apiErrorSignIn;
+
+  @override
+  String get apiErrorPayment => _t('apiErrorPayment') ?? base.apiErrorPayment;
+
+  @override
+  String get apiErrorForbidden => _t('apiErrorForbidden') ?? base.apiErrorForbidden;
+
+  @override
+  String get apiErrorNotFound => _t('apiErrorNotFound') ?? base.apiErrorNotFound;
+
+  @override
+  String get apiErrorConflict => _t('apiErrorConflict') ?? base.apiErrorConflict;
+
+  @override
+  String get apiErrorValidation => _t('apiErrorValidation') ?? base.apiErrorValidation;
+
+  @override
+  String get apiErrorRateLimited => _t('apiErrorRateLimited') ?? base.apiErrorRateLimited;
+
+  @override
+  String get apiErrorServer => _t('apiErrorServer') ?? base.apiErrorServer;
+
+  @override
+  String apiErrorUnexpected(int status) => _f('apiErrorUnexpected', {'status': status}) ?? base.apiErrorUnexpected(status);
+
+  @override
+  String get apiErrorGeneric => _t('apiErrorGeneric') ?? base.apiErrorGeneric;
+
+  @override
+  String get conversationFallbackTitle => _t('conversationFallbackTitle') ?? base.conversationFallbackTitle;
+
+  @override
+  String get pushPromptTitle => _t('pushPromptTitle') ?? base.pushPromptTitle;
+
+  @override
+  String get pushPromptBody => _t('pushPromptBody') ?? base.pushPromptBody;
+
+  @override
+  String get pushPromptNotNow => _t('pushPromptNotNow') ?? base.pushPromptNotNow;
+
+  @override
+  String get pushPromptTurnOn => _t('pushPromptTurnOn') ?? base.pushPromptTurnOn;
+
+  @override
+  String get reportSheetThanks => _t('reportSheetThanks') ?? base.reportSheetThanks;
+
+  @override
+  String get reportSheetTitleMessage => _t('reportSheetTitleMessage') ?? base.reportSheetTitleMessage;
+
+  @override
+  String get reportSheetTitleResult => _t('reportSheetTitleResult') ?? base.reportSheetTitleResult;
+
+  @override
+  String get reportSheetIntroMessage => _t('reportSheetIntroMessage') ?? base.reportSheetIntroMessage;
+
+  @override
+  String get reportSheetIntroResult => _t('reportSheetIntroResult') ?? base.reportSheetIntroResult;
+
+  @override
+  String get reportSheetRateLimited => _t('reportSheetRateLimited') ?? base.reportSheetRateLimited;
+
+  @override
+  String get reportSheetNoteLabel => _t('reportSheetNoteLabel') ?? base.reportSheetNoteLabel;
+
+  @override
+  String get reportSheetNoteHint => _t('reportSheetNoteHint') ?? base.reportSheetNoteHint;
+
+  @override
+  String get reportSheetSend => _t('reportSheetSend') ?? base.reportSheetSend;
+
+  @override
+  String get reportReasonSpam => _t('reportReasonSpam') ?? base.reportReasonSpam;
+
+  @override
+  String get reportReasonAbusive => _t('reportReasonAbusive') ?? base.reportReasonAbusive;
+
+  @override
+  String get reportReasonInappropriate => _t('reportReasonInappropriate') ?? base.reportReasonInappropriate;
+
+  @override
+  String get reportReasonInaccurate => _t('reportReasonInaccurate') ?? base.reportReasonInaccurate;
+
+  @override
+  String get reportReasonPrivacy => _t('reportReasonPrivacy') ?? base.reportReasonPrivacy;
+
+  @override
+  String get reportReasonOther => _t('reportReasonOther') ?? base.reportReasonOther;
+
+  @override
+  String get chatTitleFallback => _t('chatTitleFallback') ?? base.chatTitleFallback;
+
+  @override
+  String chatParticipantWithRole(String name, String role) => _f('chatParticipantWithRole', {'name': name, 'role': role}) ?? base.chatParticipantWithRole(name, role);
+
+  @override
+  String get chatRoleHospital => _t('chatRoleHospital') ?? base.chatRoleHospital;
+
+  @override
+  String get chatRoleCareTeam => _t('chatRoleCareTeam') ?? base.chatRoleCareTeam;
+
+  @override
+  String get chatRoleAgent => _t('chatRoleAgent') ?? base.chatRoleAgent;
+
+  @override
+  String get chatRolePatient => _t('chatRolePatient') ?? base.chatRolePatient;
+
+  @override
+  String get chatEmptyTitle => _t('chatEmptyTitle') ?? base.chatEmptyTitle;
+
+  @override
+  String get chatEmptyMessage => _t('chatEmptyMessage') ?? base.chatEmptyMessage;
+
+  @override
+  String get chatLoadingMore => _t('chatLoadingMore') ?? base.chatLoadingMore;
+
+  @override
+  String get chatLoadEarlier => _t('chatLoadEarlier') ?? base.chatLoadEarlier;
+
+  @override
+  String get chatToday => _t('chatToday') ?? base.chatToday;
+
+  @override
+  String get chatUploading => _t('chatUploading') ?? base.chatUploading;
+
+  @override
+  String get chatAttachTooltip => _t('chatAttachTooltip') ?? base.chatAttachTooltip;
+
+  @override
+  String get chatInputHint => _t('chatInputHint') ?? base.chatInputHint;
+
+  @override
+  String get chatSendTooltip => _t('chatSendTooltip') ?? base.chatSendTooltip;
+
+  @override
+  String chatSharedFile(String fileName) => _f('chatSharedFile', {'fileName': fileName}) ?? base.chatSharedFile(fileName);
+
+  @override
+  String chatSharedFiles(int count) => _f('chatSharedFiles', {'count': count}) ?? base.chatSharedFiles(count);
+
+  @override
+  String get chatCopyText => _t('chatCopyText') ?? base.chatCopyText;
+
+  @override
+  String get chatReportMessage => _t('chatReportMessage') ?? base.chatReportMessage;
+
+  @override
+  String get chatMessageCopied => _t('chatMessageCopied') ?? base.chatMessageCopied;
+
+  @override
+  String get chatHiddenByModerators => _t('chatHiddenByModerators') ?? base.chatHiddenByModerators;
+
+  @override
+  String get chatAttachmentUnavailable => _t('chatAttachmentUnavailable') ?? base.chatAttachmentUnavailable;
+
+  @override
+  String get chatAttachment => _t('chatAttachment') ?? base.chatAttachment;
+
+  @override
+  String get matchesListTitle => _t('matchesListTitle') ?? base.matchesListTitle;
+
+  @override
+  String matchesListCompareLimit(int max) => _f('matchesListCompareLimit', {'max': max}) ?? base.matchesListCompareLimit(max);
+
+  @override
+  String get matchesListFinishFirst => _t('matchesListFinishFirst') ?? base.matchesListFinishFirst;
+
+  @override
+  String get matchesListStillFinding => _t('matchesListStillFinding') ?? base.matchesListStillFinding;
+
+  @override
+  String get matchesListCompleteQuestionnaire => _t('matchesListCompleteQuestionnaire') ?? base.matchesListCompleteQuestionnaire;
+
+  @override
+  String get matchesListUsuallyQuick => _t('matchesListUsuallyQuick') ?? base.matchesListUsuallyQuick;
+
+  @override
+  String get matchesListSortTooltip => _t('matchesListSortTooltip') ?? base.matchesListSortTooltip;
+
+  @override
+  String get matchesListFilterTooltip => _t('matchesListFilterTooltip') ?? base.matchesListFilterTooltip;
+
+  @override
+  String get matchesListLoading => _t('matchesListLoading') ?? base.matchesListLoading;
+
+  @override
+  String get matchesListIntro => _t('matchesListIntro') ?? base.matchesListIntro;
+
+  @override
+  String matchesListSaveVsHome(int min, int max) => _f('matchesListSaveVsHome', {'min': min, 'max': max}) ?? base.matchesListSaveVsHome(min, max);
+
+  @override
+  String get matchesListCompareCosts => _t('matchesListCompareCosts') ?? base.matchesListCompareCosts;
+
+  @override
+  String get matchesListNoMatches => _t('matchesListNoMatches') ?? base.matchesListNoMatches;
+
+  @override
+  String get matchesListNoMatchesMessage => _t('matchesListNoMatchesMessage') ?? base.matchesListNoMatchesMessage;
+
+  @override
+  String get matchesListRunAgain => _t('matchesListRunAgain') ?? base.matchesListRunAgain;
+
+  @override
+  String get matchesListBrowseHospitals => _t('matchesListBrowseHospitals') ?? base.matchesListBrowseHospitals;
+
+  @override
+  String get matchesListNoFilterMatches => _t('matchesListNoFilterMatches') ?? base.matchesListNoFilterMatches;
+
+  @override
+  String get matchesListClearFilters => _t('matchesListClearFilters') ?? base.matchesListClearFilters;
+
+  @override
+  String matchesListSelectedForComparison(int count, int max) => _f('matchesListSelectedForComparison', {'count': count, 'max': max}) ?? base.matchesListSelectedForComparison(count, max);
+
+  @override
+  String get matchesListCompare => _t('matchesListCompare') ?? base.matchesListCompare;
+
+  @override
+  String get matchesListEmergency => _t('matchesListEmergency') ?? base.matchesListEmergency;
+
+  @override
+  String get matchesListGuidanceAcknowledged => _t('matchesListGuidanceAcknowledged') ?? base.matchesListGuidanceAcknowledged;
+
+  @override
+  String get matchesListReadGuidance => _t('matchesListReadGuidance') ?? base.matchesListReadGuidance;
+
+  @override
+  String get aiSummaryUrgencySoon => _t('aiSummaryUrgencySoon') ?? base.aiSummaryUrgencySoon;
+
+  @override
+  String get aiSummaryDisclaimer => _t('aiSummaryDisclaimer') ?? base.aiSummaryDisclaimer;
+
+  @override
+  String get aiSummaryTitleAi => _t('aiSummaryTitleAi') ?? base.aiSummaryTitleAi;
+
+  @override
+  String get aiSummaryTitleRules => _t('aiSummaryTitleRules') ?? base.aiSummaryTitleRules;
+
+  @override
+  String get aiSummaryMoreDetails => _t('aiSummaryMoreDetails') ?? base.aiSummaryMoreDetails;
+
+  @override
+  String get aiSummaryPossibleConditions => _t('aiSummaryPossibleConditions') ?? base.aiSummaryPossibleConditions;
+
+  @override
+  String aiSummaryConditionLikelihood(String name, String likelihood) => _f('aiSummaryConditionLikelihood', {'name': name, 'likelihood': likelihood}) ?? base.aiSummaryConditionLikelihood(name, likelihood);
+
+  @override
+  String get aiSummaryTests => _t('aiSummaryTests') ?? base.aiSummaryTests;
+
+  @override
+  String get aiSummaryQuestions => _t('aiSummaryQuestions') ?? base.aiSummaryQuestions;
+
+  @override
+  String get aiSummaryTravelAdvice => _t('aiSummaryTravelAdvice') ?? base.aiSummaryTravelAdvice;
+
+  @override
+  String aiSummaryBullet(String item) => _f('aiSummaryBullet', {'item': item}) ?? base.aiSummaryBullet(item);
+
+  @override
+  String get reportViewDiscardTitle => _t('reportViewDiscardTitle') ?? base.reportViewDiscardTitle;
+
+  @override
+  String get reportViewDiscardBody => _t('reportViewDiscardBody') ?? base.reportViewDiscardBody;
+
+  @override
+  String get reportViewKeepReviewing => _t('reportViewKeepReviewing') ?? base.reportViewKeepReviewing;
+
+  @override
+  String get reportViewDiscard => _t('reportViewDiscard') ?? base.reportViewDiscard;
+
+  @override
+  String get reportViewFailedTitle => _t('reportViewFailedTitle') ?? base.reportViewFailedTitle;
+
+  @override
+  String get reportViewFailedMessage => _t('reportViewFailedMessage') ?? base.reportViewFailedMessage;
+
+  @override
+  String get reportViewUnsupportedTitle => _t('reportViewUnsupportedTitle') ?? base.reportViewUnsupportedTitle;
+
+  @override
+  String get reportViewUnsupportedMessage => _t('reportViewUnsupportedMessage') ?? base.reportViewUnsupportedMessage;
+
+  @override
+  String get reportViewDiscarded => _t('reportViewDiscarded') ?? base.reportViewDiscarded;
+
+  @override
+  String get reportViewCheckIntro => _t('reportViewCheckIntro') ?? base.reportViewCheckIntro;
+
+  @override
+  String get reportViewQualityHardToRead => _t('reportViewQualityHardToRead') ?? base.reportViewQualityHardToRead;
+
+  @override
+  String reportViewImageQuality(String issues) => _f('reportViewImageQuality', {'issues': issues}) ?? base.reportViewImageQuality(issues);
+
+  @override
+  String get reportViewContactDoctor => _t('reportViewContactDoctor') ?? base.reportViewContactDoctor;
+
+  @override
+  String get reportViewReading => _t('reportViewReading') ?? base.reportViewReading;
+
+  @override
+  String get reportViewReadingHint => _t('reportViewReadingHint') ?? base.reportViewReadingHint;
+
+  @override
+  String get agentScreeningNew => _t('agentScreeningNew') ?? base.agentScreeningNew;
+
+  @override
+  String agentScreeningForPatient(String name) => _f('agentScreeningForPatient', {'name': name}) ?? base.agentScreeningForPatient(name);
+
+  @override
+  String get agentScreeningNeedHelp => _t('agentScreeningNeedHelp') ?? base.agentScreeningNeedHelp;
+
+  @override
+  String get agentScreeningHowLong => _t('agentScreeningHowLong') ?? base.agentScreeningHowLong;
+
+  @override
+  String get agentScreeningImpact => _t('agentScreeningImpact') ?? base.agentScreeningImpact;
+
+  @override
+  String get agentScreeningPreviousTreatments => _t('agentScreeningPreviousTreatments') ?? base.agentScreeningPreviousTreatments;
+
+  @override
+  String get agentScreeningNotes => _t('agentScreeningNotes') ?? base.agentScreeningNotes;
+
+  @override
+  String get agentScreeningSubmit => _t('agentScreeningSubmit') ?? base.agentScreeningSubmit;
+
+  @override
+  String agentScreeningQuotesRequested(int count) => _f('agentScreeningQuotesRequested', {'count': count}) ?? base.agentScreeningQuotesRequested(count);
+
+  @override
+  String get agentScreeningResultTitle => _t('agentScreeningResultTitle') ?? base.agentScreeningResultTitle;
+
+  @override
+  String get agentScreeningNotSubmitted => _t('agentScreeningNotSubmitted') ?? base.agentScreeningNotSubmitted;
+
+  @override
+  String get agentScreeningRunNew => _t('agentScreeningRunNew') ?? base.agentScreeningRunNew;
+
+  @override
+  String get agentScreeningAnalysing => _t('agentScreeningAnalysing') ?? base.agentScreeningAnalysing;
+
+  @override
+  String get agentScreeningFailed => _t('agentScreeningFailed') ?? base.agentScreeningFailed;
+
+  @override
+  String get agentScreeningPleaseTryAgain => _t('agentScreeningPleaseTryAgain') ?? base.agentScreeningPleaseTryAgain;
+
+  @override
+  String get agentScreeningAiTriage => _t('agentScreeningAiTriage') ?? base.agentScreeningAiTriage;
+
+  @override
+  String get agentScreeningMatchedHospitals => _t('agentScreeningMatchedHospitals') ?? base.agentScreeningMatchedHospitals;
+
+  @override
+  String get agentScreeningMatchedHospitalsHint => _t('agentScreeningMatchedHospitalsHint') ?? base.agentScreeningMatchedHospitalsHint;
+
+  @override
+  String get agentScreeningNoMatches => _t('agentScreeningNoMatches') ?? base.agentScreeningNoMatches;
+
+  @override
+  String get agentScreeningCompareQuotes => _t('agentScreeningCompareQuotes') ?? base.agentScreeningCompareQuotes;
+
+  @override
+  String get agentScreeningSelectHospitals => _t('agentScreeningSelectHospitals') ?? base.agentScreeningSelectHospitals;
+
+  @override
+  String agentScreeningRequestQuotes(int count) => _f('agentScreeningRequestQuotes', {'count': count}) ?? base.agentScreeningRequestQuotes(count);
+
+  @override
+  String agentScreeningEstimate(String amount) => _f('agentScreeningEstimate', {'amount': amount}) ?? base.agentScreeningEstimate(amount);
+
+  @override
+  String get agentScreeningRequested => _t('agentScreeningRequested') ?? base.agentScreeningRequested;
+
+  @override
+  String doctorYearsOfExperience(int count) => _f('doctorYearsOfExperience', {'count': count}) ?? base.doctorYearsOfExperience(count);
+
+  @override
+  String privacyAccessLine(String who, String role, String action, String record) => _f('privacyAccessLine', {'who': who, 'role': role, 'action': action, 'record': record}) ?? base.privacyAccessLine(who, role, action, record);
+
+  @override
+  String get privacyRoleHospital => _t('privacyRoleHospital') ?? base.privacyRoleHospital;
+
+  @override
+  String get privacyRoleAgent => _t('privacyRoleAgent') ?? base.privacyRoleAgent;
+
+  @override
+  String get privacyRoleSupport => _t('privacyRoleSupport') ?? base.privacyRoleSupport;
+
+  @override
+  String get privacyRoleFinance => _t('privacyRoleFinance') ?? base.privacyRoleFinance;
+
+  @override
+  String get privacyRoleStaff => _t('privacyRoleStaff') ?? base.privacyRoleStaff;
+
+  @override
+  String get privacyRoleSomeone => _t('privacyRoleSomeone') ?? base.privacyRoleSomeone;
+
+  @override
+  String get privacyActionDownloaded => _t('privacyActionDownloaded') ?? base.privacyActionDownloaded;
+
+  @override
+  String get privacyActionListed => _t('privacyActionListed') ?? base.privacyActionListed;
+
+  @override
+  String get privacyActionEmergency => _t('privacyActionEmergency') ?? base.privacyActionEmergency;
+
+  @override
+  String get privacyActionViewed => _t('privacyActionViewed') ?? base.privacyActionViewed;
+
+  @override
+  String get privacyRecordDocument => _t('privacyRecordDocument') ?? base.privacyRecordDocument;
+
+  @override
+  String get privacyRecordScreening => _t('privacyRecordScreening') ?? base.privacyRecordScreening;
+
+  @override
+  String get privacyRecordReportReading => _t('privacyRecordReportReading') ?? base.privacyRecordReportReading;
+
+  @override
+  String get privacyRecordVoice => _t('privacyRecordVoice') ?? base.privacyRecordVoice;
+
+  @override
+  String get privacyRecordHistory => _t('privacyRecordHistory') ?? base.privacyRecordHistory;
+
+  @override
+  String get privacyRecordOther => _t('privacyRecordOther') ?? base.privacyRecordOther;
+
+  @override
+  String get privacyGroupTitle => _t('privacyGroupTitle') ?? base.privacyGroupTitle;
+
+  @override
+  String get privacyDownloadTitle => _t('privacyDownloadTitle') ?? base.privacyDownloadTitle;
+
+  @override
+  String get privacyDownloadSubtitle => _t('privacyDownloadSubtitle') ?? base.privacyDownloadSubtitle;
+
+  @override
+  String get privacyDownloadSaved => _t('privacyDownloadSaved') ?? base.privacyDownloadSaved;
+
+  @override
+  String get privacyAccessLogTitle => _t('privacyAccessLogTitle') ?? base.privacyAccessLogTitle;
+
+  @override
+  String get privacyAccessLogSubtitle => _t('privacyAccessLogSubtitle') ?? base.privacyAccessLogSubtitle;
+
+  @override
+  String get privacyAccessLogError => _t('privacyAccessLogError') ?? base.privacyAccessLogError;
+
+  @override
+  String get privacyAccessLogEmpty => _t('privacyAccessLogEmpty') ?? base.privacyAccessLogEmpty;
+
+  @override
+  String privacyAccessLogReason(String reason) => _f('privacyAccessLogReason', {'reason': reason}) ?? base.privacyAccessLogReason(reason);
+
+  @override
+  String priceApproxSemantics(String approx, String original) => _f('priceApproxSemantics', {'approx': approx, 'original': original}) ?? base.priceApproxSemantics(approx, original);
+
+  @override
+  String priceOriginalAmount(String amount) => _f('priceOriginalAmount', {'amount': amount}) ?? base.priceOriginalAmount(amount);
+
+  @override
+  String trustAccreditationVerifiedSemantics(String body) => _f('trustAccreditationVerifiedSemantics', {'body': body}) ?? base.trustAccreditationVerifiedSemantics(body);
+
+  @override
+  String earliestConsultation(String date) => _f('earliestConsultation', {'date': date}) ?? base.earliestConsultation(date);
+
+  @override
+  String earliestAdmission(String date) => _f('earliestAdmission', {'date': date}) ?? base.earliestAdmission(date);
+
+  @override
+  String get earliestToday => _t('earliestToday') ?? base.earliestToday;
+
+  @override
+  String get earliestTomorrow => _t('earliestTomorrow') ?? base.earliestTomorrow;
+
+  @override
+  String quoteTimeLeft(int days, String time) => _f('quoteTimeLeft', {'days': days, 'time': time}) ?? base.quoteTimeLeft(days, time);
+
+  @override
+  String quoteDueBy(String time) => _f('quoteDueBy', {'time': time}) ?? base.quoteDueBy(time);
+
+  @override
+  String quoteRespondBy(String time) => _f('quoteRespondBy', {'time': time}) ?? base.quoteRespondBy(time);
+
+  @override
+  String get quoteOverduePatient => _t('quoteOverduePatient') ?? base.quoteOverduePatient;
+
+  @override
+  String get quoteOverdueHospital => _t('quoteOverdueHospital') ?? base.quoteOverdueHospital;
+
+  @override
+  String get guestAiLimitReached => _t('guestAiLimitReached') ?? base.guestAiLimitReached;
+
+  @override
+  String get guestCreateFreeAccount => _t('guestCreateFreeAccount') ?? base.guestCreateFreeAccount;
+
+  @override
+  String get guardianConsentRequiredMessage => _t('guardianConsentRequiredMessage') ?? base.guardianConsentRequiredMessage;
+
+  @override
+  String get filtersSortSoonest => _t('filtersSortSoonest') ?? base.filtersSortSoonest;
+
+  @override
+  String get trustAccreditationsTitle => _t('trustAccreditationsTitle') ?? base.trustAccreditationsTitle;
+
+  @override
+  String get trustAccreditationVerified => _t('trustAccreditationVerified') ?? base.trustAccreditationVerified;
+
+  @override
+  String trustAccreditationVerifiedUntil(String date) => _f('trustAccreditationVerifiedUntil', {'date': date}) ?? base.trustAccreditationVerifiedUntil(date);
+
+  @override
+  String get trustRegistrationVerified => _t('trustRegistrationVerified') ?? base.trustRegistrationVerified;
+
+  @override
+  String trustRegistrationVerifiedSemantics(String council) => _f('trustRegistrationVerifiedSemantics', {'council': council}) ?? base.trustRegistrationVerifiedSemantics(council);
+
+  @override
+  String reviewStarsSemantics(int rating) => _f('reviewStarsSemantics', {'rating': rating}) ?? base.reviewStarsSemantics(rating);
+
+  @override
+  String get reviewVerifiedPatient => _t('reviewVerifiedPatient') ?? base.reviewVerifiedPatient;
+
+  @override
+  String reviewVerifiedPatientFor(String treatment) => _f('reviewVerifiedPatientFor', {'treatment': treatment}) ?? base.reviewVerifiedPatientFor(treatment);
+
+  @override
+  String reviewByPatient(String name) => _f('reviewByPatient', {'name': name}) ?? base.reviewByPatient(name);
+
+  @override
+  String get reviewsTitle => _t('reviewsTitle') ?? base.reviewsTitle;
+
+  @override
+  String get reviewsEmptyTitle => _t('reviewsEmptyTitle') ?? base.reviewsEmptyTitle;
+
+  @override
+  String get reviewsEmptyMessage => _t('reviewsEmptyMessage') ?? base.reviewsEmptyMessage;
+
+  @override
+  String reviewsSeeAll(int count) => _f('reviewsSeeAll', {'count': count}) ?? base.reviewsSeeAll(count);
+
+  @override
+  String get homeBrowseSpecialties => _t('homeBrowseSpecialties') ?? base.homeBrowseSpecialties;
+
+  @override
+  String get costHomeTitle => _t('costHomeTitle') ?? base.costHomeTitle;
+
+  @override
+  String costHomePricesFor(String country) => _f('costHomePricesFor', {'country': country}) ?? base.costHomePricesFor(country);
+
+  @override
+  String costHomeFallback(String country) => _f('costHomeFallback', {'country': country}) ?? base.costHomeFallback(country);
+
+  @override
+  String get costHomeChange => _t('costHomeChange') ?? base.costHomeChange;
+
+  @override
+  String get costHomeCountryPickerTitle => _t('costHomeCountryPickerTitle') ?? base.costHomeCountryPickerTitle;
+
+  @override
+  String costHomeShowMore(int count) => _f('costHomeShowMore', {'count': count}) ?? base.costHomeShowMore(count);
+
+  @override
+  String get costHomeShowLess => _t('costHomeShowLess') ?? base.costHomeShowLess;
+
+  @override
+  String costHomeSave(String pct) => _f('costHomeSave', {'pct': pct}) ?? base.costHomeSave(pct);
+
+  @override
+  String costHomeInCountry(String country) => _f('costHomeInCountry', {'country': country}) ?? base.costHomeInCountry(country);
+
+  @override
+  String get costHomeInIndia => _t('costHomeInIndia') ?? base.costHomeInIndia;
+
+  @override
+  String costHomeWaitAtHome(String wait) => _f('costHomeWaitAtHome', {'wait': wait}) ?? base.costHomeWaitAtHome(wait);
+
+  @override
+  String get costHomeOftenUnavailable => _t('costHomeOftenUnavailable') ?? base.costHomeOftenUnavailable;
+
+  @override
+  String costHomeIndiaEarliest(String date) => _f('costHomeIndiaEarliest', {'date': date}) ?? base.costHomeIndiaEarliest(date);
+
+  @override
+  String costHomeIndiaWait(String wait) => _f('costHomeIndiaWait', {'wait': wait}) ?? base.costHomeIndiaWait(wait);
+
+  @override
+  String get costHomeEstimate => _t('costHomeEstimate') ?? base.costHomeEstimate;
+
+  @override
+  String costHomeEstimateSource(String source) => _f('costHomeEstimateSource', {'source': source}) ?? base.costHomeEstimateSource(source);
+
+  @override
+  String get costHomeSeeHospitals => _t('costHomeSeeHospitals') ?? base.costHomeSeeHospitals;
+
+  @override
+  String get costConfidenceHigh => _t('costConfidenceHigh') ?? base.costConfidenceHigh;
+
+  @override
+  String get costConfidenceMedium => _t('costConfidenceMedium') ?? base.costConfidenceMedium;
+
+  @override
+  String get costConfidenceLow => _t('costConfidenceLow') ?? base.costConfidenceLow;
+
+  @override
+  String get costSourceTitle => _t('costSourceTitle') ?? base.costSourceTitle;
+
+  @override
+  String costSourceIntro(String country) => _f('costSourceIntro', {'country': country}) ?? base.costSourceIntro(country);
+
+  @override
+  String get costSourceLabel => _t('costSourceLabel') ?? base.costSourceLabel;
+
+  @override
+  String get costSourceYear => _t('costSourceYear') ?? base.costSourceYear;
+
+  @override
+  String get costSourceConfidence => _t('costSourceConfidence') ?? base.costSourceConfidence;
+
+  @override
+  String get costSourceWait => _t('costSourceWait') ?? base.costSourceWait;
+
+  @override
+  String get costSourceNone => _t('costSourceNone') ?? base.costSourceNone;
+
+  @override
+  String get costSourceDisclaimer => _t('costSourceDisclaimer') ?? base.costSourceDisclaimer;
+
+  @override
+  String get costSourceOpen => _t('costSourceOpen') ?? base.costSourceOpen;
+
+  @override
+  String get countryPickerTitle => _t('countryPickerTitle') ?? base.countryPickerTitle;
+
+  @override
+  String get countryPickerSearch => _t('countryPickerSearch') ?? base.countryPickerSearch;
+
+  @override
+  String get countryPickerAuto => _t('countryPickerAuto') ?? base.countryPickerAuto;
+
+  @override
+  String get earliestScreenTitle => _t('earliestScreenTitle') ?? base.earliestScreenTitle;
+
+  @override
+  String get earliestIntro => _t('earliestIntro') ?? base.earliestIntro;
+
+  @override
+  String get earliestCompareCosts => _t('earliestCompareCosts') ?? base.earliestCompareCosts;
+
+  @override
+  String get earliestEmptyTitle => _t('earliestEmptyTitle') ?? base.earliestEmptyTitle;
+
+  @override
+  String get earliestEmptyMessage => _t('earliestEmptyMessage') ?? base.earliestEmptyMessage;
+
+  @override
+  String get earliestAskCoordinator => _t('earliestAskCoordinator') ?? base.earliestAskCoordinator;
+
+  @override
+  String earliestSelectSemantics(String hospital) => _f('earliestSelectSemantics', {'hospital': hospital}) ?? base.earliestSelectSemantics(hospital);
+
+  @override
+  String quickQuoteMaxHospitals(int max) => _f('quickQuoteMaxHospitals', {'max': max}) ?? base.quickQuoteMaxHospitals(max);
+
+  @override
+  String quickQuoteRequestFrom(int count) => _f('quickQuoteRequestFrom', {'count': count}) ?? base.quickQuoteRequestFrom(count);
+
+  @override
+  String quickQuoteSendTo(int count) => _f('quickQuoteSendTo', {'count': count}) ?? base.quickQuoteSendTo(count);
+
+  @override
+  String get quickQuoteSlaNote => _t('quickQuoteSlaNote') ?? base.quickQuoteSlaNote;
+
+  @override
+  String quickQuoteHospitals(int count, int max) => _f('quickQuoteHospitals', {'count': count, 'max': max}) ?? base.quickQuoteHospitals(count, max);
+
+  @override
+  String get quickQuoteAddHospital => _t('quickQuoteAddHospital') ?? base.quickQuoteAddHospital;
+
+  @override
+  String quickQuoteRemoveHospital(String hospital) => _f('quickQuoteRemoveHospital', {'hospital': hospital}) ?? base.quickQuoteRemoveHospital(hospital);
+
+  @override
+  String get quickQuoteSearchHospitals => _t('quickQuoteSearchHospitals') ?? base.quickQuoteSearchHospitals;
+
+  @override
+  String get quickQuoteNoMoreHospitals => _t('quickQuoteNoMoreHospitals') ?? base.quickQuoteNoMoreHospitals;
+
+  @override
+  String get quickQuoteReports => _t('quickQuoteReports') ?? base.quickQuoteReports;
+
+  @override
+  String get quickQuoteReportsHint => _t('quickQuoteReportsHint') ?? base.quickQuoteReportsHint;
+
+  @override
+  String get quickQuoteUpload => _t('quickQuoteUpload') ?? base.quickQuoteUpload;
+
+  @override
+  String quickQuoteConsentMany(String hospitals) => _f('quickQuoteConsentMany', {'hospitals': hospitals}) ?? base.quickQuoteConsentMany(hospitals);
+
+  @override
+  String get quoteGroupTitle => _t('quoteGroupTitle') ?? base.quoteGroupTitle;
+
+  @override
+  String get quoteGroupCompare => _t('quoteGroupCompare') ?? base.quoteGroupCompare;
+
+  @override
+  String quoteGroupReplied(int answered, int total) => _f('quoteGroupReplied', {'answered': answered, 'total': total}) ?? base.quoteGroupReplied(answered, total);
+
+  @override
+  String get quoteGroupCheapest => _t('quoteGroupCheapest') ?? base.quoteGroupCheapest;
+
+  @override
+  String quoteGroupStay(int days) => _f('quoteGroupStay', {'days': days}) ?? base.quoteGroupStay(days);
+
+  @override
+  String quoteGroupCurrencyNote(String currency) => _f('quoteGroupCurrencyNote', {'currency': currency}) ?? base.quoteGroupCurrencyNote(currency);
+
+  @override
+  String quoteGroupAcceptConfirm(String hospital) => _f('quoteGroupAcceptConfirm', {'hospital': hospital}) ?? base.quoteGroupAcceptConfirm(hospital);
+
+  @override
+  String get guardianTitle => _t('guardianTitle') ?? base.guardianTitle;
+
+  @override
+  String get guardianIntro => _t('guardianIntro') ?? base.guardianIntro;
+
+  @override
+  String get guardianAddConsent => _t('guardianAddConsent') ?? base.guardianAddConsent;
+
+  @override
+  String get guardianName => _t('guardianName') ?? base.guardianName;
+
+  @override
+  String get guardianNameRequired => _t('guardianNameRequired') ?? base.guardianNameRequired;
+
+  @override
+  String get guardianRelationship => _t('guardianRelationship') ?? base.guardianRelationship;
+
+  @override
+  String get guardianRelationshipParent => _t('guardianRelationshipParent') ?? base.guardianRelationshipParent;
+
+  @override
+  String get guardianRelationshipLawful => _t('guardianRelationshipLawful') ?? base.guardianRelationshipLawful;
+
+  @override
+  String get guardianEmail => _t('guardianEmail') ?? base.guardianEmail;
+
+  @override
+  String get guardianEmailInvalid => _t('guardianEmailInvalid') ?? base.guardianEmailInvalid;
+
+  @override
+  String get guardianPhone => _t('guardianPhone') ?? base.guardianPhone;
+
+  @override
+  String get guardianContactRequired => _t('guardianContactRequired') ?? base.guardianContactRequired;
+
+  @override
+  String get guardianDob => _t('guardianDob') ?? base.guardianDob;
+
+  @override
+  String guardianDobValue(String date) => _f('guardianDobValue', {'date': date}) ?? base.guardianDobValue(date);
+
+  @override
+  String get guardianDobRequired => _t('guardianDobRequired') ?? base.guardianDobRequired;
+
+  @override
+  String get guardianVerification => _t('guardianVerification') ?? base.guardianVerification;
+
+  @override
+  String get guardianVerifyVideo => _t('guardianVerifyVideo') ?? base.guardianVerifyVideo;
+
+  @override
+  String get guardianVerifyId => _t('guardianVerifyId') ?? base.guardianVerifyId;
+
+  @override
+  String get guardianVerifyDigilocker => _t('guardianVerifyDigilocker') ?? base.guardianVerifyDigilocker;
+
+  @override
+  String get guardianVerifyInPerson => _t('guardianVerifyInPerson') ?? base.guardianVerifyInPerson;
+
+  @override
+  String get guardianDeclaration => _t('guardianDeclaration') ?? base.guardianDeclaration;
+
+  @override
+  String get guardianDeclarationRequired => _t('guardianDeclarationRequired') ?? base.guardianDeclarationRequired;
+
+  @override
+  String get guardianSubmit => _t('guardianSubmit') ?? base.guardianSubmit;
+
+  @override
+  String get guardianAfterSubmit => _t('guardianAfterSubmit') ?? base.guardianAfterSubmit;
+
+  @override
+  String get guardianSent => _t('guardianSent') ?? base.guardianSent;
+
+  @override
+  String get aftercareFlagFever => _t('aftercareFlagFever') ?? base.aftercareFlagFever;
+
+  @override
+  String get aftercareFlagBreathlessness => _t('aftercareFlagBreathlessness') ?? base.aftercareFlagBreathlessness;
+
+  @override
+  String get aftercareFlagSeverePain => _t('aftercareFlagSeverePain') ?? base.aftercareFlagSeverePain;
+
+  @override
+  String get aftercareFlagWound => _t('aftercareFlagWound') ?? base.aftercareFlagWound;
+
+  @override
+  String get aftercareMedsAll => _t('aftercareMedsAll') ?? base.aftercareMedsAll;
+
+  @override
+  String get aftercareMedsSome => _t('aftercareMedsSome') ?? base.aftercareMedsSome;
+
+  @override
+  String get aftercareMedsNone => _t('aftercareMedsNone') ?? base.aftercareMedsNone;
+
+  @override
+  String aftercareCheckinDay(int day) => _f('aftercareCheckinDay', {'day': day}) ?? base.aftercareCheckinDay(day);
+
+  @override
+  String aftercarePainValue(int pain) => _f('aftercarePainValue', {'pain': pain}) ?? base.aftercarePainValue(pain);
+
+  @override
+  String aftercareMedsValue(String value) => _f('aftercareMedsValue', {'value': value}) ?? base.aftercareMedsValue(value);
+
+  @override
+  String get aftercareAnswerNow => _t('aftercareAnswerNow') ?? base.aftercareAnswerNow;
+
+  @override
+  String get aftercareNotAnswered => _t('aftercareNotAnswered') ?? base.aftercareNotAnswered;
+
+  @override
+  String get aftercareCheckinsTitle => _t('aftercareCheckinsTitle') ?? base.aftercareCheckinsTitle;
+
+  @override
+  String get aftercareHospitalCheckinsHint => _t('aftercareHospitalCheckinsHint') ?? base.aftercareHospitalCheckinsHint;
+
+  @override
+  String get aftercareNoCheckins => _t('aftercareNoCheckins') ?? base.aftercareNoCheckins;
+
+  @override
+  String aftercareRedFlagCount(int count) => _f('aftercareRedFlagCount', {'count': count}) ?? base.aftercareRedFlagCount(count);
+
+  @override
+  String get reviewBannerEyebrow => _t('reviewBannerEyebrow') ?? base.reviewBannerEyebrow;
+
+  @override
+  String reviewBannerTitle(String hospital) => _f('reviewBannerTitle', {'hospital': hospital}) ?? base.reviewBannerTitle(hospital);
+
+  @override
+  String get reviewBannerSubtitle => _t('reviewBannerSubtitle') ?? base.reviewBannerSubtitle;
+
+  @override
+  String get guestFreeEyebrow => _t('guestFreeEyebrow') ?? base.guestFreeEyebrow;
+
+  @override
+  String get guestFreeTitle => _t('guestFreeTitle') ?? base.guestFreeTitle;
+
+  @override
+  String get guestFreeSubtitle => _t('guestFreeSubtitle') ?? base.guestFreeSubtitle;
+
+  @override
+  String get reviewFormTitle => _t('reviewFormTitle') ?? base.reviewFormTitle;
+
+  @override
+  String get reviewFormEditTitle => _t('reviewFormEditTitle') ?? base.reviewFormEditTitle;
+
+  @override
+  String get reviewFormRatingLabel => _t('reviewFormRatingLabel') ?? base.reviewFormRatingLabel;
+
+  @override
+  String get reviewFormRatingRequired => _t('reviewFormRatingRequired') ?? base.reviewFormRatingRequired;
+
+  @override
+  String reviewFormAboutDoctor(String doctor) => _f('reviewFormAboutDoctor', {'doctor': doctor}) ?? base.reviewFormAboutDoctor(doctor);
+
+  @override
+  String get reviewFormTitleLabel => _t('reviewFormTitleLabel') ?? base.reviewFormTitleLabel;
+
+  @override
+  String get reviewFormBodyLabel => _t('reviewFormBodyLabel') ?? base.reviewFormBodyLabel;
+
+  @override
+  String get reviewFormBodyHint => _t('reviewFormBodyHint') ?? base.reviewFormBodyHint;
+
+  @override
+  String get reviewFormModerationNote => _t('reviewFormModerationNote') ?? base.reviewFormModerationNote;
+
+  @override
+  String get reviewFormSubmit => _t('reviewFormSubmit') ?? base.reviewFormSubmit;
+
+  @override
+  String get reviewFormThanks => _t('reviewFormThanks') ?? base.reviewFormThanks;
+
+  @override
+  String get reviewFormUpdated => _t('reviewFormUpdated') ?? base.reviewFormUpdated;
+
+  @override
+  String get reviewFormNotEligibleTitle => _t('reviewFormNotEligibleTitle') ?? base.reviewFormNotEligibleTitle;
+
+  @override
+  String get reviewFormNotEligibleMessage => _t('reviewFormNotEligibleMessage') ?? base.reviewFormNotEligibleMessage;
+
+  @override
+  String get myReviewsTitle => _t('myReviewsTitle') ?? base.myReviewsTitle;
+
+  @override
+  String get myReviewsSubtitle => _t('myReviewsSubtitle') ?? base.myReviewsSubtitle;
+
+  @override
+  String get myReviewsToWrite => _t('myReviewsToWrite') ?? base.myReviewsToWrite;
+
+  @override
+  String get myReviewsWritten => _t('myReviewsWritten') ?? base.myReviewsWritten;
+
+  @override
+  String get myReviewsEmpty => _t('myReviewsEmpty') ?? base.myReviewsEmpty;
+
+  @override
+  String get myReviewsPending => _t('myReviewsPending') ?? base.myReviewsPending;
+
+  @override
+  String get myReviewsPublished => _t('myReviewsPublished') ?? base.myReviewsPublished;
+
+  @override
+  String get myReviewsHidden => _t('myReviewsHidden') ?? base.myReviewsHidden;
+
+  @override
+  String myReviewsHiddenReason(String reason) => _f('myReviewsHiddenReason', {'reason': reason}) ?? base.myReviewsHiddenReason(reason);
+
+  @override
+  String get myReviewsDeleteTitle => _t('myReviewsDeleteTitle') ?? base.myReviewsDeleteTitle;
+
+  @override
+  String get myReviewsDeleteBody => _t('myReviewsDeleteBody') ?? base.myReviewsDeleteBody;
+
+  @override
+  String get aftercareTitle => _t('aftercareTitle') ?? base.aftercareTitle;
+
+  @override
+  String get aftercareLinkSubtitle => _t('aftercareLinkSubtitle') ?? base.aftercareLinkSubtitle;
+
+  @override
+  String get aftercareEmptyTitle => _t('aftercareEmptyTitle') ?? base.aftercareEmptyTitle;
+
+  @override
+  String get aftercareEmptyMessage => _t('aftercareEmptyMessage') ?? base.aftercareEmptyMessage;
+
+  @override
+  String get aftercareDueTitle => _t('aftercareDueTitle') ?? base.aftercareDueTitle;
+
+  @override
+  String get aftercareDueHint => _t('aftercareDueHint') ?? base.aftercareDueHint;
+
+  @override
+  String get aftercareFollowupsTitle => _t('aftercareFollowupsTitle') ?? base.aftercareFollowupsTitle;
+
+  @override
+  String get aftercareNoFollowups => _t('aftercareNoFollowups') ?? base.aftercareNoFollowups;
+
+  @override
+  String get aftercareFollowup => _t('aftercareFollowup') ?? base.aftercareFollowup;
+
+  @override
+  String aftercareFollowupDay(int day) => _f('aftercareFollowupDay', {'day': day}) ?? base.aftercareFollowupDay(day);
+
+  @override
+  String get aftercareTimeToConfirm => _t('aftercareTimeToConfirm') ?? base.aftercareTimeToConfirm;
+
+  @override
+  String aftercareAround(String date) => _f('aftercareAround', {'date': date}) ?? base.aftercareAround(date);
+
+  @override
+  String get aftercareJoinCall => _t('aftercareJoinCall') ?? base.aftercareJoinCall;
+
+  @override
+  String get aftercareLinkLater => _t('aftercareLinkLater') ?? base.aftercareLinkLater;
+
+  @override
+  String get aftercareCouldNotOpen => _t('aftercareCouldNotOpen') ?? base.aftercareCouldNotOpen;
+
+  @override
+  String aftercareDischarged(String date) => _f('aftercareDischarged', {'date': date}) ?? base.aftercareDischarged(date);
+
+  @override
+  String aftercareUntil(String date) => _f('aftercareUntil', {'date': date}) ?? base.aftercareUntil(date);
+
+  @override
+  String get aftercareRequestFollowup => _t('aftercareRequestFollowup') ?? base.aftercareRequestFollowup;
+
+  @override
+  String get aftercarePreferredTime => _t('aftercarePreferredTime') ?? base.aftercarePreferredTime;
+
+  @override
+  String get aftercareFollowupNotes => _t('aftercareFollowupNotes') ?? base.aftercareFollowupNotes;
+
+  @override
+  String get aftercareSendRequest => _t('aftercareSendRequest') ?? base.aftercareSendRequest;
+
+  @override
+  String get aftercareFollowupRequested => _t('aftercareFollowupRequested') ?? base.aftercareFollowupRequested;
+
+  @override
+  String get aftercareUpcomingTitle => _t('aftercareUpcomingTitle') ?? base.aftercareUpcomingTitle;
+
+  @override
+  String get aftercareCheckinIntro => _t('aftercareCheckinIntro') ?? base.aftercareCheckinIntro;
+
+  @override
+  String get aftercareQFever => _t('aftercareQFever') ?? base.aftercareQFever;
+
+  @override
+  String get aftercareQBreathless => _t('aftercareQBreathless') ?? base.aftercareQBreathless;
+
+  @override
+  String get aftercareQWound => _t('aftercareQWound') ?? base.aftercareQWound;
+
+  @override
+  String get aftercareQWoundHint => _t('aftercareQWoundHint') ?? base.aftercareQWoundHint;
+
+  @override
+  String get aftercareQMeds => _t('aftercareQMeds') ?? base.aftercareQMeds;
+
+  @override
+  String get aftercareQNotes => _t('aftercareQNotes') ?? base.aftercareQNotes;
+
+  @override
+  String get aftercareCheckinSend => _t('aftercareCheckinSend') ?? base.aftercareCheckinSend;
+
+  @override
+  String get aftercareCheckinThanks => _t('aftercareCheckinThanks') ?? base.aftercareCheckinThanks;
+
+  @override
+  String get aftercareEmergencyNote => _t('aftercareEmergencyNote') ?? base.aftercareEmergencyNote;
+
+  @override
+  String get aftercareUrgentTitle => _t('aftercareUrgentTitle') ?? base.aftercareUrgentTitle;
+
+  @override
+  String get aftercareUrgentBody => _t('aftercareUrgentBody') ?? base.aftercareUrgentBody;
+
+  @override
+  String get aftercareUrgentOk => _t('aftercareUrgentOk') ?? base.aftercareUrgentOk;
+
+  @override
+  String get aftercareUrgentSos => _t('aftercareUrgentSos') ?? base.aftercareUrgentSos;
+
+  @override
+  String get visaGuideTitle => _t('visaGuideTitle') ?? base.visaGuideTitle;
+
+  @override
+  String get visaGuideLinkSubtitle => _t('visaGuideLinkSubtitle') ?? base.visaGuideLinkSubtitle;
+
+  @override
+  String get visaGuidePickNationality => _t('visaGuidePickNationality') ?? base.visaGuidePickNationality;
+
+  @override
+  String get visaGuidePickMessage => _t('visaGuidePickMessage') ?? base.visaGuidePickMessage;
+
+  @override
+  String visaGuideFor(String country) => _f('visaGuideFor', {'country': country}) ?? base.visaGuideFor(country);
+
+  @override
+  String get visaGuideRouteEvisa => _t('visaGuideRouteEvisa') ?? base.visaGuideRouteEvisa;
+
+  @override
+  String get visaGuideRouteEvisaBody => _t('visaGuideRouteEvisaBody') ?? base.visaGuideRouteEvisaBody;
+
+  @override
+  String get visaGuideRouteRegular => _t('visaGuideRouteRegular') ?? base.visaGuideRouteRegular;
+
+  @override
+  String get visaGuideRouteRegularBody => _t('visaGuideRouteRegularBody') ?? base.visaGuideRouteRegularBody;
+
+  @override
+  String get visaGuideRouteNone => _t('visaGuideRouteNone') ?? base.visaGuideRouteNone;
+
+  @override
+  String get visaGuideRouteNoneBody => _t('visaGuideRouteNoneBody') ?? base.visaGuideRouteNoneBody;
+
+  @override
+  String get visaGuideDefaultNote => _t('visaGuideDefaultNote') ?? base.visaGuideDefaultNote;
+
+  @override
+  String visaGuideProcessing(int days) => _f('visaGuideProcessing', {'days': days}) ?? base.visaGuideProcessing(days);
+
+  @override
+  String visaGuideAttendants(int count) => _f('visaGuideAttendants', {'count': count}) ?? base.visaGuideAttendants(count);
+
+  @override
+  String get visaGuideOfficial => _t('visaGuideOfficial') ?? base.visaGuideOfficial;
+
+  @override
+  String get visaGuideChecklist => _t('visaGuideChecklist') ?? base.visaGuideChecklist;
+
+  @override
+  String visaGuideChecklistProgress(int done, int total) => _f('visaGuideChecklistProgress', {'done': done, 'total': total}) ?? base.visaGuideChecklistProgress(done, total);
+
+  @override
+  String get visaGuideOptional => _t('visaGuideOptional') ?? base.visaGuideOptional;
+
+  @override
+  String get visaGuideDisclaimer => _t('visaGuideDisclaimer') ?? base.visaGuideDisclaimer;
+
+  @override
+  String get guestFreeIntro => _t('guestFreeIntro') ?? base.guestFreeIntro;
+
+  @override
+  String get guestFreeAfterResults => _t('guestFreeAfterResults') ?? base.guestFreeAfterResults;
+
+  @override
+  String get guestNameLabel => _t('guestNameLabel') ?? base.guestNameLabel;
+
+  @override
+  String get guestContactIntro => _t('guestContactIntro') ?? base.guestContactIntro;
+
+  @override
+  String get guestChannelEmail => _t('guestChannelEmail') ?? base.guestChannelEmail;
+
+  @override
+  String get guestChannelPhone => _t('guestChannelPhone') ?? base.guestChannelPhone;
+
+  @override
+  String get guestEmailLabel => _t('guestEmailLabel') ?? base.guestEmailLabel;
+
+  @override
+  String get guestPhoneLabel => _t('guestPhoneLabel') ?? base.guestPhoneLabel;
+
+  @override
+  String get guestEmailInvalid => _t('guestEmailInvalid') ?? base.guestEmailInvalid;
+
+  @override
+  String get guestPhoneInvalid => _t('guestPhoneInvalid') ?? base.guestPhoneInvalid;
+
+  @override
+  String get guestSendCode => _t('guestSendCode') ?? base.guestSendCode;
+
+  @override
+  String get guestSmsUnavailable => _t('guestSmsUnavailable') ?? base.guestSmsUnavailable;
+
+  @override
+  String guestCodeIntro(String contact) => _f('guestCodeIntro', {'contact': contact}) ?? base.guestCodeIntro(contact);
+
+  @override
+  String get guestCodeLabel => _t('guestCodeLabel') ?? base.guestCodeLabel;
+
+  @override
+  String get guestVerify => _t('guestVerify') ?? base.guestVerify;
+
+  @override
+  String get guestResendCode => _t('guestResendCode') ?? base.guestResendCode;
+
+  @override
+  String get guestCodeInvalid => _t('guestCodeInvalid') ?? base.guestCodeInvalid;
+
+  @override
+  String guestCodeInvalidLeft(int left) => _f('guestCodeInvalidLeft', {'left': left}) ?? base.guestCodeInvalidLeft(left);
+
+  @override
+  String get guestCodeExpired => _t('guestCodeExpired') ?? base.guestCodeExpired;
+
+  @override
+  String get guestCodeTooMany => _t('guestCodeTooMany') ?? base.guestCodeTooMany;
+
+  @override
+  String get guestVerifyAgain => _t('guestVerifyAgain') ?? base.guestVerifyAgain;
+
+  @override
+  String get guestDetailsIntro => _t('guestDetailsIntro') ?? base.guestDetailsIntro;
+
+  @override
+  String guestPreferredDay(String date) => _f('guestPreferredDay', {'date': date}) ?? base.guestPreferredDay(date);
+
+  @override
+  String guestFrom(String time) => _f('guestFrom', {'time': time}) ?? base.guestFrom(time);
+
+  @override
+  String guestTo(String time) => _f('guestTo', {'time': time}) ?? base.guestTo(time);
+
+  @override
+  String guestTimezone(String zone) => _f('guestTimezone', {'zone': zone}) ?? base.guestTimezone(zone);
+
+  @override
+  String get guestQuestionLabel => _t('guestQuestionLabel') ?? base.guestQuestionLabel;
+
+  @override
+  String get guestQuestionHint => _t('guestQuestionHint') ?? base.guestQuestionHint;
+
+  @override
+  String get guestAttachScreening => _t('guestAttachScreening') ?? base.guestAttachScreening;
+
+  @override
+  String get guestBookCall => _t('guestBookCall') ?? base.guestBookCall;
+
+  @override
+  String get guestNotEmergency => _t('guestNotEmergency') ?? base.guestNotEmergency;
+
+  @override
+  String get guestAlreadyUsedTitle => _t('guestAlreadyUsedTitle') ?? base.guestAlreadyUsedTitle;
+
+  @override
+  String get guestAlreadyUsed => _t('guestAlreadyUsed') ?? base.guestAlreadyUsed;
+
+  @override
+  String get guestSeeMyCall => _t('guestSeeMyCall') ?? base.guestSeeMyCall;
+
+  @override
+  String get guestNoCallTitle => _t('guestNoCallTitle') ?? base.guestNoCallTitle;
+
+  @override
+  String get guestStatusRequested => _t('guestStatusRequested') ?? base.guestStatusRequested;
+
+  @override
+  String get guestStatusScheduled => _t('guestStatusScheduled') ?? base.guestStatusScheduled;
+
+  @override
+  String get guestStatusCompleted => _t('guestStatusCompleted') ?? base.guestStatusCompleted;
+
+  @override
+  String get guestStatusCancelled => _t('guestStatusCancelled') ?? base.guestStatusCancelled;
+
+  @override
+  String guestScheduledAt(String time, int minutes) => _f('guestScheduledAt', {'time': time, 'minutes': minutes}) ?? base.guestScheduledAt(time, minutes);
+
+  @override
+  String guestPreferredWindow(String from, String to) => _f('guestPreferredWindow', {'from': from, 'to': to}) ?? base.guestPreferredWindow(from, to);
+
+  @override
+  String guestCoordinator(String name) => _f('guestCoordinator', {'name': name}) ?? base.guestCoordinator(name);
+
+  @override
+  String guestWeWillContact(String contact) => _f('guestWeWillContact', {'contact': contact}) ?? base.guestWeWillContact(contact);
+
+  @override
+  String get guestLinkLater => _t('guestLinkLater') ?? base.guestLinkLater;
+
+  @override
+  String get guestAccountTitle => _t('guestAccountTitle') ?? base.guestAccountTitle;
+
+  @override
+  String get guestAccountBody => _t('guestAccountBody') ?? base.guestAccountBody;
+
+  @override
+  String get guardianStatusTitle => _t('guardianStatusTitle') ?? base.guardianStatusTitle;
+
+  @override
+  String guardianStatusVerified(String name) => _f('guardianStatusVerified', {'name': name}) ?? base.guardianStatusVerified(name);
+
+  @override
+  String guardianStatusPending(String name) => _f('guardianStatusPending', {'name': name}) ?? base.guardianStatusPending(name);
+
+  @override
+  String get guardianStatusNeeded => _t('guardianStatusNeeded') ?? base.guardianStatusNeeded;
+
+  @override
+  String get inviteTitle => _t('inviteTitle') ?? base.inviteTitle;
+
+  @override
+  String get inviteIntro => _t('inviteIntro') ?? base.inviteIntro;
+
+  @override
+  String get inviteGenerate => _t('inviteGenerate') ?? base.inviteGenerate;
+
+  @override
+  String get inviteRegenerate => _t('inviteRegenerate') ?? base.inviteRegenerate;
+
+  @override
+  String get inviteReview => _t('inviteReview') ?? base.inviteReview;
+
+  @override
+  String get invitePreview => _t('invitePreview') ?? base.invitePreview;
+
+  @override
+  String get inviteApprove => _t('inviteApprove') ?? base.inviteApprove;
+
+  @override
+  String get inviteApproved => _t('inviteApproved') ?? base.inviteApproved;
+
+  @override
+  String get inviteArrival => _t('inviteArrival') ?? base.inviteArrival;
+
+  @override
+  String inviteArrivalValue(String date) => _f('inviteArrivalValue', {'date': date}) ?? base.inviteArrivalValue(date);
+
+  @override
+  String get inviteDuration => _t('inviteDuration') ?? base.inviteDuration;
+
+  @override
+  String get inviteAttendant => _t('inviteAttendant') ?? base.inviteAttendant;
+
+  @override
+  String get inviteAttendantName => _t('inviteAttendantName') ?? base.inviteAttendantName;
+
+  @override
+  String get inviteAttendantRelationship => _t('inviteAttendantRelationship') ?? base.inviteAttendantRelationship;
+
+  @override
+  String get inviteAttendantPassport => _t('inviteAttendantPassport') ?? base.inviteAttendantPassport;
+
+  @override
+  String get inviteAddAttendant => _t('inviteAddAttendant') ?? base.inviteAddAttendant;
+
+  @override
+  String get inviteContactName => _t('inviteContactName') ?? base.inviteContactName;
+
+  @override
+  String get inviteContactPhone => _t('inviteContactPhone') ?? base.inviteContactPhone;
+
+  @override
+  String get inviteContactEmail => _t('inviteContactEmail') ?? base.inviteContactEmail;
+
+  @override
+  String get inviteMissingTitle => _t('inviteMissingTitle') ?? base.inviteMissingTitle;
+
+  @override
+  String get inviteMissingPassport => _t('inviteMissingPassport') ?? base.inviteMissingPassport;
+
+  @override
+  String get inviteMissingDob => _t('inviteMissingDob') ?? base.inviteMissingDob;
+
+  @override
+  String get inviteMissingNationality => _t('inviteMissingNationality') ?? base.inviteMissingNationality;
+
+  @override
+  String get inviteMissingDoctor => _t('inviteMissingDoctor') ?? base.inviteMissingDoctor;
+
+  @override
+  String get inviteMissingArrival => _t('inviteMissingArrival') ?? base.inviteMissingArrival;
+
+  @override
+  String get inviteMissingDuration => _t('inviteMissingDuration') ?? base.inviteMissingDuration;
+
+  @override
+  String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
 }
 
 /// Every ARB key, in template order.
@@ -9986,4 +11929,511 @@ const List<String> kL10nKeys = [
   'reportAddProcedure',
   'reportAddRecommendation',
   'reportNone',
+  'authContinueWithGoogle',
+  'authContinueWithApple',
+  'authCreateAccountWithEmail',
+  'authSignUpWithEmail',
+  'authContinueBrowsingAsGuest',
+  'authBrowseAsGuest',
+  'authPartnerHint',
+  'authAlreadyHaveAccount',
+  'authEmailLabel',
+  'authOr',
+  'authBackTooltip',
+  'authPasswordLabel',
+  'authShowPassword',
+  'authHidePassword',
+  'authTermsContinue',
+  'authTermsAgree',
+  'authTermsLink',
+  'authPrivacyLink',
+  'authCouldNotOpen',
+  'authAgeAdultConfirm',
+  'authAgeAdult',
+  'authAgeMinor',
+  'authAgeRequired',
+  'authAgeQuestion',
+  'authAgeDialogTitle',
+  'authAgeDialogAdultOnly',
+  'authAgeDialogNeeded',
+  'loginSubtitle',
+  'loginOtpPrompt',
+  'loginOtpLabel',
+  'loginForgotPassword',
+  'loginVerifyAndLogIn',
+  'loginSocialPatientsOnly',
+  'loginNoAccount',
+  'loginSignUp',
+  'registerConflict',
+  'registerCreateAccount',
+  'registerCreateAccountKeepProgress',
+  'registerIntroGuest',
+  'registerIntroAgent',
+  'registerIntroHospital',
+  'registerIntroPatient',
+  'registerFullNamePassport',
+  'registerYourFullName',
+  'registerPasswordHelper',
+  'registerAgencyName',
+  'registerEnterAgencyName',
+  'registerHospitalName',
+  'registerEnterHospitalName',
+  'registerCityOptional',
+  'registerPhoneOptional',
+  'registerCountryOfResidenceOptional',
+  'registerCountryOptional',
+  'registerReferralCodeOptional',
+  'registerAcceptTermsError',
+  'apiErrorTimeout',
+  'apiErrorCancelled',
+  'apiErrorNoConnection',
+  'apiErrorSecureConnection',
+  'apiErrorBadRequest',
+  'apiErrorSignIn',
+  'apiErrorPayment',
+  'apiErrorForbidden',
+  'apiErrorNotFound',
+  'apiErrorConflict',
+  'apiErrorValidation',
+  'apiErrorRateLimited',
+  'apiErrorServer',
+  'apiErrorUnexpected',
+  'apiErrorGeneric',
+  'conversationFallbackTitle',
+  'pushPromptTitle',
+  'pushPromptBody',
+  'pushPromptNotNow',
+  'pushPromptTurnOn',
+  'reportSheetThanks',
+  'reportSheetTitleMessage',
+  'reportSheetTitleResult',
+  'reportSheetIntroMessage',
+  'reportSheetIntroResult',
+  'reportSheetRateLimited',
+  'reportSheetNoteLabel',
+  'reportSheetNoteHint',
+  'reportSheetSend',
+  'reportReasonSpam',
+  'reportReasonAbusive',
+  'reportReasonInappropriate',
+  'reportReasonInaccurate',
+  'reportReasonPrivacy',
+  'reportReasonOther',
+  'chatTitleFallback',
+  'chatParticipantWithRole',
+  'chatRoleHospital',
+  'chatRoleCareTeam',
+  'chatRoleAgent',
+  'chatRolePatient',
+  'chatEmptyTitle',
+  'chatEmptyMessage',
+  'chatLoadingMore',
+  'chatLoadEarlier',
+  'chatToday',
+  'chatUploading',
+  'chatAttachTooltip',
+  'chatInputHint',
+  'chatSendTooltip',
+  'chatSharedFile',
+  'chatSharedFiles',
+  'chatCopyText',
+  'chatReportMessage',
+  'chatMessageCopied',
+  'chatHiddenByModerators',
+  'chatAttachmentUnavailable',
+  'chatAttachment',
+  'matchesListTitle',
+  'matchesListCompareLimit',
+  'matchesListFinishFirst',
+  'matchesListStillFinding',
+  'matchesListCompleteQuestionnaire',
+  'matchesListUsuallyQuick',
+  'matchesListSortTooltip',
+  'matchesListFilterTooltip',
+  'matchesListLoading',
+  'matchesListIntro',
+  'matchesListSaveVsHome',
+  'matchesListCompareCosts',
+  'matchesListNoMatches',
+  'matchesListNoMatchesMessage',
+  'matchesListRunAgain',
+  'matchesListBrowseHospitals',
+  'matchesListNoFilterMatches',
+  'matchesListClearFilters',
+  'matchesListSelectedForComparison',
+  'matchesListCompare',
+  'matchesListEmergency',
+  'matchesListGuidanceAcknowledged',
+  'matchesListReadGuidance',
+  'aiSummaryUrgencySoon',
+  'aiSummaryDisclaimer',
+  'aiSummaryTitleAi',
+  'aiSummaryTitleRules',
+  'aiSummaryMoreDetails',
+  'aiSummaryPossibleConditions',
+  'aiSummaryConditionLikelihood',
+  'aiSummaryTests',
+  'aiSummaryQuestions',
+  'aiSummaryTravelAdvice',
+  'aiSummaryBullet',
+  'reportViewDiscardTitle',
+  'reportViewDiscardBody',
+  'reportViewKeepReviewing',
+  'reportViewDiscard',
+  'reportViewFailedTitle',
+  'reportViewFailedMessage',
+  'reportViewUnsupportedTitle',
+  'reportViewUnsupportedMessage',
+  'reportViewDiscarded',
+  'reportViewCheckIntro',
+  'reportViewQualityHardToRead',
+  'reportViewImageQuality',
+  'reportViewContactDoctor',
+  'reportViewReading',
+  'reportViewReadingHint',
+  'agentScreeningNew',
+  'agentScreeningForPatient',
+  'agentScreeningNeedHelp',
+  'agentScreeningHowLong',
+  'agentScreeningImpact',
+  'agentScreeningPreviousTreatments',
+  'agentScreeningNotes',
+  'agentScreeningSubmit',
+  'agentScreeningQuotesRequested',
+  'agentScreeningResultTitle',
+  'agentScreeningNotSubmitted',
+  'agentScreeningRunNew',
+  'agentScreeningAnalysing',
+  'agentScreeningFailed',
+  'agentScreeningPleaseTryAgain',
+  'agentScreeningAiTriage',
+  'agentScreeningMatchedHospitals',
+  'agentScreeningMatchedHospitalsHint',
+  'agentScreeningNoMatches',
+  'agentScreeningCompareQuotes',
+  'agentScreeningSelectHospitals',
+  'agentScreeningRequestQuotes',
+  'agentScreeningEstimate',
+  'agentScreeningRequested',
+  'doctorYearsOfExperience',
+  'privacyAccessLine',
+  'privacyRoleHospital',
+  'privacyRoleAgent',
+  'privacyRoleSupport',
+  'privacyRoleFinance',
+  'privacyRoleStaff',
+  'privacyRoleSomeone',
+  'privacyActionDownloaded',
+  'privacyActionListed',
+  'privacyActionEmergency',
+  'privacyActionViewed',
+  'privacyRecordDocument',
+  'privacyRecordScreening',
+  'privacyRecordReportReading',
+  'privacyRecordVoice',
+  'privacyRecordHistory',
+  'privacyRecordOther',
+  'privacyGroupTitle',
+  'privacyDownloadTitle',
+  'privacyDownloadSubtitle',
+  'privacyDownloadSaved',
+  'privacyAccessLogTitle',
+  'privacyAccessLogSubtitle',
+  'privacyAccessLogError',
+  'privacyAccessLogEmpty',
+  'privacyAccessLogReason',
+  'priceApproxSemantics',
+  'priceOriginalAmount',
+  'trustAccreditationVerifiedSemantics',
+  'earliestConsultation',
+  'earliestAdmission',
+  'earliestToday',
+  'earliestTomorrow',
+  'quoteTimeLeft',
+  'quoteDueBy',
+  'quoteRespondBy',
+  'quoteOverduePatient',
+  'quoteOverdueHospital',
+  'guestAiLimitReached',
+  'guestCreateFreeAccount',
+  'guardianConsentRequiredMessage',
+  'filtersSortSoonest',
+  'trustAccreditationsTitle',
+  'trustAccreditationVerified',
+  'trustAccreditationVerifiedUntil',
+  'trustRegistrationVerified',
+  'trustRegistrationVerifiedSemantics',
+  'reviewStarsSemantics',
+  'reviewVerifiedPatient',
+  'reviewVerifiedPatientFor',
+  'reviewByPatient',
+  'reviewsTitle',
+  'reviewsEmptyTitle',
+  'reviewsEmptyMessage',
+  'reviewsSeeAll',
+  'homeBrowseSpecialties',
+  'costHomeTitle',
+  'costHomePricesFor',
+  'costHomeFallback',
+  'costHomeChange',
+  'costHomeCountryPickerTitle',
+  'costHomeShowMore',
+  'costHomeShowLess',
+  'costHomeSave',
+  'costHomeInCountry',
+  'costHomeInIndia',
+  'costHomeWaitAtHome',
+  'costHomeOftenUnavailable',
+  'costHomeIndiaEarliest',
+  'costHomeIndiaWait',
+  'costHomeEstimate',
+  'costHomeEstimateSource',
+  'costHomeSeeHospitals',
+  'costConfidenceHigh',
+  'costConfidenceMedium',
+  'costConfidenceLow',
+  'costSourceTitle',
+  'costSourceIntro',
+  'costSourceLabel',
+  'costSourceYear',
+  'costSourceConfidence',
+  'costSourceWait',
+  'costSourceNone',
+  'costSourceDisclaimer',
+  'costSourceOpen',
+  'countryPickerTitle',
+  'countryPickerSearch',
+  'countryPickerAuto',
+  'earliestScreenTitle',
+  'earliestIntro',
+  'earliestCompareCosts',
+  'earliestEmptyTitle',
+  'earliestEmptyMessage',
+  'earliestAskCoordinator',
+  'earliestSelectSemantics',
+  'quickQuoteMaxHospitals',
+  'quickQuoteRequestFrom',
+  'quickQuoteSendTo',
+  'quickQuoteSlaNote',
+  'quickQuoteHospitals',
+  'quickQuoteAddHospital',
+  'quickQuoteRemoveHospital',
+  'quickQuoteSearchHospitals',
+  'quickQuoteNoMoreHospitals',
+  'quickQuoteReports',
+  'quickQuoteReportsHint',
+  'quickQuoteUpload',
+  'quickQuoteConsentMany',
+  'quoteGroupTitle',
+  'quoteGroupCompare',
+  'quoteGroupReplied',
+  'quoteGroupCheapest',
+  'quoteGroupStay',
+  'quoteGroupCurrencyNote',
+  'quoteGroupAcceptConfirm',
+  'guardianTitle',
+  'guardianIntro',
+  'guardianAddConsent',
+  'guardianName',
+  'guardianNameRequired',
+  'guardianRelationship',
+  'guardianRelationshipParent',
+  'guardianRelationshipLawful',
+  'guardianEmail',
+  'guardianEmailInvalid',
+  'guardianPhone',
+  'guardianContactRequired',
+  'guardianDob',
+  'guardianDobValue',
+  'guardianDobRequired',
+  'guardianVerification',
+  'guardianVerifyVideo',
+  'guardianVerifyId',
+  'guardianVerifyDigilocker',
+  'guardianVerifyInPerson',
+  'guardianDeclaration',
+  'guardianDeclarationRequired',
+  'guardianSubmit',
+  'guardianAfterSubmit',
+  'guardianSent',
+  'aftercareFlagFever',
+  'aftercareFlagBreathlessness',
+  'aftercareFlagSeverePain',
+  'aftercareFlagWound',
+  'aftercareMedsAll',
+  'aftercareMedsSome',
+  'aftercareMedsNone',
+  'aftercareCheckinDay',
+  'aftercarePainValue',
+  'aftercareMedsValue',
+  'aftercareAnswerNow',
+  'aftercareNotAnswered',
+  'aftercareCheckinsTitle',
+  'aftercareHospitalCheckinsHint',
+  'aftercareNoCheckins',
+  'aftercareRedFlagCount',
+  'reviewBannerEyebrow',
+  'reviewBannerTitle',
+  'reviewBannerSubtitle',
+  'guestFreeEyebrow',
+  'guestFreeTitle',
+  'guestFreeSubtitle',
+  'reviewFormTitle',
+  'reviewFormEditTitle',
+  'reviewFormRatingLabel',
+  'reviewFormRatingRequired',
+  'reviewFormAboutDoctor',
+  'reviewFormTitleLabel',
+  'reviewFormBodyLabel',
+  'reviewFormBodyHint',
+  'reviewFormModerationNote',
+  'reviewFormSubmit',
+  'reviewFormThanks',
+  'reviewFormUpdated',
+  'reviewFormNotEligibleTitle',
+  'reviewFormNotEligibleMessage',
+  'myReviewsTitle',
+  'myReviewsSubtitle',
+  'myReviewsToWrite',
+  'myReviewsWritten',
+  'myReviewsEmpty',
+  'myReviewsPending',
+  'myReviewsPublished',
+  'myReviewsHidden',
+  'myReviewsHiddenReason',
+  'myReviewsDeleteTitle',
+  'myReviewsDeleteBody',
+  'aftercareTitle',
+  'aftercareLinkSubtitle',
+  'aftercareEmptyTitle',
+  'aftercareEmptyMessage',
+  'aftercareDueTitle',
+  'aftercareDueHint',
+  'aftercareFollowupsTitle',
+  'aftercareNoFollowups',
+  'aftercareFollowup',
+  'aftercareFollowupDay',
+  'aftercareTimeToConfirm',
+  'aftercareAround',
+  'aftercareJoinCall',
+  'aftercareLinkLater',
+  'aftercareCouldNotOpen',
+  'aftercareDischarged',
+  'aftercareUntil',
+  'aftercareRequestFollowup',
+  'aftercarePreferredTime',
+  'aftercareFollowupNotes',
+  'aftercareSendRequest',
+  'aftercareFollowupRequested',
+  'aftercareUpcomingTitle',
+  'aftercareCheckinIntro',
+  'aftercareQFever',
+  'aftercareQBreathless',
+  'aftercareQWound',
+  'aftercareQWoundHint',
+  'aftercareQMeds',
+  'aftercareQNotes',
+  'aftercareCheckinSend',
+  'aftercareCheckinThanks',
+  'aftercareEmergencyNote',
+  'aftercareUrgentTitle',
+  'aftercareUrgentBody',
+  'aftercareUrgentOk',
+  'aftercareUrgentSos',
+  'visaGuideTitle',
+  'visaGuideLinkSubtitle',
+  'visaGuidePickNationality',
+  'visaGuidePickMessage',
+  'visaGuideFor',
+  'visaGuideRouteEvisa',
+  'visaGuideRouteEvisaBody',
+  'visaGuideRouteRegular',
+  'visaGuideRouteRegularBody',
+  'visaGuideRouteNone',
+  'visaGuideRouteNoneBody',
+  'visaGuideDefaultNote',
+  'visaGuideProcessing',
+  'visaGuideAttendants',
+  'visaGuideOfficial',
+  'visaGuideChecklist',
+  'visaGuideChecklistProgress',
+  'visaGuideOptional',
+  'visaGuideDisclaimer',
+  'guestFreeIntro',
+  'guestFreeAfterResults',
+  'guestNameLabel',
+  'guestContactIntro',
+  'guestChannelEmail',
+  'guestChannelPhone',
+  'guestEmailLabel',
+  'guestPhoneLabel',
+  'guestEmailInvalid',
+  'guestPhoneInvalid',
+  'guestSendCode',
+  'guestSmsUnavailable',
+  'guestCodeIntro',
+  'guestCodeLabel',
+  'guestVerify',
+  'guestResendCode',
+  'guestCodeInvalid',
+  'guestCodeInvalidLeft',
+  'guestCodeExpired',
+  'guestCodeTooMany',
+  'guestVerifyAgain',
+  'guestDetailsIntro',
+  'guestPreferredDay',
+  'guestFrom',
+  'guestTo',
+  'guestTimezone',
+  'guestQuestionLabel',
+  'guestQuestionHint',
+  'guestAttachScreening',
+  'guestBookCall',
+  'guestNotEmergency',
+  'guestAlreadyUsedTitle',
+  'guestAlreadyUsed',
+  'guestSeeMyCall',
+  'guestNoCallTitle',
+  'guestStatusRequested',
+  'guestStatusScheduled',
+  'guestStatusCompleted',
+  'guestStatusCancelled',
+  'guestScheduledAt',
+  'guestPreferredWindow',
+  'guestCoordinator',
+  'guestWeWillContact',
+  'guestLinkLater',
+  'guestAccountTitle',
+  'guestAccountBody',
+  'guardianStatusTitle',
+  'guardianStatusVerified',
+  'guardianStatusPending',
+  'guardianStatusNeeded',
+  'inviteTitle',
+  'inviteIntro',
+  'inviteGenerate',
+  'inviteRegenerate',
+  'inviteReview',
+  'invitePreview',
+  'inviteApprove',
+  'inviteApproved',
+  'inviteArrival',
+  'inviteArrivalValue',
+  'inviteDuration',
+  'inviteAttendant',
+  'inviteAttendantName',
+  'inviteAttendantRelationship',
+  'inviteAttendantPassport',
+  'inviteAddAttendant',
+  'inviteContactName',
+  'inviteContactPhone',
+  'inviteContactEmail',
+  'inviteMissingTitle',
+  'inviteMissingPassport',
+  'inviteMissingDob',
+  'inviteMissingNationality',
+  'inviteMissingDoctor',
+  'inviteMissingArrival',
+  'inviteMissingDuration',
+  'inviteMissingTreatment',
 ];

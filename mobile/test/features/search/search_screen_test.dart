@@ -4,6 +4,7 @@ import 'package:heal_india_global/core/auth/auth_controller.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/repositories/catalog_repository.dart';
 import 'package:heal_india_global/core/repositories/patient_repository.dart';
+import 'package:heal_india_global/core/router/routes.dart';
 import 'package:heal_india_global/features/search/screens/doctor_detail_screen.dart';
 import 'package:heal_india_global/features/search/screens/hospital_detail_screen.dart';
 import 'package:heal_india_global/features/search/screens/search_screen.dart';
@@ -162,7 +163,9 @@ void main() {
 
     await tester.tap(find.widgetWithText(FilledButton, 'Request quote'));
     await tester.pumpAndSettle();
-    expect(find.text(routeLabel('/auth/register?from=%2Fdoctors%2Fd1')), findsOneWidget);
+    // After registering the guest lands on the quick-quote form for this doctor.
+    final target = Routes.quickQuote(hospitalIds: ['h1'], doctorId: 'd1', specialtyId: 's1');
+    expect(find.text(routeLabel(Routes.registerFrom(target))), findsOneWidget);
   });
 
   testWidgets('hospital detail renders overview, treatments with packages, doctors and contact', (tester) async {

@@ -10,6 +10,7 @@ import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../services/file_actions.dart';
 import '../widgets/travel_request_sheets.dart';
+import 'visa_guide_screen.dart';
 
 /// Visa & travel for one case: visa status, flights and airport transfers, accommodation and local
 /// services (translator / guide), each with "request" actions. Pushed from the Trips tab and case
@@ -57,7 +58,14 @@ class TravelScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
           children: [
-            SectionTitle(l10n.visaSectionTitle, padding: const EdgeInsets.only(top: 8, bottom: 10)),
+            SectionTitle(
+              l10n.visaSectionTitle,
+              padding: const EdgeInsets.only(top: 8, bottom: 10),
+              actionLabel: l10n.visaGuideTitle,
+              onAction: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute<void>(builder: (_) => VisaGuideScreen(caseId: caseId))),
+            ),
             _section<List<VisaRequest>>(
               context,
               visas,

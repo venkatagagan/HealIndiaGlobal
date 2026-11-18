@@ -40,6 +40,7 @@ class User {
     this.patientProfileId,
     this.agentId,
     this.hospitals = const [],
+    this.guardianConsentRequired = false,
   });
 
   factory User.fromJson(JsonMap j) => User(
@@ -59,6 +60,7 @@ class User {
     patientProfileId: jStrOrNull(j, 'patient_profile_id'),
     agentId: jStrOrNull(j, 'agent_id'),
     hospitals: jList(j, 'hospitals', UserHospital.fromJson),
+    guardianConsentRequired: jBool(j, 'guardian_consent_required'),
   );
 
   final String id;
@@ -77,6 +79,9 @@ class User {
   final String? patientProfileId;
   final String? agentId;
   final List<UserHospital> hospitals;
+
+  /// A minor patient without a verified guardian consent (AI features and booking are blocked).
+  final bool guardianConsentRequired;
 
   bool get isPatient => role == UserRole.patient;
 

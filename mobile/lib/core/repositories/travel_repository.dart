@@ -12,6 +12,11 @@ class TravelRepository {
 
   // ------------------------------------------------------------------ visa
 
+  /// `GET /travel/visa-guide?nationality=XX` (public): route, checklist, processing time.
+  Future<VisaGuide> visaGuide(String nationality) async => VisaGuide.fromJson(
+    asJsonMap(await _api.get('/travel/visa-guide', query: {'nationality': nationality.toUpperCase()})),
+  );
+
   /// `GET /travel/visa-requests`
   Future<List<VisaRequest>> visaRequests({String? caseId}) async =>
       parseList(await _api.get('/travel/visa-requests', query: {'case_id': caseId}), VisaRequest.fromJson);
@@ -162,6 +167,11 @@ class TravelRepository {
 }
 
 final travelRepositoryProvider = Provider<TravelRepository>((ref) => TravelRepository(ref.watch(apiClientProvider)));
+
+/// Visa guide by nationality (ISO2).
+final visaGuideProvider = FutureProvider.autoDispose.family<VisaGuide, String>(
+  (ref, nationality) => ref.watch(travelRepositoryProvider).visaGuide(nationality),
+);
 
 /// Keyed by case id (null = all of mine).
 final visaRequestsProvider = FutureProvider.autoDispose.family<List<VisaRequest>, String?>(

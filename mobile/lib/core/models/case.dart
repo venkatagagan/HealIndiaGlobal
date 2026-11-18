@@ -64,9 +64,19 @@ class MedicalCase {
     this.booking,
     this.createdAt,
     this.updatedAt,
+    this.quoteDueAt,
+    this.firstQuoteAt,
+    this.quoteOverdue = false,
+    this.hoursLeft,
+    this.quoteGroupId,
   });
 
   factory MedicalCase.fromJson(JsonMap j) => MedicalCase(
+    quoteDueAt: jDate(j, 'quote_due_at'),
+    firstQuoteAt: jDate(j, 'first_quote_at'),
+    quoteOverdue: jBool(j, 'quote_overdue'),
+    hoursLeft: jDoubleOrNull(j, 'hours_left'),
+    quoteGroupId: jStrOrNull(j, 'quote_group_id'),
     id: jStr(j, 'id'),
     caseNumber: jStr(j, 'case_number'),
     status: CaseStatus.fromJson(j['status']),
@@ -101,6 +111,22 @@ class MedicalCase {
   final Booking? booking;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+
+  /// When the hospital promised a quote by (quote SLA).
+  final DateTime? quoteDueAt;
+  final DateTime? firstQuoteAt;
+
+  /// No quote yet and [quoteDueAt] has passed.
+  final bool quoteOverdue;
+
+  /// Hours until [quoteDueAt] (0 when overdue); null once a quote was sent.
+  final double? hoursLeft;
+
+  /// Set when the case is part of a multi-hospital quote request.
+  final String? quoteGroupId;
+
+  /// Still waiting for the hospital's first quote (the countdown applies).
+  bool get awaitingQuote => quoteDueAt != null && firstQuoteAt == null && status == CaseStatus.enquiry;
 
   /// Short title: procedure, specialty or hospital name.
   String get title => procedure?.name ?? specialty?.name ?? hospital.name;
@@ -173,6 +199,11 @@ class MedicalCaseDetail extends MedicalCase {
     super.booking,
     super.createdAt,
     super.updatedAt,
+    super.quoteDueAt,
+    super.firstQuoteAt,
+    super.quoteOverdue,
+    super.hoursLeft,
+    super.quoteGroupId,
     this.medicalSummary,
     this.quotes = const [],
     this.timeline = const [],
@@ -199,6 +230,11 @@ class MedicalCaseDetail extends MedicalCase {
       booking: c.booking,
       createdAt: c.createdAt,
       updatedAt: c.updatedAt,
+      quoteDueAt: c.quoteDueAt,
+      firstQuoteAt: c.firstQuoteAt,
+      quoteOverdue: c.quoteOverdue,
+      hoursLeft: c.hoursLeft,
+      quoteGroupId: c.quoteGroupId,
       medicalSummary: jStrOrNull(j, 'medical_summary'),
       quotes: jList(j, 'quotes', Quote.fromJson),
       timeline: jList(j, 'timeline', CaseTimelineEntry.fromJson),

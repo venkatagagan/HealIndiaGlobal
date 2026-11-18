@@ -9,6 +9,7 @@ import '../../../core/repositories/screening_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/l10n.dart';
 import '../../screening/widgets/ai_consent_sheet.dart';
 import '../../screening/widgets/body_map.dart';
 import '../../screening/widgets/pain_slider.dart';
@@ -119,12 +120,15 @@ class _AgentScreeningFormScreenState extends ConsumerState<AgentScreeningFormScr
     final patientName = ref.watch(agentPatientProvider(widget.patientId)).value?.fullName;
     final specialties = ref.watch(specialtiesProvider);
     final suggestions = ref.watch(_agentSymptomsProvider(_specialty)).value ?? const <SymptomInfo>[];
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(patientName == null ? 'New screening' : 'Screening · $patientName')),
+      appBar: AppBar(
+        title: Text(patientName == null ? l10n.agentScreeningNew : l10n.agentScreeningForPatient(patientName)),
+      ),
       body: ListView(
         padding: AppSpacing.pageAll,
         children: [
-          const SectionTitle('What does the patient need help with?', padding: EdgeInsets.only(bottom: 10)),
+          SectionTitle(l10n.agentScreeningNeedHelp, padding: const EdgeInsetsDirectional.only(bottom: 10)),
           AsyncValueView(
             value: specialties,
             compactError: true,
@@ -134,7 +138,7 @@ class _AgentScreeningFormScreenState extends ConsumerState<AgentScreeningFormScr
               runSpacing: 8,
               children: [
                 ChoiceChip(
-                  label: const Text('Not sure'),
+                  label: Text(l10n.intakeNotSure),
                   selected: _specialty == null,
                   onSelected: (_) => setState(() => _specialty = null),
                 ),
@@ -147,11 +151,11 @@ class _AgentScreeningFormScreenState extends ConsumerState<AgentScreeningFormScr
               ],
             ),
           ),
-          const SectionTitle('Where is the problem?'),
+          SectionTitle(l10n.intakeWhereProblem),
           BodyMap(selected: _areas, onChanged: (v) => setState(() => _areas = v), height: 300),
           const SizedBox(height: 12),
           PainSlider(value: _pain, onChanged: (v) => setState(() => _pain = v)),
-          const SectionTitle('Symptoms'),
+          SectionTitle(l10n.intakeSymptoms),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -169,11 +173,11 @@ class _AgentScreeningFormScreenState extends ConsumerState<AgentScreeningFormScr
             controller: _symptomCtrl,
             onSubmitted: (_) => _addSymptom(),
             decoration: InputDecoration(
-              hintText: 'Add another symptom',
+              hintText: l10n.screeningAddAnotherSymptom,
               suffixIcon: IconButton(icon: const Icon(Icons.add_rounded), onPressed: _addSymptom),
             ),
           ),
-          const SectionTitle('How long?'),
+          SectionTitle(l10n.agentScreeningHowLong),
           Row(
             children: [
               IconButton.filledTonal(
@@ -198,25 +202,29 @@ class _AgentScreeningFormScreenState extends ConsumerState<AgentScreeningFormScr
               ),
             ],
           ),
-          const SectionTitle('Impact on daily life'),
-          _SeverityRow(label: 'Work', value: _work, onChanged: (v) => setState(() => _work = v)),
-          _SeverityRow(label: 'Sleep', value: _sleep, onChanged: (v) => setState(() => _sleep = v)),
-          _SeverityRow(label: 'Mobility', value: _mobility, onChanged: (v) => setState(() => _mobility = v)),
+          SectionTitle(l10n.agentScreeningImpact),
+          _SeverityRow(label: l10n.screeningImpactWork, value: _work, onChanged: (v) => setState(() => _work = v)),
+          _SeverityRow(label: l10n.screeningImpactSleep, value: _sleep, onChanged: (v) => setState(() => _sleep = v)),
+          _SeverityRow(
+            label: l10n.screeningImpactMobility,
+            value: _mobility,
+            onChanged: (v) => setState(() => _mobility = v),
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: _treatments,
-            decoration: const InputDecoration(labelText: 'Previous treatments (comma separated)'),
+            decoration: InputDecoration(labelText: l10n.agentScreeningPreviousTreatments),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _notes,
             maxLines: 3,
-            decoration: const InputDecoration(labelText: 'Notes for the medical team'),
+            decoration: InputDecoration(labelText: l10n.agentScreeningNotes),
           ),
           const SizedBox(height: 24),
           PrimaryButton(
             key: const ValueKey('agent-screening-submit'),
-            label: 'Find matching hospitals',
+            label: l10n.agentScreeningSubmit,
             icon: Icons.auto_awesome_rounded,
             loading: _submitting,
             onPressed: _submitting ? null : _submit,
@@ -245,10 +253,9 @@ class _SeverityRow extends StatelessWidget {
             child: SegmentedButton<SeverityLevel>(
               showSelectedIcon: false,
               emptySelectionAllowed: true,
-              segments: const [
-                ButtonSegment(value: SeverityLevel.mild, label: Text('Mild')),
-                ButtonSegment(value: SeverityLevel.moderate, label: Text('Moderate')),
-                ButtonSegment(value: SeverityLevel.severe, label: Text('Severe')),
+              segments: [
+                for (final level in const [SeverityLevel.mild, SeverityLevel.moderate, SeverityLevel.severe])
+                  ButtonSegment(value: level, label: Text(level.label)),
               ],
               selected: {?value},
               onSelectionChanged: (s) => onChanged(s.isEmpty ? null : s.first),
@@ -302,7 +309,7 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
         ..invalidate(agentCasesProvider);
       if (mounted) {
         setState(_selected.clear);
-        showInfoSnack(context, 'Quote requested from $created hospital${created == 1 ? '' : 's'}');
+        showInfoSnack(context, context.l10n.agentScreeningQuotesRequested(created));
       }
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
@@ -314,26 +321,27 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
   @override
   Widget build(BuildContext context) {
     final screening = ref.watch(agentScreeningWatchProvider(widget.screeningId));
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Screening result')),
+      appBar: AppBar(title: Text(l10n.agentScreeningResultTitle)),
       body: AsyncValueView(
         value: screening,
         onRetry: () => ref.invalidate(agentScreeningWatchProvider(widget.screeningId)),
         data: (s) {
           if (s.isDraft) {
-            return const EmptyView(
-              title: 'Screening not submitted',
-              message: 'Run a new screening from the patient page.',
+            return EmptyView(
+              title: l10n.agentScreeningNotSubmitted,
+              message: l10n.agentScreeningRunNew,
               icon: Icons.pending_actions_outlined,
             );
           }
           if (s.isProcessing) {
-            return const LoadingView(message: 'Analysing the condition and matching specialists…');
+            return LoadingView(message: l10n.agentScreeningAnalysing);
           }
           if (s.isFailed) {
             return ErrorView(
-              title: 'Screening could not be processed',
-              error: s.error ?? 'Please try again.',
+              title: l10n.agentScreeningFailed,
+              error: s.error ?? l10n.agentScreeningPleaseTryAgain,
               onRetry: () async {
                 await ref.read(screeningRepositoryProvider).rerun(s.id);
                 ref.invalidate(agentScreeningWatchProvider(widget.screeningId));
@@ -350,6 +358,7 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
     final matches = ref.watch(agentScreeningMatchesProvider(s.id));
     final triage = s.aiResult;
     final selectedMatches = (matches.value ?? const <ScreeningMatch>[]).where((m) => _selected.contains(m.id)).toList();
+    final l10n = context.l10n;
     return Column(
       children: [
         Expanded(
@@ -364,7 +373,7 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                       children: [
                         Expanded(
                           child: Text(
-                            s.specialty?.name ?? 'AI triage',
+                            s.specialty?.name ?? l10n.agentScreeningAiTriage,
                             style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
@@ -374,7 +383,7 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                     if (triage != null) ...[const SizedBox(height: 8), Text(triage.summary)],
                     for (final f in s.redFlags)
                       Padding(
-                        padding: const EdgeInsets.only(top: 6),
+                        padding: const EdgeInsetsDirectional.only(top: 6),
                         child: Row(
                           children: [
                             const Icon(Icons.warning_amber_rounded, color: AppColors.danger, size: 18),
@@ -385,7 +394,7 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                       ),
                     if (triage != null)
                       Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: AlignmentDirectional.centerStart,
                         child: TextButton.icon(
                           key: const Key('report-screening-result'),
                           style: TextButton.styleFrom(
@@ -396,26 +405,26 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                           onPressed: () =>
                               showReportSheet(context, type: ReportTargetType.screeningResult, targetId: s.id),
                           icon: const Icon(Icons.flag_outlined, size: 16),
-                          label: const Text('Report this result'),
+                          label: Text(l10n.reportSheetTitleResult),
                         ),
                       ),
                   ],
                 ),
               ),
-              const SectionTitle('Matched hospitals', subtitle: 'Select hospitals to request itemised quotes from'),
+              SectionTitle(l10n.agentScreeningMatchedHospitals, subtitle: l10n.agentScreeningMatchedHospitalsHint),
               AsyncValueView(
                 value: matches,
                 compactError: true,
                 onRetry: () => ref.invalidate(agentScreeningMatchesProvider(s.id)),
                 data: (list) => list.isEmpty
-                    ? const EmptyView(title: 'No matches yet', icon: Icons.search_off_rounded)
+                    ? EmptyView(title: l10n.agentScreeningNoMatches, icon: Icons.search_off_rounded)
                     : Column(children: [for (final m in list) _matchTile(m)]),
               ),
               if (s.patientId != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: SecondaryButton(
-                    label: 'Compare received quotes',
+                    label: l10n.agentScreeningCompareQuotes,
                     icon: Icons.compare_arrows_rounded,
                     onPressed: () => context.push(AgentRoutes.compare(s.patientId!)),
                   ),
@@ -426,12 +435,12 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
         SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 12),
             child: PrimaryButton(
               key: const ValueKey('agent-request-quotes'),
               label: selectedMatches.isEmpty
-                  ? 'Select hospitals'
-                  : 'Request ${selectedMatches.length} quote${selectedMatches.length == 1 ? '' : 's'}',
+                  ? l10n.agentScreeningSelectHospitals
+                  : l10n.agentScreeningRequestQuotes(selectedMatches.length),
               loading: _busy,
               onPressed: selectedMatches.isEmpty || _busy ? null : () => _requestQuotes(s, selectedMatches),
             ),
@@ -467,14 +476,17 @@ class _AgentScreeningResultScreenState extends ConsumerState<AgentScreeningResul
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     StatusBadge(label: m.matchLabel, dense: true, color: AppColors.primary),
-                    Text('est. ${money(m.estimatedCostMinor, m.currency)}', style: context.text.bodySmall),
+                    Text(
+                      context.l10n.agentScreeningEstimate(money(m.estimatedCostMinor, m.currency)),
+                      style: context.text.bodySmall,
+                    ),
                   ],
                 ),
               ],
             ),
           ),
           if (requested)
-            const StatusBadge(label: 'Requested', dense: true, color: AppColors.violet)
+            StatusBadge(label: context.l10n.agentScreeningRequested, dense: true, color: AppColors.violet)
           else
             Checkbox(
               value: _selected.contains(m.id),

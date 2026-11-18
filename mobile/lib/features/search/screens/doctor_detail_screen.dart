@@ -13,6 +13,7 @@ import '../widgets/catalog_cards.dart';
 import '../widgets/detail_sections.dart';
 import '../widgets/request_quote_sheet.dart';
 import '../widgets/save_button.dart';
+import 'reviews_screen.dart';
 
 /// Doctor detail: profile, qualifications, languages, procedures, availability preview,
 /// save/unsave; Get matched / Request quote.
@@ -107,7 +108,13 @@ class DoctorDetailScreen extends ConsumerWidget {
                   style: context.text.bodyMedium,
                 ),
               ),
-              ApproxPrice(d.consultationFeeMinor!, d.currency, style: context.text.titleSmall),
+              ApproxPrice(
+                d.consultationFeeMinor!,
+                d.currency,
+                display: d.displayConsultationFee,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                style: context.text.titleSmall,
+              ),
             ],
           ),
         ),
@@ -145,6 +152,28 @@ class DoctorDetailScreen extends ConsumerWidget {
             ],
           ),
         ),
+      DetailSection(
+        title: l10n.hospitalDetailPatientReviews,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (d.reviews.isEmpty)
+              Text(l10n.reviewsEmptyMessage, style: context.text.bodySmall)
+            else
+              for (final r in d.reviews.take(3))
+                Padding(padding: const EdgeInsets.only(bottom: 10), child: ReviewTile(review: r, showHospital: true)),
+            if (d.reviews.isNotEmpty)
+              SecondaryButton(
+                key: const ValueKey('doctor-all-reviews'),
+                label: l10n.reviewsSeeAll(d.ratingCount > 0 ? d.ratingCount : d.reviews.length),
+                icon: Icons.rate_review_outlined,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => ReviewsScreen.doctor(id: d.id, title: d.fullName)),
+                ),
+              ),
+          ],
+        ),
+      ),
     ];
   }
 }
@@ -157,6 +186,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = doctor;
+    final l10n = context.l10n;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -190,9 +220,32 @@ class _Header extends StatelessWidget {
                   ),
                 ),
               ),
-              if (d.hospital.accreditations.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                AccreditationBadges(d.hospital.accreditations),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  if (d.registrationVerified)
+                    Semantics(
+                      label: l10n.trustRegistrationVerifiedSemantics(d.registrationCouncilName ?? ''),
+                      excludeSemantics: true,
+                      child: Tooltip(
+                        message: d.registrationCouncilName ?? l10n.trustRegistrationVerified,
+                        child: StatusBadge(
+                          key: const ValueKey('doctor-registration-verified'),
+                          label: l10n.trustRegistrationVerified,
+                          color: AppColors.primary,
+                          icon: Icons.verified_user_outlined,
+                          dense: true,
+                        ),
+                      ),
+                    ),
+                  if (d.hospital.accreditations.isNotEmpty) AccreditationBadges(d.hospital.accreditations),
+                ],
+              ),
+              if (d.nextAvailableConsultation != null || d.nextAvailableAdmission != null) ...[
+                const SizedBox(height: 6),
+                EarliestDates(consultation: d.nextAvailableConsultation, admission: d.nextAvailableAdmission),
               ],
             ],
           ),

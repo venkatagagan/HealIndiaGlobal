@@ -9791,5 +9791,2607 @@
   "reportNone": "None",
   "@reportNone": {
     "description": "Shown under an empty list section of the review form."
+  },
+  "authContinueWithGoogle": "Continue with Google",
+  "@authContinueWithGoogle": {
+    "description": "Auth button: sign in / sign up with a Google account."
+  },
+  "authContinueWithApple": "Continue with Apple",
+  "@authContinueWithApple": {
+    "description": "Auth button: sign in / sign up with an Apple ID."
+  },
+  "authCreateAccountWithEmail": "Create account with Email",
+  "@authCreateAccountWithEmail": {
+    "description": "Auth decision screen button shown to guests: turn the guest session into an email account."
+  },
+  "authSignUpWithEmail": "Sign up with Email",
+  "@authSignUpWithEmail": {
+    "description": "Auth decision screen button: open the email sign-up form."
+  },
+  "authContinueBrowsingAsGuest": "Continue browsing as Guest",
+  "@authContinueBrowsingAsGuest": {
+    "description": "Auth decision screen button shown to guests: keep using the app without an account."
+  },
+  "authBrowseAsGuest": "Browse as Guest",
+  "@authBrowseAsGuest": {
+    "description": "Auth decision screen button: use the app without an account."
+  },
+  "authPartnerHint": "Facilitator or hospital team? Sign up with email and choose your role, or log in.",
+  "@authPartnerHint": {
+    "description": "Auth decision screen hint for medical-travel agents (facilitators) and hospital staff."
+  },
+  "authAlreadyHaveAccount": "Already have an account?",
+  "@authAlreadyHaveAccount": {
+    "description": "Text before the 'Log in' link on the auth and sign-up screens."
+  },
+  "authEmailLabel": "Email",
+  "@authEmailLabel": {
+    "description": "Label of the email field on the login and sign-up forms."
+  },
+  "authOr": "or",
+  "@authOr": {
+    "description": "Divider between the email login button and the Google / Apple buttons."
+  },
+  "authBackTooltip": "Back",
+  "@authBackTooltip": {
+    "description": "Tooltip of the back button on the auth screens."
+  },
+  "authPasswordLabel": "Password",
+  "@authPasswordLabel": {
+    "description": "Default label of the password field."
+  },
+  "authShowPassword": "Show password",
+  "@authShowPassword": {
+    "description": "Tooltip: reveal the typed password."
+  },
+  "authHidePassword": "Hide password",
+  "@authHidePassword": {
+    "description": "Tooltip: hide the typed password."
+  },
+  "authTermsContinue": "By continuing, you agree to our {terms} & {privacy}.",
+  "@authTermsContinue": {
+    "description": "Legal notice under the auth buttons. {terms} and {privacy} are tappable links (authTermsLink / authPrivacyLink).",
+    "placeholders": {
+      "terms": {
+        "type": "String",
+        "example": "Terms"
+      },
+      "privacy": {
+        "type": "String",
+        "example": "Privacy Policy"
+      }
+    }
+  },
+  "authTermsAgree": "I agree to the {terms} & {privacy}.",
+  "@authTermsAgree": {
+    "description": "Sign-up checkbox label. {terms} and {privacy} are tappable links (authTermsLink / authPrivacyLink).",
+    "placeholders": {
+      "terms": {
+        "type": "String",
+        "example": "Terms"
+      },
+      "privacy": {
+        "type": "String",
+        "example": "Privacy Policy"
+      }
+    }
+  },
+  "authTermsLink": "Terms",
+  "@authTermsLink": {
+    "description": "Link text inside the legal notice: the Terms of Service."
+  },
+  "authPrivacyLink": "Privacy Policy",
+  "@authPrivacyLink": {
+    "description": "Link text inside the legal notice: the Privacy Policy."
+  },
+  "authCouldNotOpen": "Could not open {url}",
+  "@authCouldNotOpen": {
+    "description": "Snackbar when a legal page could not be opened in the browser.",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "https://healindiaglobal.com/terms"
+      }
+    }
+  },
+  "authAgeAdultConfirm": "I confirm I am 18 or older.",
+  "@authAgeAdultConfirm": {
+    "description": "Sign-up checkbox for agents and hospital users (adults only)."
+  },
+  "authAgeAdult": "I am 18 or older",
+  "@authAgeAdult": {
+    "description": "Patient sign-up age option: adult."
+  },
+  "authAgeMinor": "I am under 18 and a parent or guardian will give consent for my care",
+  "@authAgeMinor": {
+    "description": "Patient sign-up age option: minor with parental / guardian consent."
+  },
+  "authAgeRequired": "Please confirm your age",
+  "@authAgeRequired": {
+    "description": "Error when the age question was not answered at sign-up."
+  },
+  "authAgeQuestion": "Your age",
+  "@authAgeQuestion": {
+    "description": "Heading of the age question at sign-up."
+  },
+  "authAgeDialogTitle": "Confirm your age",
+  "@authAgeDialogTitle": {
+    "description": "Title of the age dialog shown when Google / Apple sign-in creates a new account."
+  },
+  "authAgeDialogAdultOnly": "This type of account is only for adults.",
+  "@authAgeDialogAdultOnly": {
+    "description": "Age dialog text when only adults may continue."
+  },
+  "authAgeDialogNeeded": "We need to know this before we create your account.",
+  "@authAgeDialogNeeded": {
+    "description": "Age dialog text for new patient accounts."
+  },
+  "loginSubtitle": "Welcome back. Log in to continue your treatment journey.",
+  "@loginSubtitle": {
+    "description": "Subtitle under the brand on the login screen."
+  },
+  "loginOtpPrompt": "Enter the 6-digit code from your authenticator app.",
+  "@loginOtpPrompt": {
+    "description": "Login: two-factor step instructions."
+  },
+  "loginOtpLabel": "Authentication code",
+  "@loginOtpLabel": {
+    "description": "Login: label of the two-factor code field."
+  },
+  "loginForgotPassword": "Forgot password?",
+  "@loginForgotPassword": {
+    "description": "Login: link to reset the password."
+  },
+  "loginVerifyAndLogIn": "Verify & log in",
+  "@loginVerifyAndLogIn": {
+    "description": "Login button during the two-factor step."
+  },
+  "loginSocialPatientsOnly": "Google and Apple sign-in are for patients.",
+  "@loginSocialPatientsOnly": {
+    "description": "Login: note under the Google / Apple buttons."
+  },
+  "loginNoAccount": "Don't have an account?",
+  "@loginNoAccount": {
+    "description": "Login: text before the 'Sign up' link."
+  },
+  "loginSignUp": "Sign up",
+  "@loginSignUp": {
+    "description": "Login: link to the sign-up form."
+  },
+  "registerConflict": "An account with this email already exists. Try logging in instead.",
+  "@registerConflict": {
+    "description": "Sign-up error when the email is already registered."
+  },
+  "registerCreateAccount": "Create account",
+  "@registerCreateAccount": {
+    "description": "Sign-up screen title and submit button."
+  },
+  "registerCreateAccountKeepProgress": "Create account & keep my progress",
+  "@registerCreateAccountKeepProgress": {
+    "description": "Sign-up submit button for guests (keeps their guest data)."
+  },
+  "registerIntroGuest": "Save your screenings and matches, request quotes and book treatment. Everything you did as a guest is kept.",
+  "@registerIntroGuest": {
+    "description": "Sign-up intro for guests upgrading their account."
+  },
+  "registerIntroAgent": "For facilitators and agencies: register patients, compare hospital quotes and track commissions. New agent accounts are verified by our team.",
+  "@registerIntroAgent": {
+    "description": "Sign-up intro on the Agent tab (medical-travel facilitators)."
+  },
+  "registerIntroHospital": "For hospital teams: receive patient enquiries, send itemised quotes and manage admissions. Your hospital is verified by our team before it is listed.",
+  "@registerIntroHospital": {
+    "description": "Sign-up intro on the Hospital tab."
+  },
+  "registerIntroPatient": "Get matched with accredited Indian hospitals and track your whole treatment journey.",
+  "@registerIntroPatient": {
+    "description": "Sign-up intro on the Patient tab."
+  },
+  "registerFullNamePassport": "Full name (as on passport)",
+  "@registerFullNamePassport": {
+    "description": "Sign-up: name field label for patients."
+  },
+  "registerYourFullName": "Your full name",
+  "@registerYourFullName": {
+    "description": "Sign-up: name field label for agents and hospital users."
+  },
+  "registerPasswordHelper": "At least {min} characters with a letter and a number",
+  "@registerPasswordHelper": {
+    "description": "Sign-up: password rules under the password field.",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "registerAgencyName": "Agency name",
+  "@registerAgencyName": {
+    "description": "Sign-up (agent): agency name field label."
+  },
+  "registerEnterAgencyName": "Enter your agency name",
+  "@registerEnterAgencyName": {
+    "description": "Sign-up (agent): error when the agency name is empty."
+  },
+  "registerHospitalName": "Hospital name",
+  "@registerHospitalName": {
+    "description": "Sign-up (hospital): hospital name field label."
+  },
+  "registerEnterHospitalName": "Enter the hospital name",
+  "@registerEnterHospitalName": {
+    "description": "Sign-up (hospital): error when the hospital name is empty."
+  },
+  "registerCityOptional": "City (optional)",
+  "@registerCityOptional": {
+    "description": "Sign-up (hospital): city field label."
+  },
+  "registerPhoneOptional": "Phone / WhatsApp (optional)",
+  "@registerPhoneOptional": {
+    "description": "Sign-up: phone field label."
+  },
+  "registerCountryOfResidenceOptional": "Country of residence (optional)",
+  "@registerCountryOfResidenceOptional": {
+    "description": "Sign-up (patient): country picker label."
+  },
+  "registerCountryOptional": "Country (optional)",
+  "@registerCountryOptional": {
+    "description": "Sign-up (agent / hospital): country picker label."
+  },
+  "registerReferralCodeOptional": "Facilitator referral code (optional)",
+  "@registerReferralCodeOptional": {
+    "description": "Sign-up (patient): referral code from a medical-travel facilitator."
+  },
+  "registerAcceptTermsError": "Please accept the Terms and Privacy Policy",
+  "@registerAcceptTermsError": {
+    "description": "Sign-up error when the terms checkbox is not ticked."
+  },
+  "apiErrorTimeout": "The server took too long to respond. Please try again.",
+  "@apiErrorTimeout": {
+    "description": "Error: the request timed out."
+  },
+  "apiErrorCancelled": "Request cancelled.",
+  "@apiErrorCancelled": {
+    "description": "Error: the request was cancelled."
+  },
+  "apiErrorNoConnection": "No connection. Check your internet and try again.",
+  "@apiErrorNoConnection": {
+    "description": "Error: no network connection."
+  },
+  "apiErrorSecureConnection": "Secure connection failed.",
+  "@apiErrorSecureConnection": {
+    "description": "Error: TLS / certificate failure."
+  },
+  "apiErrorBadRequest": "The request could not be processed.",
+  "@apiErrorBadRequest": {
+    "description": "Error for HTTP 400 without a server message."
+  },
+  "apiErrorSignIn": "Please sign in to continue.",
+  "@apiErrorSignIn": {
+    "description": "Error for HTTP 401 without a server message."
+  },
+  "apiErrorPayment": "The payment could not be completed.",
+  "@apiErrorPayment": {
+    "description": "Error for HTTP 402 without a server message."
+  },
+  "apiErrorForbidden": "You do not have access to this.",
+  "@apiErrorForbidden": {
+    "description": "Error for HTTP 403 without a server message."
+  },
+  "apiErrorNotFound": "Not found.",
+  "@apiErrorNotFound": {
+    "description": "Error for HTTP 404 without a server message."
+  },
+  "apiErrorConflict": "This was changed by someone else. Please refresh.",
+  "@apiErrorConflict": {
+    "description": "Error for HTTP 409 without a server message."
+  },
+  "apiErrorValidation": "Please check the highlighted fields.",
+  "@apiErrorValidation": {
+    "description": "Error for HTTP 422 without a server message."
+  },
+  "apiErrorRateLimited": "Too many attempts. Please wait a moment and try again.",
+  "@apiErrorRateLimited": {
+    "description": "Error for HTTP 429 without a server message."
+  },
+  "apiErrorServer": "Something went wrong on our side. Please try again.",
+  "@apiErrorServer": {
+    "description": "Error for HTTP 5xx without a server message."
+  },
+  "apiErrorUnexpected": "Unexpected error ({status}).",
+  "@apiErrorUnexpected": {
+    "description": "Error for any other HTTP status without a server message.",
+    "placeholders": {
+      "status": {
+        "type": "int",
+        "example": "418"
+      }
+    }
+  },
+  "apiErrorGeneric": "Something went wrong.",
+  "@apiErrorGeneric": {
+    "description": "Fallback error message when no detail is known."
+  },
+  "conversationFallbackTitle": "Conversation",
+  "@conversationFallbackTitle": {
+    "description": "Title of a chat conversation without a subject or other participants."
+  },
+  "pushPromptTitle": "Turn on notifications?",
+  "@pushPromptTitle": {
+    "description": "Title of the in-app explanation shown before the system notification permission dialog."
+  },
+  "pushPromptBody": "Get updates about your case, messages and payments. We never put health details in notifications.",
+  "@pushPromptBody": {
+    "description": "Body of the notification permission pre-prompt."
+  },
+  "pushPromptNotNow": "Not now",
+  "@pushPromptNotNow": {
+    "description": "Notification pre-prompt: decline for now."
+  },
+  "pushPromptTurnOn": "Turn on",
+  "@pushPromptTurnOn": {
+    "description": "Notification pre-prompt: continue to the system permission dialog."
+  },
+  "reportSheetThanks": "Thanks. Our team will review this report.",
+  "@reportSheetThanks": {
+    "description": "Snackbar after a content report (chat message / AI result) was sent."
+  },
+  "reportSheetTitleMessage": "Report this message",
+  "@reportSheetTitleMessage": {
+    "description": "Title of the sheet for reporting a chat message."
+  },
+  "reportSheetTitleResult": "Report this result",
+  "@reportSheetTitleResult": {
+    "description": "Title of the sheet for reporting an AI result; also the button that opens it."
+  },
+  "reportSheetIntroMessage": "Tell us what is wrong with this message. Our team will look at it. The sender is not told who reported it.",
+  "@reportSheetIntroMessage": {
+    "description": "Intro of the sheet for reporting a chat message."
+  },
+  "reportSheetIntroResult": "Tell us what is wrong with this AI result. Our team will look at it and use it to improve the results.",
+  "@reportSheetIntroResult": {
+    "description": "Intro of the sheet for reporting an AI result."
+  },
+  "reportSheetRateLimited": "You have sent a lot of reports. Please try again later.",
+  "@reportSheetRateLimited": {
+    "description": "Report sheet error when too many reports were sent."
+  },
+  "reportSheetNoteLabel": "Add a note (optional)",
+  "@reportSheetNoteLabel": {
+    "description": "Report sheet: label of the optional note field."
+  },
+  "reportSheetNoteHint": "Anything that helps our team understand the problem",
+  "@reportSheetNoteHint": {
+    "description": "Report sheet: hint of the optional note field."
+  },
+  "reportSheetSend": "Send report",
+  "@reportSheetSend": {
+    "description": "Report sheet: submit button."
+  },
+  "reportReasonSpam": "Spam",
+  "@reportReasonSpam": {
+    "description": "Report reason: spam."
+  },
+  "reportReasonAbusive": "Abusive or harassing",
+  "@reportReasonAbusive": {
+    "description": "Report reason: abusive or harassing content."
+  },
+  "reportReasonInappropriate": "Inappropriate",
+  "@reportReasonInappropriate": {
+    "description": "Report reason: inappropriate content."
+  },
+  "reportReasonInaccurate": "Inaccurate",
+  "@reportReasonInaccurate": {
+    "description": "Report reason: the AI result is inaccurate."
+  },
+  "reportReasonPrivacy": "Privacy concern",
+  "@reportReasonPrivacy": {
+    "description": "Report reason: privacy concern."
+  },
+  "reportReasonOther": "Other",
+  "@reportReasonOther": {
+    "description": "Report reason: anything else."
+  },
+  "chatTitleFallback": "Chat",
+  "@chatTitleFallback": {
+    "description": "Chat screen title while the conversation is loading."
+  },
+  "chatParticipantWithRole": "{name} ({role})",
+  "@chatParticipantWithRole": {
+    "description": "Chat header: a participant's name with their role.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Priya Nair"
+      },
+      "role": {
+        "type": "String",
+        "example": "Care team"
+      }
+    }
+  },
+  "chatRoleHospital": "Hospital",
+  "@chatRoleHospital": {
+    "description": "Chat header role label: hospital staff."
+  },
+  "chatRoleCareTeam": "Care team",
+  "@chatRoleCareTeam": {
+    "description": "Chat header role label: Heal India Global support / coordinators."
+  },
+  "chatRoleAgent": "Agent",
+  "@chatRoleAgent": {
+    "description": "Chat header role label: medical-travel facilitator."
+  },
+  "chatRolePatient": "Patient",
+  "@chatRolePatient": {
+    "description": "Chat header role label: patient."
+  },
+  "chatEmptyTitle": "Say hello",
+  "@chatEmptyTitle": {
+    "description": "Empty chat title."
+  },
+  "chatEmptyMessage": "Your coordinator usually replies within a few hours.",
+  "@chatEmptyMessage": {
+    "description": "Empty chat message."
+  },
+  "chatLoadingMore": "Loading...",
+  "@chatLoadingMore": {
+    "description": "Chat: older messages are loading."
+  },
+  "chatLoadEarlier": "Load earlier messages",
+  "@chatLoadEarlier": {
+    "description": "Chat: button to load older messages."
+  },
+  "chatToday": "Today",
+  "@chatToday": {
+    "description": "Chat day separator for today's messages."
+  },
+  "chatUploading": "Uploading...",
+  "@chatUploading": {
+    "description": "Chat composer: an attachment is uploading."
+  },
+  "chatAttachTooltip": "Attach a document",
+  "@chatAttachTooltip": {
+    "description": "Chat composer: attach button tooltip."
+  },
+  "chatInputHint": "Type a message",
+  "@chatInputHint": {
+    "description": "Chat composer: input hint."
+  },
+  "chatSendTooltip": "Send",
+  "@chatSendTooltip": {
+    "description": "Chat composer: send button tooltip."
+  },
+  "chatSharedFile": "Shared {fileName}",
+  "@chatSharedFile": {
+    "description": "Message text sent when only one file is attached and no text was typed.",
+    "placeholders": {
+      "fileName": {
+        "type": "String",
+        "example": "report.pdf"
+      }
+    }
+  },
+  "chatSharedFiles": "{count, plural, other{Shared {count} files}}",
+  "@chatSharedFiles": {
+    "description": "Message text sent when several files are attached and no text was typed.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "chatCopyText": "Copy text",
+  "@chatCopyText": {
+    "description": "Chat message menu: copy the message text."
+  },
+  "chatReportMessage": "Report message",
+  "@chatReportMessage": {
+    "description": "Chat message menu: report the message."
+  },
+  "chatMessageCopied": "Message copied.",
+  "@chatMessageCopied": {
+    "description": "Snackbar after copying a chat message."
+  },
+  "chatHiddenByModerators": "Hidden by moderators",
+  "@chatHiddenByModerators": {
+    "description": "Under your own chat message that moderators hid."
+  },
+  "chatAttachmentUnavailable": "Attachment unavailable",
+  "@chatAttachmentUnavailable": {
+    "description": "Chat attachment chip when the file could not be loaded."
+  },
+  "chatAttachment": "Attachment",
+  "@chatAttachment": {
+    "description": "Chat attachment chip while the file name is loading."
+  },
+  "matchesListTitle": "Your Top Matches",
+  "@matchesListTitle": {
+    "description": "Matches screen title."
+  },
+  "matchesListCompareLimit": "You can compare up to {max} matches.",
+  "@matchesListCompareLimit": {
+    "description": "Snackbar when the compare limit is reached.",
+    "placeholders": {
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "matchesListFinishFirst": "Finish your screening first",
+  "@matchesListFinishFirst": {
+    "description": "Matches screen: the screening is still a draft."
+  },
+  "matchesListStillFinding": "Still finding your matches",
+  "@matchesListStillFinding": {
+    "description": "Matches screen: matching is still running."
+  },
+  "matchesListCompleteQuestionnaire": "Complete the questionnaire to see matched doctors.",
+  "@matchesListCompleteQuestionnaire": {
+    "description": "Matches screen: draft screening message."
+  },
+  "matchesListUsuallyQuick": "This usually takes under a minute.",
+  "@matchesListUsuallyQuick": {
+    "description": "Matches screen: matching in progress message."
+  },
+  "matchesListSortTooltip": "Sort",
+  "@matchesListSortTooltip": {
+    "description": "Matches screen: sort button tooltip."
+  },
+  "matchesListFilterTooltip": "Filter",
+  "@matchesListFilterTooltip": {
+    "description": "Matches screen: filter button tooltip."
+  },
+  "matchesListLoading": "Loading your matches...",
+  "@matchesListLoading": {
+    "description": "Matches screen: loading message."
+  },
+  "matchesListIntro": "Based on your profile, here are your top matches.",
+  "@matchesListIntro": {
+    "description": "Matches screen: intro text."
+  },
+  "matchesListSaveVsHome": "Save {min}-{max}% vs treatment at home",
+  "@matchesListSaveVsHome": {
+    "description": "Matches screen: savings banner.",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "60"
+      },
+      "max": {
+        "type": "int",
+        "example": "80"
+      }
+    }
+  },
+  "matchesListCompareCosts": "Compare costs with your home country",
+  "@matchesListCompareCosts": {
+    "description": "Matches screen: cost comparison banner without savings data."
+  },
+  "matchesListNoMatches": "No matches yet",
+  "@matchesListNoMatches": {
+    "description": "Matches screen: no matches title."
+  },
+  "matchesListNoMatchesMessage": "We could not find doctors for these answers. Try again or browse hospitals yourself.",
+  "@matchesListNoMatchesMessage": {
+    "description": "Matches screen: no matches message."
+  },
+  "matchesListRunAgain": "Run matching again",
+  "@matchesListRunAgain": {
+    "description": "Matches screen: re-run matching button."
+  },
+  "matchesListBrowseHospitals": "Browse hospitals",
+  "@matchesListBrowseHospitals": {
+    "description": "Matches screen: open hospital search."
+  },
+  "matchesListNoFilterMatches": "No matches for these filters",
+  "@matchesListNoFilterMatches": {
+    "description": "Matches screen: filters hide every match."
+  },
+  "matchesListClearFilters": "Clear filters",
+  "@matchesListClearFilters": {
+    "description": "Matches screen: clear filters button."
+  },
+  "matchesListSelectedForComparison": "{count}/{max} Selected for Comparison",
+  "@matchesListSelectedForComparison": {
+    "description": "Matches screen: compare bar counter.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "matchesListCompare": "Compare",
+  "@matchesListCompare": {
+    "description": "Matches screen: compare bar button."
+  },
+  "matchesListEmergency": "Your answers suggest you may need urgent care. Please seek local emergency care before planning travel.",
+  "@matchesListEmergency": {
+    "description": "Matches screen: emergency banner."
+  },
+  "matchesListGuidanceAcknowledged": "Guidance acknowledged",
+  "@matchesListGuidanceAcknowledged": {
+    "description": "Matches screen: emergency guidance was acknowledged."
+  },
+  "matchesListReadGuidance": "Read the guidance",
+  "@matchesListReadGuidance": {
+    "description": "Matches screen: open the emergency guidance."
+  },
+  "aiSummaryUrgencySoon": "See a doctor soon",
+  "@aiSummaryUrgencySoon": {
+    "description": "AI summary urgency chip: 'soon' level."
+  },
+  "aiSummaryDisclaimer": "This summary is generated from your answers to help you choose doctors. It is not a medical diagnosis. A qualified doctor will review your case.",
+  "@aiSummaryDisclaimer": {
+    "description": "Default disclaimer under the AI screening summary."
+  },
+  "aiSummaryTitleAi": "AI Summary",
+  "@aiSummaryTitleAi": {
+    "description": "Summary card title when the AI produced it."
+  },
+  "aiSummaryTitleRules": "Screening Summary",
+  "@aiSummaryTitleRules": {
+    "description": "Summary card title when the rules engine produced it."
+  },
+  "aiSummaryMoreDetails": "More details",
+  "@aiSummaryMoreDetails": {
+    "description": "Summary card: expand details."
+  },
+  "aiSummaryPossibleConditions": "Possible conditions to discuss",
+  "@aiSummaryPossibleConditions": {
+    "description": "Summary card section title."
+  },
+  "aiSummaryConditionLikelihood": "{likelihood, select, low{{name} (low likelihood)} medium{{name} (medium likelihood)} high{{name} (high likelihood)} other{{name}}}",
+  "@aiSummaryConditionLikelihood": {
+    "description": "Summary card: a possible condition with its likelihood (low / medium / high).",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Knee osteoarthritis"
+      },
+      "likelihood": {
+        "type": "String",
+        "example": "medium"
+      }
+    }
+  },
+  "aiSummaryTests": "Tests that may help",
+  "@aiSummaryTests": {
+    "description": "Summary card section title."
+  },
+  "aiSummaryQuestions": "Questions for your doctor",
+  "@aiSummaryQuestions": {
+    "description": "Summary card section title."
+  },
+  "aiSummaryTravelAdvice": "Travel advice",
+  "@aiSummaryTravelAdvice": {
+    "description": "Summary card section title."
+  },
+  "aiSummaryBullet": "•  {item}",
+  "@aiSummaryBullet": {
+    "description": "Bulleted list item in the summary card details.",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "example": "MRI of the knee"
+      }
+    }
+  },
+  "reportViewDiscardTitle": "Discard this reading?",
+  "@reportViewDiscardTitle": {
+    "description": "Dialog title: discard the AI reading of a medical report."
+  },
+  "reportViewDiscardBody": "The AI reading will not be used for your screening or shared with hospitals. Your uploaded report itself is kept.",
+  "@reportViewDiscardBody": {
+    "description": "Dialog body: discard the AI reading."
+  },
+  "reportViewKeepReviewing": "Keep reviewing",
+  "@reportViewKeepReviewing": {
+    "description": "Dialog button: do not discard."
+  },
+  "reportViewDiscard": "Discard",
+  "@reportViewDiscard": {
+    "description": "Button: discard the AI reading."
+  },
+  "reportViewFailedTitle": "We could not read this report",
+  "@reportViewFailedTitle": {
+    "description": "AI reading failed title."
+  },
+  "reportViewFailedMessage": "Something went wrong while reading your report.",
+  "@reportViewFailedMessage": {
+    "description": "AI reading failed default message."
+  },
+  "reportViewUnsupportedTitle": "This file type cannot be read",
+  "@reportViewUnsupportedTitle": {
+    "description": "AI reading unsupported file title."
+  },
+  "reportViewUnsupportedMessage": "Scans such as DICOM images cannot be read automatically. Please upload the radiologist's written report or a clear photo of each page instead.",
+  "@reportViewUnsupportedMessage": {
+    "description": "AI reading unsupported file default message."
+  },
+  "reportViewDiscarded": "You discarded this reading. It is not used for screening or shared with hospitals.",
+  "@reportViewDiscarded": {
+    "description": "Shown on a discarded AI reading."
+  },
+  "reportViewCheckIntro": "Please check what the AI read. Correct anything that is wrong, then tap Confirm. Only confirmed information is used.",
+  "@reportViewCheckIntro": {
+    "description": "Review banner above the AI reading form. 'Confirm' is the button label (commonConfirm)."
+  },
+  "reportViewQualityHardToRead": "parts may be hard to read",
+  "@reportViewQualityHardToRead": {
+    "description": "Image quality issue used inside reportViewImageQuality when no specific issue is known."
+  },
+  "reportViewImageQuality": "Image quality: {issues}. A clearer photo gives better results.",
+  "@reportViewImageQuality": {
+    "description": "Warning about the photo quality of a scanned report.",
+    "placeholders": {
+      "issues": {
+        "type": "String",
+        "example": "blurry, cropped"
+      }
+    }
+  },
+  "reportViewContactDoctor": "Please contact a doctor soon",
+  "@reportViewContactDoctor": {
+    "description": "Alert title above red flags found in a report."
+  },
+  "reportViewReading": "Reading your report…",
+  "@reportViewReading": {
+    "description": "Shown while the AI reads a report."
+  },
+  "reportViewReadingHint": "This usually takes less than a minute. You will review everything before it is used.",
+  "@reportViewReadingHint": {
+    "description": "Shown while the AI reads a report."
+  },
+  "agentScreeningNew": "New screening",
+  "@agentScreeningNew": {
+    "description": "Agent screening form title before the patient name is loaded."
+  },
+  "agentScreeningForPatient": "Screening · {name}",
+  "@agentScreeningForPatient": {
+    "description": "Agent screening form title.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Amina Yusuf"
+      }
+    }
+  },
+  "agentScreeningNeedHelp": "What does the patient need help with?",
+  "@agentScreeningNeedHelp": {
+    "description": "Agent screening form: specialty question."
+  },
+  "agentScreeningHowLong": "How long?",
+  "@agentScreeningHowLong": {
+    "description": "Agent screening form: symptom duration."
+  },
+  "agentScreeningImpact": "Impact on daily life",
+  "@agentScreeningImpact": {
+    "description": "Agent screening form section title."
+  },
+  "agentScreeningPreviousTreatments": "Previous treatments (comma separated)",
+  "@agentScreeningPreviousTreatments": {
+    "description": "Agent screening form field label."
+  },
+  "agentScreeningNotes": "Notes for the medical team",
+  "@agentScreeningNotes": {
+    "description": "Agent screening form field label."
+  },
+  "agentScreeningSubmit": "Find matching hospitals",
+  "@agentScreeningSubmit": {
+    "description": "Agent screening form submit button."
+  },
+  "agentScreeningQuotesRequested": "{count, plural, one{Quote requested from {count} hospital} other{Quote requested from {count} hospitals}}",
+  "@agentScreeningQuotesRequested": {
+    "description": "Snackbar after the agent requested quotes.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "agentScreeningResultTitle": "Screening result",
+  "@agentScreeningResultTitle": {
+    "description": "Agent screening result screen title."
+  },
+  "agentScreeningNotSubmitted": "Screening not submitted",
+  "@agentScreeningNotSubmitted": {
+    "description": "Agent screening result: draft screening title."
+  },
+  "agentScreeningRunNew": "Run a new screening from the patient page.",
+  "@agentScreeningRunNew": {
+    "description": "Agent screening result: draft screening message."
+  },
+  "agentScreeningAnalysing": "Analysing the condition and matching specialists…",
+  "@agentScreeningAnalysing": {
+    "description": "Agent screening result: processing."
+  },
+  "agentScreeningFailed": "Screening could not be processed",
+  "@agentScreeningFailed": {
+    "description": "Agent screening result: failed title."
+  },
+  "agentScreeningPleaseTryAgain": "Please try again.",
+  "@agentScreeningPleaseTryAgain": {
+    "description": "Agent screening result: failed default message."
+  },
+  "agentScreeningAiTriage": "AI triage",
+  "@agentScreeningAiTriage": {
+    "description": "Agent screening result card title when no specialty is known."
+  },
+  "agentScreeningMatchedHospitals": "Matched hospitals",
+  "@agentScreeningMatchedHospitals": {
+    "description": "Agent screening result section title."
+  },
+  "agentScreeningMatchedHospitalsHint": "Select hospitals to request itemised quotes from",
+  "@agentScreeningMatchedHospitalsHint": {
+    "description": "Agent screening result section subtitle."
+  },
+  "agentScreeningNoMatches": "No matches yet",
+  "@agentScreeningNoMatches": {
+    "description": "Agent screening result: no matches."
+  },
+  "agentScreeningCompareQuotes": "Compare received quotes",
+  "@agentScreeningCompareQuotes": {
+    "description": "Agent screening result: open the quote comparison."
+  },
+  "agentScreeningSelectHospitals": "Select hospitals",
+  "@agentScreeningSelectHospitals": {
+    "description": "Agent screening result: button when nothing is selected."
+  },
+  "agentScreeningRequestQuotes": "{count, plural, one{Request {count} quote} other{Request {count} quotes}}",
+  "@agentScreeningRequestQuotes": {
+    "description": "Agent screening result: request quotes button.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "agentScreeningEstimate": "est. {amount}",
+  "@agentScreeningEstimate": {
+    "description": "Agent screening result: estimated cost of a match.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$12,500"
+      }
+    }
+  },
+  "agentScreeningRequested": "Requested",
+  "@agentScreeningRequested": {
+    "description": "Agent screening result: a quote was requested from this hospital."
+  },
+  "doctorYearsOfExperience": "{count, plural, one{{count} year of experience} other{{count} years of experience}}",
+  "@doctorYearsOfExperience": {
+    "description": "Doctor subtitle: years of clinical experience.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "privacyAccessLine": "{who} ({role}) {action} {record}",
+  "@privacyAccessLine": {
+    "description": "Access log line: who (name or role), their role, what they did and to which record. Example: 'Dr Rao (Hospital) downloaded a document'.",
+    "placeholders": {
+      "who": {
+        "type": "String",
+        "example": "Dr Rao"
+      },
+      "role": {
+        "type": "String",
+        "example": "Hospital"
+      },
+      "action": {
+        "type": "String",
+        "example": "downloaded"
+      },
+      "record": {
+        "type": "String",
+        "example": "a document"
+      }
+    }
+  },
+  "privacyRoleHospital": "Hospital",
+  "@privacyRoleHospital": {
+    "description": "Access log: viewer role, a hospital team member."
+  },
+  "privacyRoleAgent": "Your agent",
+  "@privacyRoleAgent": {
+    "description": "Access log: viewer role, the patient's agent / facilitator."
+  },
+  "privacyRoleSupport": "Care coordinator",
+  "@privacyRoleSupport": {
+    "description": "Access log: viewer role, platform care coordinator."
+  },
+  "privacyRoleFinance": "Finance team",
+  "@privacyRoleFinance": {
+    "description": "Access log: viewer role, platform finance team."
+  },
+  "privacyRoleStaff": "Heal India Global staff",
+  "@privacyRoleStaff": {
+    "description": "Access log: viewer role, platform administrators. Keep the brand name in Latin script."
+  },
+  "privacyRoleSomeone": "Someone",
+  "@privacyRoleSomeone": {
+    "description": "Access log: unknown viewer role."
+  },
+  "privacyActionDownloaded": "downloaded",
+  "@privacyActionDownloaded": {
+    "description": "Access log verb: downloaded a record (lowercase, used inside a sentence)."
+  },
+  "privacyActionListed": "saw in a list",
+  "@privacyActionListed": {
+    "description": "Access log verb: saw the record in a list."
+  },
+  "privacyActionEmergency": "opened in an emergency",
+  "@privacyActionEmergency": {
+    "description": "Access log verb: opened the record using emergency access."
+  },
+  "privacyActionViewed": "viewed",
+  "@privacyActionViewed": {
+    "description": "Access log verb: viewed the record."
+  },
+  "privacyRecordDocument": "a document",
+  "@privacyRecordDocument": {
+    "description": "Access log object: a medical document."
+  },
+  "privacyRecordScreening": "a screening",
+  "@privacyRecordScreening": {
+    "description": "Access log object: an AI screening questionnaire."
+  },
+  "privacyRecordReportReading": "an AI report reading",
+  "@privacyRecordReportReading": {
+    "description": "Access log object: an AI reading of a medical report."
+  },
+  "privacyRecordVoice": "a voice transcript",
+  "@privacyRecordVoice": {
+    "description": "Access log object: a voice intake transcript."
+  },
+  "privacyRecordHistory": "your medical history",
+  "@privacyRecordHistory": {
+    "description": "Access log object: the patient's medical history."
+  },
+  "privacyRecordOther": "a record",
+  "@privacyRecordOther": {
+    "description": "Access log object: any other record."
+  },
+  "privacyGroupTitle": "Privacy",
+  "@privacyGroupTitle": {
+    "description": "Profile section heading: privacy and data rights."
+  },
+  "privacyDownloadTitle": "Download my data",
+  "@privacyDownloadTitle": {
+    "description": "Profile row: download a copy of all personal data."
+  },
+  "privacyDownloadSubtitle": "A ZIP file with everything we hold about you and your documents",
+  "@privacyDownloadSubtitle": {
+    "description": "Profile row subtitle for 'Download my data'."
+  },
+  "privacyDownloadSaved": "Your data has been saved",
+  "@privacyDownloadSaved": {
+    "description": "Snack bar after the data export ZIP was saved."
+  },
+  "privacyAccessLogTitle": "Who viewed my records",
+  "@privacyAccessLogTitle": {
+    "description": "Profile row and screen title: list of people who opened the patient's health records."
+  },
+  "privacyAccessLogSubtitle": "Hospitals, agents and staff who opened your health records",
+  "@privacyAccessLogSubtitle": {
+    "description": "Profile row subtitle for 'Who viewed my records'."
+  },
+  "privacyAccessLogError": "We could not load the list.",
+  "@privacyAccessLogError": {
+    "description": "Access log screen: loading failed."
+  },
+  "privacyAccessLogEmpty": "Nobody else has viewed your records yet.",
+  "@privacyAccessLogEmpty": {
+    "description": "Access log screen: empty state."
+  },
+  "privacyAccessLogReason": "Reason: {reason}",
+  "@privacyAccessLogReason": {
+    "description": "Access log entry: the reason given for emergency access.",
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "Patient unconscious"
+      }
+    }
+  },
+  "priceApproxSemantics": "About {approx}. The hospital charges {original}.",
+  "@priceApproxSemantics": {
+    "description": "Screen-reader label of a converted price: approximate amount in the patient's currency and the original amount the hospital charges.",
+    "placeholders": {
+      "approx": {
+        "type": "String",
+        "example": "$3,010"
+      },
+      "original": {
+        "type": "String",
+        "example": "₹2,50,000"
+      }
+    }
+  },
+  "priceOriginalAmount": "{amount} at the hospital",
+  "@priceOriginalAmount": {
+    "description": "Small text under a converted price: the original amount the hospital charges (usually Indian rupees).",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹2,50,000"
+      }
+    }
+  },
+  "trustAccreditationVerifiedSemantics": "{body} accreditation, verified",
+  "@trustAccreditationVerifiedSemantics": {
+    "description": "Screen-reader label of an accreditation badge checked by the platform.",
+    "placeholders": {
+      "body": {
+        "type": "String",
+        "example": "JCI"
+      }
+    }
+  },
+  "earliestConsultation": "Earliest consult: {date}",
+  "@earliestConsultation": {
+    "description": "Chip: earliest day with a free consultation slot.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12 Nov"
+      }
+    }
+  },
+  "earliestAdmission": "Earliest admission: {date}",
+  "@earliestAdmission": {
+    "description": "Chip: earliest day the patient can be admitted for treatment.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "14 Nov"
+      }
+    }
+  },
+  "earliestToday": "today",
+  "@earliestToday": {
+    "description": "Earliest date chip value: today (lowercase, inside a sentence)."
+  },
+  "earliestTomorrow": "tomorrow",
+  "@earliestTomorrow": {
+    "description": "Earliest date chip value: tomorrow (lowercase, inside a sentence)."
+  },
+  "quoteTimeLeft": "{days, plural, =0{{time} left} one{{days} day {time} left} other{{days} days {time} left}}",
+  "@quoteTimeLeft": {
+    "description": "Live countdown until the hospital's quote is due. time is hours:minutes:seconds.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "1"
+      },
+      "time": {
+        "type": "String",
+        "example": "04:12:09"
+      }
+    }
+  },
+  "quoteDueBy": "Quote due by {time}",
+  "@quoteDueBy": {
+    "description": "When the hospital promised to send its quote (date and time).",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "12 Nov 2026, 10:30"
+      }
+    }
+  },
+  "quoteRespondBy": "Respond by {time}",
+  "@quoteRespondBy": {
+    "description": "Hospital portal: when the hospital must send its quote.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "12 Nov 2026, 10:30"
+      }
+    }
+  },
+  "quoteOverduePatient": "Overdue — we're chasing the hospital",
+  "@quoteOverduePatient": {
+    "description": "Patient: the hospital missed its quote time; the platform is following up."
+  },
+  "quoteOverdueHospital": "Overdue",
+  "@quoteOverdueHospital": {
+    "description": "Hospital portal badge: the quote time has passed."
+  },
+  "guestAiLimitReached": "You've used today's 3 free scans — create a free account to continue.",
+  "@guestAiLimitReached": {
+    "description": "Guest reached the daily limit of free AI scans (screening / report reading)."
+  },
+  "guestCreateFreeAccount": "Create a free account",
+  "@guestCreateFreeAccount": {
+    "description": "Button: register a free account (guest upgrade)."
+  },
+  "guardianConsentRequiredMessage": "Because you are under 18, a parent or legal guardian must give consent first.",
+  "@guardianConsentRequiredMessage": {
+    "description": "Shown when a minor tries an AI feature or booking without a verified guardian consent."
+  },
+  "filtersSortSoonest": "Soonest available",
+  "@filtersSortSoonest": {
+    "description": "Sort option: earliest free appointment / admission date first."
+  },
+  "trustAccreditationsTitle": "Verified accreditations",
+  "@trustAccreditationsTitle": {
+    "description": "Hospital detail section: accreditations checked by the platform (certificate seen)."
+  },
+  "trustAccreditationVerified": "Verified",
+  "@trustAccreditationVerified": {
+    "description": "Accreditation row subtitle: checked by the platform, no expiry date known."
+  },
+  "trustAccreditationVerifiedUntil": "Verified · valid until {date}",
+  "@trustAccreditationVerifiedUntil": {
+    "description": "Accreditation row subtitle: checked by the platform and valid until a date.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "31 Dec 2027"
+      }
+    }
+  },
+  "trustRegistrationVerified": "Registration verified",
+  "@trustRegistrationVerified": {
+    "description": "Doctor badge: the doctor's medical registration was checked against the official medical council register."
+  },
+  "trustRegistrationVerifiedSemantics": "Medical registration verified {council}",
+  "@trustRegistrationVerifiedSemantics": {
+    "description": "Screen-reader label of the registration badge; council may be empty.",
+    "placeholders": {
+      "council": {
+        "type": "String",
+        "example": "National Medical Commission"
+      }
+    }
+  },
+  "reviewStarsSemantics": "{rating, plural, one{Rated 1 star out of 5} other{Rated {rating} stars out of 5}}",
+  "@reviewStarsSemantics": {
+    "description": "Screen-reader label of a review's star rating.",
+    "placeholders": {
+      "rating": {
+        "type": "int",
+        "example": "4"
+      }
+    }
+  },
+  "reviewVerifiedPatient": "Verified patient",
+  "@reviewVerifiedPatient": {
+    "description": "Review badge: written by a patient who completed treatment booked through the platform."
+  },
+  "reviewVerifiedPatientFor": "Verified patient · {treatment}",
+  "@reviewVerifiedPatientFor": {
+    "description": "Review badge with the treatment the patient had.",
+    "placeholders": {
+      "treatment": {
+        "type": "String",
+        "example": "Knee replacement"
+      }
+    }
+  },
+  "reviewByPatient": "- {name}",
+  "@reviewByPatient": {
+    "description": "Author line under a review.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Amina Y."
+      }
+    }
+  },
+  "reviewsTitle": "Patient reviews",
+  "@reviewsTitle": {
+    "description": "Screen title: all reviews of a hospital or doctor."
+  },
+  "reviewsEmptyTitle": "No reviews yet",
+  "@reviewsEmptyTitle": {
+    "description": "Reviews list empty state title."
+  },
+  "reviewsEmptyMessage": "Reviews appear here after patients complete their treatment.",
+  "@reviewsEmptyMessage": {
+    "description": "Reviews list empty state message."
+  },
+  "reviewsSeeAll": "{count, plural, one{See the review} other{See all {count} reviews}}",
+  "@reviewsSeeAll": {
+    "description": "Button: open the full list of reviews.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "homeBrowseSpecialties": "Browse by specialty",
+  "@homeBrowseSpecialties": {
+    "description": "Home: heading above the specialty grid."
+  },
+  "costHomeTitle": "Your country vs India",
+  "@costHomeTitle": {
+    "description": "Home: heading of the block comparing treatment cost and waiting time at home and in India."
+  },
+  "costHomePricesFor": "Prices for {country}",
+  "@costHomePricesFor": {
+    "description": "Home cost block: which home country the prices are for.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "Nigeria"
+      }
+    }
+  },
+  "costHomeFallback": "Showing {country} prices — choose your country",
+  "@costHomeFallback": {
+    "description": "Home cost block: no prices for the patient's country, showing another country (usually the United States) instead.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "United States"
+      }
+    }
+  },
+  "costHomeChange": "Change",
+  "@costHomeChange": {
+    "description": "Home cost block: link to pick another home country."
+  },
+  "costHomeCountryPickerTitle": "Compare prices with",
+  "@costHomeCountryPickerTitle": {
+    "description": "Title of the country picker for the home cost comparison."
+  },
+  "costHomeShowMore": "{count, plural, one{Show 1 more} other{Show {count} more}}",
+  "@costHomeShowMore": {
+    "description": "Home cost block: expand the list.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "costHomeShowLess": "Show less",
+  "@costHomeShowLess": {
+    "description": "Home cost block: collapse the list."
+  },
+  "costHomeSave": "Save {pct}",
+  "@costHomeSave": {
+    "description": "Badge with the estimated saving in India, e.g. 'Save 60–80%'. Only shown when the estimate is reliable.",
+    "placeholders": {
+      "pct": {
+        "type": "String",
+        "example": "60–80%"
+      }
+    }
+  },
+  "costHomeInCountry": "In {country}",
+  "@costHomeInCountry": {
+    "description": "Label above the price range in the patient's home country.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "Nigeria"
+      }
+    }
+  },
+  "costHomeInIndia": "In India",
+  "@costHomeInIndia": {
+    "description": "Label above the price range in India."
+  },
+  "costHomeWaitAtHome": "Wait at home: {wait}",
+  "@costHomeWaitAtHome": {
+    "description": "Typical waiting time for this treatment in the home country.",
+    "placeholders": {
+      "wait": {
+        "type": "String",
+        "example": "6-12 months"
+      }
+    }
+  },
+  "costHomeOftenUnavailable": "Often a long wait or not available locally",
+  "@costHomeOftenUnavailable": {
+    "description": "Shown instead of a saving claim when no reliable home price or waiting time is known."
+  },
+  "costHomeIndiaEarliest": "India: earliest admission {date}",
+  "@costHomeIndiaEarliest": {
+    "description": "Earliest date a hospital in India can admit the patient.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "14 Nov"
+      }
+    }
+  },
+  "costHomeIndiaWait": "India: {wait}",
+  "@costHomeIndiaWait": {
+    "description": "Typical time to treatment in India.",
+    "placeholders": {
+      "wait": {
+        "type": "String",
+        "example": "within 1 week"
+      }
+    }
+  },
+  "costHomeEstimate": "Estimate",
+  "@costHomeEstimate": {
+    "description": "Small link under a price comparison: the numbers are estimates."
+  },
+  "costHomeEstimateSource": "Estimate · {source}",
+  "@costHomeEstimateSource": {
+    "description": "Small link: estimate with its source (tap for details).",
+    "placeholders": {
+      "source": {
+        "type": "String",
+        "example": "NHS 2025"
+      }
+    }
+  },
+  "costHomeSeeHospitals": "Hospitals",
+  "@costHomeSeeHospitals": {
+    "description": "Card action: see hospitals offering this treatment, earliest date first."
+  },
+  "costConfidenceHigh": "High",
+  "@costConfidenceHigh": {
+    "description": "Confidence of a price estimate: high."
+  },
+  "costConfidenceMedium": "Medium",
+  "@costConfidenceMedium": {
+    "description": "Confidence of a price estimate: medium."
+  },
+  "costConfidenceLow": "Low",
+  "@costConfidenceLow": {
+    "description": "Confidence of a price estimate: low."
+  },
+  "costSourceTitle": "About this estimate",
+  "@costSourceTitle": {
+    "description": "Dialog title: where a home-country price comes from."
+  },
+  "costSourceIntro": "Typical prices in {country} come from published sources. Your own cost can be different.",
+  "@costSourceIntro": {
+    "description": "Dialog intro about the home price estimate.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "Nigeria"
+      }
+    }
+  },
+  "costSourceLabel": "Source",
+  "@costSourceLabel": {
+    "description": "Dialog field label: name of the published source."
+  },
+  "costSourceYear": "Price year",
+  "@costSourceYear": {
+    "description": "Dialog field label: year of the prices."
+  },
+  "costSourceConfidence": "Confidence",
+  "@costSourceConfidence": {
+    "description": "Dialog field label: how reliable the estimate is."
+  },
+  "costSourceWait": "Waiting times from",
+  "@costSourceWait": {
+    "description": "Dialog field label: source of the waiting-time figure."
+  },
+  "costSourceNone": "No published source is recorded for this estimate.",
+  "@costSourceNone": {
+    "description": "Dialog: the estimate has no source on record."
+  },
+  "costSourceDisclaimer": "This is an estimate, not a quote. Hospitals send you an exact price before you decide.",
+  "@costSourceDisclaimer": {
+    "description": "Dialog disclaimer under the source details."
+  },
+  "costSourceOpen": "Open source",
+  "@costSourceOpen": {
+    "description": "Dialog button: open the source web page."
+  },
+  "countryPickerTitle": "Choose your country",
+  "@countryPickerTitle": {
+    "description": "Country picker title."
+  },
+  "countryPickerSearch": "Search countries",
+  "@countryPickerSearch": {
+    "description": "Country picker search hint."
+  },
+  "countryPickerAuto": "Detect automatically",
+  "@countryPickerAuto": {
+    "description": "Country picker: let the app detect the country."
+  },
+  "earliestScreenTitle": "Earliest dates",
+  "@earliestScreenTitle": {
+    "description": "Screen title fallback: hospitals for a treatment, earliest date first."
+  },
+  "earliestIntro": "Hospitals offering this treatment, soonest available first. Pick up to 3 and ask them all for a quote.",
+  "@earliestIntro": {
+    "description": "Intro above the list of hospitals ordered by earliest date."
+  },
+  "earliestCompareCosts": "Compare costs with home",
+  "@earliestCompareCosts": {
+    "description": "Link to the detailed home vs India cost comparison."
+  },
+  "earliestEmptyTitle": "No hospitals listed yet",
+  "@earliestEmptyTitle": {
+    "description": "Empty state: no hospital offers this treatment yet."
+  },
+  "earliestEmptyMessage": "Search for the treatment or ask our coordinator to find a hospital for you.",
+  "@earliestEmptyMessage": {
+    "description": "Empty state message for the earliest-dates list."
+  },
+  "earliestAskCoordinator": "Dates on request",
+  "@earliestAskCoordinator": {
+    "description": "Hospital without published free dates."
+  },
+  "earliestSelectSemantics": "Ask {hospital} for a quote",
+  "@earliestSelectSemantics": {
+    "description": "Screen-reader label of the checkbox that selects a hospital for a quote request.",
+    "placeholders": {
+      "hospital": {
+        "type": "String",
+        "example": "Apollo Hospitals"
+      }
+    }
+  },
+  "quickQuoteMaxHospitals": "You can ask up to {max} hospitals at once.",
+  "@quickQuoteMaxHospitals": {
+    "description": "Snack bar when the patient selects too many hospitals.",
+    "placeholders": {
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "quickQuoteRequestFrom": "{count, plural, =0{Select a hospital} one{Request a quote} other{Request quotes from {count} hospitals}}",
+  "@quickQuoteRequestFrom": {
+    "description": "Button: request quotes from the selected hospitals.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "quickQuoteSendTo": "{count, plural, one{Send request} other{Send to {count} hospitals}}",
+  "@quickQuoteSendTo": {
+    "description": "Button: send the quote request to the selected hospitals.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "quickQuoteSlaNote": "Hospitals reply with a written quote within 48 hours. You can compare them side by side.",
+  "@quickQuoteSlaNote": {
+    "description": "Note on the quote request screen about the reply time."
+  },
+  "quickQuoteHospitals": "Hospitals ({count} of {max})",
+  "@quickQuoteHospitals": {
+    "description": "Section heading with the number of selected hospitals.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "quickQuoteAddHospital": "Add a hospital",
+  "@quickQuoteAddHospital": {
+    "description": "Button: add another hospital to the quote request."
+  },
+  "quickQuoteRemoveHospital": "Remove {hospital}",
+  "@quickQuoteRemoveHospital": {
+    "description": "Tooltip: remove a hospital from the quote request.",
+    "placeholders": {
+      "hospital": {
+        "type": "String",
+        "example": "Apollo Hospitals"
+      }
+    }
+  },
+  "quickQuoteSearchHospitals": "Search hospitals",
+  "@quickQuoteSearchHospitals": {
+    "description": "Hint of the hospital search field."
+  },
+  "quickQuoteNoMoreHospitals": "No other hospitals found.",
+  "@quickQuoteNoMoreHospitals": {
+    "description": "Hospital picker: nothing else to add."
+  },
+  "quickQuoteReports": "Medical reports",
+  "@quickQuoteReports": {
+    "description": "Section heading: reports to share with the hospitals."
+  },
+  "quickQuoteReportsHint": "Hospitals quote faster and more accurately with your reports.",
+  "@quickQuoteReportsHint": {
+    "description": "Hint under the reports heading."
+  },
+  "quickQuoteUpload": "Upload a report",
+  "@quickQuoteUpload": {
+    "description": "Button: upload a new medical report (PDF or photo)."
+  },
+  "quickQuoteConsentMany": "I agree to share my details and the selected reports with {hospitals} so they can prepare quotes.",
+  "@quickQuoteConsentMany": {
+    "description": "Consent checkbox for a request to several hospitals.",
+    "placeholders": {
+      "hospitals": {
+        "type": "String",
+        "example": "Apollo Hospitals, Fortis"
+      }
+    }
+  },
+  "quoteGroupTitle": "Compare quotes",
+  "@quoteGroupTitle": {
+    "description": "Screen title: quotes from several hospitals side by side."
+  },
+  "quoteGroupCompare": "Compare all quotes",
+  "@quoteGroupCompare": {
+    "description": "Link from a case to the side-by-side quote comparison."
+  },
+  "quoteGroupReplied": "{answered} of {total} hospitals have replied",
+  "@quoteGroupReplied": {
+    "description": "Progress of a multi-hospital quote request.",
+    "placeholders": {
+      "answered": {
+        "type": "int",
+        "example": "1"
+      },
+      "total": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "quoteGroupCheapest": "Lowest price",
+  "@quoteGroupCheapest": {
+    "description": "Badge on the cheapest quote."
+  },
+  "quoteGroupStay": "{days, plural, one{1 day stay} other{{days} days stay}}",
+  "@quoteGroupStay": {
+    "description": "Estimated stay in India included in a quote.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "quoteGroupCurrencyNote": "Totals in {currency} are approximate. You pay the hospital's price shown under each total.",
+  "@quoteGroupCurrencyNote": {
+    "description": "Note under the quote comparison about converted totals.",
+    "placeholders": {
+      "currency": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "quoteGroupAcceptConfirm": "Accept the quote from {hospital}? You can then choose your admission date.",
+  "@quoteGroupAcceptConfirm": {
+    "description": "Confirmation before accepting a quote.",
+    "placeholders": {
+      "hospital": {
+        "type": "String",
+        "example": "Apollo Hospitals"
+      }
+    }
+  },
+  "guardianTitle": "Consent from a parent or guardian",
+  "@guardianTitle": {
+    "description": "Sheet title: a parent / legal guardian must consent for a patient under 18."
+  },
+  "guardianIntro": "You are under 18. Before we can read reports with AI, record voice notes or book treatment, a parent or legal guardian must give consent. Our team verifies the guardian before anything continues.",
+  "@guardianIntro": {
+    "description": "Explanation shown to a minor when guardian consent is needed."
+  },
+  "guardianAddConsent": "Add guardian consent",
+  "@guardianAddConsent": {
+    "description": "Button: open the guardian consent form."
+  },
+  "guardianName": "Guardian's full name",
+  "@guardianName": {
+    "description": "Form field: the guardian's name."
+  },
+  "guardianNameRequired": "Enter the guardian's name",
+  "@guardianNameRequired": {
+    "description": "Validation: guardian name missing."
+  },
+  "guardianRelationship": "Relationship to you",
+  "@guardianRelationship": {
+    "description": "Form field: the guardian's relationship to the patient."
+  },
+  "guardianRelationshipParent": "Parent",
+  "@guardianRelationshipParent": {
+    "description": "Relationship option: parent."
+  },
+  "guardianRelationshipLawful": "Legal guardian",
+  "@guardianRelationshipLawful": {
+    "description": "Relationship option: legal guardian appointed by law or a court."
+  },
+  "guardianEmail": "Guardian's email",
+  "@guardianEmail": {
+    "description": "Form field: guardian's email address."
+  },
+  "guardianEmailInvalid": "Enter a valid email address",
+  "@guardianEmailInvalid": {
+    "description": "Validation: invalid email."
+  },
+  "guardianPhone": "Guardian's phone (with country code)",
+  "@guardianPhone": {
+    "description": "Form field: guardian's phone number."
+  },
+  "guardianContactRequired": "Give the guardian's email or phone number.",
+  "@guardianContactRequired": {
+    "description": "Validation: no contact for the guardian."
+  },
+  "guardianDob": "Guardian's date of birth",
+  "@guardianDob": {
+    "description": "Button: pick the guardian's date of birth."
+  },
+  "guardianDobValue": "Born {date}",
+  "@guardianDobValue": {
+    "description": "Picked guardian date of birth.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12 Mar 1980"
+      }
+    }
+  },
+  "guardianDobRequired": "Pick the guardian's date of birth.",
+  "@guardianDobRequired": {
+    "description": "Validation: guardian date of birth missing."
+  },
+  "guardianVerification": "How we verify the guardian",
+  "@guardianVerification": {
+    "description": "Form field: verification method."
+  },
+  "guardianVerifyVideo": "Short video call",
+  "@guardianVerifyVideo": {
+    "description": "Verification method: a video call with our team."
+  },
+  "guardianVerifyId": "Photo of an ID document",
+  "@guardianVerifyId": {
+    "description": "Verification method: guardian's ID document."
+  },
+  "guardianVerifyDigilocker": "DigiLocker (India)",
+  "@guardianVerifyDigilocker": {
+    "description": "Verification method: India's DigiLocker. Keep the name DigiLocker."
+  },
+  "guardianVerifyInPerson": "In person at the hospital",
+  "@guardianVerifyInPerson": {
+    "description": "Verification method: in person."
+  },
+  "guardianDeclaration": "I am the parent or legal guardian of this patient, I am 18 or older, and I consent to the processing of their health data and to their treatment being arranged.",
+  "@guardianDeclaration": {
+    "description": "Declaration the guardian must tick. Legal wording."
+  },
+  "guardianDeclarationRequired": "The guardian must tick the declaration.",
+  "@guardianDeclarationRequired": {
+    "description": "Validation: declaration not ticked."
+  },
+  "guardianSubmit": "Send for verification",
+  "@guardianSubmit": {
+    "description": "Button: submit the guardian consent."
+  },
+  "guardianAfterSubmit": "We will contact the guardian to verify. You will be notified when it is done.",
+  "@guardianAfterSubmit": {
+    "description": "Note under the guardian consent submit button."
+  },
+  "guardianSent": "Thank you. We will verify the guardian soon.",
+  "@guardianSent": {
+    "description": "Snack bar after the guardian consent was sent."
+  },
+  "aftercareFlagFever": "Fever",
+  "@aftercareFlagFever": {
+    "description": "Check-in red flag: fever."
+  },
+  "aftercareFlagBreathlessness": "Breathlessness",
+  "@aftercareFlagBreathlessness": {
+    "description": "Check-in red flag: shortness of breath."
+  },
+  "aftercareFlagSeverePain": "Severe pain",
+  "@aftercareFlagSeverePain": {
+    "description": "Check-in red flag: pain 8 or more out of 10."
+  },
+  "aftercareFlagWound": "Wound problem",
+  "@aftercareFlagWound": {
+    "description": "Check-in red flag: redness, swelling, discharge, bleeding or opening of the wound."
+  },
+  "aftercareMedsAll": "All medicines",
+  "@aftercareMedsAll": {
+    "description": "Medication adherence answer: taking all prescribed medicines."
+  },
+  "aftercareMedsSome": "Some medicines",
+  "@aftercareMedsSome": {
+    "description": "Medication adherence answer: taking some of them."
+  },
+  "aftercareMedsNone": "No medicines",
+  "@aftercareMedsNone": {
+    "description": "Medication adherence answer: taking none."
+  },
+  "aftercareCheckinDay": "Day {day} check-in",
+  "@aftercareCheckinDay": {
+    "description": "Recovery check-in title: days after discharge.",
+    "placeholders": {
+      "day": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "aftercarePainValue": "Pain {pain}/10",
+  "@aftercarePainValue": {
+    "description": "Check-in answer: pain score.",
+    "placeholders": {
+      "pain": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "aftercareMedsValue": "Medicines: {value}",
+  "@aftercareMedsValue": {
+    "description": "Check-in answer: medication adherence.",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "All medicines"
+      }
+    }
+  },
+  "aftercareAnswerNow": "Answer now",
+  "@aftercareAnswerNow": {
+    "description": "Button: answer a due recovery check-in."
+  },
+  "aftercareNotAnswered": "Not answered yet",
+  "@aftercareNotAnswered": {
+    "description": "Check-in status: not answered."
+  },
+  "aftercareCheckinsTitle": "Recovery check-ins",
+  "@aftercareCheckinsTitle": {
+    "description": "Section title: the patient's recovery check-ins after discharge."
+  },
+  "aftercareHospitalCheckinsHint": "Answers from the patient after discharge. Red flags are shown first.",
+  "@aftercareHospitalCheckinsHint": {
+    "description": "Hospital portal hint above the check-ins."
+  },
+  "aftercareNoCheckins": "No check-ins yet.",
+  "@aftercareNoCheckins": {
+    "description": "Empty state of the check-ins list."
+  },
+  "aftercareRedFlagCount": "{count, plural, one{1 check-in with red flags} other{{count} check-ins with red flags}}",
+  "@aftercareRedFlagCount": {
+    "description": "Hospital badge: number of check-ins reporting warning signs.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "reviewBannerEyebrow": "How was your treatment?",
+  "@reviewBannerEyebrow": {
+    "description": "Home banner eyebrow inviting a review."
+  },
+  "reviewBannerTitle": "Rate {hospital}",
+  "@reviewBannerTitle": {
+    "description": "Home banner title: rate the hospital.",
+    "placeholders": {
+      "hospital": {
+        "type": "String",
+        "example": "Apollo Hospitals"
+      }
+    }
+  },
+  "reviewBannerSubtitle": "Your review helps other patients choose",
+  "@reviewBannerSubtitle": {
+    "description": "Home banner subtitle for the review prompt."
+  },
+  "guestFreeEyebrow": "Free before you register",
+  "@guestFreeEyebrow": {
+    "description": "Home banner eyebrow for the free consultation."
+  },
+  "guestFreeTitle": "Free 15-minute video consultation",
+  "@guestFreeTitle": {
+    "description": "Home banner / screen title: one free video call with a medical coordinator."
+  },
+  "guestFreeSubtitle": "Talk to a medical coordinator about your options",
+  "@guestFreeSubtitle": {
+    "description": "Home banner subtitle for the free consultation."
+  },
+  "reviewFormTitle": "Rate your hospital",
+  "@reviewFormTitle": {
+    "description": "Screen title: write a review after treatment."
+  },
+  "reviewFormEditTitle": "Edit your review",
+  "@reviewFormEditTitle": {
+    "description": "Screen title: edit a pending review."
+  },
+  "reviewFormRatingLabel": "Your rating",
+  "@reviewFormRatingLabel": {
+    "description": "Label above the star rating."
+  },
+  "reviewFormRatingRequired": "Choose 1 to 5 stars.",
+  "@reviewFormRatingRequired": {
+    "description": "Validation: no star rating chosen."
+  },
+  "reviewFormAboutDoctor": "This review is also about {doctor}",
+  "@reviewFormAboutDoctor": {
+    "description": "Switch: link the review to the treating doctor.",
+    "placeholders": {
+      "doctor": {
+        "type": "String",
+        "example": "Dr. Rao"
+      }
+    }
+  },
+  "reviewFormTitleLabel": "Title (optional)",
+  "@reviewFormTitleLabel": {
+    "description": "Review form field: short title."
+  },
+  "reviewFormBodyLabel": "Your experience (optional)",
+  "@reviewFormBodyLabel": {
+    "description": "Review form field: review text."
+  },
+  "reviewFormBodyHint": "Care, communication, cleanliness, help with travel…",
+  "@reviewFormBodyHint": {
+    "description": "Hint of the review text field."
+  },
+  "reviewFormModerationNote": "Reviews are checked before they are published. Do not include medical record numbers or other people's personal details.",
+  "@reviewFormModerationNote": {
+    "description": "Note under the review form about moderation."
+  },
+  "reviewFormSubmit": "Send review",
+  "@reviewFormSubmit": {
+    "description": "Button: submit the review."
+  },
+  "reviewFormThanks": "Thank you! Your review will appear after a quick check.",
+  "@reviewFormThanks": {
+    "description": "Snack bar after sending a review."
+  },
+  "reviewFormUpdated": "Review updated.",
+  "@reviewFormUpdated": {
+    "description": "Snack bar after editing a review."
+  },
+  "reviewFormNotEligibleTitle": "Nothing to review",
+  "@reviewFormNotEligibleTitle": {
+    "description": "Empty state: this booking cannot be reviewed (already reviewed or not completed)."
+  },
+  "reviewFormNotEligibleMessage": "You can review a hospital after your treatment there is completed, once per booking.",
+  "@reviewFormNotEligibleMessage": {
+    "description": "Empty state message for the review form."
+  },
+  "myReviewsTitle": "My reviews",
+  "@myReviewsTitle": {
+    "description": "Screen / profile row title: the patient's own reviews."
+  },
+  "myReviewsSubtitle": "Rate hospitals after treatment",
+  "@myReviewsSubtitle": {
+    "description": "Profile row subtitle for 'My reviews'."
+  },
+  "myReviewsToWrite": "Waiting for your review",
+  "@myReviewsToWrite": {
+    "description": "Section: completed bookings not reviewed yet."
+  },
+  "myReviewsWritten": "Your reviews",
+  "@myReviewsWritten": {
+    "description": "Section: reviews the patient wrote."
+  },
+  "myReviewsEmpty": "You have not written any reviews yet.",
+  "@myReviewsEmpty": {
+    "description": "Empty state of the patient's reviews."
+  },
+  "myReviewsPending": "Waiting for check",
+  "@myReviewsPending": {
+    "description": "Review status: pending moderation."
+  },
+  "myReviewsPublished": "Published",
+  "@myReviewsPublished": {
+    "description": "Review status: published."
+  },
+  "myReviewsHidden": "Not published",
+  "@myReviewsHidden": {
+    "description": "Review status: hidden by moderators."
+  },
+  "myReviewsHiddenReason": "Reason: {reason}",
+  "@myReviewsHiddenReason": {
+    "description": "Why moderators did not publish the review.",
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "Contains personal details"
+      }
+    }
+  },
+  "myReviewsDeleteTitle": "Delete this review?",
+  "@myReviewsDeleteTitle": {
+    "description": "Confirm dialog title."
+  },
+  "myReviewsDeleteBody": "You can write a new one for the same treatment afterwards.",
+  "@myReviewsDeleteBody": {
+    "description": "Confirm dialog body for deleting a pending review."
+  },
+  "aftercareTitle": "Aftercare",
+  "@aftercareTitle": {
+    "description": "Screen / link title: care after discharge (follow-up calls, recovery check-ins)."
+  },
+  "aftercareLinkSubtitle": "Follow-up video calls and recovery check-ins",
+  "@aftercareLinkSubtitle": {
+    "description": "Subtitle of the Aftercare link."
+  },
+  "aftercareEmptyTitle": "No aftercare yet",
+  "@aftercareEmptyTitle": {
+    "description": "Empty state of the aftercare screen."
+  },
+  "aftercareEmptyMessage": "After your treatment, your follow-up video calls and recovery check-ins appear here.",
+  "@aftercareEmptyMessage": {
+    "description": "Empty state message of the aftercare screen."
+  },
+  "aftercareDueTitle": "Check-ins to answer",
+  "@aftercareDueTitle": {
+    "description": "Section: recovery check-ins due now."
+  },
+  "aftercareDueHint": "A few quick questions help your doctor follow your recovery.",
+  "@aftercareDueHint": {
+    "description": "Hint above due check-ins."
+  },
+  "aftercareFollowupsTitle": "Follow-up video calls",
+  "@aftercareFollowupsTitle": {
+    "description": "Section: follow-up video consultations with the treating doctor."
+  },
+  "aftercareNoFollowups": "No follow-up calls planned right now.",
+  "@aftercareNoFollowups": {
+    "description": "Empty state of follow-up calls."
+  },
+  "aftercareFollowup": "Follow-up call",
+  "@aftercareFollowup": {
+    "description": "Title of a follow-up video consultation."
+  },
+  "aftercareFollowupDay": "Day {day} follow-up",
+  "@aftercareFollowupDay": {
+    "description": "Title of a planned follow-up call, days after discharge.",
+    "placeholders": {
+      "day": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "aftercareTimeToConfirm": "Time to be confirmed by the hospital",
+  "@aftercareTimeToConfirm": {
+    "description": "Follow-up call without a time yet."
+  },
+  "aftercareAround": "Around {date} — the hospital confirms the time",
+  "@aftercareAround": {
+    "description": "Follow-up call planned around a date.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12 Dec 2026"
+      }
+    }
+  },
+  "aftercareJoinCall": "Join video call",
+  "@aftercareJoinCall": {
+    "description": "Button: open the video call link."
+  },
+  "aftercareLinkLater": "The video link appears here once the time is confirmed.",
+  "@aftercareLinkLater": {
+    "description": "Note under an unconfirmed video call."
+  },
+  "aftercareCouldNotOpen": "Could not open the video call link.",
+  "@aftercareCouldNotOpen": {
+    "description": "Error: the meeting link could not be opened."
+  },
+  "aftercareDischarged": "Discharged {date}",
+  "@aftercareDischarged": {
+    "description": "Date the patient left hospital.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "3 Nov 2026"
+      }
+    }
+  },
+  "aftercareUntil": "Follow-up calls available until {date}",
+  "@aftercareUntil": {
+    "description": "Last day a follow-up call can be requested.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "3 Nov 2027"
+      }
+    }
+  },
+  "aftercareRequestFollowup": "Request a follow-up call",
+  "@aftercareRequestFollowup": {
+    "description": "Button: ask the hospital for another follow-up video call."
+  },
+  "aftercarePreferredTime": "Preferred date and time (optional)",
+  "@aftercarePreferredTime": {
+    "description": "Button: pick a preferred time for the follow-up call."
+  },
+  "aftercareFollowupNotes": "What would you like to discuss? (optional)",
+  "@aftercareFollowupNotes": {
+    "description": "Field: notes for the follow-up call."
+  },
+  "aftercareSendRequest": "Send request",
+  "@aftercareSendRequest": {
+    "description": "Button: send the follow-up request."
+  },
+  "aftercareFollowupRequested": "Request sent. The hospital will confirm a time.",
+  "@aftercareFollowupRequested": {
+    "description": "Snack bar after requesting a follow-up call."
+  },
+  "aftercareUpcomingTitle": "Upcoming check-ins",
+  "@aftercareUpcomingTitle": {
+    "description": "Section: check-ins due later."
+  },
+  "aftercareCheckinIntro": "How are you feeling today? Your answers go to your hospital and care coordinator.",
+  "@aftercareCheckinIntro": {
+    "description": "Intro of the check-in form."
+  },
+  "aftercareQFever": "Do you have a fever?",
+  "@aftercareQFever": {
+    "description": "Check-in question: fever."
+  },
+  "aftercareQBreathless": "Are you short of breath?",
+  "@aftercareQBreathless": {
+    "description": "Check-in question: breathlessness."
+  },
+  "aftercareQWound": "Any problem with your wound?",
+  "@aftercareQWound": {
+    "description": "Check-in question: wound concerns."
+  },
+  "aftercareQWoundHint": "Redness, swelling, discharge, bleeding or the wound opening",
+  "@aftercareQWoundHint": {
+    "description": "Hint for the wound question."
+  },
+  "aftercareQMeds": "Are you taking your medicines as prescribed?",
+  "@aftercareQMeds": {
+    "description": "Check-in question: medication adherence."
+  },
+  "aftercareQNotes": "Anything else? (optional)",
+  "@aftercareQNotes": {
+    "description": "Check-in free-text field."
+  },
+  "aftercareCheckinSend": "Send check-in",
+  "@aftercareCheckinSend": {
+    "description": "Button: submit the check-in."
+  },
+  "aftercareCheckinThanks": "Thank you. Your answers were sent.",
+  "@aftercareCheckinThanks": {
+    "description": "Snack bar after a check-in without warning signs."
+  },
+  "aftercareEmergencyNote": "If you feel very unwell, do not wait: call your local emergency number.",
+  "@aftercareEmergencyNote": {
+    "description": "Safety note under the check-in form."
+  },
+  "aftercareUrgentTitle": "Please get medical help",
+  "@aftercareUrgentTitle": {
+    "description": "Dialog title when a check-in reports warning signs."
+  },
+  "aftercareUrgentBody": "Your answers include warning signs. Your hospital and care coordinator have been alerted and will contact you. If you feel very unwell, call emergency services now.",
+  "@aftercareUrgentBody": {
+    "description": "Dialog body for red-flag check-in answers. Must not promise an ambulance."
+  },
+  "aftercareUrgentOk": "I understand",
+  "@aftercareUrgentOk": {
+    "description": "Dialog button: close the urgent message."
+  },
+  "aftercareUrgentSos": "SOS / emergency",
+  "@aftercareUrgentSos": {
+    "description": "Dialog button: start the SOS emergency flow."
+  },
+  "visaGuideTitle": "Visa guide",
+  "@visaGuideTitle": {
+    "description": "Screen / link title: how to get a visa for treatment in India."
+  },
+  "visaGuideLinkSubtitle": "Which visa you need, documents and timing",
+  "@visaGuideLinkSubtitle": {
+    "description": "Subtitle of the visa guide link."
+  },
+  "visaGuidePickNationality": "Choose your nationality",
+  "@visaGuidePickNationality": {
+    "description": "Prompt / picker title: the passport country."
+  },
+  "visaGuidePickMessage": "The visa you need depends on your passport.",
+  "@visaGuidePickMessage": {
+    "description": "Empty state when no nationality is known."
+  },
+  "visaGuideFor": "For {country} passport holders",
+  "@visaGuideFor": {
+    "description": "Visa guide heading with the nationality.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "Nigeria"
+      }
+    }
+  },
+  "visaGuideRouteEvisa": "e-Medical visa (apply online)",
+  "@visaGuideRouteEvisa": {
+    "description": "Visa route: India's online e-Visa for medical treatment."
+  },
+  "visaGuideRouteEvisaBody": "Apply on the official Indian e-Visa website with the hospital's invitation letter. Attendants apply for an e-Medical Attendant visa.",
+  "@visaGuideRouteEvisaBody": {
+    "description": "Explanation of the e-Visa route."
+  },
+  "visaGuideRouteRegular": "Medical visa from an Indian embassy",
+  "@visaGuideRouteRegular": {
+    "description": "Visa route: regular paper visa from an Indian embassy or consulate."
+  },
+  "visaGuideRouteRegularBody": "Apply at the Indian embassy or consulate with the hospital's invitation letter. Start early: it takes longer than an e-Visa.",
+  "@visaGuideRouteRegularBody": {
+    "description": "Explanation of the regular visa route."
+  },
+  "visaGuideRouteNone": "No visa needed",
+  "@visaGuideRouteNone": {
+    "description": "Visa route: nationals who do not need a visa for India."
+  },
+  "visaGuideRouteNoneBody": "You can travel to India for treatment without a visa. Carry your passport or national ID and the hospital's letter.",
+  "@visaGuideRouteNoneBody": {
+    "description": "Explanation when no visa is needed."
+  },
+  "visaGuideDefaultNote": "We do not have a specific guide for this country yet, so the general embassy route is shown. Please check the official website.",
+  "@visaGuideDefaultNote": {
+    "description": "Note when the visa guide falls back to the general route."
+  },
+  "visaGuideProcessing": "{days, plural, one{Usually 1 day to process} other{Usually {days} days to process}}",
+  "@visaGuideProcessing": {
+    "description": "Typical visa processing time.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "visaGuideAttendants": "{count, plural, =0{No attendants on this visa} one{Up to 1 attendant can travel with you} other{Up to {count} attendants can travel with you}}",
+  "@visaGuideAttendants": {
+    "description": "How many companions may get attendant visas.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "visaGuideOfficial": "Official visa website",
+  "@visaGuideOfficial": {
+    "description": "Button: open the official visa website."
+  },
+  "visaGuideChecklist": "Your checklist",
+  "@visaGuideChecklist": {
+    "description": "Section: documents to prepare for the visa."
+  },
+  "visaGuideChecklistProgress": "{done} of {total} ready",
+  "@visaGuideChecklistProgress": {
+    "description": "Checklist progress (ticks are kept on this device).",
+    "placeholders": {
+      "done": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "visaGuideOptional": "Optional",
+  "@visaGuideOptional": {
+    "description": "Checklist item that is not required."
+  },
+  "visaGuideDisclaimer": "Visa rules change. Always check the official website before you apply.",
+  "@visaGuideDisclaimer": {
+    "description": "Disclaimer at the end of the visa guide."
+  },
+  "guestFreeIntro": "Talk to one of our medical coordinators for 15 minutes on video, free of charge. They help you understand your options, costs and next steps. It is not a medical diagnosis.",
+  "@guestFreeIntro": {
+    "description": "Intro of the free consultation flow."
+  },
+  "guestFreeAfterResults": "Go through your results with a medical coordinator",
+  "@guestFreeAfterResults": {
+    "description": "Card under AI results inviting a guest to the free call."
+  },
+  "guestNameLabel": "Your full name",
+  "@guestNameLabel": {
+    "description": "Field: the guest's name."
+  },
+  "guestContactIntro": "Where can we send a 6-digit code and your call details?",
+  "@guestContactIntro": {
+    "description": "Contact step intro."
+  },
+  "guestChannelEmail": "Email",
+  "@guestChannelEmail": {
+    "description": "Contact channel: email."
+  },
+  "guestChannelPhone": "Phone",
+  "@guestChannelPhone": {
+    "description": "Contact channel: phone (SMS)."
+  },
+  "guestEmailLabel": "Email address",
+  "@guestEmailLabel": {
+    "description": "Field: email."
+  },
+  "guestPhoneLabel": "Phone number with country code",
+  "@guestPhoneLabel": {
+    "description": "Field: phone."
+  },
+  "guestEmailInvalid": "Enter a valid email address.",
+  "@guestEmailInvalid": {
+    "description": "Validation: invalid email."
+  },
+  "guestPhoneInvalid": "Enter your phone number with the country code, e.g. +234 803 123 4567.",
+  "@guestPhoneInvalid": {
+    "description": "Validation: invalid phone number."
+  },
+  "guestSendCode": "Send code",
+  "@guestSendCode": {
+    "description": "Button: send the verification code."
+  },
+  "guestSmsUnavailable": "Text messages are not available yet — please use your email address.",
+  "@guestSmsUnavailable": {
+    "description": "SMS verification is not available; use email."
+  },
+  "guestCodeIntro": "Enter the 6-digit code we sent to {contact}.",
+  "@guestCodeIntro": {
+    "description": "Code step intro.",
+    "placeholders": {
+      "contact": {
+        "type": "String",
+        "example": "a***@example.com"
+      }
+    }
+  },
+  "guestCodeLabel": "6-digit code",
+  "@guestCodeLabel": {
+    "description": "Field: verification code."
+  },
+  "guestVerify": "Verify",
+  "@guestVerify": {
+    "description": "Button: check the code."
+  },
+  "guestResendCode": "Send a new code",
+  "@guestResendCode": {
+    "description": "Button: request another code."
+  },
+  "guestCodeInvalid": "That code is not right.",
+  "@guestCodeInvalid": {
+    "description": "Wrong verification code."
+  },
+  "guestCodeInvalidLeft": "{left, plural, =0{That code is not right. Ask for a new code.} one{That code is not right. 1 attempt left.} other{That code is not right. {left} attempts left.}}",
+  "@guestCodeInvalidLeft": {
+    "description": "Wrong code with remaining attempts.",
+    "placeholders": {
+      "left": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "guestCodeExpired": "This code has expired. Send a new code.",
+  "@guestCodeExpired": {
+    "description": "Expired verification code."
+  },
+  "guestCodeTooMany": "Too many wrong codes. Send a new code.",
+  "@guestCodeTooMany": {
+    "description": "Too many wrong attempts."
+  },
+  "guestVerifyAgain": "Please verify your email or phone again.",
+  "@guestVerifyAgain": {
+    "description": "Verification expired before booking."
+  },
+  "guestDetailsIntro": "When would you like the call? Times are in your time zone; a coordinator confirms the exact time.",
+  "@guestDetailsIntro": {
+    "description": "Details step intro."
+  },
+  "guestPreferredDay": "Day: {date}",
+  "@guestPreferredDay": {
+    "description": "Button showing the preferred day.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "19 Nov 2026"
+      }
+    }
+  },
+  "guestFrom": "From {time}",
+  "@guestFrom": {
+    "description": "Preferred window start.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "10:00"
+      }
+    }
+  },
+  "guestTo": "To {time}",
+  "@guestTo": {
+    "description": "Preferred window end.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "13:00"
+      }
+    }
+  },
+  "guestTimezone": "Your time zone: {zone}",
+  "@guestTimezone": {
+    "description": "The device time zone sent with the request.",
+    "placeholders": {
+      "zone": {
+        "type": "String",
+        "example": "WAT (UTC+01:00)"
+      }
+    }
+  },
+  "guestQuestionLabel": "Your question (optional)",
+  "@guestQuestionLabel": {
+    "description": "Field: what the guest wants to ask."
+  },
+  "guestQuestionHint": "e.g. Is knee replacement possible for me, and how soon?",
+  "@guestQuestionHint": {
+    "description": "Hint of the question field."
+  },
+  "guestAttachScreening": "Share my AI screening results",
+  "@guestAttachScreening": {
+    "description": "Checkbox: attach the latest AI screening."
+  },
+  "guestBookCall": "Book my free call",
+  "@guestBookCall": {
+    "description": "Button: request the free consultation."
+  },
+  "guestNotEmergency": "Not for emergencies. If you need urgent help, call your local emergency number.",
+  "@guestNotEmergency": {
+    "description": "Safety note under the booking button."
+  },
+  "guestAlreadyUsedTitle": "Free call already used",
+  "@guestAlreadyUsedTitle": {
+    "description": "Title when the free consultation was already used."
+  },
+  "guestAlreadyUsed": "The free consultation can be used once per person and device. Create a free account to book more calls with doctors.",
+  "@guestAlreadyUsed": {
+    "description": "Explanation when the free consultation was already used."
+  },
+  "guestSeeMyCall": "See my call",
+  "@guestSeeMyCall": {
+    "description": "Button: open the status of the free call."
+  },
+  "guestNoCallTitle": "No call booked yet",
+  "@guestNoCallTitle": {
+    "description": "Status screen empty state."
+  },
+  "guestStatusRequested": "Request received",
+  "@guestStatusRequested": {
+    "description": "Free call status: requested, waiting for a time."
+  },
+  "guestStatusScheduled": "Your call is booked",
+  "@guestStatusScheduled": {
+    "description": "Free call status: scheduled."
+  },
+  "guestStatusCompleted": "Call completed",
+  "@guestStatusCompleted": {
+    "description": "Free call status: completed."
+  },
+  "guestStatusCancelled": "Call cancelled",
+  "@guestStatusCancelled": {
+    "description": "Free call status: cancelled or missed."
+  },
+  "guestScheduledAt": "{time} · {minutes} minutes",
+  "@guestScheduledAt": {
+    "description": "Scheduled time and length of the call.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "19 Nov 2026, 10:30"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "guestPreferredWindow": "You asked for {from} – {to}",
+  "@guestPreferredWindow": {
+    "description": "Preferred time window sent by the guest.",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "19 Nov 2026, 10:00"
+      },
+      "to": {
+        "type": "String",
+        "example": "13:00"
+      }
+    }
+  },
+  "guestCoordinator": "Coordinator: {name}",
+  "@guestCoordinator": {
+    "description": "Name of the medical coordinator.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Priya"
+      }
+    }
+  },
+  "guestWeWillContact": "We will send the details to {contact}.",
+  "@guestWeWillContact": {
+    "description": "Where the call details are sent.",
+    "placeholders": {
+      "contact": {
+        "type": "String",
+        "example": "a***@example.com"
+      }
+    }
+  },
+  "guestLinkLater": "A coordinator will confirm the time, and the video link appears here.",
+  "@guestLinkLater": {
+    "description": "Note while the call is not scheduled yet."
+  },
+  "guestAccountTitle": "Keep everything in one place",
+  "@guestAccountTitle": {
+    "description": "Card title inviting the guest to register."
+  },
+  "guestAccountBody": "Create a free account to save your results, ask hospitals for quotes and book treatment.",
+  "@guestAccountBody": {
+    "description": "Card body inviting the guest to register."
+  },
+  "guardianStatusTitle": "Guardian consent",
+  "@guardianStatusTitle": {
+    "description": "Profile row: consent of a parent / guardian for a patient under 18."
+  },
+  "guardianStatusVerified": "Verified · {name}",
+  "@guardianStatusVerified": {
+    "description": "Guardian consent verified.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Fatima Yusuf"
+      }
+    }
+  },
+  "guardianStatusPending": "Waiting for verification · {name}",
+  "@guardianStatusPending": {
+    "description": "Guardian consent submitted, not verified yet.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Fatima Yusuf"
+      }
+    }
+  },
+  "guardianStatusNeeded": "Needed because you are under 18 — tap to add",
+  "@guardianStatusNeeded": {
+    "description": "Guardian consent missing."
+  },
+  "inviteTitle": "Invitation letter",
+  "@inviteTitle": {
+    "description": "Hospital sheet title: visa invitation letter for a patient."
+  },
+  "inviteIntro": "All fields are optional: we fill in the booking, the doctor and the patient's companions. Generate, check the draft, then approve to send it to the patient.",
+  "@inviteIntro": {
+    "description": "Intro of the invitation letter form."
+  },
+  "inviteGenerate": "Generate invitation letter",
+  "@inviteGenerate": {
+    "description": "Button: create the draft letter."
+  },
+  "inviteRegenerate": "Generate again",
+  "@inviteRegenerate": {
+    "description": "Button: re-create the draft letter."
+  },
+  "inviteReview": "Review invitation letter",
+  "@inviteReview": {
+    "description": "Button: open the existing draft letter."
+  },
+  "invitePreview": "Preview draft",
+  "@invitePreview": {
+    "description": "Button: open / download the draft PDF."
+  },
+  "inviteApprove": "Approve and send",
+  "@inviteApprove": {
+    "description": "Button: approve the letter and send it to the patient."
+  },
+  "inviteApproved": "Letter approved and sent to the patient.",
+  "@inviteApproved": {
+    "description": "Snack bar after approving."
+  },
+  "inviteArrival": "Estimated arrival date",
+  "@inviteArrival": {
+    "description": "Button: pick the arrival date."
+  },
+  "inviteArrivalValue": "Arrival: {date}",
+  "@inviteArrivalValue": {
+    "description": "Picked arrival date.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2 Dec 2026"
+      }
+    }
+  },
+  "inviteDuration": "Estimated stay in India (days)",
+  "@inviteDuration": {
+    "description": "Field: length of stay."
+  },
+  "inviteAttendant": "Attendant",
+  "@inviteAttendant": {
+    "description": "Heading of an attendant's fields."
+  },
+  "inviteAttendantName": "Full name (as in passport)",
+  "@inviteAttendantName": {
+    "description": "Field: attendant name."
+  },
+  "inviteAttendantRelationship": "Relationship to the patient",
+  "@inviteAttendantRelationship": {
+    "description": "Field: attendant relationship."
+  },
+  "inviteAttendantPassport": "Passport number",
+  "@inviteAttendantPassport": {
+    "description": "Field: attendant passport number."
+  },
+  "inviteAddAttendant": "Add an attendant",
+  "@inviteAddAttendant": {
+    "description": "Button: add an attendant to the letter."
+  },
+  "inviteContactName": "Hospital contact name",
+  "@inviteContactName": {
+    "description": "Field: contact person on the letter."
+  },
+  "inviteContactPhone": "Contact phone",
+  "@inviteContactPhone": {
+    "description": "Field: contact phone."
+  },
+  "inviteContactEmail": "Contact email",
+  "@inviteContactEmail": {
+    "description": "Field: contact email."
+  },
+  "inviteMissingTitle": "The letter is missing:",
+  "@inviteMissingTitle": {
+    "description": "Heading of details the letter could not fill in."
+  },
+  "inviteMissingPassport": "Patient's passport number",
+  "@inviteMissingPassport": {
+    "description": "Missing detail: passport number."
+  },
+  "inviteMissingDob": "Patient's date of birth",
+  "@inviteMissingDob": {
+    "description": "Missing detail: date of birth."
+  },
+  "inviteMissingNationality": "Patient's nationality",
+  "@inviteMissingNationality": {
+    "description": "Missing detail: nationality."
+  },
+  "inviteMissingDoctor": "Treating doctor",
+  "@inviteMissingDoctor": {
+    "description": "Missing detail: treating doctor."
+  },
+  "inviteMissingArrival": "Arrival date",
+  "@inviteMissingArrival": {
+    "description": "Missing detail: arrival date."
+  },
+  "inviteMissingDuration": "Length of stay",
+  "@inviteMissingDuration": {
+    "description": "Missing detail: length of stay."
+  },
+  "inviteMissingTreatment": "Treatment",
+  "@inviteMissingTreatment": {
+    "description": "Missing detail: treatment."
   }
 }

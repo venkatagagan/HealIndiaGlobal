@@ -204,7 +204,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
     return PagedList<DoctorCard>(
       key: ValueKey('doctors|$q|${f.cacheKey}'),
       fetch: (page) =>
-          repo.doctors(q: q, specialty: f.specialty, language: f.language, gender: f.doctorGender, page: page),
+          repo.doctors(
+            q: q,
+            specialty: f.specialty,
+            language: f.language,
+            gender: f.doctorGender,
+            sort: f.sort == HospitalSort.soonest ? 'soonest' : null,
+            page: page,
+          ),
       empty: _emptyResults(context.l10n.searchNoDoctorsFound),
       itemBuilder: (context, d) => DoctorListTile(doctor: d, onTap: () => context.push(Routes.doctor(d.id))),
     );

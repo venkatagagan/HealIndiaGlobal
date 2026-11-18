@@ -67,3 +67,41 @@ class Money implements Comparable<Money> {
   @override
   String toString() => format();
 }
+
+/// `display_*` money from the API: an amount converted to the viewer's currency for display only
+/// (`{amount_minor, currency, fx_rate, approximate}`). Payments always use the original amount.
+class DisplayMoney {
+  const DisplayMoney({required this.minor, required this.currency, this.fxRate, this.approximate = true});
+
+  /// Reads `j[key]`; null when missing or malformed.
+  static DisplayMoney? read(Map<String, dynamic> j, String key) {
+    final v = j[key];
+    if (v is! Map) return null;
+    final m = v.map((k, value) => MapEntry(k.toString(), value));
+    final raw = m['amount_minor'];
+    final minor = raw is num ? raw.round() : int.tryParse('${raw ?? ''}');
+    final ccy = m['currency'];
+    if (minor == null || ccy is! String || ccy.length != 3) return null;
+    final approx = m['approximate'];
+    return DisplayMoney(
+      minor: minor,
+      currency: ccy.toUpperCase(),
+      fxRate: m['fx_rate']?.toString(),
+      approximate: approx is bool ? approx : true,
+    );
+  }
+
+  final int minor;
+  final String currency;
+  final String? fxRate;
+  final bool approximate;
+
+  Money get money => Money(minor, currency);
+
+  Map<String, dynamic> toJson() => {
+    'amount_minor': minor,
+    'currency': currency,
+    'fx_rate': ?fxRate,
+    'approximate': approximate,
+  };
+}

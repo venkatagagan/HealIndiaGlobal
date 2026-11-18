@@ -164,7 +164,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(Brand.name, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+                Text(context.l10n.appName, style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                 Text(
                   l10n.appTagline,
                   maxLines: 1,

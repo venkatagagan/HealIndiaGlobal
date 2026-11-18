@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/routes.dart';
+import '../aftercare/screens/aftercare_screen.dart';
 import 'agent_shell.dart';
 import 'screens/agent_bookings_screens.dart';
 import 'screens/agent_cases_screens.dart';
@@ -41,6 +42,9 @@ abstract final class AgentRoutes {
   static String caseDetail(String id) => '$home/cases/$id';
   static String book(String caseId, {required String quoteId}) => '${caseDetail(caseId)}/book?quote=$quoteId';
   static String booking(String id) => '$home/bookings/$id';
+
+  /// Aftercare of the agent's patients (follow-up calls, check-ins).
+  static const aftercare = '$home/aftercare';
 }
 
 /// Route tree of the agent shell, mounted by `core/router/app_router.dart` under [Routes.agentHome].
@@ -93,6 +97,7 @@ List<RouteBase> agentPortalRoutes() => [
         path: 'bookings/:id',
         builder: (_, s) => AgentBookingDetailScreen(bookingId: s.pathParameters['id']!),
       ),
+      GoRoute(path: 'aftercare', builder: (_, _) => const AftercareScreen(forAgent: true)),
     ],
   ),
 ];

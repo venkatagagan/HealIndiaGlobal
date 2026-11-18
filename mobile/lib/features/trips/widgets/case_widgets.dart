@@ -58,6 +58,10 @@ class CaseCard extends StatelessWidget {
             [c.hospital.name, ?c.hospital.city, if (c.doctor != null) c.doctor!.fullName].join(' · '),
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
+          if (c.awaitingQuote) ...[
+            const SizedBox(height: 10),
+            QuoteCountdown(dueAt: c.quoteDueAt!, overdue: c.quoteOverdue, dense: true),
+          ],
           if (q != null || c.booking != null) ...[
             const SizedBox(height: 10),
             Row(
@@ -65,7 +69,16 @@ class CaseCard extends StatelessWidget {
                 if (q != null) ...[
                   const Icon(Icons.request_quote_outlined, size: 16, color: AppColors.violet),
                   const SizedBox(width: 4),
-                  MoneyText(q.totalMinor, q.currency, style: context.text.labelLarge),
+                  Flexible(
+                    child: PriceText(
+                      q.totalMinor,
+                      q.currency,
+                      display: q.displayTotal,
+                      estimateWhenMissing: false,
+                      showOriginal: false,
+                      style: context.text.labelLarge,
+                    ),
+                  ),
                   const SizedBox(width: 12),
                 ],
                 if (c.booking != null) ...[
@@ -168,7 +181,15 @@ class QuoteCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    MoneyText(l.amountMinor, q.currency, style: context.text.bodyMedium),
+                    PriceText(
+                      l.amountMinor,
+                      q.currency,
+                      display: l.displayAmount,
+                      estimateWhenMissing: false,
+                      showOriginal: false,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      style: context.text.bodyMedium,
+                    ),
                   ],
                 ),
               ),
@@ -182,9 +203,12 @@ class QuoteCard extends StatelessWidget {
                   style: context.text.titleSmall,
                 ),
               ),
-              MoneyText(
+              PriceText(
                 q.totalMinor,
                 q.currency,
+                display: q.displayTotal,
+                estimateWhenMissing: false,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
             ],

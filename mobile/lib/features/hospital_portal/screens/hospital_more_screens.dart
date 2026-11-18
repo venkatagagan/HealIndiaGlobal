@@ -17,6 +17,7 @@ import '../../trips/services/file_actions.dart';
 import '../data/hospital_models.dart';
 import '../data/hospital_repository.dart';
 import '../hospital_routes.dart';
+import '../widgets/invitation_letter_sheet.dart';
 
 // ------------------------------------------------------------------------------------------- more
 
@@ -345,6 +346,23 @@ class _VisaSheetState extends ConsumerState<_VisaSheet> {
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: 8),
+          SecondaryButton(
+            key: const ValueKey('hospital-generate-invitation'),
+            label: v.invitationLetterDraftDocumentId == null ? l10n.inviteGenerate : l10n.inviteReview,
+            icon: Icons.auto_awesome_outlined,
+            onPressed: _busy
+                ? null
+                : () async {
+                    final approved = await showModalBottomSheet<bool>(
+                      context: context,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      builder: (_) => InvitationLetterSheet(visa: v),
+                    );
+                    if (approved == true && context.mounted) Navigator.of(context).pop(true);
+                  },
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<VisaStatus>(

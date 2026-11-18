@@ -9,6 +9,7 @@ import '../../../l10n/l10n.dart';
 
 /// Hospital sort options (`/hospitals?sort=`).
 enum HospitalSort {
+  soonest('soonest'),
   rating('rating'),
   price('price'),
   name('name');
@@ -19,6 +20,7 @@ enum HospitalSort {
 
   /// Label in the app's language.
   String localizedLabel(AppLocalizations l) => switch (this) {
+    HospitalSort.soonest => l.filtersSortSoonest,
     HospitalSort.rating => l.filtersSortTopRated,
     HospitalSort.price => l.filtersSortLowestPrice,
     HospitalSort.name => l.filtersSortName,
