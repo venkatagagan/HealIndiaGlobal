@@ -83,3 +83,91 @@ Review priorities:
   `AppError` messages without an `errors.<code>` key stay English (the client can translate by `code`).
 - Notification handlers added after this change in `messaging/handlers.py` still pass English `title`/`body`
   strings until they are converted to `title_key`/`body_key`.
+
+## Web portals and website
+
+All keys below exist in `ar`, `fr`, `bn` and `ru`. Review them in the admin portal (Translations, filter by
+app) or in the catalog files. Priority order: emergency, AI disclaimers / consent, payment and refunds,
+privacy and account deletion, everything medical.
+
+### Shared web UI (`web/packages/shared/src/locales/<lng>/`; app = the portal that shows it)
+
+- Emergency / care gates: `common:careGates.emergency.*`, `common:careGates.upgrade.body`.
+- AI and consent: `docai:consentAi`, `docai:disclaimer`, `docai:reviewHint`, `docai:criticalTitle`,
+  `docai:criticalHint`, `docai:emergencyHint`, `docai:redFlagsTitle`, `docai:sig_*`, `docai:flag_critical`,
+  `docai:confidence`, `voice:consentVoice`, `voice:consentText`, `voice:disclaimer`, `voice:emergencyTitle`,
+  `voice:emergencyBody`, `voice:urgentHint`, `voice:reviewHint`, `voice:micHint`.
+- Account deletion / privacy: `common:deleteAccount.*` (especially `keptDefault`, `whatKept`, `requestHint`).
+- Enum labels: `common:enums.consentKind.*`, `common:enums.paymentGateway.*`, `common:enums.paymentOption.*`,
+  `common:enums.urgency.*` (bn renders `emergency` as "অতি জরুরি"), finance states without a standard term
+  (`ledgerTxnType.cancellation_retention`, `jobStatus.dead`, `reversed`, `needs_reconciliation`).
+- Translator flags: "Do not wait to travel" is free in ru/bn; ru `docai:disclaimer` strength; ar
+  `doctorGenderPref` reads "male/female doctor"; bn `register.errors.countryInvalid` uses BD as the example.
+
+### Patient web (`patient:`)
+
+- Emergency: `support.sos.*`, `support.helplines.*`, `support.emergencyDialog.*`, `dashboard.quick.emergency*`,
+  `profile.emergency.*`, `trip.hub.callHelpline`, `trip.hub.helpTitle`, `screening.wizard.disclaimer`.
+- AI: `screening.preferences.useAi*`, `screening.preferences.aiInfo*`, `screening.preferences.aiConsent`,
+  `screening.wizard.errors.aiConsent`, `screening.wizard.voicePrompt`, `documents.ai.*`, `documents.aiReading.*`,
+  `profile.consents.copy.ai_processing`.
+- Consent / privacy: `profile.consents.*`, `profile.medical.policy*`, `profile.passport.description`,
+  `profile.companions.storedEncrypted`, `documents.description`, `documents.table.deleteBody`, `cases.new.consent*`,
+  `screening.requestQuote.consent*`, `screening.requestQuote.info`, `careGates.guest.description`.
+- Payment / refund / insurance: `pay.*`, `bookings.refund.*`, `bookings.cancel.*`, `bookings.detail.refundedSoFar`,
+  `bookings.detail.paymentNeededText`, `bookings.detail.insuranceClaim`, `book.options.*`, `book.taxesNote`,
+  `book.insurance*`, `cases.detail.accept*`, `cases.detail.paymentOption.*`, `costComparison.*`, `razorpay.*`.
+- Medical wording: `screening.symptoms.*`, `screening.bodyMap.*`, `screening.pain.*`, `screening.duration.*`,
+  `profile.medical.*`, `support.guide.health.*`, success/savings claims (`screening.match.*`,
+  `screening.compare.rows.successRate`, `screening.new.savePct`).
+- Visa: `trip.request.visa.*`, `trip.hub.visaIntro`, `trip.hub.invitationLetter`.
+- Arabic `_one`/`_two` plural forms keep a numeric `{{count}}`; a native reviewer may prefer the singular/dual
+  wording without the number.
+
+### Agent portal (`agent:`)
+
+- Consent / privacy: `consent.*`, `patientForm.consent*`, `enquiryDialog.consent*`, `screeningForm.consent*`,
+  `screeningForm.useAiHint`, `patientDetail.documents.aiIntro`.
+- Medical / AI / emergency: `screeningResult.*` (emergency, disclaimer, conditions, red flags),
+  `screeningForm.*` (pain, severity areas, AI reading), `quotes.gate.emergency`, `patientForm.medicalHistory*`,
+  `patientForm.allergies*`.
+- Payment / commission / KYC: `bookCase.*`, `payBooking.*`, `razorpay.*`, `caseDetail.cancelBookingDescription`,
+  `commissions.*` ("reversed" = clawed back), `payoutAccount.*`, `referral.howBody`, `layout.kyc.*`,
+  `profile.kyc.*`.
+
+### Hospital portal (`hospital:`)
+
+- Screening / AI: `cases.screening.*`, `cases.detail.readings.*`, `cases.detail.patient.medicalSummary`.
+- Patient-facing messages: `cases.detail.declineDialog.*`, `cases.documents.rejectDialog.*`.
+- Quotes / pricing: `cases.quoteForm.*` (theatre and nursing terms), `cases.detail.quote.*`, `procedures.*`
+  (success rate, indicative prices, inclusions).
+- Admission / discharge / refunds: `bookings.detail.*`, `bookings.payment.*`, `bookings.visa.*`.
+- Payouts / tax / banking: `finance.*` (GST, TDS 194-O, clawback, UTR, IFSC/SWIFT errors).
+- Doctors / registration: `doctors.form.*`, `doctors.registration.*`; `availability.kindShort.*` one-letter codes.
+- Onboarding KYC / legal: `onboarding.*`, `team.roleHints.*`.
+
+### Admin portal (`admin:`, `finance:`)
+
+- `admin:caseDetail.emergency.*`, `admin:caseDetail.screening.*`, `admin:caseDetail.payment.*`,
+  `admin:travel.sos.*`, `admin:travel.visa.*`, `admin:bookings.drawer.*`, `admin:hospitalDetail.*Dialog.*`,
+  `admin:settings.items.*`, `admin:settings.refundPolicy.*`, `admin:websiteSettings.footer.*`,
+  `admin:websiteSettings.marketing.*`, `admin:websiteSettings.contact.emergency*`, `admin:websiteSettings.analytics.*`.
+- Finance (staff-only, accounting vocabulary): `finance:reviews.*` (mark paid, partial acceptance / return,
+  refund thresholds, payout failure), `finance:refunds.*`, `finance:refundDialog.*`, `finance:settlementUi.*`,
+  `finance:batchDetail.*`, `finance:overview.flow.*`, `finance:adjustments.kinds.*.help`. French uses
+  "contre-passation" for a bank-returned payout and "restitution" for a full return; the Russian payout-failure
+  wording is the least certain.
+
+### Website (`app = website`, dotted dictionary keys)
+
+- Medical / AI disclaimers: `footer.disclaimer`, `footer.disclaimerShort`, `footer.accreditationNote`,
+  `home.*` trust and savings notes, `procedure.priceNote`, `procedure.disclaimer`, `procedure.successRate*`,
+  `procedure.faq.*`, `doctors.successRate*`, `about.{not,ai,privacy,hospitals}`, `review.*`,
+  `destinations.verifyNote`, `guides.visaVerify`.
+- Emergency: `contact.helplineEmergency`, `contact.callNumber`, `contact.medicalWarning`.
+- Privacy / consent / legal: `consent.*`, `footer.cookies`, `footer.trustPrivacy`, `contact.privacyNote`,
+  `auth.acceptTerms`, `auth.secureNote`, `legal.*`, `accountDeletion.*` (menu labels in `steps.1-2` must match the
+  portal and app).
+- Payment / refund: `legal.placeholders.refunds.*`, `home.trust.priceBody`, `home.savingsNote`,
+  `forHospitals.*.termsNote`, `forAgents.*.termsNote`.
+- Long-form guides, cost guides, patient stories and procedure x city pages stay English (see website/README.md).
