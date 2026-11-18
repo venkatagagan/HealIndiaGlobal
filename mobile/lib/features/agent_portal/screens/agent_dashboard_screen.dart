@@ -10,8 +10,10 @@ import '../../../l10n/l10n.dart';
 import '../agent_routes.dart';
 import '../data/agent_models.dart';
 import '../data/agent_repository.dart';
+import '../data/crm_repository.dart';
 import '../shared/portal_account_menu.dart';
 import '../shared/portal_widgets.dart';
+import 'agent_leads_screens.dart';
 
 /// Agent dashboard: KPIs, monthly trend, quick actions and recent cases.
 class AgentDashboardScreen extends ConsumerWidget {
@@ -32,13 +34,15 @@ class AgentDashboardScreen extends ConsumerWidget {
         onRefresh: () async {
           ref
             ..invalidate(agentDashboardProvider)
-            ..invalidate(agentProfileProvider);
+            ..invalidate(agentProfileProvider)
+            ..invalidate(leadPipelineProvider);
           await ref.read(agentDashboardProvider.future);
         },
         child: ListView(
           padding: AppSpacing.pageAll,
           children: [
             const _ProfileBanner(),
+            const LeadsDashboardCard(),
             AsyncValueView(
               value: ref.watch(agentDashboardProvider),
               onRetry: () => ref.invalidate(agentDashboardProvider),

@@ -107,11 +107,11 @@ void main() {
     await pumpScreen(tester, path: '/auth/register', screen: (_) => const RegisterScreen(), authController: auth);
 
     expect(find.byKey(const Key('register-role-tabs')), findsOneWidget);
-    expect(find.widgetWithText(TextFormField, 'Facilitator referral code (optional)'), findsOneWidget);
+    expect(find.widgetWithText(TextFormField, 'Referral code (optional)'), findsOneWidget);
     await tester.tap(find.text('Agent'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('register-agency')), findsOneWidget);
-    expect(find.widgetWithText(TextFormField, 'Facilitator referral code (optional)'), findsNothing);
+    expect(find.widgetWithText(TextFormField, 'Referral code (optional)'), findsNothing);
 
     await tester.enterText(find.widgetWithText(TextFormField, 'Your full name'), 'Ravi Kumar');
     await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'ravi@agency.example');

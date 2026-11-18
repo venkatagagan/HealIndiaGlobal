@@ -2,10 +2,13 @@
 
 import Link from '@/components/link';
 import { useSearchParams } from 'next/navigation';
-import { useMemo, useState, type FormEvent } from 'react';
-import { Building2, BriefcaseMedical, Info, LockKeyhole, UserRound } from 'lucide-react';
+import { useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { Building2, BriefcaseMedical, Gift, Info, LockKeyhole, UserRound } from 'lucide-react';
 import { apiPost, destinationFor, isPortalRole, rememberSession, type TokenOut } from '@/lib/auth-client';
 import { assessmentUrl, type PortalRole } from '@/config/site';
+import type { Dictionary } from '@/i18n';
+import { formatMoney } from '@/lib/money';
+import { clearRef, clientApp, deviceId, normalizeRef, storedRef } from '@/lib/referral';
 import { ADULT_REQUIRED, AGE_ATTESTATION_REQUIRED, AgeQuestion, GoogleAgePrompt, ageAnswerValid, type AgeAnswer } from './age-question';
 import { countryOptions } from './countries';
 import { EMAIL_RE, FormAlert, PasswordField, SelectField, SubmitButton, TextField, passwordOk } from './fields';
@@ -14,13 +17,26 @@ import { Divider } from './login-form';
 import { authErrorMessage, invalidFields, type AuthLabels } from './shared';
 
 type Errors = Partial<
-  Record<'full_name' | 'email' | 'password' | 'country_code' | 'agency_name' | 'hospital_name' | 'city' | 'accept_terms' | 'is_adult', string>
+  Record<
+    'full_name' | 'email' | 'password' | 'country_code' | 'agency_name' | 'hospital_name' | 'city' | 'accept_terms' | 'is_adult' | 'referral_code',
+    string
+  >
 >;
 
 const ROLE_ICONS = { patient: UserRound, agent: BriefcaseMedical, hospital: Building2 } as const;
 
+interface CodeCheck {
+  code: string;
+  valid: boolean;
+  kind: 'patient' | 'agent' | null;
+  referee_reward: { amount_minor: number; currency: string } | null;
+}
+
+const noSubscribe = () => () => {};
+
 export function RegisterForm({
   t,
+  referralT,
   intlLocale,
   loginHref,
   termsHref,
@@ -28,6 +44,7 @@ export function RegisterForm({
   orLabel,
 }: {
   t: AuthLabels;
+  referralT: Dictionary['referral'];
   intlLocale: string;
   loginHref: string;
   termsHref: string;
@@ -47,7 +64,6 @@ export function RegisterForm({
     agency_name: '',
     hospital_name: '',
     city: '',
-    referral_code: (params.get('ref') ?? params.get('referral_code') ?? '').slice(0, 32),
     accept_terms: false,
   });
   /** CG-24 18+ attestation, sent as `is_adult` */
@@ -59,6 +75,40 @@ export function RegisterForm({
   const [pending, setPending] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const countries = useMemo(() => countryOptions(intlLocale), [intlLocale]);
+  /** referral code typed by the visitor (null = untouched: use the link's `?ref=` or the remembered code) */
+  const [typedRef, setTypedRef] = useState<string | null>(null);
+  const remembered = useSyncExternalStore(noSubscribe, storedRef, () => null);
+  const urlRef = (params.get('ref') ?? params.get('referral_code') ?? '').slice(0, 16);
+  const referralCode = typedRef ?? (urlRef || remembered || '');
+  const app = clientApp(params);
+  const [check, setCheck] = useState<CodeCheck | null>(null);
+
+  // "Invited by a friend": what the code gives the new patient (GET /referrals/check, public)
+  useEffect(() => {
+    const code = normalizeRef(referralCode);
+    if (role !== 'patient' || !code) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      fetch(`/api/v1/referrals/check?code=${encodeURIComponent(code)}`, { headers: { Accept: 'application/json' }, signal: controller.signal })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data: Omit<CodeCheck, 'code'> | null) => {
+          if (data) setCheck({ code, valid: Boolean(data.valid), kind: data.kind ?? null, referee_reward: data.referee_reward ?? null });
+        })
+        .catch(() => undefined);
+    }, 400);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [referralCode, role]);
+  const codeInfo = check && check.code === normalizeRef(referralCode) && role === 'patient' ? check : null;
+  /** sign-up extras: referral code + install id (self-referral check) */
+  const referralBody = (): Record<string, string> => {
+    const code = referralCode.trim();
+    return code ? { referral_code: code.toUpperCase(), device_id: deviceId() } : {};
+  };
+  /** attribution channel of the sign-up */
+  const appHeaders = { 'X-Client-App': app };
 
   const set = (key: keyof typeof form) => (value: string | boolean) => setForm((f) => ({ ...f, [key]: value }));
 
@@ -88,6 +138,7 @@ export function RegisterForm({
       return;
     }
     rememberSession(r);
+    clearRef();
     setRedirecting(true);
     window.location.assign(fallback && !next ? fallback : (destinationFor(r, next) as string));
   }
@@ -113,13 +164,13 @@ export function RegisterForm({
     };
     if (form.phone.trim()) body.phone = form.phone.trim();
     if (form.country_code) body.country_code = form.country_code;
-    if (role === 'patient' && form.referral_code.trim()) body.referral_code = form.referral_code.trim();
+    if (role === 'patient') Object.assign(body, referralBody());
     if (role === 'agent') body.agency_name = form.agency_name.trim();
     if (role === 'hospital') {
       body.hospital_name = form.hospital_name.trim();
       body.city = form.city.trim();
     }
-    const res = await apiPost<TokenOut>('/auth/register', body);
+    const res = await apiPost<TokenOut>('/auth/register', body, appHeaders);
     if (res.ok) return go(res.data);
     setPending(false);
     if (res.status === 422) {
@@ -133,6 +184,11 @@ export function RegisterForm({
       setErrors(fe);
     }
     if (res.status === 409) setErrors({ email: t.errors.emailTaken });
+    if (res.status === 400 && res.code === 'invalid_referral_code') {
+      setErrors({ referral_code: referralT.invalid });
+      setError(referralT.invalid);
+      return;
+    }
     setError(authErrorMessage(res, t));
   }
 
@@ -144,7 +200,8 @@ export function RegisterForm({
       id_token: idToken,
       role: 'patient',
       ...(answer !== null ? { is_adult: answer } : {}),
-    });
+      ...referralBody(),
+    }, appHeaders);
     if (res.ok) return go(res.data);
     setPending(false);
     if (res.status === 400 && res.code === AGE_ATTESTATION_REQUIRED) {
@@ -157,6 +214,11 @@ export function RegisterForm({
       return;
     }
     setGoogleToken(null);
+    if (res.status === 400 && res.code === 'invalid_referral_code') {
+      setErrors({ referral_code: referralT.invalid });
+      setError(referralT.invalid);
+      return;
+    }
     setError(res.status === 401 ? t.googleError : authErrorMessage(res, t));
   }
 
@@ -304,7 +366,33 @@ export function RegisterForm({
           <TextField label={t.phone} type="tel" name="phone" autoComplete="tel" inputMode="tel" value={form.phone} onChange={(e) => set('phone')(e.target.value)} maxLength={32} />
         </div>
         {role === 'patient' ? (
-          <TextField label={t.referralCode} name="referral_code" autoComplete="off" value={form.referral_code} onChange={(e) => set('referral_code')(e.target.value.toUpperCase())} maxLength={32} />
+          <div className="space-y-2">
+            <TextField
+              label={t.referralCode}
+              name="referral_code"
+              autoComplete="off"
+              value={referralCode}
+              onChange={(e) => {
+                setTypedRef(e.target.value.toUpperCase());
+                if (errors.referral_code) setErrors((cur) => ({ ...cur, referral_code: undefined }));
+              }}
+              error={errors.referral_code ?? (codeInfo && !codeInfo.valid ? referralT.invalid : undefined)}
+              maxLength={16}
+            />
+            {codeInfo?.valid ? (
+              <p className="flex items-start gap-2 rounded-xl bg-primary-50 p-3 text-sm text-primary-900">
+                <Gift className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                {codeInfo.kind === 'agent'
+                  ? referralT.invitedByAgent
+                  : codeInfo.referee_reward
+                    ? referralT.invitedByFriend.replace(
+                        '{amount}',
+                        formatMoney(codeInfo.referee_reward.amount_minor, codeInfo.referee_reward.currency, intlLocale),
+                      )
+                    : referralT.invitedByFriendNoReward}
+              </p>
+            ) : null}
+          </div>
         ) : null}
         {role !== 'patient' ? (
           <p className="flex items-start gap-2 rounded-xl bg-slate-50 p-3 text-sm text-slate-700">

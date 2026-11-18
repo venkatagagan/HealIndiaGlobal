@@ -2800,5 +2800,114 @@
       "footerDisclaimer": "The medical content was written by the treating hospital. Heal India Global does not change it.",
       "footerAudit": "Each visit to this page and each download is recorded and visible to the patient."
     }
+  },
+  "referral": {
+    "nav": "Refer a friend",
+    "title": "Refer a friend",
+    "description": "Invite friends to Heal India Global. When a friend completes their first treatment booking, you both get credit for future bookings.",
+    "disabled": {
+      "title": "The referral programme is paused",
+      "description": "You cannot invite friends right now. Credit you already have can still be used until it expires."
+    },
+    "code": {
+      "title": "Your referral code",
+      "description": "Your friend enters this code when they sign up, or simply opens your link.",
+      "copyCode": "Copy code",
+      "copyLink": "Copy link",
+      "share": "Share",
+      "copied": "Copied",
+      "copyFailed": "Could not copy. Please select the text and copy it.",
+      "linkLabel": "Your invite link",
+      "shareVia": "Share via",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram",
+      "email": "Email",
+      "shareTitle": "Join me on Heal India Global",
+      "emailSubject": "Join me on Heal India Global",
+      "shareText": "I use Heal India Global to plan treatment in India. Sign up with my code {{code}}: {{url}}",
+      "shareShort": "Sign up on Heal India Global with my code {{code}}"
+    },
+    "rewards": {
+      "title": "How it works",
+      "step1": "Share your code or link with a friend.",
+      "step2": "Your friend signs up with it.",
+      "step3": "When your friend's first booking is completed, you both receive credit.",
+      "youLabel": "You get",
+      "friendLabel": "Your friend gets",
+      "you": "<0/> credit per friend",
+      "friend": "<0/> credit",
+      "none": "No reward at the moment",
+      "cap_one": "You can earn one reward per year at most.",
+      "cap_other": "You can earn up to {{count}} rewards per year.",
+      "validity_one": "Credit is valid for one day after it is given.",
+      "validity_other": "Credit is valid for {{count}} days after it is given.",
+      "use": "Credit can only be used towards booking payments on Heal India Global."
+    },
+    "balance": {
+      "title": "Your credit",
+      "available": "Available",
+      "base": "Value in Indian rupees: <0/>",
+      "expiringSoon": "<0/> expires in the next 30 days.",
+      "nextExpiry": "Next expiry: {{date}}",
+      "useHint": "To use it, open the payment page of a booking and choose \"Use my credit\"."
+    },
+    "friends": {
+      "title": "Friends you invited",
+      "description": "We only show first names, never booking or health details.",
+      "empty": "No friends yet",
+      "emptyDescription": "When a friend signs up with your code, they appear here.",
+      "joined": "Joined {{date}}",
+      "rewardedOn": "Rewarded {{date}}",
+      "status": {
+        "pending": "Signed up",
+        "qualified": "Booking completed",
+        "rewarded": "Rewarded",
+        "void": "Not eligible"
+      }
+    },
+    "history": {
+      "title": "Credit history",
+      "description": "Amounts are shown in your preferred currency.",
+      "empty": "No credit movements yet.",
+      "expires": "expires {{date}}",
+      "kind": {
+        "grant": "Credit added",
+        "redeem": "Used for a payment",
+        "reinstate": "Returned to you",
+        "expire": "Expired",
+        "void": "Cancelled"
+      },
+      "creditKind": {
+        "referrer_reward": "Reward for inviting a friend",
+        "referee_reward": "Welcome reward",
+        "reinstated": "Returned credit"
+      }
+    },
+    "terms": "Referral rewards follow our <0>Terms of Service, section \"Referral programme\"</0>.",
+    "pay": {
+      "title": "Referral credit",
+      "available": "You have <0/> of referral credit.",
+      "willApply": "Credit used for this payment",
+      "remaining": "Left to pay",
+      "restNote": "After you use your credit, pay the rest below.",
+      "fullNote": "Your credit covers this payment in full.",
+      "use": "Use my credit",
+      "applied": "{{amount}} of credit applied. Please pay the rest.",
+      "paidInFull": "Paid in full with your credit.",
+      "termsLink": "Referral credit terms",
+      "reasons": {
+        "installments": "Credit cannot be used for instalment plans.",
+        "nothing_due": "Nothing is due for this payment.",
+        "no_credit": "You have no credit to use.",
+        "amount_too_small": "This amount is too small to pay with credit.",
+        "programme_off": "Credit cannot be used right now."
+      },
+      "errors": {
+        "changed": "Your credit or the amount due has changed. Please check and try again.",
+        "inProgress": "A payment for this booking is already in progress. Please finish it or try again in a few minutes.",
+        "notApplicable": "Credit cannot be used for this payment.",
+        "failed": "Could not use your credit. Please try again."
+      }
+    }
   }
 }

@@ -56,8 +56,8 @@ const routes: RouteObject[] = [
   // no login form here: the website is the door
   { path: '/login', element: <DoorRedirect to="login" /> },
   { path: '/auth/login', element: <DoorRedirect to="login" /> },
-  { path: '/register', element: <DoorRedirect to="register" role="patient" /> },
-  { path: '/auth/register', element: <DoorRedirect to="register" role="patient" /> },
+  { path: '/register', element: <DoorRedirect to="register" role="patient" clientApp="patient_web" /> },
+  { path: '/auth/register', element: <DoorRedirect to="register" role="patient" clientApp="patient_web" /> },
   { path: '*', element: <ToWebsite /> },
 ];
 

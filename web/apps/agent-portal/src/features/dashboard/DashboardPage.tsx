@@ -35,6 +35,7 @@ import { qk, useAgentProfile } from '../../lib/queries';
 import { formatDate, formatMoney, formatMonth, formatNumber, formatPercent, fromMinor, useDocumentTitle } from '../../lib/shared';
 import { useAppTranslation } from '../../i18n';
 import { useAuth } from '../../auth/AuthProvider';
+import { LeadTiles } from '../leads/LeadTiles';
 
 const tooltipStyle = {
   backgroundColor: 'var(--color-surface)',
@@ -112,6 +113,7 @@ export function DashboardPage() {
               </>
             )}
           </div>
+          <LeadTiles />
 
           <div className="mt-6 grid gap-6 xl:grid-cols-3">
             <Card className="xl:col-span-2">

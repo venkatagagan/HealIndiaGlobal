@@ -29,6 +29,7 @@ export function notificationTarget(n: NotificationOut): string | null {
   }
   const discharge = str(d, 'discharge_summary_id');
   if (discharge) return paths.dischargeSummary(discharge);
+  if (link === '/referrals' || link?.startsWith('/referrals?') || n.kind.startsWith('referral.')) return paths.referrals;
   const conversation = str(d, 'conversation_id');
   if (conversation) return paths.conversation(conversation);
   const screening = str(d, 'screening_id');

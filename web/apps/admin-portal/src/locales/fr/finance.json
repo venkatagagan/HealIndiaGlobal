@@ -1120,7 +1120,8 @@
       "razorpay": "Carte / UPI (Razorpay)",
       "stripe": "Carte (Stripe)",
       "bank_transfer": "Virement bancaire (SWIFT)",
-      "mock": "Paiement de test (dev)"
+      "mock": "Paiement de test (dev)",
+      "platform_credit": "Crédit de parrainage"
     },
     "paymentPurpose": {
       "consultation_fee": "Frais de consultation",
@@ -1137,7 +1138,8 @@
       "bank_transfer": "Virement bancaire",
       "wallet": "Portefeuille électronique",
       "emi": "Paiement échelonné (EMI)",
-      "mock": "Simulation"
+      "mock": "Simulation",
+      "platform_credit": "Crédit de parrainage"
     },
     "ledgerAccountType": {
       "asset": "Actif",

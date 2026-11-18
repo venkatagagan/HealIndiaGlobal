@@ -10,7 +10,7 @@
 | EU / UK representative | TODO-BUSINESS: [[NAME AND ADDRESS]] (GDPR Art. 27, if EU/UK patients are targeted) |
 | Basis | GDPR Art. 30(1); DPDP Act 2023 s.8 (accountability) and DPDP Rules 2025; UK GDPR Art. 30 |
 | Owner | TODO-BUSINESS: [[PRIVACY OWNER]] · review every 6 months and on every new feature that touches personal data |
-| Last updated | 2026-11-09 (engineering draft, matches migration `0009b`) |
+| Last updated | 2026-11-18 (engineering draft, matches migrations `0009b` and `0010b`: referral programme, agent CRM) |
 
 How to read this: one row per processing activity. "Where in the system" points to the code so the record can be
 checked against reality. Retention defaults are settings in `backend/.env.example`; legal holds
@@ -43,6 +43,8 @@ checked against reality. Retention defaults are settings in `backend/.env.exampl
 | 15 | Security audit and PHI access log | All users | Actor, action, entity, IP, user agent; who viewed which patient's health records | Security, accountability, "who viewed my records" | Legal obligation (DPDP Rules: ≥ 1 year logs; CERT-In) ; legitimate interests | Patient (own access log); admins | — | ≥ 1 year (append-only) | `audit_logs` (`phi.*` actions) |
 | 16 | Breach register | Affected people (aggregate) | Incident description, categories, counts, notification dates | GDPR Art. 33(5), DPDP Rule 7 | Legal obligation | Regulators | — | TODO-BUSINESS: [[5 years]] | `breach_incidents` |
 | 17 | Marketing | Patients who opt in | Email, consent | Newsletters and offers | Consent (`marketing`) | Email provider | Email provider | Until withdrawal | `consents` |
+| 18 | Referral programme and platform credit | Patients (referrers and referred patients) | Referral code, who referred whom, sign-up channel, keyed hashes of device ids (no raw ids), anti-abuse results (same email/phone/device/payment-method match), referral status, credit grants/redemptions/expiry | Run "refer a friend", prevent self-referral, account for credit | Contract (programme terms, Terms §13A); legitimate interests (fraud prevention) / consent (terms) | Referrer sees the friend's first name + initial and reward status only; staff; finance | — | Credit and referral rows are financial records (8 years, like payments); on erasure the code is disabled, device hashes removed and unused credit voided; rows point at the anonymised patient shell. TODO-BUSINESS: confirm | `referral_codes`, `referrals`, `patient_credits`, `patient_credit_movements`, `app/modules/referrals` |
+| 19 | Agent CRM leads | Prospective patients of an agency (no account, no login) | Name, country, contact details (encrypted; keyed fingerprints for de-duplication), source, short interest text, budget, pipeline status, follow-up dates, tags, activity notes (encrypted). Must not contain health data beyond the short interest the agent enters | Let agencies manage enquiries before a person becomes a managed patient | Legitimate interests of the agency / contract (the agency collects the data; counsel to decide controller vs processor, as for row 9 agents) | The agency only; staff on audited support access | Agency's country | Lost leads deleted `CRM_LOST_LEAD_RETENTION_DAYS` (default 365) after they were lost (`crm.purge_lost_leads`); converted leads are included in the patient's data export and deleted on the patient's erasure; agents can delete a lead at any time. TODO-BUSINESS: retention for open leads with no activity | `agent_leads`, `agent_lead_activities`, `app/modules/crm` |
 
 ## 2. Processors and independent controllers
 

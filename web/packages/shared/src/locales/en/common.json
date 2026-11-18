@@ -589,7 +589,8 @@
       "razorpay": "Card / UPI (Razorpay)",
       "stripe": "Card (Stripe)",
       "bank_transfer": "Bank transfer (SWIFT)",
-      "mock": "Test payment (dev)"
+      "mock": "Test payment (dev)",
+      "platform_credit": "Referral credit"
     },
     "paymentPurpose": {
       "consultation_fee": "Consultation fee",
@@ -624,7 +625,8 @@
       "bank_transfer": "Bank transfer",
       "wallet": "Wallet",
       "emi": "EMI",
-      "mock": "Mock"
+      "mock": "Mock",
+      "platform_credit": "Referral credit"
     },
     "refundStatus": {
       "requested": "Requested",

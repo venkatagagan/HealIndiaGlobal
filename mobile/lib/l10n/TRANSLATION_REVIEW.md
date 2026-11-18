@@ -157,3 +157,22 @@ Legal review of the English text is still pending; the translations follow it wo
 | `dischargeHpFinalizeBody`, `dischargeHpNewVersionBody`, `dischargeHpLockedNote`, `dischargeHpDiscardBody` | Finalized summaries are locked; edits create a new version |
 | `whatsappPrivacyNote`, `whatsappStopNote`, `whatsappIntro`, `whatsappTurnOffConfirmBody` | Promise that WhatsApp never carries medical details; opt-out by replying STOP (the keyword stays in Latin capitals in every language) |
 | `whatsappErrorInvalidCode`, `dischargeShareViews`, `dischargeShareDays` | Plural forms (ar `=2`/`few`, ru `one`/`few`/`many`) |
+## Referral programme and agent CRM (mobile, added 2026-11)
+
+| Keys | Why |
+|---|---|
+| `referralPayConfirmTitle`, `referralPayConfirmBody`, `referralPayConfirmButton`, `referralPayUseCreditTitle`, `referralPayUseCreditBody`, `referralPayApplyButton`, `referralPayApplied`, `referralPayCoversAll`, `referralPayRemaining` | Spending referral credit on a booking payment; the refund promise ("credit is returned to you") must stay exact |
+| `referralPayCreditChanged`, `referralPayInProgress`, `referralPayNotApplicable`, `referralPayNotForInstallments`, `referralPayAmountTooSmall` | Why credit cannot be applied (money) |
+| `referralHeroBoth`, `referralHeroReferrerOnly`, `referralHeroRefereeOnly`, `referralStep3`, `referralTermsValidity`, `referralTermsMaxPerYear`, `referralTermsNoCash` | Reward promises and programme terms (when the reward is earned, validity, yearly cap, no cash value) |
+| `referralCreditTitle`, `referralCreditBase`, `referralCreditExpiringSoon`, `referralCreditExpires`, `referralCreditUseHint`, `referralCreditKind*`, `referralMovement*`, `referralStatus*`, `referralFriendReward` | Credit balance, expiry and ledger wording |
+| `referralShareMessage`, `referralShareSubject` | Text the patient sends to friends in their name |
+| `referralCodeFieldLabel`, `referralCodeFieldHelper`, `referralCodeInvalid` | Sign-up referral code |
+| `enumPaymentGatewayPlatformCredit`, `enumPaymentMethod*` | Payment method names (enum keys follow the `enum<Type><Value>` convention) |
+| `crmConsentAttest`, `crmConsentAttestHint`, `crmConsentShare`, `crmConsentMethod*`, `crmConsentRequired`, `crmConvertIntro` | Agent's legal attestation that the patient consented (terms, privacy, sharing records with hospitals) |
+| `crmFormInterestHelper` | Tells agents not to store medical history in the CRM (data minimisation) |
+| `crmErrorEmailTaken`, `crmErrorAgentNotActive`, `crmErrorLeadConverted` | Account / approval errors |
+
+Notes: `crmPipelineOpen`, `crmFollowUpsDueToday`, `crmFollowUpsOverdue`, `referralTermsValidity` and `referralTermsMaxPerYear`
+use ICU plurals (ar `=1/=2/few/other`, ru `one/few/many/other`). "Lead" is rendered as ar "عميل محتمل", fr "prospect",
+bn "লিড", ru "лид"; a native reviewer may prefer another sales term. `crmTimelineStatusChange` uses an arrow in fr / ru
+and words in ar / bn.

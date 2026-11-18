@@ -3,6 +3,8 @@ import { AlertCircle } from 'lucide-react';
 import { errorMessage, fieldErrors } from '../api/client';
 import { REGISTRABLE_ROLES, type RegistrableRole } from '../api/enums';
 import type { RegisterIn, UserOut } from '../api/types';
+import { getDeviceId } from '../api/endpoints/phase1';
+import { captureReferralCode } from '../api/endpoints/referrals';
 import { cn } from '../lib/cn';
 import { useCommonTranslation } from '../lib/i18n';
 import { Button } from '../ui/Button';
@@ -106,7 +108,7 @@ export function RegisterForm({
   });
   const [values, setValues] = useState<Values>(() => ({
     ...EMPTY,
-    referral_code: referralCode ?? queryParam('ref', 'referral_code') ?? '',
+    referral_code: referralCode ?? captureReferralCode() ?? '',
   }));
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -153,7 +155,10 @@ export function RegisterForm({
     };
     if (values.phone.trim()) body.phone = values.phone.trim();
     if (values.country_code.trim()) body.country_code = values.country_code.trim().toUpperCase();
-    if (values.referral_code.trim() && role !== 'hospital') body.referral_code = values.referral_code.trim();
+    if (values.referral_code.trim() && role !== 'hospital') {
+      body.referral_code = values.referral_code.trim();
+      body.device_id = getDeviceId();
+    }
     if (role === 'agent') body.agency_name = values.agency_name.trim();
     if (role === 'hospital') {
       body.hospital_name = values.hospital_name.trim();

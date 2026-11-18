@@ -338,13 +338,14 @@ export const CONSENT_KIND_LABELS = labelsFor('consentKind', CONSENT_KINDS, {
   guardian_consent: 'Parent or guardian consent',
 });
 
-export const PAYMENT_GATEWAYS = ['razorpay', 'stripe', 'bank_transfer', 'mock'] as const;
+export const PAYMENT_GATEWAYS = ['razorpay', 'stripe', 'bank_transfer', 'mock', 'platform_credit'] as const;
 export type PaymentGateway = (typeof PAYMENT_GATEWAYS)[number];
 export const PAYMENT_GATEWAY_LABELS = labelsFor('paymentGateway', PAYMENT_GATEWAYS, {
   razorpay: 'Card / UPI (Razorpay)',
   stripe: 'Card (Stripe)',
   bank_transfer: 'Bank transfer (SWIFT)',
   mock: 'Test payment (dev)',
+  platform_credit: 'Referral credit',
 });
 
 export const PAYMENT_PURPOSES = [
@@ -382,9 +383,14 @@ export const PAYMENT_STATUSES = [
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export const PAYMENT_STATUS_LABELS = labelsFor('paymentStatus', PAYMENT_STATUSES);
 
-export const PAYMENT_METHODS = ['card', 'upi', 'netbanking', 'bank_transfer', 'wallet', 'emi', 'mock'] as const;
+export const PAYMENT_METHODS = ['card', 'upi', 'netbanking', 'bank_transfer', 'wallet', 'emi', 'mock', 'platform_credit'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
-export const PAYMENT_METHOD_LABELS = labelsFor('paymentMethod', PAYMENT_METHODS, { upi: 'UPI', emi: 'EMI', netbanking: 'Net banking' });
+export const PAYMENT_METHOD_LABELS = labelsFor('paymentMethod', PAYMENT_METHODS, {
+  upi: 'UPI',
+  emi: 'EMI',
+  netbanking: 'Net banking',
+  platform_credit: 'Referral credit',
+});
 
 /** `awaiting_payout` (SEC-010): an approved bank-transfer refund waits for finance to record and a second finance
  * user to confirm the bank payout. */

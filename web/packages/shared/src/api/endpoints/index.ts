@@ -30,3 +30,5 @@ export { reportsApi } from './reports';
 export * from './phase1';
 export * from './discharge';
 export * from './whatsapp';
+export * from './referrals';
+export * from './crm';

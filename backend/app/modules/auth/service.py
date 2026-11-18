@@ -504,11 +504,46 @@ async def _resolve_referral(db: AsyncSession, referral_code: str | None) -> uuid
         return None
     agent = (await db.execute(select(Agent).where(Agent.agent_code == code))).scalar_one_or_none()
     if agent is None:
+        from app.modules.referrals import service as referrals  # patient "refer a friend" codes
+
+        if await referrals.lookup_code(db, code) is not None:
+            return None  # recorded after sign-up by referrals.record_signup_referral
         raise BadRequest("The referral code is not valid", code="invalid_referral_code")
     if str(getattr(agent.status, "value", agent.status)) != AgentStatus.ACTIVE:
         logger.info("auth.referral_agent_inactive", agent_id=str(agent.id))
         return None
     return agent.id
+
+
+async def agent_code_valid(db: AsyncSession, referral_code: str | None) -> bool:
+    """True when ``referral_code`` is the code of an active agent (public code check)."""
+    code = (referral_code or "").strip().upper()
+    if not code:
+        return False
+    status = (await db.execute(select(Agent.status).where(Agent.agent_code == code))).scalar_one_or_none()
+    return status is not None and str(getattr(status, "value", status)) == AgentStatus.ACTIVE
+
+
+async def _record_patient_referral(
+    db: AsyncSession,
+    user: User,
+    role: str,
+    referral_code: str | None,
+    device_id: str | None,
+    request: Request,
+) -> None:
+    if role != UserRole.PATIENT.value or not referral_code:
+        return
+    from app.modules.referrals import service as referrals
+
+    await referrals.record_signup_referral(
+        db,
+        user,
+        referral_code,
+        device_id=device_id,
+        channel=request.headers.get("x-client-app"),
+        request=request,
+    )
 
 
 async def _ensure_email_free(db: AsyncSession, email: str) -> None:
@@ -628,6 +663,8 @@ async def register(db: AsyncSession, body: RegisterIn, request: Request) -> Issu
     record_age_attestation(db, user, bool(body.is_adult), request)
     if body.accept_agreement:
         _record_agreement_at_signup(db, user, body.role, hospital_id, request)
+    await db.flush()
+    await _record_patient_referral(db, user, body.role, body.referral_code, body.device_id, request)
     await send_verification_email(db, user)
     await audit_log(
         db,
@@ -884,6 +921,7 @@ class FederatedSignUp:
     referral_code: str | None
     accept_agreement: bool
     is_adult: bool | None = None
+    device_id: str | None = None
 
 
 async def _federated_sign_in(
@@ -990,6 +1028,8 @@ async def _federated_sign_in(
     record_age_attestation(db, user, extra.is_adult, request)
     if extra.accept_agreement:
         _record_agreement_at_signup(db, user, role, hospital_id, request)
+    await db.flush()
+    await _record_patient_referral(db, user, role, extra.referral_code, extra.device_id, request)
     await audit_log(
         db,
         actor=user,
@@ -1026,6 +1066,7 @@ async def google_sign_in(db: AsyncSession, body: GoogleIn, request: Request) -> 
         referral_code=body.referral_code,
         accept_agreement=body.accept_agreement,
         is_adult=body.is_adult,
+        device_id=body.device_id,
     )
     return await _federated_sign_in(db, identity, extra, request)
 
@@ -1052,6 +1093,7 @@ async def apple_sign_in(db: AsyncSession, body: AppleIn, request: Request) -> tu
         referral_code=body.referral_code,
         accept_agreement=body.accept_agreement,
         is_adult=body.is_adult,
+        device_id=body.device_id,
     )
     issued, created = await _federated_sign_in(db, identity, extra, request)
     if body.authorization_code:

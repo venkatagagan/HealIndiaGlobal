@@ -19,6 +19,7 @@ import '../../../core/utils/dates.dart';
 import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
+import '../../referrals/widgets/credit_pay_card.dart';
 import '../logic/payment_plan.dart';
 import '../providers/booking_providers.dart';
 import '../services/razorpay_launcher.dart';
@@ -127,6 +128,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         ),
         const SizedBox(height: 10),
         _BookingSummary(booking: b),
+        if (widget.installmentId == null)
+          CreditPayCard(bookingId: b.id, purpose: due.purpose, onApplied: (r) => _onCreditApplied(b, r)),
         SectionTitle(l10n.paymentMethodSection),
         OptionRadioCard(
           key: const ValueKey('method-card'),
@@ -202,6 +205,23 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           ),
       ],
     );
+  }
+
+  /// Referral credit was applied: done when it covered everything, otherwise the rest is paid normally.
+  Future<void> _onCreditApplied(Booking booking, CreditApplyResult result) async {
+    _resetAttempt();
+    if (!result.isPaidInFull) {
+      _refreshAfterPayment(booking);
+      return;
+    }
+    PaymentOrder order;
+    try {
+      order = await ref.read(paymentRepositoryProvider).order(result.orderId);
+    } catch (_) {
+      _refreshAfterPayment(booking);
+      return;
+    }
+    await _showResult(PaymentResultKind.success, booking, order);
   }
 
   Future<void> _showPlanSheet(Booking b, List<Installment> installments) async {
@@ -303,7 +323,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           _refreshAfterPayment(booking);
         case PaymentGateway.mock:
           await _payWithMock(booking, checkout);
-        case PaymentGateway.stripe:
+        case PaymentGateway.stripe || PaymentGateway.platformCredit:
           if (mounted) showInfoSnack(context, l10n.paymentMethodNotAvailable);
       }
     } on ApiException catch (e) {

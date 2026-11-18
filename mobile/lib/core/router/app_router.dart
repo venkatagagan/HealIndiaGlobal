@@ -12,6 +12,8 @@ import '../../features/guest/screens/free_consultation_screen.dart';
 import '../../features/insurance/screens/insurance_screen.dart';
 import '../../features/quotes/screens/quick_quote_screen.dart';
 import '../../features/quotes/screens/quote_group_screen.dart';
+import '../auth/pending_referral.dart';
+import '../../features/referrals/screens/referral_screen.dart';
 import '../../features/reviews/screens/my_reviews_screen.dart';
 import '../../features/reviews/screens/review_form_screen.dart';
 import '../../features/search/screens/procedure_earliest_screen.dart';
@@ -54,6 +56,7 @@ import '../auth/auth_controller.dart';
 import '../auth/roles.dart';
 import '../config/app_preferences.dart';
 import '../models/enums.dart';
+import '../models/referral.dart';
 import '../repositories/messaging_repository.dart';
 import '../widgets/bottom_nav_shell.dart';
 import 'routes.dart';
@@ -85,11 +88,25 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Routes.splash,
     debugLogDiagnostics: kDebugMode,
     refreshListenable: refresh,
-    redirect: (context, state) => computeRedirect(
-      auth: ref.read(authStateProvider),
-      onboardingSeen: ref.read(onboardingSeenProvider),
-      uri: state.uri,
-    ),
+    redirect: (context, state) {
+      // Invite deep link (healindia://register?ref=CODE): keep the code for the sign-up form, open sign-up.
+      final referralCode = referralCodeFromLink(state.uri);
+      if (referralCode != null) {
+        Future.microtask(() => ref.read(pendingReferralCodeProvider.notifier).set(referralCode));
+        final target = Uri.parse(Routes.registerWithReferral(referralCode));
+        return computeRedirect(
+              auth: ref.read(authStateProvider),
+              onboardingSeen: ref.read(onboardingSeenProvider),
+              uri: target,
+            ) ??
+            target.toString();
+      }
+      return computeRedirect(
+        auth: ref.read(authStateProvider),
+        onboardingSeen: ref.read(onboardingSeenProvider),
+        uri: state.uri,
+      );
+    },
     errorBuilder: (context, state) => NotFoundScreen(location: state.uri.path),
     routes: buildAppRoutes(),
   );
@@ -120,6 +137,7 @@ List<RouteBase> buildAppRoutes() => [
         builder: (_, s) => RegisterScreen(
           from: s.uri.queryParameters['from'],
           initialRole: UserRole.fromJsonOrNull(s.uri.queryParameters['role']),
+          referralCode: normalizeReferralCode(s.uri.queryParameters['ref']),
         ),
       ),
       GoRoute(path: 'forgot', name: RouteNames.forgotPassword, builder: (_, _) => const ForgotPasswordScreen()),
@@ -357,6 +375,7 @@ List<RouteBase> buildAppRoutes() => [
     ],
   ),
   GoRoute(path: Routes.aftercare, name: RouteNames.aftercare, builder: (_, _) => const AftercareScreen()),
+  GoRoute(path: Routes.referrals, name: RouteNames.referrals, builder: (_, _) => const ReferralScreen()),
   GoRoute(
     path: Routes.consultations,
     name: RouteNames.consultations,

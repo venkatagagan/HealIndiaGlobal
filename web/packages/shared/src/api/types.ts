@@ -204,6 +204,8 @@ export interface RegisterIn {
   phone?: string;
   country_code?: CountryCode;
   referral_code?: string;
+  /** browser/app install id (referral self-referral check); same value as `X-Device-Id` */
+  device_id?: string;
   /** agent only */
   agency_name?: string;
   /** hospital only */
@@ -227,6 +229,10 @@ export interface LoginIn {
 export interface GoogleLoginIn {
   id_token: string;
   role?: RegistrableRole;
+  /** sign-up referral code (patient or agent), used only when a new patient account is created */
+  referral_code?: string;
+  /** browser/app install id (referral self-referral check) */
+  device_id?: string;
   /**
    * 18+ attestation. Optional, but when the call would create a new account and it is missing the API answers
    * 400 `age_attestation_required` (ask the age question and retry); agent/hospital + `false` -> 400 `adult_required`.

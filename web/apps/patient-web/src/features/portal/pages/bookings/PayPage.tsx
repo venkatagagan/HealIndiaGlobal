@@ -1,29 +1,43 @@
 import { useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
-import { Lock, ShieldCheck } from 'lucide-react';
+import { Gift, Lock, ShieldCheck } from 'lucide-react';
 import {
   errorMessage,
+  isApiError,
   isFxRateUnavailable,
   newIdempotencyKey,
+  patientReferralsApi,
   paymentsApi,
   type BookingOut,
   type CheckoutOut,
+  type CreditPurpose,
   type InstallmentOut,
   type PaymentPurpose,
 } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
 import { ApproxMoney } from '../../components/phase1';
+import { referralKeys, referralTermsUrl } from '../../api/referrals';
 import { invalidateBookingRelated, useBooking, useInstallments, usePatientProfile } from '../../api/queries';
 import { BackLink, Money } from '../../components/common';
 import { BankTransferPanel, MockPanel, RadioCard, Row, usePaymentMethods, type UiGateway } from '../../components/payPanels';
 import { openRazorpayCheckout } from '../../lib/razorpay';
 import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
-import { formatDate, formatNumber, SUPPORTED_CURRENCIES, useDocumentTitle } from '../../lib/shared';
-import { Button, Card, CardBody, CardHeader, ErrorState, Field, PageHeader, Select, Skeleton } from '../../ui/primitives';
+import { formatDate, formatMoney, formatNumber, SUPPORTED_CURRENCIES, useDocumentTitle } from '../../lib/shared';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  ErrorState,
+  Field,
+  PageHeader,
+  Select,
+  Skeleton,
+} from '../../ui/primitives';
 
 type TFn = ReturnType<typeof useAppTranslation>['t'];
 
@@ -209,6 +223,19 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
             </Card>
           ) : null}
 
+          {!me.data?.is_guest && isCreditPurpose(due.purpose) ? (
+            <CreditPanel
+              bookingId={booking.id}
+              purpose={due.purpose}
+              onApplied={() => {
+                // the amount due changed: an order started before is for the old amount
+                keys.current.clear();
+                setCheckoutState(null);
+              }}
+              onPaidInFull={(orderId) => finished(orderId)}
+            />
+          ) : null}
+
           <Card>
             <CardHeader title={t('pay.method')} />
             <CardBody className="space-y-2">
@@ -320,3 +347,91 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
   );
 }
 
+const CREDIT_PURPOSES: readonly PaymentPurpose[] = ['booking_deposit', 'booking_balance', 'booking_full'];
+function isCreditPurpose(purpose: PaymentPurpose): purpose is CreditPurpose {
+  return CREDIT_PURPOSES.includes(purpose);
+}
+
+/** Referral credit on the pay screen: preview, "Use my credit", then the rest is paid with a normal order. */
+function CreditPanel({
+  bookingId,
+  purpose,
+  onApplied,
+  onPaidInFull,
+}: {
+  bookingId: string;
+  purpose: CreditPurpose;
+  onApplied: () => void;
+  onPaidInFull: (orderId: string) => void;
+}) {
+  const { t } = useAppTranslation();
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const preview = useQuery({
+    queryKey: referralKeys.preview(bookingId, purpose),
+    queryFn: () => patientReferralsApi.preview(bookingId, purpose),
+    retry: false,
+  });
+  const p = preview.data;
+  // nothing to show without credit (or when the programme is off and there is none)
+  if (!p || p.available_minor <= 0) return null;
+
+  async function apply() {
+    setBusy(true);
+    try {
+      const res = await patientReferralsApi.apply({ booking_id: bookingId, purpose });
+      void qc.invalidateQueries({ queryKey: referralKeys.all });
+      invalidateBookingRelated(qc);
+      onApplied();
+      if (res.remaining_due_minor <= 0) {
+        toast.success(t('referral.pay.paidInFull'));
+        onPaidInFull(res.order_id);
+      } else {
+        toast.success(t('referral.pay.applied', { amount: formatMoney(res.applied_minor, res.currency) }));
+      }
+    } catch (err) {
+      const code = isApiError(err) ? err.code : null;
+      if (code === 'credit_changed') toast.error(t('referral.pay.errors.changed'));
+      else if (code === 'payment_in_progress') toast.error(t('referral.pay.errors.inProgress'));
+      else if (code === 'credit_not_applicable') toast.error(t('referral.pay.errors.notApplicable'));
+      else toast.error(errorMessage(err, t('referral.pay.errors.failed')));
+      void qc.invalidateQueries({ queryKey: referralKeys.all });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader title={t('referral.pay.title')} action={<Gift className="h-5 w-5 text-accent-ink" aria-hidden />} />
+      <CardBody className="space-y-3 text-sm">
+        <p className="text-fg">
+          <Trans t={t} i18nKey="referral.pay.available" components={{ 0: <Money minor={p.available_minor} currency={p.currency} className="font-semibold" /> }} />
+        </p>
+        {p.applicable ? (
+          <>
+            <div className="space-y-1 rounded-xl bg-surface-2 p-3">
+              <Row label={t('referral.pay.willApply')}>
+                <Money minor={p.apply_minor} currency={p.currency} />
+              </Row>
+              <Row label={t('referral.pay.remaining')} strong>
+                <Money minor={p.remaining_due_minor} currency={p.currency} />
+              </Row>
+            </div>
+            <p className="text-xs text-muted">{p.remaining_due_minor > 0 ? t('referral.pay.restNote') : t('referral.pay.fullNote')}</p>
+            <Button variant="primary" loading={busy} onClick={() => void apply()}>
+              {t('referral.pay.use')}
+            </Button>
+          </>
+        ) : p.reason ? (
+          <p className="text-muted">{t(`referral.pay.reasons.${p.reason}`, { defaultValue: t('referral.pay.errors.notApplicable') })}</p>
+        ) : null}
+        <p className="text-xs text-muted">
+          <a href={referralTermsUrl()} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+            {t('referral.pay.termsLink')}
+          </a>
+        </p>
+      </CardBody>
+    </Card>
+  );
+}

@@ -22,6 +22,7 @@ import { SITE_NAME, SITE_NOINDEX, SITE_URL } from '@/config/site';
 import { getSiteConfig } from '@/lib/site-config';
 import { Ga4WithConsent } from '@/components/analytics';
 import { WebVitals } from '@/components/web-vitals';
+import { ReferralCapture } from '@/components/referral-capture';
 import { href, routes } from '@/lib/routes';
 
 export const revalidate = 3600;
@@ -112,6 +113,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         </main>
         <Footer t={t} specialties={specialties.data} />
         <ContactFab t={t} />
+        <ReferralCapture />
         <JsonLd data={organizationLd(site)} />
         {analytics.provider === 'plausible' ? (
           // Cookieless; no consent banner needed. Loaded only when the analytics provider is plausible.

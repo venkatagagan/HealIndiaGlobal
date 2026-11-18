@@ -977,6 +977,12 @@ const fr: Dictionary = {
     board: 'Si notre réponse ne vous satisfait pas, vous pouvez saisir le Data Protection Board of India.',
     footerLink: 'Réclamations',
   },
+  referral: {
+    invitedByFriend: 'Invité par un proche : vous recevrez {amount} de crédit après votre première réservation terminée.',
+    invitedByFriendNoReward: 'Vous avez été invité par un proche.',
+    invitedByAgent: 'Vous avez été recommandé par un agent partenaire.',
+    invalid: 'Ce code de parrainage n’est pas valide. Vérifiez-le ou laissez le champ vide.',
+  },
 };
 
 export default fr;

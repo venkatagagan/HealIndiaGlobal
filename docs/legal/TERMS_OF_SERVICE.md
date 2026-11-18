@@ -395,6 +395,38 @@ charge you directly before you agree to it.
 13.4 You can ask us at any time to remove an agent's access to your account by contacting [[SUPPORT EMAIL]].
 Please report any concerns about an agent's conduct to us.
 
+<a id="referral-programme"></a>
+
+## 13A. Referral programme ("refer a friend")
+
+> **TODO-BUSINESS / legal review:** this section is an engineering draft. Reward amounts, the yearly cap, the
+> validity period, who receives a reward (the referrer, the new patient or both) and the tax/consumer-law
+> treatment of credits (including advertising and "inducement" rules for healthcare referrals in the patient's
+> country and in India) must be confirmed by the business and counsel before the programme is switched on. The
+> current values are settings (`referral_programme`), shown in the app at all times.
+
+13A.1 Each patient can share a personal referral code or link. A person who signs up with that code and whose
+**first booking is completed** (treatment finished and the booking marked completed by the hospital) is a
+*qualified referral*. Signing up alone does not qualify.
+
+13A.2 For each qualified referral we add **platform credit** to the referrer's account and/or to the new
+patient's account, in the amounts shown on the "Refer a friend" screen at the time the referral qualifies. A
+referrer can earn at most the number of rewards per rolling 12 months shown on that screen.
+
+13A.3 Credit is not money. It can only be used towards future booking payments on the Platform (not
+consultation fees or instalment plans), cannot be transferred, sold or exchanged for cash, and expires after the
+period shown on the screen (unused credit then lapses). If a payment made with credit is refunded, the amount is
+returned as credit, not cash.
+
+13A.4 You must not refer yourself (including through another account, email address, phone number, device or
+payment method), create accounts to collect rewards, or share your code through spam or misleading
+advertising. We may refuse, cancel or reverse a referral or the unused credit from it if we reasonably believe
+these rules were broken, and we may change or end the programme for the future at any time; credit already in
+your account remains usable until it expires unless it was obtained in breach of these rules.
+
+13A.5 Privacy: the referrer only sees the new patient's first name and initial and whether a reward was earned
+— never any health, case or booking details. See the Privacy Policy.
+
 ## 14. Acceptable use
 
 14.1 You must use the Platform lawfully and only for your own medical-travel needs (or, as a parent, guardian or

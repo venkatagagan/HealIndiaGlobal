@@ -15,6 +15,7 @@ import {
   BookOpenCheck,
   Building,
   FileText,
+  Gift,
   Landmark,
   Layers,
   LayoutDashboard,
@@ -53,6 +54,7 @@ const CommissionRulesPage = lazy(() => import('./pages/CommissionRulesPage'));
 const CommissionChangesPage = lazy(() => import('./pages/CommissionChangesPage'));
 const PayoutAccountsPage = lazy(() => import('./pages/PayoutAccountsPage'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const ReferralsPage = lazy(() => import('./pages/ReferralsPage'));
 
 /** Renders children only for the allowed roles (waits for /auth/me). */
 export function FinanceGuard({ roles, children }: { roles: readonly UserRole[]; children: ReactNode }) {
@@ -101,6 +103,7 @@ export const financeRoutes: RouteObject[] = [
       { path: 'orders/:orderId', element: page(OrderDetailPage, S) },
       { path: 'reconciliation', element: page(ReconciliationPage, F) },
       { path: 'refunds', element: page(RefundsPage, F_AD) },
+      { path: 'referrals', element: page(ReferralsPage, S) },
       { path: 'ledger', element: page(AccountsPage, F) },
       { path: 'ledger/accounts/:accountId', element: page(AccountEntriesPage, F) },
       { path: 'ledger/journal', element: page(JournalPage, F) },
@@ -151,6 +154,7 @@ export const financeNav: FinanceNavItem[] = [
   { label: 'Payment orders', labelKey: 'finance:nav.items.orders', to: financePath('orders'), icon: ReceiptText, roles: S, group: 'finance' },
   { label: 'Bank reconciliation', labelKey: 'finance:nav.items.reconciliation', to: financePath('reconciliation'), icon: Landmark, roles: F, group: 'finance' },
   { label: 'Refunds', labelKey: 'finance:nav.items.refunds', to: financePath('refunds'), icon: Undo2, roles: F_AD, group: 'finance' },
+  { label: 'Referrals', labelKey: 'admin:referral.nav', to: financePath('referrals'), icon: Gift, roles: S, group: 'finance' },
   { label: 'Settlement items', labelKey: 'finance:nav.items.settlementItems', to: financePath('settlements'), icon: ArrowLeftRight, roles: F, end: true, group: 'settlements' },
   { label: 'Batches', labelKey: 'finance:nav.items.batches', to: financePath('settlements/batches'), icon: Layers, roles: F, group: 'settlements' },
   { label: 'Payouts', labelKey: 'finance:nav.items.payouts', to: financePath('settlements/payouts'), icon: Wallet, roles: F, group: 'settlements' },

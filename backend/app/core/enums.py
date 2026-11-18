@@ -570,6 +570,8 @@ class PaymentGateway(StrEnum):
     STRIPE = "stripe"
     BANK_TRANSFER = "bank_transfer"
     MOCK = "mock"
+    # internal: a booking payment funded from the patient's referral credit (never offered at checkout)
+    PLATFORM_CREDIT = "platform_credit"
 
 
 class PaymentPurpose(StrEnum):
@@ -609,6 +611,7 @@ class PaymentMethod(StrEnum):
     WALLET = "wallet"
     EMI = "emi"
     MOCK = "mock"
+    PLATFORM_CREDIT = "platform_credit"
 
 
 class RefundStatus(StrEnum):
@@ -669,6 +672,7 @@ class LedgerTxnType(StrEnum):
     CANCELLATION_RETENTION = "cancellation_retention"
     TAX_REMITTANCE = "tax_remittance"
     FX_DIFFERENCE = "fx_difference"
+    REFERRAL_CREDIT = "referral_credit"
 
 
 class CommissionScope(StrEnum):

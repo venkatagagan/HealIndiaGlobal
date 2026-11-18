@@ -19,6 +19,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from app.core.errors import BadRequest
 from app.core.money import MAX_COMMISSION_BPS
+from app.core.referral_settings import REFERRAL_DEFAULTS, REFERRAL_SETTING_KEY, validate_referral_programme
 from app.core.site_settings import WEBSITE_DEFAULTS, WEBSITE_KEYS, validate_website_setting
 
 if TYPE_CHECKING:
@@ -75,6 +76,8 @@ DEFAULTS: dict[str, Any] = {
         "QAR",
         "KWD",
     ],
+    # Patient referral programme (finance; app/core/referral_settings.py, docs/REFERRALS.md)
+    REFERRAL_SETTING_KEY: REFERRAL_DEFAULTS,
     # Website & contact (super_admin only; app/core/site_settings.py). Includes ``helplines``.
     **WEBSITE_DEFAULTS,
 }
@@ -103,6 +106,7 @@ FINANCE_KEYS: frozenset[str] = frozenset(
         "platform_gst_state",
         "refund_policy",
         "bank_transfer_details",
+        REFERRAL_SETTING_KEY,
     }
 )
 
@@ -194,6 +198,8 @@ def validate_setting(key: str, value: Any) -> Any:
         value = [c.upper() for c in value]
     elif key == "bank_transfer_details":
         value = validate_bank_transfer_details(value)
+    elif key == REFERRAL_SETTING_KEY:
+        value = validate_referral_programme(value)
     elif key == "platform_gstin" and value is not None:
         if not isinstance(value, str):
             raise BadRequest("platform_gstin must be a string", code="invalid_setting")

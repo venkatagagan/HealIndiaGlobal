@@ -70,6 +70,9 @@ CANCELLATION_REVENUE = "PLATFORM:CANCELLATION_REVENUE"  # platform share of reta
 FX_GAIN_LOSS = "PLATFORM:FX_GAIN_LOSS"  # realised FX differences (debit = loss, credit = gain)
 EQUITY = "PLATFORM:EQUITY"
 ADJUSTMENTS = "PLATFORM:ADJUSTMENTS"
+# Patient referral programme (docs/REFERRALS.md): credit owed to patients and its marketing expense.
+REFERRAL_CREDIT = "PLATFORM:REFERRAL_CREDIT"
+REFERRAL_REWARDS_EXPENSE = "EXPENSE:REFERRAL_REWARDS"
 
 
 def gateway_receivable(gateway: str) -> str:
@@ -135,6 +138,16 @@ _FIXED_ACCOUNTS: dict[str, tuple[str, LedgerAccountType, LedgerOwnerType]] = {
         LedgerOwnerType.PLATFORM,
     ),
     FX_GAIN_LOSS: ("FX gain / loss", LedgerAccountType.EXPENSE, LedgerOwnerType.PLATFORM),
+    REFERRAL_CREDIT: (
+        "Patient referral credit (unused)",
+        LedgerAccountType.LIABILITY,
+        LedgerOwnerType.PLATFORM,
+    ),
+    REFERRAL_REWARDS_EXPENSE: (
+        "Referral rewards (marketing)",
+        LedgerAccountType.EXPENSE,
+        LedgerOwnerType.PLATFORM,
+    ),
 }
 
 _GATEWAY_RE = re.compile(r"^GATEWAY:([a-z_]{2,30}):RECEIVABLE$")

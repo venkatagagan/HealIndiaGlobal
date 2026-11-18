@@ -1597,5 +1597,221 @@
       "title": "No activity in this period",
       "description": "Try a longer date range."
     }
+  },
+  "crm": {
+    "nav": {
+      "leads": "Leads"
+    },
+    "title": "Leads",
+    "description": "Prospective patients before they become patients: track contacts, follow-ups and conversion.",
+    "add": "Add lead",
+    "openLead": "Open lead {{name}}",
+    "emptyTitle": "No leads yet",
+    "emptyDescription": "Add a lead or import a CSV file to start your pipeline.",
+    "notificationCategory": "Leads",
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "screening": "Screening",
+      "quote_requested": "Quote requested",
+      "won": "Won",
+      "lost": "Lost"
+    },
+    "source": {
+      "walk_in": "Walk-in",
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "referral": "Referral",
+      "event": "Event",
+      "other": "Other"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "country": "Country",
+      "language": "Preferred language",
+      "source": "Source",
+      "sourceDetail": "Source details",
+      "interest": "Interested in",
+      "specialty": "Specialty",
+      "procedure": "Procedure",
+      "budget": "Budget",
+      "currency": "Currency",
+      "nextFollowUp": "Next follow-up",
+      "tags": "Tags",
+      "status": "Stage",
+      "note": "First note",
+      "owner": "Owner",
+      "contact": "Contact",
+      "lastActivity": "Last activity",
+      "created": "Added"
+    },
+    "filters": {
+      "all": "All",
+      "search": "Search name or interest, or exact email/phone",
+      "searchLabel": "Search leads",
+      "followUp": "Follow-up",
+      "tag": "Tag"
+    },
+    "followUp": {
+      "due": "Due today",
+      "overdue": "Overdue",
+      "none": "No follow-up set"
+    },
+    "summary": {
+      "open": "Open leads",
+      "conversion": "Conversion rate",
+      "wonLost": "{{won}} won · {{lost}} lost",
+      "dueToday": "Follow-ups due today",
+      "overdue_one": "{{count}} overdue",
+      "overdue_other": "{{count}} overdue",
+      "newThisMonth": "New this month"
+    },
+    "dashboard": {
+      "dueToday": "Lead follow-ups due today",
+      "dueHint": "Open your leads to follow up",
+      "conversion": "Lead conversion rate",
+      "conversionHint": "{{open}} open · {{won}} won · {{lost}} lost"
+    },
+    "view": {
+      "label": "View",
+      "board": "Board",
+      "table": "Table",
+      "boardLabel": "Lead pipeline"
+    },
+    "board": {
+      "empty": "No leads",
+      "more_one": "+{{count}} more lead",
+      "more_other": "+{{count}} more leads",
+      "moveTo": "Move {{name}} to another stage",
+      "movePlaceholder": "Move to…",
+      "convertOption": "Won (convert to patient)",
+      "convertedOn": "Converted {{date}}"
+    },
+    "move": {
+      "moved": "{{name}} moved to {{status}}",
+      "failed": "Could not move the lead",
+      "converted": "This lead is already a patient and cannot be moved.",
+      "convertRequired": "A lead is won when you convert it to a patient. Fill in the patient form to finish.",
+      "reasonRequired": "Please give a reason why the lead was lost.",
+      "lostTitle": "Mark lead as lost?",
+      "lostDescription": "Why did {{name}} not go ahead?",
+      "lostReason": "Reason",
+      "lostPlaceholder": "e.g. chose another provider, budget, postponed",
+      "lostConfirm": "Mark as lost"
+    },
+    "form": {
+      "addTitle": "Add lead",
+      "addDescription": "Only the name is required. You can add details later.",
+      "editTitle": "Edit lead",
+      "editDescription": "Contact details and interest of this lead.",
+      "medicalHint": "Do not record medical details here. Health information belongs in the patient record, after the person has given consent.",
+      "interestHint": "A short note such as \"knee replacement\" - not medical history.",
+      "sourceDetailHint": "e.g. the event name or who referred them",
+      "tagsHint": "Separate tags with commas (up to 10).",
+      "noteHint": "Added to the activity timeline.",
+      "select": "Select…",
+      "cancel": "Cancel",
+      "add": "Add lead",
+      "save": "Save changes",
+      "added": "Lead added",
+      "updated": "Lead updated",
+      "errors": {
+        "required": "This field is required",
+        "email": "Enter a valid email address",
+        "phone": "Enter a valid phone number",
+        "budget": "Enter a valid amount",
+        "tooManyTags": "Use at most 10 tags",
+        "tagTooLong": "Each tag can have at most 40 characters"
+      }
+    },
+    "detail": {
+      "back": "Back to leads",
+      "notFound": "Lead not found",
+      "since": "since {{when}}",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete this lead?",
+      "deleteDescription": "{{name}} and their activity timeline will be deleted. This cannot be undone.",
+      "deleted": "Lead deleted",
+      "deleteFailed": "Could not delete the lead",
+      "stage": "Stage",
+      "moveTo": "Move to stage",
+      "moveHint": "Choosing \"Lost\" asks for a reason; \"Won\" opens the convert form.",
+      "stageLocked": "This lead has been converted to a patient.",
+      "noFollowUp": "Not scheduled",
+      "details": "Lead details",
+      "lostReason": "Lost reason:"
+    },
+    "timeline": {
+      "title": "Activity timeline",
+      "empty": "No activity yet.",
+      "statusChange": "Stage changed from {{from}} to {{to}}"
+    },
+    "activity": {
+      "title": "Log activity",
+      "description": "Record a call, message, meeting or note and plan the next follow-up.",
+      "kindLabel": "Type",
+      "kind": {
+        "call": "Call",
+        "message": "Message",
+        "meeting": "Meeting",
+        "note": "Note",
+        "status_change": "Stage change"
+      },
+      "when": "When",
+      "whenHint": "Leave empty for now.",
+      "body": "Notes",
+      "nextFollowUp": "Next follow-up",
+      "nextFollowUpHint": "Optional: schedule the next follow-up.",
+      "submit": "Log activity",
+      "logged": "Activity logged",
+      "failed": "Could not log the activity",
+      "noteRequired": "Please write the note."
+    },
+    "convert": {
+      "button": "Convert to patient",
+      "title": "Convert lead to patient",
+      "description": "Creates a patient you manage, filled in from the lead. Check the details and confirm the patient’s consent.",
+      "submit": "Create patient",
+      "done": "Lead converted to a patient",
+      "converted": "Converted to a patient on {{date}}.",
+      "openPatient": "Open patient"
+    },
+    "import": {
+      "open": "Import CSV",
+      "title": "Import leads from CSV",
+      "description": "We check the file first. Nothing is imported while any row has an error.",
+      "formatHint": "UTF-8 CSV with a header row. Columns (only full_name is required):",
+      "rulesHint": "budget in major units (e.g. 2500.00) with budget_currency; next_follow_up as YYYY-MM-DD; tags separated by \";\". Max 1000 rows / 1 MB. Rows with an email or phone you already have are skipped.",
+      "file": "CSV file",
+      "fileHint": "Choose a .csv file",
+      "checkButton": "Check file",
+      "importButton_one": "Import {{count}} lead",
+      "importButton_other": "Import {{count}} leads",
+      "dryRunNote": "Checking does not create anything.",
+      "rows": "Rows",
+      "duplicates": "Duplicates skipped",
+      "errors": "Errors",
+      "ready_one": "No errors found. {{count}} lead will be created.",
+      "ready_other": "No errors found. {{count}} leads will be created.",
+      "fixErrors": "Fix these rows in your file and check it again.",
+      "row": "Row",
+      "field": "Column",
+      "message": "Problem",
+      "done_one": "{{count}} lead imported",
+      "done_other": "{{count}} leads imported",
+      "hasErrors": "The file has errors. Nothing was imported.",
+      "failed": "Could not import the file",
+      "tooLarge": "The file is larger than 1 MB.",
+      "rateLimited": "Too many imports. Please try again later."
+    },
+    "export": {
+      "button": "Export CSV",
+      "failed": "Could not export the leads"
+    }
   }
 }

@@ -11795,10 +11795,10 @@ abstract class AppLocalizations {
   /// **'Acting for'**
   String get hpActingFor;
 
-  /// Note on the More screen.
+  /// Footer note on the hospital More tab: what can only be edited on the web portal
   ///
   /// In en, this message translates to:
-  /// **'Profile, members, availability and price edits are available on the hospital web portal.'**
+  /// **'Profile, members and price edits are available on the hospital web portal.'**
   String get hpWebPortalNote;
 
   /// Visa screen empty state.
@@ -15377,6 +15377,1476 @@ abstract class AppLocalizations {
   /// **'Treatment'**
   String get inviteMissingTreatment;
 
+  /// Title of the report sheet opened from a published hospital or doctor review
+  ///
+  /// In en, this message translates to:
+  /// **'Report this review'**
+  String get reportSheetTitleReview;
+
+  /// Intro of the report sheet for a review: what to report and that moderators check it; the author is not told who reported it
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong with this review, for example spam, abuse, false claims or someone\'s personal details. Our moderation team will check it. The author is not told who reported it.'**
+  String get reportSheetIntroReview;
+
+  /// Tooltip / semantics label of the flag button on a published review
+  ///
+  /// In en, this message translates to:
+  /// **'Report review'**
+  String get reviewReportAction;
+
+  /// Full-screen message in the agent / hospital app when the API answers 403 organisation_suspended
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is suspended'**
+  String get orgSuspendedTitle;
+
+  /// Explanation for an agent whose agency account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your agency account has been suspended, so patients, cases and bookings cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyAgent;
+
+  /// Explanation for a hospital team member whose hospital account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your hospital\'s account has been suspended, so enquiries, patients and settlements cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyHospital;
+
+  /// Button: call the support helpline from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Call support'**
+  String get orgSuspendedCallSupport;
+
+  /// Button: open a WhatsApp chat with support from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Message support on WhatsApp'**
+  String get orgSuspendedWhatsAppSupport;
+
+  /// Shown on the suspended-account screen when the support phone numbers could not be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the support contact details. Check your connection and try again.'**
+  String get orgSuspendedNoContact;
+
+  /// Button on the suspended-account screen: try loading the app again (e.g. after support re-activated the account)
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get orgSuspendedCheckAgain;
+
+  /// Title of the hospital-level (not tied to a doctor) availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital availability'**
+  String get hpAvailabilityTitle;
+
+  /// Title of a doctor's availability calendar in the hospital app
+  ///
+  /// In en, this message translates to:
+  /// **'Availability: {name}'**
+  String hpAvailabilityDoctorTitle(String name);
+
+  /// Subtitle of the More-tab link to the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Admission and consultation capacity per day'**
+  String get hpMoreAvailabilitySubtitle;
+
+  /// Intro of a doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Set how many video consultations and admissions this doctor can take each day. Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroDoctor;
+
+  /// Intro of the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity for the hospital as a whole, not tied to one doctor (for example beds for admissions). Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroHospital;
+
+  /// Short label of the consultations-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations'**
+  String get hpAvailabilityConsultShort;
+
+  /// Short label of the admissions-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Admissions'**
+  String get hpAvailabilityAdmitShort;
+
+  /// Helper under a capacity field: how many places are already booked that day
+  ///
+  /// In en, this message translates to:
+  /// **'{count} booked'**
+  String hpAvailabilityBooked(int count);
+
+  /// Validation error: capacity lower than already booked places
+  ///
+  /// In en, this message translates to:
+  /// **'At least {count}'**
+  String hpAvailabilityBelowBooked(int count);
+
+  /// Validation error: capacity must be a whole number 0 to 1000
+  ///
+  /// In en, this message translates to:
+  /// **'0 to 1000'**
+  String get hpAvailabilityInvalidNumber;
+
+  /// Card title: fill the whole month with the same capacity
+  ///
+  /// In en, this message translates to:
+  /// **'Quick fill'**
+  String get hpAvailabilityQuickFill;
+
+  /// Explanation of the quick-fill card
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the same capacity for every remaining day of {month}. Review the days, then save.'**
+  String hpAvailabilityQuickFillHint(String month);
+
+  /// Quick-fill switch: skip Saturdays and Sundays
+  ///
+  /// In en, this message translates to:
+  /// **'Weekdays only (skip Saturday and Sunday)'**
+  String get hpAvailabilityWeekdaysOnly;
+
+  /// Quick-fill button
+  ///
+  /// In en, this message translates to:
+  /// **'Fill the month'**
+  String get hpAvailabilityApply;
+
+  /// Snackbar after the availability was saved
+  ///
+  /// In en, this message translates to:
+  /// **'Availability saved'**
+  String get hpAvailabilitySaved;
+
+  /// Error when saving with invalid capacity fields
+  ///
+  /// In en, this message translates to:
+  /// **'Fix the highlighted days before saving.'**
+  String get hpAvailabilityFixErrors;
+
+  /// Server error capacity_below_booked when saving availability
+  ///
+  /// In en, this message translates to:
+  /// **'A capacity is lower than the places already booked that day. Raise it and save again.'**
+  String get hpAvailabilityBelowBookedError;
+
+  /// Dialog title when leaving or changing month with unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard unsaved changes?'**
+  String get hpAvailabilityDiscardTitle;
+
+  /// Dialog button: discard unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get hpAvailabilityDiscard;
+
+  /// Dialog button: keep editing availability
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get hpAvailabilityKeepEditing;
+
+  /// Button on a doctor card in the hospital app: open the doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get hpAvailabilityEditButton;
+
+  /// Shown instead of editable fields for a day in the past
+  ///
+  /// In en, this message translates to:
+  /// **'Past day'**
+  String get hpAvailabilityPastDay;
+
+  /// Profile > Privacy tile and screen title: the user's data-rights requests (DPDP / GDPR)
+  ///
+  /// In en, this message translates to:
+  /// **'Data-rights requests'**
+  String get privacyRequestsTitle;
+
+  /// Subtitle of the data-rights requests tile
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a copy, correction or deletion of your data, or raise a complaint'**
+  String get privacyRequestsSubtitle;
+
+  /// Empty state of the data-rights requests list
+  ///
+  /// In en, this message translates to:
+  /// **'You have not made any data-rights requests yet.'**
+  String get privacyRequestsEmpty;
+
+  /// Button / screen title: file a new data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get privacyRequestNew;
+
+  /// Intro of the data-rights request form (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'We record your request and reply by the due date shown once it is sent. We may ask you to confirm your identity before we act on it.'**
+  String get privacyRequestFormIntro;
+
+  /// Label of the request type picker
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do?'**
+  String get privacyRequestKindLabel;
+
+  /// Data-rights request type access
+  ///
+  /// In en, this message translates to:
+  /// **'Get a copy of my data'**
+  String get privacyRequestKindAccess;
+
+  /// Data-rights request type correction
+  ///
+  /// In en, this message translates to:
+  /// **'Correct my data'**
+  String get privacyRequestKindCorrection;
+
+  /// Data-rights request type erasure
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my data'**
+  String get privacyRequestKindErasure;
+
+  /// Data-rights request type nomination
+  ///
+  /// In en, this message translates to:
+  /// **'Nominate someone for my data rights'**
+  String get privacyRequestKindNomination;
+
+  /// Data-rights request type withdraw_consent
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw a consent'**
+  String get privacyRequestKindWithdrawConsent;
+
+  /// Data-rights request type complaint (grievance)
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint (grievance)'**
+  String get privacyRequestKindComplaint;
+
+  /// Data-rights request type other
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get privacyRequestKindOther;
+
+  /// Label of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get privacyRequestDetailsLabel;
+
+  /// Hint of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what you need, for example which data is wrong and what it should say.'**
+  String get privacyRequestDetailsHint;
+
+  /// Validation: request details need at least 10 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Please write at least 10 characters.'**
+  String get privacyRequestDetailsTooShort;
+
+  /// Optional field: the person the requester acts for
+  ///
+  /// In en, this message translates to:
+  /// **'On behalf of (optional)'**
+  String get privacyRequestOnBehalfLabel;
+
+  /// Hint of the on-behalf-of field
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the person you act for, if not yourself'**
+  String get privacyRequestOnBehalfHint;
+
+  /// Button: send the data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get privacyRequestSubmit;
+
+  /// Snackbar after a data-rights request was filed
+  ///
+  /// In en, this message translates to:
+  /// **'Request {reference} sent. Reply due by {date}.'**
+  String privacyRequestSent(String reference, String date);
+
+  /// Data-rights request status received
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get privacyRequestStatusReceived;
+
+  /// Data-rights request status in_progress
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get privacyRequestStatusInProgress;
+
+  /// Data-rights request status awaiting_requester (we need something from the user)
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get privacyRequestStatusAwaitingRequester;
+
+  /// Data-rights request status completed
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get privacyRequestStatusCompleted;
+
+  /// Data-rights request status rejected
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get privacyRequestStatusRejected;
+
+  /// Line on a request: the date by which we must reply
+  ///
+  /// In en, this message translates to:
+  /// **'Reply due by {date}'**
+  String privacyRequestDueBy(String date);
+
+  /// Badge: our reply is past the due date
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get privacyRequestOverdue;
+
+  /// Line on a request: when it was sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String privacyRequestSentOn(String date);
+
+  /// Line on a request: when it was closed
+  ///
+  /// In en, this message translates to:
+  /// **'Closed on {date}'**
+  String privacyRequestClosedOn(String date);
+
+  /// Section title on the request detail: what the user wrote
+  ///
+  /// In en, this message translates to:
+  /// **'Your request'**
+  String get privacyRequestYourRequest;
+
+  /// Section title on the request detail: our answer
+  ///
+  /// In en, this message translates to:
+  /// **'Our answer'**
+  String get privacyRequestResolution;
+
+  /// Request detail: no answer has been written yet
+  ///
+  /// In en, this message translates to:
+  /// **'We have not answered yet. You will get a notification when we do.'**
+  String get privacyRequestNoAnswerYet;
+
+  /// Profile > Privacy tile and screen title: nominee who may exercise the user's data rights (DPDP s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee'**
+  String get privacyNomineeTitle;
+
+  /// Nominee tile subtitle when no nominee is set
+  ///
+  /// In en, this message translates to:
+  /// **'Choose someone to use your data rights if you cannot'**
+  String get privacyNomineeSubtitleNone;
+
+  /// Nominee tile subtitle: name and relationship of the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({relationship})'**
+  String privacyNomineeSubtitleSet(String name, String relationship);
+
+  /// Nominee screen intro (legal: DPDP Act s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Under India\'s Digital Personal Data Protection Act you can nominate a person who may exercise your data rights if you die or become unable to act yourself. Give their email address or phone number.'**
+  String get privacyNomineeIntro;
+
+  /// Nominee form: full name
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get privacyNomineeName;
+
+  /// Nominee form: relationship to the user
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship (for example spouse, son)'**
+  String get privacyNomineeRelationship;
+
+  /// Nominee form: email
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get privacyNomineeEmail;
+
+  /// Nominee form: phone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get privacyNomineePhone;
+
+  /// Validation: nominee needs an email or phone
+  ///
+  /// In en, this message translates to:
+  /// **'Give an email address or a phone number.'**
+  String get privacyNomineeContactRequired;
+
+  /// Validation: name / relationship need at least 2 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 2 characters.'**
+  String get privacyNomineeTooShort;
+
+  /// Button: save the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Save nominee'**
+  String get privacyNomineeSave;
+
+  /// Snackbar: nominee saved
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee saved'**
+  String get privacyNomineeSaved;
+
+  /// Button: remove the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove nominee'**
+  String get privacyNomineeRemove;
+
+  /// Confirm dialog body before removing the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove your nominee? They will no longer be able to act for you.'**
+  String get privacyNomineeRemoveConfirm;
+
+  /// Snackbar: nominee removed
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee removed'**
+  String get privacyNomineeRemoved;
+
+  /// Switch: share my records with hospitals (share_with_hospitals consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with hospitals'**
+  String get privacyShareHospitalsTitle;
+
+  /// Subtitle when hospital sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals you contact can open the reports you share with them'**
+  String get privacyShareHospitalsOn;
+
+  /// Subtitle when hospital sharing was withdrawn
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn: hospitals cannot open your shared reports'**
+  String get privacyShareHospitalsOff;
+
+  /// Confirm dialog title: withdraw hospital sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with hospitals?'**
+  String get privacyShareHospitalsWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing hospital sharing (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals will no longer be able to open the reports and documents you shared with them, so quotes and consultations may be delayed until you share again. Records a hospital must keep by law are not affected.'**
+  String get privacyShareHospitalsWithdrawBody;
+
+  /// Switch: share my records with my agent (share_with_agent consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with my agent'**
+  String get privacyShareAgentTitle;
+
+  /// Subtitle when agent sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator can open your documents'**
+  String get privacyShareAgentOn;
+
+  /// Subtitle when agent sharing is off
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator cannot open your documents'**
+  String get privacyShareAgentOff;
+
+  /// Confirm dialog title: withdraw agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with your agent?'**
+  String get privacyShareAgentWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator will no longer be able to open your documents. You can share them again at any time.'**
+  String get privacyShareAgentWithdrawBody;
+
+  /// Dialog button: confirm withdrawing a sharing consent
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get privacyShareWithdraw;
+
+  /// Snackbar: a sharing consent was recorded
+  ///
+  /// In en, this message translates to:
+  /// **'Your sharing choice was saved'**
+  String get privacyShareUpdated;
+
+  /// Profile > Privacy tile and screen title: Grievance Officer and Data Protection Officer contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer and DPO'**
+  String get privacyContactTitle;
+
+  /// Subtitle of the privacy contact tile
+  ///
+  /// In en, this message translates to:
+  /// **'Who to contact about your personal data'**
+  String get privacyContactSubtitle;
+
+  /// Card title: Grievance Officer (DPDP)
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer'**
+  String get privacyContactGrievance;
+
+  /// Card title: Data Protection Officer
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Officer'**
+  String get privacyContactDpo;
+
+  /// Card title: postal address for privacy requests
+  ///
+  /// In en, this message translates to:
+  /// **'Postal address'**
+  String get privacyContactAddress;
+
+  /// Line: how long we take to answer data-rights requests (legal promise)
+  ///
+  /// In en, this message translates to:
+  /// **'We answer data-rights requests and grievances within {days} days.'**
+  String privacyContactResponse(int days);
+
+  /// Line: escalation to the Data Protection Board of India (legal)
+  ///
+  /// In en, this message translates to:
+  /// **'If you are not satisfied with our answer, you can complain to the Data Protection Board of India.'**
+  String get privacyContactBoard;
+
+  /// Link: Data Protection Board website
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Board website'**
+  String get privacyContactBoardLink;
+
+  /// Shown when a contact person has no details published yet
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details not published yet'**
+  String get privacyContactNotPublished;
+
+  /// Title of the pre-travel video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation'**
+  String get consultBookTitle;
+
+  /// Intro of the video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to a specialist by video before you travel. The hospital confirms the exact time and sends you the video link.'**
+  String get consultBookIntro;
+
+  /// Section title: choose the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get consultDoctorSection;
+
+  /// No doctor of the hospital offers video consultations
+  ///
+  /// In en, this message translates to:
+  /// **'No doctor at {hospital} offers video consultations yet. You can request a quote instead.'**
+  String consultNoTeleconsultDoctors(String hospital);
+
+  /// Button: request a quote (case) instead of a video consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote instead'**
+  String get consultRequestQuoteInstead;
+
+  /// Section title: preferred day of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred day'**
+  String get consultDateSection;
+
+  /// Hint under the consultation calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Green days have free consultation places.'**
+  String get consultDateHint;
+
+  /// Section title: preferred time of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred time'**
+  String get consultTimeSection;
+
+  /// Note: consultation times are shown in the device time zone
+  ///
+  /// In en, this message translates to:
+  /// **'Times are shown in your time zone ({zone}).'**
+  String consultTimesLocal(String zone);
+
+  /// Label of the question / notes field for the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to ask the doctor?'**
+  String get consultQuestionLabel;
+
+  /// Hint of the question field
+  ///
+  /// In en, this message translates to:
+  /// **'Your symptoms, the treatment you are considering, questions about travel and recovery...'**
+  String get consultQuestionHint;
+
+  /// Section title: medical reports to share before the call
+  ///
+  /// In en, this message translates to:
+  /// **'Reports to share'**
+  String get consultReportsSection;
+
+  /// Hint of the reports section
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor can read these before the call.'**
+  String get consultReportsHint;
+
+  /// Reports section when the patient already has an open case at the hospital
+  ///
+  /// In en, this message translates to:
+  /// **'Reports you upload here are added to your case {caseNumber} with {hospital}.'**
+  String consultReportsExistingCase(String caseNumber, String hospital);
+
+  /// Button: upload a medical report
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a report'**
+  String get consultUpload;
+
+  /// Label of the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation fee'**
+  String get consultFeeLabel;
+
+  /// Consultation fee: free
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get consultFeeFree;
+
+  /// Note: when and how the consultation fee is paid
+  ///
+  /// In en, this message translates to:
+  /// **'You pay the fee by card right after sending the request. The hospital then confirms the time.'**
+  String get consultFeePayNote;
+
+  /// Button: send the consultation request
+  ///
+  /// In en, this message translates to:
+  /// **'Request consultation'**
+  String get consultSubmit;
+
+  /// Validation: choose a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a doctor.'**
+  String get consultPickDoctor;
+
+  /// Validation: choose a day and a time
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a day and a time.'**
+  String get consultPickSlot;
+
+  /// Snackbar after the consultation was requested
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation requested. The hospital will confirm the time.'**
+  String get consultRequestedSnack;
+
+  /// API error consultation_exists
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an open consultation with this doctor. You can find it under My consultations.'**
+  String get consultErrorExists;
+
+  /// API error teleconsult_unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not offer video consultations. Please choose another doctor.'**
+  String get consultErrorUnavailable;
+
+  /// API error doctor_required
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a doctor for the consultation.'**
+  String get consultErrorDoctorRequired;
+
+  /// API error invalid_doctor
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not practise at this hospital. Please choose another doctor.'**
+  String get consultErrorInvalidDoctor;
+
+  /// Title of the patient's consultations list and its links
+  ///
+  /// In en, this message translates to:
+  /// **'My consultations'**
+  String get consultMineTitle;
+
+  /// Subtitle of links to the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Video calls with doctors before and after treatment'**
+  String get consultMineSubtitle;
+
+  /// Empty state title of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'No consultations yet'**
+  String get consultListEmpty;
+
+  /// Empty state body of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation from a doctor\'s page or from your hospital matches.'**
+  String get consultListEmptyBody;
+
+  /// Button: search for a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Find a doctor'**
+  String get consultFindDoctor;
+
+  /// Title of a consultation detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get consultDetailTitle;
+
+  /// Heading: video consultation with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Video consultation with {doctor}'**
+  String consultWithDoctor(String doctor);
+
+  /// Heading: aftercare follow-up call with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Aftercare follow-up with {doctor}'**
+  String consultFollowupWith(String doctor);
+
+  /// Placeholder when the doctor of a consultation is not known
+  ///
+  /// In en, this message translates to:
+  /// **'the hospital\'s doctor'**
+  String get consultDoctorTbc;
+
+  /// Confirmed consultation time (local) and duration
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for {when} ({minutes} min)'**
+  String consultScheduledAt(String when, int minutes);
+
+  /// The hospital has not confirmed a time yet
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the hospital to confirm a time.'**
+  String get consultAwaitingTime;
+
+  /// The time the patient asked for (local)
+  ///
+  /// In en, this message translates to:
+  /// **'You asked for {when}.'**
+  String consultPreferredTime(String when);
+
+  /// Button: open the video call link
+  ///
+  /// In en, this message translates to:
+  /// **'Join video call'**
+  String get consultJoinVideo;
+
+  /// Hint under the join button
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the private video room in your browser or the Jitsi Meet app.'**
+  String get consultJoinHint;
+
+  /// The video link is not available yet
+  ///
+  /// In en, this message translates to:
+  /// **'The video link appears here once the hospital confirms the time.'**
+  String get consultLinkSoon;
+
+  /// Reminder note for a scheduled consultation
+  ///
+  /// In en, this message translates to:
+  /// **'We will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderScheduled;
+
+  /// Reminder note before the time is confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Once the time is confirmed, we will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderPending;
+
+  /// Fee status: paid
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get consultPaid;
+
+  /// Fee status: not paid yet
+  ///
+  /// In en, this message translates to:
+  /// **'Payment due'**
+  String get consultPaymentDue;
+
+  /// Fee status: payment being confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Payment being confirmed'**
+  String get consultPaymentPending;
+
+  /// Button: pay the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount}'**
+  String consultPayButton(String amount);
+
+  /// Title of the consultation fee payment sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Pay consultation fee'**
+  String get consultPayTitle;
+
+  /// Consultation fee paid
+  ///
+  /// In en, this message translates to:
+  /// **'Payment received. Thank you.'**
+  String get consultPaySuccess;
+
+  /// Consultation fee payment failed
+  ///
+  /// In en, this message translates to:
+  /// **'The payment did not go through and no money was taken. You can try again.'**
+  String get consultPayFailed;
+
+  /// Consultation fee payment pending
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is being confirmed. This page updates when it is done.'**
+  String get consultPayPending;
+
+  /// Button: cancel the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel consultation'**
+  String get consultCancel;
+
+  /// Confirm dialog title: cancel consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this consultation?'**
+  String get consultCancelConfirmTitle;
+
+  /// Confirm dialog body: cancel consultation (fee handling)
+  ///
+  /// In en, this message translates to:
+  /// **'The hospital will be told. If you already paid the fee, our team will contact you about it.'**
+  String get consultCancelConfirmBody;
+
+  /// Dialog button: keep the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get consultKeep;
+
+  /// Snackbar: consultation cancelled
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation cancelled'**
+  String get consultCancelled;
+
+  /// Link from a consultation to its case
+  ///
+  /// In en, this message translates to:
+  /// **'Open case {caseNumber}'**
+  String consultOpenCase(String caseNumber);
+
+  /// Section title: the patient's notes on a consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes'**
+  String get consultNotesSection;
+
+  /// Button on a doctor page: book a video consultation with this doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Book video consultation'**
+  String get consultBookVideoButton;
+
+  /// Title of the insurance and pay-later partners screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and pay later'**
+  String get insuranceScreenTitle;
+
+  /// Tab: partner insurance products.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance'**
+  String get insuranceTabInsurance;
+
+  /// Tab: pay-later (financing) partners.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay later'**
+  String get insuranceTabPayLater;
+
+  /// Tab: the patient's quote requests and eligibility checks.
+  ///
+  /// In en, this message translates to:
+  /// **'My requests'**
+  String get insuranceTabRequests;
+
+  /// Insurance disclaimer, always visible. Legal wording: translate faithfully, do not add or drop conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Heal India Global does not sell insurance and is not an insurance intermediary. We list partner products for information only. The insurer decides cover, price and terms; read their policy documents before you buy.'**
+  String get insuranceDisclaimer;
+
+  /// Pay-later disclaimer, always visible. Legal / financial wording: translate faithfully, do not add or drop conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Heal India Global does not lend money or make credit decisions. Pay-later plans and loans are offered by the partner, on the partner\'s terms, after their own checks. Our own instalment plans are interest-free and must be paid in full before your treatment date.'**
+  String get financingDisclaimer;
+
+  /// Pay-later tab: explains who decides. Legal / financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'The partner checks your eligibility and decides on its own website, on its own terms. Heal India Global makes no credit decision.'**
+  String get financingPartnerDecides;
+
+  /// Header above the partner list. {country} is a country name.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for {country}'**
+  String insuranceCountryFor(String country);
+
+  /// Header above the partner list when no country is chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for every country'**
+  String get insuranceCountryAll;
+
+  /// Title of the country picker on the insurance screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your country'**
+  String get insuranceCountryPick;
+
+  /// Empty state: no insurance product for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'No insurance options yet'**
+  String get insuranceEmptyTitle;
+
+  /// Empty state body: no insurance product for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'We have no partner insurance for this country right now. Check again later or ask our team.'**
+  String get insuranceEmptyBody;
+
+  /// Empty state: no pay-later partner for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'No pay-later partners yet'**
+  String get financingEmptyTitle;
+
+  /// Empty state body: no pay-later partner. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no pay-later partner for this country right now. Our interest-free instalment plan is still available when you book.'**
+  String get financingEmptyBody;
+
+  /// Insurance category: medical travel insurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical travel insurance'**
+  String get insuranceCategoryMedicalTravel;
+
+  /// Insurance category: cover for complications of a treatment.
+  ///
+  /// In en, this message translates to:
+  /// **'Complication cover'**
+  String get insuranceCategoryComplication;
+
+  /// Insurance category: health insurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Health insurance'**
+  String get insuranceCategoryHealth;
+
+  /// Insurance category: other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other cover'**
+  String get insuranceCategoryOther;
+
+  /// Partner card: the partner serves every country.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in every country'**
+  String get insuranceEligibleAll;
+
+  /// Partner card: list of countries the partner serves. {countries} is a comma-separated list of country names.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in: {countries}'**
+  String insuranceEligibleCountries(String countries);
+
+  /// Partner card: warning that the partner does not serve the selected country.
+  ///
+  /// In en, this message translates to:
+  /// **'This partner does not list your country.'**
+  String get insuranceNotInYourCountry;
+
+  /// Partner card: indicative price range set by the partner, not a quote. {price} is a formatted amount or range. Price wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicative price: {price}'**
+  String insurancePriceIndicative(String price);
+
+  /// Partner card: no indicative price listed.
+  ///
+  /// In en, this message translates to:
+  /// **'Price on request from the partner'**
+  String get insurancePriceOnRequest;
+
+  /// Button: open the form to ask the insurer for a quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote from the insurer'**
+  String get insuranceRequestQuote;
+
+  /// Button: open the partner's own website.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner website'**
+  String get insuranceVisitWebsite;
+
+  /// Snackbar when the partner link cannot be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the partner\'s website.'**
+  String get insuranceCouldNotOpen;
+
+  /// Button: ask a pay-later partner to check eligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Check eligibility'**
+  String get financingCheckEligibility;
+
+  /// Title of the insurance quote request form.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote from the insurer'**
+  String get insuranceFormTitle;
+
+  /// Title of the pay-later eligibility form.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your eligibility'**
+  String get financingFormTitle;
+
+  /// Insurance form intro. {provider} is the insurer's name. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'We pass your contact details to {provider}. They contact you directly with a quote.'**
+  String insuranceFormIntro(String provider);
+
+  /// Pay-later form intro. {provider} is the partner's name. Privacy / financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'We pass your contact details to {provider}. They check your eligibility and contact you directly.'**
+  String financingFormIntro(String provider);
+
+  /// Form field: contact name.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get insuranceFieldName;
+
+  /// Form field: contact email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get insuranceFieldEmail;
+
+  /// Form field: contact phone number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (with country code)'**
+  String get insuranceFieldPhone;
+
+  /// Validation: contact name missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name.'**
+  String get insuranceNameRequired;
+
+  /// Validation: email looks wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get insuranceEmailInvalid;
+
+  /// Validation: neither email nor phone was given.
+  ///
+  /// In en, this message translates to:
+  /// **'Give an email address or a phone number.'**
+  String get insuranceContactRequired;
+
+  /// Form: preferred contact channel.
+  ///
+  /// In en, this message translates to:
+  /// **'How should they contact you?'**
+  String get insurancePreferredContact;
+
+  /// Preferred contact option: email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get insuranceContactEmail;
+
+  /// Preferred contact option: phone call.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get insuranceContactPhone;
+
+  /// Preferred contact option: WhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get insuranceContactWhatsapp;
+
+  /// Form field: the patient's country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get insuranceFieldCountry;
+
+  /// Form: no country chosen yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get insuranceFieldCountryNotSet;
+
+  /// Form field: optional message to the partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Message (optional)'**
+  String get insuranceFieldMessage;
+
+  /// Hint under the message field. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not include medical details.'**
+  String get insuranceMessageHint;
+
+  /// Required consent checkbox. {provider} is the partner's name. Legal / privacy wording: translate faithfully, keep the meaning exact.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree that Heal India Global may share my name and contact details with {provider} so they can contact me about this request. No medical information is shared.'**
+  String insuranceConsentText(String provider);
+
+  /// Validation: consent checkbox not ticked.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick the box to agree before you send the request.'**
+  String get insuranceConsentRequired;
+
+  /// Form note: the request includes the case / booking it was opened from.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is linked to your treatment case.'**
+  String get insuranceLinkedToBooking;
+
+  /// Button: send the quote request / eligibility check.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get insuranceSend;
+
+  /// Success title after sending a request to a partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent'**
+  String get insuranceSentTitle;
+
+  /// Success body. {provider} is the partner's name.
+  ///
+  /// In en, this message translates to:
+  /// **'{provider} will contact you. You can follow this request under My requests.'**
+  String insuranceSentBody(String provider);
+
+  /// Button: hand-off to the partner's own website.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue on the partner\'s site'**
+  String get insuranceContinueOnPartner;
+
+  /// Error: the consent was not given (consent_required).
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to share your contact details first.'**
+  String get insuranceErrorConsentRequired;
+
+  /// Error: the partner does not serve the patient's country (partner_country_not_eligible).
+  ///
+  /// In en, this message translates to:
+  /// **'This partner does not serve your country. Choose another option or change the country.'**
+  String get insuranceErrorCountryNotEligible;
+
+  /// Error: a request to this partner is already open (duplicate_request).
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an open request with this partner.'**
+  String get insuranceErrorDuplicate;
+
+  /// Error: the product / partner was removed (offering_not_found).
+  ///
+  /// In en, this message translates to:
+  /// **'This option is no longer available. Refresh the list.'**
+  String get insuranceErrorNotFound;
+
+  /// Error: the request can no longer be withdrawn (lead_not_open).
+  ///
+  /// In en, this message translates to:
+  /// **'This request is already closed.'**
+  String get insuranceErrorNotOpen;
+
+  /// Empty state: no quote requests or eligibility checks.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests yet'**
+  String get insuranceRequestsEmptyTitle;
+
+  /// Empty state body for My requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote requests and eligibility checks you send to partners appear here.'**
+  String get insuranceRequestsEmptyBody;
+
+  /// Request type label: insurance quote request.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance quote'**
+  String get insuranceKindQuote;
+
+  /// Request type label: pay-later eligibility check.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay-later eligibility'**
+  String get financingKindEligibility;
+
+  /// Request status: new, not yet handled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get insuranceStatusNew;
+
+  /// Request status: being handled by our team.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get insuranceStatusInProgress;
+
+  /// Request status: contact details shared with the partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed to partner'**
+  String get insuranceStatusShared;
+
+  /// Request status: closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get insuranceStatusClosed;
+
+  /// Request status: withdrawn by the patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn'**
+  String get insuranceStatusCancelled;
+
+  /// Screen reader label of a status chip. {status} is a status label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String insuranceStatusSemantics(String status);
+
+  /// When a request was sent. {date} is a formatted date.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String insuranceRequestSentOn(String date);
+
+  /// Button: withdraw a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get insuranceWithdraw;
+
+  /// Confirm dialog title: withdraw a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw this request?'**
+  String get insuranceWithdrawTitle;
+
+  /// Confirm dialog body: withdrawing a request and consent. {provider} is the partner's name. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'This also withdraws your consent to share your contact details with {provider}. If they already received your details, ask them directly to delete them.'**
+  String insuranceWithdrawBody(String provider);
+
+  /// Snackbar after withdrawing a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Request withdrawn.'**
+  String get insuranceWithdrawn;
+
+  /// Profile: section title for insurance and pay-later options.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and payments'**
+  String get insuranceProfileGroup;
+
+  /// Profile: link to the insurance and pay-later screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and pay later'**
+  String get insuranceProfileTile;
+
+  /// Profile: subtitle of the insurance and pay-later link.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner insurance, pay-later options and your requests'**
+  String get insuranceProfileTileSubtitle;
+
+  /// Booking: card linking to partner insurance options.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance options'**
+  String get insuranceBookCardTitle;
+
+  /// Booking: short insurance disclaimer on the card. Legal wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare partner insurance for your trip and treatment. We do not sell insurance; the insurer decides cover and price.'**
+  String get insuranceBookCardBody;
+
+  /// Booking: button to open the insurance options.
+  ///
+  /// In en, this message translates to:
+  /// **'See insurance options'**
+  String get insuranceBookCardAction;
+
+  /// Booking: subtitle of the instalments option. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest-free, paid off before your admission'**
+  String get financingInstallmentsSubtitle;
+
+  /// Booking: hint shown before an admission date is picked.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an admission date to see your instalment schedule.'**
+  String get financingPickDateFirst;
+
+  /// Booking: why instalments are disabled for this date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalments are not possible for this admission date: they must be paid off before your treatment. Pay in full, pay the deposit, or choose a later date.'**
+  String get financingInstallmentsUnavailable;
+
+  /// Booking: instalment rule under the schedule. {date} is the admission date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest-free. The last instalment is due before your admission on {date}.'**
+  String financingInterestFreeNote(String date);
+
+  /// Booking: one row of the instalment schedule. {seq} is the instalment number, {date} the due date.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalment {seq}, due {date}'**
+  String financingScheduleItem(int seq, String date);
+
+  /// Booking: note that schedule amounts are estimates. Payment wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated amounts before fees. The final schedule is set when you book.'**
+  String get financingScheduleEstimate;
+
+  /// Booking: link to pay-later partners when a longer term is wanted.
+  ///
+  /// In en, this message translates to:
+  /// **'Need longer to pay? See pay-later partners'**
+  String get financingSeePartners;
+
+  /// Error installments_past_treatment: the plan would run past the treatment date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalments must be paid in full before your admission date. Choose fewer months, pay the deposit, or pick a later date.'**
+  String get financingInstallmentsPastTreatment;
+
   /// Title of the WhatsApp updates screen and its profile tile.
   ///
   /// In en, this message translates to:
@@ -16312,6 +17782,1170 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Final summaries are locked. To change this one, create a new version.'**
   String get dischargeHpLockedNote;
+
+  /// Payment gateway: paid with referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral credit'**
+  String get enumPaymentGatewayPlatformCredit;
+
+  /// Payment method: card.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get enumPaymentMethodCard;
+
+  /// Payment method: UPI (India).
+  ///
+  /// In en, this message translates to:
+  /// **'UPI'**
+  String get enumPaymentMethodUpi;
+
+  /// Payment method: net banking.
+  ///
+  /// In en, this message translates to:
+  /// **'Net banking'**
+  String get enumPaymentMethodNetbanking;
+
+  /// Payment method: bank transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get enumPaymentMethodBankTransfer;
+
+  /// Payment method: mobile wallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get enumPaymentMethodWallet;
+
+  /// Payment method: EMI (equated monthly instalments).
+  ///
+  /// In en, this message translates to:
+  /// **'EMI'**
+  String get enumPaymentMethodEmi;
+
+  /// Payment method: simulated test payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Test payment'**
+  String get enumPaymentMethodMock;
+
+  /// Payment method: paid with referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral credit'**
+  String get enumPaymentMethodPlatformCredit;
+
+  /// Referral screen title and profile entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer a friend'**
+  String get referralTitle;
+
+  /// Profile entry subtitle of the referral screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends and earn treatment credit'**
+  String get referralProfileSubtitle;
+
+  /// Referral screen banner when the programme is switched off.
+  ///
+  /// In en, this message translates to:
+  /// **'The referral programme is paused'**
+  String get referralProgrammeOffTitle;
+
+  /// Referral screen banner body when the programme is off.
+  ///
+  /// In en, this message translates to:
+  /// **'You can still use the credit you already have on your bookings.'**
+  String get referralProgrammeOffBody;
+
+  /// Referral headline when both sides get a reward. Amounts are formatted money.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend gets {friendReward} off their first treatment, and you get {yourReward} in credit once it\'s completed.'**
+  String referralHeroBoth(String friendReward, String yourReward);
+
+  /// Referral headline when only the referrer is rewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Get {yourReward} in credit when a friend you invite completes their first treatment.'**
+  String referralHeroReferrerOnly(String yourReward);
+
+  /// Referral headline when only the invited friend is rewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend gets {friendReward} in credit for their first treatment.'**
+  String referralHeroRefereeOnly(String friendReward);
+
+  /// Referral headline when no reward is configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends and family who are planning treatment in India.'**
+  String get referralHeroGeneric;
+
+  /// Label above the personal referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Your referral code'**
+  String get referralYourCode;
+
+  /// Tooltip: copy the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get referralCopyCode;
+
+  /// Snack bar after copying the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get referralCodeCopied;
+
+  /// Button: open the system share sheet with the invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Share invite'**
+  String get referralShare;
+
+  /// Button: copy the invite text with the link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy invite'**
+  String get referralCopyLink;
+
+  /// Snack bar after copying the invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite copied'**
+  String get referralLinkCopied;
+
+  /// Subject of the shared invite (e-mail apps).
+  ///
+  /// In en, this message translates to:
+  /// **'Join me on Heal India Global'**
+  String get referralShareSubject;
+
+  /// Invite text shared with a friend; code and web link are inserted.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m using Heal India Global to plan treatment in India. Sign up with my code {code}: {link}'**
+  String referralShareMessage(String code, String link);
+
+  /// Credit balance card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit'**
+  String get referralCreditTitle;
+
+  /// Credit is kept in INR; shows the INR amount under the display-currency amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Held in Indian rupees: {amount}'**
+  String referralCreditBase(String amount);
+
+  /// Part of the credit expiring within 30 days.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} expires on {date}'**
+  String referralCreditExpiringSoon(String amount, String date);
+
+  /// Where credit can be spent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it on the payment screen of a booking.'**
+  String get referralCreditUseHint;
+
+  /// Credit card when the balance is zero.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit yet. Invite a friend to earn some.'**
+  String get referralCreditNone;
+
+  /// Section title: how the referral programme works.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get referralHowItWorksTitle;
+
+  /// How it works, step 1.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your code or invite link with a friend.'**
+  String get referralStep1;
+
+  /// How it works, step 2.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend signs up with it and books treatment.'**
+  String get referralStep2;
+
+  /// How it works, step 3.
+  ///
+  /// In en, this message translates to:
+  /// **'When their first treatment is completed, the credit is added to your account.'**
+  String get referralStep3;
+
+  /// Credit validity in days.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Credit can be used on booking payments for 1 day.} other{Credit can be used on booking payments for {days} days.}}'**
+  String referralTermsValidity(int days);
+
+  /// Yearly cap of rewarded friends.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{You can earn a reward for 1 friend a year.} other{You can earn rewards for up to {count} friends a year.}}'**
+  String referralTermsMaxPerYear(int count);
+
+  /// Referral terms: no cash, no self-referral.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit cannot be exchanged for cash. Signing up yourself with your own code is not rewarded.'**
+  String get referralTermsNoCash;
+
+  /// Section title: friends who signed up with the code.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends you invited'**
+  String get referralFriendsTitle;
+
+  /// Empty friends list.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends have joined with your code yet.'**
+  String get referralFriendsEmpty;
+
+  /// Chip with a referral status and how many friends are in it.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {count}'**
+  String referralCountChip(String label, int count);
+
+  /// Date a friend signed up.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String referralFriendJoined(String date);
+
+  /// Credit earned for a rewarded friend.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} credit'**
+  String referralFriendReward(String amount);
+
+  /// Referral status: friend signed up, treatment not completed yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up'**
+  String get referralStatusPending;
+
+  /// Referral status: first treatment completed, reward not issued yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Treatment completed'**
+  String get referralStatusQualified;
+
+  /// Referral status: credit issued.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewarded'**
+  String get referralStatusRewarded;
+
+  /// Referral status: void (expired, self-referral or cancelled by staff).
+  ///
+  /// In en, this message translates to:
+  /// **'Not eligible'**
+  String get referralStatusVoid;
+
+  /// Section title: credit ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit history'**
+  String get referralHistoryTitle;
+
+  /// Empty credit ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit activity yet.'**
+  String get referralHistoryEmpty;
+
+  /// Ledger entry: credit granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit added'**
+  String get referralMovementGrant;
+
+  /// Ledger entry: credit spent on a booking payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Used on a booking'**
+  String get referralMovementRedeem;
+
+  /// Ledger entry: credit given back after a refund.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned after a refund'**
+  String get referralMovementReinstate;
+
+  /// Ledger entry: credit expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get referralMovementExpire;
+
+  /// Ledger entry: credit cancelled by staff.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get referralMovementVoid;
+
+  /// Credit kind: referrer reward.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward for inviting a friend'**
+  String get referralCreditKindReferrer;
+
+  /// Credit kind: reward of the invited friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome credit'**
+  String get referralCreditKindReferee;
+
+  /// Credit kind: credit returned after a refund.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned credit'**
+  String get referralCreditKindReinstated;
+
+  /// Expiry date of one credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String referralCreditExpires(String date);
+
+  /// Sign-up field: referral code of a friend or facilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code (optional)'**
+  String get referralCodeFieldLabel;
+
+  /// Sign-up field helper of the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'From a friend or a medical-travel facilitator'**
+  String get referralCodeFieldHelper;
+
+  /// Sign-up error: unknown referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'This referral code is not valid. Check it or leave the field empty.'**
+  String get referralCodeInvalid;
+
+  /// Pay screen: referral credit card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my credit'**
+  String get referralPayUseCreditTitle;
+
+  /// Pay screen: credit available and the part that will be applied.
+  ///
+  /// In en, this message translates to:
+  /// **'{available} available · {apply} will be applied'**
+  String referralPayUseCreditBody(String available, String apply);
+
+  /// Pay screen: credit pays everything.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit covers the full amount due now.'**
+  String get referralPayCoversAll;
+
+  /// Pay screen: amount still to pay after the credit.
+  ///
+  /// In en, this message translates to:
+  /// **'You will pay the remaining {amount} with the method below.'**
+  String referralPayRemaining(String amount);
+
+  /// Pay screen button: apply referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my credit'**
+  String get referralPayApplyButton;
+
+  /// Confirm dialog title before applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your credit?'**
+  String get referralPayConfirmTitle;
+
+  /// Confirm dialog body before applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} of your referral credit will be applied to this booking payment now. If the payment is refunded later, the credit is returned to you.'**
+  String referralPayConfirmBody(String amount);
+
+  /// Confirm dialog button.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply credit'**
+  String get referralPayConfirmButton;
+
+  /// Snack bar after applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} of credit applied'**
+  String referralPayApplied(String amount);
+
+  /// Error 409 credit_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit changed. Check the amount and try again.'**
+  String get referralPayCreditChanged;
+
+  /// Error 409 payment_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment for this booking is already in progress. Try again in a few minutes.'**
+  String get referralPayInProgress;
+
+  /// Error 400 credit_not_applicable.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit can\'t be used on this payment.'**
+  String get referralPayNotApplicable;
+
+  /// Pay screen note: credit not usable with instalments.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit can\'t be used on instalment plans.'**
+  String get referralPayNotForInstallments;
+
+  /// Pay screen note: credit below the minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit is too small to apply to this payment.'**
+  String get referralPayAmountTooSmall;
+
+  /// Agent CRM: lead list title and dashboard card.
+  ///
+  /// In en, this message translates to:
+  /// **'Leads'**
+  String get crmLeadsTitle;
+
+  /// Button: add a lead.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lead'**
+  String get crmAddLead;
+
+  /// Lead search hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, email or phone'**
+  String get crmSearchHint;
+
+  /// Tooltip of the source filter menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by source'**
+  String get crmFilterSource;
+
+  /// Source filter: no filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Any source'**
+  String get crmFilterAnySource;
+
+  /// Follow-up filter chip: no filter.
+  ///
+  /// In en, this message translates to:
+  /// **'All leads'**
+  String get crmFilterAllLeads;
+
+  /// Follow-up filter: due by the end of today (overdue included).
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get crmFilterDueToday;
+
+  /// Follow-up filter: overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get crmFilterOverdue;
+
+  /// Follow-up filter: no follow-up scheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'No follow-up'**
+  String get crmFilterNoFollowUp;
+
+  /// Filter chip with a count.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} ({count})'**
+  String crmChipCount(String label, int count);
+
+  /// Pipeline summary: open leads.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No open leads} =1{1 open lead} other{{count} open leads}}'**
+  String crmPipelineOpen(int count);
+
+  /// Follow-ups due today (overdue included).
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No follow-ups due today} =1{1 follow-up due today} other{{count} follow-ups due today}}'**
+  String crmFollowUpsDueToday(int count);
+
+  /// Overdue follow-ups.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 overdue} other{{count} overdue}}'**
+  String crmFollowUpsOverdue(int count);
+
+  /// Pipeline conversion rate (e.g. 25%).
+  ///
+  /// In en, this message translates to:
+  /// **'{rate} converted'**
+  String crmPipelineConversion(String rate);
+
+  /// Empty lead list title.
+  ///
+  /// In en, this message translates to:
+  /// **'No leads yet'**
+  String get crmLeadsEmpty;
+
+  /// Empty lead list hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the people who contact you so you can follow up and turn them into patients.'**
+  String get crmLeadsEmptyHint;
+
+  /// Lead list empty with filters.
+  ///
+  /// In en, this message translates to:
+  /// **'No leads match these filters.'**
+  String get crmLeadsNoMatch;
+
+  /// Lead tile: next follow-up date and time.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow up {date}'**
+  String crmFollowUpOn(String date);
+
+  /// Badge: follow-up is due.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get crmFollowUpDueBadge;
+
+  /// Lead detail title fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get crmLeadDetailTitle;
+
+  /// Lead detail section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get crmDetailsTitle;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get crmFieldPhone;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get crmFieldWhatsapp;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get crmFieldEmail;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get crmFieldCountry;
+
+  /// Lead field: preferred language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get crmFieldLanguage;
+
+  /// Lead field: where the lead came from.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get crmFieldSource;
+
+  /// Lead field: medical specialty of interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get crmFieldSpecialty;
+
+  /// Lead field: procedure of interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure'**
+  String get crmFieldProcedure;
+
+  /// Lead field: short interest note.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest'**
+  String get crmFieldInterest;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get crmFieldBudget;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get crmFieldTags;
+
+  /// Lead field: team member responsible.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get crmFieldOwner;
+
+  /// Lead field: why the lead was lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason lost'**
+  String get crmFieldLostReason;
+
+  /// Lead field: creation date.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get crmFieldCreated;
+
+  /// Lead section: next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up'**
+  String get crmFieldNextFollowUp;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get crmStatusNew;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get crmStatusContacted;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Qualified'**
+  String get crmStatusQualified;
+
+  /// Lead stage: health screening in progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening'**
+  String get crmStatusScreening;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote requested'**
+  String get crmStatusQuoteRequested;
+
+  /// Lead stage: converted to a patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Won'**
+  String get crmStatusWon;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get crmStatusLost;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in'**
+  String get crmSourceWalkIn;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get crmSourceWhatsapp;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get crmSourceFacebook;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get crmSourceReferral;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get crmSourceEvent;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get crmSourceOther;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get crmActivityCall;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get crmActivityMessage;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting'**
+  String get crmActivityMeeting;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get crmActivityNote;
+
+  /// Lead activity kind (written by the server).
+  ///
+  /// In en, this message translates to:
+  /// **'Status change'**
+  String get crmActivityStatusChange;
+
+  /// Button / sheet title: log a call, message, meeting or note.
+  ///
+  /// In en, this message translates to:
+  /// **'Log activity'**
+  String get crmLogActivity;
+
+  /// Button / sheet title.
+  ///
+  /// In en, this message translates to:
+  /// **'Change status'**
+  String get crmChangeStatus;
+
+  /// Status sheet button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save status'**
+  String get crmStatusSave;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated'**
+  String get crmStatusUpdated;
+
+  /// Lost reason field.
+  ///
+  /// In en, this message translates to:
+  /// **'Why was the lead lost?'**
+  String get crmLostReasonLabel;
+
+  /// Lost reason validation / API error lost_reason_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the reason the lead was lost.'**
+  String get crmLostReasonRequired;
+
+  /// Hint / API error lead_convert_required.
+  ///
+  /// In en, this message translates to:
+  /// **'To mark a lead as won, convert it to a patient.'**
+  String get crmWonViaConvert;
+
+  /// Tooltip: pick the next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule follow-up'**
+  String get crmScheduleFollowUp;
+
+  /// Tooltip: remove the follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear follow-up'**
+  String get crmClearFollowUp;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up scheduled'**
+  String get crmFollowUpScheduled;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up cleared'**
+  String get crmFollowUpCleared;
+
+  /// Lead detail: no follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'No follow-up scheduled'**
+  String get crmNoFollowUp;
+
+  /// Activity sheet: text field.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened? (optional)'**
+  String get crmActivityBodyLabel;
+
+  /// Activity sheet: pick the next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up (optional)'**
+  String get crmActivityNextFollowUp;
+
+  /// Activity sheet button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save activity'**
+  String get crmActivitySave;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity logged'**
+  String get crmActivityLogged;
+
+  /// Lead detail section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get crmTimelineTitle;
+
+  /// Empty timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity yet.'**
+  String get crmTimelineEmpty;
+
+  /// Timeline entry of a status change.
+  ///
+  /// In en, this message translates to:
+  /// **'Status changed from {fromStatus} to {toStatus}'**
+  String crmTimelineStatusChange(String fromStatus, String toStatus);
+
+  /// Timeline entry: first status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status set to {status}'**
+  String crmTimelineStatusSet(String status);
+
+  /// Timeline entry author.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String crmTimelineBy(String name);
+
+  /// Button: convert the lead to a managed patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to patient'**
+  String get crmConvertToPatient;
+
+  /// Convert screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to patient'**
+  String get crmConvertTitle;
+
+  /// Convert screen intro.
+  ///
+  /// In en, this message translates to:
+  /// **'Creates a managed patient from this lead. Check the details and confirm the patient\'s consent.'**
+  String get crmConvertIntro;
+
+  /// Snack bar after converting.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient created from the lead'**
+  String get crmConverted;
+
+  /// Lead detail banner / convert screen when already converted.
+  ///
+  /// In en, this message translates to:
+  /// **'This lead is already a patient.'**
+  String get crmAlreadyConverted;
+
+  /// Button: open the converted patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Open patient'**
+  String get crmViewPatient;
+
+  /// Menu item / confirm button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete lead'**
+  String get crmDeleteLead;
+
+  /// Confirm dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this lead?'**
+  String get crmDeleteConfirmTitle;
+
+  /// Confirm dialog body.
+  ///
+  /// In en, this message translates to:
+  /// **'The lead and its timeline are removed. This cannot be undone.'**
+  String get crmDeleteConfirmBody;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead deleted'**
+  String get crmLeadDeleted;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead added'**
+  String get crmLeadAdded;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get crmFormFullName;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get crmFormPhone;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp (optional)'**
+  String get crmFormWhatsapp;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get crmFormEmail;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get crmFormEmailInvalid;
+
+  /// Lead form field: ISO 2-letter country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code (optional, e.g. NG)'**
+  String get crmFormCountry;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a 2-letter country code, e.g. NG.'**
+  String get crmFormCountryInvalid;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get crmFormSource;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Source details (optional)'**
+  String get crmFormSourceDetail;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest (optional)'**
+  String get crmFormInterest;
+
+  /// Lead form helper: no medical history in the CRM.
+  ///
+  /// In en, this message translates to:
+  /// **'A short note such as \"knee replacement\". Do not enter medical history.'**
+  String get crmFormInterestHelper;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget (optional)'**
+  String get crmFormBudget;
+
+  /// Lead form field: budget currency (ISO code).
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get crmFormBudgetCurrency;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount and 3-letter currency.'**
+  String get crmFormBudgetInvalid;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up (optional)'**
+  String get crmFormFollowUp;
+
+  /// Lead form field: first timeline note.
+  ///
+  /// In en, this message translates to:
+  /// **'First note (optional)'**
+  String get crmFormNote;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get crmFormRequired;
+
+  /// Dashboard leads card subtitle while loading / unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Track enquiries and follow-ups'**
+  String get crmDashboardHint;
+
+  /// API error lead_converted.
+  ///
+  /// In en, this message translates to:
+  /// **'This lead was already converted to a patient.'**
+  String get crmErrorLeadConverted;
+
+  /// API error email_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get crmErrorEmailTaken;
+
+  /// API error agent_not_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Your agency account must be approved before you can add patients.'**
+  String get crmErrorAgentNotActive;
+
+  /// Add-patient / convert form: consent section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient consent'**
+  String get crmConsentSection;
+
+  /// Consent attestation checkbox (legal).
+  ///
+  /// In en, this message translates to:
+  /// **'I confirm the patient has agreed to the Terms of Service and Privacy Policy'**
+  String get crmConsentAttest;
+
+  /// Consent attestation hint (legal).
+  ///
+  /// In en, this message translates to:
+  /// **'Your attestation is recorded with your name and time. The patient confirms it on first sign-in.'**
+  String get crmConsentAttestHint;
+
+  /// Optional consent: share records with hospitals.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient also agreed to share their records with the hospitals I contact for them'**
+  String get crmConsentShare;
+
+  /// Consent method field.
+  ///
+  /// In en, this message translates to:
+  /// **'How was consent obtained?'**
+  String get crmConsentMethod;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'In person'**
+  String get crmConsentMethodInPerson;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone call'**
+  String get crmConsentMethodPhone;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Video call'**
+  String get crmConsentMethodVideoCall;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Written / signed form'**
+  String get crmConsentMethodWritten;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get crmConsentMethodEmail;
+
+  /// Consent note field.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get crmConsentNote;
+
+  /// Consent note hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Signed form on file'**
+  String get crmConsentNoteHint;
+
+  /// Consent validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm that the patient has given consent before adding them.'**
+  String get crmConsentRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

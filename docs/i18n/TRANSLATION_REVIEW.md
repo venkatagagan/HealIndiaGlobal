@@ -441,3 +441,60 @@ write the number as a word (ar "يوم واحد", "مرتين"). French says "co
   body with a placeholder, and keep "Heal India Global" and "SOS" in Latin script. The `name_fallback`
   greeting words ("there", "عزيزنا المريض", "à vous", "বন্ধু", "уважаемый пациент") are used when a patient
   has no first name.
+## Referral programme and agent CRM (web)
+
+New sections `referral.*` (patient web, admin portal, website) and `crm.*` (agent portal), translated into ar, fr,
+bn and ru. Review these money, credit, terms and consent strings first:
+
+### Shared web UI (`common:`)
+
+- Payments: `enums.paymentGateway.platform_credit`, `enums.paymentMethod.platform_credit` ("Referral credit"; ru uses
+  "Бонус за приглашение" because "кредит" reads as a loan). The same two keys were added to the admin `finance:`
+  catalog (`enums.paymentGateway.platform_credit`, `enums.paymentMethod.platform_credit`).
+
+### Patient web (`patient:`)
+
+- Rewards and limits: `referral.description`, `referral.rewards.*` (`step3` "when your friend's first booking is
+  completed, you both receive credit", `you`, `friend`, `cap_*`, `validity_*`, `use` "credit can only be used towards
+  booking payments").
+- Credit balance and history: `referral.balance.*` (`base` "Value in Indian rupees", `expiringSoon`, `useHint`),
+  `referral.history.kind.*`, `referral.history.creditKind.*`, `referral.disabled.description`.
+- Terms: `referral.terms` (link text "Terms of Service, section Referral programme"), `referral.pay.termsLink`.
+- Pay screen: `referral.pay.*` - `available`, `willApply`, `remaining`, `restNote`, `fullNote`, `paidInFull`,
+  `reasons.*` (instalment plans, amount too small) and `errors.*` (amount changed, payment in progress).
+- Privacy: `referral.friends.description` ("only first names, never booking or health details").
+- ru renders "credit" as "бонусы" throughout; ar uses رصيد; fr "crédit"; bn "ক্রেডিট".
+
+### Admin portal (`admin:`)
+
+- Finance: `referral.description`, `referral.summary.*` (`issued`, `redeemed`, `expiredVoided`, `outstanding`,
+  `liability` "Ledger liability", `mismatch`), `referral.creditKind.*`, `referral.creditStatus.*`.
+- Void (audited): `referral.void.*` - especially `void.description` ("unused credit is voided; credit already spent is
+  not taken back").
+- Settings: `referral.settings.*` (`description` "only finance staff or a super admin can change them"),
+  `referral.setting.label`, `referral.setting.description` (System settings label of `referral_programme`).
+
+### Agent portal (`agent:`)
+
+- Privacy / medical: `crm.form.medicalHint` ("Do not record medical details here. Health information belongs in the
+  patient record, after the person has given consent"), `crm.form.interestHint` ("not medical history").
+- Consent: `crm.convert.description` ("check the details and confirm the patient's consent"; the consent attestation
+  itself reuses the existing `patientForm.consent*` keys).
+- Money: `crm.fields.budget`, `crm.import.rulesHint` (budget in major units with `budget_currency`),
+  `crm.summary.conversion`, `crm.dashboard.conversion*`.
+- Data deletion: `crm.detail.deleteDescription` ("cannot be undone").
+
+### Website (`website`)
+
+- `referral.invitedByFriend` ("you get {amount} credit after your first completed booking"), `referral.invalid`.
+
+## Referral programme and agent CRM (server notifications)
+
+`backend/app/i18n/<lng>.json`, new top-level sections only:
+
+- Credit / reward (financial wording - "credit" must never read as a loan or as cash; ru uses "бонусы", as on
+  web and mobile): `referral.notifications.rewarded.*`,
+  `referral.notifications.qualified.*` (mentions the yearly reward limit), `referral.notifications.welcome_credit.*`.
+- `referral.notifications.signed_up.*` (must not imply anything about the friend's treatment beyond "first
+  booking completed").
+- `crm.notifications.follow_up_due.*` (agent-facing; check Russian/Arabic number agreement with `{count}`).

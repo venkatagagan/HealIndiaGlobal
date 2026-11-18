@@ -279,11 +279,26 @@ void main() {
     await tester.enterText(find.byKey(const ValueKey('patient-first-name')), 'John');
     await tester.enterText(find.byKey(const ValueKey('patient-last-name')), 'Doe');
     await tester.enterText(find.byKey(const ValueKey('patient-nationality')), 'ke');
+    // The API requires the agent's consent attestation: saving without it is blocked in the form.
+    await tester.ensureVisible(find.byKey(const ValueKey('patient-save')));
+    await tester.tap(find.byKey(const ValueKey('patient-save')));
+    await tester.pumpAndSettle();
+    expect(api.last('POST', '/agent-portal/patients'), isNull);
+    await tester.ensureVisible(find.byKey(const ValueKey('consent-attest')));
+    await tester.tap(find.byKey(const ValueKey('consent-attest')));
+    await tester.ensureVisible(find.byKey(const ValueKey('patient-save')));
     await tester.tap(find.byKey(const ValueKey('patient-save')));
     await tester.pumpAndSettle();
 
     final body = bodyOf(api.last('POST', '/agent-portal/patients'));
-    expect(body, {'first_name': 'John', 'last_name': 'Doe', 'nationality': 'KE'});
+    expect(body, {
+      'first_name': 'John',
+      'last_name': 'Doe',
+      'nationality': 'KE',
+      'consent_attested': true,
+      'consent_kinds': ['terms', 'privacy', 'share_with_hospitals'],
+      'consent_method': 'in_person',
+    });
     expect(find.text('John Doe'), findsWidgets);
   });
 

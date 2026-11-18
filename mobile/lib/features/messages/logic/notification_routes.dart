@@ -28,6 +28,10 @@ String? notificationTarget(AppNotification n) {
     return Routes.dischargeSummary(discharge);
   }
   if (kind.startsWith('message.') && conversation != null) return Routes.chat(conversation);
+  // Referral programme (friend signed up / rewarded, welcome credit).
+  if (kind.startsWith('referral.')) return Routes.referrals;
+  // Agent CRM follow-up reminder (`data.link` = /leads?follow_up=due or /leads/<id>).
+  if (kind.startsWith('crm.')) return agentLeadsLinkRoute(id('link')) ?? AgentRoutes.leadsFor(followUp: 'due');
   // Treatment completed: invite the patient to rate the hospital.
   if (kind == 'booking.completed' && booking != null) return Routes.writeReview(booking);
   if (kind.startsWith('aftercare.')) return Routes.aftercare;
@@ -63,6 +67,7 @@ String pushLinkRoute(String? link, UserRole role, {String? kind}) {
   switch (role) {
     case UserRole.agent:
       if (idAfter('discharge-summaries') case final id?) return AgentRoutes.dischargeSummary(id);
+      if (agentLeadsLinkRoute(link) case final route?) return route;
       if (idAfter('cases') case final id?) return AgentRoutes.caseDetail(id);
       if (idAfter('bookings') case final id?) return AgentRoutes.booking(id);
       if (idAfter('screening') case final id?) return AgentRoutes.screening(id);
@@ -82,8 +87,19 @@ String pushLinkRoute(String? link, UserRole role, {String? kind}) {
       if (seg.length == 1 && seg[0] == 'cases') return Routes.cases;
       if (seg.length == 1 && seg[0] == 'messages') return Routes.messages;
       if (seg.isNotEmpty && seg[0] == 'support') return Routes.support;
+      if (seg.isNotEmpty && seg[0] == 'referrals') return Routes.referrals;
       return Routes.notifications;
   }
+}
+
+/// Agent lead screen for a server link `/leads`, `/leads?follow_up=due` or `/leads/<id>`; null for other links.
+String? agentLeadsLinkRoute(String? link) {
+  final uri = Uri.tryParse(link ?? '');
+  if (uri == null) return null;
+  final seg = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+  if (seg.isEmpty || seg[0] != 'leads') return null;
+  if (seg.length >= 2) return AgentRoutes.lead(seg[1]);
+  return AgentRoutes.leadsFor(followUp: uri.queryParameters['follow_up']);
 }
 
 /// Icon and accent for a notification kind.
@@ -100,6 +116,8 @@ String pushLinkRoute(String? link, UserRole role, {String? kind}) {
     'sos' => (Icons.sos_rounded, AppColors.danger),
     'visa' || 'travel' => (Icons.flight_rounded, AppColors.info),
     'appointment' || 'itinerary' => (Icons.alarm_rounded, AppColors.warning),
+    'referral' => (Icons.card_giftcard_rounded, AppColors.primary),
+    'crm' => (Icons.contact_phone_outlined, AppColors.warning),
     _ => (Icons.notifications_none_rounded, AppColors.violet),
   };
 }

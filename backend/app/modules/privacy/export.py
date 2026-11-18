@@ -248,6 +248,11 @@ async def collect(db: AsyncSession, user: User) -> tuple[dict[str, Any], list[Do
             "sos_alerts": _rows(await _all(db, select(SosAlert).where(SosAlert.patient_id == pid))),
         }
         data["access_log"] = await access_log_entries(db, pid)
+        from app.modules.crm.privacy import export_for_patient as crm_export
+        from app.modules.referrals.privacy import export_for_patient as referrals_export
+
+        data["referral_programme"] = await referrals_export(db, pid, serialize)
+        data["agent_leads"] = await crm_export(db, pid, serialize)
 
     order_filter = PaymentOrder.payer_user_id == user.id
     if pid is not None:

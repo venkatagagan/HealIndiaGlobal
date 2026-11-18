@@ -1120,7 +1120,8 @@
       "razorpay": "কার্ড / UPI (Razorpay)",
       "stripe": "কার্ড (Stripe)",
       "bank_transfer": "ব্যাংক ট্রান্সফার (SWIFT)",
-      "mock": "টেস্ট পেমেন্ট (dev)"
+      "mock": "টেস্ট পেমেন্ট (dev)",
+      "platform_credit": "রেফারেল ক্রেডিট"
     },
     "paymentPurpose": {
       "consultation_fee": "পরামর্শ ফি",
@@ -1137,7 +1138,8 @@
       "bank_transfer": "ব্যাংক ট্রান্সফার",
       "wallet": "ওয়ালেট",
       "emi": "EMI",
-      "mock": "মক"
+      "mock": "মক",
+      "platform_credit": "রেফারেল ক্রেডিট"
     },
     "ledgerAccountType": {
       "asset": "সম্পদ",

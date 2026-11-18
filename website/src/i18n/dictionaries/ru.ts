@@ -1091,6 +1091,12 @@ const ru: Dictionary = {
     board: 'Если наш ответ вас не устроит, вы можете подать жалобу в Совет по защите данных Индии (Data Protection Board of India).',
     footerLink: 'Жалобы и данные',
   },
+  referral: {
+    invitedByFriend: 'Вас пригласил друг: после первого завершённого бронирования вы получите бонусы на сумму {amount}.',
+    invitedByFriendNoReward: 'Вас пригласил друг.',
+    invitedByAgent: 'Вас направил агент-партнёр.',
+    invalid: 'Этот реферальный код недействителен. Проверьте его или оставьте поле пустым.',
+  },
 };
 
 export default ru;

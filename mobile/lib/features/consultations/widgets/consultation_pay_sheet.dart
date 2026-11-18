@@ -118,7 +118,7 @@ class _ConsultationPaySheetState extends ConsumerState<ConsultationPaySheet> {
           await _razorpay(checkout);
         case PaymentGateway.mock:
           await _mock(checkout);
-        case PaymentGateway.bankTransfer || PaymentGateway.stripe:
+        case PaymentGateway.bankTransfer || PaymentGateway.stripe || PaymentGateway.platformCredit:
           if (mounted) setState(() => _error = l10n.paymentMethodNotAvailable);
       }
     } on ApiException catch (e) {

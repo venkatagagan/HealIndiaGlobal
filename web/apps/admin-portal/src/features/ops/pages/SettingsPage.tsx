@@ -47,7 +47,7 @@ interface SettingMeta {
 }
 
 /** Known settings: editor + group. Label and description: `settings.items.<key>.label|description`. */
-const META: Record<string, { editor: EditorKind; group: SettingGroup }> = {
+const META: Record<string, { editor: EditorKind; group: SettingGroup; /** catalog prefix of label/description */ i18nKey?: string }> = {
   default_commission_bps: { editor: 'bps', group: 'commercial' },
   default_agent_commission_bps: { editor: 'bps', group: 'commercial' },
   patient_service_fee_bps: { editor: 'bps', group: 'commercial' },
@@ -66,6 +66,7 @@ const META: Record<string, { editor: EditorKind; group: SettingGroup }> = {
   fx_rate_max_age_hours: { editor: 'hours', group: 'payments' },
   bank_transfer_details: { editor: 'string_map', group: 'payments' },
   supported_currencies: { editor: 'string_list', group: 'patientSupport' },
+  referral_programme: { editor: 'json', group: 'payments', i18nKey: 'referral.setting' },
 };
 
 const GROUP_ORDER: SettingGroup[] = ['commercial', 'tax', 'settlements', 'payments', 'patientSupport', 'other'];
@@ -73,7 +74,8 @@ const GROUP_ORDER: SettingGroup[] = ['commercial', 'tax', 'settlements', 'paymen
 function metaFor(s: PlatformSettingOut, t: TFunction): SettingMeta {
   const known = META[s.key];
   if (known) {
-    return { ...known, label: t(`settings.items.${s.key}.label`), description: t(`settings.items.${s.key}.description`) };
+    const prefix = known.i18nKey ?? `settings.items.${s.key}`;
+    return { editor: known.editor, group: known.group, label: t(`${prefix}.label`), description: t(`${prefix}.description`) };
   }
   return {
     label: s.key,

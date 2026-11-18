@@ -1597,5 +1597,221 @@
       "title": "Aucune activité sur cette période",
       "description": "Essayez une période plus longue."
     }
+  },
+  "crm": {
+    "nav": {
+      "leads": "Prospects"
+    },
+    "title": "Prospects",
+    "description": "Les futurs patients avant qu’ils ne deviennent patients : suivez les contacts, les relances et la conversion.",
+    "add": "Ajouter un prospect",
+    "openLead": "Ouvrir le prospect {{name}}",
+    "emptyTitle": "Aucun prospect pour le moment",
+    "emptyDescription": "Ajoutez un prospect ou importez un fichier CSV pour démarrer votre pipeline.",
+    "notificationCategory": "Prospects",
+    "status": {
+      "new": "Nouveau",
+      "contacted": "Contacté",
+      "qualified": "Qualifié",
+      "screening": "Évaluation",
+      "quote_requested": "Devis demandé",
+      "won": "Gagné",
+      "lost": "Perdu"
+    },
+    "source": {
+      "walk_in": "Visite directe",
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "referral": "Recommandation",
+      "event": "Événement",
+      "other": "Autre"
+    },
+    "fields": {
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail",
+      "country": "Pays",
+      "language": "Langue préférée",
+      "source": "Source",
+      "sourceDetail": "Détails de la source",
+      "interest": "Intéressé par",
+      "specialty": "Spécialité",
+      "procedure": "Intervention",
+      "budget": "Budget",
+      "currency": "Devise",
+      "nextFollowUp": "Prochaine relance",
+      "tags": "Étiquettes",
+      "status": "Étape",
+      "note": "Première note",
+      "owner": "Responsable",
+      "contact": "Contact",
+      "lastActivity": "Dernière activité",
+      "created": "Ajouté le"
+    },
+    "filters": {
+      "all": "Tous",
+      "search": "Rechercher un nom ou un intérêt, ou un e-mail/téléphone exact",
+      "searchLabel": "Rechercher des prospects",
+      "followUp": "Relance",
+      "tag": "Étiquette"
+    },
+    "followUp": {
+      "due": "À faire aujourd’hui",
+      "overdue": "En retard",
+      "none": "Aucune relance prévue"
+    },
+    "summary": {
+      "open": "Prospects ouverts",
+      "conversion": "Taux de conversion",
+      "wonLost": "{{won}} gagnés · {{lost}} perdus",
+      "dueToday": "Relances du jour",
+      "overdue_one": "{{count}} en retard",
+      "overdue_other": "{{count}} en retard",
+      "newThisMonth": "Nouveaux ce mois-ci"
+    },
+    "dashboard": {
+      "dueToday": "Relances de prospects du jour",
+      "dueHint": "Ouvrez vos prospects pour les relancer",
+      "conversion": "Taux de conversion des prospects",
+      "conversionHint": "{{open}} ouverts · {{won}} gagnés · {{lost}} perdus"
+    },
+    "view": {
+      "label": "Affichage",
+      "board": "Tableau kanban",
+      "table": "Liste",
+      "boardLabel": "Pipeline des prospects"
+    },
+    "board": {
+      "empty": "Aucun prospect",
+      "more_one": "+{{count}} autre prospect",
+      "more_other": "+{{count}} autres prospects",
+      "moveTo": "Déplacer {{name}} vers une autre étape",
+      "movePlaceholder": "Déplacer vers…",
+      "convertOption": "Gagné (convertir en patient)",
+      "convertedOn": "Converti le {{date}}"
+    },
+    "move": {
+      "moved": "{{name}} déplacé vers « {{status}} »",
+      "failed": "Impossible de déplacer le prospect",
+      "converted": "Ce prospect est déjà un patient et ne peut pas être déplacé.",
+      "convertRequired": "Un prospect est gagné lorsque vous le convertissez en patient. Remplissez le formulaire patient pour terminer.",
+      "reasonRequired": "Veuillez indiquer pourquoi le prospect a été perdu.",
+      "lostTitle": "Marquer le prospect comme perdu ?",
+      "lostDescription": "Pourquoi {{name}} n’a-t-il pas donné suite ?",
+      "lostReason": "Motif",
+      "lostPlaceholder": "ex. a choisi un autre prestataire, budget, reporté",
+      "lostConfirm": "Marquer comme perdu"
+    },
+    "form": {
+      "addTitle": "Ajouter un prospect",
+      "addDescription": "Seul le nom est obligatoire. Vous pourrez ajouter des détails plus tard.",
+      "editTitle": "Modifier le prospect",
+      "editDescription": "Coordonnées et centres d’intérêt de ce prospect.",
+      "medicalHint": "N’enregistrez pas d’informations médicales ici. Les informations de santé vont dans le dossier patient, une fois que la personne a donné son consentement.",
+      "interestHint": "Une courte note comme « prothèse du genou » - pas d’antécédents médicaux.",
+      "sourceDetailHint": "ex. le nom de l’événement ou la personne qui l’a recommandé",
+      "tagsHint": "Séparez les étiquettes par des virgules (10 maximum).",
+      "noteHint": "Ajoutée à l’historique d’activité.",
+      "select": "Sélectionner…",
+      "cancel": "Annuler",
+      "add": "Ajouter le prospect",
+      "save": "Enregistrer",
+      "added": "Prospect ajouté",
+      "updated": "Prospect mis à jour",
+      "errors": {
+        "required": "Ce champ est obligatoire",
+        "email": "Saisissez une adresse e-mail valide",
+        "phone": "Saisissez un numéro de téléphone valide",
+        "budget": "Saisissez un montant valide",
+        "tooManyTags": "Utilisez 10 étiquettes au maximum",
+        "tagTooLong": "Chaque étiquette peut contenir 40 caractères au maximum"
+      }
+    },
+    "detail": {
+      "back": "Retour aux prospects",
+      "notFound": "Prospect introuvable",
+      "since": "depuis {{when}}",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer ce prospect ?",
+      "deleteDescription": "{{name}} et son historique d’activité seront supprimés. Cette action est irréversible.",
+      "deleted": "Prospect supprimé",
+      "deleteFailed": "Impossible de supprimer le prospect",
+      "stage": "Étape",
+      "moveTo": "Déplacer vers l’étape",
+      "moveHint": "Choisir « Perdu » demande un motif ; « Gagné » ouvre le formulaire de conversion.",
+      "stageLocked": "Ce prospect a été converti en patient.",
+      "noFollowUp": "Non planifiée",
+      "details": "Détails du prospect",
+      "lostReason": "Motif de perte :"
+    },
+    "timeline": {
+      "title": "Historique d’activité",
+      "empty": "Aucune activité pour le moment.",
+      "statusChange": "Étape passée de « {{from}} » à « {{to}} »"
+    },
+    "activity": {
+      "title": "Enregistrer une activité",
+      "description": "Enregistrez un appel, un message, un rendez-vous ou une note et planifiez la prochaine relance.",
+      "kindLabel": "Type",
+      "kind": {
+        "call": "Appel",
+        "message": "Message",
+        "meeting": "Rendez-vous",
+        "note": "Note",
+        "status_change": "Changement d’étape"
+      },
+      "when": "Quand",
+      "whenHint": "Laissez vide pour maintenant.",
+      "body": "Notes",
+      "nextFollowUp": "Prochaine relance",
+      "nextFollowUpHint": "Facultatif : planifiez la prochaine relance.",
+      "submit": "Enregistrer l’activité",
+      "logged": "Activité enregistrée",
+      "failed": "Impossible d’enregistrer l’activité",
+      "noteRequired": "Veuillez rédiger la note."
+    },
+    "convert": {
+      "button": "Convertir en patient",
+      "title": "Convertir le prospect en patient",
+      "description": "Crée un patient que vous gérez, prérempli à partir du prospect. Vérifiez les informations et confirmez le consentement du patient.",
+      "submit": "Créer le patient",
+      "done": "Prospect converti en patient",
+      "converted": "Converti en patient le {{date}}.",
+      "openPatient": "Ouvrir le patient"
+    },
+    "import": {
+      "open": "Importer un CSV",
+      "title": "Importer des prospects depuis un CSV",
+      "description": "Nous vérifions d’abord le fichier. Rien n’est importé tant qu’une ligne contient une erreur.",
+      "formatHint": "CSV UTF-8 avec une ligne d’en-tête. Colonnes (seul full_name est obligatoire) :",
+      "rulesHint": "budget en unités principales (ex. 2500.00) avec budget_currency ; next_follow_up au format YYYY-MM-DD ; tags séparées par « ; ». 1000 lignes / 1 MB maximum. Les lignes dont l’e-mail ou le téléphone existe déjà sont ignorées.",
+      "file": "Fichier CSV",
+      "fileHint": "Choisissez un fichier .csv",
+      "checkButton": "Vérifier le fichier",
+      "importButton_one": "Importer {{count}} prospect",
+      "importButton_other": "Importer {{count}} prospects",
+      "dryRunNote": "La vérification ne crée rien.",
+      "rows": "Lignes",
+      "duplicates": "Doublons ignorés",
+      "errors": "Erreurs",
+      "ready_one": "Aucune erreur. {{count}} prospect sera créé.",
+      "ready_other": "Aucune erreur. {{count}} prospects seront créés.",
+      "fixErrors": "Corrigez ces lignes dans votre fichier puis vérifiez-le à nouveau.",
+      "row": "Ligne",
+      "field": "Colonne",
+      "message": "Problème",
+      "done_one": "{{count}} prospect importé",
+      "done_other": "{{count}} prospects importés",
+      "hasErrors": "Le fichier contient des erreurs. Rien n’a été importé.",
+      "failed": "Impossible d’importer le fichier",
+      "tooLarge": "Le fichier dépasse 1 MB.",
+      "rateLimited": "Trop d’importations. Veuillez réessayer plus tard."
+    },
+    "export": {
+      "button": "Exporter en CSV",
+      "failed": "Impossible d’exporter les prospects"
+    }
   }
 }

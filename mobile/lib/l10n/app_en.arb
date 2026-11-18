@@ -14292,5 +14292,927 @@
   "dischargeHpLockedNote": "Final summaries are locked. To change this one, create a new version.",
   "@dischargeHpLockedNote": {
     "description": "Note on a final summary."
+  },
+  "enumPaymentGatewayPlatformCredit": "Referral credit",
+  "@enumPaymentGatewayPlatformCredit": {
+    "description": "Payment gateway: paid with referral credit."
+  },
+  "enumPaymentMethodCard": "Card",
+  "@enumPaymentMethodCard": {
+    "description": "Payment method: card."
+  },
+  "enumPaymentMethodUpi": "UPI",
+  "@enumPaymentMethodUpi": {
+    "description": "Payment method: UPI (India)."
+  },
+  "enumPaymentMethodNetbanking": "Net banking",
+  "@enumPaymentMethodNetbanking": {
+    "description": "Payment method: net banking."
+  },
+  "enumPaymentMethodBankTransfer": "Bank transfer",
+  "@enumPaymentMethodBankTransfer": {
+    "description": "Payment method: bank transfer."
+  },
+  "enumPaymentMethodWallet": "Wallet",
+  "@enumPaymentMethodWallet": {
+    "description": "Payment method: mobile wallet."
+  },
+  "enumPaymentMethodEmi": "EMI",
+  "@enumPaymentMethodEmi": {
+    "description": "Payment method: EMI (equated monthly instalments)."
+  },
+  "enumPaymentMethodMock": "Test payment",
+  "@enumPaymentMethodMock": {
+    "description": "Payment method: simulated test payment."
+  },
+  "enumPaymentMethodPlatformCredit": "Referral credit",
+  "@enumPaymentMethodPlatformCredit": {
+    "description": "Payment method: paid with referral credit."
+  },
+  "referralTitle": "Refer a friend",
+  "@referralTitle": {
+    "description": "Referral screen title and profile entry."
+  },
+  "referralProfileSubtitle": "Invite friends and earn treatment credit",
+  "@referralProfileSubtitle": {
+    "description": "Profile entry subtitle of the referral screen."
+  },
+  "referralProgrammeOffTitle": "The referral programme is paused",
+  "@referralProgrammeOffTitle": {
+    "description": "Referral screen banner when the programme is switched off."
+  },
+  "referralProgrammeOffBody": "You can still use the credit you already have on your bookings.",
+  "@referralProgrammeOffBody": {
+    "description": "Referral screen banner body when the programme is off."
+  },
+  "referralHeroBoth": "Your friend gets {friendReward} off their first treatment, and you get {yourReward} in credit once it's completed.",
+  "@referralHeroBoth": {
+    "description": "Referral headline when both sides get a reward. Amounts are formatted money.",
+    "placeholders": {
+      "friendReward": {
+        "type": "String"
+      },
+      "yourReward": {
+        "type": "String"
+      }
+    }
+  },
+  "referralHeroReferrerOnly": "Get {yourReward} in credit when a friend you invite completes their first treatment.",
+  "@referralHeroReferrerOnly": {
+    "description": "Referral headline when only the referrer is rewarded.",
+    "placeholders": {
+      "yourReward": {
+        "type": "String"
+      }
+    }
+  },
+  "referralHeroRefereeOnly": "Your friend gets {friendReward} in credit for their first treatment.",
+  "@referralHeroRefereeOnly": {
+    "description": "Referral headline when only the invited friend is rewarded.",
+    "placeholders": {
+      "friendReward": {
+        "type": "String"
+      }
+    }
+  },
+  "referralHeroGeneric": "Invite friends and family who are planning treatment in India.",
+  "@referralHeroGeneric": {
+    "description": "Referral headline when no reward is configured."
+  },
+  "referralYourCode": "Your referral code",
+  "@referralYourCode": {
+    "description": "Label above the personal referral code."
+  },
+  "referralCopyCode": "Copy code",
+  "@referralCopyCode": {
+    "description": "Tooltip: copy the referral code."
+  },
+  "referralCodeCopied": "Code copied",
+  "@referralCodeCopied": {
+    "description": "Snack bar after copying the referral code."
+  },
+  "referralShare": "Share invite",
+  "@referralShare": {
+    "description": "Button: open the system share sheet with the invite."
+  },
+  "referralCopyLink": "Copy invite",
+  "@referralCopyLink": {
+    "description": "Button: copy the invite text with the link."
+  },
+  "referralLinkCopied": "Invite copied",
+  "@referralLinkCopied": {
+    "description": "Snack bar after copying the invite."
+  },
+  "referralShareSubject": "Join me on Heal India Global",
+  "@referralShareSubject": {
+    "description": "Subject of the shared invite (e-mail apps)."
+  },
+  "referralShareMessage": "I'm using Heal India Global to plan treatment in India. Sign up with my code {code}: {link}",
+  "@referralShareMessage": {
+    "description": "Invite text shared with a friend; code and web link are inserted.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "referralCreditTitle": "Your credit",
+  "@referralCreditTitle": {
+    "description": "Credit balance card title."
+  },
+  "referralCreditBase": "Held in Indian rupees: {amount}",
+  "@referralCreditBase": {
+    "description": "Credit is kept in INR; shows the INR amount under the display-currency amount.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "referralCreditExpiringSoon": "{amount} expires on {date}",
+  "@referralCreditExpiringSoon": {
+    "description": "Part of the credit expiring within 30 days.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "referralCreditUseHint": "Use it on the payment screen of a booking.",
+  "@referralCreditUseHint": {
+    "description": "Where credit can be spent."
+  },
+  "referralCreditNone": "No credit yet. Invite a friend to earn some.",
+  "@referralCreditNone": {
+    "description": "Credit card when the balance is zero."
+  },
+  "referralHowItWorksTitle": "How it works",
+  "@referralHowItWorksTitle": {
+    "description": "Section title: how the referral programme works."
+  },
+  "referralStep1": "Share your code or invite link with a friend.",
+  "@referralStep1": {
+    "description": "How it works, step 1."
+  },
+  "referralStep2": "Your friend signs up with it and books treatment.",
+  "@referralStep2": {
+    "description": "How it works, step 2."
+  },
+  "referralStep3": "When their first treatment is completed, the credit is added to your account.",
+  "@referralStep3": {
+    "description": "How it works, step 3."
+  },
+  "referralTermsValidity": "{days, plural, =1{Credit can be used on booking payments for 1 day.} other{Credit can be used on booking payments for {days} days.}}",
+  "@referralTermsValidity": {
+    "description": "Credit validity in days.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "referralTermsMaxPerYear": "{count, plural, =1{You can earn a reward for 1 friend a year.} other{You can earn rewards for up to {count} friends a year.}}",
+  "@referralTermsMaxPerYear": {
+    "description": "Yearly cap of rewarded friends.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "referralTermsNoCash": "Credit cannot be exchanged for cash. Signing up yourself with your own code is not rewarded.",
+  "@referralTermsNoCash": {
+    "description": "Referral terms: no cash, no self-referral."
+  },
+  "referralFriendsTitle": "Friends you invited",
+  "@referralFriendsTitle": {
+    "description": "Section title: friends who signed up with the code."
+  },
+  "referralFriendsEmpty": "No friends have joined with your code yet.",
+  "@referralFriendsEmpty": {
+    "description": "Empty friends list."
+  },
+  "referralCountChip": "{label}: {count}",
+  "@referralCountChip": {
+    "description": "Chip with a referral status and how many friends are in it.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "referralFriendJoined": "Joined {date}",
+  "@referralFriendJoined": {
+    "description": "Date a friend signed up.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "referralFriendReward": "+{amount} credit",
+  "@referralFriendReward": {
+    "description": "Credit earned for a rewarded friend.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "referralStatusPending": "Signed up",
+  "@referralStatusPending": {
+    "description": "Referral status: friend signed up, treatment not completed yet."
+  },
+  "referralStatusQualified": "Treatment completed",
+  "@referralStatusQualified": {
+    "description": "Referral status: first treatment completed, reward not issued yet."
+  },
+  "referralStatusRewarded": "Rewarded",
+  "@referralStatusRewarded": {
+    "description": "Referral status: credit issued."
+  },
+  "referralStatusVoid": "Not eligible",
+  "@referralStatusVoid": {
+    "description": "Referral status: void (expired, self-referral or cancelled by staff)."
+  },
+  "referralHistoryTitle": "Credit history",
+  "@referralHistoryTitle": {
+    "description": "Section title: credit ledger."
+  },
+  "referralHistoryEmpty": "No credit activity yet.",
+  "@referralHistoryEmpty": {
+    "description": "Empty credit ledger."
+  },
+  "referralMovementGrant": "Credit added",
+  "@referralMovementGrant": {
+    "description": "Ledger entry: credit granted."
+  },
+  "referralMovementRedeem": "Used on a booking",
+  "@referralMovementRedeem": {
+    "description": "Ledger entry: credit spent on a booking payment."
+  },
+  "referralMovementReinstate": "Returned after a refund",
+  "@referralMovementReinstate": {
+    "description": "Ledger entry: credit given back after a refund."
+  },
+  "referralMovementExpire": "Expired",
+  "@referralMovementExpire": {
+    "description": "Ledger entry: credit expired."
+  },
+  "referralMovementVoid": "Cancelled",
+  "@referralMovementVoid": {
+    "description": "Ledger entry: credit cancelled by staff."
+  },
+  "referralCreditKindReferrer": "Reward for inviting a friend",
+  "@referralCreditKindReferrer": {
+    "description": "Credit kind: referrer reward."
+  },
+  "referralCreditKindReferee": "Welcome credit",
+  "@referralCreditKindReferee": {
+    "description": "Credit kind: reward of the invited friend."
+  },
+  "referralCreditKindReinstated": "Returned credit",
+  "@referralCreditKindReinstated": {
+    "description": "Credit kind: credit returned after a refund."
+  },
+  "referralCreditExpires": "Expires {date}",
+  "@referralCreditExpires": {
+    "description": "Expiry date of one credit.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "referralCodeFieldLabel": "Referral code (optional)",
+  "@referralCodeFieldLabel": {
+    "description": "Sign-up field: referral code of a friend or facilitator."
+  },
+  "referralCodeFieldHelper": "From a friend or a medical-travel facilitator",
+  "@referralCodeFieldHelper": {
+    "description": "Sign-up field helper of the referral code."
+  },
+  "referralCodeInvalid": "This referral code is not valid. Check it or leave the field empty.",
+  "@referralCodeInvalid": {
+    "description": "Sign-up error: unknown referral code."
+  },
+  "referralPayUseCreditTitle": "Use my credit",
+  "@referralPayUseCreditTitle": {
+    "description": "Pay screen: referral credit card title."
+  },
+  "referralPayUseCreditBody": "{available} available · {apply} will be applied",
+  "@referralPayUseCreditBody": {
+    "description": "Pay screen: credit available and the part that will be applied.",
+    "placeholders": {
+      "available": {
+        "type": "String"
+      },
+      "apply": {
+        "type": "String"
+      }
+    }
+  },
+  "referralPayCoversAll": "Your credit covers the full amount due now.",
+  "@referralPayCoversAll": {
+    "description": "Pay screen: credit pays everything."
+  },
+  "referralPayRemaining": "You will pay the remaining {amount} with the method below.",
+  "@referralPayRemaining": {
+    "description": "Pay screen: amount still to pay after the credit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "referralPayApplyButton": "Use my credit",
+  "@referralPayApplyButton": {
+    "description": "Pay screen button: apply referral credit."
+  },
+  "referralPayConfirmTitle": "Use your credit?",
+  "@referralPayConfirmTitle": {
+    "description": "Confirm dialog title before applying credit."
+  },
+  "referralPayConfirmBody": "{amount} of your referral credit will be applied to this booking payment now. If the payment is refunded later, the credit is returned to you.",
+  "@referralPayConfirmBody": {
+    "description": "Confirm dialog body before applying credit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "referralPayConfirmButton": "Apply credit",
+  "@referralPayConfirmButton": {
+    "description": "Confirm dialog button."
+  },
+  "referralPayApplied": "{amount} of credit applied",
+  "@referralPayApplied": {
+    "description": "Snack bar after applying credit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "referralPayCreditChanged": "Your credit changed. Check the amount and try again.",
+  "@referralPayCreditChanged": {
+    "description": "Error 409 credit_changed."
+  },
+  "referralPayInProgress": "A payment for this booking is already in progress. Try again in a few minutes.",
+  "@referralPayInProgress": {
+    "description": "Error 409 payment_in_progress."
+  },
+  "referralPayNotApplicable": "Credit can't be used on this payment.",
+  "@referralPayNotApplicable": {
+    "description": "Error 400 credit_not_applicable."
+  },
+  "referralPayNotForInstallments": "Credit can't be used on instalment plans.",
+  "@referralPayNotForInstallments": {
+    "description": "Pay screen note: credit not usable with instalments."
+  },
+  "referralPayAmountTooSmall": "Your credit is too small to apply to this payment.",
+  "@referralPayAmountTooSmall": {
+    "description": "Pay screen note: credit below the minimum."
+  },
+  "crmLeadsTitle": "Leads",
+  "@crmLeadsTitle": {
+    "description": "Agent CRM: lead list title and dashboard card."
+  },
+  "crmAddLead": "Add lead",
+  "@crmAddLead": {
+    "description": "Button: add a lead."
+  },
+  "crmSearchHint": "Search name, email or phone",
+  "@crmSearchHint": {
+    "description": "Lead search hint."
+  },
+  "crmFilterSource": "Filter by source",
+  "@crmFilterSource": {
+    "description": "Tooltip of the source filter menu."
+  },
+  "crmFilterAnySource": "Any source",
+  "@crmFilterAnySource": {
+    "description": "Source filter: no filter."
+  },
+  "crmFilterAllLeads": "All leads",
+  "@crmFilterAllLeads": {
+    "description": "Follow-up filter chip: no filter."
+  },
+  "crmFilterDueToday": "Due today",
+  "@crmFilterDueToday": {
+    "description": "Follow-up filter: due by the end of today (overdue included)."
+  },
+  "crmFilterOverdue": "Overdue",
+  "@crmFilterOverdue": {
+    "description": "Follow-up filter: overdue."
+  },
+  "crmFilterNoFollowUp": "No follow-up",
+  "@crmFilterNoFollowUp": {
+    "description": "Follow-up filter: no follow-up scheduled."
+  },
+  "crmChipCount": "{label} ({count})",
+  "@crmChipCount": {
+    "description": "Filter chip with a count.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crmPipelineOpen": "{count, plural, =0{No open leads} =1{1 open lead} other{{count} open leads}}",
+  "@crmPipelineOpen": {
+    "description": "Pipeline summary: open leads.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crmFollowUpsDueToday": "{count, plural, =0{No follow-ups due today} =1{1 follow-up due today} other{{count} follow-ups due today}}",
+  "@crmFollowUpsDueToday": {
+    "description": "Follow-ups due today (overdue included).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crmFollowUpsOverdue": "{count, plural, =1{1 overdue} other{{count} overdue}}",
+  "@crmFollowUpsOverdue": {
+    "description": "Overdue follow-ups.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crmPipelineConversion": "{rate} converted",
+  "@crmPipelineConversion": {
+    "description": "Pipeline conversion rate (e.g. 25%).",
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "crmLeadsEmpty": "No leads yet",
+  "@crmLeadsEmpty": {
+    "description": "Empty lead list title."
+  },
+  "crmLeadsEmptyHint": "Add the people who contact you so you can follow up and turn them into patients.",
+  "@crmLeadsEmptyHint": {
+    "description": "Empty lead list hint."
+  },
+  "crmLeadsNoMatch": "No leads match these filters.",
+  "@crmLeadsNoMatch": {
+    "description": "Lead list empty with filters."
+  },
+  "crmFollowUpOn": "Follow up {date}",
+  "@crmFollowUpOn": {
+    "description": "Lead tile: next follow-up date and time.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "crmFollowUpDueBadge": "Due",
+  "@crmFollowUpDueBadge": {
+    "description": "Badge: follow-up is due."
+  },
+  "crmLeadDetailTitle": "Lead",
+  "@crmLeadDetailTitle": {
+    "description": "Lead detail title fallback."
+  },
+  "crmDetailsTitle": "Details",
+  "@crmDetailsTitle": {
+    "description": "Lead detail section title."
+  },
+  "crmFieldPhone": "Phone",
+  "@crmFieldPhone": {
+    "description": "Lead field."
+  },
+  "crmFieldWhatsapp": "WhatsApp",
+  "@crmFieldWhatsapp": {
+    "description": "Lead field."
+  },
+  "crmFieldEmail": "Email",
+  "@crmFieldEmail": {
+    "description": "Lead field."
+  },
+  "crmFieldCountry": "Country",
+  "@crmFieldCountry": {
+    "description": "Lead field."
+  },
+  "crmFieldLanguage": "Language",
+  "@crmFieldLanguage": {
+    "description": "Lead field: preferred language."
+  },
+  "crmFieldSource": "Source",
+  "@crmFieldSource": {
+    "description": "Lead field: where the lead came from."
+  },
+  "crmFieldSpecialty": "Specialty",
+  "@crmFieldSpecialty": {
+    "description": "Lead field: medical specialty of interest."
+  },
+  "crmFieldProcedure": "Procedure",
+  "@crmFieldProcedure": {
+    "description": "Lead field: procedure of interest."
+  },
+  "crmFieldInterest": "Interest",
+  "@crmFieldInterest": {
+    "description": "Lead field: short interest note."
+  },
+  "crmFieldBudget": "Budget",
+  "@crmFieldBudget": {
+    "description": "Lead field."
+  },
+  "crmFieldTags": "Tags",
+  "@crmFieldTags": {
+    "description": "Lead field."
+  },
+  "crmFieldOwner": "Owner",
+  "@crmFieldOwner": {
+    "description": "Lead field: team member responsible."
+  },
+  "crmFieldLostReason": "Reason lost",
+  "@crmFieldLostReason": {
+    "description": "Lead field: why the lead was lost."
+  },
+  "crmFieldCreated": "Added",
+  "@crmFieldCreated": {
+    "description": "Lead field: creation date."
+  },
+  "crmFieldNextFollowUp": "Next follow-up",
+  "@crmFieldNextFollowUp": {
+    "description": "Lead section: next follow-up."
+  },
+  "crmStatusNew": "New",
+  "@crmStatusNew": {
+    "description": "Lead stage."
+  },
+  "crmStatusContacted": "Contacted",
+  "@crmStatusContacted": {
+    "description": "Lead stage."
+  },
+  "crmStatusQualified": "Qualified",
+  "@crmStatusQualified": {
+    "description": "Lead stage."
+  },
+  "crmStatusScreening": "Screening",
+  "@crmStatusScreening": {
+    "description": "Lead stage: health screening in progress."
+  },
+  "crmStatusQuoteRequested": "Quote requested",
+  "@crmStatusQuoteRequested": {
+    "description": "Lead stage."
+  },
+  "crmStatusWon": "Won",
+  "@crmStatusWon": {
+    "description": "Lead stage: converted to a patient."
+  },
+  "crmStatusLost": "Lost",
+  "@crmStatusLost": {
+    "description": "Lead stage."
+  },
+  "crmSourceWalkIn": "Walk-in",
+  "@crmSourceWalkIn": {
+    "description": "Lead source."
+  },
+  "crmSourceWhatsapp": "WhatsApp",
+  "@crmSourceWhatsapp": {
+    "description": "Lead source."
+  },
+  "crmSourceFacebook": "Facebook",
+  "@crmSourceFacebook": {
+    "description": "Lead source."
+  },
+  "crmSourceReferral": "Referral",
+  "@crmSourceReferral": {
+    "description": "Lead source."
+  },
+  "crmSourceEvent": "Event",
+  "@crmSourceEvent": {
+    "description": "Lead source."
+  },
+  "crmSourceOther": "Other",
+  "@crmSourceOther": {
+    "description": "Lead source."
+  },
+  "crmActivityCall": "Call",
+  "@crmActivityCall": {
+    "description": "Lead activity kind."
+  },
+  "crmActivityMessage": "Message",
+  "@crmActivityMessage": {
+    "description": "Lead activity kind."
+  },
+  "crmActivityMeeting": "Meeting",
+  "@crmActivityMeeting": {
+    "description": "Lead activity kind."
+  },
+  "crmActivityNote": "Note",
+  "@crmActivityNote": {
+    "description": "Lead activity kind."
+  },
+  "crmActivityStatusChange": "Status change",
+  "@crmActivityStatusChange": {
+    "description": "Lead activity kind (written by the server)."
+  },
+  "crmLogActivity": "Log activity",
+  "@crmLogActivity": {
+    "description": "Button / sheet title: log a call, message, meeting or note."
+  },
+  "crmChangeStatus": "Change status",
+  "@crmChangeStatus": {
+    "description": "Button / sheet title."
+  },
+  "crmStatusSave": "Save status",
+  "@crmStatusSave": {
+    "description": "Status sheet button."
+  },
+  "crmStatusUpdated": "Status updated",
+  "@crmStatusUpdated": {
+    "description": "Snack bar."
+  },
+  "crmLostReasonLabel": "Why was the lead lost?",
+  "@crmLostReasonLabel": {
+    "description": "Lost reason field."
+  },
+  "crmLostReasonRequired": "Enter the reason the lead was lost.",
+  "@crmLostReasonRequired": {
+    "description": "Lost reason validation / API error lost_reason_required."
+  },
+  "crmWonViaConvert": "To mark a lead as won, convert it to a patient.",
+  "@crmWonViaConvert": {
+    "description": "Hint / API error lead_convert_required."
+  },
+  "crmScheduleFollowUp": "Schedule follow-up",
+  "@crmScheduleFollowUp": {
+    "description": "Tooltip: pick the next follow-up."
+  },
+  "crmClearFollowUp": "Clear follow-up",
+  "@crmClearFollowUp": {
+    "description": "Tooltip: remove the follow-up."
+  },
+  "crmFollowUpScheduled": "Follow-up scheduled",
+  "@crmFollowUpScheduled": {
+    "description": "Snack bar."
+  },
+  "crmFollowUpCleared": "Follow-up cleared",
+  "@crmFollowUpCleared": {
+    "description": "Snack bar."
+  },
+  "crmNoFollowUp": "No follow-up scheduled",
+  "@crmNoFollowUp": {
+    "description": "Lead detail: no follow-up."
+  },
+  "crmActivityBodyLabel": "What happened? (optional)",
+  "@crmActivityBodyLabel": {
+    "description": "Activity sheet: text field."
+  },
+  "crmActivityNextFollowUp": "Next follow-up (optional)",
+  "@crmActivityNextFollowUp": {
+    "description": "Activity sheet: pick the next follow-up."
+  },
+  "crmActivitySave": "Save activity",
+  "@crmActivitySave": {
+    "description": "Activity sheet button."
+  },
+  "crmActivityLogged": "Activity logged",
+  "@crmActivityLogged": {
+    "description": "Snack bar."
+  },
+  "crmTimelineTitle": "Timeline",
+  "@crmTimelineTitle": {
+    "description": "Lead detail section title."
+  },
+  "crmTimelineEmpty": "No activity yet.",
+  "@crmTimelineEmpty": {
+    "description": "Empty timeline."
+  },
+  "crmTimelineStatusChange": "Status changed from {fromStatus} to {toStatus}",
+  "@crmTimelineStatusChange": {
+    "description": "Timeline entry of a status change.",
+    "placeholders": {
+      "fromStatus": {
+        "type": "String"
+      },
+      "toStatus": {
+        "type": "String"
+      }
+    }
+  },
+  "crmTimelineStatusSet": "Status set to {status}",
+  "@crmTimelineStatusSet": {
+    "description": "Timeline entry: first status.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "crmTimelineBy": "by {name}",
+  "@crmTimelineBy": {
+    "description": "Timeline entry author.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crmConvertToPatient": "Convert to patient",
+  "@crmConvertToPatient": {
+    "description": "Button: convert the lead to a managed patient."
+  },
+  "crmConvertTitle": "Convert to patient",
+  "@crmConvertTitle": {
+    "description": "Convert screen title."
+  },
+  "crmConvertIntro": "Creates a managed patient from this lead. Check the details and confirm the patient's consent.",
+  "@crmConvertIntro": {
+    "description": "Convert screen intro."
+  },
+  "crmConverted": "Patient created from the lead",
+  "@crmConverted": {
+    "description": "Snack bar after converting."
+  },
+  "crmAlreadyConverted": "This lead is already a patient.",
+  "@crmAlreadyConverted": {
+    "description": "Lead detail banner / convert screen when already converted."
+  },
+  "crmViewPatient": "Open patient",
+  "@crmViewPatient": {
+    "description": "Button: open the converted patient."
+  },
+  "crmDeleteLead": "Delete lead",
+  "@crmDeleteLead": {
+    "description": "Menu item / confirm button."
+  },
+  "crmDeleteConfirmTitle": "Delete this lead?",
+  "@crmDeleteConfirmTitle": {
+    "description": "Confirm dialog title."
+  },
+  "crmDeleteConfirmBody": "The lead and its timeline are removed. This cannot be undone.",
+  "@crmDeleteConfirmBody": {
+    "description": "Confirm dialog body."
+  },
+  "crmLeadDeleted": "Lead deleted",
+  "@crmLeadDeleted": {
+    "description": "Snack bar."
+  },
+  "crmLeadAdded": "Lead added",
+  "@crmLeadAdded": {
+    "description": "Snack bar."
+  },
+  "crmFormFullName": "Full name",
+  "@crmFormFullName": {
+    "description": "Lead form field."
+  },
+  "crmFormPhone": "Phone (optional)",
+  "@crmFormPhone": {
+    "description": "Lead form field."
+  },
+  "crmFormWhatsapp": "WhatsApp (optional)",
+  "@crmFormWhatsapp": {
+    "description": "Lead form field."
+  },
+  "crmFormEmail": "Email (optional)",
+  "@crmFormEmail": {
+    "description": "Lead form field."
+  },
+  "crmFormEmailInvalid": "Enter a valid email address.",
+  "@crmFormEmailInvalid": {
+    "description": "Lead form validation."
+  },
+  "crmFormCountry": "Country code (optional, e.g. NG)",
+  "@crmFormCountry": {
+    "description": "Lead form field: ISO 2-letter country."
+  },
+  "crmFormCountryInvalid": "Use a 2-letter country code, e.g. NG.",
+  "@crmFormCountryInvalid": {
+    "description": "Lead form validation."
+  },
+  "crmFormSource": "Source",
+  "@crmFormSource": {
+    "description": "Lead form field."
+  },
+  "crmFormSourceDetail": "Source details (optional)",
+  "@crmFormSourceDetail": {
+    "description": "Lead form field."
+  },
+  "crmFormInterest": "Interest (optional)",
+  "@crmFormInterest": {
+    "description": "Lead form field."
+  },
+  "crmFormInterestHelper": "A short note such as \"knee replacement\". Do not enter medical history.",
+  "@crmFormInterestHelper": {
+    "description": "Lead form helper: no medical history in the CRM."
+  },
+  "crmFormBudget": "Budget (optional)",
+  "@crmFormBudget": {
+    "description": "Lead form field."
+  },
+  "crmFormBudgetCurrency": "Currency",
+  "@crmFormBudgetCurrency": {
+    "description": "Lead form field: budget currency (ISO code)."
+  },
+  "crmFormBudgetInvalid": "Enter a valid amount and 3-letter currency.",
+  "@crmFormBudgetInvalid": {
+    "description": "Lead form validation."
+  },
+  "crmFormFollowUp": "Next follow-up (optional)",
+  "@crmFormFollowUp": {
+    "description": "Lead form field."
+  },
+  "crmFormNote": "First note (optional)",
+  "@crmFormNote": {
+    "description": "Lead form field: first timeline note."
+  },
+  "crmFormRequired": "Required",
+  "@crmFormRequired": {
+    "description": "Lead form validation."
+  },
+  "crmDashboardHint": "Track enquiries and follow-ups",
+  "@crmDashboardHint": {
+    "description": "Dashboard leads card subtitle while loading / unavailable."
+  },
+  "crmErrorLeadConverted": "This lead was already converted to a patient.",
+  "@crmErrorLeadConverted": {
+    "description": "API error lead_converted."
+  },
+  "crmErrorEmailTaken": "An account with this email already exists.",
+  "@crmErrorEmailTaken": {
+    "description": "API error email_taken."
+  },
+  "crmErrorAgentNotActive": "Your agency account must be approved before you can add patients.",
+  "@crmErrorAgentNotActive": {
+    "description": "API error agent_not_active."
+  },
+  "crmConsentSection": "Patient consent",
+  "@crmConsentSection": {
+    "description": "Add-patient / convert form: consent section title."
+  },
+  "crmConsentAttest": "I confirm the patient has agreed to the Terms of Service and Privacy Policy",
+  "@crmConsentAttest": {
+    "description": "Consent attestation checkbox (legal)."
+  },
+  "crmConsentAttestHint": "Your attestation is recorded with your name and time. The patient confirms it on first sign-in.",
+  "@crmConsentAttestHint": {
+    "description": "Consent attestation hint (legal)."
+  },
+  "crmConsentShare": "The patient also agreed to share their records with the hospitals I contact for them",
+  "@crmConsentShare": {
+    "description": "Optional consent: share records with hospitals."
+  },
+  "crmConsentMethod": "How was consent obtained?",
+  "@crmConsentMethod": {
+    "description": "Consent method field."
+  },
+  "crmConsentMethodInPerson": "In person",
+  "@crmConsentMethodInPerson": {
+    "description": "Consent method."
+  },
+  "crmConsentMethodPhone": "Phone call",
+  "@crmConsentMethodPhone": {
+    "description": "Consent method."
+  },
+  "crmConsentMethodVideoCall": "Video call",
+  "@crmConsentMethodVideoCall": {
+    "description": "Consent method."
+  },
+  "crmConsentMethodWritten": "Written / signed form",
+  "@crmConsentMethodWritten": {
+    "description": "Consent method."
+  },
+  "crmConsentMethodEmail": "Email",
+  "@crmConsentMethodEmail": {
+    "description": "Consent method."
+  },
+  "crmConsentNote": "Note (optional)",
+  "@crmConsentNote": {
+    "description": "Consent note field."
+  },
+  "crmConsentNoteHint": "e.g. Signed form on file",
+  "@crmConsentNoteHint": {
+    "description": "Consent note hint."
+  },
+  "crmConsentRequired": "Confirm that the patient has given consent before adding them.",
+  "@crmConsentRequired": {
+    "description": "Consent validation."
   }
 }

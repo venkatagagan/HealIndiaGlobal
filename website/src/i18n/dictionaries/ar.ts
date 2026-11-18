@@ -1061,6 +1061,12 @@ const ar: Dictionary = {
     board: 'إذا لم تكن راضيًا عن ردنا، يمكنك تقديم شكوى إلى مجلس حماية البيانات في الهند.',
     footerLink: 'مسؤول التظلمات',
   },
+  referral: {
+    invitedByFriend: 'دعاك صديق: ستحصل على رصيد بقيمة {amount} بعد اكتمال أول حجز لك.',
+    invitedByFriendNoReward: 'لقد دعاك صديق.',
+    invitedByAgent: 'تمت إحالتك من وكيل شريك.',
+    invalid: 'رمز الإحالة هذا غير صالح. تحقّق منه أو اترك الحقل فارغًا.',
+  },
 };
 
 export default ar;

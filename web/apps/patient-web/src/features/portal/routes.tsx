@@ -45,6 +45,7 @@ const DischargeListPage = lazy(() => import('./pages/discharge/DischargeListPage
 const DischargeDetailPage = lazy(() => import('./pages/discharge/DischargeDetailPage').then((m) => ({ default: m.DischargeDetailPage })));
 const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
 const InsurancePage = lazy(() => import('./pages/insurance/InsurancePage').then((m) => ({ default: m.InsurancePage })));
+const ReferralsPage = lazy(() => import('./pages/referrals/ReferralsPage').then((m) => ({ default: m.ReferralsPage })));
 const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
 
 /** Child routes, relative to the portal mount point (/app). */
@@ -94,6 +95,7 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'free-call', element: <FreeCallPage /> },
   { path: 'free-call/status', element: <FreeCallStatusPage /> },
   { path: 'insurance', element: <InsurancePage /> },
+  { path: 'referrals', element: <ReferralsPage /> },
   { path: '*', element: <Navigate to={PORTAL_BASE} replace /> },
 ];
 

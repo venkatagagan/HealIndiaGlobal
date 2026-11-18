@@ -85,6 +85,8 @@ abstract final class Routes {
 
   /// `/discharge-summaries/:id`
   static String dischargeSummary(String id) => '$dischargeSummaries/$id';
+  // referral programme: invite friends, referral credit
+  static const referrals = '/referrals';
 
   /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
   static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
@@ -144,6 +146,9 @@ abstract final class Routes {
 
   /// `/auth/register?from=...` — also used for guest upgrade.
   static String registerFrom(String from) => _q(register, {'from': from});
+
+  /// `/auth/register?ref=CODE` — sign-up with a referral code filled in (invite deep link).
+  static String registerWithReferral(String code) => _q(register, {'ref': code});
 
   /// `/hospitals/:id` (slug or id).
   static String hospital(String slugOrId) => '/hospitals/${Uri.encodeComponent(slugOrId)}';
@@ -275,4 +280,5 @@ abstract final class RouteNames {
   static const whatsapp = 'whatsapp';
   static const dischargeSummaries = 'discharge-summaries';
   static const dischargeSummary = 'discharge-summary';
+  static const referrals = 'referrals';
 }
