@@ -19,35 +19,30 @@ class AgentShell extends StatelessWidget {
 
   static const tabs = [
     PortalTab(
-      label: 'Dashboard',
       labelBuilder: _dashboardLabel,
       icon: Icons.space_dashboard_outlined,
       selectedIcon: Icons.space_dashboard_rounded,
       builder: _dashboard,
     ),
     PortalTab(
-      label: 'Patients',
       labelBuilder: _patientsLabel,
       icon: Icons.groups_outlined,
       selectedIcon: Icons.groups_rounded,
       builder: _patients,
     ),
     PortalTab(
-      label: 'Cases',
       labelBuilder: _casesLabel,
       icon: Icons.folder_shared_outlined,
       selectedIcon: Icons.folder_shared,
       builder: _cases,
     ),
     PortalTab(
-      label: 'Bookings',
       labelBuilder: _bookingsLabel,
       icon: Icons.event_available_outlined,
       selectedIcon: Icons.event_available_rounded,
       builder: _bookings,
     ),
     PortalTab(
-      label: 'Earnings',
       labelBuilder: _earningsLabel,
       icon: Icons.account_balance_wallet_outlined,
       selectedIcon: Icons.account_balance_wallet_rounded,
