@@ -124,6 +124,26 @@ privacy and account deletion, everything medical.
 - Arabic `_one`/`_two` plural forms keep a numeric `{{count}}`; a native reviewer may prefer the singular/dual
   wording without the number.
 
+#### Patient web phase-1 screens (added 2026-11)
+
+Most of these reuse the reviewed mobile ARB wording (`mobile/lib/l10n/TRANSLATION_REVIEW.md`); the keys below
+are new or rephrased for the web and should be checked first.
+
+- Emergency / red flags: `aftercare.emergencyNote`, `aftercare.urgentTitle`, `aftercare.urgentBody`,
+  `aftercare.flags.*`, `aftercare.q*` (check-in questions, pain scale `aftercare.painNone` / `painWorst`),
+  `freeCall.notEmergency`, `quoteGroup.emergencyFirst`.
+- Price / saving claims (legal display rule - must never promise a price): `costHome.*` (especially `save`,
+  `disclaimer`, `source.*`, `oftenUnavailable`), `procedure.priceNote`, `procedure.homeVsIndia`,
+  `money.approx*`, `hospital.treatmentsHint`, `hospital.selfDeclared`, `quoteGroup.currencyNote`,
+  `quoteGroup.youPay`, `screening.match.compareHome`.
+- Consent / privacy: `quickQuote.consentOne`, `quickQuote.consentMany`, `quickQuote.theHospital` (inserted into
+  `consentOne` when the name is not loaded - ru/bn rephrased so the case ending fits), `guardian.*` (the
+  `guardian.declaration` is a legal statement), `reviews.form.moderationNote`, `visaGuide.ticksLocal`.
+- AI quota: `guestAi.*`; trust: `trust.registrationVerified`, `reviews.verified*`, `doctor.registrationHint`.
+- Visa: `visaGuide.route.*`, `visaGuide.type.*`, `visaGuide.defaultNote`, `visaGuide.disclaimer`,
+  `visaGuide.attendants_*` (Arabic dual / Russian few-many forms).
+- Free call verification: `freeCall.codeInvalidLeft_*`, `freeCall.smsUnavailable`, `freeCall.alreadyUsed`.
+
 ### Agent portal (`agent:`)
 
 - Consent / privacy: `consent.*`, `patientForm.consent*`, `enquiryDialog.consent*`, `screeningForm.consent*`,
