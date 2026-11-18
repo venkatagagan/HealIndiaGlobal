@@ -523,7 +523,9 @@ async def test_booking_created_builds_installments_and_installment_payment(
 
 
 async def test_overdue_installments(db):
-    w = await make_world(db, payment_option="installments", installment_months=2)
+    # admission far enough away that the 2 monthly instalments end before it (CG-18)
+    admission = datetime.now(UTC).date() + timedelta(days=200)
+    w = await make_world(db, payment_option="installments", installment_months=2, admission_date=admission)
     await service.create_installment_schedule(db, w.booking.id)
     await db.commit()
     assert (
