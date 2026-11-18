@@ -168,6 +168,7 @@ async def test_full_flow_with_mocked_claude(
     assert top["savings"]["home_country"] == "US"
     assert top["savings"]["home_currency"] == "USD"
     assert top["savings"]["pct_min"] == 85 and top["savings"]["pct_max"] == 91
+    assert isinstance(top["savings"]["claim_allowed"], bool)  # legal price-claim rule (catalog.claims)
     assert top["doctor"]["specialty"]["slug"] == "orthopedics"
     assert top["doctor"]["hospital"]["accreditations"] == ["jci", "nabh"]
     assert top["hospital"]["starting_price_minor"] == 3_90_000_00

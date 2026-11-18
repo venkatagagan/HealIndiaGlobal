@@ -41,6 +41,7 @@ from app.models import (
     ScreeningMatch,
     TreatmentPackage,
 )
+from app.modules.catalog.claims import price_claim_allowed
 from app.modules.screening.ai.schema import CatalogSnapshot, TriageResult
 
 TOP_N = 10
@@ -453,6 +454,16 @@ async def compute_savings(
             "home_currency": m.currency,
             "pct_min": _saving_pct(home_min, m.estimated_cost_minor),
             "pct_max": _saving_pct(home_max, m.estimated_cost_minor),
+            # legal price-claim rule (``catalog.claims``): may the saving be shown as a claim?
+            "claim_allowed": price_claim_allowed(
+                confidence=bench.confidence,
+                source=bench.source,
+                source_url=bench.source_url,
+                home_min=home_min,
+                home_max=home_max,
+                india_min=m.estimated_cost_minor,
+                india_max=m.estimated_cost_minor,
+            ),
         }
     return out
 

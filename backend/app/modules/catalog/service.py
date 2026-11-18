@@ -58,6 +58,7 @@ from app.models import (
     Specialty,
     TreatmentPackage,
 )
+from app.modules.catalog.claims import price_claim_allowed
 from app.modules.catalog.content import DEFAULT_CULTURAL_TIPS, INDIA_WAIT_TIME_TEXT, ITEMIZED_SPLIT_BPS
 from app.modules.catalog.councils import MEDICAL_COUNCILS, council_name
 from app.modules.catalog.earliest import SlotMinima, doctor_soonest_subq, hospital_soonest_subq, slot_minima
@@ -457,10 +458,31 @@ async def build_hospital_cards(
     badges = await verified_accreditations(db, ids)
     if minima is None:
         minima = await slot_minima(db, ids)
+    stats = await published_review_stats(db, Review.hospital_id, ids)
     return [
-        _hospital_card(h, names.get(h.id, {}), prices.get(h.id), badges.get(h.id, []), minima)
+        _hospital_card(
+            h, names.get(h.id, {}), prices.get(h.id), badges.get(h.id, []), minima, stats.get(h.id, (None, 0))
+        )
         for h in hospitals
     ]
+
+
+async def published_review_stats(
+    db: AsyncSession, column: Any, ids: Sequence[uuid.UUID]
+) -> dict[uuid.UUID, tuple[float | None, int]]:
+    """Average rating and count of PUBLISHED reviews per hospital/doctor (``column`` = ``Review.hospital_id``
+    or ``Review.doctor_id``). Unlike ``rating_avg`` (curated for hospitals without reviews), this is only
+    ever real patient reviews."""
+    if not ids:
+        return {}
+    rows = await db.execute(
+        select(column, func.avg(Review.rating), func.count(Review.id))
+        .where(column.in_(list(set(ids))), Review.status == ReviewStatus.PUBLISHED)
+        .group_by(column)
+    )
+    return {
+        key: (round(float(avg), 2) if avg is not None else None, int(count)) for key, avg, count in rows.all()
+    }
 
 
 def _hospital_card(
@@ -469,6 +491,7 @@ def _hospital_card(
     price: int | None,
     badges: list[AccreditationBadge],
     minima: SlotMinima,
+    reviews: tuple[float | None, int] = (None, 0),
 ) -> HospitalCard:
     return HospitalCard(
         id=h.id,
@@ -479,6 +502,8 @@ def _hospital_card(
         accreditations=list(h.accreditations or []),
         rating_avg=_float(h.rating_avg),
         rating_count=h.rating_count,
+        published_rating_avg=reviews[0],
+        published_review_count=reviews[1],
         logo_url=h.logo_url,
         cover_image_url=h.cover_image_url,
         specialties=[n for _, n in sorted(names.values())],
@@ -787,18 +812,26 @@ async def build_doctor_cards(
     hospital_ids = list({d.hospital_id for d in doctors})
     badges = await verified_accreditations(db, hospital_ids)
     minima = await slot_minima(db, hospital_ids)
+    stats = await published_review_stats(db, Review.doctor_id, [d.id for d in doctors])
     out: list[DoctorCard] = []
     for d in doctors:
         hosp = known.get(d.hospital_id)
         spec = specs.get(d.specialty_id)
         if hosp is None or spec is None:
             continue
-        out.append(_doctor_card(d, hosp, spec, badges.get(d.hospital_id, []), minima))
+        out.append(
+            _doctor_card(d, hosp, spec, badges.get(d.hospital_id, []), minima, stats.get(d.id, (None, 0)))
+        )
     return out
 
 
 def _doctor_card(
-    d: Doctor, h: Hospital, s: Specialty, badges: list[AccreditationBadge], minima: SlotMinima
+    d: Doctor,
+    h: Hospital,
+    s: Specialty,
+    badges: list[AccreditationBadge],
+    minima: SlotMinima,
+    reviews: tuple[float | None, int] = (None, 0),
 ) -> DoctorCard:
     return DoctorCard(
         id=d.id,
@@ -813,6 +846,8 @@ def _doctor_card(
         success_rate_pct=_float(d.success_rate_pct),
         rating_avg=_float(d.rating_avg),
         rating_count=d.rating_count,
+        published_rating_avg=reviews[0],
+        published_review_count=reviews[1],
         consultation_fee_minor=d.consultation_fee_minor,
         currency=d.currency,
         teleconsult_available=d.teleconsult_available,
@@ -1296,6 +1331,15 @@ async def _cost_parts(
         currency=target,
         pct_min=min(pct_low, pct_high),
         pct_max=max(pct_low, pct_high),
+        claim_allowed=price_claim_allowed(
+            confidence=bench.confidence,
+            source=bench.source,
+            source_url=bench.source_url,
+            home_min=home_min,
+            home_max=home_max,
+            india_min=india_min,
+            india_max=india_max,
+        ),
     )
     return home, india, savings
 
@@ -1352,6 +1396,7 @@ async def cost_comparison(
         india=india,
         savings=savings,
         itemized=itemized,
+        claim_allowed=savings.claim_allowed,
     )
 
 
@@ -1363,7 +1408,8 @@ async def cost_highlights(
     limit: int = HIGHLIGHTS_DEFAULT_LIMIT,
     country_source: str | None = None,
 ) -> CostHighlightsOut:
-    """Procedures with the biggest savings for a home country (for the home screen), best first."""
+    """Procedures with a lower India price for a home country (for the home screen): claim-allowed items
+    first (``claim_allowed``), then the shortest India wait."""
     requested = _valid_country(country)
     limit = max(1, min(int(limit), HIGHLIGHTS_MAX_LIMIT))
 
@@ -1412,9 +1458,19 @@ async def cost_highlights(
                 home=home,
                 india=india_part,
                 savings=savings,
+                claim_allowed=savings.claim_allowed,
             )
         )
-    items.sort(key=lambda i: (-i.savings.pct_max, -i.savings.max_minor, i.procedure.name))
+    # legal price-claim rule: claim-allowed items first, then the shortest India wait (earliest admission),
+    # then the bigger saving
+    items.sort(
+        key=lambda i: (
+            not i.claim_allowed,
+            i.india.earliest_admission_date or date.max,
+            -i.savings.pct_max,
+            i.procedure.name,
+        )
+    )
     return CostHighlightsOut(
         requested_country=requested,
         country_used=country_used,

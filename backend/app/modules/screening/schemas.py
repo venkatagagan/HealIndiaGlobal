@@ -280,12 +280,16 @@ class PackageOut(_Out):
 
 
 class SavingsOut(BaseModel):
+    """Saving versus the home-country benchmark. ``claim_allowed`` (legal price-claim rule,
+    ``app.modules.catalog.claims``): only when true may clients present it as a saving claim."""
+
     home_country: str
     home_min_minor: int
     home_max_minor: int
     home_currency: str
     pct_min: int
     pct_max: int
+    claim_allowed: bool = False
 
 
 class MatchOut(BaseModel):

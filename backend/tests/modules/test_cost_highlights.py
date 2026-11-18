@@ -11,7 +11,7 @@ from sqlalchemy import select
 
 from app.core.currency import COUNTRY_CURRENCY, currency_for_country, default_currency_for_country
 from app.models import AvailabilitySlot, CostBenchmark, FxRate
-from app.modules.catalog.service import today_ist
+from app.modules.catalog.service import invalidate_catalog_cache, today_ist
 from app.modules.catalog.settings import catalog_settings
 from app.modules.catalog.viewer import accept_language_country
 from scripts.import_benchmarks import import_rows, load_file, parse_row
@@ -212,8 +212,12 @@ async def test_highlights_rank_by_savings(client, db):
     assert h["currency"] == "GBP"
     slugs = [i["procedure"]["slug"] for i in h["items"]]
     assert set(slugs) == {"total-knee-replacement", "cabg"}
-    pcts = [i["savings"]["pct_max"] for i in h["items"]]
-    assert pcts == sorted(pcts, reverse=True)
+    # legal price-claim rule: the medium-confidence, sourced knee benchmark may be claimed and comes first;
+    # the bypass benchmark has no confidence, so its saving is returned but not claimable
+    assert slugs[0] == "total-knee-replacement"
+    flags = {i["procedure"]["slug"]: i["claim_allowed"] for i in h["items"]}
+    assert flags == {"total-knee-replacement": True, "cabg": False}
+    assert all(i["savings"]["claim_allowed"] == i["claim_allowed"] for i in h["items"])
     knee = next(i for i in h["items"] if i["procedure"]["slug"] == "total-knee-replacement")
     assert knee["specialty"]["slug"] == "orthopedics"
     assert knee["home"]["min_minor"] == 12_000_00 and knee["home"]["max_minor"] == 15_000_00
@@ -372,3 +376,57 @@ def test_parse_row_validation():
         parse_row(
             {"procedure": "x", "country": "US", "currency": "USD", "min": 1, "source": {"url": "ftp://x"}}
         )
+
+
+async def test_price_claim_rule_on_comparison(client, db):
+    """Savings stay in the response; ``claim_allowed`` needs medium/high confidence, a source and India
+    cheaper at both ends of the range."""
+    w = await build_world(db)
+    await _benchmarks(db, w)
+    r = await client.get(f"{API}/cost-comparison", params={"procedure": w.knee.slug, "country": "GB"})
+    body = r.json()
+    assert r.status_code == 200 and body["claim_allowed"] is True and body["savings"]["claim_allowed"] is True
+    bm = (
+        await db.execute(
+            select(CostBenchmark).where(
+                CostBenchmark.procedure_id == w.knee.id, CostBenchmark.country_code == "GB"
+            )
+        )
+    ).scalar_one()
+    # low confidence; no source; India (GBP 2,909-4,545) not cheaper at the low end of GBP 2,000-15,000
+    for change in ({"confidence": "low"}, {"source": None, "source_url": None}, {"cost_min_minor": 2000_00}):
+        original = {k: getattr(bm, k) for k in change}
+        for k, v in change.items():
+            setattr(bm, k, v)
+        await db.commit()
+        await invalidate_catalog_cache()
+        r = await client.get(f"{API}/cost-comparison", params={"procedure": w.knee.slug, "country": "GB"})
+        body = r.json()
+        assert body["claim_allowed"] is False, change
+        assert body["savings"] is not None and body["savings"]["claim_allowed"] is False
+        for k, v in original.items():
+            setattr(bm, k, v)
+        await db.commit()
+        await invalidate_catalog_cache()
+
+
+def test_price_claim_allowed_rule() -> None:
+    from app.modules.catalog.claims import price_claim_allowed
+
+    base = {"confidence": "High", "source": "Survey", "source_url": None}
+    assert price_claim_allowed(**base, home_min=100, home_max=200, india_min=50, india_max=150)
+    # cheaper only at one end (India's top price above the home low price is fine; above the home top is not)
+    assert not price_claim_allowed(**base, home_min=100, home_max=200, india_min=50, india_max=250)
+    assert not price_claim_allowed(**base, home_min=100, home_max=200, india_min=120, india_max=150)
+    assert not price_claim_allowed(
+        confidence="low",
+        source="Survey",
+        source_url=None,
+        home_min=100,
+        home_max=200,
+        india_min=1,
+        india_max=2,
+    )
+    assert not price_claim_allowed(
+        confidence="medium", source=" ", source_url="", home_min=100, home_max=200, india_min=1, india_max=2
+    )
