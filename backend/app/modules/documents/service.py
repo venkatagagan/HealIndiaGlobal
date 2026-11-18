@@ -19,6 +19,7 @@ from app.core.enums import DocumentKind, DocumentStatus, UserRole
 from app.core.errors import AppError, BadRequest, Forbidden, NotFound
 from app.core.events import publish
 from app.core.storage import ObjectNotFound, get_storage, make_key
+from app.i18n import Msg
 from app.models import Case, Document, User
 from app.modules.documents.policies import (
     Principal,
@@ -307,9 +308,10 @@ async def _record_break_glass(
             db,
             list(admins),
             "privacy.break_glass",
-            "Emergency document access",
-            f"{user.full_name or 'A support user'} opened a document outside their cases. Reason: {reason}",
-            {"document_id": str(document.id), "actor_user_id": str(user.id)},
+            data={"document_id": str(document.id), "actor_user_id": str(user.id)},
+            title_key="notifications.break_glass.title",
+            body_key="notifications.break_glass.body",
+            params={"name": user.full_name or Msg("common.a_support_user"), "reason": reason},
             dedupe_key=f"{document.id}:{user.id}:{datetime.now(UTC):%Y%m%d%H}",
             email=False,
         )

@@ -866,7 +866,9 @@ def _deviation(new: Decimal, reference: Decimal) -> Decimal:
     return abs(Decimal(new) / Decimal(reference) - 1) if reference else Decimal("Infinity")
 
 
-async def _alert_finance_fx(db: AsyncSession, actor: User, rate: FxRate, title: str, body: str) -> None:
+async def _alert_finance_fx(db: AsyncSession, actor: User, rate: FxRate, new_rate: Decimal) -> None:
+    """Ask the other finance users to approve a large FX change (text in each recipient's language)."""
+    from app.i18n import Msg
     from app.modules.admin.service import _finance_user_ids
     from app.modules.messaging.notifications import notify_many
 
@@ -874,10 +876,16 @@ async def _alert_finance_fx(db: AsyncSession, actor: User, rate: FxRate, title: 
         db,
         await _finance_user_ids(db, exclude=actor.id),
         "fx_rate.change",
-        title,
-        body,
-        {"fx_rate_id": str(rate.id), "currency": rate.quote_currency, "link": "/fx-rates"},
+        data={"fx_rate_id": str(rate.id), "currency": rate.quote_currency, "link": "/fx-rates"},
         email=True,
+        title_key="notifications.fx_rate_change.title",
+        body_key="notifications.fx_rate_change.body",
+        params={
+            "name": actor.full_name or Msg("common.a_finance_user"),
+            "currency": rate.quote_currency,
+            "old_rate": format(Decimal(rate.rate).normalize(), "f"),
+            "new_rate": format(Decimal(new_rate).normalize(), "f"),
+        },
     )
 
 
@@ -942,16 +950,7 @@ async def update_fx_rate(
         rate.pending_requested_by = actor.id
         rate.pending_requested_at = datetime.now(UTC)
         await db.flush()
-        await _alert_finance_fx(
-            db,
-            actor,
-            rate,
-            f"Exchange rate change for {rate.quote_currency} needs approval",
-            f"{actor.full_name or 'A finance user'} asked to change the {rate.quote_currency} rate from "
-            f"{format(Decimal(rate.rate).normalize(), 'f')} to "
-            f"{format(Decimal(data['rate']).normalize(), 'f')} "
-            "INR. A second finance user must approve it before it is used for payments.",
-        )
+        await _alert_finance_fx(db, actor, rate, data["rate"])
         await _commit(
             db,
             actor,

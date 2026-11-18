@@ -4,7 +4,24 @@
     "the_hospital": "l'hôpital",
     "reason": "Motif : {reason}.",
     "note": "Remarque : {note}",
-    "message": "Message : {message}"
+    "message": "Message : {message}",
+    "the_doctor": "le médecin",
+    "a_coordinator": "Un coordinateur",
+    "a_finance_user": "Un membre de l'équipe financière",
+    "a_support_user": "Un membre de l'assistance",
+    "a_user": "Un utilisateur",
+    "someone": "Quelqu'un",
+    "list_separator": ", ",
+    "payee": {
+      "hospital": "hôpital",
+      "agent": "agent",
+      "vendor": "prestataire"
+    },
+    "role": {
+      "patient": "patient",
+      "agent": "agent",
+      "hospital": "hôpital"
+    }
   },
   "email": {
     "common": {
@@ -184,6 +201,253 @@
     "message_created": {
       "title": "Nouveau message envoyé par {sender}",
       "attachment": "Pièce jointe envoyée"
+    },
+    "screening_emergency_staff": {
+      "title": "Urgent : urgence médicale possible pour {patient}",
+      "body": "Une pré-évaluation pour {patient} a été signalée comme une urgence médicale possible. Il a été conseillé au patient de consulter les services d'urgence locaux. Veuillez le contacter maintenant."
+    },
+    "travel_status": {
+      "title": "Mise à jour du voyage pour le dossier {case_number}",
+      "body": "{item} : {status} (dossier {case_number}).",
+      "visa_applied_body": "Votre demande de visa médical a été déposée pour le dossier {case_number}.",
+      "items": {
+        "visa": "Votre visa médical",
+        "accommodation": "Votre réservation d'hébergement",
+        "flight": "Votre réservation de vol",
+        "airport_pickup": "Votre accueil à l'aéroport",
+        "airport_drop": "Votre transfert vers l'aéroport",
+        "local_transport": "Votre réservation de transport local",
+        "translator": "Votre réservation d'interprète",
+        "local_guide": "Votre réservation de guide local",
+        "transport": "Votre réservation de transport",
+        "travel_agent": "Votre réservation auprès de l'agence de voyages",
+        "insurance": "Votre assurance voyage",
+        "other": "Votre organisation de voyage"
+      },
+      "statuses": {
+        "documents_pending": "documents à nous fournir",
+        "invitation_issued": "lettre d'invitation de l'hôpital disponible",
+        "applied": "demande déposée",
+        "approved": "approbation accordée",
+        "rejected": "demande non approuvée. Votre coordinateur vous aidera pour la suite",
+        "quoted": "devis prêt, à examiner",
+        "confirmed": "confirmation effectuée",
+        "completed": "prestation terminée",
+        "cancelled": "annulation effectuée"
+      }
+    },
+    "consultation_scheduled": {
+      "title": "Consultation programmée pour le dossier {num}",
+      "body": "Votre téléconsultation avec {doctor} est prévue le {when}. Le lien de connexion se trouve dans le dossier."
+    },
+    "consultation_rescheduled": {
+      "title": "Consultation modifiée pour le dossier {num}",
+      "body": "Votre téléconsultation avec {doctor} a été modifiée. Nouvel horaire : {when}. Consultez le dossier pour le lien de connexion à jour."
+    },
+    "consultation_cancelled": {
+      "title": "Consultation annulée pour le dossier {num}",
+      "body": "La téléconsultation avec {doctor} pour le dossier {num} a été annulée. Vous pouvez en demander une nouvelle depuis le dossier."
+    },
+    "coordinator_assigned": {
+      "title": "Votre coordinateur pour le dossier {case_number}",
+      "body": "{name}, de Heal India Global, est désormais votre coordinateur de soins. Écrivez-lui à tout moment depuis le dossier.",
+      "coordinator_title": "Vous coordonnez le dossier {case_number}",
+      "coordinator_body": "Vous avez été désigné(e) comme coordinateur pour {patient} (dossier {case_number})."
+    },
+    "quote_rejected": {
+      "title": "Devis refusé pour {case_number}",
+      "body": "{patient} a refusé votre devis pour le dossier {case_number}.",
+      "reason": "Motif : {reason}",
+      "next": "Vous pouvez envoyer un devis révisé."
+    },
+    "quote_expired": {
+      "hospital_title": "Devis expiré pour {case_number}",
+      "hospital_body": "Votre devis pour le dossier {case_number} a dépassé sa date de validité sans être accepté. Envoyez un nouveau devis si le patient a toujours besoin d'un traitement.",
+      "title": "Le devis envoyé par {hospital} a expiré",
+      "body": "Le devis du dossier {case_number} n'est plus valable. Demandez un nouveau devis à l'hôpital ou à votre coordinateur."
+    },
+    "installment_due": {
+      "title": "Rappel de paiement",
+      "body_today": "L'échéance {seq} de {amount} pour la réservation {booking_number} est à payer aujourd'hui.",
+      "body_date": "L'échéance {seq} de {amount} pour la réservation {booking_number} est à payer le {date}."
+    },
+    "installment_overdue": {
+      "title": "Paiement en retard",
+      "body": "L'échéance {seq} de {amount} pour la réservation {booking_number} était à payer le {date} et n'est toujours pas réglée. Veuillez la régler ou contacter votre coordinateur."
+    },
+    "settlement_batch_pending": {
+      "title": "Le lot de règlement {batch_number} doit être approuvé",
+      "body": "Un lot de règlement ({payee_type}) de {count} éléments ({amount} net) attend un second approbateur."
+    },
+    "quote_reminder_due": {
+      "title": "Devis bientôt attendu pour le dossier {case_number}",
+      "body": "Le patient attend votre devis. Veuillez l'envoyer dans les {hours} heures (avant le {when})."
+    },
+    "quote_overdue": {
+      "hospital_title": "Devis en retard pour le dossier {case_number}",
+      "hospital_body": "Le devis promis au patient est en retard. Veuillez l'envoyer maintenant.",
+      "coordinator_title": "Devis de l'hôpital en retard : dossier {case_number}",
+      "coordinator_body": "L'hôpital n'a pas envoyé de devis dans les délais. Veuillez relancer l'hôpital.",
+      "patient_title": "Nous relançons l'hôpital pour votre devis",
+      "patient_body": "Votre devis pour le dossier {case_number} prend plus de temps que prévu. Notre équipe relance l'hôpital et vous tiendra informé(e) rapidement."
+    },
+    "aftercare_red_flag": {
+      "title": "URGENT : signes d'alerte pendant la convalescence, dossier {case_number}",
+      "body": "Le patient a signalé : {flags}, lors du suivi du jour {day}. Veuillez contacter le patient maintenant.",
+      "patient_title": "Votre équipe soignante a été alertée",
+      "patient_body": "Merci pour votre suivi. Votre hôpital et notre coordinateur ont été prévenus et vont vous contacter. Si vous vous sentez très mal, appelez le numéro d'urgence local ou rendez-vous immédiatement à l'hôpital le plus proche.",
+      "flags": {
+        "fever": "fièvre",
+        "breathlessness": "essoufflement",
+        "severe_pain": "douleur intense",
+        "wound_concerns": "problème de plaie"
+      }
+    },
+    "consultation_reminder": {
+      "patient_title_soon": "Votre consultation vidéo commence dans 1 heure",
+      "patient_title_tomorrow": "Votre consultation vidéo a lieu demain",
+      "patient_body": "Votre consultation est prévue le {when}. Rejoignez-la depuis l'application avec le lien vidéo.",
+      "hospital_title_soon": "Consultation dans 1 heure : dossier {case_number}",
+      "hospital_title_tomorrow": "Consultation demain : dossier {case_number}",
+      "hospital_body": "Une consultation vidéo est prévue le {when}.",
+      "intro_title_soon": "Votre appel gratuit avec notre coordinateur médical commence dans 1 heure",
+      "intro_title_tomorrow": "Votre appel gratuit avec notre coordinateur médical a lieu demain",
+      "intro_body": "Votre appel vidéo de 15 minutes est prévu le {when}. Rejoignez-le avec le lien vidéo.",
+      "coordinator_title_soon": "Appel de présentation dans 1 heure",
+      "coordinator_title_tomorrow": "Appel de présentation demain",
+      "coordinator_body": "Appel de présentation gratuit avec {name} le {when}."
+    },
+    "visa_invitation_issued": {
+      "title": "La lettre d'invitation de votre hôpital est prête",
+      "body": "Téléchargez la lettre d'invitation dans vos documents et joignez-la à votre demande de visa."
+    },
+    "intro_requested": {
+      "title": "Nouvelle demande d'appel de présentation gratuit",
+      "body": "Un visiteur a demandé un appel gratuit de 15 minutes avec un coordinateur médical. Veuillez le programmer."
+    },
+    "intro_scheduled": {
+      "title": "Votre appel gratuit est réservé",
+      "body": "Votre appel vidéo de 15 minutes avec notre coordinateur médical est prévu le {when}."
+    },
+    "fx_rate_change": {
+      "title": "La modification du taux de change {currency} doit être approuvée",
+      "body": "{name} a demandé de modifier le taux {currency} de {old_rate} à {new_rate} INR. Un second membre de l'équipe financière doit l'approuver avant son utilisation pour les paiements."
+    },
+    "bank_details_change_requested": {
+      "title": "La modification des coordonnées de virement doit être approuvée",
+      "body": "{name} a demandé de modifier le compte bancaire affiché aux patients. Un second membre de l'équipe financière doit l'examiner et l'approuver avant qu'elle ne prenne effet."
+    },
+    "bank_details_changed": {
+      "title": "Coordonnées de virement modifiées",
+      "body": "Le compte bancaire affiché aux patients pour les virements a été modifié et approuvé."
+    },
+    "agent_consent": {
+      "title": "Veuillez confirmer votre consentement",
+      "body": "{agency} vous a inscrit(e) sur Heal India Global et a confirmé que vous avez accepté nos conditions d'utilisation et notre politique de confidentialité. Veuillez vérifier et confirmer ces consentements lors de votre connexion."
+    },
+    "agent_kyc_submitted": {
+      "title": "KYC d'agent envoyé",
+      "body": "{agency} ({code}) a envoyé ses documents KYC pour vérification."
+    },
+    "deletion_requested": {
+      "title": "Demande de suppression de compte",
+      "body": "Un compte de type {role} a demandé sa suppression ; elle est bloquée tant que des éléments en cours ne sont pas réglés."
+    },
+    "break_glass": {
+      "title": "Accès d'urgence à un document",
+      "body": "{name} a ouvert un document en dehors de ses dossiers. Motif : {reason}"
+    },
+    "support_conversation": {
+      "title": "Nouvelle conversation d'assistance",
+      "body": "{name} a ouvert une conversation d'assistance : {subject}"
+    },
+    "conversation_created": {
+      "title": "Nouvelle conversation",
+      "body": "{name} a ouvert une conversation avec vous"
+    },
+    "site_enquiry": {
+      "title": "Nouvelle demande via le site",
+      "body": "{name} a envoyé une demande via le formulaire de contact du site. Veuillez répondre sous un jour ouvré.",
+      "body_topic": "{name} a envoyé une demande via le formulaire de contact du site ({topic}). Veuillez répondre sous un jour ouvré."
+    },
+    "content_report": {
+      "title": "Nouveau signalement de contenu",
+      "body": "Un utilisateur a signalé un contenu : {target} ({reason}). Veuillez l'examiner dans la file de modération.",
+      "targets": {
+        "message": "message",
+        "screening_result": "résultat de pré-évaluation",
+        "document_analysis": "analyse de document",
+        "review": "avis"
+      },
+      "reasons": {
+        "spam": "spam",
+        "abusive": "propos abusifs",
+        "inappropriate": "contenu inapproprié",
+        "inaccurate": "information inexacte",
+        "privacy": "vie privée",
+        "other": "autre"
+      }
+    },
+    "moderation_warning": {
+      "title": "Un message de l'équipe Heal India Global",
+      "body": "Notre équipe a examiné un contenu que vous avez publié et a constaté qu'il enfreint nos règles de la communauté. Merci de garder des échanges respectueux et pertinents. Des problèmes répétés peuvent entraîner la suspension de votre compte."
+    },
+    "privacy_request_received": {
+      "title": "Nouvelle demande relative aux droits sur les données",
+      "body": "{reference} : {kind}. Réponse attendue avant le {date}.",
+      "kinds": {
+        "access": "accès à vos données",
+        "correction": "rectification de vos données",
+        "erasure": "effacement de vos données",
+        "nomination": "désignation d'une personne de confiance",
+        "withdraw_consent": "retrait du consentement",
+        "complaint": "réclamation",
+        "other": "question sur la confidentialité"
+      }
+    },
+    "privacy_request_updated": {
+      "title": "Mise à jour de votre demande {reference}",
+      "answer": "Notre réponse : {resolution}",
+      "status": {
+        "in_progress": "Nous traitons votre demande.",
+        "awaiting_requester": "Nous avons besoin d'informations complémentaires de votre part pour continuer.",
+        "completed": "Votre demande a été traitée.",
+        "rejected": "Nous n'avons pas pu donner suite à votre demande.",
+        "received": "Votre demande a été rouverte."
+      }
+    },
+    "guardian_consent_pending": {
+      "title": "Consentement parental à vérifier",
+      "body": "Un parent ou tuteur a donné son consentement pour un patient de moins de 18 ans. Vérifiez son identité et validez le consentement."
+    },
+    "breach_recorded": {
+      "title": "Violation de données personnelles {reference}",
+      "body": "Gravité : {severity}. Les notifications doivent être faites avant le {deadline} UTC.",
+      "severity": {
+        "low": "faible",
+        "medium": "moyenne",
+        "high": "élevée",
+        "critical": "critique"
+      }
+    },
+    "inactivity_notice": {
+      "title": "Votre compte sera bientôt supprimé",
+      "body": "Vous ne vous êtes pas connecté(e) depuis longtemps. Connectez-vous dans les {days} jours pour conserver votre compte ; à défaut, nous le supprimerons ainsi que vos données, comme indiqué dans notre politique de confidentialité."
+    },
+    "privacy_request_due": {
+      "title_overdue": "La demande relative aux données {reference} est en retard",
+      "title_due_soon": "La demande relative aux données {reference} arrive à échéance",
+      "body": "Réponse attendue avant le {date}."
+    },
+    "review_submitted": {
+      "title": "Nouvel avis à modérer",
+      "body": "Un patient a laissé un avis de {rating} étoile(s) sur {hospital}. Veuillez le vérifier dans la file de modération des avis."
+    },
+    "review_moderated": {
+      "published_title": "Votre avis est en ligne",
+      "published_body": "Merci. Votre avis sur {hospital} est maintenant publié.",
+      "hidden_title": "Votre avis n'a pas été publié",
+      "hidden_body": "Votre avis sur {hospital} n'a pas été publié car il ne respecte pas nos règles relatives aux avis."
     }
   },
   "errors": {

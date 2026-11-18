@@ -19,6 +19,7 @@ from app.core.deps import PageQuery, is_staff
 from app.core.enums import ConsentKind, UserRole, UserStatus
 from app.core.errors import BadRequest, Forbidden, NotFound
 from app.core.jobs import enqueue
+from app.i18n import Msg
 from app.models import Case, PatientProfile, User
 from app.models.privacy import (
     BreachIncident,
@@ -167,9 +168,14 @@ async def create_request(
         db,
         await _privacy_staff_ids(db),
         "privacy.request_received",
-        "New data-rights request",
-        f"{row.reference}: {_KIND_LABELS[body.kind]}. Reply by {row.due_at:%d %b %Y}.",
-        {"request_id": str(row.id), "reference": row.reference, "kind": body.kind.value},
+        data={"request_id": str(row.id), "reference": row.reference, "kind": body.kind.value},
+        title_key="notifications.privacy_request_received.title",
+        body_key="notifications.privacy_request_received.body",
+        params={
+            "reference": row.reference,
+            "kind": Msg(f"notifications.privacy_request_received.kinds.{body.kind.value}"),
+            "date": f"{row.due_at:%d %b %Y}",
+        },
         dedupe_key=str(row.id),
         email=False,
     )
@@ -298,15 +304,20 @@ async def _tell_requester(db: AsyncSession, row: DataRightsRequest) -> None:
     if row.user_id is not None:
         from app.modules.messaging.notifications import notify
 
+        prefix = "notifications.privacy_request_updated"
         await notify(
             db,
             row.user_id,
             "privacy.request_updated",
-            f"Update on your request {row.reference}",
-            body,
-            {"request_id": str(row.id), "status": str(row.status)},
+            data={"request_id": str(row.id), "status": str(row.status)},
             dedupe_key=f"{row.id}:{row.status}",
             email=False,
+            title_key=f"{prefix}.title",
+            body_key=[
+                f"{prefix}.status.{DataRightsRequestStatus(row.status).value}",
+                f"{prefix}.answer" if row.resolution else None,
+            ],
+            params={"reference": row.reference, "resolution": row.resolution or ""},
         )
     if row.requester_email:
         await enqueue(
@@ -486,9 +497,9 @@ async def record_guardian_consent(
             db,
             await _privacy_staff_ids(db),
             "privacy.guardian_consent_pending",
-            "Guardian consent to verify",
-            "A parent or guardian gave consent for a patient under 18. Check their identity and verify it.",
-            {"guardian_consent_id": str(row.id), "patient_id": str(profile.id)},
+            data={"guardian_consent_id": str(row.id), "patient_id": str(profile.id)},
+            title_key="notifications.guardian_consent_pending.title",
+            body_key="notifications.guardian_consent_pending.body",
             dedupe_key=str(row.id),
             email=False,
         )
@@ -718,10 +729,14 @@ async def record_breach(db: AsyncSession, actor: User, body: BreachIn, request: 
         db,
         list(admins),
         "privacy.breach_recorded",
-        f"Personal data breach {row.reference}",
-        f"{body.severity.value.title()} severity. Notifications are due by "
-        f"{row.notification_deadline_at:%d %b %Y %H:%M} UTC.",
-        {"breach_id": str(row.id)},
+        data={"breach_id": str(row.id)},
+        title_key="notifications.breach_recorded.title",
+        body_key="notifications.breach_recorded.body",
+        params={
+            "reference": row.reference,
+            "severity": Msg(f"notifications.breach_recorded.severity.{body.severity.value}"),
+            "deadline": f"{row.notification_deadline_at:%d %b %Y %H:%M}",
+        },
         dedupe_key=str(row.id),
         email=True,
     )

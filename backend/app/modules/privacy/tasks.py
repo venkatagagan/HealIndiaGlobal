@@ -240,10 +240,10 @@ async def inactive_accounts(db: AsyncSession, payload: dict[str, Any]) -> dict[s
             db,
             user.id,
             "privacy.inactivity_notice",
-            "Your account will be deleted soon",
-            f"You have not signed in for a long time. Sign in within {notice_days} days to keep your "
-            "account; otherwise we will delete it and your data as described in our privacy policy.",
-            {"erase_after": (now + timedelta(days=notice_days)).isoformat()},
+            data={"erase_after": (now + timedelta(days=notice_days)).isoformat()},
+            title_key="notifications.inactivity_notice.title",
+            body_key="notifications.inactivity_notice.body",
+            params={"days": notice_days},
             dedupe_key=f"inactivity:{now:%Y%m%d}",
             email=True,
         )
@@ -315,9 +315,10 @@ async def data_rights_sla(db: AsyncSession, payload: dict[str, Any]) -> int:
             db,
             recipients,
             "privacy.request_due",
-            f"Data-rights request {row.reference} {'is overdue' if overdue else 'is due soon'}",
-            f"Reply by {row.due_at:%d %b %Y}.",
-            {"request_id": str(row.id)},
+            data={"request_id": str(row.id)},
+            title_key=f"notifications.privacy_request_due.{'title_overdue' if overdue else 'title_due_soon'}",
+            body_key="notifications.privacy_request_due.body",
+            params={"reference": row.reference, "date": f"{row.due_at:%d %b %Y}"},
             dedupe_key=f"{row.id}:{now:%Y%m%d}",
             email=overdue,
         )

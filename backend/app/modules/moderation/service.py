@@ -35,6 +35,7 @@ from app.core.enums import (
 )
 from app.core.errors import BadRequest, Conflict, NotFound
 from app.core.pagination import Page, paginate
+from app.i18n import Msg
 from app.models import (
     ContentReport,
     ConversationParticipant,
@@ -237,10 +238,13 @@ async def create_report(
             db,
             await messaging_policies.staff_user_ids(db, [UserRole.SUPPORT, UserRole.ADMIN]),
             "moderation.report_created",
-            "New content report",
-            f"A user reported a {body.target_type.value.replace('_', ' ')} ({body.reason.value}). "
-            "Please review it in the moderation queue.",
-            {"report_id": str(report.id), "link": f"/moderation?report={report.id}"},
+            data={"report_id": str(report.id), "link": f"/moderation?report={report.id}"},
+            title_key="notifications.content_report.title",
+            body_key="notifications.content_report.body",
+            params={
+                "target": Msg(f"notifications.content_report.targets.{body.target_type.value}"),
+                "reason": Msg(f"notifications.content_report.reasons.{body.reason.value}"),
+            },
             dedupe_key=f"moderation.report_created:{body.target_type.value}:{body.target_id}",
             email=False,
         )
@@ -318,6 +322,9 @@ async def get_report(db: AsyncSession, report_id: uuid.UUID) -> AdminReportOut:
     return await admin_report_out(db, report)
 
 
+#: catalog keys of the warning sent to an author (English: WARNING_TITLE / WARNING_BODY)
+WARNING_TITLE_KEY = "notifications.moderation_warning.title"
+WARNING_BODY_KEY = "notifications.moderation_warning.body"
 WARNING_TITLE = "A message from the Heal India Global team"
 WARNING_BODY = (
     "Our team reviewed content you posted and found that it breaks our community rules. Please keep "
@@ -378,11 +385,11 @@ async def resolve_report(
                 db,
                 author.id,
                 "moderation.warning",
-                WARNING_TITLE,
-                WARNING_BODY,
-                {"link": "/"},
+                data={"link": "/"},
                 dedupe_key=f"moderation.warning:{report.id}",
                 email=True,
+                title_key=WARNING_TITLE_KEY,
+                body_key=WARNING_BODY_KEY,
             )
         else:
             before_status = str(getattr(author.status, "value", author.status))

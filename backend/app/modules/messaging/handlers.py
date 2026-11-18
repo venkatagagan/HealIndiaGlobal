@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.enums import CaseStatus, HospitalMemberRole, PayeeType, UserRole
 from app.core.events import subscribe
 from app.core.money import format_minor
-from app.i18n import recipient_locale, t
+from app.i18n import Msg, recipient_locale, t
 from app.i18n import runtime as i18n_runtime
 from app.models import (
     Agent,
@@ -77,18 +77,24 @@ def _status(value: Any) -> str:
     return str(getattr(value, "value", value) or "")
 
 
-async def _patient_name(db: AsyncSession, patient_id: uuid.UUID | None) -> str:
+THE_PATIENT = Msg("common.the_patient")
+THE_HOSPITAL = Msg("common.the_hospital")
+
+
+async def _patient_name(db: AsyncSession, patient_id: uuid.UUID | None) -> str | Msg:
+    """The patient's name, else "the patient" in the recipient's language (only as a ``params`` value)."""
     if patient_id is None:
-        return "the patient"
+        return THE_PATIENT
     p = await db.get(PatientProfile, patient_id)
-    return (p.full_name if p is not None else "") or "the patient"
+    return (p.full_name if p is not None else "") or THE_PATIENT
 
 
-async def _hospital_name(db: AsyncSession, hospital_id: uuid.UUID | None) -> str:
+async def _hospital_name(db: AsyncSession, hospital_id: uuid.UUID | None) -> str | Msg:
+    """The hospital's name, else "the hospital" in the recipient's language (only as a ``params`` value)."""
     if hospital_id is None:
-        return "the hospital"
+        return THE_HOSPITAL
     h = await db.get(Hospital, hospital_id)
-    return h.name if h is not None else "the hospital"
+    return h.name if h is not None else THE_HOSPITAL
 
 
 async def _patient_side(db: AsyncSession, case: Case) -> list[uuid.UUID]:
@@ -311,14 +317,14 @@ async def _alert_support_of_emergency(
         db,
         recipients,
         "screening.emergency",
-        f"Urgent: possible emergency for {patient_name}",
-        f"A screening for {patient_name} was flagged as a possible medical emergency. The patient has been "
-        "told to seek local emergency care. Please contact them now.",
-        {
+        data={
             "screening_id": str(screening_id),
             "patient_id": str(patient_id) if patient_id else None,
             "link": f"/screenings/{screening_id}",
         },
+        title_key="notifications.screening_emergency_staff.title",
+        body_key="notifications.screening_emergency_staff.body",
+        params={"patient": patient_name},
         dedupe_key=f"screening.emergency:{screening_id}",
         email=True,
     )
@@ -897,32 +903,35 @@ def _when(value: datetime | None) -> str:
     return value.astimezone(UTC).strftime("%d %b %Y, %H:%M UTC")
 
 
-_TRAVEL_ITEM_LABELS: dict[str, str] = {
-    "visa": "Your medical visa",
-    "accommodation": "Your accommodation booking",
-}
-_TRAVEL_KIND_LABELS: dict[str, str] = {
-    "flight": "Your flight booking",
-    "airport_pickup": "Your airport pickup",
-    "airport_drop": "Your airport drop-off",
-    "local_transport": "Your local transport booking",
-    "translator": "Your translator booking",
-    "local_guide": "Your local guide booking",
-    "transport": "Your transport booking",
-    "travel_agent": "Your travel agent booking",
-    "insurance": "Your travel insurance",
-}
-_TRAVEL_STATUS_TEXT: dict[str, str] = {
-    "documents_pending": "needs documents from you",
-    "invitation_issued": "has an invitation letter from the hospital",
-    "applied": "application has been submitted",
-    "approved": "has been approved",
-    "rejected": "was not approved. Your coordinator will help you with next steps",
-    "quoted": "has a price quote ready for you to review",
-    "confirmed": "is confirmed",
-    "completed": "is complete",
-    "cancelled": "has been cancelled",
-}
+#: travel item types / service kinds with their own label (``notifications.travel_status.items.<name>``)
+_TRAVEL_ITEM_TYPES: frozenset[str] = frozenset({"visa", "accommodation"})
+_TRAVEL_KINDS: frozenset[str] = frozenset(
+    {
+        "flight",
+        "airport_pickup",
+        "airport_drop",
+        "local_transport",
+        "translator",
+        "local_guide",
+        "transport",
+        "travel_agent",
+        "insurance",
+    }
+)
+#: statuses notified (``notifications.travel_status.statuses.<status>``)
+_TRAVEL_STATUSES: frozenset[str] = frozenset(
+    {
+        "documents_pending",
+        "invitation_issued",
+        "applied",
+        "approved",
+        "rejected",
+        "quoted",
+        "confirmed",
+        "completed",
+        "cancelled",
+    }
+)
 
 
 @subscribe("travel.status_changed")
@@ -932,28 +941,35 @@ async def on_travel_status_changed(db: AsyncSession, payload: dict[str, Any]) ->
     item_id = _uuid(payload, "item_id")
     case = await db.get(Case, case_id) if case_id else None
     to_status = str(payload.get("to_status") or "")
-    if case is None or item_id is None or to_status not in _TRAVEL_STATUS_TEXT:
+    if case is None or item_id is None or to_status not in _TRAVEL_STATUSES:
         return
     item_type = str(payload.get("item_type") or "")
     kind = str(payload.get("kind") or "")
-    label = _TRAVEL_ITEM_LABELS.get(item_type) or _TRAVEL_KIND_LABELS.get(kind) or "Your travel arrangement"
-    status_text = _TRAVEL_STATUS_TEXT[to_status]
-    if item_type == "visa" and to_status == "applied":
-        body = f"{label} application has been submitted for case {case.case_number}."
+    if item_type in _TRAVEL_ITEM_TYPES:
+        item = item_type
+    elif kind in _TRAVEL_KINDS:
+        item = kind
     else:
-        body = f"{label} {status_text} (case {case.case_number})."
+        item = "other"
+    prefix = "notifications.travel_status"
+    visa_applied = item_type == "visa" and to_status == "applied"
     await notify_many(
         db,
         _without(await _patient_side(db, case), _uuid(payload, "actor_user_id")),
         "travel.status_changed",
-        f"Travel update for case {case.case_number}",
-        body,
-        {
+        data={
             "case_id": str(case.id),
             "item_type": item_type,
             "item_id": str(item_id),
             "status": to_status,
             "link": f"/cases/{case.id}",
+        },
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.visa_applied_body" if visa_applied else f"{prefix}.body",
+        params={
+            "case_number": case.case_number,
+            "item": Msg(f"{prefix}.items.{item}"),
+            "status": Msg(f"{prefix}.statuses.{to_status}"),
         },
         dedupe_key=f"travel.status_changed:{item_id}:{to_status}",
     )
@@ -969,28 +985,29 @@ async def _consultation_context(
     return consultation, await db.get(Case, consultation.case_id)
 
 
-async def _consultation_notify(
-    db: AsyncSession, payload: dict[str, Any], kind: str, title: str, body: str, key_suffix: str
-) -> None:
+async def _consultation_notify(db: AsyncSession, payload: dict[str, Any], kind: str, key_suffix: str) -> None:
+    """``kind`` ``consultation.<x>``: text from ``notifications.consultation_<x>.title`` / ``.body``."""
     consultation, case = await _consultation_context(db, payload)
     if consultation is None or case is None:
         return
     recipients = await _patient_side(db, case) + await _hospital_side(db, case) + await _coordinator(case)
     doctor = await db.get(Doctor, consultation.doctor_id)
-    doctor_name = doctor.full_name if doctor is not None and doctor.full_name else "the doctor"
+    doctor_name = doctor.full_name if doctor is not None and doctor.full_name else Msg("common.the_doctor")
     when = _when(consultation.scheduled_at)
+    prefix = f"notifications.{kind.replace('.', '_')}"
     await notify_many(
         db,
         _without(recipients, _uuid(payload, "actor_user_id")),
         kind,
-        title.format(num=case.case_number),
-        body.format(doctor=doctor_name, when=when, num=case.case_number),
-        {
+        data={
             "case_id": str(case.id),
             "consultation_id": str(consultation.id),
             "scheduled_at": consultation.scheduled_at.isoformat() if consultation.scheduled_at else None,
             "link": f"/cases/{case.id}",
         },
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.body",
+        params={"doctor": doctor_name, "when": when, "num": case.case_number},
         dedupe_key=f"{kind}:{consultation.id}:{key_suffix}",
     )
 
@@ -1001,8 +1018,6 @@ async def on_consultation_scheduled(db: AsyncSession, payload: dict[str, Any]) -
         db,
         payload,
         "consultation.scheduled",
-        "Consultation scheduled for case {num}",
-        "Your tele-consultation with {doctor} is scheduled for {when}. The joining link is in the case.",
         str(payload.get("scheduled_at") or ""),
     )
 
@@ -1013,9 +1028,6 @@ async def on_consultation_rescheduled(db: AsyncSession, payload: dict[str, Any])
         db,
         payload,
         "consultation.rescheduled",
-        "Consultation changed for case {num}",
-        "Your tele-consultation with {doctor} has changed. New time: {when}. Check the case for the "
-        "current joining link.",
         str(payload.get("scheduled_at") or ""),
     )
 
@@ -1026,9 +1038,6 @@ async def on_consultation_cancelled(db: AsyncSession, payload: dict[str, Any]) -
         db,
         payload,
         "consultation.cancelled",
-        "Consultation cancelled for case {num}",
-        "The tele-consultation with {doctor} for case {num} has been cancelled. You can request a new one "
-        "from the case.",
         "cancelled",
     )
 
@@ -1044,26 +1053,29 @@ async def on_case_coordinator_assigned(db: AsyncSession, payload: dict[str, Any]
     # Add the coordinator to the case conversation.
     await ensure_case_conversation(db, case.id)
     data = {"case_id": str(case.id), "coordinator_user_id": str(coordinator.id), "link": f"/cases/{case.id}"}
-    name = coordinator.full_name or "A coordinator"
+    name = coordinator.full_name or Msg("common.a_coordinator")
+    prefix = "notifications.coordinator_assigned"
     await notify_many(
         db,
         await _patient_side(db, case),
         "case.coordinator_assigned",
-        f"Your coordinator for case {case.case_number}",
-        f"{name} from Heal India Global is now your care coordinator. Message them from the case any time.",
-        data,
+        data=data,
         dedupe_key=f"case.coordinator_assigned:{case.id}:{coordinator.id}",
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.body",
+        params={"case_number": case.case_number, "name": name},
     )
     patient_name = await _patient_name(db, case.patient_id)
     await notify(
         db,
         coordinator.id,
         "case.coordinator_assigned",
-        f"You are coordinating case {case.case_number}",
-        f"You have been assigned as the coordinator for {patient_name} (case {case.case_number}).",
-        data,
+        data=data,
         dedupe_key=f"case.coordinator_assigned:{case.id}:{coordinator.id}",
         email=False,
+        title_key=f"{prefix}.coordinator_title",
+        body_key=f"{prefix}.coordinator_body",
+        params={"case_number": case.case_number, "patient": patient_name},
     )
 
 
@@ -1076,18 +1088,16 @@ async def on_quote_rejected(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     patient_name = await _patient_name(db, case.patient_id)
     reason = str(payload.get("reason") or "").strip()
-    body = f"{patient_name} declined your quote for case {case.case_number}."
-    if reason:
-        body += f" Reason: {reason}"
-    body += " You can send a revised quote."
+    prefix = "notifications.quote_rejected"
     await notify_many(
         db,
         await _hospital_side(db, case) + await _coordinator(case),
         "quote.rejected",
-        f"Quote declined for {case.case_number}",
-        body,
-        {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        data={"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
         dedupe_key=f"quote.rejected:{quote_id}",
+        title_key=f"{prefix}.title",
+        body_key=[f"{prefix}.body", f"{prefix}.reason" if reason else None, f"{prefix}.next"],
+        params={"case_number": case.case_number, "patient": patient_name, "reason": reason},
     )
 
 
@@ -1100,25 +1110,27 @@ async def on_quote_expired(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     hospital = await _hospital_name(db, case.hospital_id)
     data = {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"}
+    prefix = "notifications.quote_expired"
+    params = {"case_number": case.case_number, "hospital": hospital}
     await notify_many(
         db,
         await _hospital_side(db, case),
         "quote.expired",
-        f"Quote expired for {case.case_number}",
-        f"Your quote for case {case.case_number} passed its validity date without being accepted. "
-        "Send a new quote if the patient still needs treatment.",
-        data,
+        data=data,
         dedupe_key=f"quote.expired:{quote_id}",
+        title_key=f"{prefix}.hospital_title",
+        body_key=f"{prefix}.hospital_body",
+        params=params,
     )
     await notify_many(
         db,
         await _patient_side(db, case),
         "quote.expired",
-        f"Your quote from {hospital} has expired",
-        f"The quote for case {case.case_number} is no longer valid. Ask the hospital or your coordinator "
-        "for a new quote.",
-        data,
+        data=data,
         dedupe_key=f"quote.expired:{quote_id}",
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.body",
+        params=params,
     )
 
 
@@ -1148,18 +1160,24 @@ async def on_installment_due(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     amount = _money(installment.amount_minor, installment.currency)
     days_left = payload.get("days_left")
-    when = "today" if days_left == 0 else f"on {installment.due_date.isoformat()}"
+    prefix = "notifications.installment_due"
     await notify_many(
         db,
         await _installment_recipients(db, booking, case),
         "installment.due",
-        "Payment reminder",
-        f"Instalment {installment.seq} of {amount} for booking {booking.booking_number} is due {when}.",
-        {
+        data={
             "installment_id": str(installment.id),
             "booking_id": str(booking.id),
             "due_date": installment.due_date.isoformat(),
             "link": f"/pay/{booking.id}",
+        },
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.body_today" if days_left == 0 else f"{prefix}.body_date",
+        params={
+            "seq": installment.seq,
+            "amount": amount,
+            "booking_number": booking.booking_number,
+            "date": installment.due_date.isoformat(),
         },
         dedupe_key=f"installment.due:{installment.id}:{payload.get('day') or ''}",
     )
@@ -1175,17 +1193,26 @@ async def on_installment_overdue(db: AsyncSession, payload: dict[str, Any]) -> N
         db,
         await _installment_recipients(db, booking, case),
         "installment.overdue",
-        "Payment overdue",
-        f"Instalment {installment.seq} of {amount} for booking {booking.booking_number} was due on "
-        f"{installment.due_date.isoformat()} and is still unpaid. Please pay it or talk to your coordinator.",
-        {
+        data={
             "installment_id": str(installment.id),
             "booking_id": str(booking.id),
             "due_date": installment.due_date.isoformat(),
             "link": f"/pay/{booking.id}",
         },
+        title_key="notifications.installment_overdue.title",
+        body_key="notifications.installment_overdue.body",
+        params={
+            "seq": installment.seq,
+            "amount": amount,
+            "booking_number": booking.booking_number,
+            "date": installment.due_date.isoformat(),
+        },
         dedupe_key=f"installment.overdue:{installment.id}:{payload.get('day') or ''}",
     )
+
+
+def _payee_label(payee_type: str) -> str | Msg:
+    return Msg(f"common.payee.{payee_type}") if payee_type in {p.value for p in PayeeType} else payee_type
 
 
 @subscribe("settlement_batch.pending_approval")
@@ -1200,10 +1227,15 @@ async def on_settlement_batch_pending_approval(db: AsyncSession, payload: dict[s
         db,
         approvers,
         "settlement_batch.pending_approval",
-        f"Settlement batch {batch.batch_number} needs approval",
-        f"A {_status(batch.payee_type)} settlement batch of {batch.items_count} items "
-        f"({_money(batch.total_net_minor, batch.currency)} net) is waiting for a second approver.",
-        {"batch_id": str(batch.id), "link": f"/finance/settlements/batches/{batch.id}"},
+        data={"batch_id": str(batch.id), "link": f"/finance/settlements/batches/{batch.id}"},
+        title_key="notifications.settlement_batch_pending.title",
+        body_key="notifications.settlement_batch_pending.body",
+        params={
+            "batch_number": batch.batch_number,
+            "payee_type": _payee_label(_status(batch.payee_type)),
+            "count": batch.items_count,
+            "amount": _money(batch.total_net_minor, batch.currency),
+        },
         dedupe_key=f"settlement_batch.pending_approval:{batch.id}",
         email=True,
     )

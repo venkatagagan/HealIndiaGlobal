@@ -22,6 +22,7 @@ from app.core.enums import ConversationKind, UserRole
 from app.core.errors import BadRequest, NotFound
 from app.core.events import publish
 from app.core.ids import uuid7
+from app.i18n import Msg
 from app.models import Case, Conversation, ConversationParticipant, Document, Message, Notification, User
 from app.modules.messaging import policies
 from app.modules.messaging.notifications import notify, notify_many
@@ -376,9 +377,10 @@ async def create_conversation(db: AsyncSession, user: User, body: ConversationCr
             db,
             support_ids,
             "support.conversation_created",
-            "New support conversation",
-            f"{user.full_name or 'A user'} started a support conversation: {conversation.subject}",
-            {"conversation_id": str(conversation.id), "link": f"/messages/{conversation.id}"},
+            data={"conversation_id": str(conversation.id), "link": f"/messages/{conversation.id}"},
+            title_key="notifications.support_conversation.title",
+            body_key="notifications.support_conversation.body",
+            params={"name": user.full_name or Msg("common.a_user"), "subject": conversation.subject},
             dedupe_key=f"support.conversation_created:{conversation.id}",
             email=False,
         )
@@ -387,9 +389,10 @@ async def create_conversation(db: AsyncSession, user: User, body: ConversationCr
             db,
             targets,
             "conversation.created",
-            "New conversation",
-            f"{user.full_name or 'Someone'} started a conversation with you",
-            {"conversation_id": str(conversation.id), "link": f"/messages/{conversation.id}"},
+            data={"conversation_id": str(conversation.id), "link": f"/messages/{conversation.id}"},
+            title_key="notifications.conversation_created.title",
+            body_key="notifications.conversation_created.body",
+            params={"name": user.full_name or Msg("common.someone")},
             dedupe_key=f"conversation.created:{conversation.id}",
             email=False,
         )

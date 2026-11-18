@@ -1883,6 +1883,10 @@ async def delete_account(db: AsyncSession, user: User, body: AccountDeleteIn, re
     return deleted_at
 
 
+#: roles with a translated label in deletion-request notifications (``common.role.<role>``)
+DELETION_ROLE_LABELS: frozenset[str] = frozenset({"patient", "agent", "hospital"})
+
+
 async def request_account_deletion(
     db: AsyncSession, user: User, body: DeletionRequestIn, request: Request
 ) -> AuditLog:
@@ -1919,17 +1923,20 @@ async def request_account_deletion(
         .all()
     )
     if support_ids:
+        from app.i18n import Msg
         from app.modules.messaging.notifications import notify_many  # lazy: messaging imports auth
 
+        role_label = Msg(f"common.role.{role}") if role in DELETION_ROLE_LABELS else role
         await notify_many(
             db,
             support_ids,
             "account.deletion_requested",
-            "Account deletion request",
-            f"A {role} account asked to be deleted; deletion is blocked until open items are resolved.",
-            {"user_id": str(user.id), "request_id": str(entry.id), "blockers": blockers or None},
+            data={"user_id": str(user.id), "request_id": str(entry.id), "blockers": blockers or None},
             dedupe_key=str(entry.id),
             email=False,
+            title_key="notifications.deletion_requested.title",
+            body_key="notifications.deletion_requested.body",
+            params={"role": role_label},
         )
     await db.commit()
     return entry
