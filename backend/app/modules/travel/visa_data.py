@@ -4,7 +4,8 @@
 Provenance (research on 2026-11-09)
 -----------------------------------
 * The official e-Visa portal https://indianvisaonline.gov.in/evisa/ refused automated connections on
-  2026-11-09, so it could NOT be read directly. TODO: re-check every list below on the portal by hand.
+  2026-11-09, so it could NOT be read directly. VERIFY: re-check every list below on the portal by hand
+  (reviewer notes: ``REVIEWER_CAVEATS``; never shown to patients).
 * e-Visa eligible nationalities: Ministry of Tourism, https://incredibleindia.gov.in/en/plan-your-trip/visa
   (read 2026-11-09; the page has no "as of" date). 168 nationalities list "eMedical, eMedical Attendant".
 * e-Medical rules, read 2026-11-09 on Indian mission pages (not on the portal itself):
@@ -16,7 +17,7 @@ Provenance (research on 2026-11-09)
   - passport valid 6 months with 2 blank pages: hcililongwe Q1, https://indianembassyusa.gov.in/home?id=4
   - processing "72 hours or more": hcililongwe Q7; "cleared in 72 hours": cgivladi
   - at most twice per calendar year (general e-Visa rule): eoibratislava, cgivladi, eoilisbon
-  - TODO (unverified): whether e-Medical may be used three times a year; e-Medical Attendant "blood
+  - VERIFY (unverified): whether e-Medical may be used three times a year; e-Medical Attendant "blood
     relative" rule; current number of designated airports/seaports; fees.
 * Pakistan nationals / Pakistani origin must apply for a regular visa: hcililongwe FAQ Q1, cgivladi,
   eoilisbon (verified 2026-11-09).
@@ -26,7 +27,7 @@ Provenance (research on 2026-11-09)
   of funds; Medical Attendant visa for spouse, children or blood relatives (non-blood relative needs the
   patient's undertaking); stays over 180 days register with the FRRO within 14 days:
   https://www.indianembassysantiago.gov.in/pdf/Medical%20Visa-24-05-2026.pdf (verified 2026-11-09).
-  TODO (unverified): maximum number of Medical Attendant visas on a regular visa (2 assumed below) and
+  VERIFY (unverified): maximum number of Medical Attendant visas on a regular visa (2 assumed below) and
   typical embassy processing time (left empty).
 """
 
@@ -41,9 +42,30 @@ EVISA_URL = "https://indianvisaonline.gov.in/evisa/"
 REGULAR_VISA_URL = "https://indianvisaonline.gov.in/visa/"
 NO_VISA_URL = "https://incredibleindia.gov.in/en/plan-your-trip/visa"
 EVISA_LIST_SOURCE = (
-    f"e-Visa eligible list: https://incredibleindia.gov.in/en/plan-your-trip/visa (read {SOURCE_DATE}). "
-    "TODO: confirm on https://indianvisaonline.gov.in/evisa/ (unreachable from our servers that day)."
+    f"e-Visa eligible list: https://incredibleindia.gov.in/en/plan-your-trip/visa (read {SOURCE_DATE}); "
+    f"official e-Visa portal: {EVISA_URL}"
 )
+REGULAR_VISA_SOURCE = (
+    "Regular Medical / Medical Attendant visa requirements: "
+    "https://www.indianembassysantiago.gov.in/pdf/Medical%20Visa-24-05-2026.pdf "
+    f"(read {SOURCE_DATE}); official portal: {REGULAR_VISA_URL}"
+)
+
+#: Plain, neutral sentence shown with every rule whose details could not be confirmed on the official portal.
+CHECK_OFFICIAL = "Check the latest rules on the official Indian visa website before applying."
+
+#: Reviewer-only caveats (never shown to patients or stored in the tables). Re-verify each on the official
+#: portal (https://indianvisaonline.gov.in/) before changing a rule (reminder in deploy/starter/README.md).
+REVIEWER_CAVEATS: dict[str, str] = {
+    "*": "The e-Visa portal refused automated connections on 2026-11-09: re-check every list by hand.",
+    "AF": "Afghanistan appears on the Ministry of Tourism e-Visa list but not on the older MHA list.",
+    "CA": "Canada is missing from the Ministry of Tourism e-Visa list (read 2026-11-09).",
+    "MV": "Unverified whether medical stays are covered by the Maldives visa exemption.",
+    "regular_visa": (
+        "Maximum number of Medical Attendant visas on a regular visa (2 assumed) and typical embassy "
+        "processing time are not published."
+    ),
+}
 
 #: Nationalities listed as eligible for e-Medical / e-Medical Attendant visas (ISO 3166-1 alpha-2).
 EVISA_NATIONALITIES: tuple[str, ...] = tuple(
@@ -63,17 +85,11 @@ REGULAR_VISA_NOTES: dict[str, str] = {
         "Pakistani nationals and people of Pakistani origin cannot use the e-Visa and must apply for a "
         "regular Medical visa at an Indian mission."
     ),
-    "AF": (
-        "Apply for a regular Medical visa at an Indian mission. TODO: Afghanistan appears on the Ministry of "
-        "Tourism e-Visa list but not on the older MHA list; verify on the e-Visa portal before changing."
-    ),
-    "CA": (
-        "Apply for a regular Medical visa at an Indian mission. TODO: Canada is missing from the Ministry of "
-        "Tourism e-Visa list (read 2026-11-09); check the e-Visa portal manually."
-    ),
+    "AF": ("Apply for a regular Medical visa at an Indian mission. " + CHECK_OFFICIAL),
+    "CA": ("Apply for a regular Medical visa at an Indian mission. " + CHECK_OFFICIAL),
     "MV": (
-        "Maldivian citizens may visit India visa-free for up to 90 days for tourism; for treatment apply for "
-        "a Medical visa. TODO: verify whether medical stays are covered by the visa exemption."
+        "Maldivian citizens may visit India visa-free for up to 90 days for tourism; for medical treatment "
+        "apply for a Medical visa. " + CHECK_OFFICIAL
     ),
     "BD": "Not on the e-Visa list (read 2026-11-09): apply for a regular Medical visa at an Indian mission.",
     "CN": "Not on the e-Visa list (read 2026-11-09): apply for a regular Medical visa at an Indian mission.",
@@ -98,7 +114,6 @@ NO_VISA_NOTE = (
     "Nationals of Nepal and Bhutan do not need a visa for India. A passport is needed when arriving from "
     "China, Macau, Hong Kong or Pakistan."
 )
-REGULAR_ATTENDANTS_TODO = "TODO: the maximum number of Medical Attendant visas (2 assumed) is not verified."
 
 
 def default_rules() -> list[dict[str, Any]]:
@@ -137,10 +152,7 @@ def default_rules() -> list[dict[str, Any]]:
                 "typical_processing_days": None,
                 "notes": note,
                 "official_url": REGULAR_VISA_URL,
-                "source": (
-                    f"{EVISA_LIST_SOURCE} {REGULAR_ATTENDANTS_TODO} "
-                    "TODO: typical embassy processing time not published."
-                ),
+                "source": REGULAR_VISA_SOURCE,
             }
         )
     for row in rows:

@@ -276,3 +276,16 @@ def test_passport_decrypted_only_while_rendering() -> None:
     assert _passport(encrypt_str("N1234567")) == "N1234567"
     assert _passport(None) == "To be provided"
     assert _passport("v1:not-valid") == "To be provided"
+
+
+def test_seed_visa_text_has_no_internal_notes() -> None:
+    """Patients see notes / checklist text verbatim: no reviewer TODOs or caveats in the seed data."""
+    from app.modules.travel import visa_data
+
+    texts = [str(r.get("notes") or "") + str(r.get("source") or "") for r in visa_data.default_rules()]
+    texts += [str(i) for i in visa_data.default_checklist()]
+    texts.append(str(visa_data.FALLBACK_RULE))
+    assert not [t for t in texts if "TODO" in t or "unverified" in t.lower()]
+    for code in ("AF", "CA", "MV"):
+        rule = next(r for r in visa_data.default_rules() if r["nationality"] == code)
+        assert visa_data.CHECK_OFFICIAL in rule["notes"] and rule["official_url"].startswith("https://")
