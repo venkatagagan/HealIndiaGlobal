@@ -152,6 +152,11 @@ async def _user_from_token(db: AsyncSession, token: str, request: Request | None
     user = await db.get(User, uuid.UUID(str(payload["sub"])))
     if user is None:
         raise Unauthorized("Invalid access token", code="invalid_token")
+    if request is not None:
+        # Plain value for the locale middleware (the ORM object may be expired/detached by the time the
+        # response starts). Set before the checks below so their errors (e.g. organisation_suspended) are
+        # rendered in the user's language too.
+        request.state.user_language = user.preferred_language
     ensure_portal_matches(user, payload)
     status = _role_value(user.status)
     if status == UserStatus.DELETED.value or getattr(user, "deleted_at", None) is not None:
@@ -171,9 +176,6 @@ async def _user_from_token(db: AsyncSession, token: str, request: Request | None
             await touch_staff_session(payload)
         request.state.user = user
         request.state.token_payload = payload
-        # Plain value for the locale middleware (the ORM object may be expired/detached by the time the
-        # response starts, e.g. after an error rolled the session back).
-        request.state.user_language = user.preferred_language
     return user
 
 
