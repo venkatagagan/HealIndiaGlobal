@@ -2,9 +2,9 @@
 
 Heal India Global ships in **English** (default, always on), **Arabic** (right-to-left), **French**,
 **Bengali** and **Russian**. Every language except English starts switched **off**; an admin switches each one
-on in the admin portal (**Settings → Languages**) once its translations have been reviewed
+on in the admin portal (**System → Languages**, `/settings/languages`) once its translations have been reviewed
 (see [TRANSLATION_REVIEW.md](TRANSLATION_REVIEW.md)). Admins can also change any text in any language without a
-developer (**Settings → Translations**).
+developer (**System → Translations**, `/settings/translations`).
 
 ## Where the text lives
 
@@ -45,7 +45,7 @@ The language itself is chosen in this order, only among enabled languages:
 
 ## For admins: change a text
 
-1. Admin portal → **Settings → Translations**.
+1. Admin portal → **System → Translations**.
 2. Pick the app (patient web, agent portal, website, emails/notifications, ...) and the language.
 3. Search by English text, translation or key. Filters: *Missing* (no translation yet), *Overridden*.
 4. Edit the text and save. It is live within about a minute (web apps fetch overrides at start-up; the website
@@ -56,7 +56,7 @@ values. Every change is recorded in the audit log.
 
 ## For admins: switch a language on or off
 
-Admin portal → **Settings → Languages**. Each language shows how complete its translation is per app. English
+Admin portal → **System → Languages**. Each language shows how complete its translation is per app. English
 cannot be switched off. Switching a language off hides it from every switcher and from the website's language
 routes; people who had chosen it see English.
 
@@ -102,7 +102,7 @@ routes; people who had chosen it see English.
 | Method | Path | Notes |
 | --- | --- | --- |
 | GET | `/api/v1/i18n/languages` | enabled languages `[{code, name, native_name, rtl, enabled}]`, public, cached |
-| GET | `/api/v1/i18n/overrides?locale=ar&app=patient_web` | `{locale, app, version, strings: {key: text}}`, public, `ETag`; `since=<version>` or `If-None-Match` → 304 |
+| GET | `/api/v1/i18n/overrides?locale=ar&app=patient_web` | full set `{locale, app, version, strings: {key: text}}`, public, `ETag`; `If-None-Match` → 304 |
 | GET | `/api/v1/admin/i18n/languages` | all languages with completeness per app |
 | PATCH | `/api/v1/admin/i18n/languages/{code}` | `{enabled}`; English cannot be disabled; audited |
 | GET | `/api/v1/admin/i18n/strings?app=&locale=&q=&status=&page=&page_size=` | keys with English, shipped and override text |
