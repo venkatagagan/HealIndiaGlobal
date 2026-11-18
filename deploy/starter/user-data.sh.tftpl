@@ -102,6 +102,16 @@ exec bash "$release/deploy/starter/deploy.sh" "$TAG"
 WRAPPER
 chmod 0750 /usr/local/bin/hig-deploy
 
+# ---- hig-compose: docker compose with the production files of the running release (operators, SSM sessions)
+cat > /usr/local/bin/hig-compose <<'WRAPPER'
+#!/bin/bash
+# Usage: sudo hig-compose ps | logs -f api | exec api python -m scripts.create_superadmin --email ... | ...
+set -euo pipefail
+cd /opt/hig/current
+exec docker compose -p hig -f infra/docker-compose.yml -f infra/docker-compose.aws.yml --env-file /opt/hig/.env "$@"
+WRAPPER
+chmod 0750 /usr/local/bin/hig-compose
+
 # ---- certificate renewal twice a day (deploy/starter/certs.sh of the current release) -------------
 cat > /etc/systemd/system/hig-certs.service <<'UNIT'
 [Unit]
