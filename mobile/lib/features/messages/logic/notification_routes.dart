@@ -23,6 +23,11 @@ String? notificationTarget(AppNotification n) {
   final installment = id('installment_id');
 
   if (kind.startsWith('message.') && conversation != null) return Routes.chat(conversation);
+  // Treatment completed: invite the patient to rate the hospital.
+  if (kind == 'booking.completed' && booking != null) return Routes.writeReview(booking);
+  if (kind.startsWith('aftercare.')) return Routes.aftercare;
+  if (kind.startsWith('intro_consultation.')) return Routes.freeConsultationStatus;
+  if (kind.startsWith('review.')) return Routes.myReviews;
   if (kind.startsWith('screening.') && screening != null) return Routes.matches(screening);
   if ((kind == 'installment.due' || kind == 'installment.overdue' || kind == 'payment.due') && booking != null) {
     return Routes.pay(booking, installmentId: installment);
@@ -40,7 +45,12 @@ String? notificationTarget(AppNotification n) {
 /// In-app location for a tapped push notification (CG-15). The server sends a portal-style `link`
 /// (`/cases/<id>`, `/messages/<id>`, `/bookings/<id>`, ...); known links map to the matching screen of
 /// the user's role, anything else opens the notifications list (patients) or the role's home.
-String pushLinkRoute(String? link, UserRole role) {
+String pushLinkRoute(String? link, UserRole role, {String? kind}) {
+  // Patients: a completed treatment opens the review form for that booking.
+  if (role == UserRole.patient && kind == 'booking.completed') {
+    final seg = Uri.tryParse(link ?? '')?.pathSegments.where((s) => s.isNotEmpty).toList() ?? const [];
+    if (seg.length >= 2 && seg[0] == 'bookings') return Routes.writeReview(seg[1]);
+  }
   final uri = Uri.tryParse(link ?? '');
   final seg = uri == null ? const <String>[] : uri.pathSegments.where((s) => s.isNotEmpty).toList();
   String? idAfter(String head) => seg.length >= 2 && seg[0] == head ? seg[1] : null;

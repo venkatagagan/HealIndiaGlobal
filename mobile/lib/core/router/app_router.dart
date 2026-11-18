@@ -4,7 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/agent_portal/agent_routes.dart';
+import '../../features/aftercare/screens/aftercare_screen.dart';
 import '../../features/auth/screens/auth_screen.dart';
+import '../../features/guest/screens/free_consultation_screen.dart';
+import '../../features/quotes/screens/quick_quote_screen.dart';
+import '../../features/quotes/screens/quote_group_screen.dart';
+import '../../features/reviews/screens/my_reviews_screen.dart';
+import '../../features/reviews/screens/review_form_screen.dart';
+import '../../features/search/screens/procedure_earliest_screen.dart';
+import '../../features/trips/screens/visa_guide_screen.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
@@ -299,6 +307,62 @@ List<RouteBase> buildAppRoutes() => [
     name: RouteNames.voiceIntake,
     builder: (_, s) => VoiceIntakeScreen(screeningId: s.uri.queryParameters['screeningId']),
   ),
+  // phase 1: cost & time-to-treatment, quick quotes, reviews, aftercare, visa guide, guest intro call
+  GoRoute(
+    path: '/procedures/:slug/earliest',
+    name: RouteNames.procedureEarliest,
+    builder: (_, s) => ProcedureEarliestScreen(slug: s.pathParameters['slug']!),
+  ),
+  GoRoute(
+    path: Routes.quickQuoteNew,
+    name: RouteNames.quickQuote,
+    builder: (_, s) {
+      final q = s.uri.queryParameters;
+      return QuickQuoteScreen(
+        hospitalIds: (q['hospitals'] ?? '').split(',').where((e) => e.isNotEmpty).toList(),
+        procedureSlug: q['procedure'],
+        procedureId: q['procedure_id'],
+        doctorId: q['doctor'],
+        specialtyId: q['specialty'],
+        screeningId: q['screening'],
+      );
+    },
+  ),
+  GoRoute(
+    path: '/quotes/:id',
+    name: RouteNames.quoteGroup,
+    builder: (_, s) => QuoteGroupScreen(groupId: s.pathParameters['id']!),
+  ),
+  GoRoute(
+    path: Routes.myReviews,
+    name: RouteNames.myReviews,
+    builder: (_, _) => const MyReviewsScreen(),
+    routes: [
+      GoRoute(
+        path: 'write',
+        name: RouteNames.writeReview,
+        builder: (_, s) => ReviewFormScreen(bookingId: s.uri.queryParameters['booking']),
+      ),
+    ],
+  ),
+  GoRoute(path: Routes.aftercare, name: RouteNames.aftercare, builder: (_, _) => const AftercareScreen()),
+  GoRoute(
+    path: Routes.visaGuidePath,
+    name: RouteNames.visaGuide,
+    builder: (_, s) => VisaGuideScreen(nationality: s.uri.queryParameters['nationality']),
+  ),
+  GoRoute(
+    path: Routes.freeConsultation,
+    name: RouteNames.freeConsultation,
+    builder: (_, _) => const FreeConsultationScreen(),
+    routes: [
+      GoRoute(
+        path: 'status',
+        name: RouteNames.freeConsultationStatus,
+        builder: (_, _) => const FreeConsultationStatusScreen(),
+      ),
+    ],
+  ),
 ];
 
 /// Locations a guest (`is_guest=true`) may open: browse + screening (+ auth for upgrading).
@@ -316,6 +380,10 @@ bool isGuestAllowedLocation(String path) {
     // screening helpers: report capture (screening step 3) and voice intake (steps 1-2)
     Routes.reportCapture,
     Routes.voiceIntake,
+    // before registering: hospitals by earliest date, visa guide, the one free video consultation
+    '/procedures/',
+    Routes.visaGuidePath,
+    Routes.freeConsultation,
   ];
   return prefixes.any((p) => path == p || path.startsWith(p.endsWith('/') ? p : '$p/'));
 }

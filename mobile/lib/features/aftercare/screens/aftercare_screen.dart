@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/aftercare_repository.dart';
 import '../../../core/repositories/case_repository.dart';
 import '../../../core/theme/app_theme.dart';
@@ -83,7 +84,8 @@ class AftercareScreen extends ConsumerWidget {
                     if (a.followups.isEmpty)
                       Text(l10n.aftercareNoFollowups, style: context.text.bodyMedium)
                     else
-                      for (final f in a.followups) _FollowupCard(followup: f, onJoin: (url) => _join(context, ref, url)),
+                      for (final f in a.followups)
+                        _FollowupCard(followup: f, onJoin: (url) => _join(context, ref, url)),
                     for (final c in a.cases)
                       AppCard(
                         key: ValueKey('aftercare-case-${c.caseId}'),
@@ -240,13 +242,15 @@ class _FollowupRequestSheetState extends ConsumerState<_FollowupRequestSheet> {
       _error = null;
     });
     try {
-      await ref.read(caseRepositoryProvider).requestConsultation(
-        caseId: widget.aftercareCase.caseId,
-        doctorId: widget.aftercareCase.doctor?.id,
-        kind: 'followup',
-        preferredAt: _preferred,
-        notes: _notes.text.trim(),
-      );
+      await ref
+          .read(caseRepositoryProvider)
+          .requestConsultation(
+            caseId: widget.aftercareCase.caseId,
+            doctorId: widget.aftercareCase.doctor?.id,
+            kind: 'followup',
+            preferredAt: _preferred,
+            notes: _notes.text.trim(),
+          );
       if (!mounted) return;
       showInfoSnack(context, context.l10n.aftercareFollowupRequested);
       Navigator.of(context).pop(true);

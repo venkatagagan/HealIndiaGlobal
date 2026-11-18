@@ -13,6 +13,8 @@ import 'package:heal_india_global/core/config/app_preferences.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/network/api_client.dart';
 import 'package:heal_india_global/core/repositories/catalog_repository.dart';
+import 'package:heal_india_global/core/repositories/privacy_repository.dart';
+import 'package:heal_india_global/core/repositories/trust_repository.dart';
 import 'package:heal_india_global/core/theme/app_theme.dart';
 import 'package:heal_india_global/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -224,6 +226,16 @@ class FakeCatalogRepository extends CatalogRepository {
     String? doctorId,
   }) async => [];
 }
+
+/// Empty answers for the phase-1 side panels (guardian status, reviews to write, home cost highlights) so
+/// screens that show them never reach the network in tests.
+List<Override> quietPhase1Overrides({CostHighlights? highlights}) => [
+  guardianStatusProvider.overrideWith((ref) async => const GuardianStatus()),
+  eligibleReviewsProvider.overrideWith((ref) async => const <ReviewableBooking>[]),
+  costHighlightsProvider.overrideWith(
+    (ref) async => highlights ?? const CostHighlights(country: HomeCountryInfo(countryUsed: 'US'), currency: 'USD'),
+  ),
+];
 
 /// Text shown by the placeholder for every route other than the screen under test.
 String routeLabel(String location) => 'route:$location';

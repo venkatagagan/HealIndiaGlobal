@@ -108,7 +108,11 @@ class PushCoordinator {
   void _open(Map<String, dynamic> data) {
     final auth = _ref.read(authStateProvider);
     if (!auth.isAuthenticated) return;
-    final route = pushLinkRoute(data['link']?.toString(), auth.user?.role ?? UserRole.patient);
+    final route = pushLinkRoute(
+      data['link']?.toString(),
+      auth.user?.role ?? UserRole.patient,
+      kind: data['kind']?.toString(),
+    );
     _ref.read(routerProvider).go(route);
   }
 }

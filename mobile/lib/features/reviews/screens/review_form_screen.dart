@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/trust_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
@@ -92,7 +93,8 @@ class _ReviewFormScreenState extends ConsumerState<ReviewFormScreen> {
         body: ErrorView(error: e, onRetry: () => ref.invalidate(eligibleReviewsProvider)),
       ),
       data: (list) {
-        final booking = list.where((b) => b.bookingId == widget.bookingId).firstOrNull ??
+        final booking =
+            list.where((b) => b.bookingId == widget.bookingId).firstOrNull ??
             (widget.bookingId == null ? list.firstOrNull : null);
         if (booking == null) {
           return Scaffold(
@@ -172,7 +174,10 @@ class _ReviewFormScreenState extends ConsumerState<ReviewFormScreen> {
               alignLabelWithHint: true,
             ),
           ),
-          Text(l10n.reviewFormModerationNote, style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary)),
+          Text(
+            l10n.reviewFormModerationNote,
+            style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
+          ),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_controller.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/i18n/language_picker.dart';
 import '../../../core/models/models.dart';
 import '../../../core/theme/app_theme.dart';
@@ -28,7 +30,9 @@ class PortalAccountMenu extends ConsumerWidget {
       tooltip: l10n.commonAccount,
       icon: Avatar(name: user?.fullName ?? '', imageUrl: user?.avatarUrl, size: 32),
       onSelected: (v) async {
-        if (v == '_language') {
+        if (v == '_aftercare') {
+          if (context.mounted) await context.push('${Routes.agentHome}/aftercare');
+        } else if (v == '_language') {
           if (context.mounted) await showLanguagePicker(context, ref);
         } else if (v == '_logout') {
           await ref.read(authControllerProvider.notifier).logout();
@@ -53,6 +57,16 @@ class PortalAccountMenu extends ConsumerWidget {
             CheckedPopupMenuItem<String>(value: 'h:${h.id}', checked: h.id == active?.id, child: Text(h.name)),
         ],
         const PopupMenuDivider(),
+        if (user?.role == UserRole.agent)
+          PopupMenuItem<String>(
+            key: const ValueKey('portal-aftercare'),
+            value: '_aftercare',
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.healing_outlined),
+              title: Text(l10n.aftercareTitle),
+            ),
+          ),
         PopupMenuItem<String>(
           key: const ValueKey('portal-language'),
           value: '_language',

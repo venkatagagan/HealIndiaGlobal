@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/document_repository.dart';
 import '../../../core/repositories/guest_repository.dart';
 import '../../../core/repositories/patient_repository.dart';
@@ -153,16 +154,18 @@ class _FreeConsultationScreenState extends ConsumerState<FreeConsultationScreen>
     var to = DateTime(_day.year, _day.month, _day.day, _to.hour, _to.minute);
     if (!to.isAfter(from)) to = from.add(const Duration(hours: 1));
     final screeningId = _screeningId();
-    await ref.read(guestRepositoryProvider).requestConsultation(
-      verificationId: _verification!.id,
-      fullName: _name.text.trim(),
-      preferredFrom: from,
-      preferredTo: to,
-      timezone: timezoneLabel(DateTime.now()),
-      question: _question.text.trim(),
-      screeningId: _attachScreening ? screeningId : null,
-      documentIds: _documentIds.toList(),
-    );
+    await ref
+        .read(guestRepositoryProvider)
+        .requestConsultation(
+          verificationId: _verification!.id,
+          fullName: _name.text.trim(),
+          preferredFrom: from,
+          preferredTo: to,
+          timezone: timezoneLabel(DateTime.now()),
+          question: _question.text.trim(),
+          screeningId: _attachScreening ? screeningId : null,
+          documentIds: _documentIds.toList(),
+        );
     ref.invalidate(introConsultationProvider);
     if (mounted) context.pushReplacement(Routes.freeConsultationStatus);
   });
@@ -195,12 +198,15 @@ class _FreeConsultationScreenState extends ConsumerState<FreeConsultationScreen>
         children: [
           StepProgressBar(step: stepIndex + 1, total: _Step.values.length),
           const SizedBox(height: 16),
-          if (_alreadyUsed) _usedCard(context) else ...switch (_step) {
-            _Step.name => _nameStep(context),
-            _Step.contact => _contactStep(context),
-            _Step.code => _codeStep(context),
-            _Step.details => _detailsStep(context),
-          },
+          if (_alreadyUsed)
+            _usedCard(context)
+          else
+            ...switch (_step) {
+              _Step.name => _nameStep(context),
+              _Step.contact => _contactStep(context),
+              _Step.code => _codeStep(context),
+              _Step.details => _detailsStep(context),
+            },
           if (_error != null && !_alreadyUsed)
             Padding(
               padding: const EdgeInsets.only(top: 12),
@@ -488,7 +494,9 @@ class FreeConsultationStatusScreen extends ConsumerWidget {
             children: [
               Icon(icon, color: color, size: 28),
               const SizedBox(width: 10),
-              Expanded(child: Text(title, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800))),
+              Expanded(
+                child: Text(title, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              ),
             ],
           ),
           const SizedBox(height: 10),

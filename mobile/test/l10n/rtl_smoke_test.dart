@@ -32,6 +32,7 @@ Future<void> _pumpHome(WidgetTester tester, Locale locale, {Size size = const Si
     overrides: [
       specialtiesProvider.overrideWith((ref) async => _specialties),
       patientDashboardProvider.overrideWith((ref) async => const PatientDashboard()),
+      ...quietPhase1Overrides(),
     ],
   );
   await tester.pumpAndSettle();
@@ -88,6 +89,7 @@ void main() {
           }),
         ),
         companionsProvider.overrideWith((ref) async => const <PatientCompanion>[]),
+        ...quietPhase1Overrides(),
       ],
     );
     await tester.pumpAndSettle();

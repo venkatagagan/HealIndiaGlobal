@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/auth_controller.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/screening_repository.dart';
 import '../../../core/router/routes.dart';
@@ -168,6 +169,30 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
         ],
         if (s?.aiResult != null) ...[
           AiSummaryCard(result: s!.aiResult!, urgency: s.urgency, screeningId: _id),
+          const SizedBox(height: 12),
+        ],
+        // Before registering: one free video call with a coordinator to talk the results through.
+        if (ref.watch(authStateProvider).isGuest) ...[
+          AppCard(
+            key: const ValueKey('matches-free-consultation'),
+            onTap: () => context.push(Routes.freeConsultation),
+            child: Row(
+              children: [
+                const Icon(Icons.video_call_rounded, color: AppColors.info, size: 32),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.guestFreeTitle, style: context.text.titleSmall),
+                      Text(l10n.guestFreeAfterResults, style: context.text.bodySmall),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
+          ),
           const SizedBox(height: 12),
         ],
         if (procedureSlug != null) ...[

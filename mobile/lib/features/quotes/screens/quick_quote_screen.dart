@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_repository.dart';
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/case_repository.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/repositories/document_repository.dart';
@@ -158,7 +159,9 @@ class _QuickQuoteScreenState extends ConsumerState<QuickQuoteScreen> {
     final first = _hospitals.isEmpty ? null : ref.watch(hospitalDetailProvider(_hospitals.first)).value;
     final procedureId = procedure?.id ?? _procedureId;
     final docs = ref.watch(documentsProvider((caseId: null, kind: null))).value ?? const <AppDocument>[];
-    final allDocs = {for (final d in [..._uploaded, ...docs]) d.id: d}.values.toList();
+    final allDocs = {
+      for (final d in [..._uploaded, ...docs]) d.id: d,
+    }.values.toList();
     final names = [
       for (final id in _hospitals) ref.watch(hospitalDetailProvider(id)).value?.name ?? '',
     ].where((n) => n.isNotEmpty).toList();
@@ -196,7 +199,11 @@ class _QuickQuoteScreenState extends ConsumerState<QuickQuoteScreen> {
             l10n.quickQuoteHospitals(_hospitals.length, CaseRepository.maxQuoteHospitals),
             padding: const EdgeInsets.only(top: 16, bottom: 8),
           ),
-          for (final id in _hospitals) _HospitalRow(hospitalId: id, onRemove: _hospitals.length > 1 ? () => setState(() => _hospitals.remove(id)) : null),
+          for (final id in _hospitals)
+            _HospitalRow(
+              hospitalId: id,
+              onRemove: _hospitals.length > 1 ? () => setState(() => _hospitals.remove(id)) : null,
+            ),
           if (_hospitals.length < CaseRepository.maxQuoteHospitals && widget.doctorId == null)
             Align(
               alignment: AlignmentDirectional.centerStart,
@@ -269,7 +276,9 @@ class _QuickQuoteScreenState extends ConsumerState<QuickQuoteScreen> {
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
             title: Text(
-              names.length <= 1 ? l10n.quoteConsent(names.isEmpty ? '' : names.first) : l10n.quickQuoteConsentMany(names.join(', ')),
+              names.length <= 1
+                  ? l10n.quoteConsent(names.isEmpty ? '' : names.first)
+                  : l10n.quickQuoteConsentMany(names.join(', ')),
               style: context.text.bodySmall,
             ),
           ),
@@ -310,7 +319,10 @@ class _HospitalRow extends ConsumerWidget {
                 if (h?.nextAvailableAdmission != null || h?.nextAvailableConsultation != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: EarliestDates(consultation: h!.nextAvailableConsultation, admission: h.nextAvailableAdmission),
+                    child: EarliestDates(
+                      consultation: h!.nextAvailableConsultation,
+                      admission: h.nextAvailableAdmission,
+                    ),
                   ),
               ],
             ),
@@ -364,7 +376,11 @@ class _HospitalPickerState extends ConsumerState<_HospitalPicker> {
                   const SizedBox(height: 8),
                   TextField(
                     onChanged: (v) => setState(() => _q = v.trim()),
-                    decoration: InputDecoration(prefixIcon: const Icon(Icons.search_rounded), hintText: l10n.quickQuoteSearchHospitals, isDense: true),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      hintText: l10n.quickQuoteSearchHospitals,
+                      isDense: true,
+                    ),
                   ),
                 ],
               ],

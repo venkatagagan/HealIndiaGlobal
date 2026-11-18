@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/aftercare_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
@@ -187,9 +188,11 @@ class _CheckinFormScreenState extends ConsumerState<CheckinFormScreen> {
             maxLength: 2000,
             decoration: InputDecoration(labelText: l10n.aftercareQNotes, alignLabelWithHint: true),
           ),
-          if (_error != null)
-            Text(_error!, style: context.text.bodySmall?.copyWith(color: AppColors.danger)),
-          Text(l10n.aftercareEmergencyNote, style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary)),
+          if (_error != null) Text(_error!, style: context.text.bodySmall?.copyWith(color: AppColors.danger)),
+          Text(
+            l10n.aftercareEmergencyNote,
+            style: context.text.labelSmall?.copyWith(color: context.palette.textSecondary),
+          ),
         ],
       ),
     );
