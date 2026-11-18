@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { AlertTriangle, CalendarClock, ClipboardCheck, HeartPulse, History, Video } from 'lucide-react';
-import { casesApi, errorMessage, type CasePatientRef } from '@hig/shared/api';
+import { aftercareApi, casesApi, errorMessage, isApiError, type CasePatientRef } from '@hig/shared/api';
 import {
   Badge,
   Button,
@@ -13,14 +13,22 @@ import {
   EmptyState,
   ErrorState,
   FormField,
+  Input,
   LoadingBlock,
   Modal,
   PageHeader,
   Select,
   Textarea,
 } from '../../components/ui';
-import { phase1Api, type CheckinOut, type CheckinSubmitIn, type FollowupOut, type MedicationAdherence } from '../../lib/phase1Api';
-import { cn, formatDate, formatDateTime, useDocumentTitle } from '../../lib/shared';
+import {
+  phase1Api,
+  type AftercareCase,
+  type CheckinOut,
+  type CheckinSubmitIn,
+  type FollowupOut,
+  type MedicationAdherence,
+} from '../../lib/phase1Api';
+import { cn, formatDate, formatDateTime, formatTime, isoDateFromToday, useDocumentTitle } from '../../lib/shared';
 import { useAppTranslation, type AppT } from '../../i18n';
 
 const aftercareKey = ['aftercare'] as const;
@@ -52,6 +60,7 @@ export function AftercarePage() {
   }, [treated.data]);
   const [answering, setAnswering] = useState<CheckinOut | null>(null);
   const [history, setHistory] = useState<{ caseId: string; caseNumber: string } | null>(null);
+  const [followupFor, setFollowupFor] = useState<AftercareCase | null>(null);
 
   if (query.isPending) return <LoadingBlock />;
   if (query.isError) return <ErrorState error={query.error} onRetry={() => void query.refetch()} />;
@@ -148,6 +157,11 @@ export function AftercarePage() {
                       ? t('aftercare.dischargedUntil', { discharged: formatDate(c.discharged_on), until: formatDate(c.aftercare_until) })
                       : t('aftercare.inTreatment')}
                   </p>
+                  {(!c.aftercare_until || c.aftercare_until.slice(0, 10) >= isoDateFromToday(0)) && (
+                    <Button size="sm" variant="outline" className="mt-1" icon={<Video className="h-4 w-4" aria-hidden />} onClick={() => setFollowupFor(c)}>
+                      {t('aftercare.requestFollowup.open')}
+                    </Button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -157,6 +171,11 @@ export function AftercarePage() {
 
       <CheckinDialog checkin={answering} patient={answering ? patientOf(answering.case_id)?.full_name : undefined} onClose={() => setAnswering(null)} />
       <HistoryDialog target={history} onClose={() => setHistory(null)} />
+      <FollowupRequestDialog
+        target={followupFor}
+        patient={followupFor ? patientOf(followupFor.case_id)?.full_name : undefined}
+        onClose={() => setFollowupFor(null)}
+      />
     </div>
   );
 }
@@ -362,6 +381,115 @@ function HistoryDialog({ target, onClose }: { target: { caseId: string; caseNumb
   return (
     <Modal open={target !== null} onClose={onClose} title={t('aftercare.historyTitle')} description={target?.caseNumber}>
       {body}
+    </Modal>
+  );
+}
+
+const FOLLOWUP_TIMES = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+/**
+ * Ask for another video follow-up for a managed patient (`POST /consultations`, kind `followup`, free): allowed
+ * during treatment and within the aftercare window after discharge; the hospital confirms the time.
+ */
+function FollowupRequestDialog({ target, patient, onClose }: { target: AftercareCase | null; patient?: string; onClose: () => void }) {
+  const { t } = useAppTranslation();
+  const queryClient = useQueryClient();
+  const ids = { date: useId(), time: useId(), notes: useId() };
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState(FOLLOWUP_TIMES[1] as string);
+  const [notes, setNotes] = useState('');
+  useEffect(() => {
+    if (target) {
+      setDate('');
+      setNotes('');
+    }
+  }, [target]);
+  const preferredAt = date ? `${date}T${time}:00+05:30` : null;
+  const request = useMutation({
+    mutationFn: () =>
+      aftercareApi.requestFollowup({
+        case_id: target!.case_id,
+        doctor_id: target!.doctor?.id ?? null,
+        preferred_at: preferredAt,
+        ...(notes.trim() ? { notes: notes.trim() } : {}),
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: aftercareKey });
+      void queryClient.invalidateQueries({ queryKey: ['consultations'] });
+      toast.success(t('aftercare.requestFollowup.sent'));
+      onClose();
+    },
+    onError: (error) => {
+      const code = isApiError(error) ? error.code : '';
+      toast.error(
+        code === 'consultation_exists'
+          ? t('aftercare.requestFollowup.errors.exists')
+          : code === 'aftercare_window_closed'
+            ? t('aftercare.requestFollowup.errors.windowClosed')
+            : code === 'followup_not_available'
+              ? t('aftercare.requestFollowup.errors.notAvailable')
+              : errorMessage(error),
+      );
+    },
+  });
+  const maxDate = target?.aftercare_until ? target.aftercare_until.slice(0, 10) : undefined;
+
+  return (
+    <Modal
+      open={target !== null}
+      onClose={onClose}
+      title={t('aftercare.requestFollowup.title')}
+      description={
+        target
+          ? t('aftercare.requestFollowup.description', {
+              patient: patient ?? target.case_number,
+              hospital: target.hospital.name,
+              doctor: target.doctor?.full_name ?? t('aftercare.requestFollowup.treatingDoctor'),
+            })
+          : undefined
+      }
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose} disabled={request.isPending}>
+            {t('aftercare.requestFollowup.cancel')}
+          </Button>
+          <Button loading={request.isPending} onClick={() => request.mutate()} icon={<Video className="h-4 w-4" aria-hidden />}>
+            {t('aftercare.requestFollowup.submit')}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField label={t('aftercare.requestFollowup.date')} htmlFor={ids.date} hint={t('aftercare.requestFollowup.dateHint')}>
+            <Input
+              id={ids.date}
+              type="date"
+              min={isoDateFromToday(1)}
+              max={maxDate}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </FormField>
+          <FormField
+            label={t('aftercare.requestFollowup.time')}
+            htmlFor={ids.time}
+            hint={preferredAt ? t('aftercare.requestFollowup.localTime', { time: formatTime(preferredAt) }) : undefined}
+          >
+            <Select id={ids.time} value={time} onChange={(e) => setTime(e.target.value)} disabled={!date}>
+              {FOLLOWUP_TIMES.map((v) => (
+                <option key={v} value={v}>
+                  {t('aftercare.requestFollowup.istTime', { time: v })}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+        </div>
+        <FormField label={t('aftercare.requestFollowup.notes')} htmlFor={ids.notes} hint={t('aftercare.requestFollowup.notesHint')}>
+          <Textarea id={ids.notes} rows={4} maxLength={4000} value={notes} onChange={(e) => setNotes(e.target.value)} />
+        </FormField>
+        <p className="text-xs text-muted">{t('aftercare.requestFollowup.free')}</p>
+      </div>
     </Modal>
   );
 }

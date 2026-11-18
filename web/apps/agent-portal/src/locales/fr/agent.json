@@ -1438,6 +1438,28 @@
       "submit": "Envoyer les réponses",
       "sent": "Bilan envoyé.",
       "sentFlagged": "Bilan envoyé. L'hôpital et le coordinateur ont été alertés."
+    },
+    "requestFollowup": {
+      "open": "Demander un suivi",
+      "title": "Demander une consultation vidéo de suivi",
+      "description": "Pour {{patient}} avec {{doctor}}, {{hospital}}. L'hôpital confirme l'heure et envoie le lien vidéo.",
+      "treatingDoctor": "le médecin traitant",
+      "date": "Date souhaitée",
+      "dateHint": "Pendant la période de suivi.",
+      "time": "Heure (heure de l'Inde)",
+      "istTime": "{{time}} heure de l'Inde",
+      "localTime": "Soit {{time}} dans votre fuseau horaire.",
+      "notes": "Qu'est-ce que le médecin doit examiner ?",
+      "notesHint": "Symptômes depuis la sortie, cicatrice, médicaments, résultats d'examens.",
+      "free": "Les suivis post-traitement font partie du forfait : pas d'honoraires de consultation.",
+      "submit": "Demander le suivi",
+      "cancel": "Annuler",
+      "sent": "Suivi demandé. L'hôpital confirmera un horaire.",
+      "errors": {
+        "exists": "Un suivi avec ce médecin est déjà en cours pour ce patient.",
+        "windowClosed": "La période de suivi de ce dossier est terminée.",
+        "notAvailable": "Les suivis ne sont possibles que pendant et après le traitement."
+      }
     }
   },
   "teleconsult": {

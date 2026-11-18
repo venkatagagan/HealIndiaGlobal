@@ -1438,6 +1438,28 @@
       "submit": "Send answers",
       "sent": "Check-in sent.",
       "sentFlagged": "Check-in sent. The hospital and the coordinator have been alerted."
+    },
+    "requestFollowup": {
+      "open": "Request follow-up",
+      "title": "Request a follow-up video consultation",
+      "description": "For {{patient}} with {{doctor}}, {{hospital}}. The hospital confirms the time and sends the video link.",
+      "treatingDoctor": "the treating doctor",
+      "date": "Preferred date",
+      "dateHint": "Within the aftercare period.",
+      "time": "Time (India time)",
+      "istTime": "{{time}} India time",
+      "localTime": "That is {{time}} in your time zone.",
+      "notes": "What should the doctor look at?",
+      "notesHint": "Symptoms since discharge, wound, medicines, test results.",
+      "free": "Aftercare follow-ups are part of the treatment package: no consultation fee.",
+      "submit": "Request follow-up",
+      "cancel": "Cancel",
+      "sent": "Follow-up requested. The hospital will confirm a time.",
+      "errors": {
+        "exists": "A follow-up with this doctor is already open for this patient.",
+        "windowClosed": "The aftercare period for this case has ended.",
+        "notAvailable": "Follow-ups are available during and after treatment only."
+      }
     }
   },
   "teleconsult": {
