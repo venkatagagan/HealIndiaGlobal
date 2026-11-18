@@ -31,6 +31,7 @@ import type {
   HospitalDetail,
   Loaded,
   Procedure,
+  ReviewPage,
   Specialty,
 } from './types';
 
@@ -292,6 +293,29 @@ export const getDoctor = cache(async (slug: string): Promise<Loaded<DoctorDetail
     if (requireLiveData()) refuseFallback(`doctor ${slug}`, err);
     if (!fallbackAllowed()) throw err;
     return { data: fallbackCatalog().doctors.find((d) => d.slug === slug) ?? null, source: 'fallback' };
+  }
+});
+
+// ----------------------------------------------------------------------------------------------- reviews
+const EMPTY_REVIEWS: ReviewPage = { items: [], total: 0, page: 1, page_size: 0, pages: 0 };
+
+/** Published reviews, newest first (GET /hospitals/{slug}/reviews). Empty when the API is unavailable. */
+export const getHospitalReviews = cache(async (slug: string, page = 1, pageSize = 10): Promise<ReviewPage> => {
+  try {
+    const r = await apiGet<ReviewPage>(`/hospitals/${enc(slug)}/reviews?page=${page}&page_size=${pageSize}`, ['reviews', `hospital:${slug}`]);
+    return { ...EMPTY_REVIEWS, ...r, items: r.items ?? [] };
+  } catch {
+    return EMPTY_REVIEWS;
+  }
+});
+
+/** Published reviews naming a doctor, newest first (GET /doctors/{id}/reviews). Empty when the API is unavailable. */
+export const getDoctorReviews = cache(async (doctorId: string, doctorSlug: string, page = 1, pageSize = 10): Promise<ReviewPage> => {
+  try {
+    const r = await apiGet<ReviewPage>(`/doctors/${enc(doctorId)}/reviews?page=${page}&page_size=${pageSize}`, ['reviews', `doctor:${doctorSlug}`]);
+    return { ...EMPTY_REVIEWS, ...r, items: r.items ?? [] };
+  } catch {
+    return EMPTY_REVIEWS;
   }
 });
 

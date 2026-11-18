@@ -4,7 +4,7 @@ import type { Dictionary } from '@/i18n';
 import { fmt, formatDate, plural } from '@/i18n/format';
 import { href, routes } from '@/lib/routes';
 import { toNumber } from '@/lib/money';
-import type { DoctorCard as Doctor, FxTable, HospitalCard as Hospital, Procedure, Specialty } from '@/lib/data/types';
+import type { AccreditationBadge, DoctorCard as Doctor, FxTable, HospitalCard as Hospital, Procedure, Review, Specialty } from '@/lib/data/types';
 import { PriceRange } from './price';
 import { SpecialtyIcon, specialtyTint, specialtyTone } from './specialty-icon';
 import { Badge } from './ui';
@@ -155,26 +155,148 @@ export function Rating({ t, value, count }: { t: Dictionary; value: number | str
   );
 }
 
-export function AccreditationBadges({ t, items, dark = false }: { t: Dictionary; items: string[]; dark?: boolean }) {
-  if (!items.length) return null;
+/** Lower-case accreditation keys that a platform admin has verified (certificate seen, still valid). */
+function verifiedKeys(verified: AccreditationBadge[] | undefined): Map<string, AccreditationBadge> {
+  return new Map((verified ?? []).map((v) => [v.body.trim().toLowerCase(), v]));
+}
+
+/**
+ * Accreditation chips. Admin-verified accreditations carry a check mark (and are listed first); accreditations the
+ * hospital only declared are plain chips labelled "Declared by the hospital".
+ */
+export function AccreditationBadges({
+  t,
+  items,
+  verified,
+  dark = false,
+}: {
+  t: Dictionary;
+  items: string[];
+  verified?: AccreditationBadge[];
+  dark?: boolean;
+}) {
+  const checked = verifiedKeys(verified);
+  const keys = [...new Set([...checked.keys(), ...items.map((a) => a.trim().toLowerCase())])].filter(Boolean);
+  if (!keys.length) return null;
+  keys.sort((a, b) => Number(checked.has(b)) - Number(checked.has(a)));
   return (
     <ul className="flex flex-wrap gap-1.5" aria-label={t.hospitals.accreditationsTitle}>
-      {items.map((a) => {
-        const key = a.toLowerCase() as keyof Dictionary['common']['accreditations'];
-        const label = t.common.accreditations[key] ?? a.toUpperCase();
-        const title = t.common.accreditationNames[key] ?? label;
+      {keys.map((key) => {
+        const k = key as keyof Dictionary['common']['accreditations'];
+        const label = t.common.accreditations[k] ?? key.toUpperCase();
+        const name = t.common.accreditationNames[k] ?? label;
+        const isVerified = checked.has(key);
         return (
-          <li key={a}>
-            <Badge tone={dark ? 'onDark' : a.toLowerCase() === 'jci' ? 'primary' : 'green'} className="uppercase">
-              <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
-              <abbr title={title} className="no-underline">
+          <li key={key}>
+            <Badge tone={dark ? 'onDark' : isVerified ? (key === 'jci' ? 'primary' : 'green') : 'slate'} className="uppercase">
+              {isVerified ? <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" /> : null}
+              <abbr title={`${name} - ${isVerified ? t.trust.verifiedBadge : t.trust.selfDeclared}`} className="no-underline">
                 {label}
               </abbr>
+              <span className="sr-only"> ({isVerified ? t.trust.verifiedBadge : t.trust.selfDeclared})</span>
             </Badge>
           </li>
         );
       })}
     </ul>
+  );
+}
+
+/** Hospital page: verified accreditations (body + valid until) shown apart from self-declared ones. */
+export function HospitalAccreditations({ t, items, verified }: { t: Dictionary; items: string[]; verified?: AccreditationBadge[] }) {
+  const checked = verifiedKeys(verified);
+  const declared = [...new Set(items.map((a) => a.trim().toLowerCase()))].filter((a) => a && !checked.has(a));
+  const nameOf = (key: string) => {
+    const k = key as keyof Dictionary['common']['accreditations'];
+    return { label: t.common.accreditations[k] ?? key.toUpperCase(), name: t.common.accreditationNames[k] ?? key.toUpperCase() };
+  };
+  if (!checked.size && !declared.length) return <p className="text-sm text-slate-600">{t.hospitals.noAccreditations}</p>;
+  return (
+    <div className="space-y-3">
+      {checked.size ? (
+        <div>
+          <p className="text-xs font-semibold tracking-wide text-health-800 uppercase">{t.trust.verifiedAccreditations}</p>
+          <ul className="mt-1.5 space-y-1.5">
+            {[...checked.entries()].map(([key, v]) => {
+              const { label, name } = nameOf(key);
+              return (
+                <li key={key} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                  <Badge tone={key === 'jci' ? 'primary' : 'green'} className="uppercase">
+                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    <abbr title={name} className="no-underline">
+                      {label}
+                    </abbr>
+                  </Badge>
+                  {v.valid_until ? <span className="text-slate-600">{fmt(t.trust.validUntil, { date: formatDate(v.valid_until) })}</span> : null}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-1.5 text-xs text-slate-600">{t.trust.verifiedAccreditationsNote}</p>
+        </div>
+      ) : null}
+      {declared.length ? (
+        <div>
+          <p className="text-xs font-semibold tracking-wide text-slate-700 uppercase">{t.trust.selfDeclared}</p>
+          <ul className="mt-1.5 flex flex-wrap gap-1.5">
+            {declared.map((key) => {
+              const { label, name } = nameOf(key);
+              return (
+                <li key={key}>
+                  <Badge tone="slate" className="uppercase">
+                    <abbr title={name} className="no-underline">
+                      {label}
+                    </abbr>
+                  </Badge>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-1.5 text-xs text-slate-600">{t.trust.selfDeclaredNote}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** "Registration verified" (medical registration checked by a platform admin against the official register). */
+export function RegistrationVerified({ t, verified }: { t: Dictionary; verified?: boolean }) {
+  if (!verified) return null;
+  return (
+    <Badge tone="green">
+      <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+      {t.trust.registrationVerified}
+    </Badge>
+  );
+}
+
+/** One published review: stars, text, author, date and "Verified patient · <treatment>" when applicable. */
+export function ReviewItem({ t, review }: { t: Dictionary; review: Review }) {
+  const stars = Math.max(0, Math.min(5, Math.round(review.rating)));
+  const author = review.patient_name?.trim() || review.author_name?.trim() || null;
+  const when = review.published_at ?? review.created_at;
+  return (
+    <article className="h-full rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-amber-600">
+          <span aria-hidden="true">{'★'.repeat(stars)}</span>
+          <span className="sr-only">{fmt(t.common.rating, { rating: stars })}</span>
+        </p>
+        {review.verified_patient ? (
+          <Badge tone="green">
+            <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+            {review.treatment_name ? fmt(t.trust.verifiedPatientTreatment, { treatment: review.treatment_name }) : t.trust.verifiedPatient}
+          </Badge>
+        ) : null}
+      </div>
+      {review.title ? <h3 className="mt-2 font-semibold">{review.title}</h3> : null}
+      {review.body ? <p className="mt-1 text-sm whitespace-pre-line text-slate-700">{review.body}</p> : null}
+      {author || when ? (
+        <p className="mt-3 text-xs text-slate-600">
+          {[author, when ? formatDate(when) : null].filter(Boolean).join(' · ')}
+        </p>
+      ) : null}
+    </article>
   );
 }
 
@@ -264,7 +386,7 @@ export function HospitalCard({
         </h3>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Rating t={t} value={hospital.rating_avg} count={hospital.rating_count} />
-          <AccreditationBadges t={t} items={hospital.accreditations} />
+          <AccreditationBadges t={t} items={hospital.accreditations} verified={hospital.accreditations_verified} />
         </div>
         {hospital.specialties.length ? (
           <p className="text-sm text-slate-600">
@@ -320,6 +442,11 @@ export function DoctorCard({ t, doctor }: { t: Dictionary; doctor: Doctor }) {
             </Link>
           </h3>
           {doctor.specialty ? <p className="text-sm text-primary-700">{doctor.specialty.name}</p> : null}
+          {doctor.registration_verified ? (
+            <p className="mt-1">
+              <RegistrationVerified t={t} verified />
+            </p>
+          ) : null}
           {doctor.hospital ? (
             <p className="mt-0.5 text-sm text-slate-600">
               {doctor.hospital.name}, {doctor.hospital.city}

@@ -4,13 +4,13 @@ import { notFound } from 'next/navigation';
 import { ArrowRight, Building2, CalendarDays, ChevronDown, Languages, MapPin, Plane } from 'lucide-react';
 import { getDictionary } from '@/i18n';
 import { fmt, formatList, formatNumber, plural, intlLocale } from '@/i18n/format';
-import { getFxRates, getHospital, getHospitals, getProcedures } from '@/lib/data/catalog';
+import { getFxRates, getHospital, getHospitalReviews, getHospitals, getProcedures } from '@/lib/data/catalog';
 import { formatMoney, toNumber } from '@/lib/money';
-import { hospitalLd } from '@/lib/jsonld';
+import { hospitalLd, publishedRating } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata, shortName, truncate } from '@/lib/seo';
 import { PageHero } from '@/components/page-hero';
-import { AccreditationBadges, DoctorCard, EarliestAvailability, Rating } from '@/components/cards';
+import { DoctorCard, EarliestAvailability, HospitalAccreditations, Rating, ReviewItem } from '@/components/cards';
 import { AssessmentCta } from '@/components/cta';
 import { JsonLd } from '@/components/json-ld';
 import { PriceRange } from '@/components/price';
@@ -62,15 +62,18 @@ export default async function HospitalPage({ params }: Props) {
   const h = loaded.data;
   if (!h) notFound();
   const intl = intlLocale();
-  const [fx, procedures] = await Promise.all([getFxRates(), getProcedures()]);
+  // Up to 100 published reviews: the total for "See all reviews" and, when complete, the JSON-LD rating.
+  const [fx, procedures, reviewPage] = await Promise.all([getFxRates(), getProcedures(), getHospitalReviews(h.slug, 1, 100)]);
+  const rating = loaded.source === 'api' ? publishedRating(reviewPage, h.rating_avg, h.rating_count) : null;
+  const reviews = reviewPage.items.length ? reviewPage.items : h.reviews;
   const specialtyOf = new Map(procedures.data.map((p) => [p.slug, p.specialty.slug]));
   const path = routes.hospital(h.slug);
   const airport = toNumber(h.airport_distance_km);
 
   return (
     <>
-      {/* AggregateRating only with live data AND the patient reviews visible on this page (Google review-snippet policy). */}
-      <JsonLd data={hospitalLd(h, href(path), loaded.source === 'api' && h.reviews.length > 0)} />
+      {/* AggregateRating only from published reviews (live data), which this page links to (review-snippet policy). */}
+      <JsonLd data={hospitalLd(h, href(path), rating)} />
       <PageHero
         crumbs={[
           { name: t.common.home, path: href(routes.home) },
@@ -123,7 +126,7 @@ export default async function HospitalPage({ params }: Props) {
             <div className="mt-4 border-t border-slate-100 pt-4">
               <h3 className="text-sm font-semibold text-slate-800">{t.hospitals.accreditationsTitle}</h3>
               <div className="mt-2">
-                {h.accreditations.length ? <AccreditationBadges t={t} items={h.accreditations} /> : <p className="text-sm text-slate-600">{t.hospitals.noAccreditations}</p>}
+                <HospitalAccreditations t={t} items={h.accreditations} verified={h.accreditations_verified} />
               </div>
               <p className="mt-2 text-xs leading-relaxed text-slate-600">{t.hospitals.accreditationVerify}</p>
             </div>
@@ -258,20 +261,27 @@ export default async function HospitalPage({ params }: Props) {
           </section>
         ) : null}
 
-        {h.reviews.length ? (
+        {reviews.length ? (
           <section aria-labelledby="reviews-title">
-            <SectionHeader id="reviews-title" title={t.hospitals.reviewsTitle} />
+            <SectionHeader
+              id="reviews-title"
+              title={t.hospitals.reviewsTitle}
+              action={
+                reviewPage.total > Math.min(6, reviews.length) ? (
+                  <ButtonLink href={href(routes.hospitalReviews(h.slug))} variant="secondary" size="sm">
+                    {plural(t.trust.allReviews, reviewPage.total)}
+                  </ButtonLink>
+                ) : undefined
+              }
+            />
             <ul className="grid gap-4 md:grid-cols-2">
-              {h.reviews.slice(0, 6).map((r) => (
-                <li key={r.id} className="rounded-2xl border border-slate-200 bg-white p-5">
-                  <p className="text-sm font-semibold text-amber-600" aria-label={fmt(t.common.rating, { rating: r.rating })}>
-                    {'★'.repeat(Math.max(0, Math.min(5, Math.round(r.rating))))}
-                  </p>
-                  {r.title ? <h3 className="mt-1 font-semibold">{r.title}</h3> : null}
-                  {r.body ? <p className="mt-1 text-sm text-slate-700">{r.body}</p> : null}
+              {reviews.slice(0, 6).map((r) => (
+                <li key={r.id}>
+                  <ReviewItem t={t} review={r} />
                 </li>
               ))}
             </ul>
+            <p className="mt-4 text-sm text-slate-600">{t.trust.reviewsNote}</p>
           </section>
         ) : null}
 

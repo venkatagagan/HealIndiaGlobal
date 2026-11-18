@@ -217,7 +217,7 @@ export default async function ProcedureCityPage({ params }: Props) {
                 </h3>
                 <p className="text-sm text-slate-600">{[h.city, h.state].filter(Boolean).join(', ')}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
-                  {h.accreditations.length ? <AccreditationBadges t={t} items={h.accreditations} /> : <span className="text-sm text-slate-600">{t.hospitals.noAccreditations}</span>}
+                  {h.accreditations.length ? <AccreditationBadges t={t} items={h.accreditations} verified={h.accreditations_verified} /> : <span className="text-sm text-slate-600">{t.hospitals.noAccreditations}</span>}
                   {h.international_desk ? <Badge tone="blue">{t.common.internationalDesk}</Badge> : null}
                 </div>
                 <dl className="mt-4 space-y-2 text-sm">
