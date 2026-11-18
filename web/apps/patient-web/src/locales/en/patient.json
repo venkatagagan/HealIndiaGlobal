@@ -2116,5 +2116,28 @@
     "addConsent": "Add guardian consent",
     "dobUnknown": "Add your date of birth in your profile so we can check whether consent is needed.",
     "statusHint": "A guardian's consent is needed for patients under 18 before AI reading, voice notes or booking."
+  },
+  "guestUpgrade": {
+    "title": "Create your account",
+    "description": "Keep your screenings, cases and documents, and sign in from any device.",
+    "success": "Your account is ready. Everything you did as a guest has been kept.",
+    "notNow": "Not now",
+    "submit": "Create account",
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 10 characters with a letter and a number.",
+    "confirm": "Confirm password",
+    "bannerTitle": "You are browsing as a guest",
+    "bannerBody": "Create a free account to save your progress, receive quotes from hospitals and book treatment.",
+    "errors": {
+      "name": "Please enter your full name",
+      "email": "Enter a valid email address",
+      "passwordLength": "At least 10 characters",
+      "passwordLetter": "Include at least one letter",
+      "passwordNumber": "Include at least one number",
+      "age": "Please confirm your age",
+      "mismatch": "Passwords do not match"
+    }
   }
 }

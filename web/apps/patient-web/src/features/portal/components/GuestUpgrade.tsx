@@ -6,33 +6,43 @@ import { toast } from 'sonner';
 import { UserPlus } from 'lucide-react';
 import { errorMessage, fieldErrors } from '@hig/shared/api';
 import { AgeAttestation } from '@hig/shared/auth';
+import { useAppTranslation } from '../../../i18n';
 import { useUpgradeGuest } from '../lib/session';
 import { Button, Field, Input, Modal } from '../ui/primitives';
 
+// Validation messages are catalog keys (namespace `patient`), translated when shown.
 const schema = z
   .object({
-    full_name: z.string().trim().min(2, 'Please enter your full name').max(120),
-    email: z.string().trim().email('Enter a valid email address').max(254),
+    full_name: z.string().trim().min(2, 'guestUpgrade.errors.name').max(120),
+    email: z.string().trim().email('guestUpgrade.errors.email').max(254),
     password: z
       .string()
-      .min(10, 'At least 10 characters')
+      .min(10, 'guestUpgrade.errors.passwordLength')
       .max(128)
-      .regex(/[A-Za-z]/, 'Include at least one letter')
-      .regex(/\d/, 'Include at least one number'),
+      .regex(/[A-Za-z]/, 'guestUpgrade.errors.passwordLetter')
+      .regex(/\d/, 'guestUpgrade.errors.passwordNumber'),
     confirm: z.string(),
     /** CG-24: 18 or older (true) / under 18 with a parent or guardian's consent (false) */
     is_adult: z
       .boolean()
       .nullable()
-      .refine((v) => v !== null, 'Please confirm your age'),
+      .refine((v) => v !== null, 'guestUpgrade.errors.age'),
   })
-  .refine((v) => v.password === v.confirm, { path: ['confirm'], message: 'Passwords do not match' });
+  .refine((v) => v.password === v.confirm, { path: ['confirm'], message: 'guestUpgrade.errors.mismatch' });
+
+/** zod messages are catalog keys; server messages (422) are shown as they are */
+function useFieldError() {
+  const { t } = useAppTranslation();
+  return (message: string | undefined) => (message ? (message.startsWith('guestUpgrade.') ? t(message) : message) : undefined);
+}
 
 /** form state: `is_adult` starts unanswered (null); the schema only lets a boolean through */
 type FormInput = z.input<typeof schema>;
 type FormValues = z.output<typeof schema>;
 
 export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useAppTranslation();
+  const fieldError = useFieldError();
   const upgrade = useUpgradeGuest();
   const form = useForm<FormInput, unknown, FormValues>({
     resolver: zodResolver(schema),
@@ -48,7 +58,7 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
         password: values.password,
         is_adult: values.is_adult,
       });
-      toast.success('Your account is ready. Everything you did as a guest has been kept.');
+      toast.success(t('guestUpgrade.success'));
       form.reset();
       onClose();
     } catch (err) {
@@ -68,31 +78,31 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
     <Modal
       open={open}
       onClose={onClose}
-      title="Create your account"
-      description="Keep your screenings, cases and documents, and sign in from any device."
+      title={t('guestUpgrade.title')}
+      description={t('guestUpgrade.description')}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Not now
+            {t('guestUpgrade.notNow')}
           </Button>
           <Button type="submit" form="guest-upgrade-form" loading={upgrade.isPending}>
-            Create account
+            {t('guestUpgrade.submit')}
           </Button>
         </>
       }
     >
       <form id="guest-upgrade-form" onSubmit={onSubmit} className="space-y-4" noValidate>
-        <Field label="Full name" htmlFor="gu-name" error={errors.full_name?.message} required>
+        <Field label={t('guestUpgrade.fullName')} htmlFor="gu-name" error={fieldError(errors.full_name?.message)} required>
           <Input id="gu-name" autoComplete="name" aria-invalid={!!errors.full_name} {...form.register('full_name')} />
         </Field>
-        <Field label="Email" htmlFor="gu-email" error={errors.email?.message} required>
+        <Field label={t('guestUpgrade.email')} htmlFor="gu-email" error={fieldError(errors.email?.message)} required>
           <Input id="gu-email" type="email" autoComplete="email" aria-invalid={!!errors.email} {...form.register('email')} />
         </Field>
         <Field
-          label="Password"
+          label={t('guestUpgrade.password')}
           htmlFor="gu-password"
-          error={errors.password?.message}
-          hint="At least 10 characters with a letter and a number."
+          error={fieldError(errors.password?.message)}
+          hint={t('guestUpgrade.passwordHint')}
           required
         >
           <Input
@@ -103,7 +113,7 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
             {...form.register('password')}
           />
         </Field>
-        <Field label="Confirm password" htmlFor="gu-confirm" error={errors.confirm?.message} required>
+        <Field label={t('guestUpgrade.confirm')} htmlFor="gu-confirm" error={fieldError(errors.confirm?.message)} required>
           <Input
             id="gu-confirm"
             type="password"
@@ -121,7 +131,7 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
               name="gu-is-adult"
               value={field.value}
               onChange={field.onChange}
-              error={errors.is_adult?.message}
+              error={fieldError(errors.is_adult?.message)}
             />
           )}
         />
@@ -131,14 +141,13 @@ export function GuestUpgradeDialog({ open, onClose }: { open: boolean; onClose: 
 }
 
 export function GuestBanner() {
+  const { t } = useAppTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-hero-gradient p-5 text-white shadow-glow-accent sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="font-semibold">You are browsing as a guest</p>
-        <p className="text-sm text-white/85">
-          Create a free account to save your progress, receive quotes from hospitals and book treatment.
-        </p>
+        <p className="font-semibold">{t('guestUpgrade.bannerTitle')}</p>
+        <p className="text-sm text-white/85">{t('guestUpgrade.bannerBody')}</p>
       </div>
       <Button
         variant="secondary"
@@ -146,7 +155,7 @@ export function GuestBanner() {
         icon={<UserPlus className="h-4 w-4" aria-hidden />}
         onClick={() => setOpen(true)}
       >
-        Create account
+        {t('guestUpgrade.submit')}
       </Button>
       <GuestUpgradeDialog open={open} onClose={() => setOpen(false)} />
     </div>

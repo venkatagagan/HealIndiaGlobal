@@ -2116,5 +2116,28 @@
     "body": "Les invités peuvent faire quelques analyses IA gratuites par jour. Créez un compte gratuit pour continuer à utiliser le pré-diagnostic et la lecture des comptes rendus par IA, ou parlez à un coordinateur lors d'un appel gratuit de 15 minutes.",
     "resets": "Vos analyses gratuites reprennent demain.",
     "freeCall": "Appel gratuit de 15 minutes"
+  },
+  "guestUpgrade": {
+    "title": "Créez votre compte",
+    "description": "Conservez vos pré-diagnostics, dossiers et documents, et connectez-vous depuis n'importe quel appareil.",
+    "success": "Votre compte est prêt. Tout ce que vous avez fait en tant qu'invité a été conservé.",
+    "notNow": "Plus tard",
+    "submit": "Créer un compte",
+    "fullName": "Nom complet",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "passwordHint": "Au moins 10 caractères, dont une lettre et un chiffre.",
+    "confirm": "Confirmer le mot de passe",
+    "bannerTitle": "Vous naviguez en tant qu'invité",
+    "bannerBody": "Créez un compte gratuit pour enregistrer votre progression, recevoir des devis des hôpitaux et réserver votre traitement.",
+    "errors": {
+      "name": "Veuillez saisir votre nom complet",
+      "email": "Saisissez une adresse e-mail valide",
+      "passwordLength": "Au moins 10 caractères",
+      "passwordLetter": "Incluez au moins une lettre",
+      "passwordNumber": "Incluez au moins un chiffre",
+      "age": "Veuillez confirmer votre âge",
+      "mismatch": "Les mots de passe ne correspondent pas"
+    }
   }
 }
