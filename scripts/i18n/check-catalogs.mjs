@@ -5,8 +5,12 @@
  *   in English may be "items_zero".."items_many" in Arabic or Russian);
  * - placeholders ({{name}}, {name}) and <0>Trans</0> tags of the English text are kept;
  * - no HTML in any string (overrides and catalogs are rendered as text).
+ * Mobile (Flutter gen-l10n, mobile/lib/l10n/app_<lng>.arb):
+ * - every language has exactly the English message keys, "@@locale" matches the file name, no empty values;
+ * - every placeholder declared in English ("@key".placeholders: {name}, {count, plural, ...}) is used by the
+ *   translation, no other ICU argument is introduced, and braces are balanced.
  *
- *   node scripts/i18n/check-catalogs.mjs            # all web catalogs
+ *   node scripts/i18n/check-catalogs.mjs            # all web catalogs + the mobile ARB files
  *   node scripts/i18n/check-catalogs.mjs web/apps/patient-web/src/locales   # one directory
  */
 import fs from 'node:fs';
@@ -90,6 +94,140 @@ for (const rel of DIRS) {
     }
   }
 }
+
+// ---- mobile ARB files -------------------------------------------------------------------------------
+const ARB_DIR = 'mobile/lib/l10n';
+// ICU argument names used by a message: {name}, {count, plural, one{...} other{...}}, {g, select, ...},
+// {n, number}. A small parser, so plural/select branch texts such as "other{days}" are not mistaken for
+// arguments. ICU quoting ('{') is honoured. Returns null when the message cannot be parsed.
+const icuArguments = (text) => {
+  const names = new Set();
+  let i = 0;
+  const skipSpace = () => {
+    while (i < text.length && /\s/.test(text[i])) i += 1;
+  };
+  const readUntil = (stops) => {
+    const start = i;
+    while (i < text.length && !stops.includes(text[i])) i += 1;
+    return text.slice(start, i).trim();
+  };
+  function message(nested) {
+    while (i < text.length) {
+      const ch = text[i];
+      if (ch === "'" && (text[i + 1] === '{' || text[i + 1] === '}' || text[i + 1] === "'")) {
+        const end = text.indexOf("'", i + 1);
+        i = end === -1 ? text.length : end + 1;
+      } else if (ch === '{') {
+        i += 1;
+        argument();
+      } else if (ch === '}') {
+        if (!nested) throw new Error('unbalanced }');
+        return;
+      } else {
+        i += 1;
+      }
+    }
+    if (nested) throw new Error('unbalanced {');
+  }
+  function argument() {
+    const name = readUntil([',', '}']);
+    if (i >= text.length) throw new Error('unterminated argument');
+    if (!/^[A-Za-z_]\w*$/.test(name)) throw new Error(`bad argument "${name}"`);
+    names.add(name);
+    if (text[i] === '}') {
+      i += 1;
+      return;
+    }
+    i += 1; // ','
+    const type = readUntil([',', '}']);
+    if (text[i] === '}') {
+      i += 1;
+      return;
+    }
+    i += 1; // ','
+    if (!['plural', 'select', 'selectordinal'].includes(type)) {
+      readUntil(['}']); // number/date style
+      i += 1;
+      return;
+    }
+    for (;;) {
+      skipSpace();
+      if (text[i] === '}') {
+        i += 1;
+        return;
+      }
+      const selector = readUntil(['{', '}']);
+      if (text[i] !== '{' || !selector) throw new Error(`bad ${type} branch`);
+      i += 1;
+      message(true);
+      i += 1; // branch '}'
+    }
+  }
+  try {
+    message(false);
+  } catch {
+    return null;
+  }
+  return names;
+};
+
+function checkArb() {
+  const dir = path.join(ROOT, ARB_DIR);
+  const enPath = path.join(dir, 'app_en.arb');
+  if (!fs.existsSync(enPath)) return;
+  const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
+  const messages = Object.keys(en).filter((k) => !k.startsWith('@'));
+  const declared = (key) => Object.keys(en[`@${key}`]?.placeholders ?? {});
+  for (const key of messages) {
+    if (!icuArguments(String(en[key]))) report(`${ARB_DIR}/app_en.arb: invalid ICU message "${key}"`);
+  }
+  for (const lng of LANGS) {
+    const file = `app_${lng}.arb`;
+    const target = path.join(dir, file);
+    if (!fs.existsSync(target)) {
+      report(`${ARB_DIR}/${file}: missing file`);
+      continue;
+    }
+    let data;
+    try {
+      data = JSON.parse(fs.readFileSync(target, 'utf8'));
+    } catch (error) {
+      report(`${ARB_DIR}/${file}: invalid JSON (${error.message})`);
+      continue;
+    }
+    if (data['@@locale'] !== undefined && data['@@locale'] !== lng) {
+      report(`${ARB_DIR}/${file}: "@@locale" is "${data['@@locale']}", expected "${lng}"`);
+    }
+    const keys = new Set(Object.keys(data).filter((k) => !k.startsWith('@')));
+    for (const key of messages) if (!keys.has(key)) report(`${ARB_DIR}/${file}: missing "${key}"`);
+    for (const key of keys) {
+      if (!(key in en)) {
+        report(`${ARB_DIR}/${file}: extra key "${key}"`);
+        continue;
+      }
+      const text = data[key];
+      if (typeof text !== 'string' || !text.trim()) {
+        report(`${ARB_DIR}/${file}: empty "${key}"`);
+        continue;
+      }
+      const got = icuArguments(text);
+      if (!got) {
+        report(`${ARB_DIR}/${file}: invalid ICU message "${key}" (braces / plural / select syntax)`);
+        continue;
+      }
+      const allowed = new Set([...declared(key), ...(icuArguments(String(en[key])) ?? [])]);
+      for (const name of declared(key)) {
+        if (!got.has(name)) report(`${ARB_DIR}/${file}: lost placeholder {${name}} in "${key}"`);
+      }
+      for (const name of got) {
+        if (!allowed.has(name)) report(`${ARB_DIR}/${file}: unknown placeholder {${name}} in "${key}"`);
+      }
+    }
+  }
+}
+
+// The mobile check runs with the default (no-argument) invocation used by CI.
+if (process.argv.slice(2).length === 0) checkArb();
 
 if (problems) {
   console.error(`\n${problems} catalog problem(s)`);
