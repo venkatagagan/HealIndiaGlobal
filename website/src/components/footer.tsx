@@ -4,7 +4,8 @@ import type { Dictionary } from '@/i18n';
 import { fmt } from '@/i18n/format';
 import { href, routes } from '@/lib/routes';
 import type { Specialty } from '@/lib/data/types';
-import { getSiteConfig } from '@/lib/site-config';
+import { getPrivacyContact, getSiteConfig } from '@/lib/site-config';
+import { PRIVACY_CONTACT_ID } from './privacy-contact';
 import { assessmentUrl } from '@/config/site';
 import { BrandIcon, socialOf } from './brand-icons';
 import { FooterColumns, type FooterColumn } from './footer-columns';
@@ -13,7 +14,7 @@ import { Logo } from './logo';
 export async function Footer({ t, specialties }: { t: Dictionary; specialties: Specialty[] }) {
   const f = t.footer;
   // Contact, social links, credit and disclaimer: site settings (System -> Website & contact), env as fallback.
-  const site = await getSiteConfig();
+  const [site, privacyContact] = await Promise.all([getSiteConfig(), getPrivacyContact()]);
   const numbers = site.contact;
   const email = site.contact.email;
   // GA4 sets cookies after consent; plausible/off do not.
@@ -61,6 +62,8 @@ export async function Footer({ t, specialties }: { t: Dictionary; specialties: S
     { href: href(routes.terms), label: f.terms },
     { href: href(routes.privacy), label: f.privacy },
     { href: href(routes.refunds), label: f.refunds },
+    // Grievance Officer / DPO (DPDP Rule 14): listed once the contact is published (GET /site-config/privacy-contact).
+    ...(privacyContact ? [{ href: `${href(routes.privacy)}#${PRIVACY_CONTACT_ID}`, label: t.privacyContact.footerLink }] : []),
   ];
   const contactCls = 'inline-flex items-center gap-2 text-slate-300 transition-colors hover:text-white';
 

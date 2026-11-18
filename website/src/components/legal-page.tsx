@@ -9,6 +9,8 @@ import { PageHero } from './page-hero';
 import { InlineNote } from './data-notice';
 import { MarkdownContent } from './markdown';
 import Link from '@/components/link';
+import { getPrivacyContact } from '@/lib/site-config';
+import { PRIVACY_CONTACT_ID, PrivacyContactCard } from './privacy-contact';
 
 const PATHS: Record<LegalDoc, string> = { terms: routes.terms, privacy: routes.privacy, refunds: routes.refunds };
 
@@ -33,6 +35,7 @@ export async function LegalPage({ doc }: { doc: LegalDoc }) {
   const t = await getDictionary();
   const legal = legalDocument(doc);
   const title = t.legal[doc].title;
+  const privacyContact = doc === 'privacy' ? await getPrivacyContact() : null;
   return (
     <>
       <PageHero
@@ -66,6 +69,7 @@ export async function LegalPage({ doc }: { doc: LegalDoc }) {
             </ul>
           </>
         )}
+        {privacyContact ? <PrivacyContactCard t={t} contact={privacyContact} id={PRIVACY_CONTACT_ID} /> : null}
         {doc === 'privacy' ? (
           <p className="max-w-3xl rounded-2xl border border-slate-200 bg-surface p-5 text-slate-700">
             {t.legal.deleteAccountNote}{' '}
