@@ -90,7 +90,7 @@ Remove-Item Env:PGPASSWORD             # when finished
 ```powershell
 cd C:\NewProjects\ForHosp\backend
 # one-time (already done by backend-core): C:\NewProjects\python313\python.exe -m venv .venv
-#                                          .venv\Scripts\python -m pip install -e ".[dev]"
+#                                          .venv\Scripts\python -m pip install -r requirements-dev.lock.txt; pip install --no-deps -e .
 .venv\Scripts\python -m alembic upgrade head                           # schema
 .venv\Scripts\python -m scripts.seed                                   # demo data (§7)
 .venv\Scripts\python -m uvicorn app.main:app --reload --port 8000      # API (+ embedded worker)

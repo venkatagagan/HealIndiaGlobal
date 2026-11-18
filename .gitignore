@@ -139,3 +139,6 @@ docs/demo/.cache/
 crash.log
 # Provider locks are generated per platform; regenerate with `terraform providers lock -platform=...`.
 .terraform.lock.hcl
+
+# --- Local Whisper models (WHISPER_MODEL_DIR) -------------------------------
+backend/.models/

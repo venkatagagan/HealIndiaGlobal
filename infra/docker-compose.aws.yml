@@ -70,7 +70,9 @@ services:
       - storage:/app/storage
       # Whisper model cache (downloaded on the first voice note; survives deploys).
       - whisper-models:/app/.models
-    # Whisper small (int8) needs ~1 GiB while transcribing; swap absorbs bursts.
+    # Multilingual Whisper "small" (int8, default) needs ~1 GiB while transcribing; swap absorbs bursts.
+    # Upgrade to "medium" (better accuracy for ar/bn/ru accents, ~2.5 GiB, ~3x slower on 2 vCPU): set
+    # whisper_model = "medium" in Terraform and raise this limit to 4g (api 1.5g) - or move to t4g.xlarge.
     mem_limit: 3g
     memswap_limit: 5g
 

@@ -10,7 +10,8 @@
 #   5. migrations: `alembic upgrade head` as the migrator role (one-off `migrate` container)
 #   6. docker compose up -d, then wait until api, web, website and edge are healthy and
 #      https://<domain>/health/ready answers through the edge
-#   7. success: /opt/hig/current -> this release; first run: Let's Encrypt certificate; prune old images
+#   7. success: /opt/hig/current -> this release; first run: Let's Encrypt certificate; Whisper model
+#      prefetch; website revalidation; prune old images
 #      failure after step 5: automatic rollback to the previous release + image tag (same .env as before)
 #
 # Migrations are not rolled back: keep them expand-only (old code must run on the new schema), as for ECS.
@@ -201,6 +202,9 @@ if [ ! -s "$HIG_CERTS_DIR/fullchain.pem" ] \
   || ! openssl x509 -in "$HIG_CERTS_DIR/fullchain.pem" -noout -issuer 2>/dev/null | grep -qi "let's encrypt"; then
   bash "$here/certs.sh" || log "WARNING: certificate not issued yet (DNS not pointing here?); the timer retries"
 fi
+
+# Whisper model for voice intake: download once into the whisper-models volume (no-op afterwards).
+compose "$REL" exec -T worker python -m scripts.prefetch_whisper_model   || log "WARNING: Whisper model not prefetched; the worker downloads it on the first voice note"
 
 # Website: refresh the ISR pages built without API access (best effort).
 compose "$REL" exec -T website node -e "fetch('http://127.0.0.1:3000/api/revalidate',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+process.env.REVALIDATE_SECRET},body:JSON.stringify({tags:['catalog']})}).then(r=>console.log('revalidate',r.status)).catch(()=>{})" || true

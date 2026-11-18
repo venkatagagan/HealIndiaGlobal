@@ -108,7 +108,7 @@ Three tests depend on time passing and therefore on seed data; they **skip** (wi
 
 ## CI notes
 
-- Start Postgres, `pip install -e "backend[dev]"`, `alembic upgrade head`, `python -m scripts.seed`, then the API
+- Start Postgres, `pip install -r backend/requirements-dev.lock.txt && pip install --no-deps -e backend`, `alembic upgrade head`, `python -m scripts.seed`, then the API
   in the background with `RATE_LIMIT_ENABLED=false RUN_WORKER_IN_API=true PAYMENT_GATEWAYS_ENABLED=mock,bank_transfer`.
 - Portals: either `npm run dev -w apps/<app>` (simplest) or production builds served by `vite preview` on the same
   ports. **Preview builds must be built with `VITE_ENABLE_MOCK_PAYMENTS=true`**, otherwise the patient payment page

@@ -134,7 +134,8 @@ cd C:\NewProjects\ForHosp
 
 # 1. Backend virtualenv + dependencies (once)
 C:\NewProjects\python313\python.exe -m venv backend\.venv
-backend\.venv\Scripts\python -m pip install -e "backend[dev]"
+backend\.venv\Scripts\python -m pip install -r backend\requirements-dev.lock.txt
+backend\.venv\Scripts\python -m pip install --no-deps -e backend
 
 # 2. Configuration: backend\.env holds DATABASE_URL and generated secrets (never commit it).
 #    For a fresh clone copy backend\.env.example to backend\.env and fill in the values.

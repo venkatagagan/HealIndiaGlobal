@@ -25,3 +25,4 @@ tests/
 .vscode/
 Dockerfile
 .dockerignore
+.models/

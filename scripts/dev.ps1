@@ -125,7 +125,7 @@ if ((Invoke-Native $PgCtl @('status', '-D', $PgData) -Quiet) -eq 0) {
 
 # ---- 2. Backend prerequisites + migrations ------------------------------------------------------------
 if (-not (Test-Path $Python)) {
-    throw "backend\.venv not found. Create it with:`n  C:\NewProjects\python313\python.exe -m venv backend\.venv`n  backend\.venv\Scripts\python -m pip install -e `"backend[dev]`""
+    throw "backend\.venv not found. Create it with:`n  C:\NewProjects\python313\python.exe -m venv backend\.venv`n  backend\.venv\Scripts\python -m pip install -r backend\requirements-dev.lock.txt`n  backend\.venv\Scripts\python -m pip install --no-deps -e backend"
 }
 $BackendEnv = Join-Path $Backend '.env'
 if (-not (Test-Path $BackendEnv)) {
