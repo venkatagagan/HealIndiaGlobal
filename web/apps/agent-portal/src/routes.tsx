@@ -36,6 +36,7 @@ const HospitalsPage = page(() => import('./features/directory/HospitalsPage'), '
 const HospitalDetailPage = page(() => import('./features/directory/HospitalDetailPage'), 'HospitalDetailPage');
 const DoctorsPage = page(() => import('./features/directory/DoctorsPage'), 'DoctorsPage');
 const DoctorDetailPage = page(() => import('./features/directory/DoctorDetailPage'), 'DoctorDetailPage');
+const PerformancePage = page(() => import('./features/performance/PerformancePage'), 'PerformancePage');
 const CommissionsPage = page(() => import('./features/finance/CommissionsPage'), 'CommissionsPage');
 const PayoutAccountPage = page(() => import('./features/finance/PayoutAccountPage'), 'PayoutAccountPage');
 const ReferralPage = page(() => import('./features/referral/ReferralPage'), 'ReferralPage');
@@ -90,6 +91,7 @@ export const router = createBrowserRouter([
       { path: 'hospitals/:slug', element: withSuspense(HospitalDetailPage) },
       { path: 'doctors', element: withSuspense(DoctorsPage) },
       { path: 'doctors/:doctorId', element: withSuspense(DoctorDetailPage) },
+      { path: 'performance', element: withSuspense(PerformancePage) },
       { path: 'commissions', element: withSuspense(CommissionsPage) },
       { path: 'payout-account', element: withSuspense(PayoutAccountPage) },
       { path: 'referral', element: withSuspense(ReferralPage) },

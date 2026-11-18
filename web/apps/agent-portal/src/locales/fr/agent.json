@@ -531,7 +531,8 @@
     "account": "Compte",
     "profileKyc": "Profil et KYC",
     "referral": "Programme de parrainage",
-    "aftercare": "Suivi post-traitement"
+    "aftercare": "Suivi post-traitement",
+    "performance": "Performance"
   },
   "layout": {
     "subtitle": "Portail agent",
@@ -1433,6 +1434,63 @@
       "submit": "Envoyer les réponses",
       "sent": "Bilan envoyé.",
       "sentFlagged": "Bilan envoyé. L'hôpital et le coordinateur ont été alertés."
+    }
+  },
+  "analytics": {
+    "title": "Performance",
+    "description": "Vos prospects, dossiers, réservations et commissions dans le temps.",
+    "timezoneNote": "Dates à l’heure normale de l’Inde (IST)",
+    "downloadCsv": "Télécharger le CSV",
+    "range": {
+      "label": "Période",
+      "last30": "30 derniers jours",
+      "last90": "90 derniers jours",
+      "last180": "180 derniers jours",
+      "last365": "365 derniers jours",
+      "custom": "Personnalisée",
+      "from": "Du",
+      "to": "Au",
+      "groupBy": "Regrouper par",
+      "auto": "Automatique",
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois",
+      "period": "{{from}} – {{to}}",
+      "invalidOrder": "La date de début doit être antérieure ou égale à la date de fin.",
+      "tooLong": "La période ne peut pas dépasser 2 ans."
+    },
+    "tiles": {
+      "leads": "Prospects",
+      "patients": "Patients",
+      "cases": "Dossiers",
+      "quoted": "Dossiers chiffrés",
+      "bookings": "Réservations",
+      "completed": "Traitements terminés",
+      "conversionRate": "Taux de conversion",
+      "conversionHint": "Réservations rapportées aux dossiers"
+    },
+    "commission": {
+      "title": "Commission",
+      "description": "Commission pour cette période, en {{currency}}",
+      "earned": "Acquise",
+      "pending": "En attente",
+      "paid": "Versée",
+      "viewDetails": "Voir le détail des commissions"
+    },
+    "series": {
+      "title": "Activité dans le temps",
+      "description": "Dossiers, réservations et commission par période",
+      "cases": "Dossiers",
+      "bookings": "Réservations",
+      "commission": "Commission",
+      "chartSummary": "Graphique en barres : {{name}} du {{from}} au {{to}}, total {{total}}",
+      "viewTable": "Afficher sous forme de tableau",
+      "period": "Période",
+      "weekOf": "Semaine du {{date}}"
+    },
+    "empty": {
+      "title": "Aucune activité sur cette période",
+      "description": "Essayez une période plus longue."
     }
   }
 }

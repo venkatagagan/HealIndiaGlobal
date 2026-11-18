@@ -531,7 +531,8 @@
     "account": "Account",
     "profileKyc": "Profile & KYC",
     "referral": "Referral program",
-    "aftercare": "Aftercare"
+    "aftercare": "Aftercare",
+    "performance": "Performance"
   },
   "layout": {
     "subtitle": "Agent portal",
@@ -1433,6 +1434,63 @@
       "submit": "Send answers",
       "sent": "Check-in sent.",
       "sentFlagged": "Check-in sent. The hospital and the coordinator have been alerted."
+    }
+  },
+  "analytics": {
+    "title": "Performance",
+    "description": "Your leads, cases, bookings and commission over time.",
+    "timezoneNote": "Dates in India Standard Time (IST)",
+    "downloadCsv": "Download CSV",
+    "range": {
+      "label": "Date range",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "last180": "Last 180 days",
+      "last365": "Last 365 days",
+      "custom": "Custom",
+      "from": "From",
+      "to": "To",
+      "groupBy": "Group by",
+      "auto": "Automatic",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "period": "{{from}} – {{to}}",
+      "invalidOrder": "The start date must be on or before the end date.",
+      "tooLong": "The date range can be at most 2 years."
+    },
+    "tiles": {
+      "leads": "Leads",
+      "patients": "Patients",
+      "cases": "Cases",
+      "quoted": "Quoted cases",
+      "bookings": "Bookings",
+      "completed": "Completed treatments",
+      "conversionRate": "Conversion rate",
+      "conversionHint": "Bookings as a share of cases"
+    },
+    "commission": {
+      "title": "Commission",
+      "description": "Commission for this period, in {{currency}}",
+      "earned": "Earned",
+      "pending": "Pending",
+      "paid": "Paid",
+      "viewDetails": "View commission details"
+    },
+    "series": {
+      "title": "Activity over time",
+      "description": "Cases, bookings and commission per period",
+      "cases": "Cases",
+      "bookings": "Bookings",
+      "commission": "Commission",
+      "chartSummary": "Bar chart of {{name}} from {{from}} to {{to}}, total {{total}}",
+      "viewTable": "View as table",
+      "period": "Period",
+      "weekOf": "Week of {{date}}"
+    },
+    "empty": {
+      "title": "No activity in this period",
+      "description": "Try a longer date range."
     }
   }
 }

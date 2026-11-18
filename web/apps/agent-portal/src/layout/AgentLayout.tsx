@@ -2,6 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
+  BarChart3,
   Bell,
   Briefcase,
   Building2,
@@ -41,6 +42,7 @@ function CountBadge({ count }: { count: number }) {
 function buildNav(unread: number, t: AppT): NavItem[] {
   return [
     { to: '/', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, accent: 'green' },
+    { to: '/performance', label: t('nav.performance'), icon: BarChart3, accent: 'indigo' },
     {
       id: 'patients',
       label: t('nav.patientsAndCases'),

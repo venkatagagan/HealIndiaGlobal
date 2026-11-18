@@ -113,7 +113,9 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "aftercare": "Aftercare",
-    "accreditations": "Accreditations"
+    "accreditations": "Accreditations",
+    "performance": "Performance",
+    "performanceReviews": "Performance & reviews"
   },
   "layout": {
     "subtitle": "Hospital portal",
@@ -1309,6 +1311,92 @@
       "fileAttached": "Certificate attached",
       "reverifyTitle": "This accreditation is verified",
       "reverifyBody": "Saving changes removes the verification until our team checks it again."
+    }
+  },
+  "analytics": {
+    "title": "Performance",
+    "description": "How your enquiries turn into quotes, bookings and completed treatments.",
+    "timezoneNote": "Dates in India Standard Time (IST)",
+    "downloadCsv": "Download CSV",
+    "hours": "{{value}} h",
+    "range": {
+      "label": "Date range",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "last180": "Last 180 days",
+      "last365": "Last 365 days",
+      "custom": "Custom",
+      "from": "From",
+      "to": "To",
+      "groupBy": "Group by",
+      "auto": "Automatic",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "period": "{{from}} – {{to}}",
+      "invalidOrder": "The start date must be on or before the end date.",
+      "tooLong": "The date range can be at most 2 years."
+    },
+    "tiles": {
+      "enquiries": "Enquiries",
+      "quoted": "Quoted",
+      "quotedHint": "Enquiries with at least one quote",
+      "quotesSent": "Quotes sent",
+      "accepted": "Quotes accepted",
+      "bookings": "Bookings",
+      "completed": "Completed treatments",
+      "conversionRate": "Conversion rate",
+      "conversionHint": "Bookings as a share of enquiries"
+    },
+    "sla": {
+      "title": "Time to first quote",
+      "description": "Target: first quote within {{hours}} hours of the enquiry",
+      "median": "Median time to first quote",
+      "within": "Within SLA",
+      "over": "Over SLA",
+      "withinPct": "{{value}} of first quotes were sent within the SLA",
+      "noData": "No first quotes in this period.",
+      "p90": "90th percentile",
+      "overdueNow": "Overdue now",
+      "overdueHint": "Open enquiries past the SLA",
+      "platformMedian": "Platform median",
+      "platformHint": "All hospitals, same period"
+    },
+    "rating": {
+      "title": "Patient rating",
+      "count_one": "{{formatted}} rating",
+      "count_other": "{{formatted}} ratings",
+      "allTime": "Overall rating from all published reviews",
+      "none": "No ratings yet",
+      "inPeriod": "Reviews in this period",
+      "avgInPeriod": "Average rating in this period"
+    },
+    "series": {
+      "title": "Activity over time",
+      "description": "Enquiries, quotes sent and bookings per period",
+      "enquiries": "Enquiries",
+      "quotesSent": "Quotes sent",
+      "bookings": "Bookings",
+      "chartSummary": "Bar chart of {{name}} from {{from}} to {{to}}, total {{total}}",
+      "viewTable": "View as table",
+      "period": "Period",
+      "weekOf": "Week of {{date}}"
+    },
+    "countries": {
+      "title": "Patients by home country",
+      "description": "Where the patients who contacted you live",
+      "country": "Country",
+      "patients": "Patients",
+      "cases": "Cases",
+      "bookings": "Bookings",
+      "suppressed": "<{{min}}",
+      "notAvailable": "n/a",
+      "privacyNote": "Groups smaller than {{min}} are hidden to protect patient privacy",
+      "empty": "No patients in this period"
+    },
+    "empty": {
+      "title": "No activity in this period",
+      "description": "Try a longer date range."
     }
   }
 }
