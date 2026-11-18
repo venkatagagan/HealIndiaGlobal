@@ -38,6 +38,7 @@ const MyReviewsPage = lazy(() => import('./pages/reviews/MyReviewsPage').then((m
 const ReviewFormPage = lazy(() => import('./pages/reviews/ReviewFormPage').then((m) => ({ default: m.ReviewFormPage })));
 const AftercarePage = lazy(() => import('./pages/aftercare/AftercarePage').then((m) => ({ default: m.AftercarePage })));
 const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
+const ReferralsPage = lazy(() => import('./pages/referrals/ReferralsPage').then((m) => ({ default: m.ReferralsPage })));
 const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
 
 /** Child routes, relative to the portal mount point (/app). */
@@ -80,6 +81,7 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'aftercare', element: <AftercarePage /> },
   { path: 'free-call', element: <FreeCallPage /> },
   { path: 'free-call/status', element: <FreeCallStatusPage /> },
+  { path: 'referrals', element: <ReferralsPage /> },
   { path: '*', element: <Navigate to={PORTAL_BASE} replace /> },
 ];
 

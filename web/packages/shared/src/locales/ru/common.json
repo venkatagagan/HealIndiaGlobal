@@ -599,7 +599,8 @@
       "razorpay": "Карта / UPI (Razorpay)",
       "stripe": "Карта (Stripe)",
       "bank_transfer": "Банковский перевод (SWIFT)",
-      "mock": "Тестовый платёж (dev)"
+      "mock": "Тестовый платёж (dev)",
+      "platform_credit": "Бонус за приглашение"
     },
     "paymentPurpose": {
       "consultation_fee": "Оплата консультации",
@@ -634,7 +635,8 @@
       "bank_transfer": "Банковский перевод",
       "wallet": "Электронный кошелёк",
       "emi": "EMI",
-      "mock": "Тестовый"
+      "mock": "Тестовый",
+      "platform_credit": "Бонус за приглашение"
     },
     "refundStatus": {
       "requested": "Запрошен",

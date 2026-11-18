@@ -12,6 +12,7 @@ import {
   errorMessage,
   fieldErrors,
   type AgentConsentMethod,
+  type AgentPatientCreateIn,
   type AgentPatientOut,
   type ConsentKind,
   type Gender,
@@ -62,7 +63,17 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
-function toDefaults(p?: AgentPatientOut | null): FormValues {
+/** Values a caller can prefill when creating a patient (e.g. from a CRM lead). */
+export type PatientPrefill = Partial<Pick<FormValues, 'first_name' | 'last_name' | 'email' | 'phone' | 'whatsapp' | 'nationality' | 'country_of_residence'>>;
+
+function toDefaults(p?: AgentPatientOut | null, prefill?: PatientPrefill): FormValues {
+  return {
+    ...emptyDefaults(p),
+    ...(p ? {} : prefill),
+  };
+}
+
+function emptyDefaults(p?: AgentPatientOut | null): FormValues {
   return {
     first_name: p?.first_name ?? '',
     last_name: p?.last_name ?? '',
@@ -89,17 +100,30 @@ function toDefaults(p?: AgentPatientOut | null): FormValues {
   };
 }
 
-/** Create (no `patient`) or edit a patient managed by this agent. */
+/**
+ * Create (no `patient`) or edit a patient managed by this agent. `prefill` + `createWith` reuse the create form
+ * elsewhere (e.g. converting a CRM lead: POST /agent-portal/leads/{id}/convert takes the same body).
+ */
 export function PatientFormDialog({
   open,
   onClose,
   patient,
   onSaved,
+  prefill,
+  createWith,
+  title,
+  description,
+  submitLabel,
 }: {
   open: boolean;
   onClose: () => void;
   patient?: AgentPatientOut | null;
   onSaved?: (patient: AgentPatientOut) => void;
+  prefill?: PatientPrefill;
+  createWith?: (body: AgentPatientCreateIn) => Promise<AgentPatientOut>;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
 }) {
   const { t } = useAppTranslation();
   const queryClient = useQueryClient();
@@ -110,7 +134,7 @@ export function PatientFormDialog({
     reset,
     setError,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), values: toDefaults(patient) });
+  } = useForm<FormValues>({ resolver: zodResolver(schema), values: toDefaults(patient, prefill) });
 
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
@@ -138,7 +162,7 @@ export function PatientFormDialog({
         });
       }
       const consentKinds: ConsentKind[] = ['terms', 'privacy', ...(values.consent_share ? (['share_with_hospitals'] as const) : [])];
-      const created = await agentPortalApi.createPatient({
+      const created = await (createWith ?? agentPortalApi.createPatient)({
         consent_attested: true,
         consent_kinds: consentKinds,
         consent_method: values.consent_method as AgentConsentMethod,
@@ -205,11 +229,12 @@ export function PatientFormDialog({
       open={open}
       onClose={onClose}
       size="lg"
-      title={editing ? t('patientForm.editTitle') : t('patientForm.addTitle')}
+      title={title ?? (editing ? t('patientForm.editTitle') : t('patientForm.addTitle'))}
       description={
-        editing
+        description ??
+        (editing
           ? t('patientForm.editDescription')
-          : t('patientForm.addDescription')
+          : t('patientForm.addDescription'))
       }
       footer={
         <>
@@ -217,7 +242,7 @@ export function PatientFormDialog({
             {t('patientForm.cancel')}
           </Button>
           <Button type="submit" form="patient-form" loading={mutation.isPending}>
-            {editing ? t('patientForm.saveChanges') : t('patientForm.submitAdd')}
+            {editing ? t('patientForm.saveChanges') : (submitLabel ?? t('patientForm.submitAdd'))}
           </Button>
         </>
       }

@@ -609,7 +609,8 @@
       "razorpay": "بطاقة / UPI (Razorpay)",
       "stripe": "بطاقة (Stripe)",
       "bank_transfer": "تحويل بنكي (SWIFT)",
-      "mock": "دفعة تجريبية (للتطوير)"
+      "mock": "دفعة تجريبية (للتطوير)",
+      "platform_credit": "رصيد الإحالة"
     },
     "paymentPurpose": {
       "consultation_fee": "رسوم الاستشارة",
@@ -644,7 +645,8 @@
       "bank_transfer": "تحويل بنكي",
       "wallet": "محفظة إلكترونية",
       "emi": "EMI",
-      "mock": "تجريبي"
+      "mock": "تجريبي",
+      "platform_credit": "رصيد الإحالة"
     },
     "refundStatus": {
       "requested": "مطلوب",

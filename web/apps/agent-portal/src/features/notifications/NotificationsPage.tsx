@@ -18,6 +18,9 @@ function str(data: Record<string, unknown> | null, key: string): string | null {
 /** Deep link for a notification based on its data payload. */
 export function notificationLink(n: NotificationOut): string | null {
   const d = n.data;
+  const link = str(d, 'link');
+  if (n.kind.startsWith('crm.') && link && /^\/leads(\/[\w-]+)?(\?[\w=&-]*)?$/.test(link)) return link;
+  if (n.kind.startsWith('crm.')) return '/leads?follow_up=due';
   const conversation = str(d, 'conversation_id');
   if (n.kind.startsWith('message') && conversation) return `/messages/${conversation}`;
   const screening = str(d, 'screening_id');
@@ -42,6 +45,7 @@ const CATEGORY_KEYS: Record<string, string> = {
   agent: 'notifications.category.account',
   consent: 'notifications.category.consent',
   document: 'notifications.category.documents',
+  crm: 'crm.notificationCategory',
 };
 const category = (t: AppT, n: NotificationOut) => {
   const head = n.kind.split('.')[0] ?? n.kind;

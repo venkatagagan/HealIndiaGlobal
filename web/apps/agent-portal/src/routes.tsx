@@ -41,6 +41,8 @@ const PayoutAccountPage = page(() => import('./features/finance/PayoutAccountPag
 const ReferralPage = page(() => import('./features/referral/ReferralPage'), 'ReferralPage');
 const MessagesPage = page(() => import('./features/messages/MessagesPage'), 'MessagesPage');
 const NotificationsPage = page(() => import('./features/notifications/NotificationsPage'), 'NotificationsPage');
+const LeadsPage = page(() => import('./features/leads/LeadsPage'), 'LeadsPage');
+const LeadDetailPage = page(() => import('./features/leads/LeadDetailPage'), 'LeadDetailPage');
 const ProfilePage = page(() => import('./features/profile/ProfilePage'), 'ProfilePage');
 
 function NotFound() {
@@ -71,6 +73,8 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: withSuspense(DashboardPage) },
+      { path: 'leads', element: withSuspense(LeadsPage) },
+      { path: 'leads/:leadId', element: withSuspense(LeadDetailPage) },
       { path: 'patients', element: withSuspense(PatientsPage) },
       { path: 'patients/:patientId', element: withSuspense(PatientDetailPage) },
       { path: 'patients/:patientId/screenings/new', element: withSuspense(ScreeningFormPage) },

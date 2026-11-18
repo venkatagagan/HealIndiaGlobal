@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarRange,
   FileText,
+  Gift,
   HeartHandshake,
   HeartPulse,
   Home,
@@ -101,6 +102,7 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
       children: [
         { to: paths.saved, label: t('shell.nav.saved'), icon: Bookmark },
         { to: paths.reviews, label: t('shell.nav.reviews'), icon: Star },
+        { to: paths.referrals, label: t('referral.nav'), icon: Gift },
         { to: paths.profile, label: t('shell.nav.profile'), icon: User },
       ],
     },
@@ -288,6 +290,10 @@ export function PortalShell() {
             <Link to={paths.saved} role="menuitem" className={MENU_LINK}>
               <Bookmark className="size-4 text-muted" aria-hidden />
               {t('shell.menu.saved')}
+            </Link>
+            <Link to={paths.referrals} role="menuitem" className={MENU_LINK}>
+              <Gift className="size-4 text-muted" aria-hidden />
+              {t('referral.nav')}
             </Link>
           </>
         }

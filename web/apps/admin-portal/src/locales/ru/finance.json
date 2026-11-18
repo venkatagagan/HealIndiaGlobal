@@ -1003,7 +1003,8 @@
       "razorpay": "Карта / UPI (Razorpay)",
       "stripe": "Карта (Stripe)",
       "bank_transfer": "Банковский перевод (SWIFT)",
-      "mock": "Тестовый платёж (dev)"
+      "mock": "Тестовый платёж (dev)",
+      "platform_credit": "Бонус за приглашение"
     },
     "paymentPurpose": {
       "consultation_fee": "Плата за консультацию",
@@ -1020,7 +1021,8 @@
       "bank_transfer": "Банковский перевод",
       "wallet": "Электронный кошелёк",
       "emi": "Рассрочка (EMI)",
-      "mock": "Тестовый"
+      "mock": "Тестовый",
+      "platform_credit": "Бонус за приглашение"
     },
     "ledgerAccountType": {
       "asset": "Актив",

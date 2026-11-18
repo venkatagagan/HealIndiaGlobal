@@ -589,7 +589,8 @@
       "razorpay": "কার্ড / UPI (Razorpay)",
       "stripe": "কার্ড (Stripe)",
       "bank_transfer": "ব্যাংক ট্রান্সফার (SWIFT)",
-      "mock": "পরীক্ষামূলক পেমেন্ট (dev)"
+      "mock": "পরীক্ষামূলক পেমেন্ট (dev)",
+      "platform_credit": "রেফারেল ক্রেডিট"
     },
     "paymentPurpose": {
       "consultation_fee": "পরামর্শ ফি",
@@ -624,7 +625,8 @@
       "bank_transfer": "ব্যাংক ট্রান্সফার",
       "wallet": "ওয়ালেট",
       "emi": "EMI",
-      "mock": "নকল (পরীক্ষা)"
+      "mock": "নকল (পরীক্ষা)",
+      "platform_credit": "রেফারেল ক্রেডিট"
     },
     "refundStatus": {
       "requested": "অনুরোধ করা হয়েছে",

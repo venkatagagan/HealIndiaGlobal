@@ -2564,5 +2564,110 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Write a reply… (Ctrl+Enter to send)",
     "send": "Send"
+  },
+  "referral": {
+    "nav": "Referrals",
+    "title": "Referrals",
+    "description": "Patient-to-patient referrals and the platform credit they earn. Credit amounts are in INR, the ledger base currency.",
+    "summary": {
+      "label": "Referral programme summary",
+      "referrals": "Referrals",
+      "byStatus": "{{pending}} pending · {{qualified}} qualified · {{rewarded}} rewarded · {{void}} void",
+      "issued": "Credit issued",
+      "reinstated": "Reinstated: {{amount}}",
+      "redeemed": "Credit redeemed",
+      "expiredVoided": "Expired: {{expired}} · Voided: {{voided}}",
+      "outstanding": "Outstanding credit",
+      "liability": "Ledger liability: {{amount}}",
+      "mismatch": "The ledger liability is lower than the outstanding credit. Please check the referral credit account in the ledger."
+    },
+    "status": {
+      "pending": "Pending",
+      "qualified": "Qualified",
+      "rewarded": "Rewarded",
+      "void": "Void"
+    },
+    "channel": {
+      "website": "Website",
+      "patient_web": "Patient web",
+      "mobile": "Mobile app",
+      "other": "Other"
+    },
+    "columns": {
+      "code": "Code",
+      "referrer": "Referrer",
+      "referred": "Referred patient",
+      "status": "Status",
+      "credits": "Credit issued",
+      "created": "Signed up"
+    },
+    "filters": {
+      "all": "All",
+      "search": "Search code, name or email"
+    },
+    "openReferral": "Open referral {{code}}",
+    "emptyTitle": "No referrals",
+    "emptyDescription": "Referrals appear here when a patient signs up with another patient’s code.",
+    "settings": {
+      "title": "Programme settings",
+      "description": "Read only. Change them in System → Settings (setting \"{{key}}\"). Only finance staff or a super admin can change them.",
+      "open": "Open settings",
+      "loading": "Loading settings…",
+      "error": "Could not load the programme settings.",
+      "yes": "Yes",
+      "no": "No",
+      "effective": "Programme active",
+      "envEnabled": "Enabled on this server",
+      "enabled": "Enabled in settings",
+      "rewardReferrer": "Reward the referrer",
+      "referrerReward": "Referrer reward",
+      "rewardReferee": "Reward the new patient",
+      "refereeReward": "New patient reward",
+      "fallbackCurrency": "Fallback currency",
+      "maxRewards": "Max rewards per referrer per year",
+      "validityDays": "Credit valid for (days)",
+      "qualifyDays": "Qualify within (days of sign-up)"
+    },
+    "detail": {
+      "title": "Referral {{code}}",
+      "booking": "Qualifying booking",
+      "voidReason": "Void reason:",
+      "dates": "Dates",
+      "created": "Signed up",
+      "expires": "Expires",
+      "qualified": "Qualified",
+      "rewarded": "Rewarded",
+      "voided": "Voided",
+      "checks": "Anti-abuse checks",
+      "noChecks": "No checks recorded.",
+      "credits": "Credits",
+      "noCredits": "No credit issued yet.",
+      "remaining": "Remaining {{amount}}",
+      "original": "originally {{amount}}"
+    },
+    "creditKind": {
+      "referrer_reward": "Referrer reward",
+      "referee_reward": "New patient reward",
+      "reinstated": "Reinstated credit"
+    },
+    "creditStatus": {
+      "active": "Active",
+      "used": "Used",
+      "expired": "Expired",
+      "void": "Void"
+    },
+    "void": {
+      "action": "Void referral",
+      "title": "Void this referral?",
+      "description": "The referral will not be rewarded and any unused credit from it is voided. Credit already spent is not taken back. This is recorded in the audit log.",
+      "reason": "Reason (shown in the audit log)",
+      "done": "Referral voided",
+      "failed": "Could not void the referral",
+      "tooShort": "Please enter a reason of at least 3 characters."
+    },
+    "setting": {
+      "label": "Referral programme",
+      "description": "Rewards for patient referrals: on/off, reward amounts per currency (minor units), yearly cap per referrer, credit validity and qualifying window. Finance only."
+    }
   }
 }

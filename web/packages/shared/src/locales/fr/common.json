@@ -589,7 +589,8 @@
       "razorpay": "Carte / UPI (Razorpay)",
       "stripe": "Carte (Stripe)",
       "bank_transfer": "Virement bancaire (SWIFT)",
-      "mock": "Paiement de test (dev)"
+      "mock": "Paiement de test (dev)",
+      "platform_credit": "Crédit de parrainage"
     },
     "paymentPurpose": {
       "consultation_fee": "Frais de consultation",
@@ -624,7 +625,8 @@
       "bank_transfer": "Virement bancaire",
       "wallet": "Portefeuille",
       "emi": "EMI",
-      "mock": "Simulé"
+      "mock": "Simulé",
+      "platform_credit": "Crédit de parrainage"
     },
     "refundStatus": {
       "requested": "Demandé",

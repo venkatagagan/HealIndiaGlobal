@@ -9,6 +9,7 @@ import {
   ClipboardList,
   FilePlus2,
   Gift,
+  Contact,
   HeartPulse,
   Landmark,
   LayoutDashboard,
@@ -47,6 +48,7 @@ function buildNav(unread: number, t: AppT): NavItem[] {
       icon: Users,
       accent: 'blue',
       children: [
+        { to: '/leads', label: t('crm.nav.leads'), icon: Contact },
         { to: '/patients', label: t('nav.patients'), icon: Users },
         { to: '/screenings', label: t('nav.screenings'), icon: ClipboardList },
         { to: '/cases', label: t('nav.casesAndQuotes'), icon: Briefcase },

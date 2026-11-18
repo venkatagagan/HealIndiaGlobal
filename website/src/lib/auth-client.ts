@@ -24,7 +24,7 @@ export type ApiResult<T> =
   | { ok: true; status: number; data: T }
   | { ok: false; status: number; code: string | null; message: string | null; details: unknown };
 
-export async function apiPost<T>(path: string, body?: unknown): Promise<ApiResult<T>> {
+export async function apiPost<T>(path: string, body?: unknown, extraHeaders?: Record<string, string>): Promise<ApiResult<T>> {
   let res: Response;
   try {
     res = await fetch(`/api/v1${path}`, {
@@ -34,6 +34,7 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<ApiResul
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
+        ...extraHeaders,
       },
       body: JSON.stringify(body ?? {}),
     });

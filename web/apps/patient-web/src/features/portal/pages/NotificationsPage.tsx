@@ -22,6 +22,8 @@ function str(data: Record<string, unknown> | null, key: string): string | null {
 /** Where a notification should take the patient, based on its payload. */
 export function notificationTarget(n: NotificationOut): string | null {
   const d = n.data;
+  const link = str(d, 'link');
+  if (link === '/referrals' || link?.startsWith('/referrals?') || n.kind.startsWith('referral.')) return paths.referrals;
   const conversation = str(d, 'conversation_id');
   if (conversation) return paths.conversation(conversation);
   const screening = str(d, 'screening_id');

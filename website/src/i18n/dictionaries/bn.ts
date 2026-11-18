@@ -914,6 +914,12 @@ const bn: Dictionary = {
     decline: 'প্রত্যাখ্যান করুন',
     privacyLink: 'গোপনীয়তা নীতি',
   },
+  referral: {
+    invitedByFriend: 'একজন বন্ধু আপনাকে আমন্ত্রণ জানিয়েছেন: আপনার প্রথম বুকিং সম্পন্ন হলে আপনি {amount} ক্রেডিট পাবেন।',
+    invitedByFriendNoReward: 'একজন বন্ধু আপনাকে আমন্ত্রণ জানিয়েছেন।',
+    invitedByAgent: 'একজন অংশীদার এজেন্ট আপনাকে রেফার করেছেন।',
+    invalid: 'এই রেফারেল কোডটি সঠিক নয়। যাচাই করুন অথবা ঘরটি ফাঁকা রাখুন।',
+  },
 };
 
 export default bn;

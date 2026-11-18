@@ -914,6 +914,12 @@ const en = {
     decline: 'Decline',
     privacyLink: 'Privacy policy',
   },
+  referral: {
+    invitedByFriend: 'Invited by a friend: you get {amount} credit after your first completed booking.',
+    invitedByFriendNoReward: 'You were invited by a friend.',
+    invitedByAgent: 'You were referred by a partner agent.',
+    invalid: 'This referral code is not valid. Check it or leave the field empty.',
+  },
 };
 
 export type Dictionary = typeof en;

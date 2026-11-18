@@ -2564,5 +2564,110 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Rédigez une réponse… (Ctrl+Enter pour envoyer)",
     "send": "Envoyer"
+  },
+  "referral": {
+    "nav": "Parrainages",
+    "title": "Parrainages",
+    "description": "Parrainages entre patients et crédit plateforme obtenu. Les montants de crédit sont en INR, la devise de base du grand livre.",
+    "summary": {
+      "label": "Résumé du programme de parrainage",
+      "referrals": "Parrainages",
+      "byStatus": "{{pending}} en attente · {{qualified}} qualifiés · {{rewarded}} récompensés · {{void}} annulés",
+      "issued": "Crédit émis",
+      "reinstated": "Restitué : {{amount}}",
+      "redeemed": "Crédit utilisé",
+      "expiredVoided": "Expiré : {{expired}} · Annulé : {{voided}}",
+      "outstanding": "Crédit en cours",
+      "liability": "Passif au grand livre : {{amount}}",
+      "mismatch": "Le passif au grand livre est inférieur au crédit en cours. Veuillez vérifier le compte de crédit de parrainage dans le grand livre."
+    },
+    "status": {
+      "pending": "En attente",
+      "qualified": "Qualifié",
+      "rewarded": "Récompensé",
+      "void": "Annulé"
+    },
+    "channel": {
+      "website": "Site web",
+      "patient_web": "Espace patient",
+      "mobile": "Application mobile",
+      "other": "Autre"
+    },
+    "columns": {
+      "code": "Code",
+      "referrer": "Parrain",
+      "referred": "Patient parrainé",
+      "status": "Statut",
+      "credits": "Crédit émis",
+      "created": "Inscription"
+    },
+    "filters": {
+      "all": "Tous",
+      "search": "Rechercher un code, un nom ou un e-mail"
+    },
+    "openReferral": "Ouvrir le parrainage {{code}}",
+    "emptyTitle": "Aucun parrainage",
+    "emptyDescription": "Les parrainages apparaissent ici lorsqu’un patient s’inscrit avec le code d’un autre patient.",
+    "settings": {
+      "title": "Paramètres du programme",
+      "description": "Lecture seule. Modifiez-les dans Système → Paramètres (paramètre « {{key}} »). Seuls l’équipe finance ou un super administrateur peuvent les modifier.",
+      "open": "Ouvrir les paramètres",
+      "loading": "Chargement des paramètres…",
+      "error": "Impossible de charger les paramètres du programme.",
+      "yes": "Oui",
+      "no": "Non",
+      "effective": "Programme actif",
+      "envEnabled": "Activé sur ce serveur",
+      "enabled": "Activé dans les paramètres",
+      "rewardReferrer": "Récompenser le parrain",
+      "referrerReward": "Récompense du parrain",
+      "rewardReferee": "Récompenser le nouveau patient",
+      "refereeReward": "Récompense du nouveau patient",
+      "fallbackCurrency": "Devise par défaut",
+      "maxRewards": "Récompenses max. par parrain et par an",
+      "validityDays": "Validité du crédit (jours)",
+      "qualifyDays": "Délai de qualification (jours après l’inscription)"
+    },
+    "detail": {
+      "title": "Parrainage {{code}}",
+      "booking": "Réservation qualifiante",
+      "voidReason": "Motif d’annulation :",
+      "dates": "Dates",
+      "created": "Inscription",
+      "expires": "Expiration",
+      "qualified": "Qualification",
+      "rewarded": "Récompense",
+      "voided": "Annulation",
+      "checks": "Contrôles anti-abus",
+      "noChecks": "Aucun contrôle enregistré.",
+      "credits": "Crédits",
+      "noCredits": "Aucun crédit émis pour le moment.",
+      "remaining": "Restant {{amount}}",
+      "original": "initialement {{amount}}"
+    },
+    "creditKind": {
+      "referrer_reward": "Récompense du parrain",
+      "referee_reward": "Récompense du nouveau patient",
+      "reinstated": "Crédit restitué"
+    },
+    "creditStatus": {
+      "active": "Actif",
+      "used": "Utilisé",
+      "expired": "Expiré",
+      "void": "Annulé"
+    },
+    "void": {
+      "action": "Annuler le parrainage",
+      "title": "Annuler ce parrainage ?",
+      "description": "Le parrainage ne sera pas récompensé et tout crédit non utilisé qui en découle sera annulé. Le crédit déjà dépensé n’est pas repris. Cette action est enregistrée dans le journal d’audit.",
+      "reason": "Motif (visible dans le journal d’audit)",
+      "done": "Parrainage annulé",
+      "failed": "Impossible d’annuler le parrainage",
+      "tooShort": "Veuillez saisir un motif d’au moins 3 caractères."
+    },
+    "setting": {
+      "label": "Programme de parrainage",
+      "description": "Récompenses de parrainage entre patients : activation, montants par devise (unités mineures), plafond annuel par parrain, validité du crédit et délai de qualification. Finance uniquement."
+    }
   }
 }

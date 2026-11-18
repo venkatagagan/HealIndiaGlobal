@@ -2139,5 +2139,114 @@
       "age": "Veuillez confirmer votre âge",
       "mismatch": "Les mots de passe ne correspondent pas"
     }
+  },
+  "referral": {
+    "nav": "Parrainer un proche",
+    "title": "Parrainer un proche",
+    "description": "Invitez vos proches sur Heal India Global. Lorsqu’un proche termine sa première réservation de soins, vous recevez tous les deux un crédit pour vos prochaines réservations.",
+    "disabled": {
+      "title": "Le programme de parrainage est suspendu",
+      "description": "Vous ne pouvez pas inviter de proches pour le moment. Le crédit dont vous disposez reste utilisable jusqu’à son expiration."
+    },
+    "code": {
+      "title": "Votre code de parrainage",
+      "description": "Votre proche saisit ce code lors de son inscription, ou ouvre simplement votre lien.",
+      "copyCode": "Copier le code",
+      "copyLink": "Copier le lien",
+      "share": "Partager",
+      "copied": "Copié",
+      "copyFailed": "Impossible de copier. Veuillez sélectionner le texte et le copier.",
+      "linkLabel": "Votre lien d’invitation",
+      "shareVia": "Partager via",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram",
+      "email": "E-mail",
+      "shareTitle": "Rejoignez-moi sur Heal India Global",
+      "emailSubject": "Rejoignez-moi sur Heal India Global",
+      "shareText": "J’utilise Heal India Global pour organiser des soins en Inde. Inscrivez-vous avec mon code {{code}} : {{url}}",
+      "shareShort": "Inscrivez-vous sur Heal India Global avec mon code {{code}}"
+    },
+    "rewards": {
+      "title": "Comment ça marche",
+      "step1": "Partagez votre code ou votre lien avec un proche.",
+      "step2": "Votre proche s’inscrit avec celui-ci.",
+      "step3": "Lorsque la première réservation de votre proche est terminée, vous recevez tous les deux un crédit.",
+      "youLabel": "Vous recevez",
+      "friendLabel": "Votre proche reçoit",
+      "you": "<0/> de crédit par proche",
+      "friend": "<0/> de crédit",
+      "none": "Aucune récompense pour le moment",
+      "cap_one": "Vous pouvez obtenir au maximum une récompense par an.",
+      "cap_other": "Vous pouvez obtenir jusqu’à {{count}} récompenses par an.",
+      "validity_one": "Le crédit est valable un jour après son attribution.",
+      "validity_other": "Le crédit est valable {{count}} jours après son attribution.",
+      "use": "Le crédit ne peut être utilisé que pour payer des réservations sur Heal India Global."
+    },
+    "balance": {
+      "title": "Votre crédit",
+      "available": "Disponible",
+      "base": "Valeur en roupies indiennes : <0/>",
+      "expiringSoon": "<0/> expire dans les 30 prochains jours.",
+      "nextExpiry": "Prochaine expiration : {{date}}",
+      "useHint": "Pour l’utiliser, ouvrez la page de paiement d’une réservation et choisissez « Utiliser mon crédit »."
+    },
+    "friends": {
+      "title": "Proches invités",
+      "description": "Nous affichons uniquement les prénoms, jamais les détails de réservation ou de santé.",
+      "empty": "Aucun proche pour le moment",
+      "emptyDescription": "Lorsqu’un proche s’inscrit avec votre code, il apparaît ici.",
+      "joined": "Inscrit le {{date}}",
+      "rewardedOn": "Récompensé le {{date}}",
+      "status": {
+        "pending": "Inscrit",
+        "qualified": "Réservation terminée",
+        "rewarded": "Récompensé",
+        "void": "Non éligible"
+      }
+    },
+    "history": {
+      "title": "Historique du crédit",
+      "description": "Les montants sont affichés dans votre devise préférée.",
+      "empty": "Aucun mouvement de crédit pour le moment.",
+      "expires": "expire le {{date}}",
+      "kind": {
+        "grant": "Crédit ajouté",
+        "redeem": "Utilisé pour un paiement",
+        "reinstate": "Restitué",
+        "expire": "Expiré",
+        "void": "Annulé"
+      },
+      "creditKind": {
+        "referrer_reward": "Récompense de parrainage",
+        "referee_reward": "Récompense de bienvenue",
+        "reinstated": "Crédit restitué"
+      }
+    },
+    "terms": "Les récompenses de parrainage sont régies par nos <0>Conditions d’utilisation, section « Programme de parrainage »</0>.",
+    "pay": {
+      "title": "Crédit de parrainage",
+      "available": "Vous disposez de <0/> de crédit de parrainage.",
+      "willApply": "Crédit utilisé pour ce paiement",
+      "remaining": "Reste à payer",
+      "restNote": "Après avoir utilisé votre crédit, payez le reste ci-dessous.",
+      "fullNote": "Votre crédit couvre la totalité de ce paiement.",
+      "use": "Utiliser mon crédit",
+      "applied": "{{amount}} de crédit utilisé. Veuillez payer le reste.",
+      "paidInFull": "Payé en totalité avec votre crédit.",
+      "termsLink": "Conditions du crédit de parrainage",
+      "reasons": {
+        "installments": "Le crédit ne peut pas être utilisé pour un paiement échelonné.",
+        "nothing_due": "Aucun montant n’est dû pour ce paiement.",
+        "no_credit": "Vous n’avez aucun crédit à utiliser.",
+        "amount_too_small": "Ce montant est trop faible pour être payé avec le crédit.",
+        "programme_off": "Le crédit ne peut pas être utilisé pour le moment."
+      },
+      "errors": {
+        "changed": "Votre crédit ou le montant dû a changé. Veuillez vérifier et réessayer.",
+        "inProgress": "Un paiement est déjà en cours pour cette réservation. Veuillez le terminer ou réessayer dans quelques minutes.",
+        "notApplicable": "Le crédit ne peut pas être utilisé pour ce paiement.",
+        "failed": "Impossible d’utiliser votre crédit. Veuillez réessayer."
+      }
+    }
   }
 }

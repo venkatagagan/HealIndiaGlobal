@@ -1011,7 +1011,8 @@
       "razorpay": "بطاقة / UPI (Razorpay)",
       "stripe": "بطاقة (Stripe)",
       "bank_transfer": "تحويل بنكي (SWIFT)",
-      "mock": "دفع تجريبي (للتطوير)"
+      "mock": "دفع تجريبي (للتطوير)",
+      "platform_credit": "رصيد الإحالة"
     },
     "paymentPurpose": {
       "consultation_fee": "رسوم الاستشارة",
@@ -1028,7 +1029,8 @@
       "bank_transfer": "تحويل بنكي",
       "wallet": "محفظة إلكترونية",
       "emi": "أقساط شهرية (EMI)",
-      "mock": "تجريبي"
+      "mock": "تجريبي",
+      "platform_credit": "رصيد الإحالة"
     },
     "ledgerAccountType": {
       "asset": "أصل",

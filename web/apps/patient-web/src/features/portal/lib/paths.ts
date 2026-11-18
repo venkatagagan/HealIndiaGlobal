@@ -72,6 +72,7 @@ export const paths = {
   writeReview: (bookingId: Uuid) => `${PORTAL_BASE}/reviews/new?booking=${encodeURIComponent(bookingId)}`,
   editReview: (reviewId: Uuid) => `${PORTAL_BASE}/reviews/${encodeURIComponent(reviewId)}/edit`,
   aftercare: `${PORTAL_BASE}/aftercare`,
+  referrals: `${PORTAL_BASE}/referrals`,
   freeCall: (screeningId?: Uuid) =>
     `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
   freeCallStatus: `${PORTAL_BASE}/free-call/status`,

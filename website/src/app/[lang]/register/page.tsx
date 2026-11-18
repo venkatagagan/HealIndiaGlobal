@@ -17,6 +17,7 @@ export default async function RegisterPage() {
     <AuthShell title={t.auth.registerTitle} subtitle={t.auth.registerSubtitle} tagline={t.common.tagline} points={t.home.heroPoints}>
       <RegisterForm
         t={t.auth}
+        referralT={t.referral}
         intlLocale={intlLocale()}
         loginHref={href(routes.login)}
         termsHref={href(routes.terms)}

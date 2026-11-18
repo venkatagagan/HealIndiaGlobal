@@ -991,6 +991,12 @@ const ar: Dictionary = {
     decline: 'رفض',
     privacyLink: 'سياسة الخصوصية',
   },
+  referral: {
+    invitedByFriend: 'دعاك صديق: ستحصل على رصيد بقيمة {amount} بعد اكتمال أول حجز لك.',
+    invitedByFriendNoReward: 'لقد دعاك صديق.',
+    invitedByAgent: 'تمت إحالتك من وكيل شريك.',
+    invalid: 'رمز الإحالة هذا غير صالح. تحقّق منه أو اترك الحقل فارغًا.',
+  },
 };
 
 export default ar;

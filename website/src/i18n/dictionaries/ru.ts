@@ -1023,6 +1023,12 @@ const ru: Dictionary = {
     decline: 'Отклонить',
     privacyLink: 'Политика конфиденциальности',
   },
+  referral: {
+    invitedByFriend: 'Вас пригласил друг: после первого завершённого бронирования вы получите бонусы на сумму {amount}.',
+    invitedByFriendNoReward: 'Вас пригласил друг.',
+    invitedByAgent: 'Вас направил агент-партнёр.',
+    invalid: 'Этот реферальный код недействителен. Проверьте его или оставьте поле пустым.',
+  },
 };
 
 export default ru;
