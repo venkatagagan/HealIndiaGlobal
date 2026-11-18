@@ -26,7 +26,12 @@ Future<void> openQuickQuote(
     specialtyId: specialtyId,
     screeningId: screeningId,
   );
-  final auth = ref.read(authStateProvider);
+  var auth = ref.read(authStateProvider);
+  if (!auth.isKnown) {
+    // The session is still being restored: wait for it instead of treating the user as signed out.
+    auth = await ref.read(authControllerProvider.future);
+    if (!context.mounted) return;
+  }
   if (!auth.isAuthenticated) {
     await context.push(Routes.registerFrom(target));
     return;
