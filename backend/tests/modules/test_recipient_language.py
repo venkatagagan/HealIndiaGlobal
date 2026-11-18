@@ -69,7 +69,7 @@ async def test_guest_code_in_request_language(client, db, run_jobs, email_outbox
     assert r.status_code == 201, r.text
     sms = guest_service.sms_outbox[-1]
     code = re.search(r"\d{6}", sms["text"]).group(0)  # type: ignore[union-attr]
-    assert sms["text"] == t("email.guest_code.sms", "ar", app_name=settings.APP_NAME, code=code, minutes=10)
+    assert sms["text"] == t("sms.verification_code", "ar", app_name=settings.APP_NAME, code=code, minutes=10)
 
 
 async def test_privacy_request_acknowledged_in_request_language(client, db, run_jobs, email_outbox) -> None:
