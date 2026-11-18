@@ -15,21 +15,20 @@ import {
   Users,
 } from 'lucide-react';
 import { getDictionary } from '@/i18n';
-import { countryName, fmt, formatNumber, intlLocale } from '@/i18n/format';
+import { fmt, formatNumber } from '@/i18n/format';
 import { marketing, testimonials } from '@/config/marketing';
 import { getSiteConfig } from '@/lib/site-config';
 import { JCI_URL, NABH_URL, assessmentUrl } from '@/config/site';
 import {
   featuredOrder,
   getCities,
+  getCostComparison,
   getFxRates,
   getHospitals,
   getProcedure,
   getProcedures,
   getSpecialties,
 } from '@/lib/data/catalog';
-import { compare } from '@/lib/cost';
-import { formatMoneyRange } from '@/lib/money';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 import { websiteLd } from '@/lib/jsonld';
@@ -37,7 +36,7 @@ import { JsonLd } from '@/components/json-ld';
 import { HospitalCard, SpecialtyTile } from '@/components/cards';
 import { AssessmentCta } from '@/components/cta';
 import { Badge, ButtonLink, SectionHeader } from '@/components/ui';
-import type { FxTable, Procedure } from '@/lib/data/types';
+import { HomeExamples, HomeHeroComparison, type HomeComparisonItem, type HomeComparisonLabels } from '@/components/home-comparison';
 
 export const revalidate = 3600;
 
@@ -59,23 +58,28 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-async function loadComparison(slug: string, country: string, fx: FxTable) {
+/**
+ * A featured procedure for the home comparisons. The page is cached and the same for everyone: the visitor's country
+ * is applied in the browser (components/home-comparison.tsx), so every benchmark is passed and the legal display rule
+ * (lib/cost.ts) is evaluated there for the country actually shown.
+ */
+async function loadItem(slug: string, exampleCountry: string): Promise<HomeComparisonItem | null> {
   const p = (await getProcedure(slug)).data;
   if (!p || p.india_price_min_minor === null || p.india_price_max_minor === null) return null;
-  const benchmark = p.benchmarks.find((b) => b.country_code === country) ?? null;
-  const result = compare(
-    { min: p.india_price_min_minor, max: p.india_price_max_minor, currency: p.currency },
-    benchmark,
-    benchmark?.currency ?? 'USD',
-    fx,
-  );
-  if (!result?.home || !result.savings) return null;
-  return { procedure: p, result };
+  // India availability does not depend on the home country; this is the same cached call the procedure page makes.
+  const api = await getCostComparison(p.slug, exampleCountry, 'USD');
+  return {
+    slug: p.slug,
+    name: p.name,
+    href: href(routes.procedure(p.specialty.slug, p.slug)),
+    india: { min: p.india_price_min_minor, max: p.india_price_max_minor, currency: p.currency },
+    benchmarks: p.benchmarks,
+    earliestAdmission: api?.india.earliest_admission_date ?? null,
+  };
 }
 
 export default async function HomePage() {
   const t = await getDictionary();
-  const intl = intlLocale();
 
   const [specialties, procedures, hospitals, fx, cities, site] = await Promise.all([
     getSpecialties(),
@@ -87,17 +91,38 @@ export default async function HomePage() {
   ]);
   // Claims (savings %, stats, testimonials switch): System -> Website & contact -> Marketing claims.
   const claims = site.marketing;
+  // Example home country for the cached HTML (crawlers, no JS); visitors see their own country after hydration.
   const country = marketing.savingsExampleCountry;
-  const [hero, ...examples] = await Promise.all(
-    [marketing.heroComparisonProcedure, ...marketing.savingsExampleProcedures].map((slug) =>
-      loadComparison(slug, country, fx.data),
-    ),
+  const [hero, ...exampleItems] = await Promise.all(
+    [marketing.heroComparisonProcedure, ...marketing.savingsExampleProcedures].map((slug) => loadItem(slug, country)),
   );
+  const procBySlug = new Map(procedures.data.map((p) => [p.slug, p.name]));
+  const examples = exampleItems
+    .filter((x): x is HomeComparisonItem => !!x)
+    .map((x) => ({ ...x, name: procBySlug.get(x.slug) ?? x.name }));
+  const comparisonLabels: HomeComparisonLabels = {
+    home: {
+      heroCardTitle: t.home.heroCardTitle,
+      heroCardIn: t.home.heroCardIn,
+      heroCardCost: t.home.heroCardCost,
+      heroCardWait: t.home.heroCardWait,
+      heroCardSavings: t.home.heroCardSavings,
+      heroCardNote: t.home.heroCardNote,
+      savingsTitle: t.home.savingsTitle,
+      savingsSubtitle: t.home.savingsSubtitle,
+      savingsHome: t.home.savingsHome,
+      savingsIndia: t.home.savingsIndia,
+      savingsYouSave: t.home.savingsYouSave,
+      savingsNote: t.home.savingsNote,
+    },
+    prices: t.prices,
+    india: t.common.india,
+    viewDetails: t.common.viewDetails,
+    indiaWait: claims.indiaWait || t.procedure.calc.indiaWait,
+  };
   const featured = featuredOrder(hospitals.data, hospitals.source).slice(0, 6);
   const jci = hospitals.data.filter((h) => h.accreditations.includes('jci')).length;
   const nabh = hospitals.data.filter((h) => h.accreditations.includes('nabh')).length;
-  const countryLabel = countryName(country);
-  const procBySlug = new Map<string, Procedure>(procedures.data.map((p) => [p.slug, p]));
 
   const stats = [
     ...claims.stats
@@ -174,53 +199,7 @@ export default async function HomePage() {
             </form>
           </div>
 
-          {hero ? (
-            <div
-              className="relative rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-[0_24px_60px_-28px_rgb(16_42_67/0.35)] sm:p-7"
-              aria-labelledby="hero-compare-title"
-            >
-              <span aria-hidden="true" className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-champagne to-transparent" />
-              <p id="hero-compare-title" className="text-sm font-semibold tracking-[0.06em] text-slate-600 uppercase">
-                {t.home.heroCardTitle}
-              </p>
-              <p className="font-display mt-1 text-xl font-semibold text-slate-900">{hero.procedure.name}</p>
-              <dl className="mt-5 grid grid-cols-2 divide-x divide-slate-200 rounded-xl border border-slate-200">
-                <div className="p-4">
-                  <dt className="text-sm font-semibold text-slate-800">{fmt(t.home.heroCardIn, { place: countryLabel })}</dt>
-                  <dd className="mt-3 text-xs text-slate-600">{t.home.heroCardCost}</dd>
-                  <dd className="font-semibold text-slate-900">
-                    {formatMoneyRange(hero.result.home!.min, hero.result.home!.max, hero.result.currency, intl, { approx: true })}
-                  </dd>
-                  {hero.result.home!.wait ? (
-                    <>
-                      <dd className="mt-2 text-xs text-slate-600">{t.home.heroCardWait}</dd>
-                      <dd className="text-sm font-semibold text-slate-800">{hero.result.home!.wait}</dd>
-                    </>
-                  ) : null}
-                </div>
-                <div className="bg-primary-50/50 p-4">
-                  <dt className="text-sm font-semibold text-slate-800">{fmt(t.home.heroCardIn, { place: t.common.india })}</dt>
-                  <dd className="mt-3 text-xs text-slate-600">{t.home.heroCardCost}</dd>
-                  <dd className="font-semibold text-slate-900">
-                    {formatMoneyRange(hero.result.india.min, hero.result.india.max, hero.result.currency, intl, { approx: true })}
-                  </dd>
-                  <dd className="mt-2 text-xs text-slate-600">{t.home.heroCardSavings}</dd>
-                  <dd className="text-sm font-semibold text-health-700">
-                    {formatMoneyRange(hero.result.savings!.min, hero.result.savings!.max, hero.result.currency, intl, { approx: true })}{' '}
-                    ({hero.result.savings!.pctMin}–{hero.result.savings!.pctMax}%)
-                  </dd>
-                </div>
-              </dl>
-              <p className="mt-4 text-xs text-slate-600">{fmt(t.home.heroCardNote, { procedure: hero.procedure.name })}</p>
-              <Link
-                href={href(routes.procedure(hero.procedure.specialty.slug, hero.procedure.slug))}
-                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary-700 hover:text-primary-800"
-              >
-                {t.common.viewDetails}
-                <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
-              </Link>
-            </div>
-          ) : null}
+          {hero ? <HomeHeroComparison item={hero} defaultCountry={country} labels={comparisonLabels} /> : null}
         </div>
       </section>
 
@@ -301,45 +280,7 @@ export default async function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------------------ savings examples */}
-      {examples.some(Boolean) ? (
-        <section className="bg-surface py-12 sm:py-16" aria-labelledby="savings-title">
-          <div className="container-page">
-            <SectionHeader id="savings-title" title={t.home.savingsTitle} subtitle={fmt(t.home.savingsSubtitle, { country: countryLabel })} />
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {examples.map((ex) =>
-                ex ? (
-                  <li key={ex.procedure.slug} className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
-                    <h3 className="font-semibold text-slate-900">
-                      <Link
-                        href={href(routes.procedure(ex.procedure.specialty.slug, ex.procedure.slug))}
-                        className="after:absolute after:inset-0 after:content-[''] hover:text-primary-800"
-                      >
-                        {procBySlug.get(ex.procedure.slug)?.name ?? ex.procedure.name}
-                      </Link>
-                    </h3>
-                    <dl className="mt-4 space-y-2 text-sm">
-                      <div className="flex justify-between gap-3">
-                        <dt className="text-slate-600">{fmt(t.home.savingsHome, { country: countryLabel })}</dt>
-                        <dd className="text-end font-medium">{formatMoneyRange(ex.result.home!.min, ex.result.home!.max, ex.result.currency, intl, { approx: true })}</dd>
-                      </div>
-                      <div className="flex justify-between gap-3">
-                        <dt className="text-slate-600">{t.home.savingsIndia}</dt>
-                        <dd className="text-end font-medium">{formatMoneyRange(ex.result.india.min, ex.result.india.max, ex.result.currency, intl, { approx: true })}</dd>
-                      </div>
-                    </dl>
-                    <p className="mt-auto pt-4">
-                      <Badge tone="green" className="text-sm">
-                        {t.home.savingsYouSave}: {ex.result.savings!.pctMin}–{ex.result.savings!.pctMax}%
-                      </Badge>
-                    </p>
-                  </li>
-                ) : null,
-              )}
-            </ul>
-            <p className="mt-6 text-sm text-slate-600">{t.home.savingsNote}</p>
-          </div>
-        </section>
-      ) : null}
+      {examples.length ? <HomeExamples items={examples} defaultCountry={country} labels={comparisonLabels} /> : null}
 
       {/* --------------------------------------------------------------------- featured hospitals */}
       {featured.length ? (

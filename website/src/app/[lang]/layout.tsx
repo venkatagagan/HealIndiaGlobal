@@ -13,7 +13,9 @@ import { getDictionary, getLocale } from '@/i18n';
 import { dirOf, NATIVE_NAMES, OG_LOCALES } from '@/i18n/config';
 import { getEnabledLanguages, getEnabledLocales } from '@/i18n/languages';
 import { LocaleProvider } from '@/components/locale-provider';
-import { getSpecialties } from '@/lib/data/catalog';
+import { getFxRates, getSpecialties } from '@/lib/data/catalog';
+import { displayCurrencies } from '@/lib/cost';
+import { VisitorProvider } from '@/components/visitor-provider';
 import { organizationLd } from '@/lib/jsonld';
 import { favicon } from '@/lib/brand';
 import { SITE_NAME, SITE_NOINDEX, SITE_URL } from '@/config/site';
@@ -82,11 +84,12 @@ export async function generateStaticParams() {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
-  const [t, languages, specialties, site] = await Promise.all([
+  const [t, languages, specialties, site, fx] = await Promise.all([
     getDictionary(),
     getEnabledLanguages(),
     getSpecialties(),
     getSiteConfig(),
+    getFxRates(),
   ]);
   if (!languages.some((l) => l.code === locale)) notFound();
   const analytics = site.analytics;
@@ -95,6 +98,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={locale} dir={dirOf(locale)} className={`${inter.variable} ${manrope.variable}`}>
       <body className="flex min-h-dvh flex-col font-sans text-slate-900 antialiased">
         <LocaleProvider locale={locale}>
+        <VisitorProvider fx={fx.data} currencies={displayCurrencies(fx.data)}>
         <a
           href="#main"
           className="sr-only z-50 rounded-lg bg-white px-4 py-2 font-semibold text-primary-800 shadow focus:not-sr-only focus:fixed focus:start-4 focus:top-4"
@@ -117,6 +121,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         {analytics.provider === 'ga4' ? (
           <Ga4WithConsent measurementId={analytics.measurementId} labels={t.consent} privacyHref={href(routes.privacy)} />
         ) : null}
+        </VisitorProvider>
         </LocaleProvider>
       </body>
     </html>

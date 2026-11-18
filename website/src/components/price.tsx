@@ -1,14 +1,17 @@
-import { convertMinor, formatMoneyRange, formatMoney } from '@/lib/money';
+import { formatMoneyRange, formatMoney } from '@/lib/money';
 import type { FxTable } from '@/lib/data/types';
 import { intlLocale } from '@/i18n/format';
+import { ApproxPrice } from './approx-price';
 
-/** "₹2,50,000 – ₹4,50,000" plus an approximate conversion ("≈ $2,800 – $5,100") when FX is known. */
+/**
+ * "₹2,50,000 – ₹4,50,000" plus an approximate conversion ("≈ $2,800 – $5,100") into the visitor's display currency
+ * (components/visitor-provider.tsx; USD in the cached HTML). Pass `fx` to show the conversion.
+ */
 export function PriceRange({
   min,
   max,
   currency,
   fx,
-  approxCurrency = 'USD',
   approxLabel,
   className = '',
   stacked = false,
@@ -16,8 +19,8 @@ export function PriceRange({
   min: number | null;
   max: number | null;
   currency: string;
+  /** Any value turns the approximate conversion on (the rates come from the VisitorProvider). */
   fx?: FxTable;
-  approxCurrency?: string;
   approxLabel: string;
   className?: string;
   stacked?: boolean;
@@ -27,16 +30,10 @@ export function PriceRange({
   const hi = max ?? min ?? 0;
   const intl = intlLocale();
   const main = formatMoneyRange(lo, hi, currency, intl);
-  let approx: string | null = null;
-  if (fx && currency !== approxCurrency) {
-    const a = convertMinor(lo, currency, approxCurrency, fx);
-    const b = convertMinor(hi, currency, approxCurrency, fx);
-    if (a !== null && b !== null) approx = approxLabel.replace('{amount}', formatMoneyRange(a, b, approxCurrency, intl, { approx: true }));
-  }
   return (
     <span className={`${stacked ? 'flex flex-col' : 'inline'} ${className}`}>
       <span className="font-semibold whitespace-nowrap">{main}</span>
-      {approx ? <span className={`text-sm text-slate-600 ${stacked ? '' : 'ms-1.5'} whitespace-nowrap`}>({approx})</span> : null}
+      {fx ? <ApproxPrice min={lo} max={hi} currency={currency} label={approxLabel} stacked={stacked} /> : null}
     </span>
   );
 }
