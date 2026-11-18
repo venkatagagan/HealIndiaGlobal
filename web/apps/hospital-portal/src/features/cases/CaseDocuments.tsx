@@ -1,17 +1,23 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CheckCircle2, Download, FileText, XCircle } from 'lucide-react';
+import { CheckCircle2, Download, FileText, Share2, XCircle } from 'lucide-react';
 import { DOCUMENT_KIND_LABELS, documentsApi, errorMessage, type DocumentOut } from '@hig/shared/api';
 import { Button, DataTable, DateCell, StatusBadgeCell, TextCell, type DataTableColumn } from '@hig/shared/ui';
 // local ConfirmDialog: the shared one has no built-in "reason" note field
-import { ConfirmDialog } from '../../components/ui';
+import { Badge, ConfirmDialog } from '../../components/ui';
 import { useAppTranslation } from '../../i18n';
 import { formatBytes } from '../../lib/format';
 
-/** Case documents shared with the hospital: authorized download + verify / reject (POST /documents/{id}/verify). */
+/**
+ * Case documents shared with the hospital: authorized download + verify / reject (POST /documents/{id}/verify).
+ * Reports the patient shared from their records when asking for a quote (`case_documents`, phase 1) belong to
+ * the patient or to another case, so they are flagged "Shared report".
+ */
 export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[]; caseId: string }) {
   const { t } = useAppTranslation();
+  const isShared = (d: DocumentOut) => d.case_id !== caseId;
+  const sharedCount = documents.filter(isShared).length;
   const queryClient = useQueryClient();
   const [rejecting, setRejecting] = useState<DocumentOut | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -49,7 +55,19 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
       cell: (d) => (
         <span className="flex min-w-0 items-center gap-3">
           <FileText className="size-5 shrink-0 text-muted" aria-hidden />
-          <TextCell primary={<span className="font-medium">{d.file_name}</span>} secondary={`${formatBytes(d.size_bytes)}${d.uploaded_by_name ? ` · ${d.uploaded_by_name}` : ''}`} />
+          <TextCell
+            primary={
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="font-medium">{d.file_name}</span>
+                {isShared(d) && (
+                  <Badge tone="violet" className="gap-1">
+                    <Share2 className="size-3" aria-hidden /> {t('cases.documents.sharedBadge')}
+                  </Badge>
+                )}
+              </span>
+            }
+            secondary={`${formatBytes(d.size_bytes)}${d.uploaded_by_name ? ` · ${d.uploaded_by_name}` : ''}`}
+          />
         </span>
       ),
     },
@@ -120,6 +138,11 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
           <div className="border-b border-border px-4 py-3 sm:px-5">
             <h2 className="text-base font-semibold text-fg">{t('cases.documents.title')}</h2>
             <p className="text-sm text-muted">{t('cases.documents.description')}</p>
+            {sharedCount > 0 && (
+              <p className="mt-1 flex items-center gap-1.5 text-sm text-accent-ink">
+                <Share2 className="size-4" aria-hidden /> {t('cases.documents.sharedSummary', { count: sharedCount })}
+              </p>
+            )}
           </div>
         }
         caption={t('cases.documents.title')}

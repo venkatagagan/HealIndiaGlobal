@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { MessageSquareQuote } from 'lucide-react';
+import { BadgeCheck, MessageSquareQuote } from 'lucide-react';
 import { hospitalPortalApi, type ReviewOut } from '@hig/shared/api';
-import { Card, CardBody, EmptyState, ErrorState, PageHeader, Skeleton, Stars, StatusBadge, Tabs } from '../../components/ui';
+import { Badge, Card, CardBody, EmptyState, ErrorState, PageHeader, Skeleton, Stars, StatusBadge, Tabs } from '../../components/ui';
 import { formatNumber } from '@hig/shared/lib';
 import { useAppTranslation } from '../../i18n';
 import { formatDate } from '../../lib/format';
@@ -89,16 +89,30 @@ export function ReviewsPage() {
                 {shown.map((r) => (
                   <li key={r.id} className="px-5 py-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Stars value={r.rating} />
                         {r.title && <span className="font-semibold text-slate-900 dark:text-white">{r.title}</span>}
                       </div>
-                      {r.status && r.status !== 'published' && <StatusBadge status={r.status} />}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {r.verified_patient && (
+                          <span title={t('reviews.verifiedPatientHint')}>
+                            <Badge tone="green" className="gap-1">
+                              <BadgeCheck className="size-3.5" aria-hidden /> {t('reviews.verifiedPatient')}
+                            </Badge>
+                          </span>
+                        )}
+                        {r.status && r.status !== 'published' && <StatusBadge status={r.status} />}
+                      </div>
                     </div>
+                    {r.treatment_name && (
+                      <p className="mt-1 text-xs font-medium text-slate-600 dark:text-slate-300">
+                        {t('reviews.treatment', { name: r.treatment_name })}
+                      </p>
+                    )}
                     {r.body && <p className="mt-2 text-sm whitespace-pre-line text-slate-700 dark:text-slate-300">{r.body}</p>}
                     <p className="mt-2 text-xs text-slate-500">
                       {r.patient_name ?? t('common.patient')} · {formatDate(r.created_at)}
-                      {r.doctor_id && doctorName.get(r.doctor_id) ? ` · ${doctorName.get(r.doctor_id)}` : ''}
+                      {(r.doctor_name ?? (r.doctor_id ? doctorName.get(r.doctor_id) : undefined)) ? ` · ${r.doctor_name ?? doctorName.get(r.doctor_id!)}` : ''}
                     </p>
                   </li>
                 ))}

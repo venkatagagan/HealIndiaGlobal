@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { Download, ShieldAlert, Siren } from 'lucide-react';
+import { AlarmClock, Download, ShieldAlert, Siren } from 'lucide-react';
 import {
   casesApi,
   CASE_STATUSES,
@@ -40,7 +40,7 @@ const FILTERS = {
   from: filterParam.date(),
   to: filterParam.date(),
 };
-const SORT_KEYS = ['created_at', 'updated_at', 'case_number', 'status'] as const;
+const SORT_KEYS = ['created_at', 'updated_at', 'case_number', 'status', 'quote_due_at'] as const;
 const QUICK_STATUSES: CaseStatus[] = ['enquiry', 'quoted', 'accepted', 'booked', 'in_treatment', 'completed'];
 const URGENT: ('urgent' | 'emergency')[] = ['urgent', 'emergency'];
 
@@ -97,6 +97,7 @@ export function CasesPage() {
   ];
   const quickValue =
     filters.status.length === 0 ? '' : filters.status.length === 1 && QUICK_STATUSES.includes(filters.status[0]!) ? filters.status[0]! : null;
+  const respondFirst = table.sortParam === 'quote_due_at';
   const urgentOnly = filters.urgency.length === URGENT.length && URGENT.every((u) => filters.urgency.includes(u));
 
   return (
@@ -105,6 +106,15 @@ export function CasesPage() {
         title={t('cases.list.title')}
         description={t('cases.list.description')}
         actions={
+          <>
+          <Button
+            variant={respondFirst ? 'primary' : 'outline'}
+            leftIcon={<AlarmClock className="size-4" aria-hidden />}
+            aria-pressed={respondFirst}
+            onClick={() => table.setSort(respondFirst ? { key: 'created_at', direction: 'desc' } : { key: 'quote_due_at', direction: 'asc' })}
+          >
+            {t('cases.respondBy.sortButton')}
+          </Button>
           <Button
             variant={urgentOnly ? 'primary' : 'outline'}
             leftIcon={<Siren className="size-4" aria-hidden />}
@@ -113,6 +123,7 @@ export function CasesPage() {
           >
             {urgentOnly ? t('cases.list.showingUrgentOnly') : t('cases.list.urgentAndEmergency')}
           </Button>
+          </>
         }
       />
       <DataTable
