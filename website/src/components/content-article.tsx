@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { Dictionary } from '@/i18n';
 import { fmt, formatDate } from '@/i18n/format';
 import { requestLocale } from '@/i18n/request';
-import { resolveContentHref, tableOfContents, type ContentPage } from '@/lib/content';
+import { contentLang, resolveContentHref, tableOfContents, type ContentPage } from '@/lib/content';
 import { TocNav } from './toc-nav';
 import { href } from '@/lib/routes';
 import { getReviewers, medicalReview, medicalWebPageLd } from '@/lib/medical-review';
@@ -55,6 +55,7 @@ export async function ContentArticle({
         <ContentNotices page={page} t={t} />
         <MedicalReviewByline review={review} t={t} />
         <MarkdownContent
+          {...contentLang(page)}
           resolveHref={(h) => resolveContentHref(page.path, h)}
           shiftHeadings={shiftHeadings}
           className="max-w-3xl"

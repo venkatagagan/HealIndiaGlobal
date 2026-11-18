@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getDictionary } from '@/i18n';
-import { faqContent, markdownToPlain, parseFaq, resolveContentHref } from '@/lib/content';
+import { contentLang, faqContent, markdownToPlain, parseFaq, resolveContentHref } from '@/lib/content';
 import { faqLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
@@ -68,7 +68,7 @@ export default async function FaqPage() {
                         <summary className="cursor-pointer font-semibold text-slate-900">
                           <h3 className="inline">{markdownToPlain(item.question)}</h3>
                         </summary>
-                        <MarkdownContent resolveHref={(h) => resolveContentHref(page!.path, h)} className="mt-3 text-base">
+                        <MarkdownContent {...contentLang(page!)} resolveHref={(h) => resolveContentHref(page!.path, h)} className="mt-3 text-base">
                           {item.answer}
                         </MarkdownContent>
                       </details>

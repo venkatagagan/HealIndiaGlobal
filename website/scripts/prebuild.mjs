@@ -5,7 +5,8 @@
  * 1. Long-form Markdown: ../content/**.md  -> content-snapshot/content/  (images -> public/content-assets/)
  * 2. Legal drafts:       ../docs/legal/*.md -> content-snapshot/legal/
  * 3. Brand assets:       ../design/** (web images) -> public/brand/ + src/data/brand-manifest.json
- * 4. Marketing claims:   ../content/site/marketing.json -> src/data/marketing.json (editable claims, INTEGRATION_BACKLOG #14)
+ * 4. Marketing claims:   ../content/site/marketing.json (+ marketing.<lng>.json under `translations`) -> src/data/marketing.json
+ *                        (editable claims, INTEGRATION_BACKLOG #14)
  *    Medical reviewers:  ../content/site/reviewers.json -> src/data/reviewers.json (health-page review bylines)
  * 5. Fallback catalogue: src/data/seed-data.json is (re)exported from ../backend/scripts/seed_data when a Python
  *    interpreter is configured (PYTHON env var or backend/.venv) and the seed is newer - or always with --seed.
@@ -212,8 +213,15 @@ function syncMarketing() {
     return;
   }
   const data = JSON.parse(fs.readFileSync(MARKETING_SRC, 'utf8'));
+  // Translated text (india_wait, testimonials) from content/site/marketing.<lng>.json (content/README.md section 8).
+  const translations = {};
+  for (const lng of ['ar', 'fr', 'bn', 'ru']) {
+    const file = path.join(CONTENT_SRC, 'site', `marketing.${lng}.json`);
+    if (fs.existsSync(file)) translations[lng] = JSON.parse(fs.readFileSync(file, 'utf8'));
+  }
+  if (Object.keys(translations).length) data.translations = translations;
   writeJson(MARKETING_JSON, data);
-  log(`marketing: claims synced (claims_verified=${data.claims_verified === true})`);
+  log(`marketing: claims synced (claims_verified=${data.claims_verified === true}, translations: ${Object.keys(translations).join(', ') || 'none'})`);
 }
 
 /** Medical reviewers credited on health pages; invalid JSON fails the build loudly. */

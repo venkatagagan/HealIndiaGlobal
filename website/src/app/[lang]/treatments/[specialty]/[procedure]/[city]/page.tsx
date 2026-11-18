@@ -15,7 +15,7 @@ import { getProcedureCities, getProcedureCity, procedureCityStatus, type Procedu
 import { getReviewers } from '@/lib/medical-review';
 import { growthWebPageLd, hospitalItemListLd } from '@/lib/growth/jsonld';
 import { travelNotes } from '@/lib/growth/travel';
-import { resolveContentHref } from '@/lib/content';
+import { contentLang, resolveContentHref } from '@/lib/content';
 import type { DoctorCard as Doctor, FxTable } from '@/lib/data/types';
 import { PageHero } from '@/components/page-hero';
 import { AccreditationBadges, DoctorCard } from '@/components/cards';
@@ -280,7 +280,7 @@ export default async function ProcedureCityPage({ params }: Props) {
             <SectionHeader id="travel-title" title={`Arriving in ${d.name}`} subtitle={`From our ${d.name} city guide.`} />
             <div className="space-y-4">
               {travel.page.isDraft ? <InlineNote tone="amber" text={t.common.contentDraft} /> : null}
-              <MarkdownContent resolveHref={(h) => resolveContentHref(travel.page.path, h)} shiftHeadings={1} className="max-w-3xl">
+              <MarkdownContent {...contentLang(travel.page)} resolveHref={(h) => resolveContentHref(travel.page.path, h)} shiftHeadings={1} className="max-w-3xl">
                 {travel.markdown}
               </MarkdownContent>
               <Link href={href(routes.city(d.slug))} className="inline-block font-medium text-primary-700 underline underline-offset-4">
