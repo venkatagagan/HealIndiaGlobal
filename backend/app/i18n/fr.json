@@ -544,7 +544,9 @@
     "unknown_locale": "Cette langue n'est pas disponible.",
     "unknown_translation_key": "Cette clé de traduction n'existe pas.",
     "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé.",
-    "login_throttled": "Trop de tentatives de connexion échouées depuis ce réseau. Réessayez plus tard."
+    "login_throttled": "Trop de tentatives de connexion échouées depuis ce réseau. Réessayez plus tard.",
+    "organisation_suspended": "Le compte de votre organisation est suspendu. Veuillez contacter le support.",
+    "too_many_unpaid_bookings": "Veuillez payer ou annuler vos autres réservations impayées avant d'en faire une nouvelle."
   },
   "push": {
     "title": "{app_name}",

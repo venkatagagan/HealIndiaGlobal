@@ -544,7 +544,9 @@
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
     "default_language_required": "English is the default language and cannot be switched off.",
-    "login_throttled": "Too many failed sign-in attempts from this network. Try again later."
+    "login_throttled": "Too many failed sign-in attempts from this network. Try again later.",
+    "organisation_suspended": "Your organisation's account is suspended. Please contact support.",
+    "too_many_unpaid_bookings": "Please pay or cancel your other unpaid bookings before making a new one."
   },
   "push": {
     "title": "{app_name}",

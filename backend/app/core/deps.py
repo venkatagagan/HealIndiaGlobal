@@ -128,8 +128,12 @@ async def ensure_organisation_active(db: AsyncSession, user: User, request: Requ
             .all()
         )
         if statuses and all(_role_value(s) == HospitalStatus.SUSPENDED.value for s in statuses):
+            # clients show ``message`` (translated via ``errors.organisation_suspended``; English original
+            # in ``message_en``) and may use ``details.organisation`` for their own wording
             raise Forbidden(
-                "Your hospital's account is suspended. Please contact support.", code="organisation_suspended"
+                "Your hospital's account is suspended. Please contact support.",
+                code="organisation_suspended",
+                details={"organisation": "hospital"},
             )
         return
     agent_status = (
@@ -137,7 +141,9 @@ async def ensure_organisation_active(db: AsyncSession, user: User, request: Requ
     ).scalar_one_or_none()
     if agent_status is not None and _role_value(agent_status) == AgentStatus.SUSPENDED.value:
         raise Forbidden(
-            "Your agency account is suspended. Please contact support.", code="organisation_suspended"
+            "Your agency account is suspended. Please contact support.",
+            code="organisation_suspended",
+            details={"organisation": "agency"},
         )
 
 

@@ -291,3 +291,21 @@ Commercial / money texts - review before switching a language on:
 - `finance:nav.items.commissionChanges`, `finance:reviews.queue.commissionChanges`.
 - `admin:commissionApproval.*` (hospital/agent pages and Settings): `sentForApproval`, `note`, `settingCheckBody`
   (check the default rate against the signed commercial terms).
+
+## Server texts added by the backend gap fixes (2026-11-18)
+
+`backend/app/i18n/<lng>.json`, all in en/ar/fr/bn/ru. Review before switching a language on:
+
+- Legal (privacy): `email.privacy_request.received_body` (mentions the Data Protection Board of India - keep the
+  English name in brackets), `received_subject`, `received_title`, `button`. Status updates by email reuse
+  `notifications.privacy_request_updated.*`.
+- Money: `notifications.refund_requested.*` (patient), `notifications.refund_approval_needed.*`,
+  `notifications.refund_awaiting_payout.*`, `notifications.refund_payout_recorded.*` (finance, bank payout
+  maker-checker), `notifications.commission_change_requested.*`, `notifications.commission_default_change_requested.*`,
+  `notifications.commission_default_changed.*` (commercial terms), `errors.too_many_unpaid_bookings`.
+- Security: `email.account_locked.*` (sign-ins paused after failed attempts; advice to change the password and turn
+  on two-factor authentication), `errors.login_throttled`, `errors.organisation_suspended`.
+- Guests: `email.guest_code.*` (verification code by email and SMS: "do not share it"),
+  `email.intro_scheduled.*` (free 15-minute video call).
+- Aftercare: `notifications.aftercare_checkin_due.*` (no health details by design).
+- Push (lock-screen text, deliberately generic - never health, document or payment details): `push.*`.

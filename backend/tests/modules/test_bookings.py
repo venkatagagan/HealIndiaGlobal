@@ -535,3 +535,32 @@ async def test_bookings_filters_and_counts_are_scoped_per_role(db, client, auth_
     assert await visible(world.hospital_user, sort="-admission_date", payment="unpaid") == {
         agent_booking.booking_number
     }
+
+
+async def test_at_most_three_unpaid_bookings_per_patient(db, client, auth_headers) -> None:
+    """SEC-018: a patient cannot hold more than 3 unpaid bookings (admission slots) at once."""
+    world = await make_world(db)
+    p_h = auth_headers(world.patient_user)
+    cases = [await _accepted_case(db, world) for _ in range(4)]
+    booking_ids = []
+    for case in cases[:3]:
+        r = await client.post(
+            f"{API}/bookings", json={"case_id": str(case.id), "admission_date": future(30)}, headers=p_h
+        )
+        assert r.status_code == 201, r.text
+        assert r.json()["status"] == "pending_payment"
+        booking_ids.append(r.json()["id"])
+    r = await client.post(
+        f"{API}/bookings", json={"case_id": str(cases[3].id), "admission_date": future(30)}, headers=p_h
+    )
+    assert r.status_code == 409 and r.json()["error"]["code"] == "too_many_unpaid_bookings"
+    assert r.json()["error"]["details"] == {"limit": 3}
+    # once one of them is paid, a new booking is possible again
+    paid = await db.get(Booking, uuid.UUID(booking_ids[0]))
+    assert paid is not None
+    paid.status = "confirmed"
+    await db.commit()
+    r = await client.post(
+        f"{API}/bookings", json={"case_id": str(cases[3].id), "admission_date": future(30)}, headers=p_h
+    )
+    assert r.status_code == 201, r.text
