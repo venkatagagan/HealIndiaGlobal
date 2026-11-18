@@ -5,7 +5,7 @@
  * or high AND India is cheaper at both ends of the range ({@link canShowSaving}); otherwise the card leads with
  * the wait time at home and the earliest date in India and makes no saving claim.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, CalendarCheck2, ExternalLink, Globe2, Hourglass, Info } from 'lucide-react';
 import type { CostHighlights as CostHighlightsData } from '@hig/shared/api';
@@ -15,7 +15,8 @@ import { useCostHighlights } from '../api/phase1';
 import { countryName, countryOptions } from '../lib/countries';
 import { paths } from '../lib/paths';
 import { cn, formatMoneyRange, formatNumber } from '../lib/shared';
-import { useHomeCountryPref, useViewerCurrency } from '../lib/viewer';
+import { useMe } from '../lib/session';
+import { rememberGuestCurrency, useHomeCountryPref, useViewerCurrency } from '../lib/viewer';
 import { Badge, Button, Card, CardBody, CardHeader, ErrorState, Select, Skeleton } from '../ui/primitives';
 import { useEarliestLabel } from './phase1';
 
@@ -209,12 +210,18 @@ function HighlightCard({ item, country }: { item: Item; country: string }) {
 
 export function CostHighlightsBlock({ className }: { className?: string }) {
   const { t } = useAppTranslation();
+  const me = useMe();
   const [country, setCountry] = useHomeCountryPref();
   const currency = useViewerCurrency();
   const [expanded, setExpanded] = useState(false);
   const [picking, setPicking] = useState(false);
-  const query = useCostHighlights({ country: country ?? undefined, currency, limit: 9 });
+  const isGuest = me.data?.is_guest ?? false;
+  // guests: the server picks the currency of the chosen / detected country (remembered for catalogue prices)
+  const query = useCostHighlights({ country: country ?? undefined, currency: isGuest ? undefined : currency, limit: 9 });
   const data = query.data;
+  useEffect(() => {
+    if (isGuest && data?.currency) rememberGuestCurrency(data.currency);
+  }, [isGuest, data?.currency]);
   const shown = data?.country_used ?? country ?? 'US';
   const shownName = countryName(shown);
   const items = data ? (expanded ? data.items : data.items.slice(0, COLLAPSED)) : [];

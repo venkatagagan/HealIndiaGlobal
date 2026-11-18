@@ -25,13 +25,26 @@ export function useHomeCountryPref(): [string | null, (code: string | null) => v
   return [value, set];
 }
 
+const GUEST_CURRENCY_KEY = 'display_currency';
+
+/** Remember the home-country currency the cost block resolved for a guest (they have no profile currency). */
+export function rememberGuestCurrency(currency: string | null | undefined): void {
+  const code = currency && /^[A-Z]{3}$/.test(currency) && currency !== 'INR' ? currency : null;
+  if (prefs.get(GUEST_CURRENCY_KEY) === code) return;
+  prefs.set(GUEST_CURRENCY_KEY, code);
+  for (const l of listeners) l();
+}
+
 /**
  * Currency for `?currency=`: the patient's preferred currency (signed-in patients get `display_*` in it anyway,
- * this keeps cached catalogue reads keyed by currency). Guests: undefined (amounts stay in INR).
+ * this keeps cached catalogue reads keyed by currency). Guests: the currency of their home country as resolved by
+ * "Your country vs India" (undefined until then - amounts stay in INR).
  */
 export function useViewerCurrency(): string | undefined {
   const me = useMe();
   const isGuest = me.data?.is_guest ?? true;
   const profile = usePatientProfile(!!me.data && !isGuest);
-  return profile.data?.preferred_currency ?? undefined;
+  const guestCurrency = useSyncExternalStore(subscribe, () => prefs.get(GUEST_CURRENCY_KEY), () => null);
+  if (!isGuest) return profile.data?.preferred_currency ?? undefined;
+  return guestCurrency ?? undefined;
 }
