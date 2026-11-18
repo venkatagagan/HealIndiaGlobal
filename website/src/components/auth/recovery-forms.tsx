@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { useState, type FormEvent } from 'react';
 import { apiPost } from '@/lib/auth-client';
 import { fmt } from '@/i18n/format';

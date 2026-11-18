@@ -22,8 +22,8 @@ export default async function ContactPage() {
   const { contact } = await getSiteConfig();
   const CONTACT_EMAIL = contact.email;
   const helplines = [
-    { label: 'Phone', value: contact.phoneDisplay, href: contact.phone ? `tel:${contact.phone}` : '' },
-    { label: 'WhatsApp', value: contact.whatsappDisplay, href: contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '' },
+    { label: t.contact.phoneLabel, value: contact.phoneDisplay, href: contact.phone ? `tel:${contact.phone}` : '' },
+    { label: t.contact.whatsappLabel, value: contact.whatsappDisplay, href: contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '' },
   ].filter((h) => h.href);
   const c = t.contact;
 
@@ -97,7 +97,7 @@ export default async function ContactPage() {
                 className="mt-3 inline-flex items-center gap-2 rounded-xl bg-red-700 px-4 py-2 text-sm font-semibold text-white hover:bg-red-800"
               >
                 <PhoneCall className="h-4 w-4" aria-hidden="true" />
-                {`Call ${contact.emergency}`}
+                {fmt(c.callNumber, { number: contact.emergency })}
               </a>
             ) : null}
             {helplines.length ? (

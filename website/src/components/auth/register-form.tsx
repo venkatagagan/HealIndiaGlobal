@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState, type FormEvent } from 'react';
 import { Building2, BriefcaseMedical, Info, LockKeyhole, UserRound } from 'lucide-react';

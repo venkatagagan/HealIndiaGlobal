@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { useState, type FormEvent } from 'react';
 import { apiPost, destinationFor, isPortalRole, rememberSession, type TokenOut } from '@/lib/auth-client';
 import { FormAlert, PasswordField, SubmitButton, TextField, passwordOk } from './fields';
