@@ -47,6 +47,42 @@ class CommissionRule(UUIDPkMixin, TimestampMixin, Base):
     created_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
 
 
+class CommissionChangeRequest(UUIDPkMixin, TimestampMixin, Base):
+    """SEC-044: a commission rate change waiting for a second approver (maker-checker).
+
+    ``target_type``: ``hospital`` / ``agent`` (their ``commission_rate_bps``) or ``commission_rule`` (a rule's
+    rate, dates or activation; new rules are created inactive and activated by the approval). ``changes``
+    holds the requested values, ``before`` the values the requester saw (an approval is refused when the
+    target changed since). At most one ``pending`` request per target; a new request supersedes
+    the old one."""
+
+    __tablename__ = "commission_change_requests"
+    __table_args__ = (
+        sa.Index("ix_commission_change_requests_target", "target_type", "target_id"),
+        sa.Index(
+            "uq_commission_change_requests_pending_target",
+            "target_type",
+            "target_id",
+            unique=True,
+            postgresql_where=sa.text("status = 'pending'"),
+        ),
+    )
+
+    target_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    target_id: Mapped[uuid.UUID] = mapped_column(sa.UUID(as_uuid=True), nullable=False)
+    changes: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, server_default=sa.text("'{}'::jsonb")
+    )
+    before: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, server_default=sa.text("'{}'::jsonb")
+    )
+    status: Mapped[str] = mapped_column(String(20), nullable=False, server_default="pending", index=True)
+    requested_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    decided_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reason: Mapped[str | None] = mapped_column(Text)
+
+
 class PayoutAccount(UUIDPkMixin, TimestampMixin, Base):
     __tablename__ = "payout_accounts"
     __table_args__ = (

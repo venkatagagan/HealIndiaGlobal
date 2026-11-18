@@ -268,7 +268,8 @@ async def create_commission_rule(
         rate_bps=body.rate_bps,
         effective_from=body.effective_from or _today(),
         effective_to=body.effective_to,
-        is_active=body.is_active,
+        # SEC-044: a new rule starts inactive; a second admin/finance user activates it by approving
+        is_active=False,
         created_by=actor.id,
     )
     db.add(rule)
@@ -282,6 +283,12 @@ async def create_commission_rule(
         after=body.model_dump(mode="json"),
         request=request,
     )
+    if body.is_active:
+        from app.modules.admin import commission_control
+
+        await commission_control.request_change(
+            db, actor, "commission_rule", rule.id, {"is_active": True}, request
+        )
     return rule
 
 
@@ -296,24 +303,17 @@ async def update_commission_rule(
     if rule is None:
         raise NotFound("Commission rule not found")
     changes = body.model_dump(exclude_unset=True)
-    before = {k: getattr(rule, k) for k in changes}
     for key, value in changes.items():
         if key in {"rate_bps", "effective_from", "is_active"} and value is None:
             raise BadRequest(f"{key} cannot be null", code="invalid_value")
-        setattr(rule, key, value)
-    if rule.effective_to is not None and rule.effective_to < rule.effective_from:
+    effective_from = changes.get("effective_from", rule.effective_from)
+    effective_to = changes.get("effective_to", rule.effective_to)
+    if effective_to is not None and effective_to < effective_from:
         raise BadRequest("effective_to must be on or after effective_from", code="invalid_value")
-    await db.flush()
-    await audit_log(
-        db,
-        actor=actor,
-        action="commission_rule.update",
-        entity_type="commission_rule",
-        entity_id=rule.id,
-        before=before,
-        after=changes,
-        request=request,
-    )
+    # SEC-044: every change to a rule (rate, dates, activation) waits for a second approver
+    from app.modules.admin import commission_control
+
+    await commission_control.request_change(db, actor, "commission_rule", rule.id, changes, request)
     return rule
 
 

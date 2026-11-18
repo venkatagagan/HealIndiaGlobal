@@ -74,6 +74,29 @@
       "body": "{inviter} vous a ajouté(e) à l'équipe de {hospital} en tant que {role}. Connectez-vous au portail hôpital pour commencer.",
       "default_inviter": "Un collègue",
       "button": "Ouvrir le portail hôpital"
+    },
+    "account_locked": {
+      "subject": "La connexion à votre compte {app_name} a été suspendue",
+      "title": "Connexion suspendue pendant {minutes} minutes",
+      "body": "Nous avons constaté plusieurs tentatives de connexion infructueuses à votre compte : les nouvelles connexions sont donc suspendues pendant {minutes} minutes. Vous restez connecté sur vos appareils.\n\nSi ce n'était pas vous, nous vous recommandons de changer votre mot de passe et d'activer l'authentification à deux facteurs."
+    },
+    "guest_code": {
+      "subject": "Votre code de vérification {app_name}",
+      "title": "Votre code de vérification",
+      "body": "Votre code est {code}.\n\nIl expire dans {minutes} minutes. Si vous ne l'avez pas demandé, vous pouvez ignorer cet e-mail.",
+      "sms": "Votre code {app_name} est {code}. Il expire dans {minutes} minutes. Ne le partagez pas."
+    },
+    "intro_scheduled": {
+      "subject": "Votre appel gratuit avec notre coordinateur médical",
+      "title": "Votre appel gratuit est réservé",
+      "body": "Votre appel vidéo de 15 minutes a lieu le {when}.\n\nRejoignez-le à cette heure avec le bouton ci-dessous. Aucune application ni aucun compte n'est nécessaire.",
+      "button": "Rejoindre l'appel vidéo"
+    },
+    "privacy_request": {
+      "received_subject": "Nous avons reçu votre demande {reference}",
+      "received_title": "Nous avons reçu votre demande",
+      "received_body": "Merci. Nous avons reçu votre demande concernant {kind} (référence {reference}). Nous vous répondrons d'ici le {date}. Si notre réponse ne vous satisfait pas, vous pouvez saisir le Data Protection Board of India.",
+      "button": "Politique de confidentialité"
     }
   },
   "notifications": {
@@ -470,6 +493,18 @@
     "aftercare_checkin_due": {
       "title": "Suivi de convalescence à remplir",
       "body": "Votre suivi de convalescence du jour {day} pour le dossier {case_number} est prêt. Il prend environ une minute et aide votre équipe soignante à suivre votre rétablissement."
+    },
+    "commission_change_requested": {
+      "title": "Modification de commission à approuver",
+      "body": "{name} a demandé de modifier la commission pour {target}. Un second membre de l'administration ou de la finance doit l'examiner et l'approuver avant son entrée en vigueur."
+    },
+    "commission_default_change_requested": {
+      "title": "Modification de la commission par défaut à approuver",
+      "body": "{name} a demandé de modifier un taux de commission par défaut. Un second membre de la finance doit l'examiner et l'approuver avant son entrée en vigueur."
+    },
+    "commission_default_changed": {
+      "title": "Taux de commission par défaut modifié",
+      "body": "{name} a approuvé une modification d'un taux de commission par défaut. Elle s'applique désormais aux nouvelles réservations."
     }
   },
   "errors": {
@@ -510,5 +545,16 @@
     "unknown_translation_key": "Cette clé de traduction n'existe pas.",
     "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé.",
     "login_throttled": "Trop de tentatives de connexion échouées depuis ce réseau. Réessayez plus tard."
+  },
+  "push": {
+    "title": "{app_name}",
+    "message": "Vous avez un nouveau message.",
+    "urgent": "Vous avez une mise à jour urgente. Veuillez ouvrir l'application.",
+    "payment": "Vous avez une mise à jour concernant un paiement.",
+    "trip": "Vous avez une mise à jour concernant votre voyage.",
+    "consultation": "Vous avez une mise à jour concernant une consultation.",
+    "team": "Vous avez un message de notre équipe.",
+    "enquiry": "Une nouvelle demande est arrivée depuis le site.",
+    "case": "Vous avez une mise à jour concernant votre dossier."
   }
 }

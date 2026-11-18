@@ -388,17 +388,34 @@ async def test_hospital_patch_commission_by_finance(client, db, make_user, auth_
     )
     assert r.status_code == 200, r.text
     body = r.json()
+    # SEC-044: the other fields apply at once, the rate waits for a second approver
     assert (body["commission_rate_bps"], body["settlement_cycle_days"], body["is_featured"]) == (
-        1200,
+        None,
         14,
         True,
     )
+    pending = body["pending_commission_change"]
+    assert pending["changes"] == {"commission_rate_bps": 1200} and pending["status"] == "pending"
+    checker = await make_user(role="admin")
+    r = await client.post(
+        f"{API}/admin/commission-changes/{pending['id']}/approve", headers=auth_headers(checker)
+    )
+    assert r.status_code == 200 and r.json()["status"] == "approved"
+    r = await client.get(f"{API}/admin/hospitals/{hospital.id}", headers=auth_headers(finance))
+    assert r.json()["commission_rate_bps"] == 1200 and r.json()["pending_commission_change"] is None
     r = await client.patch(
         f"{API}/admin/hospitals/{hospital.id}",
         json={"commission_rate_bps": None},
         headers=auth_headers(finance),
     )
-    assert r.status_code == 200 and r.json()["commission_rate_bps"] is None
+    assert r.status_code == 200 and r.json()["commission_rate_bps"] == 1200
+    pending = r.json()["pending_commission_change"]
+    r = await client.post(
+        f"{API}/admin/commission-changes/{pending['id']}/approve", headers=auth_headers(checker)
+    )
+    assert r.status_code == 200
+    r = await client.get(f"{API}/admin/hospitals/{hospital.id}", headers=auth_headers(finance))
+    assert r.json()["commission_rate_bps"] is None
     for bad in ({"commission_rate_bps": 10_001}, {"settlement_cycle_days": 0}, {}, {"is_featured": None}):
         r = await client.patch(
             f"{API}/admin/hospitals/{hospital.id}", json=bad, headers=auth_headers(finance)
@@ -408,7 +425,8 @@ async def test_hospital_patch_commission_by_finance(client, db, make_user, auth_
         f"{API}/admin/hospitals/{hospital.id}", json={"is_featured": False}, headers=auth_headers(support)
     )
     assert r.status_code == 403
-    assert (await _audit_actions(db, hospital.id)).count("hospital.update") == 2
+    actions = await _audit_actions(db, hospital.id)
+    assert actions.count("hospital.update") == 1 and actions.count("commission_change.approved") == 2
 
 
 # --------------------------------------------------------------------------------------------- agent flow
@@ -457,7 +475,11 @@ async def test_agent_approval_and_rejection(client, db, make_user, auth_headers,
         headers=auth_headers(finance),
     )
     assert r.status_code == 200, r.text
-    assert (r.json()["commission_rate_bps"], r.json()["tier"]) == (700, "gold")
+    # SEC-044: the tier applies at once, the rate waits for a second approver
+    assert (r.json()["commission_rate_bps"], r.json()["tier"]) == (None, "gold")
+    change_id = r.json()["pending_commission_change"]["id"]
+    r = await client.post(f"{API}/admin/commission-changes/{change_id}/approve", headers=h)
+    assert r.status_code == 200, r.text
     r = await client.patch(f"{API}/admin/agents/{pending.id}", json={"tier": "platinum"}, headers=h)
     assert r.status_code == 422
 
@@ -465,11 +487,20 @@ async def test_agent_approval_and_rejection(client, db, make_user, auth_headers,
     assert r.status_code == 200
     assert [(d["kind"], d["status"]) for d in r.json()["kyc_documents"]] == [("kyc_id_proof", "verified")]
     actions = await _audit_actions(db, pending.id)
-    assert actions == ["agent.approve", "agent.suspend", "agent.reinstate", "agent.update"]
+    assert sorted(actions) == sorted(
+        [
+            "agent.approve",
+            "agent.suspend",
+            "agent.reinstate",
+            "commission_change.requested",
+            "agent.update",
+            "commission_change.approved",
+        ]
+    )
     other_id = other.id
     db.expire_all()
     rows = await db.execute(select(func.count()).select_from(AuditLog).where(AuditLog.entity_type == "agent"))
-    assert rows.scalar_one() == 5
+    assert rows.scalar_one() == 7  # incl. commission_change.requested + approved
     fresh = await db.get(Agent, other_id)
     assert fresh is not None and fresh.status == AgentStatus.REJECTED
 

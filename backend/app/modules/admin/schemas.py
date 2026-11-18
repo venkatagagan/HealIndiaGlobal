@@ -295,6 +295,8 @@ class AdminDoctorOut(BaseModel):
 class AdminHospitalDetail(HospitalProfileOut):
     #: SEC-020: requested identity/accreditation changes awaiting review (PAN masked)
     pending_profile_values: dict[str, Any] = Field(default_factory=dict)
+    #: SEC-044: requested commission rate awaiting a second approver (``CommissionChangeOut``)
+    pending_commission_change: dict[str, Any] | None = None
     kyc_documents: list[DocumentOut] = Field(default_factory=list)
     members: list[HospitalMemberOut] = Field(default_factory=list)
     payout_accounts: list[PayoutAccountOut] = Field(default_factory=list)
@@ -351,6 +353,8 @@ class AdminAgentOut(BaseModel):
     user_status: UserStatus | None = None
     patients_count: int = 0
     kyc_documents: list[DocumentOut] | None = None
+    #: SEC-044: requested commission rate awaiting a second approver (``CommissionChangeOut``)
+    pending_commission_change: dict[str, Any] | None = None
 
 
 class AdminAgentUpdateIn(_In):

@@ -221,6 +221,9 @@ class CommissionRuleOut(_Out):
     specialty_name: str | None = None
     procedure_name: str | None = None
     agent_name: str | None = None
+    #: SEC-044: requested change awaiting a second approver (``CommissionChangeOut``); new rules are created
+    #: inactive with a pending activation
+    pending_change: dict[str, Any] | None = None
 
 
 class CommissionRuleIn(_In):

@@ -47,7 +47,14 @@ from app.models.payments import Installment, Invoice, Payment, PaymentOrder, Ref
 from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
 from app.models.screening import AIRequestLog, Screening, ScreeningMatch
 from app.models.sequences import NUMBER_SEQUENCES, next_number
-from app.models.settlements import CommissionRule, Payout, PayoutAccount, SettlementBatch, SettlementItem
+from app.models.settlements import (
+    CommissionChangeRequest,
+    CommissionRule,
+    Payout,
+    PayoutAccount,
+    SettlementBatch,
+    SettlementItem,
+)
 from app.models.travel import (
     AccommodationBooking,
     AccommodationHospitalLink,
@@ -91,6 +98,7 @@ __all__ = [
     "Case",
     "CaseStatusHistory",
     "ChecklistItem",
+    "CommissionChangeRequest",
     "CommissionRule",
     "Consent",
     "Consultation",

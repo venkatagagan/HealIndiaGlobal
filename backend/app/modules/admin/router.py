@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import date
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import StreamingResponse
@@ -27,7 +27,7 @@ from app.core.enums import (
 )
 from app.core.pagination import Page
 from app.models import User
-from app.modules.admin import catalog_admin, dashboard, listing, reports, service
+from app.modules.admin import catalog_admin, commission_control, dashboard, listing, reports, service
 from app.modules.admin.schemas import (
     AccommodationProviderIn,
     AccommodationProviderOut,
@@ -402,6 +402,45 @@ async def reinstate_agent(
     agent_id: uuid.UUID, request: Request, db: DbSession, actor: AdminUser
 ) -> AdminAgentOut:
     return await service.reinstate_agent(db, actor, agent_id, request)
+
+
+# ------------------------------------------------------------------------------ commission changes (SEC-044)
+@router.get("/admin/commission-changes", response_model=list[commission_control.CommissionChangeOut])
+async def list_commission_changes(
+    db: DbSession,
+    _: AdminOrFinanceUser,
+    status: Annotated[
+        Literal["pending", "approved", "rejected", "withdrawn", "superseded"] | None, Query()
+    ] = "pending",
+    target_type: Annotated[Literal["hospital", "agent", "commission_rule"] | None, Query()] = None,
+    target_id: uuid.UUID | None = None,
+) -> list[commission_control.CommissionChangeOut]:
+    """Commission rate changes awaiting (or decided by) a second approver."""
+    return await commission_control.list_changes(
+        db, status=status, target_type=target_type, target_id=target_id
+    )
+
+
+@router.post(
+    "/admin/commission-changes/{request_id}/approve", response_model=commission_control.CommissionChangeOut
+)
+async def approve_commission_change(
+    request_id: uuid.UUID, request: Request, db: DbSession, actor: AdminOrFinanceUser
+) -> commission_control.CommissionChangeOut:
+    """Apply a pending commission change; an admin/finance user other than the requester."""
+    row = await commission_control.approve_change(db, actor, request_id, request)
+    return (await commission_control.change_outs(db, [row]))[0]
+
+
+@router.post(
+    "/admin/commission-changes/{request_id}/reject", response_model=commission_control.CommissionChangeOut
+)
+async def reject_commission_change(
+    request_id: uuid.UUID, body: OptionalReasonIn, request: Request, db: DbSession, actor: AdminOrFinanceUser
+) -> commission_control.CommissionChangeOut:
+    """Reject a pending change (the requester withdraws it)."""
+    row = await commission_control.reject_change(db, actor, request_id, body.reason, request)
+    return (await commission_control.change_outs(db, [row]))[0]
 
 
 @router.patch("/admin/agents/{agent_id}", response_model=AdminAgentOut)

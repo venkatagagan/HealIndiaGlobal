@@ -347,6 +347,9 @@ async def _revoke_sessions(db: AsyncSession, user_id: uuid.UUID) -> int:
         .values(revoked_at=func.now())
         .execution_options(synchronize_session=False)
     )
+    from app.core import realtime
+
+    realtime.queue_close_sessions(db, user_id)  # SEC-031: open sockets close after the commit
     return int(getattr(result, "rowcount", 0) or 0)
 
 
@@ -625,8 +628,12 @@ async def get_hospital_detail(db: AsyncSession, hospital_id: uuid.UUID) -> Admin
     cases_count = (
         await db.execute(select(func.count(Case.id)).where(Case.hospital_id == hospital.id))
     ).scalar_one()
+    from app.modules.admin import commission_control
+
+    pending_rate = (await commission_control.pending_for(db, "hospital", [hospital.id])).get(hospital.id)
     return AdminHospitalDetail(
         **profile.model_dump(),
+        pending_commission_change=pending_rate.model_dump(mode="json") if pending_rate else None,
         kyc_documents=await documents_out(db, docs),
         members=[
             HospitalMemberOut(
@@ -964,10 +971,20 @@ async def update_hospital(
     body: AdminHospitalUpdateIn,
     request: Request | None,
 ) -> AdminHospitalDetail:
+    from app.modules.admin import commission_control
+
     hospital: Hospital = await _lock(db, Hospital, hospital_id, "Hospital")
     before = _hospital_snapshot(hospital)
-    for field in body.model_fields_set:
+    for field in body.model_fields_set - {"commission_rate_bps"}:
         setattr(hospital, field, getattr(body, field))
+    if "commission_rate_bps" in body.model_fields_set:
+        # SEC-044: the rate needs a second approver; the other fields apply now
+        await commission_control.request_change(
+            db, actor, "hospital", hospital.id, {"commission_rate_bps": body.commission_rate_bps}, request
+        )
+    if not body.model_fields_set - {"commission_rate_bps"}:
+        await db.commit()
+        return await get_hospital_detail(db, hospital_id)
     return await _finish_hospital_change(db, actor, hospital, "hospital.update", before, request)
 
 
@@ -1007,9 +1024,13 @@ async def _agent_outs(
         for d in docs:
             if d.agent_id is not None:
                 docs_by_agent[d.agent_id].append(d)
+    from app.modules.admin import commission_control
+
+    pending_rates = await commission_control.pending_for(db, "agent", [a.id for a in agents])
     out: list[AdminAgentOut] = []
     for a in agents:
         u = users.get(a.user_id)
+        pending_rate = pending_rates.get(a.id)
         out.append(
             AdminAgentOut(
                 id=a.id,
@@ -1033,6 +1054,7 @@ async def _agent_outs(
                 user_status=u.status if u else None,
                 patients_count=int(counts.get(a.id, 0)),
                 kyc_documents=await documents_out(db, docs_by_agent.get(a.id, [])) if with_docs else None,
+                pending_commission_change=pending_rate.model_dump(mode="json") if pending_rate else None,
             )
         )
     return out
@@ -1194,10 +1216,20 @@ async def reinstate_agent(
 async def update_agent(
     db: AsyncSession, actor: User, agent_id: uuid.UUID, body: AdminAgentUpdateIn, request: Request | None
 ) -> AdminAgentOut:
+    from app.modules.admin import commission_control
+
     agent: Agent = await _lock(db, Agent, agent_id, "Agent")
     before = _agent_snapshot(agent)
-    for field in body.model_fields_set:
+    for field in body.model_fields_set - {"commission_rate_bps"}:
         setattr(agent, field, getattr(body, field))
+    if "commission_rate_bps" in body.model_fields_set:
+        # SEC-044: the rate needs a second approver; the tier applies now
+        await commission_control.request_change(
+            db, actor, "agent", agent.id, {"commission_rate_bps": body.commission_rate_bps}, request
+        )
+    if not body.model_fields_set - {"commission_rate_bps"}:
+        await db.commit()
+        return await get_agent(db, agent_id)
     return await _finish_agent_change(db, actor, agent, "agent.update", before, request)
 
 
@@ -1249,7 +1281,25 @@ async def list_settings(db: AsyncSession) -> list[PlatformSettingOut]:
 
 
 # SEC-011: keys whose change needs a second finance approver (maker-checker) and alerts every finance user.
-DUAL_CONTROL_KEYS: frozenset[str] = frozenset({"bank_transfer_details"})
+# SEC-044: the default commission rates too.
+DUAL_CONTROL_KEYS: frozenset[str] = frozenset(
+    {"bank_transfer_details", "default_commission_bps", "default_agent_commission_bps"}
+)
+# notification texts per dual-control key (requested / applied)
+_DUAL_CONTROL_TEXTS: dict[str, tuple[str, str]] = {
+    "bank_transfer_details": (
+        "notifications.bank_details_change_requested",
+        "notifications.bank_details_changed",
+    ),
+    "default_commission_bps": (
+        "notifications.commission_default_change_requested",
+        "notifications.commission_default_changed",
+    ),
+    "default_agent_commission_bps": (
+        "notifications.commission_default_change_requested",
+        "notifications.commission_default_changed",
+    ),
+}
 PENDING_SUFFIX = "__pending"
 
 
@@ -1321,13 +1371,7 @@ async def _request_setting_change(
         after={"request_id": request_id, "value": audit_safe_value(key, value)},
         request=request,
     )
-    await _notify_finance(
-        db,
-        actor,
-        key,
-        "notifications.bank_details_change_requested",
-        request_id=request_id,
-    )
+    await _notify_finance(db, actor, key, _DUAL_CONTROL_TEXTS[key][0], request_id=request_id)
     clear_settings_cache()
     await db.commit()
     return await _setting_out(db, key)
@@ -1367,13 +1411,7 @@ async def approve_setting_change(
         after={"request_id": data.get("id"), "requested_by": data.get("requested_by")},
         request=request,
     )
-    await _notify_finance(
-        db,
-        actor,
-        key,
-        "notifications.bank_details_changed",
-        request_id=str(data.get("id")),
-    )
+    await _notify_finance(db, actor, key, _DUAL_CONTROL_TEXTS[key][1], request_id=str(data.get("id")))
     clear_settings_cache()
     await db.commit()
     return await _setting_out(db, key)
