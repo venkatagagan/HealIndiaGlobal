@@ -1052,7 +1052,9 @@
       "country": "Pays",
       "homeCost": "Coût dans le pays d'origine",
       "wait": "Attente",
-      "source": "Source"
+      "source": "Source",
+      "priceYear": "Année",
+      "confidence": "Fiabilité"
     },
     "fields": {
       "name": "Nom",
@@ -1084,7 +1086,15 @@
       "waitTime": "Délai d'attente habituel",
       "waitTimeHint": "par ex. 3 à 6 mois",
       "source": "Source",
-      "sourceHint": "Origine du chiffre"
+      "sourceHint": "Origine du chiffre",
+      "sourceUrl": "Lien de la source",
+      "sourceUrlHint": "Page web ou rapport d'où provient le prix (https://…)",
+      "priceYear": "Année du prix",
+      "priceYearHint": "Année à laquelle s'applique le prix de la source, par ex. 2025",
+      "confidence": "Fiabilité",
+      "confidenceHint": "Degré de fiabilité de la source pour ce pays",
+      "waitSource": "Source du délai d'attente",
+      "waitSourceHint": "Origine du délai d'attente habituel"
     },
     "entities": {
       "specialty": "spécialité",
@@ -1107,7 +1117,15 @@
       "stayValue": "{{stay}} / {{recovery}} jours"
     },
     "benchmarks": {
-      "description": "Coût habituel à la charge du patient dans son pays d'origine ; sert à calculer les économies affichées aux patients."
+      "description": "Coût habituel à la charge du patient dans son pays d'origine ; sert à calculer les économies affichées aux patients.",
+      "priceYear": "Prix de {{year}}",
+      "waitSource": "Attente : {{source}}",
+      "noConfidence": "Non évaluée"
+    },
+    "confidence": {
+      "high": "Élevée",
+      "medium": "Moyenne",
+      "low": "Faible"
     }
   },
   "content": {
@@ -1508,7 +1526,10 @@
     "audit": "Journal d'audit",
     "moderation": "Signalements",
     "enquiries": "Demandes du site",
-    "privacy": "Demandes de confidentialité"
+    "privacy": "Demandes de confidentialité",
+    "reviews": "Avis",
+    "introCalls": "Appels découverte gratuits",
+    "visaRules": "Règles de visa"
   },
   "ui": {
     "loading": "Chargement…",
@@ -1991,5 +2012,557 @@
       "tagsNote": "Le texte anglais signale les liens ou les mots en gras avec des balises numérotées comme <0>…</0>. Votre texte est enregistré en texte brut : ces balises sont supprimées et le lien ou le gras est perdu.",
       "plainText": "Texte brut uniquement : le HTML est supprimé à l'enregistrement. Chaque modification est enregistrée dans le journal d'audit."
     }
+  },
+  "security": {
+    "approve": "Approuver",
+    "reject": "Refuser",
+    "withdraw": "Retirer",
+    "requestedByYou": "vous",
+    "requestedByOther": "un autre utilisateur finance",
+    "requestedAtBy": "Demandé {{when}} par {{name}}",
+    "needsSecondApprover": "Un second utilisateur finance doit approuver cette modification.",
+    "financeOnly": "Seule l'équipe finance peut approuver ou refuser cette modification.",
+    "diff": {
+      "caption": "Valeurs actuelles et proposées",
+      "field": "Champ",
+      "current": "Actuelle",
+      "proposed": "Proposée",
+      "removed": "(supprimée)"
+    },
+    "fx": {
+      "pendingTitle_one": "{{count}} modification de taux de change est en attente d'approbation",
+      "pendingTitle_other": "{{count}} modifications de taux de change sont en attente d'approbation",
+      "pendingBody": "Les modifications de plus de 10 % ne sont appliquées qu'après l'approbation d'un second utilisateur finance. D'ici là, les paiements utilisent le taux actuel.",
+      "pendingBadge": "En attente : ₹{{rate}}",
+      "approved": "Nouveau taux {{currency}} approuvé et appliqué.",
+      "rejected": "Modification en attente du taux {{currency}} abandonnée.",
+      "dualControlNote": "Une modification de plus de 10 % attend l'approbation d'un second utilisateur finance.",
+      "financeOnlyNote": "Seuls les utilisateurs finance peuvent modifier les taux de change."
+    },
+    "setting": {
+      "pendingTitle": "Modification en attente d'un second approbateur",
+      "checkBody": "Vérifiez chaque champ modifié par rapport à la confirmation de la banque avant d'approuver.",
+      "dualControlNote": "Chaque modification n'est appliquée qu'après l'approbation d'un second utilisateur finance.",
+      "sentForApproval": "{{label}} : modification envoyée pour approbation par un second utilisateur finance.",
+      "approved": "{{label}} mis à jour.",
+      "rejected": "Modification en attente de {{label}} abandonnée.",
+      "rejectTitle": "Refuser cette modification ?",
+      "withdrawTitle": "Retirer votre modification ?",
+      "rejectDescription": "La valeur actuelle reste en vigueur. Le motif est conservé dans le journal d'audit.",
+      "rejectReason": "Motif (facultatif)"
+    },
+    "profile": {
+      "title_one": "{{count}} modification de profil est en attente de vérification",
+      "title_other": "{{count}} modifications de profil sont en attente de vérification",
+      "body": "L'hôpital a demandé à modifier ses informations d'identité ou d'accréditation. Les patients continuent de voir les valeurs actuelles jusqu'à votre approbation.",
+      "approve": "Approuver les modifications",
+      "reject": "Refuser les modifications",
+      "approveTitle": "Approuver ces modifications de profil ?",
+      "rejectTitle": "Refuser ces modifications de profil ?",
+      "approveMessage": "Les nouvelles informations sont publiées sur le profil de {{name}}. Vérifiez-les d'abord par rapport aux documents KYC.",
+      "rejectMessage": "Les modifications demandées pour {{name}} sont abandonnées et les informations actuelles sont conservées.",
+      "approved": "Modifications de profil approuvées.",
+      "rejected": "Modifications de profil refusées.",
+      "fields": {
+        "name": "Nom de l'hôpital",
+        "legal_name": "Raison sociale",
+        "gstin": "GSTIN",
+        "pan": "PAN",
+        "email": "E-mail",
+        "website": "Site web",
+        "accreditations": "Accréditations"
+      }
+    }
+  },
+  "accreditations": {
+    "tab": "Accréditations",
+    "title": "Accréditations",
+    "description": "Certificats déclarés par l'hôpital. Seuls les certificats vérifiés et non expirés sont affichés aux patients.",
+    "add": "Ajouter une accréditation",
+    "empty": "Aucune accréditation",
+    "emptyDescription": "Ajoutez les certificats JCI, NABH ou autres de l'hôpital pour les afficher sur son profil une fois vérifiés.",
+    "status": {
+      "public": "Vérifiée · affichée publiquement",
+      "verifiedExpired": "Vérifiée · expirée",
+      "unverified": "Non vérifiée"
+    },
+    "expiry": {
+      "expired_one": "Expiré il y a {{count}} jour",
+      "expired_other": "Expiré il y a {{count}} jours",
+      "today": "Expire aujourd'hui",
+      "soon_one": "Expire dans {{count}} jour",
+      "soon_other": "Expire dans {{count}} jours"
+    },
+    "expiryTitle": "Certificats à renouveler",
+    "expiredCount_one": "{{count}} certificat a expiré et n'est plus affiché aux patients.",
+    "expiredCount_other": "{{count}} certificats ont expiré et ne sont plus affichés aux patients.",
+    "soonCount_one": "{{count}} certificat expire dans les {{days}} jours.",
+    "soonCount_other": "{{count}} certificats expirent dans les {{days}} jours.",
+    "unverifiedCount_one": "{{count}} accréditation est en attente de vérification.",
+    "unverifiedCount_other": "{{count}} accréditations sont en attente de vérification.",
+    "certificateNo": "Certificat {{number}}",
+    "noCertificateNo": "Aucun numéro de certificat",
+    "validUntil": "Valable jusqu'au {{date}}",
+    "noExpiry": "Aucune date d'expiration",
+    "verifiedOn": "Vérifiée le {{date}}",
+    "certificate": "Certificat",
+    "verify": "Vérifier",
+    "unverify": "Retirer la vérification",
+    "cannotVerifyExpired": "Un certificat expiré ne peut pas être vérifié. Demandez à l'hôpital le certificat renouvelé.",
+    "editLabel": "Modifier {{body}}",
+    "deleteLabel": "Supprimer {{body}}",
+    "verifyHint": "Ne vérifiez qu'après avoir contrôlé le certificat sur le site web ou le registre de l'organisme d'accréditation.",
+    "deleteTitle": "Supprimer cette accréditation ?",
+    "deleteMessage": "{{body}} est retiré de l'hôpital. Cette action est irréversible.",
+    "delete": "Supprimer",
+    "toast": {
+      "verified": "{{body}} vérifié.",
+      "unverified": "Vérification de {{body}} retirée.",
+      "deleted": "Accréditation supprimée.",
+      "created": "Accréditation ajoutée.",
+      "updated": "Accréditation mise à jour."
+    },
+    "form": {
+      "newTitle": "Ajouter une accréditation",
+      "editTitle": "Modifier l'accréditation",
+      "body": "Organisme d'accréditation",
+      "choose": "Choisir…",
+      "other": "Autre",
+      "code": "Code court",
+      "codeHint": "Lettres, chiffres et tirets, par ex. cap ou iso-9001",
+      "bodyError": "Choisissez un organisme ou saisissez un code court (2 à 20 lettres, chiffres ou tirets).",
+      "certificateNumber": "Numéro de certificat",
+      "validUntil": "Valable jusqu'au",
+      "reverifyNote": "L'enregistrement des modifications retire la vérification. Vérifiez à nouveau après avoir contrôlé les nouvelles informations.",
+      "certificateNote": "Les certificats qui expirent dans les {{days}} jours sont signalés ici et sur le portail de l'hôpital.",
+      "save": "Enregistrer les modifications",
+      "create": "Ajouter"
+    }
+  },
+  "reviews": {
+    "title": "Avis",
+    "description": "Avis des patients sur les hôpitaux et les médecins. Publiez-les après avoir vérifié qu'ils respectent les règles relatives aux avis ; masquez les avis injurieux ou mensongers en indiquant un motif.",
+    "all": "Tous",
+    "statusFilter": "Statut de l'avis",
+    "hospitalFilter": "Hôpital",
+    "status": {
+      "pending": "En attente",
+      "published": "Publié",
+      "hidden": "Masqué"
+    },
+    "columns": {
+      "review": "Avis",
+      "hospital": "Hôpital",
+      "patient": "Patient",
+      "status": "Statut",
+      "submitted": "Envoyé"
+    },
+    "stars_one": "{{count}} étoile sur 5",
+    "stars_other": "{{count}} étoiles sur 5",
+    "noText": "Aucun avis écrit",
+    "anonymous": "Patient anonyme",
+    "verifiedPatient": "Patient vérifié",
+    "notVerified": "Non vérifié",
+    "openRow": "Ouvrir l'avis sur {{hospital}}",
+    "empty": "Aucun avis",
+    "emptyPending": "Aucun avis en attente",
+    "emptyDescription": "Les avis apparaissent ici lorsque des patients notent un traitement terminé.",
+    "drawerTitle": "Avis sur {{hospital}}",
+    "hide": "Masquer l'avis",
+    "publish": "Publier l'avis",
+    "republish": "Publier à nouveau",
+    "hideTitle": "Masquer cet avis ?",
+    "hideDescription": "L'avis est retiré des pages de l'hôpital et du médecin, et les notes sont recalculées. Le patient voit votre motif.",
+    "hiddenReason": "Masqué : motif affiché au patient",
+    "unverifiedTitle": "Non lié à une réservation terminée",
+    "unverifiedBody": "Le traitement de ce patient dans cet hôpital n'a pas pu être confirmé. Vérifiez attentivement le contenu avant de le publier.",
+    "adminOnly": "Seuls les administrateurs peuvent publier ou masquer des avis.",
+    "fields": {
+      "hospital": "Hôpital",
+      "doctor": "Médecin",
+      "treatment": "Traitement",
+      "patient": "Patient",
+      "booking": "Réservation",
+      "submitted": "Envoyé",
+      "published": "Publié",
+      "moderated": "Dernière modération"
+    },
+    "toast": {
+      "published": "Avis publié.",
+      "hidden": "Avis masqué."
+    }
+  },
+  "intro": {
+    "title": "Appels découverte gratuits",
+    "description": "Appels vidéo gratuits de 15 minutes demandés par des invités et de nouveaux patients. Planifiez-les, ajoutez des notes et marquez-les comme effectués.",
+    "all": "Tous",
+    "statusFilter": "Statut de l'appel",
+    "mineOnly": "Attribués à moi",
+    "status": {
+      "requested": "Demandé",
+      "scheduled": "Planifié",
+      "completed": "Effectué",
+      "cancelled": "Annulé"
+    },
+    "columns": {
+      "person": "Personne",
+      "contact": "Contact",
+      "when": "Date",
+      "coordinator": "Coordinateur",
+      "status": "Statut",
+      "requested": "Demandé"
+    },
+    "guest": "Invité",
+    "registered": "Patient inscrit",
+    "unassigned": "Non attribué",
+    "anyTime": "N'importe quand",
+    "window": "Préfère {{from}} – {{to}}",
+    "openRow": "Ouvrir l'appel découverte avec {{name}}",
+    "empty": "Aucun appel découverte",
+    "emptyDescription": "Les demandes d'appel découverte gratuit apparaissent ici.",
+    "drawerSubtitle": "Appel de {{minutes}} minutes · demandé le {{date}}",
+    "meetingLink": "Lien de la réunion",
+    "callAt": "Appel le {{when}}",
+    "copyLink": "Copier le lien",
+    "join": "Rejoindre",
+    "noQuestion": "Aucune question n'a été ajoutée.",
+    "attachments_one": "{{count}} élément partagé",
+    "attachments_other": "{{count}} éléments partagés",
+    "channels": {
+      "email": "E-mail",
+      "phone": "Téléphone"
+    },
+    "fields": {
+      "contact": "Contact",
+      "channel": "Vérifié par",
+      "preferred": "Créneau souhaité",
+      "timezone": "Fuseau horaire",
+      "coordinator": "Coordinateur",
+      "attachments": "Partagé avec la demande",
+      "question": "Question de la personne"
+    },
+    "form": {
+      "when": "Date et heure de l'appel",
+      "whenHint": "Votre heure locale. La personne reçoit un e-mail ou un SMS avec le lien.",
+      "coordinator": "Coordinateur",
+      "coordinatorPlaceholder": "Choisissez un coordinateur",
+      "meetingUrl": "Lien de la réunion",
+      "meetingUrlHint": "Laissez vide pour créer automatiquement un lien vidéo Jitsi.",
+      "notes": "Notes du coordinateur",
+      "notesHint": "Réservé au personnel. Ne collez pas de rapports médicaux ici.",
+      "invalidDate": "Saisissez une date et une heure valides.",
+      "pastDate": "Choisissez une heure dans le futur.",
+      "httpsOnly": "Le lien de la réunion doit commencer par https://",
+      "selfAssign": "Si aucun coordinateur n'est choisi, l'appel vous est attribué lorsque vous le planifiez."
+    },
+    "actions": {
+      "schedule": "Planifier l'appel",
+      "save": "Enregistrer",
+      "complete": "Marquer comme effectué",
+      "cancel": "Annuler l'appel"
+    },
+    "confirm": {
+      "cancelTitle": "Annuler cet appel découverte ?",
+      "cancelMessage": "La personne est informée que l'appel est annulé. Elle ne peut pas demander un autre appel découverte gratuit.",
+      "completeTitle": "Marquer cet appel comme effectué ?",
+      "completeMessage": "À utiliser une fois l'appel passé. Vos notes sont conservées avec la demande."
+    },
+    "toast": {
+      "scheduled": "Appel planifié le {{when}}.",
+      "saved": "Modifications enregistrées.",
+      "completed": "Appel marqué comme effectué.",
+      "cancelled": "Appel annulé.",
+      "noChanges": "Rien à enregistrer.",
+      "linkCopied": "Lien copié.",
+      "copyFailed": "Impossible de copier le lien."
+    }
+  },
+  "visaRules": {
+    "title": "Règles de visa",
+    "description": "Comment les patients de chaque nationalité obtiennent un visa pour se faire soigner en Inde, et les documents nécessaires. Les patients voient ce guide dans les applications ; les hôpitaux l'utilisent pour les lettres d'invitation.",
+    "tabs": {
+      "rules": "Règles par pays",
+      "checklist": "Liste des documents"
+    },
+    "routes": {
+      "e_visa": "e-visa médical",
+      "regular_visa": "Visa médical classique",
+      "not_required": "Aucun visa requis"
+    },
+    "rulesDescription": "Une règle par nationalité. Les pays sans règle suivent la procédure par défaut. Consultez toujours le lien officiel avant de modifier une règle.",
+    "checklistDescription": "Documents indiqués pour chaque type de visa. Laissez la nationalité vide pour les éléments qui s'appliquent à tous pour ce type de visa.",
+    "allNationalities": "Toutes les nationalités",
+    "noOfficialLink": "Aucun lien officiel",
+    "required": "Obligatoire",
+    "optional": "Facultatif",
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours",
+    "entities": {
+      "rule": "règle",
+      "rules": "règles",
+      "item": "élément de la liste",
+      "items": "éléments de la liste"
+    },
+    "columns": {
+      "country": "Pays",
+      "route": "Type de visa",
+      "attendants": "Accompagnants",
+      "processing": "Traitement",
+      "official": "Lien officiel",
+      "notes": "Notes",
+      "item": "Document",
+      "appliesTo": "S'applique à",
+      "required": "Obligatoire",
+      "order": "Ordre"
+    },
+    "filters": {
+      "route": "Type de visa",
+      "appliesTo": "S'applique à"
+    },
+    "fields": {
+      "nationality": "Nationalité (ISO-2)",
+      "nationalityHint": "par ex. NG, BD, US. Non modifiable par la suite.",
+      "countryName": "Nom du pays",
+      "countryNameHint": "Facultatif ; le nom standard est utilisé si vide",
+      "route": "Type de visa",
+      "maxAttendants": "Accompagnants autorisés",
+      "processingDays": "Délai de traitement habituel (jours)",
+      "officialUrl": "Lien officiel",
+      "notes": "Notes pour les patients",
+      "notesHint": "Affiché dans le guide des visas, par ex. où déposer la demande ou règles supplémentaires",
+      "source": "Source (personnel uniquement)",
+      "sourceHint": "Où et quand cette règle a été vérifiée",
+      "onlyNationality": "Uniquement pour la nationalité (ISO-2)",
+      "onlyNationalityHint": "Laissez vide pour toutes les nationalités de ce type de visa",
+      "itemKey": "Clé de l'élément",
+      "itemKeyHint": "Lettres minuscules, chiffres et _, par ex. passport_copy",
+      "title": "Document",
+      "description": "Explication",
+      "sortOrder": "Ordre de tri",
+      "required": "Document obligatoire"
+    },
+    "defaults": {
+      "button": "Charger les valeurs par défaut",
+      "title": "Charger les règles de visa par défaut ?",
+      "message": "Les règles et éléments de liste intégrés manquants sont ajoutés. Les règles et éléments que vous avez modifiés sont conservés.",
+      "confirm": "Charger les valeurs par défaut",
+      "loaded": "{{rules}} règles et {{items}} éléments de liste ajoutés."
+    }
+  },
+  "privacy": {
+    "title": "Demandes de confidentialité",
+    "description": "Demandes d'exercice des droits sur les données et réclamations. Répondez avant la date d'échéance ; le demandeur est informé à chaque changement de statut.",
+    "filterLabel": "Filtrer les demandes",
+    "views": {
+      "open": "Ouvertes",
+      "overdue": "En retard",
+      "all": "Toutes"
+    },
+    "kinds": {
+      "access": "Accès à mes données",
+      "correction": "Rectification de mes données",
+      "erasure": "Effacement de mes données",
+      "nomination": "Désignation d'un mandataire",
+      "withdraw_consent": "Retrait du consentement",
+      "complaint": "Réclamation",
+      "other": "Autre question de confidentialité"
+    },
+    "statuses": {
+      "received": "Reçue",
+      "in_progress": "En cours",
+      "awaiting_requester": "En attente du demandeur",
+      "completed": "Traitée",
+      "rejected": "Refusée"
+    },
+    "loading": "Chargement…",
+    "empty": "Aucune demande ici.",
+    "overdue": "En retard",
+    "due": "Échéance le {{date}}",
+    "onBehalfOf": "au nom de {{name}}",
+    "signedIn": "compte connecté",
+    "noAccount": "sans compte",
+    "via": "via {{channel}}",
+    "answer": "Réponse : {{text}}",
+    "work": "Traiter cette demande",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page {{page}} sur {{pages}}",
+    "toast": {
+      "updated": "{{reference}} mise à jour"
+    },
+    "form": {
+      "status": "Statut",
+      "answer": "Réponse au demandeur",
+      "answerHint": "Le demandeur voit ce texte dans l'application et par e-mail.",
+      "notes": "Notes internes",
+      "notesHint": "Réservé au personnel. Ne collez jamais de copies de pièces d'identité ici.",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "guardian": {
+      "title": "Consentements parentaux à vérifier",
+      "description": "Les patients de moins de 18 ans ne peuvent pas faire de pré-évaluation, utiliser les fonctions d'IA ni réserver tant que l'identité d'un parent ou d'un tuteur légal n'a pas été vérifiée.",
+      "checkedBy": "vérifié par {{method}}",
+      "checkedByRef": "vérifié par {{method}} ({{reference}})",
+      "markVerified": "Marquer comme vérifié",
+      "verified": "Consentement parental vérifié"
+    }
+  },
+  "moderation": {
+    "title": "Signalements",
+    "description": "Contenus signalés par des utilisateurs : messages de discussion, résultats de pré-évaluation par IA, analyses de documents par IA et avis.",
+    "caption": "Signalements de contenu",
+    "all": "Tous",
+    "statusFilter": "Statut du signalement",
+    "contentType": "Type de contenu",
+    "status": {
+      "open": "Ouvert",
+      "actioned": "Traité",
+      "dismissed": "Classé sans suite"
+    },
+    "targets": {
+      "message": "Message de discussion",
+      "screening_result": "Résultat de pré-évaluation par IA",
+      "document_analysis": "Analyse de document par IA",
+      "review": "Avis"
+    },
+    "actions": {
+      "dismiss": "Classé sans suite",
+      "hide_message": "Message masqué",
+      "warn": "Auteur averti",
+      "suspend": "Auteur suspendu"
+    },
+    "columns": {
+      "reason": "Motif",
+      "content": "Contenu",
+      "reporter": "Signalé par",
+      "author": "Auteur",
+      "reports": "Signalements",
+      "status": "Statut",
+      "reported": "Signalé"
+    },
+    "noPreview": "Aucun aperçu",
+    "noPreviewAvailable": "Aucun aperçu disponible.",
+    "deletedUser": "Utilisateur supprimé",
+    "openRow": "Ouvrir le signalement : {{reason}}",
+    "emptyOpen": "Aucun signalement ouvert",
+    "empty": "Aucun signalement",
+    "emptyDescription": "Les signalements apparaissent ici lorsque quelqu'un signale un contenu dans les applications.",
+    "drawerTitle": "Signalement : {{reason}}",
+    "drawerTitleEmpty": "Signalement",
+    "buttons": {
+      "dismiss": "Classer sans suite",
+      "hideMessage": "Masquer le message",
+      "warn": "Avertir l'auteur",
+      "suspend": "Suspendre l'auteur"
+    },
+    "multipleTitle_one": "{{count}} signalement ouvert sur ce contenu",
+    "multipleTitle_other": "{{count}} signalements ouverts sur ce contenu",
+    "multipleBody": "Résoudre ce signalement clôture aussi les autres signalements ouverts sur le même contenu.",
+    "reportedContent": "Contenu signalé",
+    "hiddenByModerators": "Masqué par les modérateurs",
+    "openConversation": "Ouvrir la conversation",
+    "noAuthor": "Aucun auteur (par exemple un résultat d'IA)",
+    "fields": {
+      "status": "Statut",
+      "openReports": "Signalements ouverts sur ce contenu",
+      "reporter": "Signalé par",
+      "author": "Auteur",
+      "reporterNote": "Note de l'auteur du signalement",
+      "targetId": "Identifiant de la cible",
+      "action": "Action",
+      "resolved": "Résolu",
+      "resolvedBy": "Résolu par",
+      "note": "Note"
+    },
+    "resolution": "Résolution",
+    "moderatorNote": "Note du modérateur",
+    "moderatorNoteHint": "Facultatif, conservée avec le signalement ({{max}} caractères maximum).",
+    "authorIsStaff": "L'auteur est membre du personnel : l'avertissement et la suspension ne sont pas disponibles.",
+    "noAuthorToAct": "Il n'y a aucun auteur à avertir ou à suspendre.",
+    "suspendTitle": "Suspendre ce compte ?",
+    "suspendMessage": "<0>{{name}}</0> sera déconnecté et ne pourra plus se connecter tant qu'un administrateur n'aura pas réactivé le compte. Le signalement est clôturé comme traité.",
+    "toast": {
+      "resolved": "Signalement résolu : {{action}}.",
+      "done": "traité"
+    }
+  },
+  "enquiries": {
+    "title": "Demandes du site web",
+    "description": "Messages envoyés via le formulaire de contact du site public.",
+    "all": "Toutes",
+    "statusFilter": "Statut de la demande",
+    "status": {
+      "new": "Nouvelle",
+      "in_progress": "En cours",
+      "closed": "Clôturée"
+    },
+    "topics": {
+      "patient": "Patient",
+      "agent": "Agent",
+      "hospital": "Hôpital",
+      "media": "Médias",
+      "other": "Autre"
+    },
+    "columns": {
+      "from": "De",
+      "topic": "Sujet",
+      "message": "Message",
+      "country": "Pays",
+      "status": "Statut",
+      "received": "Reçue"
+    },
+    "openRow": "Ouvrir la demande de {{name}}",
+    "empty": "Aucune demande",
+    "emptyDescription": "Les messages du formulaire de contact du site apparaissent ici.",
+    "drawerTitle": "Demande de {{name}}",
+    "drawerTitleEmpty": "Demande",
+    "fields": {
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "country": "Pays",
+      "topic": "Sujet",
+      "status": "Statut",
+      "handledBy": "Traitée par",
+      "message": "Message"
+    },
+    "changeStatus": "Changer le statut",
+    "toast": {
+      "new": "Marquée comme nouvelle.",
+      "in_progress": "Marquée comme en cours.",
+      "closed": "Marquée comme clôturée."
+    }
+  },
+  "messages": {
+    "title": "Boîte d'assistance",
+    "description": "Conversations avec les patients, les agents et les hôpitaux.",
+    "unread_one": "{{count}} message non lu",
+    "unread_other": "{{count}} messages non lus",
+    "started": "Conversation commencée",
+    "notInCase": "Vous ne participez pas encore à une conversation pour ce dossier.",
+    "openCaseConversation": "Ouvrir la conversation du dossier",
+    "searchPlaceholder": "Rechercher des personnes ou des messages…",
+    "searchLabel": "Rechercher dans les conversations",
+    "typeFilter": "Type de conversation",
+    "all": "Toutes",
+    "kinds": {
+      "support": "Assistance",
+      "case": "Dossiers",
+      "direct": "Directes"
+    },
+    "empty": "Aucune conversation",
+    "noMessages": "Aucun message pour le moment",
+    "selectTitle": "Sélectionnez une conversation",
+    "selectDescription": "Choisissez une conversation à gauche pour la lire et répondre.",
+    "back": "Retour aux conversations",
+    "openCase": "Ouvrir le dossier",
+    "loadEarlier": "Charger les messages précédents",
+    "sendFirst": "Envoyez le premier message ci-dessous.",
+    "attachments_one": "{{count}} pièce jointe (voir les documents du dossier)",
+    "attachments_other": "{{count}} pièces jointes (voir les documents du dossier)",
+    "hidden": "Masqué par les modérateurs",
+    "messageLabel": "Message",
+    "replyPlaceholder": "Rédigez une réponse… (Ctrl+Enter pour envoyer)",
+    "send": "Envoyer"
   }
 }

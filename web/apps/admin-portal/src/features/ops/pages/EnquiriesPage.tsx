@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import type { TFunction } from 'i18next';
 import { Mail, Phone } from 'lucide-react';
 import { adminApi, type AdminEnquiryListParams, type EnquiryOut, type EnquiryStatus } from '@hig/shared/api';
 import { filterParam, useTableState } from '@hig/shared/lib';
@@ -13,41 +14,38 @@ import {
   type DataTableColumn,
   type QuickFilterItem,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { Drawer, Field, KeyValue, Select } from '../ui';
 import { formatDateTime, useDocumentTitle } from '../lib/format';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
 import { useOpsPermissions } from '../lib/session';
 
 const ENQUIRY_STATUSES = ['new', 'in_progress', 'closed'] as const satisfies readonly EnquiryStatus[];
-const STATUS_LABELS: Record<EnquiryStatus, string> = { new: 'New', in_progress: 'In progress', closed: 'Closed' };
 const STATUS_TONES: Record<EnquiryStatus, 'info' | 'warning' | 'neutral'> = {
   new: 'info',
   in_progress: 'warning',
   closed: 'neutral',
 };
-const TOPIC_LABELS: Record<string, string> = {
-  patient: 'Patient',
-  agent: 'Agent',
-  hospital: 'Hospital',
-  media: 'Media',
-  other: 'Other',
-};
-const topicLabel = (topic: string | null) => (topic ? (TOPIC_LABELS[topic] ?? topic) : '—');
+const TOPICS = ['patient', 'agent', 'hospital', 'media', 'other'] as const;
+const statusLabel = (t: TFunction, status: EnquiryStatus) => t(`enquiries.status.${status}`, { defaultValue: status });
+const topicLabel = (t: TFunction, topic: string | null) =>
+  topic ? ((TOPICS as readonly string[]).includes(topic) ? t(`enquiries.topics.${topic}`) : topic) : '—';
 
 const FILTERS = { status: filterParam.oneOf(ENQUIRY_STATUSES) };
 
 function StatusPill({ status }: { status: EnquiryStatus }) {
+  const { t } = useAppTranslation();
   return (
     <Badge tone={STATUS_TONES[status] ?? 'neutral'} dot>
-      {STATUS_LABELS[status] ?? status}
+      {statusLabel(t, status)}
     </Badge>
   );
 }
 
-const COLUMNS: DataTableColumn<EnquiryOut>[] = [
+const columnsFor = (t: TFunction): DataTableColumn<EnquiryOut>[] => [
   {
     key: 'name',
-    header: 'From',
+    header: t('enquiries.columns.from'),
     sticky: true,
     mobile: 'primary',
     cell: (e) => <PersonCell name={e.name} secondary={e.email} />,
@@ -55,34 +53,34 @@ const COLUMNS: DataTableColumn<EnquiryOut>[] = [
   },
   {
     key: 'topic',
-    header: 'Topic',
-    cell: (e) => topicLabel(e.topic),
+    header: t('enquiries.columns.topic'),
+    cell: (e) => topicLabel(t, e.topic),
     exportValue: (e) => e.topic ?? '',
   },
   {
     key: 'message',
-    header: 'Message',
+    header: t('enquiries.columns.message'),
     className: 'max-w-96',
     cell: (e) => <span className="line-clamp-2 text-sm text-fg">{e.message}</span>,
     exportValue: (e) => e.message,
   },
   {
     key: 'country',
-    header: 'Country',
+    header: t('enquiries.columns.country'),
     hideOnMobile: true,
     cell: (e) => e.country || '—',
     exportValue: (e) => e.country ?? '',
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('enquiries.columns.status'),
     mobile: 'badge',
     cell: (e) => <StatusPill status={e.status} />,
     exportValue: (e) => e.status,
   },
   {
     key: 'created_at',
-    header: 'Received',
+    header: t('enquiries.columns.received'),
     mobile: 'meta',
     cell: (e) => <DateCell value={e.created_at} display="datetime" secondary={<DateCell value={e.created_at} display="relative" />} />,
     exportValue: (e) => e.created_at,
@@ -90,7 +88,8 @@ const COLUMNS: DataTableColumn<EnquiryOut>[] = [
 ];
 
 export default function EnquiriesPage() {
-  useDocumentTitle('Website enquiries');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('enquiries.title'));
   const perms = useOpsPermissions();
   const table = useTableState({ filters: FILTERS, defaultPageSize: 25 });
   const { filters, setFilter } = table;
@@ -100,6 +99,7 @@ export default function EnquiriesPage() {
     page_size: table.pageSize,
   };
   const [selected, setSelected] = useState<EnquiryOut | null>(null);
+  const columns = useMemo(() => columnsFor(t), [t]);
 
   const list = useQuery({
     queryKey: [...opsKeys.enquiries, 'list', listParams],
@@ -109,24 +109,24 @@ export default function EnquiriesPage() {
 
   const update = useOpsMutation({
     mutationFn: ({ id, status }: { id: string; status: EnquiryStatus }) => adminApi.updateEnquiry(id, { status }),
-    success: (e) => `Marked as ${STATUS_LABELS[e.status].toLowerCase()}.`,
+    success: (e) => t(`enquiries.toast.${e.status}`),
     invalidate: [opsKeys.enquiries],
     onSuccess: (e) => setSelected(e),
   });
 
   const quickItems: QuickFilterItem<EnquiryStatus>[] = [
-    { value: '', label: 'All' },
-    ...ENQUIRY_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], tone: STATUS_TONES[s] })),
+    { value: '', label: t('enquiries.all') },
+    ...ENQUIRY_STATUSES.map((s) => ({ value: s, label: statusLabel(t, s), tone: STATUS_TONES[s] })),
   ];
 
   return (
     <div>
-      <PageHeader title="Website enquiries" description="Messages sent through the contact form on the public website." />
+      <PageHeader title={t('enquiries.title')} description={t('enquiries.description')} />
       <DataTable
         id="admin.enquiries"
-        caption="Website enquiries"
+        caption={t('enquiries.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -134,12 +134,12 @@ export default function EnquiriesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={setSelected}
-        rowLabel={(e) => `Open enquiry from ${e.name}`}
-        emptyTitle="No enquiries"
-        emptyDescription="Messages from the website contact form appear here."
+        rowLabel={(e) => t('enquiries.openRow', { name: e.name })}
+        emptyTitle={t('enquiries.empty')}
+        emptyDescription={t('enquiries.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Enquiry status" items={quickItems} value={filters.status} onChange={(s) => setFilter('status', s)} />
+            <QuickFilters label={t('enquiries.statusFilter')} items={quickItems} value={filters.status} onChange={(s) => setFilter('status', s)} />
           </div>
         }
       />
@@ -148,7 +148,7 @@ export default function EnquiriesPage() {
         open={!!selected}
         onClose={() => setSelected(null)}
         width="lg"
-        title={selected ? `Enquiry from ${selected.name}` : 'Enquiry'}
+        title={selected ? t('enquiries.drawerTitle', { name: selected.name }) : t('enquiries.drawerTitleEmpty')}
         subtitle={selected ? formatDateTime(selected.created_at, 'd MMM yyyy, HH:mm') : undefined}
       >
         {selected && (
@@ -156,26 +156,26 @@ export default function EnquiriesPage() {
             <KeyValue
               items={[
                 [
-                  'Email',
+                  t('enquiries.fields.email'),
                   <a key="email" href={`mailto:${selected.email}`} className="inline-flex items-center gap-1 text-green-700 hover:underline dark:text-green-400">
                     <Mail className="size-3.5" aria-hidden /> {selected.email}
                   </a>,
                 ],
                 [
-                  'Phone',
+                  t('enquiries.fields.phone'),
                   selected.phone ? (
-                    <a key="phone" href={`tel:${selected.phone}`} className="inline-flex items-center gap-1 text-green-700 hover:underline dark:text-green-400">
+                    <a key="phone" href={`tel:${selected.phone}`} dir="ltr" className="inline-flex items-center gap-1 text-green-700 hover:underline dark:text-green-400">
                       <Phone className="size-3.5" aria-hidden /> {selected.phone}
                     </a>
                   ) : (
                     '—'
                   ),
                 ],
-                ['Country', selected.country || '—'],
-                ['Topic', topicLabel(selected.topic)],
-                ['Status', <StatusPill key="status" status={selected.status} />],
+                [t('enquiries.fields.country'), selected.country || '—'],
+                [t('enquiries.fields.topic'), topicLabel(t, selected.topic)],
+                [t('enquiries.fields.status'), <StatusPill key="status" status={selected.status} />],
                 [
-                  'Handled by',
+                  t('enquiries.fields.handledBy'),
                   selected.handled_by
                     ? `${selected.handled_by.full_name}${selected.handled_at ? ` · ${formatDateTime(selected.handled_at, 'd MMM yyyy, HH:mm')}` : ''}`
                     : '—',
@@ -183,17 +183,17 @@ export default function EnquiriesPage() {
               ]}
             />
             <section>
-              <h3 className="mb-2 text-xs font-semibold uppercase text-muted">Message</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase text-muted">{t('enquiries.fields.message')}</h3>
               <div className="rounded-lg border border-border bg-surface-2 p-3 text-sm whitespace-pre-wrap break-words text-fg">{selected.message}</div>
             </section>
             {perms.moderateContent && (
-              <Field label="Change status">
+              <Field label={t('enquiries.changeStatus')}>
                 {(fieldId) => (
                   <Select
                     id={fieldId}
                     value={selected.status}
                     disabled={update.isPending}
-                    options={ENQUIRY_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s] }))}
+                    options={ENQUIRY_STATUSES.map((s) => ({ value: s, label: statusLabel(t, s) }))}
                     onChange={(e) => {
                       const status = e.target.value as EnquiryStatus;
                       if (status !== selected.status) update.mutate({ id: selected.id, status });

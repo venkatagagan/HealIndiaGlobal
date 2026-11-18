@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import type { TFunction } from 'i18next';
+import { Trans } from 'react-i18next';
 import { Ban, Bell, CheckCircle2, EyeOff, Shapes } from 'lucide-react';
 import {
   adminApi,
@@ -27,6 +29,7 @@ import {
   type DataTableColumn,
   type QuickFilterItem,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { Button, ConfirmDialog, Drawer, ErrorState, Field, KeyValue, LoadingState, Textarea } from '../ui';
 import { Banner } from '../ui/detail';
 import { formatDateTime, useDocumentTitle } from '../lib/format';
@@ -37,24 +40,15 @@ import { useOpsPermissions } from '../lib/session';
 const REPORT_STATUSES = ['open', 'actioned', 'dismissed'] as const satisfies readonly ReportStatus[];
 const TARGET_TYPES = ['message', 'screening_result', 'document_analysis', 'review'] as const satisfies readonly ReportTargetType[];
 
-const STATUS_LABELS: Record<ReportStatus, string> = { open: 'Open', actioned: 'Actioned', dismissed: 'Dismissed' };
 const STATUS_TONES: Record<ReportStatus, 'warning' | 'success' | 'neutral'> = {
   open: 'warning',
   actioned: 'success',
   dismissed: 'neutral',
 };
-const TARGET_LABELS: Record<ReportTargetType, string> = {
-  message: 'Chat message',
-  screening_result: 'AI screening result',
-  document_analysis: 'AI document analysis',
-  review: 'Review',
-};
-const ACTION_LABELS: Record<ReportAction, string> = {
-  dismiss: 'Dismissed',
-  hide_message: 'Message hidden',
-  warn: 'Author warned',
-  suspend: 'Author suspended',
-};
+const statusLabel = (t: TFunction, status: ReportStatus) => t(`moderation.status.${status}`, { defaultValue: status });
+const targetLabel = (t: TFunction, target: ReportTargetType) => t(`moderation.targets.${target}`, { defaultValue: target });
+const actionLabel = (t: TFunction, action: ReportAction) => t(`moderation.actions.${action}`, { defaultValue: action });
+const roleLabel = (role: string) => USER_ROLE_LABELS[role as keyof typeof USER_ROLE_LABELS] ?? role;
 const NOTE_MAX = 1000;
 
 const FILTERS = {
@@ -72,49 +66,42 @@ function toApiFilters(f: ReportFilters): Omit<AdminReportListParams, 'page' | 'p
 
 const isStaff = (role: string | undefined) => !!role && (STAFF_ROLES as readonly string[]).includes(role);
 
-const COLUMNS: DataTableColumn<AdminReportOut>[] = [
+const columnsFor = (t: TFunction): DataTableColumn<AdminReportOut>[] => [
   {
     key: 'reason',
-    header: 'Reason',
+    header: t('moderation.columns.reason'),
     sticky: true,
     mobile: 'primary',
-    cell: (r) => (
-      <TextCell
-        primary={reportReasonLabel(r.reason)}
-        secondary={TARGET_LABELS[r.target_type] ?? r.target_type}
-      />
-    ),
+    cell: (r) => <TextCell primary={reportReasonLabel(r.reason)} secondary={targetLabel(t, r.target_type)} />,
     exportValue: (r) => r.reason,
   },
   {
     key: 'excerpt',
-    header: 'Content',
+    header: t('moderation.columns.content'),
     className: 'max-w-80',
     cell: (r) => (
-      <span className="line-clamp-2 text-sm text-fg">
-        {r.excerpt ?? <span className="text-muted">No preview</span>}
-      </span>
+      <span className="line-clamp-2 text-sm text-fg">{r.excerpt ?? <span className="text-muted">{t('moderation.noPreview')}</span>}</span>
     ),
     exportValue: (r) => r.excerpt ?? '',
   },
   {
     key: 'reporter',
-    header: 'Reporter',
+    header: t('moderation.columns.reporter'),
     hideOnMobile: true,
     cell: (r) =>
       r.reporter ? (
-        <PersonCell name={r.reporter.full_name} secondary={USER_ROLE_LABELS[r.reporter.role] ?? r.reporter.role} />
+        <PersonCell name={r.reporter.full_name} secondary={roleLabel(r.reporter.role)} />
       ) : (
-        <span className="text-muted">Deleted user</span>
+        <span className="text-muted">{t('moderation.deletedUser')}</span>
       ),
     exportValue: (r) => r.reporter?.full_name ?? '',
   },
   {
     key: 'target_user',
-    header: 'Author',
+    header: t('moderation.columns.author'),
     cell: (r) =>
       r.target_user ? (
-        <PersonCell name={r.target_user.full_name} secondary={USER_ROLE_LABELS[r.target_user.role] ?? r.target_user.role} />
+        <PersonCell name={r.target_user.full_name} secondary={roleLabel(r.target_user.role)} />
       ) : (
         <span className="text-muted">—</span>
       ),
@@ -122,7 +109,7 @@ const COLUMNS: DataTableColumn<AdminReportOut>[] = [
   },
   {
     key: 'report_count',
-    header: 'Reports',
+    header: t('moderation.columns.reports'),
     align: 'end',
     mobile: 'badge',
     cell: (r) => <Badge tone={r.report_count > 1 ? 'danger' : 'neutral'}>{r.report_count}</Badge>,
@@ -130,18 +117,18 @@ const COLUMNS: DataTableColumn<AdminReportOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('moderation.columns.status'),
     mobile: 'badge',
     cell: (r) => (
       <Badge tone={STATUS_TONES[r.status]} dot>
-        {STATUS_LABELS[r.status] ?? r.status}
+        {statusLabel(t, r.status)}
       </Badge>
     ),
     exportValue: (r) => r.status,
   },
   {
     key: 'created_at',
-    header: 'Reported',
+    header: t('moderation.columns.reported'),
     mobile: 'meta',
     cell: (r) => <DateCell value={r.created_at} display="datetime" secondary={<DateCell value={r.created_at} display="relative" />} />,
     exportValue: (r) => r.created_at,
@@ -149,11 +136,13 @@ const COLUMNS: DataTableColumn<AdminReportOut>[] = [
 ];
 
 export default function ModerationPage() {
-  useDocumentTitle('Reports');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('moderation.title'));
   const table = useTableState({ filters: FILTERS, defaultPageSize: 25 });
   const { filters, setFilter } = table;
   const listParams: AdminReportListParams = { ...toApiFilters(filters), page: table.page, page_size: table.pageSize };
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const columns = useMemo(() => columnsFor(t), [t]);
 
   const list = useQuery({
     queryKey: [...opsKeys.contentReports, 'list', listParams],
@@ -162,21 +151,18 @@ export default function ModerationPage() {
   });
 
   const quickItems: QuickFilterItem<ReportStatus>[] = [
-    ...REPORT_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], tone: STATUS_TONES[s] })),
-    { value: '', label: 'All' },
+    ...REPORT_STATUSES.map((s) => ({ value: s, label: statusLabel(t, s), tone: STATUS_TONES[s] })),
+    { value: '', label: t('moderation.all') },
   ];
 
   return (
     <div>
-      <PageHeader
-        title="Reports"
-        description="Content people reported: chat messages, AI screening results, AI document analyses and reviews."
-      />
+      <PageHeader title={t('moderation.title')} description={t('moderation.description')} />
       <DataTable
         id="admin.content-reports"
-        caption="Content reports"
+        caption={t('moderation.caption')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -184,22 +170,22 @@ export default function ModerationPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={(r) => setSelectedId(r.id)}
-        rowLabel={(r) => `Open report: ${reportReasonLabel(r.reason)}`}
-        emptyTitle={filters.status === 'open' ? 'No open reports' : 'No reports'}
-        emptyDescription="Reports appear here when someone flags content in the apps."
+        rowLabel={(r) => t('moderation.openRow', { reason: reportReasonLabel(r.reason) })}
+        emptyTitle={filters.status === 'open' ? t('moderation.emptyOpen') : t('moderation.empty')}
+        emptyDescription={t('moderation.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Report status" items={quickItems} value={filters.status} onChange={(s) => setFilter('status', s)} />
+            <QuickFilters label={t('moderation.statusFilter')} items={quickItems} value={filters.status} onChange={(s) => setFilter('status', s)} />
           </div>
         }
         toolbar={
           <FilterBar onReset={table.resetFilters}>
             <SelectFilter
-              label="Content type"
+              label={t('moderation.contentType')}
               icon={<Shapes className="size-3.5 opacity-70" aria-hidden />}
               value={filters.target_type}
               onChange={(v) => setFilter('target_type', v as ReportTargetType | '')}
-              options={TARGET_TYPES.map((t) => ({ value: t, label: TARGET_LABELS[t] }))}
+              options={TARGET_TYPES.map((type) => ({ value: type, label: targetLabel(t, type) }))}
             />
           </FilterBar>
         }
@@ -210,6 +196,7 @@ export default function ModerationPage() {
 }
 
 function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const perms = useOpsPermissions();
   const [note, setNote] = useState('');
   const [confirmSuspend, setConfirmSuspend] = useState(false);
@@ -225,7 +212,7 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
       const trimmed = note.trim();
       return adminApi.resolveContentReport(id!, { action, ...(trimmed ? { note: trimmed.slice(0, NOTE_MAX) } : {}) });
     },
-    success: (r) => `Report resolved: ${r.action ? ACTION_LABELS[r.action] : 'done'}.`,
+    success: (r) => t('moderation.toast.resolved', { action: r.action ? actionLabel(t, r.action) : t('moderation.toast.done') }),
     invalidate: [opsKeys.contentReports],
     onSuccess: () => {
       setNote('');
@@ -253,8 +240,8 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
         open={!!id}
         onClose={close}
         width="lg"
-        title={r ? `Report: ${reportReasonLabel(r.reason)}` : 'Report'}
-        subtitle={r ? `${TARGET_LABELS[r.target_type] ?? r.target_type} · ${formatDateTime(r.created_at, 'd MMM yyyy, HH:mm')}` : undefined}
+        title={r ? t('moderation.drawerTitle', { reason: reportReasonLabel(r.reason) }) : t('moderation.drawerTitleEmpty')}
+        subtitle={r ? `${targetLabel(t, r.target_type)} · ${formatDateTime(r.created_at, 'd MMM yyyy, HH:mm')}` : undefined}
         footer={
           canAct ? (
             <div className="flex flex-wrap justify-end gap-2">
@@ -265,7 +252,7 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
                 disabled={resolve.isPending}
                 onClick={() => resolve.mutate('dismiss')}
               >
-                Dismiss
+                {t('moderation.buttons.dismiss')}
               </Button>
               {r?.target_type === 'message' && (
                 <Button
@@ -275,7 +262,7 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
                   disabled={resolve.isPending || r.message_hidden}
                   onClick={() => resolve.mutate('hide_message')}
                 >
-                  Hide message
+                  {t('moderation.buttons.hideMessage')}
                 </Button>
               )}
               <Button
@@ -285,7 +272,7 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
                 disabled={resolve.isPending || !authorActionable}
                 onClick={() => resolve.mutate('warn')}
               >
-                Warn author
+                {t('moderation.buttons.warn')}
               </Button>
               <Button
                 variant="danger"
@@ -293,7 +280,7 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
                 disabled={resolve.isPending || !authorActionable || author?.status === 'suspended'}
                 onClick={() => setConfirmSuspend(true)}
               >
-                Suspend author
+                {t('moderation.buttons.suspend')}
               </Button>
             </div>
           ) : undefined
@@ -306,18 +293,18 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
         ) : r ? (
           <div className="space-y-5">
             {r.report_count > 1 && r.status === 'open' && (
-              <Banner tone="warning" title={`${r.report_count} open reports on this content`}>
-                Resolving this report also closes the other open reports on the same content.
+              <Banner tone="warning" title={t('moderation.multipleTitle', { count: r.report_count })}>
+                {t('moderation.multipleBody')}
               </Banner>
             )}
             <section>
-              <h3 className="mb-2 text-xs font-semibold uppercase text-muted">Reported content</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase text-muted">{t('moderation.reportedContent')}</h3>
               <div className="rounded-lg border border-border bg-surface-2 p-3 text-sm whitespace-pre-wrap break-words text-fg">
-                {r.excerpt ?? <span className="text-muted">No preview available.</span>}
+                {r.excerpt ?? <span className="text-muted">{t('moderation.noPreviewAvailable')}</span>}
               </div>
               {r.target_type === 'message' && r.message_hidden && (
                 <p className="mt-1.5 flex items-center gap-1 text-xs text-muted">
-                  <EyeOff className="size-3.5" aria-hidden /> Hidden by moderators
+                  <EyeOff className="size-3.5" aria-hidden /> {t('moderation.hiddenByModerators')}
                 </p>
               )}
               {r.conversation_id && (
@@ -325,65 +312,66 @@ function ReportDrawer({ id, onClose }: { id: string | null; onClose: () => void 
                   to={`${opsPaths.messages}?c=${encodeURIComponent(r.conversation_id)}`}
                   className="mt-1.5 inline-block text-xs text-green-700 hover:underline dark:text-green-400"
                 >
-                  Open conversation
+                  {t('moderation.openConversation')}
                 </Link>
               )}
             </section>
             <KeyValue
               items={[
-                ['Status', <Badge key="s" tone={STATUS_TONES[r.status]} dot>{STATUS_LABELS[r.status] ?? r.status}</Badge>],
-                ['Open reports on this content', String(r.report_count)],
-                ['Reporter', r.reporter ? `${r.reporter.full_name} (${USER_ROLE_LABELS[r.reporter.role] ?? r.reporter.role})` : 'Deleted user'],
                 [
-                  'Author',
-                  author
-                    ? `${author.full_name} (${USER_ROLE_LABELS[author.role] ?? author.role}) · ${author.status}`
-                    : 'No author (for example an AI result)',
+                  t('moderation.fields.status'),
+                  <Badge key="s" tone={STATUS_TONES[r.status]} dot>
+                    {statusLabel(t, r.status)}
+                  </Badge>,
                 ],
-                ['Reporter note', r.note || '—'],
-                ['Target id', <span key="t" className="font-mono text-xs">{r.target_id}</span>],
+                [t('moderation.fields.openReports'), String(r.report_count)],
+                [
+                  t('moderation.fields.reporter'),
+                  r.reporter ? `${r.reporter.full_name} (${roleLabel(r.reporter.role)})` : t('moderation.deletedUser'),
+                ],
+                [
+                  t('moderation.fields.author'),
+                  author ? `${author.full_name} (${roleLabel(author.role)}) · ${author.status}` : t('moderation.noAuthor'),
+                ],
+                [t('moderation.fields.reporterNote'), r.note || '—'],
+                [t('moderation.fields.targetId'), <span key="t" className="font-mono text-xs">{r.target_id}</span>],
               ]}
             />
             {r.status !== 'open' ? (
               <section>
-                <h3 className="mb-2 text-xs font-semibold uppercase text-muted">Resolution</h3>
+                <h3 className="mb-2 text-xs font-semibold uppercase text-muted">{t('moderation.resolution')}</h3>
                 <KeyValue
                   items={[
-                    ['Action', r.action ? ACTION_LABELS[r.action] : '—'],
-                    ['Resolved', r.resolved_at ? formatDateTime(r.resolved_at, 'd MMM yyyy, HH:mm') : '—'],
-                    ['Resolved by', r.resolved_by?.full_name ?? '—'],
-                    ['Note', r.resolution_note || '—'],
+                    [t('moderation.fields.action'), r.action ? actionLabel(t, r.action) : '—'],
+                    [t('moderation.fields.resolved'), r.resolved_at ? formatDateTime(r.resolved_at, 'd MMM yyyy, HH:mm') : '—'],
+                    [t('moderation.fields.resolvedBy'), r.resolved_by?.full_name ?? '—'],
+                    [t('moderation.fields.note'), r.resolution_note || '—'],
                   ]}
                 />
               </section>
             ) : canAct ? (
-              <Field label="Moderator note" hint={`Optional, kept with the report (up to ${NOTE_MAX} characters).`}>
+              <Field label={t('moderation.moderatorNote')} hint={t('moderation.moderatorNoteHint', { max: NOTE_MAX })}>
                 {(fieldId) => (
                   <Textarea id={fieldId} rows={3} maxLength={NOTE_MAX} value={note} onChange={(e) => setNote(e.target.value)} />
                 )}
               </Field>
             ) : null}
             {canAct && !authorActionable && (
-              <p className="text-xs text-muted">
-                {author ? 'The author is a staff member, so warn and suspend are not available.' : 'There is no author to warn or suspend.'}
-              </p>
+              <p className="text-xs text-muted">{author ? t('moderation.authorIsStaff') : t('moderation.noAuthorToAct')}</p>
             )}
           </div>
         ) : null}
       </Drawer>
       <ConfirmDialog
         open={confirmSuspend}
-        title="Suspend this account?"
+        title={t('moderation.suspendTitle')}
         tone="danger"
-        confirmLabel="Suspend author"
+        confirmLabel={t('moderation.buttons.suspend')}
         loading={resolve.isPending}
         onClose={() => setConfirmSuspend(false)}
         onConfirm={() => resolve.mutate('suspend')}
         message={
-          <>
-            <strong>{author?.full_name}</strong> will be signed out and cannot sign in until an admin activates the
-            account again. The report is closed as actioned.
-          </>
+          <Trans t={t} i18nKey="moderation.suspendMessage" values={{ name: author?.full_name ?? '' }} components={{ 0: <strong /> }} />
         }
       />
     </>
