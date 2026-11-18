@@ -113,10 +113,12 @@ class NormalizedEvent:
 
 @dataclass(slots=True)
 class ParsedWebhook:
-    event_id: str
+    event_id: str  # SEC-046: taken from the signed body, never from an unsigned header
     event_type: str
     events: list[NormalizedEvent]
     payload: dict[str, Any]
+    # unix time the gateway created the event (signed body); used for the freshness check (SEC-046)
+    occurred_at: int | None = None
 
 
 @dataclass(slots=True)

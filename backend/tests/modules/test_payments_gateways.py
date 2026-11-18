@@ -20,12 +20,14 @@ from tests.modules.payments_helpers import (
     STRIPE_PUBLISHABLE_KEY,
     STRIPE_WEBHOOK_SECRET,
     EventRecorder,
+    fresh,
     gateway_keys_fixture,  # noqa: F401
     json_bytes,
     make_world,
     razorpay_payment_entity,
     razorpay_signature,
     recorder_fixture,  # noqa: F401
+    rzp_event_id,
 )
 
 ORDERS = "/api/v1/payments/orders"
@@ -116,7 +118,7 @@ async def test_razorpay_verify_valid_signature_captures(
         "entity": "event",
         "event": "payment.captured",
         "payload": {"payment": {"entity": razorpay_payment_entity("pay_ABC", "order_RZP123", 90909, "USD")}},
-        "created_at": 1,
+        "created_at": int(time.time()),
     }
     raw = json_bytes(event)
     r = await client.post(
@@ -177,7 +179,7 @@ async def test_razorpay_webhook_signature_and_dedupe(
         "entity": "event",
         "event": "payment.captured",
         "payload": {"payment": {"entity": razorpay_payment_entity("pay_W1", "order_RZP123", 90909, "USD")}},
-        "created_at": 1700000000,
+        "created_at": int(time.time()),
     }
     raw = json_bytes(event)
     url = "/api/v1/payments/webhooks/razorpay"
@@ -198,7 +200,8 @@ async def test_razorpay_webhook_signature_and_dedupe(
         "X-Razorpay-Event-Id": "evt_1",
     }
     r = await client.post(url, content=raw, headers=headers)
-    assert r.status_code == 200 and r.json() == {"status": "processed", "event_id": "evt_1"}
+    # SEC-046: the dedupe id comes from the signed body, not from the unsigned header
+    assert r.status_code == 200 and r.json() == {"status": "processed", "event_id": rzp_event_id(raw)}
     assert len(recorder.of("payment.captured")) == 1
     db.expire_all()
     order = await db.get(PaymentOrder, uuid.UUID(order_id))
@@ -228,7 +231,7 @@ async def test_razorpay_webhook_payment_failed_and_unknown_order(
             }
         },
     }
-    raw = json_bytes(failed)
+    raw = json_bytes(fresh(failed))
     r = await client.post(
         url,
         content=raw,
@@ -244,7 +247,7 @@ async def test_razorpay_webhook_payment_failed_and_unknown_order(
         "event": "payment.captured",
         "payload": {"payment": {"entity": razorpay_payment_entity("pay_X", "order_UNKNOWN", 100, "USD")}},
     }
-    raw = json_bytes(unknown)
+    raw = json_bytes(fresh(unknown))
     r = await client.post(
         url,
         content=raw,
@@ -255,7 +258,7 @@ async def test_razorpay_webhook_payment_failed_and_unknown_order(
     )
     assert r.status_code == 200
     stored = (
-        await db.execute(select(WebhookEvent).where(WebhookEvent.event_id == "evt_unknown"))
+        await db.execute(select(WebhookEvent).where(WebhookEvent.event_id == rzp_event_id(raw)))
     ).scalar_one()
     assert stored.processed_at is not None and "No matching" in (stored.processing_error or "")
 
@@ -386,3 +389,40 @@ async def test_stripe_verify_fetches_payment_intent(db, client, auth_headers, ga
             headers=auth_headers(w.patient_user),
         )
     assert r.status_code == 200 and r.json()["status"] == "paid"
+
+
+async def test_razorpay_webhook_replay_and_stale_events_refused(
+    db, client, auth_headers, gateway_keys, recorder: EventRecorder
+):
+    """SEC-046: dedupe uses the signed body (a new unsigned event-id header does not make a replay new) and
+    events older than WEBHOOK_MAX_AGE_SECONDS are refused."""
+    w = await make_world(db)
+    await _razorpay_order(client, auth_headers, w)
+    url = "/api/v1/payments/webhooks/razorpay"
+    event = fresh(
+        {
+            "entity": "event",
+            "event": "payment.captured",
+            "payload": {
+                "payment": {"entity": razorpay_payment_entity("pay_S1", "order_RZP123", 90909, "USD")}
+            },
+        }
+    )
+    raw = json_bytes(event)
+    sig = razorpay_signature(RAZORPAY_WEBHOOK_SECRET, raw)
+    r = await client.post(url, content=raw, headers={"X-Razorpay-Signature": sig, "X-Razorpay-Event-Id": "a"})
+    assert r.status_code == 200 and r.json()["status"] == "processed"
+    r = await client.post(url, content=raw, headers={"X-Razorpay-Signature": sig, "X-Razorpay-Event-Id": "b"})
+    assert r.status_code == 200 and r.json()["status"] == "duplicate"
+    assert (await db.scalar(select(func.count()).select_from(WebhookEvent))) == 1
+
+    for created_at in (int(time.time()) - 3600, int(time.time()) + 3600):
+        old = json_bytes({**event, "event": "payment.failed", "created_at": created_at})
+        r = await client.post(
+            url,
+            content=old,
+            headers={"X-Razorpay-Signature": razorpay_signature(RAZORPAY_WEBHOOK_SECRET, old)},
+        )
+        assert r.status_code == 400 and r.json()["error"]["code"] == "stale_webhook"
+    assert (await db.scalar(select(func.count()).select_from(WebhookEvent))) == 1
+    assert recorder.of("payment.failed") == []

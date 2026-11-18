@@ -196,6 +196,9 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
     RAZORPAY_WEBHOOK_SECRET: str = ""
+    # SEC-046: Razorpay webhooks whose signed created_at is older than this are refused (stale_webhook).
+    # Widen temporarily (max 7 days) to accept gateway retries after an outage.
+    WEBHOOK_MAX_AGE_SECONDS: int = Field(default=300, ge=60, le=7 * 86400)
     STRIPE_SECRET_KEY: str = ""
     STRIPE_PUBLISHABLE_KEY: str = ""
     STRIPE_WEBHOOK_SECRET: str = ""

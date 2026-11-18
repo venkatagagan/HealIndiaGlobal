@@ -1701,7 +1701,7 @@ async def process_webhook_event(db: AsyncSession, webhook_event_id: uuid.UUID) -
     gateway = PaymentGateway(event.gateway)
     adapter = get_gateway(gateway)
     raw = json.dumps(event.payload).encode()
-    parsed = adapter.parse_webhook(raw, {"x-razorpay-event-id": event.event_id})
+    parsed = adapter.parse_webhook(raw, {})
     try:
         for ev in parsed.events:
             await apply_event(db, gateway, ev, source=f"webhook:{event.event_type}")
@@ -1711,6 +1711,35 @@ async def process_webhook_event(db: AsyncSession, webhook_event_id: uuid.UUID) -
     else:
         event.processing_error = None
     event.processed_at = _now()
+
+
+WEBHOOK_FUTURE_SKEW_SECONDS = 300
+
+
+def _check_webhook_fresh(gateway_name: PaymentGateway, parsed: Any) -> None:
+    """SEC-046: refuse replays of old (validly signed) deliveries. Stripe signs a delivery timestamp
+    (``t=``, checked against a 5-minute tolerance in ``verify_webhook``), so its retries stay valid. Razorpay
+    signs only the body, whose ``created_at`` must be within ``WEBHOOK_MAX_AGE_SECONDS``."""
+    if gateway_name != PaymentGateway.RAZORPAY:
+        return
+    occurred = parsed.occurred_at
+    now = int(_now().timestamp())
+    if occurred is None:
+        raise BadRequest("Webhook has no event time", code="malformed_webhook")
+    age = now - int(occurred)
+    if age > settings.WEBHOOK_MAX_AGE_SECONDS or age < -WEBHOOK_FUTURE_SKEW_SECONDS:
+        logger.error(
+            "payments.webhook_stale",
+            gateway=gateway_name.value,
+            event_id=parsed.event_id,
+            event_type=parsed.event_type,
+            age_seconds=age,
+        )
+        raise BadRequest(
+            "Webhook event is too old",
+            code="stale_webhook",
+            details={"max_age_seconds": settings.WEBHOOK_MAX_AGE_SECONDS},
+        )
 
 
 async def handle_webhook(
@@ -1746,6 +1775,7 @@ async def handle_webhook(
         parsed = adapter.parse_webhook(raw_body, headers)
     except GatewayError as exc:
         raise BadRequest("Malformed webhook payload", code="malformed_webhook") from exc
+    _check_webhook_fresh(gateway_name, parsed)
 
     stmt = (
         pg_insert(WebhookEvent)

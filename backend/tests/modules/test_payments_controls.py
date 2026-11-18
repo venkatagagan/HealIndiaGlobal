@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import itertools
 import json
+import time
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -45,8 +47,12 @@ async def _razorpay_order(client, auth_headers, w, rzp_order_id: str) -> str:
     return r.json()["order"]["id"]
 
 
+_DELIVERIES = itertools.count()
+
+
 async def _webhook(client, event: dict, event_id: str) -> httpx.Response:
-    raw = json_bytes(event)
+    # each call is a distinct (signed) gateway event: a recent, different created_at (SEC-046)
+    raw = json_bytes({**event, "created_at": int(time.time()) - next(_DELIVERIES)})
     return await client.post(
         WEBHOOK,
         content=raw,
@@ -179,7 +185,9 @@ async def test_amount_difference_returned_in_full(
     }
     r = await _webhook(client, event, "evt_r2")
     assert r.status_code == 200
-    row = (await db.execute(select(WebhookEvent).where(WebhookEvent.event_id == "evt_r2"))).scalar_one()
+    row = (
+        await db.execute(select(WebhookEvent).where(WebhookEvent.event_type == "refund.processed"))
+    ).scalar_one()
     assert row.processing_error is None
 
 
