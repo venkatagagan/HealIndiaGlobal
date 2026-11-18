@@ -110,7 +110,7 @@ export function ProcedurePage() {
     <div className="space-y-6 pb-24">
       <PageHeader
         back={<BackLink to={paths.dashboard}>{t('procedure.back')}</BackLink>}
-        title={p ? p.name : <Skeleton className="h-8 w-64" />}
+        title={p ? p.name : <span className="inline-block h-8 w-64 max-w-full animate-pulse rounded-lg bg-surface-2" aria-hidden />}
         description={p?.specialty.name}
         actions={
           <ButtonLink to={paths.browse({ tab: 'hospitals', procedure: slug })} variant="outline">

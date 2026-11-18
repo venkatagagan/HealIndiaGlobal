@@ -25,7 +25,6 @@ import {
   ConfirmDialog,
   ErrorState,
   PageHeader,
-  Skeleton,
   SkeletonList,
 } from '../../ui/primitives';
 
@@ -177,7 +176,7 @@ export function QuoteGroupPage() {
       <PageHeader
         back={<BackLink to={paths.cases}>{t('quoteGroup.back')}</BackLink>}
         title={t('quoteGroup.title')}
-        description={g ? (g.procedure?.name ?? g.specialty?.name ?? undefined) : <Skeleton className="h-4 w-40" />}
+        description={g ? (g.procedure?.name ?? g.specialty?.name ?? undefined) : undefined}
       />
       {!g ? (
         <SkeletonList rows={3} />

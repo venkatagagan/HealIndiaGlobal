@@ -230,7 +230,11 @@ export function QuickQuotePage() {
         <CardHeader title={t('quickQuote.treatment')} />
         <CardBody>
           {procedureSlug ? (
-            <p className="font-medium text-fg">{procedure.data?.name ?? <Skeleton className="h-5 w-40" />}</p>
+            procedure.data ? (
+              <p className="font-medium text-fg">{procedure.data.name}</p>
+            ) : (
+              <Skeleton className="h-5 w-40" />
+            )
           ) : (
             <Select aria-label={t('quickQuote.treatment')} value={procedureId} onChange={(e) => setProcedureId(e.target.value)}>
               <option value="">{t('quickQuote.notSure')}</option>
