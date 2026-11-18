@@ -111,6 +111,21 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ],
+              // Partner insurance and pay-later options (guests too).
+              if (auth.hasSession)
+                SettingsGroup(
+                  title: l10n.insuranceProfileGroup,
+                  children: [
+                    SettingsTile(
+                      key: const Key('profile-insurance'),
+                      icon: Icons.health_and_safety_outlined,
+                      title: l10n.insuranceProfileTile,
+                      subtitle: l10n.insuranceProfileTileSubtitle,
+                      color: AppColors.info,
+                      onTap: () => context.push(Routes.insurance),
+                    ),
+                  ],
+                ),
               const _PreferencesGroup(),
               if (full) _SecurityGroup(user: user),
               if (auth.hasSession) PrivacyGroup(showAccessLog: full),

@@ -51,6 +51,9 @@ abstract final class Routes {
   static const freeConsultation = '/free-consultation';
   static const freeConsultationStatus = '/free-consultation/status';
 
+  // insurance & pay-later partners (CG-18)
+  static const insurance = '/insurance';
+
   /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
   static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
 
@@ -76,6 +79,11 @@ abstract final class Routes {
 
   /// `/reviews/write?booking=<id>` — rate the hospital of a completed booking.
   static String writeReview(String bookingId) => _q(writeReviewPath, {'booking': bookingId});
+
+  /// `/insurance?tab=insurance|pay_later|requests&case=<id>&booking=<id>` — partner insurance, pay-later
+  /// partners and the patient's requests; [caseId] / [bookingId] link a request to the booking flow.
+  static String insuranceFor({String? tab, String? caseId, String? bookingId}) =>
+      _q(insurance, {'tab': tab, 'case': caseId, 'booking': bookingId});
 
   /// `/visa-guide?nationality=XX`
   static String visaGuide({String? nationality}) => _q(visaGuidePath, {'nationality': nationality});
@@ -228,4 +236,5 @@ abstract final class RouteNames {
   static const visaGuide = 'visa-guide';
   static const freeConsultation = 'free-consultation';
   static const freeConsultationStatus = 'free-consultation-status';
+  static const insurance = 'insurance';
 }

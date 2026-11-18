@@ -107,6 +107,18 @@ Notes: plural forms were written for every category (ar zero/one/two/few/many/ot
 `privacyAccessLine` assembles who / role / action / record and reads mechanically in fr and ru — a full-sentence rewrite
 per action may read better.
 
+## Insurance, pay-later partners and instalments (CG-18, added 2026-11-18)
+
+Legal review of the English text is still pending; the translations follow it word for word.
+
+| Keys | Why |
+|---|---|
+| `insuranceDisclaimer`, `insuranceBookCardBody` | We do not sell insurance and are not an insurance intermediary; the insurer sets cover, price and terms (shown on every insurance surface) |
+| `financingDisclaimer`, `financingPartnerDecides`, `financingFormIntro` | We do not lend money or make credit decisions; the partner decides on its own terms (shown on every pay-later surface) |
+| `insuranceConsentText`, `insuranceConsentRequired`, `insuranceFormIntro`, `insuranceWithdrawBody`, `insuranceMessageHint` | Consent to share contact details with a named partner, "no medical information is shared", withdrawing that consent |
+| `financingInstallmentsSubtitle`, `financingInstallmentsUnavailable`, `financingInterestFreeNote`, `financingScheduleEstimate`, `financingInstallmentsPastTreatment`, `financingEmptyBody` | Interest-free pre-payment plan paid off before admission (Google Play financial features declaration) |
+| `insurancePriceIndicative`, `insurancePriceOnRequest`, `insuranceCategory*`, `insuranceErrorCountryNotEligible` | Indicative partner prices (not a quote) and insurance product names |
+
 ## Politically sensitive names
 
 `countryTW`, `countryPS`, `countryIL`, `countryHK`, `countryCD` — check the naming conventions expected in each market.

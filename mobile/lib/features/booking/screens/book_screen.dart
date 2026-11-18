@@ -7,11 +7,11 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/booking_repository.dart';
 import '../../../core/repositories/case_repository.dart';
 import '../../../core/repositories/catalog_repository.dart';
+import '../../../core/repositories/partner_repository.dart';
 import '../../../core/repositories/patient_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
-import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../logic/admission_availability.dart';
@@ -26,6 +26,10 @@ import '../widgets/option_radio_card.dart';
 /// Treatment Selection ("Select Dates"): doctor header, admission calendar from
 /// `/hospitals/{id}/availability`, treatment duration, package or accepted quote, payment option,
 /// then `POST /bookings` and on to payment.
+///
+/// Instalments (CG-18) are an interest-free pre-payment plan: `GET /financing/installment-plan` gives the
+/// month counts allowed for the admission date (the last instalment is due before admission) and the
+/// schedule; longer terms only through a pay-later partner (`/insurance?tab=pay_later`).
 ///
 /// Route: `/book/:caseId?quote=&package=` · Owner: fl-journey.
 class BookScreen extends ConsumerStatefulWidget {
@@ -42,8 +46,6 @@ class BookScreen extends ConsumerStatefulWidget {
 }
 
 class _BookScreenState extends ConsumerState<BookScreen> {
-  static const _installmentChoices = [3, 6, 12];
-
   late DateTime _month;
   DateTime? _date;
   String? _packageId;
@@ -53,6 +55,11 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   int _months = 6;
   bool _insurance = false;
   bool _submitting = false;
+
+  /// Last instalment plan seen for [_planDate] (shown while the plan for another month count loads).
+  InstallmentPlan? _plan;
+  String? _planDate;
+  bool _planSyncScheduled = false;
 
   @override
   void initState() {
@@ -104,7 +111,50 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   bool _hasActiveBooking(MedicalCaseDetail c) =>
       (c.booking != null && c.booking!.status != BookingStatus.cancelled) || !c.isOpen;
 
-  bool get _canSubmit => _date != null && (_packageId != null || _quoteId != null);
+  bool get _canSubmit =>
+      _date != null &&
+      (_packageId != null || _quoteId != null) &&
+      !(_option == PaymentOption.installments && _plan != null && !_plan!.installmentsAvailable);
+
+  /// Watches the instalment plan for the chosen admission date (null before a date is picked).
+  AsyncValue<InstallmentPlan>? _watchPlan(int? priceMinor) {
+    final date = _date;
+    if (date == null) return null;
+    final query = (
+      admissionDate: Dates.api(date),
+      months: _months,
+      totalMinor: priceMinor != null && priceMinor > 0 ? priceMinor : null,
+      depositMinor: null,
+      country: ref.watch(partnerCountryProvider),
+    );
+    final value = ref.watch(installmentPlanProvider(query));
+    final plan = value.value;
+    if (plan != null) {
+      _plan = plan;
+      _planDate = query.admissionDate;
+      _syncWithPlan(plan);
+    } else if (_planDate != query.admissionDate) {
+      _plan = null;
+    }
+    return value;
+  }
+
+  /// Keeps the month count within `allowed_months` and leaves the instalment option when none is allowed.
+  void _syncWithPlan(InstallmentPlan plan) {
+    final months = plan.closestAllowed(_months);
+    final needsMonths = months != null && months != _months;
+    final needsOption = !plan.installmentsAvailable && _option == PaymentOption.installments;
+    if ((!needsMonths && !needsOption) || _planSyncScheduled) return;
+    _planSyncScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _planSyncScheduled = false;
+      if (!mounted) return;
+      setState(() {
+        if (needsMonths) _months = months;
+        if (needsOption) _option = PaymentOption.deposit;
+      });
+    });
+  }
 
   Quote? _acceptedQuote(MedicalCaseDetail c) {
     final all = [...c.quotes, ?c.latestQuote];
@@ -278,7 +328,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
             ),
           ),
         SectionTitle(l10n.bookPaymentOptionSection),
-        _paymentOptions(priceMinor, priceCcy),
+        _paymentOptions(c, priceCcy, _watchPlan(priceMinor)),
         const SizedBox(height: 8),
         CheckboxListTile(
           key: const ValueKey('insurance-claim'),
@@ -292,6 +342,8 @@ class _BookScreenState extends ConsumerState<BookScreen> {
           ),
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        const SizedBox(height: 8),
+        _InsuranceOptionsCard(caseId: c.id),
       ],
     );
   }
@@ -340,12 +392,10 @@ class _BookScreenState extends ConsumerState<BookScreen> {
     return parts.join('\n');
   }
 
-  Widget _paymentOptions(int? priceMinor, String currency) {
+  Widget _paymentOptions(MedicalCaseDetail c, String currency, AsyncValue<InstallmentPlan>? planAsync) {
     final l10n = context.l10n;
-    String? perMonth() {
-      if (priceMinor == null || priceMinor <= 0) return null;
-      return l10n.bookInstallmentPerMonth(formatMoney((priceMinor / _months).ceil(), currency));
-    }
+    final plan = planAsync?.value ?? _plan;
+    final unavailable = plan != null && !plan.installmentsAvailable;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -367,33 +417,88 @@ class _BookScreenState extends ConsumerState<BookScreen> {
         OptionRadioCard(
           key: const ValueKey('option-installments'),
           title: l10n.bookMonthlyInstallments,
-          subtitle: l10n.bookInstallmentChoices,
-          selected: _option == PaymentOption.installments,
+          subtitle: unavailable ? l10n.financingInstallmentsUnavailable : l10n.financingInstallmentsSubtitle,
+          selected: _option == PaymentOption.installments && !unavailable,
+          enabled: !unavailable,
           onTap: () => setState(() => _option = PaymentOption.installments),
-          footer: _option != PaymentOption.installments
+          footer: _option != PaymentOption.installments || unavailable
               ? null
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              : _installmentDetails(plan, planAsync, currency),
+        ),
+        if (plan?.partnerFinancingAvailable ?? false)
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              key: const ValueKey('see-pay-later-partners'),
+              style: TextButton.styleFrom(minimumSize: const Size(0, 44)),
+              onPressed: () => context.push(Routes.insuranceFor(tab: 'pay_later', caseId: c.id)),
+              icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+              label: Text(l10n.financingSeePartners),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Month chips (`allowed_months`), the schedule and the "interest-free, paid before admission" rule.
+  Widget _installmentDetails(InstallmentPlan? plan, AsyncValue<InstallmentPlan>? planAsync, String currency) {
+    final l10n = context.l10n;
+    final muted = context.text.bodySmall?.copyWith(color: context.palette.textSecondary);
+    if (_date == null) {
+      return Text(l10n.financingPickDateFirst, key: const ValueKey('installments-pick-date'), style: muted);
+    }
+    if (plan == null) {
+      if (planAsync != null && planAsync.hasError) {
+        return ErrorView(error: planAsync.error, compact: true, onRetry: () => ref.invalidate(installmentPlanProvider));
+      }
+      return const LinearProgressIndicator(minHeight: 2);
+    }
+    final schedule = plan.months == _months ? plan.schedule : const <InstallmentRow>[];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final m in plan.allowedMonths)
+              ChipToggle(
+                key: ValueKey('months-$m'),
+                label: l10n.bookMonths(m),
+                selected: _months == m,
+                selectedColor: AppColors.violet,
+                onChanged: (_) => setState(() => _months = m),
+              ),
+          ],
+        ),
+        if (schedule.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          for (final row in schedule)
+            MergeSemantics(
+              key: ValueKey('installment-row-${row.seq}'),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(vertical: 2),
+                child: Row(
                   children: [
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        for (final m in _installmentChoices)
-                          ChipToggle(
-                            key: ValueKey('months-$m'),
-                            label: l10n.bookMonths(m),
-                            selected: _months == m,
-                            selectedColor: AppColors.violet,
-                            onChanged: (_) => setState(() => _months = m),
-                          ),
-                      ],
+                    Expanded(child: Text(l10n.financingScheduleItem(row.seq, Dates.day(row.dueDate)), style: muted)),
+                    const SizedBox(width: 8),
+                    MoneyText(
+                      row.amountMinor,
+                      currency,
+                      style: context.text.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     ),
-                    if (perMonth() != null) ...[
-                      const SizedBox(height: 8),
-                      Text(perMonth()!, style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary)),
-                    ],
                   ],
                 ),
+              ),
+            ),
+          const SizedBox(height: 4),
+          Text(l10n.financingScheduleEstimate, style: muted),
+        ],
+        const SizedBox(height: 8),
+        Text(
+          l10n.financingInterestFreeNote(Dates.day(plan.admissionDate ?? _date)),
+          key: const ValueKey('installments-interest-free'),
+          style: context.text.bodySmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -431,12 +536,75 @@ class _BookScreenState extends ConsumerState<BookScreen> {
         ref.invalidate(admissionAvailabilityProvider);
         setState(() => _date = null);
       }
+      if (e.isInstallmentsPastTreatment) {
+        // CG-18: the plan would end after admission; fall back to the longest allowed plan, else the deposit.
+        final details = e.details;
+        final max = details is Map ? int.tryParse('${details['max_months'] ?? ''}') : null;
+        ref.invalidate(installmentPlanProvider);
+        setState(() {
+          if (max != null && max > 0) {
+            _months = max;
+          } else {
+            _option = PaymentOption.deposit;
+          }
+        });
+      }
       if (mounted) showErrorSnack(context, e);
     } catch (e) {
       if (mounted) showErrorSnack(context, e);
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
+  }
+}
+
+/// "Insurance options" with a short disclaimer, linking to the partner insurance screen.
+class _InsuranceOptionsCard extends StatelessWidget {
+  const _InsuranceOptionsCard({required this.caseId});
+
+  final String caseId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppCard(
+      key: const ValueKey('insurance-options-card'),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const ExcludeSemantics(child: Icon(Icons.health_and_safety_outlined, color: AppColors.info)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    l10n.insuranceBookCardTitle,
+                    style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.insuranceBookCardBody,
+            style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              key: const ValueKey('open-insurance-options'),
+              style: TextButton.styleFrom(minimumSize: const Size(0, 44)),
+              onPressed: () => context.push(Routes.insuranceFor(caseId: caseId)),
+              child: Text(l10n.insuranceBookCardAction),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

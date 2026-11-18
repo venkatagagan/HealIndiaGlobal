@@ -20,6 +20,7 @@ export 'money.dart';
 export 'notification.dart';
 export 'package.dart';
 export 'page.dart';
+export 'partner.dart';
 export 'patient.dart';
 export 'payment.dart';
 export 'procedure.dart';

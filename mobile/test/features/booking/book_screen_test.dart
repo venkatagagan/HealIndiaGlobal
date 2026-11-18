@@ -7,6 +7,7 @@ import 'package:heal_india_global/core/auth/token_storage.dart';
 import 'package:heal_india_global/core/repositories/booking_repository.dart';
 import 'package:heal_india_global/core/repositories/case_repository.dart';
 import 'package:heal_india_global/core/repositories/catalog_repository.dart';
+import 'package:heal_india_global/core/repositories/partner_repository.dart';
 import 'package:heal_india_global/core/theme/app_text_styles.dart';
 import 'package:heal_india_global/core/utils/dates.dart';
 import 'package:heal_india_global/features/booking/logic/admission_availability.dart';
@@ -21,6 +22,9 @@ class _FakeBookingRepository extends BookingRepository {
 
   Map<String, Object?>? created;
 
+  /// Thrown by [create] instead of creating the booking.
+  Object? failWith;
+
   @override
   Future<Booking> create({
     required String caseId,
@@ -31,6 +35,8 @@ class _FakeBookingRepository extends BookingRepository {
     int? installmentMonths,
     bool insuranceClaimRequested = false,
   }) async {
+    final f = failWith;
+    if (f != null) throw f;
     created = {
       'case_id': caseId,
       'admission_date': Dates.api(admissionDate),
@@ -105,6 +111,77 @@ final _hospital = HospitalDetail.fromJson({
   'reviews': [],
 });
 
+/// `InstallmentPlanOut` for [q]: [allowed] month counts, a schedule for the requested months.
+InstallmentPlan _plan(InstallmentPlanQuery q, {required List<int> allowed, bool partners = false}) {
+  final admission = DateTime.parse(q.admissionDate);
+  final months = q.months;
+  final ok = months != null && allowed.contains(months);
+  return InstallmentPlan.fromJson({
+    'admission_date': q.admissionDate,
+    'today': Dates.api(DateTime.now()),
+    'last_due_by': Dates.api(admission.subtract(const Duration(days: 1))),
+    'max_months': allowed.isEmpty ? 0 : allowed.last,
+    'allowed_months': allowed,
+    'months': months,
+    'valid': ok,
+    'schedule': ok
+        ? [
+            for (var i = 1; i <= months; i++)
+              {
+                'seq': i,
+                'due_date': Dates.api(admission.subtract(Duration(days: (months - i) * 30 + 1))),
+                'amount_minor': 10000,
+              },
+          ]
+        : [],
+    'interest_free': true,
+    'partner_financing_available': partners,
+  });
+}
+
+/// Pumps the booking screen with one free admission day (the last day of the visible month) and picks it.
+Future<_FakeBookingRepository> _pumpAndPickDate(
+  WidgetTester tester, {
+  required InstallmentPlan Function(InstallmentPlanQuery q) plan,
+}) async {
+  tester.view.devicePixelRatio = 2.5;
+  tester.view.physicalSize = const Size(480, 1600) * 2.5;
+  addTearDown(tester.view.reset);
+  final today = Dates.dateOnly(DateTime.now());
+  final month = DateTime(today.add(const Duration(days: 1)).year, today.add(const Duration(days: 1)).month);
+  final freeDay = DateTime(month.year, month.month + 1, 0);
+  final availability = AdmissionAvailability.fromSlots([
+    AvailabilitySlot.fromJson({'date': Dates.api(freeDay), 'slot_kind': 'admission', 'capacity': 2, 'booked': 0}),
+  ]);
+  final bookings = _FakeBookingRepository();
+  final overrides = [
+    ...await journeyBaseOverrides(),
+    caseDetailProvider.overrideWith((ref, id) async => _case),
+    hospitalDetailProvider.overrideWith((ref, id) async => _hospital),
+    procedureDetailProvider.overrideWith((ref, slug) => Future<Procedure>.error(StateError('offline'))),
+    admissionAvailabilityProvider.overrideWith((ref, q) async => availability),
+    fxRatesProvider.overrideWith((ref) async => const {'USD': 83.0}),
+    bookingRepositoryProvider.overrideWithValue(bookings),
+    installmentPlanProvider.overrideWith((ref, q) async => plan(q)),
+  ];
+  final routes = <RouteBase>[
+    GoRoute(
+      path: '/book/:caseId',
+      builder: (_, s) => BookScreen(caseId: s.pathParameters['caseId']!),
+    ),
+    stubRoute('/pay/:bookingId', 'pay', param: 'bookingId'),
+    GoRoute(
+      path: '/insurance',
+      builder: (_, s) => Scaffold(body: Text('insurance ${s.uri.query}')),
+    ),
+  ];
+  await tester.pumpWidget(journeyApp(overrides: overrides, routes: routes, initialLocation: '/book/c1'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(ValueKey('day-${Dates.api(freeDay)}')));
+  await tester.pumpAndSettle();
+  return bookings;
+}
+
 void main() {
   setUp(() => AppTextStyles.useGoogleFonts = false);
 
@@ -132,6 +209,7 @@ void main() {
       admissionAvailabilityProvider.overrideWith((ref, q) async => availability),
       fxRatesProvider.overrideWith((ref) async => const {'USD': 83.0}),
       bookingRepositoryProvider.overrideWithValue(bookings),
+      installmentPlanProvider.overrideWith((ref, q) async => _plan(q, allowed: const [3, 6, 12])),
     ];
     final routes = <RouteBase>[
       GoRoute(
@@ -171,7 +249,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const ValueKey('months-12')));
     await tester.tap(find.byKey(const ValueKey('months-12')));
-    await tester.pump();
+    await tester.pumpAndSettle();
+    // CG-18: interest-free, paid before admission; the schedule comes from the server.
+    expect(find.textContaining('Interest-free. The last instalment is due before your admission on'), findsOneWidget);
+    expect(find.byKey(const ValueKey('installment-row-12')), findsOneWidget);
+    expect(find.byKey(const ValueKey('months-1')), findsNothing);
 
     await tester.tap(proceed);
     await tester.pumpAndSettle();
@@ -186,5 +268,83 @@ void main() {
       'insurance': false,
     });
     expect(find.text('pay b1'), findsOneWidget);
+  });
+
+  testWidgets('instalments are disabled when the admission date is too close (max_months 0)', (tester) async {
+    final bookings = await _pumpAndPickDate(tester, plan: (q) => _plan(q, allowed: const [], partners: true));
+
+    await tester.ensureVisible(find.byKey(const ValueKey('option-installments')));
+    expect(find.textContaining('Instalments are not possible for this admission date'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('option-installments')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('months-3')), findsNothing);
+
+    // A pay-later partner exists: link to the partners (outside the platform).
+    await tester.ensureVisible(find.byKey(const ValueKey('see-pay-later-partners')));
+    expect(find.text('Need longer to pay? See pay-later partners'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('proceed-to-payment')));
+    await tester.pumpAndSettle();
+    expect(bookings.created!['payment_option'], 'full');
+    expect(bookings.created!['installment_months'], isNull);
+  });
+
+  testWidgets('months are limited to allowed_months; the partners link and insurance card navigate', (tester) async {
+    await _pumpAndPickDate(tester, plan: (q) => _plan(q, allowed: const [1, 2], partners: true));
+
+    await tester.ensureVisible(find.byKey(const ValueKey('option-installments')));
+    await tester.tap(find.byKey(const ValueKey('option-installments')));
+    await tester.pumpAndSettle();
+    // The default 6 months is not allowed: the longest allowed plan is chosen.
+    expect(find.byKey(const ValueKey('months-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('months-2')), findsOneWidget);
+    expect(find.byKey(const ValueKey('months-6')), findsNothing);
+    expect(find.byKey(const ValueKey('installment-row-2')), findsOneWidget);
+    expect(find.byKey(const ValueKey('installment-row-3')), findsNothing);
+
+    // Insurance options card (short disclaimer) under the payment options.
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('open-insurance-options')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.textContaining('We do not sell insurance'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('open-insurance-options')));
+    await tester.pumpAndSettle();
+    expect(find.text('insurance case=c1'), findsOneWidget);
+    GoRouter.of(tester.element(find.text('insurance case=c1'))).pop();
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.byKey(const ValueKey('see-pay-later-partners')));
+    await tester.tap(find.byKey(const ValueKey('see-pay-later-partners')));
+    await tester.pumpAndSettle();
+    expect(find.text('insurance tab=pay_later&case=c1'), findsOneWidget);
+  });
+
+  testWidgets('installments_past_treatment from the API is translated and falls back to max_months', (tester) async {
+    final bookings = await _pumpAndPickDate(tester, plan: (q) => _plan(q, allowed: const [3, 6]));
+    await tester.ensureVisible(find.byKey(const ValueKey('option-installments')));
+    await tester.tap(find.byKey(const ValueKey('option-installments')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('months-6')));
+    await tester.tap(find.byKey(const ValueKey('months-6')));
+    await tester.pumpAndSettle();
+
+    bookings.failWith = ApiException.fromResponse(400, {
+      'error': {
+        'code': 'installments_past_treatment',
+        'message': 'raw server text',
+        'details': {'max_months': 3, 'last_due_by': '2027-01-01'},
+      },
+    });
+    await tester.tap(find.byKey(const ValueKey('proceed-to-payment')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Instalments must be paid in full before your admission date'), findsOneWidget);
+    expect(find.text('raw server text'), findsNothing);
+
+    bookings.failWith = null;
+    await tester.tap(find.byKey(const ValueKey('proceed-to-payment')));
+    await tester.pumpAndSettle();
+    expect(bookings.created!['installment_months'], 3);
   });
 }

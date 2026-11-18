@@ -8785,4 +8785,297 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Traitement';
+
+  @override
+  String get insuranceScreenTitle => 'Assurance et paiement différé';
+
+  @override
+  String get insuranceTabInsurance => 'Assurance';
+
+  @override
+  String get insuranceTabPayLater => 'Payer plus tard';
+
+  @override
+  String get insuranceTabRequests => 'Mes demandes';
+
+  @override
+  String get insuranceDisclaimer =>
+      'Heal India Global ne vend pas d\'assurance et n\'est pas un intermédiaire d\'assurance. Nous présentons les produits de nos partenaires à titre d\'information uniquement. L\'assureur décide de la couverture, du prix et des conditions ; lisez ses documents contractuels avant de souscrire.';
+
+  @override
+  String get financingDisclaimer =>
+      'Heal India Global ne prête pas d\'argent et ne prend aucune décision de crédit. Les paiements différés et les prêts sont proposés par le partenaire, selon ses propres conditions, après ses propres vérifications. Nos plans de paiement échelonné sont sans intérêts et doivent être réglés en totalité avant la date de votre traitement.';
+
+  @override
+  String get financingPartnerDecides =>
+      'Le partenaire vérifie votre éligibilité et décide sur son propre site, selon ses propres conditions. Heal India Global ne prend aucune décision de crédit.';
+
+  @override
+  String insuranceCountryFor(String country) {
+    return 'Options pour : $country';
+  }
+
+  @override
+  String get insuranceCountryAll => 'Options pour tous les pays';
+
+  @override
+  String get insuranceCountryPick => 'Choisissez votre pays';
+
+  @override
+  String get insuranceEmptyTitle => 'Pas encore d\'offre d\'assurance';
+
+  @override
+  String get insuranceEmptyBody =>
+      'Nous n\'avons pas d\'assurance partenaire pour ce pays pour le moment. Revenez plus tard ou contactez notre équipe.';
+
+  @override
+  String get financingEmptyTitle => 'Pas encore de partenaire de paiement différé';
+
+  @override
+  String get financingEmptyBody =>
+      'Il n\'y a pas de partenaire de paiement différé pour ce pays pour le moment. Notre paiement échelonné sans intérêts reste disponible lors de la réservation.';
+
+  @override
+  String get insuranceCategoryMedicalTravel => 'Assurance voyage médical';
+
+  @override
+  String get insuranceCategoryComplication => 'Couverture des complications';
+
+  @override
+  String get insuranceCategoryHealth => 'Assurance santé';
+
+  @override
+  String get insuranceCategoryOther => 'Autre couverture';
+
+  @override
+  String get insuranceEligibleAll => 'Disponible dans tous les pays';
+
+  @override
+  String insuranceEligibleCountries(String countries) {
+    return 'Disponible dans : $countries';
+  }
+
+  @override
+  String get insuranceNotInYourCountry => 'Ce partenaire ne mentionne pas votre pays.';
+
+  @override
+  String insurancePriceIndicative(String price) {
+    return 'Prix indicatif : $price';
+  }
+
+  @override
+  String get insurancePriceOnRequest => 'Prix sur demande auprès du partenaire';
+
+  @override
+  String get insuranceRequestQuote => 'Demander un devis à l\'assureur';
+
+  @override
+  String get insuranceVisitWebsite => 'Site du partenaire';
+
+  @override
+  String get insuranceCouldNotOpen => 'Impossible d\'ouvrir le site du partenaire.';
+
+  @override
+  String get financingCheckEligibility => 'Vérifier l\'éligibilité';
+
+  @override
+  String get insuranceFormTitle => 'Demander un devis à l\'assureur';
+
+  @override
+  String get financingFormTitle => 'Vérifier votre éligibilité';
+
+  @override
+  String insuranceFormIntro(String provider) {
+    return 'Nous transmettons vos coordonnées à $provider. Le partenaire vous contacte directement avec un devis.';
+  }
+
+  @override
+  String financingFormIntro(String provider) {
+    return 'Nous transmettons vos coordonnées à $provider. Le partenaire vérifie votre éligibilité et vous contacte directement.';
+  }
+
+  @override
+  String get insuranceFieldName => 'Votre nom';
+
+  @override
+  String get insuranceFieldEmail => 'E-mail';
+
+  @override
+  String get insuranceFieldPhone => 'Téléphone (avec indicatif)';
+
+  @override
+  String get insuranceNameRequired => 'Saisissez votre nom.';
+
+  @override
+  String get insuranceEmailInvalid => 'Saisissez une adresse e-mail valide.';
+
+  @override
+  String get insuranceContactRequired => 'Indiquez une adresse e-mail ou un numéro de téléphone.';
+
+  @override
+  String get insurancePreferredContact => 'Comment souhaitez-vous être contacté ?';
+
+  @override
+  String get insuranceContactEmail => 'E-mail';
+
+  @override
+  String get insuranceContactPhone => 'Téléphone';
+
+  @override
+  String get insuranceContactWhatsapp => 'WhatsApp';
+
+  @override
+  String get insuranceFieldCountry => 'Pays de résidence';
+
+  @override
+  String get insuranceFieldCountryNotSet => 'Non renseigné';
+
+  @override
+  String get insuranceFieldMessage => 'Message (facultatif)';
+
+  @override
+  String get insuranceMessageHint => 'N\'indiquez aucune information médicale.';
+
+  @override
+  String insuranceConsentText(String provider) {
+    return 'J\'accepte que Heal India Global partage mon nom et mes coordonnées avec $provider afin qu\'il puisse me contacter au sujet de cette demande. Aucune information médicale n\'est partagée.';
+  }
+
+  @override
+  String get insuranceConsentRequired => 'Cochez la case pour donner votre accord avant d\'envoyer la demande.';
+
+  @override
+  String get insuranceLinkedToBooking => 'Cette demande est liée à votre dossier de traitement.';
+
+  @override
+  String get insuranceSend => 'Envoyer la demande';
+
+  @override
+  String get insuranceSentTitle => 'Demande envoyée';
+
+  @override
+  String insuranceSentBody(String provider) {
+    return '$provider vous contactera. Vous pouvez suivre cette demande dans Mes demandes.';
+  }
+
+  @override
+  String get insuranceContinueOnPartner => 'Continuer sur le site du partenaire';
+
+  @override
+  String get insuranceErrorConsentRequired => 'Veuillez d\'abord accepter le partage de vos coordonnées.';
+
+  @override
+  String get insuranceErrorCountryNotEligible =>
+      'Ce partenaire ne couvre pas votre pays. Choisissez une autre option ou changez de pays.';
+
+  @override
+  String get insuranceErrorDuplicate => 'Vous avez déjà une demande en cours auprès de ce partenaire.';
+
+  @override
+  String get insuranceErrorNotFound => 'Cette option n\'est plus disponible. Actualisez la liste.';
+
+  @override
+  String get insuranceErrorNotOpen => 'Cette demande est déjà clôturée.';
+
+  @override
+  String get insuranceRequestsEmptyTitle => 'Aucune demande pour le moment';
+
+  @override
+  String get insuranceRequestsEmptyBody =>
+      'Les demandes de devis et les vérifications d\'éligibilité envoyées aux partenaires apparaissent ici.';
+
+  @override
+  String get insuranceKindQuote => 'Devis d\'assurance';
+
+  @override
+  String get financingKindEligibility => 'Éligibilité au paiement différé';
+
+  @override
+  String get insuranceStatusNew => 'Envoyée';
+
+  @override
+  String get insuranceStatusInProgress => 'En cours';
+
+  @override
+  String get insuranceStatusShared => 'Transmise au partenaire';
+
+  @override
+  String get insuranceStatusClosed => 'Clôturée';
+
+  @override
+  String get insuranceStatusCancelled => 'Retirée';
+
+  @override
+  String insuranceStatusSemantics(String status) {
+    return 'Statut : $status';
+  }
+
+  @override
+  String insuranceRequestSentOn(String date) {
+    return 'Envoyée le $date';
+  }
+
+  @override
+  String get insuranceWithdraw => 'Retirer';
+
+  @override
+  String get insuranceWithdrawTitle => 'Retirer cette demande ?';
+
+  @override
+  String insuranceWithdrawBody(String provider) {
+    return 'Cela retire aussi votre accord pour partager vos coordonnées avec $provider. S\'il les a déjà reçues, demandez-lui directement de les supprimer.';
+  }
+
+  @override
+  String get insuranceWithdrawn => 'Demande retirée.';
+
+  @override
+  String get insuranceProfileGroup => 'Assurance et paiements';
+
+  @override
+  String get insuranceProfileTile => 'Assurance et paiement différé';
+
+  @override
+  String get insuranceProfileTileSubtitle => 'Assurances partenaires, paiement différé et vos demandes';
+
+  @override
+  String get insuranceBookCardTitle => 'Options d\'assurance';
+
+  @override
+  String get insuranceBookCardBody =>
+      'Comparez les assurances partenaires pour votre voyage et votre traitement. Nous ne vendons pas d\'assurance ; l\'assureur décide de la couverture et du prix.';
+
+  @override
+  String get insuranceBookCardAction => 'Voir les options d\'assurance';
+
+  @override
+  String get financingInstallmentsSubtitle => 'Sans intérêts, réglé avant votre admission';
+
+  @override
+  String get financingPickDateFirst => 'Choisissez une date d\'admission pour voir votre échéancier.';
+
+  @override
+  String get financingInstallmentsUnavailable =>
+      'Le paiement échelonné n\'est pas possible pour cette date d\'admission : il doit être réglé avant votre traitement. Payez en totalité, payez l\'acompte ou choisissez une date plus tardive.';
+
+  @override
+  String financingInterestFreeNote(String date) {
+    return 'Sans intérêts. La dernière échéance est due avant votre admission le $date.';
+  }
+
+  @override
+  String financingScheduleItem(int seq, String date) {
+    return 'Échéance $seq, due le $date';
+  }
+
+  @override
+  String get financingScheduleEstimate =>
+      'Montants estimés hors frais. L\'échéancier définitif est fixé lors de la réservation.';
+
+  @override
+  String get financingSeePartners => 'Besoin de plus de temps pour payer ? Voir les partenaires de paiement différé';
+
+  @override
+  String get financingInstallmentsPastTreatment =>
+      'Les échéances doivent être réglées en totalité avant votre date d\'admission. Choisissez moins de mois, payez l\'acompte ou choisissez une date plus tardive.';
 }

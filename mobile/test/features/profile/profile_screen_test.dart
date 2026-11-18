@@ -39,7 +39,11 @@ void main() {
     expect(find.text('Create your free account'), findsOneWidget);
     expect(find.text('Personal information'), findsNothing);
     expect(find.text('Currency'), findsOneWidget);
+    // Guests may also open the partner insurance / pay-later options.
+    expect(find.byKey(const Key('profile-insurance')), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Exit guest mode'), 300);
     expect(find.text('Exit guest mode'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Create account'), -300);
 
     await tester.tap(find.text('Create account'));
     await tester.pumpAndSettle();

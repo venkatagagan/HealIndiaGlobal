@@ -62,6 +62,9 @@ class ApiException implements Exception {
             ? L10n.current.guestAiLimitReached
             : code == 'guardian_consent_required'
             ? L10n.current.guardianConsentRequiredMessage
+            // CG-18: an instalment plan may not run past the admission (treatment) date.
+            : code == 'installments_past_treatment'
+            ? L10n.current.financingInstallmentsPastTreatment
             : (err['message'] ?? _messageForStatus(statusCode)).toString(),
         details: details,
         requestId: err['request_id']?.toString(),
@@ -115,6 +118,10 @@ class ApiException implements Exception {
     final d = details;
     return code == 'rate_limited' && d is Map && d['scope'] == 'guest_ai_daily';
   }
+
+  /// `POST /bookings`: the instalment plan would end after the admission date (CG-18);
+  /// `details: {max_months, last_due_by}`.
+  bool get isInstallmentsPastTreatment => code == 'installments_past_treatment';
 
   /// A patient under 18 needs a verified guardian consent first (403).
   bool get isGuardianConsentRequired => code == 'guardian_consent_required';

@@ -8961,4 +8961,294 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'العلاج';
+
+  @override
+  String get insuranceScreenTitle => 'التأمين والدفع لاحقًا';
+
+  @override
+  String get insuranceTabInsurance => 'التأمين';
+
+  @override
+  String get insuranceTabPayLater => 'الدفع لاحقًا';
+
+  @override
+  String get insuranceTabRequests => 'طلباتي';
+
+  @override
+  String get insuranceDisclaimer =>
+      'لا تبيع Heal India Global التأمين وليست وسيط تأمين. نعرض منتجات الشركاء للعلم فقط. شركة التأمين هي التي تحدد التغطية والسعر والشروط؛ اقرأ وثائق الوثيقة قبل الشراء.';
+
+  @override
+  String get financingDisclaimer =>
+      'لا تُقرض Heal India Global المال ولا تتخذ قرارات ائتمانية. خطط الدفع لاحقًا والقروض يقدمها الشريك وفق شروطه وبعد إجراء فحوصاته الخاصة. خطط التقسيط الخاصة بنا بدون فوائد ويجب سدادها بالكامل قبل موعد علاجك.';
+
+  @override
+  String get financingPartnerDecides =>
+      'يتحقق الشريك من أهليتك ويتخذ القرار على موقعه الخاص ووفق شروطه. لا تتخذ Heal India Global أي قرار ائتماني.';
+
+  @override
+  String insuranceCountryFor(String country) {
+    return 'الخيارات المتاحة في: $country';
+  }
+
+  @override
+  String get insuranceCountryAll => 'الخيارات لجميع الدول';
+
+  @override
+  String get insuranceCountryPick => 'اختر بلدك';
+
+  @override
+  String get insuranceEmptyTitle => 'لا توجد خيارات تأمين بعد';
+
+  @override
+  String get insuranceEmptyBody => 'لا يوجد لدينا حاليًا تأمين من شركاء لهذا البلد. تحقق لاحقًا أو اسأل فريقنا.';
+
+  @override
+  String get financingEmptyTitle => 'لا يوجد شركاء للدفع لاحقًا بعد';
+
+  @override
+  String get financingEmptyBody =>
+      'لا يوجد حاليًا شريك للدفع لاحقًا لهذا البلد. لا تزال خطة التقسيط بدون فوائد متاحة عند الحجز.';
+
+  @override
+  String get insuranceCategoryMedicalTravel => 'تأمين السفر العلاجي';
+
+  @override
+  String get insuranceCategoryComplication => 'تغطية المضاعفات';
+
+  @override
+  String get insuranceCategoryHealth => 'تأمين صحي';
+
+  @override
+  String get insuranceCategoryOther => 'تغطية أخرى';
+
+  @override
+  String get insuranceEligibleAll => 'متاح في جميع الدول';
+
+  @override
+  String insuranceEligibleCountries(String countries) {
+    return 'متاح في: $countries';
+  }
+
+  @override
+  String get insuranceNotInYourCountry => 'لا يذكر هذا الشريك بلدك.';
+
+  @override
+  String insurancePriceIndicative(String price) {
+    return 'سعر تقريبي: $price';
+  }
+
+  @override
+  String get insurancePriceOnRequest => 'السعر عند الطلب من الشريك';
+
+  @override
+  String get insuranceRequestQuote => 'اطلب عرض سعر من شركة التأمين';
+
+  @override
+  String get insuranceVisitWebsite => 'موقع الشريك';
+
+  @override
+  String get insuranceCouldNotOpen => 'تعذر فتح موقع الشريك.';
+
+  @override
+  String get financingCheckEligibility => 'تحقق من الأهلية';
+
+  @override
+  String get insuranceFormTitle => 'اطلب عرض سعر من شركة التأمين';
+
+  @override
+  String get financingFormTitle => 'تحقق من أهليتك';
+
+  @override
+  String insuranceFormIntro(String provider) {
+    return 'نرسل بيانات الاتصال الخاصة بك إلى $provider. سيتواصل معك مباشرة بعرض سعر.';
+  }
+
+  @override
+  String financingFormIntro(String provider) {
+    return 'نرسل بيانات الاتصال الخاصة بك إلى $provider. سيتحقق من أهليتك ويتواصل معك مباشرة.';
+  }
+
+  @override
+  String get insuranceFieldName => 'اسمك';
+
+  @override
+  String get insuranceFieldEmail => 'البريد الإلكتروني';
+
+  @override
+  String get insuranceFieldPhone => 'الهاتف (مع رمز الدولة)';
+
+  @override
+  String get insuranceNameRequired => 'أدخل اسمك.';
+
+  @override
+  String get insuranceEmailInvalid => 'أدخل بريدًا إلكترونيًا صحيحًا.';
+
+  @override
+  String get insuranceContactRequired => 'أدخل بريدًا إلكترونيًا أو رقم هاتف.';
+
+  @override
+  String get insurancePreferredContact => 'كيف تفضل أن يتواصلوا معك؟';
+
+  @override
+  String get insuranceContactEmail => 'البريد الإلكتروني';
+
+  @override
+  String get insuranceContactPhone => 'الهاتف';
+
+  @override
+  String get insuranceContactWhatsapp => 'واتساب';
+
+  @override
+  String get insuranceFieldCountry => 'بلد الإقامة';
+
+  @override
+  String get insuranceFieldCountryNotSet => 'غير محدد';
+
+  @override
+  String get insuranceFieldMessage => 'رسالة (اختياري)';
+
+  @override
+  String get insuranceMessageHint => 'لا تذكر أي معلومات طبية.';
+
+  @override
+  String insuranceConsentText(String provider) {
+    return 'أوافق على أن تشارك Heal India Global اسمي وبيانات الاتصال الخاصة بي مع $provider ليتمكن من التواصل معي بشأن هذا الطلب. لا تتم مشاركة أي معلومات طبية.';
+  }
+
+  @override
+  String get insuranceConsentRequired => 'ضع علامة في المربع للموافقة قبل إرسال الطلب.';
+
+  @override
+  String get insuranceLinkedToBooking => 'هذا الطلب مرتبط بملف علاجك.';
+
+  @override
+  String get insuranceSend => 'إرسال الطلب';
+
+  @override
+  String get insuranceSentTitle => 'تم إرسال الطلب';
+
+  @override
+  String insuranceSentBody(String provider) {
+    return 'سيتواصل معك $provider. يمكنك متابعة هذا الطلب في «طلباتي».';
+  }
+
+  @override
+  String get insuranceContinueOnPartner => 'المتابعة على موقع الشريك';
+
+  @override
+  String get insuranceErrorConsentRequired => 'يُرجى الموافقة أولًا على مشاركة بيانات الاتصال الخاصة بك.';
+
+  @override
+  String get insuranceErrorCountryNotEligible => 'لا يخدم هذا الشريك بلدك. اختر خيارًا آخر أو غيّر البلد.';
+
+  @override
+  String get insuranceErrorDuplicate => 'لديك بالفعل طلب مفتوح لدى هذا الشريك.';
+
+  @override
+  String get insuranceErrorNotFound => 'لم يعد هذا الخيار متاحًا. حدّث القائمة.';
+
+  @override
+  String get insuranceErrorNotOpen => 'تم إغلاق هذا الطلب بالفعل.';
+
+  @override
+  String get insuranceRequestsEmptyTitle => 'لا توجد طلبات بعد';
+
+  @override
+  String get insuranceRequestsEmptyBody =>
+      'تظهر هنا طلبات عروض الأسعار وطلبات التحقق من الأهلية التي ترسلها إلى الشركاء.';
+
+  @override
+  String get insuranceKindQuote => 'عرض سعر تأمين';
+
+  @override
+  String get financingKindEligibility => 'أهلية الدفع لاحقًا';
+
+  @override
+  String get insuranceStatusNew => 'مُرسل';
+
+  @override
+  String get insuranceStatusInProgress => 'قيد المعالجة';
+
+  @override
+  String get insuranceStatusShared => 'أُرسل إلى الشريك';
+
+  @override
+  String get insuranceStatusClosed => 'مغلق';
+
+  @override
+  String get insuranceStatusCancelled => 'مسحوب';
+
+  @override
+  String insuranceStatusSemantics(String status) {
+    return 'الحالة: $status';
+  }
+
+  @override
+  String insuranceRequestSentOn(String date) {
+    return 'أُرسل في $date';
+  }
+
+  @override
+  String get insuranceWithdraw => 'سحب';
+
+  @override
+  String get insuranceWithdrawTitle => 'هل تريد سحب هذا الطلب؟';
+
+  @override
+  String insuranceWithdrawBody(String provider) {
+    return 'يؤدي هذا أيضًا إلى سحب موافقتك على مشاركة بيانات الاتصال الخاصة بك مع $provider. إذا كان قد تلقى بياناتك بالفعل، فاطلب منه مباشرة حذفها.';
+  }
+
+  @override
+  String get insuranceWithdrawn => 'تم سحب الطلب.';
+
+  @override
+  String get insuranceProfileGroup => 'التأمين والمدفوعات';
+
+  @override
+  String get insuranceProfileTile => 'التأمين والدفع لاحقًا';
+
+  @override
+  String get insuranceProfileTileSubtitle => 'تأمين الشركاء وخيارات الدفع لاحقًا وطلباتك';
+
+  @override
+  String get insuranceBookCardTitle => 'خيارات التأمين';
+
+  @override
+  String get insuranceBookCardBody =>
+      'قارن تأمين الشركاء لرحلتك وعلاجك. نحن لا نبيع التأمين؛ شركة التأمين هي التي تحدد التغطية والسعر.';
+
+  @override
+  String get insuranceBookCardAction => 'عرض خيارات التأمين';
+
+  @override
+  String get financingInstallmentsSubtitle => 'بدون فوائد، وتُسدَّد قبل دخولك المستشفى';
+
+  @override
+  String get financingPickDateFirst => 'اختر تاريخ الدخول لعرض جدول الأقساط.';
+
+  @override
+  String get financingInstallmentsUnavailable =>
+      'التقسيط غير ممكن لتاريخ الدخول هذا: يجب سداد الأقساط قبل علاجك. ادفع المبلغ كاملًا أو ادفع العربون أو اختر تاريخًا لاحقًا.';
+
+  @override
+  String financingInterestFreeNote(String date) {
+    return 'بدون فوائد. يستحق القسط الأخير قبل دخولك المستشفى في $date.';
+  }
+
+  @override
+  String financingScheduleItem(int seq, String date) {
+    return 'القسط $seq، يستحق في $date';
+  }
+
+  @override
+  String get financingScheduleEstimate => 'مبالغ تقديرية قبل الرسوم. يُحدَّد الجدول النهائي عند الحجز.';
+
+  @override
+  String get financingSeePartners => 'تحتاج إلى مدة أطول للدفع؟ اطّلع على شركاء الدفع لاحقًا';
+
+  @override
+  String get financingInstallmentsPastTreatment =>
+      'يجب سداد الأقساط بالكامل قبل تاريخ دخولك المستشفى. اختر عددًا أقل من الأشهر أو ادفع العربون أو اختر تاريخًا لاحقًا.';
 }
