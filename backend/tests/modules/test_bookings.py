@@ -56,7 +56,7 @@ async def test_package_booking_from_enquiry(db, client, auth_headers, event_log:
         json={
             "case_id": str(case.id),
             "package_id": str(world.package.id),
-            "admission_date": future(20),
+            "admission_date": future(200),  # CG-18: 6 instalments must end before admission
             "payment_option": "installments",
             "installment_months": 6,
             "insurance_claim_requested": True,

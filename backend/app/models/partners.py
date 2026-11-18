@@ -25,7 +25,8 @@ class PartnerOffering(UUIDPkMixin, TimestampMixin, Base):
     """An insurance product (``kind=insurance``) or a pay-later partner (``kind=pay_later``), admin-managed.
 
     ``countries``: ISO-3166 alpha-2 codes of the patients' home countries the partner accepts (empty = any).
-    ``summary``: coverage summary (insurance) or terms summary (pay-later), written by staff from the partner's
+    ``summary``: coverage summary (insurance) or terms summary (pay-later), written by staff from the
+    partner's
     own documents. Prices are an indicative range in ``currency`` minor units."""
 
     __tablename__ = "partner_offerings"

@@ -1,18 +1,24 @@
-"""Shared building blocks for the analytics endpoints: date window + buckets, filters, small-cell suppression and
+"""Shared building blocks for the analytics endpoints: date window + buckets, filters, small-cell
+suppression and
 the short-lived cache.
 
 * **Time zone.** Every date (``from``/``to``, buckets, months) is an India Standard Time calendar day
-  (``Asia/Kolkata``, UTC+05:30, no DST) - the same convention as the admin reports and invoices. Responses say so
+  (``Asia/Kolkata``, UTC+05:30, no DST) - the same convention as the admin reports and invoices.
+  Responses say so
   in ``meta.timezone``.
 * **Window.** ``from``/``to`` are inclusive IST days (default: the last 30 days incl. today), at most 2 years.
-  Granularity ``day`` | ``week`` (ISO weeks, Monday start) | ``month``; when omitted it is chosen from the length
+  Granularity ``day`` | ``week`` (ISO weeks, Monday start) | ``month``; when omitted it is chosen from
+  the length
   of the window (<= 62 days: day, <= 200: week, else month).
 * **Filters** apply to case-level data (cases, quotes, bookings, reviews, aftercare, payments, commission):
   patient's home country (``country_of_residence`` -> ``nationality`` -> account country), specialty (case
-  specialty, else its procedure's), hospital, agent, channel (``agent`` = the case has an agent, ``direct`` = it
-  has none). Steps before a case exists (guest sessions, scans, registrations, screenings) are not attributable
+  specialty, else its procedure's), hospital, agent, channel (``agent`` = the case has an agent,
+  ``direct`` = it
+  has none). Steps before a case exists (guest sessions, scans, registrations, screenings) are not
+  attributable
   to those dimensions and come back as ``null`` when any filter is set.
-* **Privacy.** Only aggregates leave this module; breakdown cells between 1 and ``MIN_CELL - 1`` are suppressed
+* **Privacy.** Only aggregates leave this module; breakdown cells between 1 and ``MIN_CELL - 1`` are
+suppressed
   (``null`` + ``suppressed: true``) so a small group cannot point at one patient.
 """
 
@@ -106,7 +112,11 @@ def auto_granularity(start: date, end: date) -> Granularity:
 
 
 def make_window(
-    date_from: date | None, date_to: date | None, granularity: Granularity | None, *, default_days: int = DEFAULT_DAYS
+    date_from: date | None,
+    date_to: date | None,
+    granularity: Granularity | None,
+    *,
+    default_days: int = DEFAULT_DAYS,
 ) -> Window:
     end = date_to or today_ist()
     start = date_from or end - timedelta(days=default_days - 1)
@@ -147,7 +157,10 @@ class Filters:
 
     @property
     def any(self) -> bool:
-        return any(v is not None for v in (self.country, self.specialty_id, self.hospital_id, self.agent_id, self.channel))
+        return any(
+            v is not None
+            for v in (self.country, self.specialty_id, self.hospital_id, self.agent_id, self.channel)
+        )
 
     def as_dict(self) -> dict[str, str | None]:
         return {

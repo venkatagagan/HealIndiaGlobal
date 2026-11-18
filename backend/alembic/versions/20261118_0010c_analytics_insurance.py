@@ -79,7 +79,10 @@ def upgrade() -> None:
         "ix_partner_offerings_kind_active", "partner_offerings", ["kind", "is_active", "sort"], unique=False
     )
     op.create_index(
-        op.f("ix_partner_offerings_updated_by_user_id"), "partner_offerings", ["updated_by_user_id"], unique=False
+        op.f("ix_partner_offerings_updated_by_user_id"),
+        "partner_offerings",
+        ["updated_by_user_id"],
+        unique=False,
     )
 
     op.create_table(
@@ -125,10 +128,16 @@ def upgrade() -> None:
             ["case_id"], ["cases.id"], name=op.f("fk_partner_leads_case_id_cases"), ondelete="SET NULL"
         ),
         sa.ForeignKeyConstraint(
-            ["booking_id"], ["bookings.id"], name=op.f("fk_partner_leads_booking_id_bookings"), ondelete="SET NULL"
+            ["booking_id"],
+            ["bookings.id"],
+            name=op.f("fk_partner_leads_booking_id_bookings"),
+            ondelete="SET NULL",
         ),
         sa.ForeignKeyConstraint(
-            ["consent_id"], ["consents.id"], name=op.f("fk_partner_leads_consent_id_consents"), ondelete="SET NULL"
+            ["consent_id"],
+            ["consents.id"],
+            name=op.f("fk_partner_leads_consent_id_consents"),
+            ondelete="SET NULL",
         ),
         sa.ForeignKeyConstraint(
             ["handled_by_user_id"],
@@ -139,14 +148,33 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_partner_leads")),
     )
     op.create_index(
-        "ix_partner_leads_kind_status_created_at", "partner_leads", ["kind", "status", "created_at"], unique=False
+        "ix_partner_leads_kind_status_created_at",
+        "partner_leads",
+        ["kind", "status", "created_at"],
+        unique=False,
     )
-    for column in ("offering_id", "user_id", "patient_id", "case_id", "booking_id", "consent_id", "handled_by_user_id"):
+    for column in (
+        "offering_id",
+        "user_id",
+        "patient_id",
+        "case_id",
+        "booking_id",
+        "consent_id",
+        "handled_by_user_id",
+    ):
         op.create_index(op.f(f"ix_partner_leads_{column}"), "partner_leads", [column], unique=False)
 
 
 def downgrade() -> None:
-    for column in ("offering_id", "user_id", "patient_id", "case_id", "booking_id", "consent_id", "handled_by_user_id"):
+    for column in (
+        "offering_id",
+        "user_id",
+        "patient_id",
+        "case_id",
+        "booking_id",
+        "consent_id",
+        "handled_by_user_id",
+    ):
         op.drop_index(op.f(f"ix_partner_leads_{column}"), table_name="partner_leads")
     op.drop_index("ix_partner_leads_kind_status_created_at", table_name="partner_leads")
     op.drop_table("partner_leads")

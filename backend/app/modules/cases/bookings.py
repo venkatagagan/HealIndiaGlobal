@@ -354,6 +354,22 @@ async def create_booking(
 
     if body.admission_date <= today_ist():
         raise BadRequest("The admission date must be in the future", code="invalid_admission_date")
+    if body.payment_option == PaymentOption.INSTALLMENTS:
+        # CG-18: a platform instalment plan is an interest-free pre-payment plan that ends before admission;
+        # longer terms are credit and only a licensed pay-later partner may offer them (outside the platform).
+        from app.modules.partners.service import max_installment_months
+
+        max_months = max_installment_months(today_ist(), body.admission_date)
+        if (body.installment_months or 0) > max_months:
+            raise BadRequest(
+                "Instalments must be paid before the admission date. Choose fewer months, pay the deposit, "
+                "or ask a pay-later partner.",
+                code="installments_past_treatment",
+                details={
+                    "max_months": max_months,
+                    "last_due_by": (body.admission_date - timedelta(days=1)).isoformat(),
+                },
+            )
 
     # ---- pricing (minor units of the quote/package currency)
     if quote is not None:

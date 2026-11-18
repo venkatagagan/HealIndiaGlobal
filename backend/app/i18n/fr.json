@@ -487,5 +487,41 @@
     "unknown_locale": "Cette langue n'est pas disponible.",
     "unknown_translation_key": "Cette clé de traduction n'existe pas.",
     "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé."
+  },
+  "insurance": {
+    "notifications": {
+      "request_received": {
+        "title": "Nous avons reçu votre demande de devis d'assurance",
+        "body": "Nous allons transmettre vos coordonnées à {provider} pour qu'il vous contacte au sujet de {product}. Heal India Global ne vend pas d'assurance : l'assureur fixe la couverture, le prix et les conditions."
+      },
+      "request_updated": {
+        "title": "Mise à jour de votre demande d'assurance",
+        "body_in_progress": "Notre équipe traite votre demande pour {product} auprès de {provider}.",
+        "body_shared_with_partner": "Nous avons transmis vos coordonnées à {provider}, qui vous contactera au sujet de {product}.",
+        "body_closed": "Votre demande pour {product} auprès de {provider} est clôturée."
+      },
+      "staff_new": {
+        "title": "Nouvelle demande de devis d'assurance",
+        "body": "{name} a demandé un devis pour {product} auprès de {provider}."
+      }
+    }
+  },
+  "financing": {
+    "notifications": {
+      "request_received": {
+        "title": "Nous avons reçu votre demande d'éligibilité au paiement différé",
+        "body": "Nous allons transmettre vos coordonnées à {provider} pour qu'il vérifie votre éligibilité à {product}. Heal India Global ne prête pas d'argent et ne prend aucune décision de crédit."
+      },
+      "request_updated": {
+        "title": "Mise à jour de votre demande de paiement différé",
+        "body_in_progress": "Notre équipe traite votre demande d'éligibilité pour {product} auprès de {provider}.",
+        "body_shared_with_partner": "Nous avons transmis vos coordonnées à {provider}, qui vous contactera au sujet de {product} et décidera de votre éligibilité.",
+        "body_closed": "Votre demande d'éligibilité pour {product} auprès de {provider} est clôturée."
+      },
+      "staff_new": {
+        "title": "Nouvelle demande d'éligibilité au paiement différé",
+        "body": "{name} a demandé à {provider} de vérifier son éligibilité à {product}."
+      }
+    }
   }
 }

@@ -13,7 +13,8 @@ from app.modules.analytics.common import AnalyticsMeta
 # --------------------------------------------------------------------------------------------- overview
 class FunnelStep(BaseModel):
     step: str
-    """visitors | guest_scans | registrations | screenings | cases | quotes_sent | quotes_accepted | bookings |
+    """visitors | guest_scans | registrations | screenings | cases | quotes_sent | quotes_accepted |
+    bookings |
     completed | reviews"""
     count: int | None
     """``null`` = not attributable to the active filters (steps before a case exists)."""
