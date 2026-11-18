@@ -25,6 +25,7 @@ export 'payment.dart';
 export 'procedure.dart';
 export 'quote.dart';
 export 'quote_group.dart';
+export 'referral.dart';
 export 'refs.dart';
 export 'screening.dart';
 export 'specialty.dart';

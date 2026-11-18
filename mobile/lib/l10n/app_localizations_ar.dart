@@ -8961,4 +8961,678 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'العلاج';
+
+  @override
+  String get enumPaymentGatewayPlatformCredit => 'رصيد الإحالة';
+
+  @override
+  String get enumPaymentMethodCard => 'بطاقة';
+
+  @override
+  String get enumPaymentMethodUpi => 'UPI';
+
+  @override
+  String get enumPaymentMethodNetbanking => 'خدمات مصرفية عبر الإنترنت';
+
+  @override
+  String get enumPaymentMethodBankTransfer => 'تحويل بنكي';
+
+  @override
+  String get enumPaymentMethodWallet => 'محفظة إلكترونية';
+
+  @override
+  String get enumPaymentMethodEmi => 'أقساط شهرية (EMI)';
+
+  @override
+  String get enumPaymentMethodMock => 'دفعة تجريبية';
+
+  @override
+  String get enumPaymentMethodPlatformCredit => 'رصيد الإحالة';
+
+  @override
+  String get referralTitle => 'ادعُ صديقًا';
+
+  @override
+  String get referralProfileSubtitle => 'ادعُ أصدقاءك واكسب رصيدًا للعلاج';
+
+  @override
+  String get referralProgrammeOffTitle => 'برنامج الإحالة متوقف مؤقتًا';
+
+  @override
+  String get referralProgrammeOffBody => 'لا يزال بإمكانك استخدام الرصيد الموجود لديك في حجوزاتك.';
+
+  @override
+  String referralHeroBoth(String friendReward, String yourReward) {
+    return 'يحصل صديقك على خصم $friendReward على علاجه الأول، وتحصل أنت على رصيد بقيمة $yourReward بعد اكتماله.';
+  }
+
+  @override
+  String referralHeroReferrerOnly(String yourReward) {
+    return 'احصل على رصيد بقيمة $yourReward عندما يُكمل صديق تدعوه علاجه الأول.';
+  }
+
+  @override
+  String referralHeroRefereeOnly(String friendReward) {
+    return 'يحصل صديقك على رصيد بقيمة $friendReward لعلاجه الأول.';
+  }
+
+  @override
+  String get referralHeroGeneric => 'ادعُ أصدقاءك وعائلتك الذين يخططون للعلاج في الهند.';
+
+  @override
+  String get referralYourCode => 'رمز الإحالة الخاص بك';
+
+  @override
+  String get referralCopyCode => 'نسخ الرمز';
+
+  @override
+  String get referralCodeCopied => 'تم نسخ الرمز';
+
+  @override
+  String get referralShare => 'مشاركة الدعوة';
+
+  @override
+  String get referralCopyLink => 'نسخ الدعوة';
+
+  @override
+  String get referralLinkCopied => 'تم نسخ الدعوة';
+
+  @override
+  String get referralShareSubject => 'انضم إليّ في Heal India Global';
+
+  @override
+  String referralShareMessage(String code, String link) {
+    return 'أستخدم Heal India Global للتخطيط للعلاج في الهند. سجّل باستخدام رمزي $code: $link';
+  }
+
+  @override
+  String get referralCreditTitle => 'رصيدك';
+
+  @override
+  String referralCreditBase(String amount) {
+    return 'محفوظ بالروبية الهندية: $amount';
+  }
+
+  @override
+  String referralCreditExpiringSoon(String amount, String date) {
+    return 'تنتهي صلاحية $amount في $date';
+  }
+
+  @override
+  String get referralCreditUseHint => 'استخدمه في شاشة الدفع الخاصة بالحجز.';
+
+  @override
+  String get referralCreditNone => 'لا يوجد رصيد بعد. ادعُ صديقًا لتكسب رصيدًا.';
+
+  @override
+  String get referralHowItWorksTitle => 'كيف يعمل البرنامج';
+
+  @override
+  String get referralStep1 => 'شارك رمزك أو رابط الدعوة مع صديق.';
+
+  @override
+  String get referralStep2 => 'يسجّل صديقك باستخدامه ويحجز علاجه.';
+
+  @override
+  String get referralStep3 => 'عند اكتمال علاجه الأول، يُضاف الرصيد إلى حسابك.';
+
+  @override
+  String referralTermsValidity(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'يمكن استخدام الرصيد في دفعات الحجز لمدة $days يومًا.',
+      few: 'يمكن استخدام الرصيد في دفعات الحجز لمدة $days أيام.',
+      two: 'يمكن استخدام الرصيد في دفعات الحجز لمدة يومين.',
+      one: 'يمكن استخدام الرصيد في دفعات الحجز لمدة يوم واحد.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String referralTermsMaxPerYear(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يمكنك كسب مكافآت عن $count صديقًا كحد أقصى في السنة.',
+      few: 'يمكنك كسب مكافآت عن $count أصدقاء كحد أقصى في السنة.',
+      two: 'يمكنك كسب مكافآت عن صديقين كحد أقصى في السنة.',
+      one: 'يمكنك كسب مكافأة عن صديق واحد في السنة.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get referralTermsNoCash => 'لا يمكن استبدال الرصيد بالنقد. لا تُمنح مكافأة على التسجيل باستخدام رمزك الخاص.';
+
+  @override
+  String get referralFriendsTitle => 'الأصدقاء الذين دعوتهم';
+
+  @override
+  String get referralFriendsEmpty => 'لم ينضم أي صديق باستخدام رمزك بعد.';
+
+  @override
+  String referralCountChip(String label, int count) {
+    return '$label: $count';
+  }
+
+  @override
+  String referralFriendJoined(String date) {
+    return 'انضم في $date';
+  }
+
+  @override
+  String referralFriendReward(String amount) {
+    return '+$amount رصيد';
+  }
+
+  @override
+  String get referralStatusPending => 'سجّل';
+
+  @override
+  String get referralStatusQualified => 'اكتمل العلاج';
+
+  @override
+  String get referralStatusRewarded => 'تمت المكافأة';
+
+  @override
+  String get referralStatusVoid => 'غير مؤهل';
+
+  @override
+  String get referralHistoryTitle => 'سجل الرصيد';
+
+  @override
+  String get referralHistoryEmpty => 'لا توجد حركات على الرصيد بعد.';
+
+  @override
+  String get referralMovementGrant => 'تمت إضافة رصيد';
+
+  @override
+  String get referralMovementRedeem => 'استُخدم في حجز';
+
+  @override
+  String get referralMovementReinstate => 'أُعيد بعد استرداد';
+
+  @override
+  String get referralMovementExpire => 'انتهت صلاحيته';
+
+  @override
+  String get referralMovementVoid => 'أُلغي';
+
+  @override
+  String get referralCreditKindReferrer => 'مكافأة دعوة صديق';
+
+  @override
+  String get referralCreditKindReferee => 'رصيد ترحيبي';
+
+  @override
+  String get referralCreditKindReinstated => 'رصيد مُعاد';
+
+  @override
+  String referralCreditExpires(String date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String get referralCodeFieldLabel => 'رمز الإحالة (اختياري)';
+
+  @override
+  String get referralCodeFieldHelper => 'من صديق أو من وسيط سياحة علاجية';
+
+  @override
+  String get referralCodeInvalid => 'رمز الإحالة هذا غير صالح. تحقق منه أو اترك الحقل فارغًا.';
+
+  @override
+  String get referralPayUseCreditTitle => 'استخدام رصيدي';
+
+  @override
+  String referralPayUseCreditBody(String available, String apply) {
+    return 'المتاح $available · سيُطبَّق $apply';
+  }
+
+  @override
+  String get referralPayCoversAll => 'رصيدك يغطي كامل المبلغ المستحق الآن.';
+
+  @override
+  String referralPayRemaining(String amount) {
+    return 'ستدفع المبلغ المتبقي $amount بالطريقة أدناه.';
+  }
+
+  @override
+  String get referralPayApplyButton => 'استخدام رصيدي';
+
+  @override
+  String get referralPayConfirmTitle => 'هل تريد استخدام رصيدك؟';
+
+  @override
+  String referralPayConfirmBody(String amount) {
+    return 'سيتم تطبيق $amount من رصيد الإحالة على دفعة هذا الحجز الآن. إذا استُردّت الدفعة لاحقًا، يُعاد الرصيد إليك.';
+  }
+
+  @override
+  String get referralPayConfirmButton => 'تطبيق الرصيد';
+
+  @override
+  String referralPayApplied(String amount) {
+    return 'تم تطبيق $amount من الرصيد';
+  }
+
+  @override
+  String get referralPayCreditChanged => 'تغيّر رصيدك. تحقق من المبلغ وحاول مرة أخرى.';
+
+  @override
+  String get referralPayInProgress => 'هناك دفعة قيد التنفيذ لهذا الحجز. حاول مرة أخرى بعد بضع دقائق.';
+
+  @override
+  String get referralPayNotApplicable => 'لا يمكن استخدام الرصيد في هذه الدفعة.';
+
+  @override
+  String get referralPayNotForInstallments => 'لا يمكن استخدام الرصيد في خطط التقسيط.';
+
+  @override
+  String get referralPayAmountTooSmall => 'رصيدك أقل من أن يُطبَّق على هذه الدفعة.';
+
+  @override
+  String get crmLeadsTitle => 'العملاء المحتملون';
+
+  @override
+  String get crmAddLead => 'إضافة عميل محتمل';
+
+  @override
+  String get crmSearchHint => 'ابحث بالاسم أو البريد الإلكتروني أو الهاتف';
+
+  @override
+  String get crmFilterSource => 'تصفية حسب المصدر';
+
+  @override
+  String get crmFilterAnySource => 'أي مصدر';
+
+  @override
+  String get crmFilterAllLeads => 'جميع العملاء المحتملين';
+
+  @override
+  String get crmFilterDueToday => 'مستحقة اليوم';
+
+  @override
+  String get crmFilterOverdue => 'متأخرة';
+
+  @override
+  String get crmFilterNoFollowUp => 'بلا متابعة';
+
+  @override
+  String crmChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String crmPipelineOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عميلًا محتملًا مفتوحًا',
+      few: '$count عملاء محتملين مفتوحين',
+      two: 'عميلان محتملان مفتوحان',
+      one: 'عميل محتمل مفتوح واحد',
+      zero: 'لا يوجد عملاء محتملون مفتوحون',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsDueToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متابعة مستحقة اليوم',
+      few: '$count متابعات مستحقة اليوم',
+      two: 'متابعتان مستحقتان اليوم',
+      one: 'متابعة واحدة مستحقة اليوم',
+      zero: 'لا متابعات مستحقة اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متابعة متأخرة',
+      few: '$count متابعات متأخرة',
+      two: 'متابعتان متأخرتان',
+      one: 'متابعة متأخرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmPipelineConversion(String rate) {
+    return 'نسبة التحويل $rate';
+  }
+
+  @override
+  String get crmLeadsEmpty => 'لا يوجد عملاء محتملون بعد';
+
+  @override
+  String get crmLeadsEmptyHint => 'أضف الأشخاص الذين يتواصلون معك لتتابعهم وتحوّلهم إلى مرضى.';
+
+  @override
+  String get crmLeadsNoMatch => 'لا يوجد عملاء محتملون يطابقون عوامل التصفية هذه.';
+
+  @override
+  String crmFollowUpOn(String date) {
+    return 'المتابعة: $date';
+  }
+
+  @override
+  String get crmFollowUpDueBadge => 'مستحقة';
+
+  @override
+  String get crmLeadDetailTitle => 'عميل محتمل';
+
+  @override
+  String get crmDetailsTitle => 'التفاصيل';
+
+  @override
+  String get crmFieldPhone => 'الهاتف';
+
+  @override
+  String get crmFieldWhatsapp => 'واتساب';
+
+  @override
+  String get crmFieldEmail => 'البريد الإلكتروني';
+
+  @override
+  String get crmFieldCountry => 'الدولة';
+
+  @override
+  String get crmFieldLanguage => 'اللغة';
+
+  @override
+  String get crmFieldSource => 'المصدر';
+
+  @override
+  String get crmFieldSpecialty => 'التخصص';
+
+  @override
+  String get crmFieldProcedure => 'الإجراء';
+
+  @override
+  String get crmFieldInterest => 'الاهتمام';
+
+  @override
+  String get crmFieldBudget => 'الميزانية';
+
+  @override
+  String get crmFieldTags => 'الوسوم';
+
+  @override
+  String get crmFieldOwner => 'المسؤول';
+
+  @override
+  String get crmFieldLostReason => 'سبب الخسارة';
+
+  @override
+  String get crmFieldCreated => 'تاريخ الإضافة';
+
+  @override
+  String get crmFieldNextFollowUp => 'المتابعة التالية';
+
+  @override
+  String get crmStatusNew => 'جديد';
+
+  @override
+  String get crmStatusContacted => 'تم التواصل';
+
+  @override
+  String get crmStatusQualified => 'مؤهل';
+
+  @override
+  String get crmStatusScreening => 'قيد الفحص';
+
+  @override
+  String get crmStatusQuoteRequested => 'طُلب عرض سعر';
+
+  @override
+  String get crmStatusWon => 'تم الكسب';
+
+  @override
+  String get crmStatusLost => 'خسارة';
+
+  @override
+  String get crmSourceWalkIn => 'زيارة مباشرة';
+
+  @override
+  String get crmSourceWhatsapp => 'واتساب';
+
+  @override
+  String get crmSourceFacebook => 'فيسبوك';
+
+  @override
+  String get crmSourceReferral => 'إحالة';
+
+  @override
+  String get crmSourceEvent => 'فعالية';
+
+  @override
+  String get crmSourceOther => 'أخرى';
+
+  @override
+  String get crmActivityCall => 'مكالمة';
+
+  @override
+  String get crmActivityMessage => 'رسالة';
+
+  @override
+  String get crmActivityMeeting => 'اجتماع';
+
+  @override
+  String get crmActivityNote => 'ملاحظة';
+
+  @override
+  String get crmActivityStatusChange => 'تغيير الحالة';
+
+  @override
+  String get crmLogActivity => 'تسجيل نشاط';
+
+  @override
+  String get crmChangeStatus => 'تغيير الحالة';
+
+  @override
+  String get crmStatusSave => 'حفظ الحالة';
+
+  @override
+  String get crmStatusUpdated => 'تم تحديث الحالة';
+
+  @override
+  String get crmLostReasonLabel => 'لماذا خُسر هذا العميل المحتمل؟';
+
+  @override
+  String get crmLostReasonRequired => 'أدخل سبب خسارة العميل المحتمل.';
+
+  @override
+  String get crmWonViaConvert => 'لتسجيل العميل المحتمل كمكسوب، حوّله إلى مريض.';
+
+  @override
+  String get crmScheduleFollowUp => 'جدولة متابعة';
+
+  @override
+  String get crmClearFollowUp => 'إزالة المتابعة';
+
+  @override
+  String get crmFollowUpScheduled => 'تمت جدولة المتابعة';
+
+  @override
+  String get crmFollowUpCleared => 'تمت إزالة المتابعة';
+
+  @override
+  String get crmNoFollowUp => 'لا توجد متابعة مجدولة';
+
+  @override
+  String get crmActivityBodyLabel => 'ماذا حدث؟ (اختياري)';
+
+  @override
+  String get crmActivityNextFollowUp => 'المتابعة التالية (اختياري)';
+
+  @override
+  String get crmActivitySave => 'حفظ النشاط';
+
+  @override
+  String get crmActivityLogged => 'تم تسجيل النشاط';
+
+  @override
+  String get crmTimelineTitle => 'السجل الزمني';
+
+  @override
+  String get crmTimelineEmpty => 'لا يوجد نشاط بعد.';
+
+  @override
+  String crmTimelineStatusChange(String fromStatus, String toStatus) {
+    return 'تغيّرت الحالة من $fromStatus إلى $toStatus';
+  }
+
+  @override
+  String crmTimelineStatusSet(String status) {
+    return 'عُيّنت الحالة إلى $status';
+  }
+
+  @override
+  String crmTimelineBy(String name) {
+    return 'بواسطة $name';
+  }
+
+  @override
+  String get crmConvertToPatient => 'تحويل إلى مريض';
+
+  @override
+  String get crmConvertTitle => 'تحويل إلى مريض';
+
+  @override
+  String get crmConvertIntro => 'يُنشئ مريضًا مُدارًا من هذا العميل المحتمل. تحقق من البيانات وأكّد موافقة المريض.';
+
+  @override
+  String get crmConverted => 'تم إنشاء المريض من العميل المحتمل';
+
+  @override
+  String get crmAlreadyConverted => 'هذا العميل المحتمل أصبح مريضًا بالفعل.';
+
+  @override
+  String get crmViewPatient => 'فتح ملف المريض';
+
+  @override
+  String get crmDeleteLead => 'حذف العميل المحتمل';
+
+  @override
+  String get crmDeleteConfirmTitle => 'هل تريد حذف هذا العميل المحتمل؟';
+
+  @override
+  String get crmDeleteConfirmBody => 'سيُحذف العميل المحتمل وسجله الزمني. لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get crmLeadDeleted => 'تم حذف العميل المحتمل';
+
+  @override
+  String get crmLeadAdded => 'تمت إضافة العميل المحتمل';
+
+  @override
+  String get crmFormFullName => 'الاسم الكامل';
+
+  @override
+  String get crmFormPhone => 'الهاتف (اختياري)';
+
+  @override
+  String get crmFormWhatsapp => 'واتساب (اختياري)';
+
+  @override
+  String get crmFormEmail => 'البريد الإلكتروني (اختياري)';
+
+  @override
+  String get crmFormEmailInvalid => 'أدخل بريدًا إلكترونيًا صالحًا.';
+
+  @override
+  String get crmFormCountry => 'رمز الدولة (اختياري، مثل NG)';
+
+  @override
+  String get crmFormCountryInvalid => 'استخدم رمز دولة من حرفين، مثل NG.';
+
+  @override
+  String get crmFormSource => 'المصدر';
+
+  @override
+  String get crmFormSourceDetail => 'تفاصيل المصدر (اختياري)';
+
+  @override
+  String get crmFormInterest => 'الاهتمام (اختياري)';
+
+  @override
+  String get crmFormInterestHelper => 'ملاحظة قصيرة مثل \"استبدال الركبة\". لا تُدخل التاريخ الطبي.';
+
+  @override
+  String get crmFormBudget => 'الميزانية (اختياري)';
+
+  @override
+  String get crmFormBudgetCurrency => 'العملة';
+
+  @override
+  String get crmFormBudgetInvalid => 'أدخل مبلغًا صالحًا وعملة من 3 أحرف.';
+
+  @override
+  String get crmFormFollowUp => 'المتابعة التالية (اختياري)';
+
+  @override
+  String get crmFormNote => 'الملاحظة الأولى (اختياري)';
+
+  @override
+  String get crmFormRequired => 'مطلوب';
+
+  @override
+  String get crmDashboardHint => 'تابع الاستفسارات والمتابعات';
+
+  @override
+  String get crmErrorLeadConverted => 'تم تحويل هذا العميل المحتمل إلى مريض بالفعل.';
+
+  @override
+  String get crmErrorEmailTaken => 'يوجد حساب بهذا البريد الإلكتروني بالفعل.';
+
+  @override
+  String get crmErrorAgentNotActive => 'يجب اعتماد حساب وكالتك قبل أن تتمكن من إضافة مرضى.';
+
+  @override
+  String get crmConsentSection => 'موافقة المريض';
+
+  @override
+  String get crmConsentAttest => 'أؤكد أن المريض وافق على شروط الخدمة وسياسة الخصوصية';
+
+  @override
+  String get crmConsentAttestHint => 'يُسجَّل إقرارك باسمك ووقته. يؤكده المريض عند أول تسجيل دخول.';
+
+  @override
+  String get crmConsentShare => 'وافق المريض أيضًا على مشاركة سجلاته مع المستشفيات التي أتواصل معها نيابةً عنه';
+
+  @override
+  String get crmConsentMethod => 'كيف تم الحصول على الموافقة؟';
+
+  @override
+  String get crmConsentMethodInPerson => 'شخصيًا';
+
+  @override
+  String get crmConsentMethodPhone => 'مكالمة هاتفية';
+
+  @override
+  String get crmConsentMethodVideoCall => 'مكالمة فيديو';
+
+  @override
+  String get crmConsentMethodWritten => 'نموذج مكتوب / موقّع';
+
+  @override
+  String get crmConsentMethodEmail => 'البريد الإلكتروني';
+
+  @override
+  String get crmConsentNote => 'ملاحظة (اختياري)';
+
+  @override
+  String get crmConsentNoteHint => 'مثال: النموذج الموقّع محفوظ';
+
+  @override
+  String get crmConsentRequired => 'أكّد أن المريض قد أعطى موافقته قبل إضافته.';
 }

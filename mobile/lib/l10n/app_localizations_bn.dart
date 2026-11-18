@@ -8673,4 +8673,668 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'চিকিৎসা';
+
+  @override
+  String get enumPaymentGatewayPlatformCredit => 'রেফারেল ক্রেডিট';
+
+  @override
+  String get enumPaymentMethodCard => 'কার্ড';
+
+  @override
+  String get enumPaymentMethodUpi => 'UPI';
+
+  @override
+  String get enumPaymentMethodNetbanking => 'নেট ব্যাংকিং';
+
+  @override
+  String get enumPaymentMethodBankTransfer => 'ব্যাংক ট্রান্সফার';
+
+  @override
+  String get enumPaymentMethodWallet => 'ওয়ালেট';
+
+  @override
+  String get enumPaymentMethodEmi => 'মাসিক কিস্তি (EMI)';
+
+  @override
+  String get enumPaymentMethodMock => 'পরীক্ষামূলক পেমেন্ট';
+
+  @override
+  String get enumPaymentMethodPlatformCredit => 'রেফারেল ক্রেডিট';
+
+  @override
+  String get referralTitle => 'বন্ধুকে আমন্ত্রণ জানান';
+
+  @override
+  String get referralProfileSubtitle => 'বন্ধুদের আমন্ত্রণ জানান এবং চিকিৎসার ক্রেডিট পান';
+
+  @override
+  String get referralProgrammeOffTitle => 'রেফারেল প্রোগ্রাম সাময়িকভাবে বন্ধ আছে';
+
+  @override
+  String get referralProgrammeOffBody => 'আপনার কাছে থাকা ক্রেডিট এখনও বুকিংয়ে ব্যবহার করতে পারবেন।';
+
+  @override
+  String referralHeroBoth(String friendReward, String yourReward) {
+    return 'আপনার বন্ধু তার প্রথম চিকিৎসায় $friendReward ছাড় পাবেন, আর চিকিৎসা সম্পন্ন হলে আপনি $yourReward ক্রেডিট পাবেন।';
+  }
+
+  @override
+  String referralHeroReferrerOnly(String yourReward) {
+    return 'আপনার আমন্ত্রিত কোনো বন্ধু প্রথম চিকিৎসা সম্পন্ন করলে আপনি $yourReward ক্রেডিট পাবেন।';
+  }
+
+  @override
+  String referralHeroRefereeOnly(String friendReward) {
+    return 'আপনার বন্ধু তার প্রথম চিকিৎসার জন্য $friendReward ক্রেডিট পাবেন।';
+  }
+
+  @override
+  String get referralHeroGeneric => 'ভারতে চিকিৎসার পরিকল্পনা করছেন এমন বন্ধু ও পরিবারকে আমন্ত্রণ জানান।';
+
+  @override
+  String get referralYourCode => 'আপনার রেফারেল কোড';
+
+  @override
+  String get referralCopyCode => 'কোড কপি করুন';
+
+  @override
+  String get referralCodeCopied => 'কোড কপি হয়েছে';
+
+  @override
+  String get referralShare => 'আমন্ত্রণ শেয়ার করুন';
+
+  @override
+  String get referralCopyLink => 'আমন্ত্রণ কপি করুন';
+
+  @override
+  String get referralLinkCopied => 'আমন্ত্রণ কপি হয়েছে';
+
+  @override
+  String get referralShareSubject => 'Heal India Global-এ আমার সাথে যোগ দিন';
+
+  @override
+  String referralShareMessage(String code, String link) {
+    return 'আমি ভারতে চিকিৎসার পরিকল্পনা করতে Heal India Global ব্যবহার করছি। আমার কোড $code দিয়ে সাইন আপ করুন: $link';
+  }
+
+  @override
+  String get referralCreditTitle => 'আপনার ক্রেডিট';
+
+  @override
+  String referralCreditBase(String amount) {
+    return 'ভারতীয় রুপিতে রাখা: $amount';
+  }
+
+  @override
+  String referralCreditExpiringSoon(String amount, String date) {
+    return '$amount-এর মেয়াদ $date তারিখে শেষ হবে';
+  }
+
+  @override
+  String get referralCreditUseHint => 'বুকিংয়ের পেমেন্ট স্ক্রিনে এটি ব্যবহার করুন।';
+
+  @override
+  String get referralCreditNone => 'এখনও কোনো ক্রেডিট নেই। ক্রেডিট পেতে একজন বন্ধুকে আমন্ত্রণ জানান।';
+
+  @override
+  String get referralHowItWorksTitle => 'কীভাবে কাজ করে';
+
+  @override
+  String get referralStep1 => 'আপনার কোড বা আমন্ত্রণ লিংক একজন বন্ধুর সাথে শেয়ার করুন।';
+
+  @override
+  String get referralStep2 => 'আপনার বন্ধু এটি দিয়ে সাইন আপ করে চিকিৎসা বুক করেন।';
+
+  @override
+  String get referralStep3 => 'তার প্রথম চিকিৎসা সম্পন্ন হলে ক্রেডিট আপনার অ্যাকাউন্টে যোগ হয়।';
+
+  @override
+  String referralTermsValidity(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'ক্রেডিট বুকিং পেমেন্টে $days দিন ব্যবহার করা যাবে।',
+      one: 'ক্রেডিট বুকিং পেমেন্টে ১ দিন ব্যবহার করা যাবে।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String referralTermsMaxPerYear(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'বছরে সর্বোচ্চ $count জন বন্ধুর জন্য পুরস্কার পেতে পারেন।',
+      one: 'বছরে ১ জন বন্ধুর জন্য পুরস্কার পেতে পারেন।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get referralTermsNoCash =>
+      'ক্রেডিট নগদ টাকায় বদলানো যায় না। নিজের কোড দিয়ে নিজে সাইন আপ করলে কোনো পুরস্কার নেই।';
+
+  @override
+  String get referralFriendsTitle => 'আপনার আমন্ত্রিত বন্ধুরা';
+
+  @override
+  String get referralFriendsEmpty => 'এখনও কোনো বন্ধু আপনার কোড দিয়ে যোগ দেননি।';
+
+  @override
+  String referralCountChip(String label, int count) {
+    return '$label: $count';
+  }
+
+  @override
+  String referralFriendJoined(String date) {
+    return 'যোগ দিয়েছেন $date';
+  }
+
+  @override
+  String referralFriendReward(String amount) {
+    return '+$amount ক্রেডিট';
+  }
+
+  @override
+  String get referralStatusPending => 'সাইন আপ করেছেন';
+
+  @override
+  String get referralStatusQualified => 'চিকিৎসা সম্পন্ন';
+
+  @override
+  String get referralStatusRewarded => 'পুরস্কৃত';
+
+  @override
+  String get referralStatusVoid => 'যোগ্য নয়';
+
+  @override
+  String get referralHistoryTitle => 'ক্রেডিটের ইতিহাস';
+
+  @override
+  String get referralHistoryEmpty => 'এখনও কোনো ক্রেডিট লেনদেন নেই।';
+
+  @override
+  String get referralMovementGrant => 'ক্রেডিট যোগ হয়েছে';
+
+  @override
+  String get referralMovementRedeem => 'একটি বুকিংয়ে ব্যবহৃত';
+
+  @override
+  String get referralMovementReinstate => 'রিফান্ডের পর ফেরত';
+
+  @override
+  String get referralMovementExpire => 'মেয়াদোত্তীর্ণ';
+
+  @override
+  String get referralMovementVoid => 'বাতিল';
+
+  @override
+  String get referralCreditKindReferrer => 'বন্ধুকে আমন্ত্রণের পুরস্কার';
+
+  @override
+  String get referralCreditKindReferee => 'স্বাগত ক্রেডিট';
+
+  @override
+  String get referralCreditKindReinstated => 'ফেরত পাওয়া ক্রেডিট';
+
+  @override
+  String referralCreditExpires(String date) {
+    return 'মেয়াদ শেষ $date';
+  }
+
+  @override
+  String get referralCodeFieldLabel => 'রেফারেল কোড (ঐচ্ছিক)';
+
+  @override
+  String get referralCodeFieldHelper => 'কোনো বন্ধু বা মেডিকেল-ট্রাভেল সহায়কের কাছ থেকে';
+
+  @override
+  String get referralCodeInvalid => 'এই রেফারেল কোডটি বৈধ নয়। এটি যাচাই করুন বা ঘরটি খালি রাখুন।';
+
+  @override
+  String get referralPayUseCreditTitle => 'আমার ক্রেডিট ব্যবহার করুন';
+
+  @override
+  String referralPayUseCreditBody(String available, String apply) {
+    return '$available উপলব্ধ · $apply প্রয়োগ হবে';
+  }
+
+  @override
+  String get referralPayCoversAll => 'আপনার ক্রেডিট এখন প্রদেয় পুরো অর্থ পরিশোধ করে।';
+
+  @override
+  String referralPayRemaining(String amount) {
+    return 'বাকি $amount নিচের পদ্ধতিতে পরিশোধ করবেন।';
+  }
+
+  @override
+  String get referralPayApplyButton => 'আমার ক্রেডিট ব্যবহার করুন';
+
+  @override
+  String get referralPayConfirmTitle => 'আপনার ক্রেডিট ব্যবহার করবেন?';
+
+  @override
+  String referralPayConfirmBody(String amount) {
+    return 'আপনার রেফারেল ক্রেডিট থেকে $amount এখনই এই বুকিংয়ের পেমেন্টে প্রয়োগ হবে। পরে পেমেন্ট রিফান্ড হলে ক্রেডিট আপনাকে ফেরত দেওয়া হবে।';
+  }
+
+  @override
+  String get referralPayConfirmButton => 'ক্রেডিট প্রয়োগ করুন';
+
+  @override
+  String referralPayApplied(String amount) {
+    return '$amount ক্রেডিট প্রয়োগ হয়েছে';
+  }
+
+  @override
+  String get referralPayCreditChanged => 'আপনার ক্রেডিট পরিবর্তিত হয়েছে। অর্থের পরিমাণ যাচাই করে আবার চেষ্টা করুন।';
+
+  @override
+  String get referralPayInProgress => 'এই বুকিংয়ের একটি পেমেন্ট ইতিমধ্যে চলছে। কয়েক মিনিট পর আবার চেষ্টা করুন।';
+
+  @override
+  String get referralPayNotApplicable => 'এই পেমেন্টে ক্রেডিট ব্যবহার করা যাবে না।';
+
+  @override
+  String get referralPayNotForInstallments => 'কিস্তি পরিকল্পনায় ক্রেডিট ব্যবহার করা যায় না।';
+
+  @override
+  String get referralPayAmountTooSmall => 'এই পেমেন্টে প্রয়োগ করার জন্য আপনার ক্রেডিট খুব কম।';
+
+  @override
+  String get crmLeadsTitle => 'লিড';
+
+  @override
+  String get crmAddLead => 'লিড যোগ করুন';
+
+  @override
+  String get crmSearchHint => 'নাম, ইমেল বা ফোন দিয়ে খুঁজুন';
+
+  @override
+  String get crmFilterSource => 'উৎস অনুযায়ী ফিল্টার';
+
+  @override
+  String get crmFilterAnySource => 'যেকোনো উৎস';
+
+  @override
+  String get crmFilterAllLeads => 'সব লিড';
+
+  @override
+  String get crmFilterDueToday => 'আজ করণীয়';
+
+  @override
+  String get crmFilterOverdue => 'মেয়াদোত্তীর্ণ';
+
+  @override
+  String get crmFilterNoFollowUp => 'ফলো-আপ নেই';
+
+  @override
+  String crmChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String crmPipelineOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি খোলা লিড',
+      one: '১টি খোলা লিড',
+      zero: 'কোনো খোলা লিড নেই',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsDueToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'আজ $countটি ফলো-আপ',
+      one: 'আজ ১টি ফলো-আপ',
+      zero: 'আজ কোনো ফলো-আপ নেই',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$countটি বিলম্বিত', one: '১টি বিলম্বিত');
+    return '$_temp0';
+  }
+
+  @override
+  String crmPipelineConversion(String rate) {
+    return '$rate রূপান্তরিত';
+  }
+
+  @override
+  String get crmLeadsEmpty => 'এখনও কোনো লিড নেই';
+
+  @override
+  String get crmLeadsEmptyHint =>
+      'যারা আপনার সাথে যোগাযোগ করেন তাদের যোগ করুন, যাতে ফলো-আপ করে তাদের রোগীতে রূপান্তর করতে পারেন।';
+
+  @override
+  String get crmLeadsNoMatch => 'এই ফিল্টারের সাথে কোনো লিড মেলে না।';
+
+  @override
+  String crmFollowUpOn(String date) {
+    return 'ফলো-আপ: $date';
+  }
+
+  @override
+  String get crmFollowUpDueBadge => 'করণীয়';
+
+  @override
+  String get crmLeadDetailTitle => 'লিড';
+
+  @override
+  String get crmDetailsTitle => 'বিস্তারিত';
+
+  @override
+  String get crmFieldPhone => 'ফোন';
+
+  @override
+  String get crmFieldWhatsapp => 'হোয়াটসঅ্যাপ';
+
+  @override
+  String get crmFieldEmail => 'ইমেল';
+
+  @override
+  String get crmFieldCountry => 'দেশ';
+
+  @override
+  String get crmFieldLanguage => 'ভাষা';
+
+  @override
+  String get crmFieldSource => 'উৎস';
+
+  @override
+  String get crmFieldSpecialty => 'বিশেষত্ব';
+
+  @override
+  String get crmFieldProcedure => 'প্রসিডিউর';
+
+  @override
+  String get crmFieldInterest => 'আগ্রহ';
+
+  @override
+  String get crmFieldBudget => 'বাজেট';
+
+  @override
+  String get crmFieldTags => 'ট্যাগ';
+
+  @override
+  String get crmFieldOwner => 'দায়িত্বপ্রাপ্ত';
+
+  @override
+  String get crmFieldLostReason => 'হারানোর কারণ';
+
+  @override
+  String get crmFieldCreated => 'যোগ করা হয়েছে';
+
+  @override
+  String get crmFieldNextFollowUp => 'পরবর্তী ফলো-আপ';
+
+  @override
+  String get crmStatusNew => 'নতুন';
+
+  @override
+  String get crmStatusContacted => 'যোগাযোগ করা হয়েছে';
+
+  @override
+  String get crmStatusQualified => 'যোগ্য';
+
+  @override
+  String get crmStatusScreening => 'স্ক্রিনিং চলছে';
+
+  @override
+  String get crmStatusQuoteRequested => 'কোটেশন অনুরোধ করা হয়েছে';
+
+  @override
+  String get crmStatusWon => 'সফল';
+
+  @override
+  String get crmStatusLost => 'হারানো';
+
+  @override
+  String get crmSourceWalkIn => 'সরাসরি আগমন';
+
+  @override
+  String get crmSourceWhatsapp => 'হোয়াটসঅ্যাপ';
+
+  @override
+  String get crmSourceFacebook => 'ফেসবুক';
+
+  @override
+  String get crmSourceReferral => 'রেফারেল';
+
+  @override
+  String get crmSourceEvent => 'ইভেন্ট';
+
+  @override
+  String get crmSourceOther => 'অন্যান্য';
+
+  @override
+  String get crmActivityCall => 'কল';
+
+  @override
+  String get crmActivityMessage => 'বার্তা';
+
+  @override
+  String get crmActivityMeeting => 'মিটিং';
+
+  @override
+  String get crmActivityNote => 'নোট';
+
+  @override
+  String get crmActivityStatusChange => 'স্ট্যাটাস পরিবর্তন';
+
+  @override
+  String get crmLogActivity => 'কার্যকলাপ লিখুন';
+
+  @override
+  String get crmChangeStatus => 'স্ট্যাটাস পরিবর্তন করুন';
+
+  @override
+  String get crmStatusSave => 'স্ট্যাটাস সংরক্ষণ করুন';
+
+  @override
+  String get crmStatusUpdated => 'স্ট্যাটাস আপডেট হয়েছে';
+
+  @override
+  String get crmLostReasonLabel => 'লিডটি কেন হারানো গেল?';
+
+  @override
+  String get crmLostReasonRequired => 'লিড হারানোর কারণ লিখুন।';
+
+  @override
+  String get crmWonViaConvert => 'লিডকে সফল হিসেবে চিহ্নিত করতে, এটিকে রোগীতে রূপান্তর করুন।';
+
+  @override
+  String get crmScheduleFollowUp => 'ফলো-আপ নির্ধারণ করুন';
+
+  @override
+  String get crmClearFollowUp => 'ফলো-আপ সরান';
+
+  @override
+  String get crmFollowUpScheduled => 'ফলো-আপ নির্ধারিত হয়েছে';
+
+  @override
+  String get crmFollowUpCleared => 'ফলো-আপ সরানো হয়েছে';
+
+  @override
+  String get crmNoFollowUp => 'কোনো ফলো-আপ নির্ধারিত নেই';
+
+  @override
+  String get crmActivityBodyLabel => 'কী হয়েছে? (ঐচ্ছিক)';
+
+  @override
+  String get crmActivityNextFollowUp => 'পরবর্তী ফলো-আপ (ঐচ্ছিক)';
+
+  @override
+  String get crmActivitySave => 'কার্যকলাপ সংরক্ষণ করুন';
+
+  @override
+  String get crmActivityLogged => 'কার্যকলাপ লেখা হয়েছে';
+
+  @override
+  String get crmTimelineTitle => 'টাইমলাইন';
+
+  @override
+  String get crmTimelineEmpty => 'এখনও কোনো কার্যকলাপ নেই।';
+
+  @override
+  String crmTimelineStatusChange(String fromStatus, String toStatus) {
+    return 'স্ট্যাটাস পরিবর্তন: $fromStatus থেকে $toStatus';
+  }
+
+  @override
+  String crmTimelineStatusSet(String status) {
+    return 'স্ট্যাটাস নির্ধারিত: $status';
+  }
+
+  @override
+  String crmTimelineBy(String name) {
+    return '$name দ্বারা';
+  }
+
+  @override
+  String get crmConvertToPatient => 'রোগীতে রূপান্তর করুন';
+
+  @override
+  String get crmConvertTitle => 'রোগীতে রূপান্তর';
+
+  @override
+  String get crmConvertIntro =>
+      'এই লিড থেকে একজন পরিচালিত রোগী তৈরি করে। তথ্য যাচাই করুন এবং রোগীর সম্মতি নিশ্চিত করুন।';
+
+  @override
+  String get crmConverted => 'লিড থেকে রোগী তৈরি হয়েছে';
+
+  @override
+  String get crmAlreadyConverted => 'এই লিড ইতিমধ্যে একজন রোগী।';
+
+  @override
+  String get crmViewPatient => 'রোগী খুলুন';
+
+  @override
+  String get crmDeleteLead => 'লিড মুছুন';
+
+  @override
+  String get crmDeleteConfirmTitle => 'এই লিড মুছবেন?';
+
+  @override
+  String get crmDeleteConfirmBody => 'লিড এবং এর টাইমলাইন মুছে যাবে। এটি পূর্বাবস্থায় ফেরানো যাবে না।';
+
+  @override
+  String get crmLeadDeleted => 'লিড মুছে ফেলা হয়েছে';
+
+  @override
+  String get crmLeadAdded => 'লিড যোগ হয়েছে';
+
+  @override
+  String get crmFormFullName => 'পুরো নাম';
+
+  @override
+  String get crmFormPhone => 'ফোন (ঐচ্ছিক)';
+
+  @override
+  String get crmFormWhatsapp => 'হোয়াটসঅ্যাপ (ঐচ্ছিক)';
+
+  @override
+  String get crmFormEmail => 'ইমেল (ঐচ্ছিক)';
+
+  @override
+  String get crmFormEmailInvalid => 'একটি বৈধ ইমেল ঠিকানা লিখুন।';
+
+  @override
+  String get crmFormCountry => 'দেশের কোড (ঐচ্ছিক, যেমন NG)';
+
+  @override
+  String get crmFormCountryInvalid => '২ অক্ষরের দেশের কোড ব্যবহার করুন, যেমন NG।';
+
+  @override
+  String get crmFormSource => 'উৎস';
+
+  @override
+  String get crmFormSourceDetail => 'উৎসের বিবরণ (ঐচ্ছিক)';
+
+  @override
+  String get crmFormInterest => 'আগ্রহ (ঐচ্ছিক)';
+
+  @override
+  String get crmFormInterestHelper => '\"হাঁটু প্রতিস্থাপন\"-এর মতো ছোট নোট। চিকিৎসার ইতিহাস লিখবেন না।';
+
+  @override
+  String get crmFormBudget => 'বাজেট (ঐচ্ছিক)';
+
+  @override
+  String get crmFormBudgetCurrency => 'মুদ্রা';
+
+  @override
+  String get crmFormBudgetInvalid => 'একটি বৈধ পরিমাণ এবং ৩ অক্ষরের মুদ্রা লিখুন।';
+
+  @override
+  String get crmFormFollowUp => 'পরবর্তী ফলো-আপ (ঐচ্ছিক)';
+
+  @override
+  String get crmFormNote => 'প্রথম নোট (ঐচ্ছিক)';
+
+  @override
+  String get crmFormRequired => 'আবশ্যক';
+
+  @override
+  String get crmDashboardHint => 'অনুসন্ধান ও ফলো-আপ ট্র্যাক করুন';
+
+  @override
+  String get crmErrorLeadConverted => 'এই লিড ইতিমধ্যে রোগীতে রূপান্তরিত হয়েছে।';
+
+  @override
+  String get crmErrorEmailTaken => 'এই ইমেল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।';
+
+  @override
+  String get crmErrorAgentNotActive => 'রোগী যোগ করার আগে আপনার এজেন্সি অ্যাকাউন্ট অনুমোদিত হতে হবে।';
+
+  @override
+  String get crmConsentSection => 'রোগীর সম্মতি';
+
+  @override
+  String get crmConsentAttest => 'আমি নিশ্চিত করছি যে রোগী পরিষেবার শর্তাবলী ও গোপনীয়তা নীতিতে সম্মত হয়েছেন';
+
+  @override
+  String get crmConsentAttestHint =>
+      'আপনার নিশ্চিতকরণ আপনার নাম ও সময়সহ সংরক্ষিত হয়। রোগী প্রথম সাইন-ইনে এটি নিশ্চিত করেন।';
+
+  @override
+  String get crmConsentShare =>
+      'রোগী আরও সম্মত হয়েছেন যে আমি তার পক্ষে যেসব হাসপাতালের সাথে যোগাযোগ করি তাদের সাথে তার রেকর্ড শেয়ার করা যাবে';
+
+  @override
+  String get crmConsentMethod => 'সম্মতি কীভাবে নেওয়া হয়েছে?';
+
+  @override
+  String get crmConsentMethodInPerson => 'সরাসরি';
+
+  @override
+  String get crmConsentMethodPhone => 'ফোন কল';
+
+  @override
+  String get crmConsentMethodVideoCall => 'ভিডিও কল';
+
+  @override
+  String get crmConsentMethodWritten => 'লিখিত / স্বাক্ষরিত ফর্ম';
+
+  @override
+  String get crmConsentMethodEmail => 'ইমেল';
+
+  @override
+  String get crmConsentNote => 'নোট (ঐচ্ছিক)';
+
+  @override
+  String get crmConsentNoteHint => 'যেমন: স্বাক্ষরিত ফর্ম সংরক্ষিত আছে';
+
+  @override
+  String get crmConsentRequired => 'রোগীকে যোগ করার আগে নিশ্চিত করুন যে তিনি সম্মতি দিয়েছেন।';
 }

@@ -110,6 +110,17 @@
 				<string>com.googleusercontent.apps.heal-india-global</string>
 			</array>
 		</dict>
+		<dict>
+			<!-- Referral invite: healindia://register?ref=CODE opens sign-up with the code filled in -->
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>global.healindia.referral</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>healindia</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

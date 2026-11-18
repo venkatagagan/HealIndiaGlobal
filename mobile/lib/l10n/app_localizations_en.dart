@@ -8597,4 +8597,666 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Treatment';
+
+  @override
+  String get enumPaymentGatewayPlatformCredit => 'Referral credit';
+
+  @override
+  String get enumPaymentMethodCard => 'Card';
+
+  @override
+  String get enumPaymentMethodUpi => 'UPI';
+
+  @override
+  String get enumPaymentMethodNetbanking => 'Net banking';
+
+  @override
+  String get enumPaymentMethodBankTransfer => 'Bank transfer';
+
+  @override
+  String get enumPaymentMethodWallet => 'Wallet';
+
+  @override
+  String get enumPaymentMethodEmi => 'EMI';
+
+  @override
+  String get enumPaymentMethodMock => 'Test payment';
+
+  @override
+  String get enumPaymentMethodPlatformCredit => 'Referral credit';
+
+  @override
+  String get referralTitle => 'Refer a friend';
+
+  @override
+  String get referralProfileSubtitle => 'Invite friends and earn treatment credit';
+
+  @override
+  String get referralProgrammeOffTitle => 'The referral programme is paused';
+
+  @override
+  String get referralProgrammeOffBody => 'You can still use the credit you already have on your bookings.';
+
+  @override
+  String referralHeroBoth(String friendReward, String yourReward) {
+    return 'Your friend gets $friendReward off their first treatment, and you get $yourReward in credit once it\'s completed.';
+  }
+
+  @override
+  String referralHeroReferrerOnly(String yourReward) {
+    return 'Get $yourReward in credit when a friend you invite completes their first treatment.';
+  }
+
+  @override
+  String referralHeroRefereeOnly(String friendReward) {
+    return 'Your friend gets $friendReward in credit for their first treatment.';
+  }
+
+  @override
+  String get referralHeroGeneric => 'Invite friends and family who are planning treatment in India.';
+
+  @override
+  String get referralYourCode => 'Your referral code';
+
+  @override
+  String get referralCopyCode => 'Copy code';
+
+  @override
+  String get referralCodeCopied => 'Code copied';
+
+  @override
+  String get referralShare => 'Share invite';
+
+  @override
+  String get referralCopyLink => 'Copy invite';
+
+  @override
+  String get referralLinkCopied => 'Invite copied';
+
+  @override
+  String get referralShareSubject => 'Join me on Heal India Global';
+
+  @override
+  String referralShareMessage(String code, String link) {
+    return 'I\'m using Heal India Global to plan treatment in India. Sign up with my code $code: $link';
+  }
+
+  @override
+  String get referralCreditTitle => 'Your credit';
+
+  @override
+  String referralCreditBase(String amount) {
+    return 'Held in Indian rupees: $amount';
+  }
+
+  @override
+  String referralCreditExpiringSoon(String amount, String date) {
+    return '$amount expires on $date';
+  }
+
+  @override
+  String get referralCreditUseHint => 'Use it on the payment screen of a booking.';
+
+  @override
+  String get referralCreditNone => 'No credit yet. Invite a friend to earn some.';
+
+  @override
+  String get referralHowItWorksTitle => 'How it works';
+
+  @override
+  String get referralStep1 => 'Share your code or invite link with a friend.';
+
+  @override
+  String get referralStep2 => 'Your friend signs up with it and books treatment.';
+
+  @override
+  String get referralStep3 => 'When their first treatment is completed, the credit is added to your account.';
+
+  @override
+  String referralTermsValidity(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Credit can be used on booking payments for $days days.',
+      one: 'Credit can be used on booking payments for 1 day.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String referralTermsMaxPerYear(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You can earn rewards for up to $count friends a year.',
+      one: 'You can earn a reward for 1 friend a year.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get referralTermsNoCash =>
+      'Credit cannot be exchanged for cash. Signing up yourself with your own code is not rewarded.';
+
+  @override
+  String get referralFriendsTitle => 'Friends you invited';
+
+  @override
+  String get referralFriendsEmpty => 'No friends have joined with your code yet.';
+
+  @override
+  String referralCountChip(String label, int count) {
+    return '$label: $count';
+  }
+
+  @override
+  String referralFriendJoined(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String referralFriendReward(String amount) {
+    return '+$amount credit';
+  }
+
+  @override
+  String get referralStatusPending => 'Signed up';
+
+  @override
+  String get referralStatusQualified => 'Treatment completed';
+
+  @override
+  String get referralStatusRewarded => 'Rewarded';
+
+  @override
+  String get referralStatusVoid => 'Not eligible';
+
+  @override
+  String get referralHistoryTitle => 'Credit history';
+
+  @override
+  String get referralHistoryEmpty => 'No credit activity yet.';
+
+  @override
+  String get referralMovementGrant => 'Credit added';
+
+  @override
+  String get referralMovementRedeem => 'Used on a booking';
+
+  @override
+  String get referralMovementReinstate => 'Returned after a refund';
+
+  @override
+  String get referralMovementExpire => 'Expired';
+
+  @override
+  String get referralMovementVoid => 'Cancelled';
+
+  @override
+  String get referralCreditKindReferrer => 'Reward for inviting a friend';
+
+  @override
+  String get referralCreditKindReferee => 'Welcome credit';
+
+  @override
+  String get referralCreditKindReinstated => 'Returned credit';
+
+  @override
+  String referralCreditExpires(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get referralCodeFieldLabel => 'Referral code (optional)';
+
+  @override
+  String get referralCodeFieldHelper => 'From a friend or a medical-travel facilitator';
+
+  @override
+  String get referralCodeInvalid => 'This referral code is not valid. Check it or leave the field empty.';
+
+  @override
+  String get referralPayUseCreditTitle => 'Use my credit';
+
+  @override
+  String referralPayUseCreditBody(String available, String apply) {
+    return '$available available · $apply will be applied';
+  }
+
+  @override
+  String get referralPayCoversAll => 'Your credit covers the full amount due now.';
+
+  @override
+  String referralPayRemaining(String amount) {
+    return 'You will pay the remaining $amount with the method below.';
+  }
+
+  @override
+  String get referralPayApplyButton => 'Use my credit';
+
+  @override
+  String get referralPayConfirmTitle => 'Use your credit?';
+
+  @override
+  String referralPayConfirmBody(String amount) {
+    return '$amount of your referral credit will be applied to this booking payment now. If the payment is refunded later, the credit is returned to you.';
+  }
+
+  @override
+  String get referralPayConfirmButton => 'Apply credit';
+
+  @override
+  String referralPayApplied(String amount) {
+    return '$amount of credit applied';
+  }
+
+  @override
+  String get referralPayCreditChanged => 'Your credit changed. Check the amount and try again.';
+
+  @override
+  String get referralPayInProgress => 'A payment for this booking is already in progress. Try again in a few minutes.';
+
+  @override
+  String get referralPayNotApplicable => 'Credit can\'t be used on this payment.';
+
+  @override
+  String get referralPayNotForInstallments => 'Credit can\'t be used on instalment plans.';
+
+  @override
+  String get referralPayAmountTooSmall => 'Your credit is too small to apply to this payment.';
+
+  @override
+  String get crmLeadsTitle => 'Leads';
+
+  @override
+  String get crmAddLead => 'Add lead';
+
+  @override
+  String get crmSearchHint => 'Search name, email or phone';
+
+  @override
+  String get crmFilterSource => 'Filter by source';
+
+  @override
+  String get crmFilterAnySource => 'Any source';
+
+  @override
+  String get crmFilterAllLeads => 'All leads';
+
+  @override
+  String get crmFilterDueToday => 'Due today';
+
+  @override
+  String get crmFilterOverdue => 'Overdue';
+
+  @override
+  String get crmFilterNoFollowUp => 'No follow-up';
+
+  @override
+  String crmChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String crmPipelineOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count open leads',
+      one: '1 open lead',
+      zero: 'No open leads',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsDueToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count follow-ups due today',
+      one: '1 follow-up due today',
+      zero: 'No follow-ups due today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count overdue', one: '1 overdue');
+    return '$_temp0';
+  }
+
+  @override
+  String crmPipelineConversion(String rate) {
+    return '$rate converted';
+  }
+
+  @override
+  String get crmLeadsEmpty => 'No leads yet';
+
+  @override
+  String get crmLeadsEmptyHint => 'Add the people who contact you so you can follow up and turn them into patients.';
+
+  @override
+  String get crmLeadsNoMatch => 'No leads match these filters.';
+
+  @override
+  String crmFollowUpOn(String date) {
+    return 'Follow up $date';
+  }
+
+  @override
+  String get crmFollowUpDueBadge => 'Due';
+
+  @override
+  String get crmLeadDetailTitle => 'Lead';
+
+  @override
+  String get crmDetailsTitle => 'Details';
+
+  @override
+  String get crmFieldPhone => 'Phone';
+
+  @override
+  String get crmFieldWhatsapp => 'WhatsApp';
+
+  @override
+  String get crmFieldEmail => 'Email';
+
+  @override
+  String get crmFieldCountry => 'Country';
+
+  @override
+  String get crmFieldLanguage => 'Language';
+
+  @override
+  String get crmFieldSource => 'Source';
+
+  @override
+  String get crmFieldSpecialty => 'Specialty';
+
+  @override
+  String get crmFieldProcedure => 'Procedure';
+
+  @override
+  String get crmFieldInterest => 'Interest';
+
+  @override
+  String get crmFieldBudget => 'Budget';
+
+  @override
+  String get crmFieldTags => 'Tags';
+
+  @override
+  String get crmFieldOwner => 'Owner';
+
+  @override
+  String get crmFieldLostReason => 'Reason lost';
+
+  @override
+  String get crmFieldCreated => 'Added';
+
+  @override
+  String get crmFieldNextFollowUp => 'Next follow-up';
+
+  @override
+  String get crmStatusNew => 'New';
+
+  @override
+  String get crmStatusContacted => 'Contacted';
+
+  @override
+  String get crmStatusQualified => 'Qualified';
+
+  @override
+  String get crmStatusScreening => 'Screening';
+
+  @override
+  String get crmStatusQuoteRequested => 'Quote requested';
+
+  @override
+  String get crmStatusWon => 'Won';
+
+  @override
+  String get crmStatusLost => 'Lost';
+
+  @override
+  String get crmSourceWalkIn => 'Walk-in';
+
+  @override
+  String get crmSourceWhatsapp => 'WhatsApp';
+
+  @override
+  String get crmSourceFacebook => 'Facebook';
+
+  @override
+  String get crmSourceReferral => 'Referral';
+
+  @override
+  String get crmSourceEvent => 'Event';
+
+  @override
+  String get crmSourceOther => 'Other';
+
+  @override
+  String get crmActivityCall => 'Call';
+
+  @override
+  String get crmActivityMessage => 'Message';
+
+  @override
+  String get crmActivityMeeting => 'Meeting';
+
+  @override
+  String get crmActivityNote => 'Note';
+
+  @override
+  String get crmActivityStatusChange => 'Status change';
+
+  @override
+  String get crmLogActivity => 'Log activity';
+
+  @override
+  String get crmChangeStatus => 'Change status';
+
+  @override
+  String get crmStatusSave => 'Save status';
+
+  @override
+  String get crmStatusUpdated => 'Status updated';
+
+  @override
+  String get crmLostReasonLabel => 'Why was the lead lost?';
+
+  @override
+  String get crmLostReasonRequired => 'Enter the reason the lead was lost.';
+
+  @override
+  String get crmWonViaConvert => 'To mark a lead as won, convert it to a patient.';
+
+  @override
+  String get crmScheduleFollowUp => 'Schedule follow-up';
+
+  @override
+  String get crmClearFollowUp => 'Clear follow-up';
+
+  @override
+  String get crmFollowUpScheduled => 'Follow-up scheduled';
+
+  @override
+  String get crmFollowUpCleared => 'Follow-up cleared';
+
+  @override
+  String get crmNoFollowUp => 'No follow-up scheduled';
+
+  @override
+  String get crmActivityBodyLabel => 'What happened? (optional)';
+
+  @override
+  String get crmActivityNextFollowUp => 'Next follow-up (optional)';
+
+  @override
+  String get crmActivitySave => 'Save activity';
+
+  @override
+  String get crmActivityLogged => 'Activity logged';
+
+  @override
+  String get crmTimelineTitle => 'Timeline';
+
+  @override
+  String get crmTimelineEmpty => 'No activity yet.';
+
+  @override
+  String crmTimelineStatusChange(String fromStatus, String toStatus) {
+    return 'Status changed from $fromStatus to $toStatus';
+  }
+
+  @override
+  String crmTimelineStatusSet(String status) {
+    return 'Status set to $status';
+  }
+
+  @override
+  String crmTimelineBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get crmConvertToPatient => 'Convert to patient';
+
+  @override
+  String get crmConvertTitle => 'Convert to patient';
+
+  @override
+  String get crmConvertIntro =>
+      'Creates a managed patient from this lead. Check the details and confirm the patient\'s consent.';
+
+  @override
+  String get crmConverted => 'Patient created from the lead';
+
+  @override
+  String get crmAlreadyConverted => 'This lead is already a patient.';
+
+  @override
+  String get crmViewPatient => 'Open patient';
+
+  @override
+  String get crmDeleteLead => 'Delete lead';
+
+  @override
+  String get crmDeleteConfirmTitle => 'Delete this lead?';
+
+  @override
+  String get crmDeleteConfirmBody => 'The lead and its timeline are removed. This cannot be undone.';
+
+  @override
+  String get crmLeadDeleted => 'Lead deleted';
+
+  @override
+  String get crmLeadAdded => 'Lead added';
+
+  @override
+  String get crmFormFullName => 'Full name';
+
+  @override
+  String get crmFormPhone => 'Phone (optional)';
+
+  @override
+  String get crmFormWhatsapp => 'WhatsApp (optional)';
+
+  @override
+  String get crmFormEmail => 'Email (optional)';
+
+  @override
+  String get crmFormEmailInvalid => 'Enter a valid email address.';
+
+  @override
+  String get crmFormCountry => 'Country code (optional, e.g. NG)';
+
+  @override
+  String get crmFormCountryInvalid => 'Use a 2-letter country code, e.g. NG.';
+
+  @override
+  String get crmFormSource => 'Source';
+
+  @override
+  String get crmFormSourceDetail => 'Source details (optional)';
+
+  @override
+  String get crmFormInterest => 'Interest (optional)';
+
+  @override
+  String get crmFormInterestHelper => 'A short note such as \"knee replacement\". Do not enter medical history.';
+
+  @override
+  String get crmFormBudget => 'Budget (optional)';
+
+  @override
+  String get crmFormBudgetCurrency => 'Currency';
+
+  @override
+  String get crmFormBudgetInvalid => 'Enter a valid amount and 3-letter currency.';
+
+  @override
+  String get crmFormFollowUp => 'Next follow-up (optional)';
+
+  @override
+  String get crmFormNote => 'First note (optional)';
+
+  @override
+  String get crmFormRequired => 'Required';
+
+  @override
+  String get crmDashboardHint => 'Track enquiries and follow-ups';
+
+  @override
+  String get crmErrorLeadConverted => 'This lead was already converted to a patient.';
+
+  @override
+  String get crmErrorEmailTaken => 'An account with this email already exists.';
+
+  @override
+  String get crmErrorAgentNotActive => 'Your agency account must be approved before you can add patients.';
+
+  @override
+  String get crmConsentSection => 'Patient consent';
+
+  @override
+  String get crmConsentAttest => 'I confirm the patient has agreed to the Terms of Service and Privacy Policy';
+
+  @override
+  String get crmConsentAttestHint =>
+      'Your attestation is recorded with your name and time. The patient confirms it on first sign-in.';
+
+  @override
+  String get crmConsentShare => 'The patient also agreed to share their records with the hospitals I contact for them';
+
+  @override
+  String get crmConsentMethod => 'How was consent obtained?';
+
+  @override
+  String get crmConsentMethodInPerson => 'In person';
+
+  @override
+  String get crmConsentMethodPhone => 'Phone call';
+
+  @override
+  String get crmConsentMethodVideoCall => 'Video call';
+
+  @override
+  String get crmConsentMethodWritten => 'Written / signed form';
+
+  @override
+  String get crmConsentMethodEmail => 'Email';
+
+  @override
+  String get crmConsentNote => 'Note (optional)';
+
+  @override
+  String get crmConsentNoteHint => 'e.g. Signed form on file';
+
+  @override
+  String get crmConsentRequired => 'Confirm that the patient has given consent before adding them.';
 }

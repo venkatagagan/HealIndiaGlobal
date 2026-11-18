@@ -61,6 +61,8 @@ void main() {
 
     final download = find.byKey(const Key('profile-download-data'));
     await tester.scrollUntilVisible(download, 300);
+    await tester.ensureVisible(download);
+    await tester.pumpAndSettle();
     expect(find.text('Download my data'), findsOneWidget);
     await tester.tap(download);
     await tester.pumpAndSettle();

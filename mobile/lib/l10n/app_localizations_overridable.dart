@@ -2246,6 +2246,175 @@ class OverridableLocalizations extends AppLocalizations {
     'inviteMissingArrival' => inviteMissingArrival,
     'inviteMissingDuration' => inviteMissingDuration,
     'inviteMissingTreatment' => inviteMissingTreatment,
+    'enumPaymentGatewayPlatformCredit' => enumPaymentGatewayPlatformCredit,
+    'enumPaymentMethodCard' => enumPaymentMethodCard,
+    'enumPaymentMethodUpi' => enumPaymentMethodUpi,
+    'enumPaymentMethodNetbanking' => enumPaymentMethodNetbanking,
+    'enumPaymentMethodBankTransfer' => enumPaymentMethodBankTransfer,
+    'enumPaymentMethodWallet' => enumPaymentMethodWallet,
+    'enumPaymentMethodEmi' => enumPaymentMethodEmi,
+    'enumPaymentMethodMock' => enumPaymentMethodMock,
+    'enumPaymentMethodPlatformCredit' => enumPaymentMethodPlatformCredit,
+    'referralTitle' => referralTitle,
+    'referralProfileSubtitle' => referralProfileSubtitle,
+    'referralProgrammeOffTitle' => referralProgrammeOffTitle,
+    'referralProgrammeOffBody' => referralProgrammeOffBody,
+    'referralHeroGeneric' => referralHeroGeneric,
+    'referralYourCode' => referralYourCode,
+    'referralCopyCode' => referralCopyCode,
+    'referralCodeCopied' => referralCodeCopied,
+    'referralShare' => referralShare,
+    'referralCopyLink' => referralCopyLink,
+    'referralLinkCopied' => referralLinkCopied,
+    'referralShareSubject' => referralShareSubject,
+    'referralCreditTitle' => referralCreditTitle,
+    'referralCreditUseHint' => referralCreditUseHint,
+    'referralCreditNone' => referralCreditNone,
+    'referralHowItWorksTitle' => referralHowItWorksTitle,
+    'referralStep1' => referralStep1,
+    'referralStep2' => referralStep2,
+    'referralStep3' => referralStep3,
+    'referralTermsNoCash' => referralTermsNoCash,
+    'referralFriendsTitle' => referralFriendsTitle,
+    'referralFriendsEmpty' => referralFriendsEmpty,
+    'referralStatusPending' => referralStatusPending,
+    'referralStatusQualified' => referralStatusQualified,
+    'referralStatusRewarded' => referralStatusRewarded,
+    'referralStatusVoid' => referralStatusVoid,
+    'referralHistoryTitle' => referralHistoryTitle,
+    'referralHistoryEmpty' => referralHistoryEmpty,
+    'referralMovementGrant' => referralMovementGrant,
+    'referralMovementRedeem' => referralMovementRedeem,
+    'referralMovementReinstate' => referralMovementReinstate,
+    'referralMovementExpire' => referralMovementExpire,
+    'referralMovementVoid' => referralMovementVoid,
+    'referralCreditKindReferrer' => referralCreditKindReferrer,
+    'referralCreditKindReferee' => referralCreditKindReferee,
+    'referralCreditKindReinstated' => referralCreditKindReinstated,
+    'referralCodeFieldLabel' => referralCodeFieldLabel,
+    'referralCodeFieldHelper' => referralCodeFieldHelper,
+    'referralCodeInvalid' => referralCodeInvalid,
+    'referralPayUseCreditTitle' => referralPayUseCreditTitle,
+    'referralPayCoversAll' => referralPayCoversAll,
+    'referralPayApplyButton' => referralPayApplyButton,
+    'referralPayConfirmTitle' => referralPayConfirmTitle,
+    'referralPayConfirmButton' => referralPayConfirmButton,
+    'referralPayCreditChanged' => referralPayCreditChanged,
+    'referralPayInProgress' => referralPayInProgress,
+    'referralPayNotApplicable' => referralPayNotApplicable,
+    'referralPayNotForInstallments' => referralPayNotForInstallments,
+    'referralPayAmountTooSmall' => referralPayAmountTooSmall,
+    'crmLeadsTitle' => crmLeadsTitle,
+    'crmAddLead' => crmAddLead,
+    'crmSearchHint' => crmSearchHint,
+    'crmFilterSource' => crmFilterSource,
+    'crmFilterAnySource' => crmFilterAnySource,
+    'crmFilterAllLeads' => crmFilterAllLeads,
+    'crmFilterDueToday' => crmFilterDueToday,
+    'crmFilterOverdue' => crmFilterOverdue,
+    'crmFilterNoFollowUp' => crmFilterNoFollowUp,
+    'crmLeadsEmpty' => crmLeadsEmpty,
+    'crmLeadsEmptyHint' => crmLeadsEmptyHint,
+    'crmLeadsNoMatch' => crmLeadsNoMatch,
+    'crmFollowUpDueBadge' => crmFollowUpDueBadge,
+    'crmLeadDetailTitle' => crmLeadDetailTitle,
+    'crmDetailsTitle' => crmDetailsTitle,
+    'crmFieldPhone' => crmFieldPhone,
+    'crmFieldWhatsapp' => crmFieldWhatsapp,
+    'crmFieldEmail' => crmFieldEmail,
+    'crmFieldCountry' => crmFieldCountry,
+    'crmFieldLanguage' => crmFieldLanguage,
+    'crmFieldSource' => crmFieldSource,
+    'crmFieldSpecialty' => crmFieldSpecialty,
+    'crmFieldProcedure' => crmFieldProcedure,
+    'crmFieldInterest' => crmFieldInterest,
+    'crmFieldBudget' => crmFieldBudget,
+    'crmFieldTags' => crmFieldTags,
+    'crmFieldOwner' => crmFieldOwner,
+    'crmFieldLostReason' => crmFieldLostReason,
+    'crmFieldCreated' => crmFieldCreated,
+    'crmFieldNextFollowUp' => crmFieldNextFollowUp,
+    'crmStatusNew' => crmStatusNew,
+    'crmStatusContacted' => crmStatusContacted,
+    'crmStatusQualified' => crmStatusQualified,
+    'crmStatusScreening' => crmStatusScreening,
+    'crmStatusQuoteRequested' => crmStatusQuoteRequested,
+    'crmStatusWon' => crmStatusWon,
+    'crmStatusLost' => crmStatusLost,
+    'crmSourceWalkIn' => crmSourceWalkIn,
+    'crmSourceWhatsapp' => crmSourceWhatsapp,
+    'crmSourceFacebook' => crmSourceFacebook,
+    'crmSourceReferral' => crmSourceReferral,
+    'crmSourceEvent' => crmSourceEvent,
+    'crmSourceOther' => crmSourceOther,
+    'crmActivityCall' => crmActivityCall,
+    'crmActivityMessage' => crmActivityMessage,
+    'crmActivityMeeting' => crmActivityMeeting,
+    'crmActivityNote' => crmActivityNote,
+    'crmActivityStatusChange' => crmActivityStatusChange,
+    'crmLogActivity' => crmLogActivity,
+    'crmChangeStatus' => crmChangeStatus,
+    'crmStatusSave' => crmStatusSave,
+    'crmStatusUpdated' => crmStatusUpdated,
+    'crmLostReasonLabel' => crmLostReasonLabel,
+    'crmLostReasonRequired' => crmLostReasonRequired,
+    'crmWonViaConvert' => crmWonViaConvert,
+    'crmScheduleFollowUp' => crmScheduleFollowUp,
+    'crmClearFollowUp' => crmClearFollowUp,
+    'crmFollowUpScheduled' => crmFollowUpScheduled,
+    'crmFollowUpCleared' => crmFollowUpCleared,
+    'crmNoFollowUp' => crmNoFollowUp,
+    'crmActivityBodyLabel' => crmActivityBodyLabel,
+    'crmActivityNextFollowUp' => crmActivityNextFollowUp,
+    'crmActivitySave' => crmActivitySave,
+    'crmActivityLogged' => crmActivityLogged,
+    'crmTimelineTitle' => crmTimelineTitle,
+    'crmTimelineEmpty' => crmTimelineEmpty,
+    'crmConvertToPatient' => crmConvertToPatient,
+    'crmConvertTitle' => crmConvertTitle,
+    'crmConvertIntro' => crmConvertIntro,
+    'crmConverted' => crmConverted,
+    'crmAlreadyConverted' => crmAlreadyConverted,
+    'crmViewPatient' => crmViewPatient,
+    'crmDeleteLead' => crmDeleteLead,
+    'crmDeleteConfirmTitle' => crmDeleteConfirmTitle,
+    'crmDeleteConfirmBody' => crmDeleteConfirmBody,
+    'crmLeadDeleted' => crmLeadDeleted,
+    'crmLeadAdded' => crmLeadAdded,
+    'crmFormFullName' => crmFormFullName,
+    'crmFormPhone' => crmFormPhone,
+    'crmFormWhatsapp' => crmFormWhatsapp,
+    'crmFormEmail' => crmFormEmail,
+    'crmFormEmailInvalid' => crmFormEmailInvalid,
+    'crmFormCountry' => crmFormCountry,
+    'crmFormCountryInvalid' => crmFormCountryInvalid,
+    'crmFormSource' => crmFormSource,
+    'crmFormSourceDetail' => crmFormSourceDetail,
+    'crmFormInterest' => crmFormInterest,
+    'crmFormInterestHelper' => crmFormInterestHelper,
+    'crmFormBudget' => crmFormBudget,
+    'crmFormBudgetCurrency' => crmFormBudgetCurrency,
+    'crmFormBudgetInvalid' => crmFormBudgetInvalid,
+    'crmFormFollowUp' => crmFormFollowUp,
+    'crmFormNote' => crmFormNote,
+    'crmFormRequired' => crmFormRequired,
+    'crmDashboardHint' => crmDashboardHint,
+    'crmErrorLeadConverted' => crmErrorLeadConverted,
+    'crmErrorEmailTaken' => crmErrorEmailTaken,
+    'crmErrorAgentNotActive' => crmErrorAgentNotActive,
+    'crmConsentSection' => crmConsentSection,
+    'crmConsentAttest' => crmConsentAttest,
+    'crmConsentAttestHint' => crmConsentAttestHint,
+    'crmConsentShare' => crmConsentShare,
+    'crmConsentMethod' => crmConsentMethod,
+    'crmConsentMethodInPerson' => crmConsentMethodInPerson,
+    'crmConsentMethodPhone' => crmConsentMethodPhone,
+    'crmConsentMethodVideoCall' => crmConsentMethodVideoCall,
+    'crmConsentMethodWritten' => crmConsentMethodWritten,
+    'crmConsentMethodEmail' => crmConsentMethodEmail,
+    'crmConsentNote' => crmConsentNote,
+    'crmConsentNoteHint' => crmConsentNoteHint,
+    'crmConsentRequired' => crmConsentRequired,
     _ => null,
   };
 
@@ -9886,6 +10055,588 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
+
+  @override
+  String get enumPaymentGatewayPlatformCredit => _t('enumPaymentGatewayPlatformCredit') ?? base.enumPaymentGatewayPlatformCredit;
+
+  @override
+  String get enumPaymentMethodCard => _t('enumPaymentMethodCard') ?? base.enumPaymentMethodCard;
+
+  @override
+  String get enumPaymentMethodUpi => _t('enumPaymentMethodUpi') ?? base.enumPaymentMethodUpi;
+
+  @override
+  String get enumPaymentMethodNetbanking => _t('enumPaymentMethodNetbanking') ?? base.enumPaymentMethodNetbanking;
+
+  @override
+  String get enumPaymentMethodBankTransfer => _t('enumPaymentMethodBankTransfer') ?? base.enumPaymentMethodBankTransfer;
+
+  @override
+  String get enumPaymentMethodWallet => _t('enumPaymentMethodWallet') ?? base.enumPaymentMethodWallet;
+
+  @override
+  String get enumPaymentMethodEmi => _t('enumPaymentMethodEmi') ?? base.enumPaymentMethodEmi;
+
+  @override
+  String get enumPaymentMethodMock => _t('enumPaymentMethodMock') ?? base.enumPaymentMethodMock;
+
+  @override
+  String get enumPaymentMethodPlatformCredit => _t('enumPaymentMethodPlatformCredit') ?? base.enumPaymentMethodPlatformCredit;
+
+  @override
+  String get referralTitle => _t('referralTitle') ?? base.referralTitle;
+
+  @override
+  String get referralProfileSubtitle => _t('referralProfileSubtitle') ?? base.referralProfileSubtitle;
+
+  @override
+  String get referralProgrammeOffTitle => _t('referralProgrammeOffTitle') ?? base.referralProgrammeOffTitle;
+
+  @override
+  String get referralProgrammeOffBody => _t('referralProgrammeOffBody') ?? base.referralProgrammeOffBody;
+
+  @override
+  String referralHeroBoth(String friendReward, String yourReward) => _f('referralHeroBoth', {'friendReward': friendReward, 'yourReward': yourReward}) ?? base.referralHeroBoth(friendReward, yourReward);
+
+  @override
+  String referralHeroReferrerOnly(String yourReward) => _f('referralHeroReferrerOnly', {'yourReward': yourReward}) ?? base.referralHeroReferrerOnly(yourReward);
+
+  @override
+  String referralHeroRefereeOnly(String friendReward) => _f('referralHeroRefereeOnly', {'friendReward': friendReward}) ?? base.referralHeroRefereeOnly(friendReward);
+
+  @override
+  String get referralHeroGeneric => _t('referralHeroGeneric') ?? base.referralHeroGeneric;
+
+  @override
+  String get referralYourCode => _t('referralYourCode') ?? base.referralYourCode;
+
+  @override
+  String get referralCopyCode => _t('referralCopyCode') ?? base.referralCopyCode;
+
+  @override
+  String get referralCodeCopied => _t('referralCodeCopied') ?? base.referralCodeCopied;
+
+  @override
+  String get referralShare => _t('referralShare') ?? base.referralShare;
+
+  @override
+  String get referralCopyLink => _t('referralCopyLink') ?? base.referralCopyLink;
+
+  @override
+  String get referralLinkCopied => _t('referralLinkCopied') ?? base.referralLinkCopied;
+
+  @override
+  String get referralShareSubject => _t('referralShareSubject') ?? base.referralShareSubject;
+
+  @override
+  String referralShareMessage(String code, String link) => _f('referralShareMessage', {'code': code, 'link': link}) ?? base.referralShareMessage(code, link);
+
+  @override
+  String get referralCreditTitle => _t('referralCreditTitle') ?? base.referralCreditTitle;
+
+  @override
+  String referralCreditBase(String amount) => _f('referralCreditBase', {'amount': amount}) ?? base.referralCreditBase(amount);
+
+  @override
+  String referralCreditExpiringSoon(String amount, String date) => _f('referralCreditExpiringSoon', {'amount': amount, 'date': date}) ?? base.referralCreditExpiringSoon(amount, date);
+
+  @override
+  String get referralCreditUseHint => _t('referralCreditUseHint') ?? base.referralCreditUseHint;
+
+  @override
+  String get referralCreditNone => _t('referralCreditNone') ?? base.referralCreditNone;
+
+  @override
+  String get referralHowItWorksTitle => _t('referralHowItWorksTitle') ?? base.referralHowItWorksTitle;
+
+  @override
+  String get referralStep1 => _t('referralStep1') ?? base.referralStep1;
+
+  @override
+  String get referralStep2 => _t('referralStep2') ?? base.referralStep2;
+
+  @override
+  String get referralStep3 => _t('referralStep3') ?? base.referralStep3;
+
+  @override
+  String referralTermsValidity(int days) => _f('referralTermsValidity', {'days': days}) ?? base.referralTermsValidity(days);
+
+  @override
+  String referralTermsMaxPerYear(int count) => _f('referralTermsMaxPerYear', {'count': count}) ?? base.referralTermsMaxPerYear(count);
+
+  @override
+  String get referralTermsNoCash => _t('referralTermsNoCash') ?? base.referralTermsNoCash;
+
+  @override
+  String get referralFriendsTitle => _t('referralFriendsTitle') ?? base.referralFriendsTitle;
+
+  @override
+  String get referralFriendsEmpty => _t('referralFriendsEmpty') ?? base.referralFriendsEmpty;
+
+  @override
+  String referralCountChip(String label, int count) => _f('referralCountChip', {'label': label, 'count': count}) ?? base.referralCountChip(label, count);
+
+  @override
+  String referralFriendJoined(String date) => _f('referralFriendJoined', {'date': date}) ?? base.referralFriendJoined(date);
+
+  @override
+  String referralFriendReward(String amount) => _f('referralFriendReward', {'amount': amount}) ?? base.referralFriendReward(amount);
+
+  @override
+  String get referralStatusPending => _t('referralStatusPending') ?? base.referralStatusPending;
+
+  @override
+  String get referralStatusQualified => _t('referralStatusQualified') ?? base.referralStatusQualified;
+
+  @override
+  String get referralStatusRewarded => _t('referralStatusRewarded') ?? base.referralStatusRewarded;
+
+  @override
+  String get referralStatusVoid => _t('referralStatusVoid') ?? base.referralStatusVoid;
+
+  @override
+  String get referralHistoryTitle => _t('referralHistoryTitle') ?? base.referralHistoryTitle;
+
+  @override
+  String get referralHistoryEmpty => _t('referralHistoryEmpty') ?? base.referralHistoryEmpty;
+
+  @override
+  String get referralMovementGrant => _t('referralMovementGrant') ?? base.referralMovementGrant;
+
+  @override
+  String get referralMovementRedeem => _t('referralMovementRedeem') ?? base.referralMovementRedeem;
+
+  @override
+  String get referralMovementReinstate => _t('referralMovementReinstate') ?? base.referralMovementReinstate;
+
+  @override
+  String get referralMovementExpire => _t('referralMovementExpire') ?? base.referralMovementExpire;
+
+  @override
+  String get referralMovementVoid => _t('referralMovementVoid') ?? base.referralMovementVoid;
+
+  @override
+  String get referralCreditKindReferrer => _t('referralCreditKindReferrer') ?? base.referralCreditKindReferrer;
+
+  @override
+  String get referralCreditKindReferee => _t('referralCreditKindReferee') ?? base.referralCreditKindReferee;
+
+  @override
+  String get referralCreditKindReinstated => _t('referralCreditKindReinstated') ?? base.referralCreditKindReinstated;
+
+  @override
+  String referralCreditExpires(String date) => _f('referralCreditExpires', {'date': date}) ?? base.referralCreditExpires(date);
+
+  @override
+  String get referralCodeFieldLabel => _t('referralCodeFieldLabel') ?? base.referralCodeFieldLabel;
+
+  @override
+  String get referralCodeFieldHelper => _t('referralCodeFieldHelper') ?? base.referralCodeFieldHelper;
+
+  @override
+  String get referralCodeInvalid => _t('referralCodeInvalid') ?? base.referralCodeInvalid;
+
+  @override
+  String get referralPayUseCreditTitle => _t('referralPayUseCreditTitle') ?? base.referralPayUseCreditTitle;
+
+  @override
+  String referralPayUseCreditBody(String available, String apply) => _f('referralPayUseCreditBody', {'available': available, 'apply': apply}) ?? base.referralPayUseCreditBody(available, apply);
+
+  @override
+  String get referralPayCoversAll => _t('referralPayCoversAll') ?? base.referralPayCoversAll;
+
+  @override
+  String referralPayRemaining(String amount) => _f('referralPayRemaining', {'amount': amount}) ?? base.referralPayRemaining(amount);
+
+  @override
+  String get referralPayApplyButton => _t('referralPayApplyButton') ?? base.referralPayApplyButton;
+
+  @override
+  String get referralPayConfirmTitle => _t('referralPayConfirmTitle') ?? base.referralPayConfirmTitle;
+
+  @override
+  String referralPayConfirmBody(String amount) => _f('referralPayConfirmBody', {'amount': amount}) ?? base.referralPayConfirmBody(amount);
+
+  @override
+  String get referralPayConfirmButton => _t('referralPayConfirmButton') ?? base.referralPayConfirmButton;
+
+  @override
+  String referralPayApplied(String amount) => _f('referralPayApplied', {'amount': amount}) ?? base.referralPayApplied(amount);
+
+  @override
+  String get referralPayCreditChanged => _t('referralPayCreditChanged') ?? base.referralPayCreditChanged;
+
+  @override
+  String get referralPayInProgress => _t('referralPayInProgress') ?? base.referralPayInProgress;
+
+  @override
+  String get referralPayNotApplicable => _t('referralPayNotApplicable') ?? base.referralPayNotApplicable;
+
+  @override
+  String get referralPayNotForInstallments => _t('referralPayNotForInstallments') ?? base.referralPayNotForInstallments;
+
+  @override
+  String get referralPayAmountTooSmall => _t('referralPayAmountTooSmall') ?? base.referralPayAmountTooSmall;
+
+  @override
+  String get crmLeadsTitle => _t('crmLeadsTitle') ?? base.crmLeadsTitle;
+
+  @override
+  String get crmAddLead => _t('crmAddLead') ?? base.crmAddLead;
+
+  @override
+  String get crmSearchHint => _t('crmSearchHint') ?? base.crmSearchHint;
+
+  @override
+  String get crmFilterSource => _t('crmFilterSource') ?? base.crmFilterSource;
+
+  @override
+  String get crmFilterAnySource => _t('crmFilterAnySource') ?? base.crmFilterAnySource;
+
+  @override
+  String get crmFilterAllLeads => _t('crmFilterAllLeads') ?? base.crmFilterAllLeads;
+
+  @override
+  String get crmFilterDueToday => _t('crmFilterDueToday') ?? base.crmFilterDueToday;
+
+  @override
+  String get crmFilterOverdue => _t('crmFilterOverdue') ?? base.crmFilterOverdue;
+
+  @override
+  String get crmFilterNoFollowUp => _t('crmFilterNoFollowUp') ?? base.crmFilterNoFollowUp;
+
+  @override
+  String crmChipCount(String label, int count) => _f('crmChipCount', {'label': label, 'count': count}) ?? base.crmChipCount(label, count);
+
+  @override
+  String crmPipelineOpen(int count) => _f('crmPipelineOpen', {'count': count}) ?? base.crmPipelineOpen(count);
+
+  @override
+  String crmFollowUpsDueToday(int count) => _f('crmFollowUpsDueToday', {'count': count}) ?? base.crmFollowUpsDueToday(count);
+
+  @override
+  String crmFollowUpsOverdue(int count) => _f('crmFollowUpsOverdue', {'count': count}) ?? base.crmFollowUpsOverdue(count);
+
+  @override
+  String crmPipelineConversion(String rate) => _f('crmPipelineConversion', {'rate': rate}) ?? base.crmPipelineConversion(rate);
+
+  @override
+  String get crmLeadsEmpty => _t('crmLeadsEmpty') ?? base.crmLeadsEmpty;
+
+  @override
+  String get crmLeadsEmptyHint => _t('crmLeadsEmptyHint') ?? base.crmLeadsEmptyHint;
+
+  @override
+  String get crmLeadsNoMatch => _t('crmLeadsNoMatch') ?? base.crmLeadsNoMatch;
+
+  @override
+  String crmFollowUpOn(String date) => _f('crmFollowUpOn', {'date': date}) ?? base.crmFollowUpOn(date);
+
+  @override
+  String get crmFollowUpDueBadge => _t('crmFollowUpDueBadge') ?? base.crmFollowUpDueBadge;
+
+  @override
+  String get crmLeadDetailTitle => _t('crmLeadDetailTitle') ?? base.crmLeadDetailTitle;
+
+  @override
+  String get crmDetailsTitle => _t('crmDetailsTitle') ?? base.crmDetailsTitle;
+
+  @override
+  String get crmFieldPhone => _t('crmFieldPhone') ?? base.crmFieldPhone;
+
+  @override
+  String get crmFieldWhatsapp => _t('crmFieldWhatsapp') ?? base.crmFieldWhatsapp;
+
+  @override
+  String get crmFieldEmail => _t('crmFieldEmail') ?? base.crmFieldEmail;
+
+  @override
+  String get crmFieldCountry => _t('crmFieldCountry') ?? base.crmFieldCountry;
+
+  @override
+  String get crmFieldLanguage => _t('crmFieldLanguage') ?? base.crmFieldLanguage;
+
+  @override
+  String get crmFieldSource => _t('crmFieldSource') ?? base.crmFieldSource;
+
+  @override
+  String get crmFieldSpecialty => _t('crmFieldSpecialty') ?? base.crmFieldSpecialty;
+
+  @override
+  String get crmFieldProcedure => _t('crmFieldProcedure') ?? base.crmFieldProcedure;
+
+  @override
+  String get crmFieldInterest => _t('crmFieldInterest') ?? base.crmFieldInterest;
+
+  @override
+  String get crmFieldBudget => _t('crmFieldBudget') ?? base.crmFieldBudget;
+
+  @override
+  String get crmFieldTags => _t('crmFieldTags') ?? base.crmFieldTags;
+
+  @override
+  String get crmFieldOwner => _t('crmFieldOwner') ?? base.crmFieldOwner;
+
+  @override
+  String get crmFieldLostReason => _t('crmFieldLostReason') ?? base.crmFieldLostReason;
+
+  @override
+  String get crmFieldCreated => _t('crmFieldCreated') ?? base.crmFieldCreated;
+
+  @override
+  String get crmFieldNextFollowUp => _t('crmFieldNextFollowUp') ?? base.crmFieldNextFollowUp;
+
+  @override
+  String get crmStatusNew => _t('crmStatusNew') ?? base.crmStatusNew;
+
+  @override
+  String get crmStatusContacted => _t('crmStatusContacted') ?? base.crmStatusContacted;
+
+  @override
+  String get crmStatusQualified => _t('crmStatusQualified') ?? base.crmStatusQualified;
+
+  @override
+  String get crmStatusScreening => _t('crmStatusScreening') ?? base.crmStatusScreening;
+
+  @override
+  String get crmStatusQuoteRequested => _t('crmStatusQuoteRequested') ?? base.crmStatusQuoteRequested;
+
+  @override
+  String get crmStatusWon => _t('crmStatusWon') ?? base.crmStatusWon;
+
+  @override
+  String get crmStatusLost => _t('crmStatusLost') ?? base.crmStatusLost;
+
+  @override
+  String get crmSourceWalkIn => _t('crmSourceWalkIn') ?? base.crmSourceWalkIn;
+
+  @override
+  String get crmSourceWhatsapp => _t('crmSourceWhatsapp') ?? base.crmSourceWhatsapp;
+
+  @override
+  String get crmSourceFacebook => _t('crmSourceFacebook') ?? base.crmSourceFacebook;
+
+  @override
+  String get crmSourceReferral => _t('crmSourceReferral') ?? base.crmSourceReferral;
+
+  @override
+  String get crmSourceEvent => _t('crmSourceEvent') ?? base.crmSourceEvent;
+
+  @override
+  String get crmSourceOther => _t('crmSourceOther') ?? base.crmSourceOther;
+
+  @override
+  String get crmActivityCall => _t('crmActivityCall') ?? base.crmActivityCall;
+
+  @override
+  String get crmActivityMessage => _t('crmActivityMessage') ?? base.crmActivityMessage;
+
+  @override
+  String get crmActivityMeeting => _t('crmActivityMeeting') ?? base.crmActivityMeeting;
+
+  @override
+  String get crmActivityNote => _t('crmActivityNote') ?? base.crmActivityNote;
+
+  @override
+  String get crmActivityStatusChange => _t('crmActivityStatusChange') ?? base.crmActivityStatusChange;
+
+  @override
+  String get crmLogActivity => _t('crmLogActivity') ?? base.crmLogActivity;
+
+  @override
+  String get crmChangeStatus => _t('crmChangeStatus') ?? base.crmChangeStatus;
+
+  @override
+  String get crmStatusSave => _t('crmStatusSave') ?? base.crmStatusSave;
+
+  @override
+  String get crmStatusUpdated => _t('crmStatusUpdated') ?? base.crmStatusUpdated;
+
+  @override
+  String get crmLostReasonLabel => _t('crmLostReasonLabel') ?? base.crmLostReasonLabel;
+
+  @override
+  String get crmLostReasonRequired => _t('crmLostReasonRequired') ?? base.crmLostReasonRequired;
+
+  @override
+  String get crmWonViaConvert => _t('crmWonViaConvert') ?? base.crmWonViaConvert;
+
+  @override
+  String get crmScheduleFollowUp => _t('crmScheduleFollowUp') ?? base.crmScheduleFollowUp;
+
+  @override
+  String get crmClearFollowUp => _t('crmClearFollowUp') ?? base.crmClearFollowUp;
+
+  @override
+  String get crmFollowUpScheduled => _t('crmFollowUpScheduled') ?? base.crmFollowUpScheduled;
+
+  @override
+  String get crmFollowUpCleared => _t('crmFollowUpCleared') ?? base.crmFollowUpCleared;
+
+  @override
+  String get crmNoFollowUp => _t('crmNoFollowUp') ?? base.crmNoFollowUp;
+
+  @override
+  String get crmActivityBodyLabel => _t('crmActivityBodyLabel') ?? base.crmActivityBodyLabel;
+
+  @override
+  String get crmActivityNextFollowUp => _t('crmActivityNextFollowUp') ?? base.crmActivityNextFollowUp;
+
+  @override
+  String get crmActivitySave => _t('crmActivitySave') ?? base.crmActivitySave;
+
+  @override
+  String get crmActivityLogged => _t('crmActivityLogged') ?? base.crmActivityLogged;
+
+  @override
+  String get crmTimelineTitle => _t('crmTimelineTitle') ?? base.crmTimelineTitle;
+
+  @override
+  String get crmTimelineEmpty => _t('crmTimelineEmpty') ?? base.crmTimelineEmpty;
+
+  @override
+  String crmTimelineStatusChange(String fromStatus, String toStatus) => _f('crmTimelineStatusChange', {'fromStatus': fromStatus, 'toStatus': toStatus}) ?? base.crmTimelineStatusChange(fromStatus, toStatus);
+
+  @override
+  String crmTimelineStatusSet(String status) => _f('crmTimelineStatusSet', {'status': status}) ?? base.crmTimelineStatusSet(status);
+
+  @override
+  String crmTimelineBy(String name) => _f('crmTimelineBy', {'name': name}) ?? base.crmTimelineBy(name);
+
+  @override
+  String get crmConvertToPatient => _t('crmConvertToPatient') ?? base.crmConvertToPatient;
+
+  @override
+  String get crmConvertTitle => _t('crmConvertTitle') ?? base.crmConvertTitle;
+
+  @override
+  String get crmConvertIntro => _t('crmConvertIntro') ?? base.crmConvertIntro;
+
+  @override
+  String get crmConverted => _t('crmConverted') ?? base.crmConverted;
+
+  @override
+  String get crmAlreadyConverted => _t('crmAlreadyConverted') ?? base.crmAlreadyConverted;
+
+  @override
+  String get crmViewPatient => _t('crmViewPatient') ?? base.crmViewPatient;
+
+  @override
+  String get crmDeleteLead => _t('crmDeleteLead') ?? base.crmDeleteLead;
+
+  @override
+  String get crmDeleteConfirmTitle => _t('crmDeleteConfirmTitle') ?? base.crmDeleteConfirmTitle;
+
+  @override
+  String get crmDeleteConfirmBody => _t('crmDeleteConfirmBody') ?? base.crmDeleteConfirmBody;
+
+  @override
+  String get crmLeadDeleted => _t('crmLeadDeleted') ?? base.crmLeadDeleted;
+
+  @override
+  String get crmLeadAdded => _t('crmLeadAdded') ?? base.crmLeadAdded;
+
+  @override
+  String get crmFormFullName => _t('crmFormFullName') ?? base.crmFormFullName;
+
+  @override
+  String get crmFormPhone => _t('crmFormPhone') ?? base.crmFormPhone;
+
+  @override
+  String get crmFormWhatsapp => _t('crmFormWhatsapp') ?? base.crmFormWhatsapp;
+
+  @override
+  String get crmFormEmail => _t('crmFormEmail') ?? base.crmFormEmail;
+
+  @override
+  String get crmFormEmailInvalid => _t('crmFormEmailInvalid') ?? base.crmFormEmailInvalid;
+
+  @override
+  String get crmFormCountry => _t('crmFormCountry') ?? base.crmFormCountry;
+
+  @override
+  String get crmFormCountryInvalid => _t('crmFormCountryInvalid') ?? base.crmFormCountryInvalid;
+
+  @override
+  String get crmFormSource => _t('crmFormSource') ?? base.crmFormSource;
+
+  @override
+  String get crmFormSourceDetail => _t('crmFormSourceDetail') ?? base.crmFormSourceDetail;
+
+  @override
+  String get crmFormInterest => _t('crmFormInterest') ?? base.crmFormInterest;
+
+  @override
+  String get crmFormInterestHelper => _t('crmFormInterestHelper') ?? base.crmFormInterestHelper;
+
+  @override
+  String get crmFormBudget => _t('crmFormBudget') ?? base.crmFormBudget;
+
+  @override
+  String get crmFormBudgetCurrency => _t('crmFormBudgetCurrency') ?? base.crmFormBudgetCurrency;
+
+  @override
+  String get crmFormBudgetInvalid => _t('crmFormBudgetInvalid') ?? base.crmFormBudgetInvalid;
+
+  @override
+  String get crmFormFollowUp => _t('crmFormFollowUp') ?? base.crmFormFollowUp;
+
+  @override
+  String get crmFormNote => _t('crmFormNote') ?? base.crmFormNote;
+
+  @override
+  String get crmFormRequired => _t('crmFormRequired') ?? base.crmFormRequired;
+
+  @override
+  String get crmDashboardHint => _t('crmDashboardHint') ?? base.crmDashboardHint;
+
+  @override
+  String get crmErrorLeadConverted => _t('crmErrorLeadConverted') ?? base.crmErrorLeadConverted;
+
+  @override
+  String get crmErrorEmailTaken => _t('crmErrorEmailTaken') ?? base.crmErrorEmailTaken;
+
+  @override
+  String get crmErrorAgentNotActive => _t('crmErrorAgentNotActive') ?? base.crmErrorAgentNotActive;
+
+  @override
+  String get crmConsentSection => _t('crmConsentSection') ?? base.crmConsentSection;
+
+  @override
+  String get crmConsentAttest => _t('crmConsentAttest') ?? base.crmConsentAttest;
+
+  @override
+  String get crmConsentAttestHint => _t('crmConsentAttestHint') ?? base.crmConsentAttestHint;
+
+  @override
+  String get crmConsentShare => _t('crmConsentShare') ?? base.crmConsentShare;
+
+  @override
+  String get crmConsentMethod => _t('crmConsentMethod') ?? base.crmConsentMethod;
+
+  @override
+  String get crmConsentMethodInPerson => _t('crmConsentMethodInPerson') ?? base.crmConsentMethodInPerson;
+
+  @override
+  String get crmConsentMethodPhone => _t('crmConsentMethodPhone') ?? base.crmConsentMethodPhone;
+
+  @override
+  String get crmConsentMethodVideoCall => _t('crmConsentMethodVideoCall') ?? base.crmConsentMethodVideoCall;
+
+  @override
+  String get crmConsentMethodWritten => _t('crmConsentMethodWritten') ?? base.crmConsentMethodWritten;
+
+  @override
+  String get crmConsentMethodEmail => _t('crmConsentMethodEmail') ?? base.crmConsentMethodEmail;
+
+  @override
+  String get crmConsentNote => _t('crmConsentNote') ?? base.crmConsentNote;
+
+  @override
+  String get crmConsentNoteHint => _t('crmConsentNoteHint') ?? base.crmConsentNoteHint;
+
+  @override
+  String get crmConsentRequired => _t('crmConsentRequired') ?? base.crmConsentRequired;
 }
 
 /// Every ARB key, in template order.
@@ -12436,4 +13187,198 @@ const List<String> kL10nKeys = [
   'inviteMissingArrival',
   'inviteMissingDuration',
   'inviteMissingTreatment',
+  'enumPaymentGatewayPlatformCredit',
+  'enumPaymentMethodCard',
+  'enumPaymentMethodUpi',
+  'enumPaymentMethodNetbanking',
+  'enumPaymentMethodBankTransfer',
+  'enumPaymentMethodWallet',
+  'enumPaymentMethodEmi',
+  'enumPaymentMethodMock',
+  'enumPaymentMethodPlatformCredit',
+  'referralTitle',
+  'referralProfileSubtitle',
+  'referralProgrammeOffTitle',
+  'referralProgrammeOffBody',
+  'referralHeroBoth',
+  'referralHeroReferrerOnly',
+  'referralHeroRefereeOnly',
+  'referralHeroGeneric',
+  'referralYourCode',
+  'referralCopyCode',
+  'referralCodeCopied',
+  'referralShare',
+  'referralCopyLink',
+  'referralLinkCopied',
+  'referralShareSubject',
+  'referralShareMessage',
+  'referralCreditTitle',
+  'referralCreditBase',
+  'referralCreditExpiringSoon',
+  'referralCreditUseHint',
+  'referralCreditNone',
+  'referralHowItWorksTitle',
+  'referralStep1',
+  'referralStep2',
+  'referralStep3',
+  'referralTermsValidity',
+  'referralTermsMaxPerYear',
+  'referralTermsNoCash',
+  'referralFriendsTitle',
+  'referralFriendsEmpty',
+  'referralCountChip',
+  'referralFriendJoined',
+  'referralFriendReward',
+  'referralStatusPending',
+  'referralStatusQualified',
+  'referralStatusRewarded',
+  'referralStatusVoid',
+  'referralHistoryTitle',
+  'referralHistoryEmpty',
+  'referralMovementGrant',
+  'referralMovementRedeem',
+  'referralMovementReinstate',
+  'referralMovementExpire',
+  'referralMovementVoid',
+  'referralCreditKindReferrer',
+  'referralCreditKindReferee',
+  'referralCreditKindReinstated',
+  'referralCreditExpires',
+  'referralCodeFieldLabel',
+  'referralCodeFieldHelper',
+  'referralCodeInvalid',
+  'referralPayUseCreditTitle',
+  'referralPayUseCreditBody',
+  'referralPayCoversAll',
+  'referralPayRemaining',
+  'referralPayApplyButton',
+  'referralPayConfirmTitle',
+  'referralPayConfirmBody',
+  'referralPayConfirmButton',
+  'referralPayApplied',
+  'referralPayCreditChanged',
+  'referralPayInProgress',
+  'referralPayNotApplicable',
+  'referralPayNotForInstallments',
+  'referralPayAmountTooSmall',
+  'crmLeadsTitle',
+  'crmAddLead',
+  'crmSearchHint',
+  'crmFilterSource',
+  'crmFilterAnySource',
+  'crmFilterAllLeads',
+  'crmFilterDueToday',
+  'crmFilterOverdue',
+  'crmFilterNoFollowUp',
+  'crmChipCount',
+  'crmPipelineOpen',
+  'crmFollowUpsDueToday',
+  'crmFollowUpsOverdue',
+  'crmPipelineConversion',
+  'crmLeadsEmpty',
+  'crmLeadsEmptyHint',
+  'crmLeadsNoMatch',
+  'crmFollowUpOn',
+  'crmFollowUpDueBadge',
+  'crmLeadDetailTitle',
+  'crmDetailsTitle',
+  'crmFieldPhone',
+  'crmFieldWhatsapp',
+  'crmFieldEmail',
+  'crmFieldCountry',
+  'crmFieldLanguage',
+  'crmFieldSource',
+  'crmFieldSpecialty',
+  'crmFieldProcedure',
+  'crmFieldInterest',
+  'crmFieldBudget',
+  'crmFieldTags',
+  'crmFieldOwner',
+  'crmFieldLostReason',
+  'crmFieldCreated',
+  'crmFieldNextFollowUp',
+  'crmStatusNew',
+  'crmStatusContacted',
+  'crmStatusQualified',
+  'crmStatusScreening',
+  'crmStatusQuoteRequested',
+  'crmStatusWon',
+  'crmStatusLost',
+  'crmSourceWalkIn',
+  'crmSourceWhatsapp',
+  'crmSourceFacebook',
+  'crmSourceReferral',
+  'crmSourceEvent',
+  'crmSourceOther',
+  'crmActivityCall',
+  'crmActivityMessage',
+  'crmActivityMeeting',
+  'crmActivityNote',
+  'crmActivityStatusChange',
+  'crmLogActivity',
+  'crmChangeStatus',
+  'crmStatusSave',
+  'crmStatusUpdated',
+  'crmLostReasonLabel',
+  'crmLostReasonRequired',
+  'crmWonViaConvert',
+  'crmScheduleFollowUp',
+  'crmClearFollowUp',
+  'crmFollowUpScheduled',
+  'crmFollowUpCleared',
+  'crmNoFollowUp',
+  'crmActivityBodyLabel',
+  'crmActivityNextFollowUp',
+  'crmActivitySave',
+  'crmActivityLogged',
+  'crmTimelineTitle',
+  'crmTimelineEmpty',
+  'crmTimelineStatusChange',
+  'crmTimelineStatusSet',
+  'crmTimelineBy',
+  'crmConvertToPatient',
+  'crmConvertTitle',
+  'crmConvertIntro',
+  'crmConverted',
+  'crmAlreadyConverted',
+  'crmViewPatient',
+  'crmDeleteLead',
+  'crmDeleteConfirmTitle',
+  'crmDeleteConfirmBody',
+  'crmLeadDeleted',
+  'crmLeadAdded',
+  'crmFormFullName',
+  'crmFormPhone',
+  'crmFormWhatsapp',
+  'crmFormEmail',
+  'crmFormEmailInvalid',
+  'crmFormCountry',
+  'crmFormCountryInvalid',
+  'crmFormSource',
+  'crmFormSourceDetail',
+  'crmFormInterest',
+  'crmFormInterestHelper',
+  'crmFormBudget',
+  'crmFormBudgetCurrency',
+  'crmFormBudgetInvalid',
+  'crmFormFollowUp',
+  'crmFormNote',
+  'crmFormRequired',
+  'crmDashboardHint',
+  'crmErrorLeadConverted',
+  'crmErrorEmailTaken',
+  'crmErrorAgentNotActive',
+  'crmConsentSection',
+  'crmConsentAttest',
+  'crmConsentAttestHint',
+  'crmConsentShare',
+  'crmConsentMethod',
+  'crmConsentMethodInPerson',
+  'crmConsentMethodPhone',
+  'crmConsentMethodVideoCall',
+  'crmConsentMethodWritten',
+  'crmConsentMethodEmail',
+  'crmConsentNote',
+  'crmConsentNoteHint',
+  'crmConsentRequired',
 ];

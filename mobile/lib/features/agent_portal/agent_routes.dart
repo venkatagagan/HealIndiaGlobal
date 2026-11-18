@@ -5,6 +5,7 @@ import '../aftercare/screens/aftercare_screen.dart';
 import 'agent_shell.dart';
 import 'screens/agent_bookings_screens.dart';
 import 'screens/agent_cases_screens.dart';
+import 'screens/agent_leads_screens.dart';
 import 'screens/agent_patients_screens.dart';
 import 'screens/agent_screening_screens.dart';
 
@@ -45,6 +46,18 @@ abstract final class AgentRoutes {
 
   /// Aftercare of the agent's patients (follow-up calls, check-ins).
   static const aftercare = '$home/aftercare';
+
+  // CRM: leads (prospective patients), follow-ups and conversion.
+  static const leads = '$home/leads';
+  static const newLead = '$leads/new';
+  static String lead(String id) => '$leads/$id';
+
+  /// Converts the lead with the add-patient form (prefilled from the lead, with consent attestation).
+  static String convertLead(String id) => '${lead(id)}/convert';
+
+  /// `/agent/leads?follow_up=due|overdue|none` (null: every lead).
+  static String leadsFor({String? followUp}) =>
+      followUp == null || followUp.isEmpty ? leads : '$leads?follow_up=${Uri.encodeQueryComponent(followUp)}';
 }
 
 /// Route tree of the agent shell, mounted by `core/router/app_router.dart` under [Routes.agentHome].
@@ -98,6 +111,23 @@ List<RouteBase> agentPortalRoutes() => [
         builder: (_, s) => AgentBookingDetailScreen(bookingId: s.pathParameters['id']!),
       ),
       GoRoute(path: 'aftercare', builder: (_, _) => const AftercareScreen(forAgent: true)),
+      GoRoute(
+        path: 'leads',
+        builder: (_, s) => AgentLeadsScreen(followUp: s.uri.queryParameters['follow_up']),
+        routes: [
+          GoRoute(path: 'new', builder: (_, _) => const AgentLeadFormScreen()),
+          GoRoute(
+            path: ':id',
+            builder: (_, s) => AgentLeadDetailScreen(leadId: s.pathParameters['id']!),
+            routes: [
+              GoRoute(
+                path: 'convert',
+                builder: (_, s) => AgentPatientFormScreen(leadId: s.pathParameters['id']),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
   ),
 ];

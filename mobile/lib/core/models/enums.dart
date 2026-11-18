@@ -636,7 +636,11 @@ enum PaymentGateway with JsonEnum {
   razorpay('razorpay'),
   stripe('stripe'),
   bankTransfer('bank_transfer'),
-  mock('mock');
+  mock('mock'),
+
+  /// Internal gateway of referral credit (`POST /patient/credits/apply`); shown in order / payment lists,
+  /// never offered at checkout.
+  platformCredit('platform_credit');
 
   const PaymentGateway(this.json);
 
@@ -649,11 +653,45 @@ enum PaymentGateway with JsonEnum {
     PaymentGateway.stripe => 'Card (Stripe)',
     PaymentGateway.bankTransfer => 'Bank Transfer',
     PaymentGateway.mock => 'Test payment',
+    PaymentGateway.platformCredit => 'Referral credit',
   };
 
   static PaymentGateway fromJson(Object? raw) => enumFromJson(values, raw, PaymentGateway.razorpay);
 
   static PaymentGateway? fromJsonOrNull(Object? raw) => enumFromJsonOrNull(values, raw);
+}
+
+/// `PaymentMethod` (payment `method`): how a captured payment was made.
+enum PaymentMethod with JsonEnum {
+  card('card'),
+  upi('upi'),
+  netbanking('netbanking'),
+  bankTransfer('bank_transfer'),
+  wallet('wallet'),
+  emi('emi'),
+  mock('mock'),
+
+  /// Paid with referral credit.
+  platformCredit('platform_credit');
+
+  const PaymentMethod(this.json);
+
+  @override
+  final String json;
+
+  @override
+  String get englishLabel => switch (this) {
+    PaymentMethod.card => 'Card',
+    PaymentMethod.upi => 'UPI',
+    PaymentMethod.netbanking => 'Net banking',
+    PaymentMethod.bankTransfer => 'Bank transfer',
+    PaymentMethod.wallet => 'Wallet',
+    PaymentMethod.emi => 'EMI',
+    PaymentMethod.mock => 'Test payment',
+    PaymentMethod.platformCredit => 'Referral credit',
+  };
+
+  static PaymentMethod? fromJsonOrNull(Object? raw) => enumFromJsonOrNull(values, raw);
 }
 
 /// `PaymentPurpose` (PLAN §5).

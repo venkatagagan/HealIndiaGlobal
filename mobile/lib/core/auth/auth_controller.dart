@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/enums.dart';
 import '../models/user.dart';
 import '../network/api_client.dart';
+import '../repositories/guest_repository.dart';
 import '../services/push_service.dart';
 import 'apple_sign_in_service.dart';
 import 'auth_repository.dart';
 import 'google_sign_in_service.dart';
+import 'pending_referral.dart';
 import 'roles.dart';
 import 'token_storage.dart';
 
@@ -117,21 +119,26 @@ class AuthController extends AsyncNotifier<AuthState> {
     String? agencyName,
     String? hospitalName,
     String? city,
-  }) => _apply(
-    _repo.register(
-      email: email,
-      password: password,
-      fullName: fullName,
-      isAdult: isAdult,
-      role: role,
-      phone: phone,
-      countryCode: countryCode,
-      referralCode: referralCode,
-      agencyName: agencyName,
-      hospitalName: hospitalName,
-      city: city,
-    ),
-  );
+  }) async {
+    final user = await _apply(
+      _repo.register(
+        email: email,
+        password: password,
+        fullName: fullName,
+        isAdult: isAdult,
+        role: role,
+        phone: phone,
+        countryCode: countryCode,
+        referralCode: referralCode,
+        deviceId: _deviceId(),
+        agencyName: agencyName,
+        hospitalName: hospitalName,
+        city: city,
+      ),
+    );
+    _clearPendingReferral();
+    return user;
+  }
 
   /// Google flow end-to-end. Returns null when the user cancelled the Google dialog (or the 18+
   /// question, see [AgeAttestationPrompt]).
@@ -142,20 +149,25 @@ class AuthController extends AsyncNotifier<AuthState> {
   }
 
   /// Signs in with a Google ID token obtained elsewhere (e.g. the web button).
-  Future<User?> signInWithGoogleIdToken(String idToken, {AgeAttestationPrompt? askAge}) =>
-      _withAgeAttestation((isAdult) => _repo.google(idToken: idToken, isAdult: isAdult), askAge);
+  Future<User?> signInWithGoogleIdToken(String idToken, {AgeAttestationPrompt? askAge}) => _withAgeAttestation(
+    (isAdult, referralCode) =>
+        _repo.google(idToken: idToken, isAdult: isAdult, referralCode: referralCode, deviceId: _deviceId()),
+    askAge,
+  );
 
   /// Sign in with Apple end-to-end (iOS/macOS). Returns null when the user cancelled.
   Future<User?> signInWithApple({AgeAttestationPrompt? askAge}) async {
     final credential = await ref.read(appleSignInServiceProvider).signIn();
     if (credential == null) return null;
     return _withAgeAttestation(
-      (isAdult) => _repo.apple(
+      (isAdult, referralCode) => _repo.apple(
         identityToken: credential.identityToken,
         nonce: credential.nonce,
         authorizationCode: credential.authorizationCode,
         fullName: credential.fullName,
         isAdult: isAdult,
+        referralCode: referralCode,
+        deviceId: _deviceId(),
       ),
       askAge,
     );
@@ -163,15 +175,26 @@ class AuthController extends AsyncNotifier<AuthState> {
 
   /// Runs a Google / Apple sign-in call; when the API needs the 18+ answer for a new account it asks
   /// [askAge] and retries the same call with `is_adult` (CG-24). Null when the user cancelled.
+  ///
+  /// A referral code received through an invite link is sent along (used only when the call creates the
+  /// account); when the API rejects it (`invalid_referral_code`) it is dropped and the call retried.
   Future<User?> _withAgeAttestation(
-    Future<AuthSession> Function(bool? isAdult) call,
+    Future<AuthSession> Function(bool? isAdult, String? referralCode) call,
     AgeAttestationPrompt? askAge,
   ) async {
     bool? isAdult;
+    var referralCode = _bestEffort(() => ref.read(pendingReferralCodeProvider));
     for (var attempt = 0; ; attempt++) {
       try {
-        return await _apply(call(isAdult));
+        final user = await _apply(call(isAdult, referralCode));
+        if (referralCode != null) _clearPendingReferral();
+        return user;
       } on ApiException catch (e) {
+        if (e.code == 'invalid_referral_code' && referralCode != null) {
+          referralCode = null;
+          _clearPendingReferral();
+          continue;
+        }
         final needsAnswer = e.isAgeAttestationRequired || e.isAdultRequired;
         if (!needsAnswer || askAge == null || attempt >= 2) rethrow;
         isAdult = await askAge(adultOnly: e.isAdultRequired);
@@ -225,6 +248,25 @@ class AuthController extends AsyncNotifier<AuthState> {
       await ref.read(pushServiceProvider).onSignedOut(unregisterOnServer: onServer);
     } catch (_) {
       // Push is best effort; signing out must always work.
+    }
+  }
+
+  /// Referral attribution (install id, invite code) is best effort and never blocks signing in.
+  T? _bestEffort<T>(T Function() read) {
+    try {
+      return read();
+    } on Object {
+      return null;
+    }
+  }
+
+  String? _deviceId() => _bestEffort(() => ref.read(deviceIdProvider));
+
+  void _clearPendingReferral() {
+    try {
+      ref.read(pendingReferralCodeProvider.notifier).clear();
+    } on Object {
+      // best effort
     }
   }
 

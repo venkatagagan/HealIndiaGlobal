@@ -37,6 +37,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Referral invite: healindia://register?ref=CODE opens sign-up with the code filled in
+                 (go_router, core/auth/pending_referral.dart; only the ref parameter is read). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="healindia" android:host="register"/>
+            </intent-filter>
         </activity>
         <!-- Push (CG-15): no FCM token is created until the user signs in and turns notifications on
              (FirebasePushService enables auto-init then). -->

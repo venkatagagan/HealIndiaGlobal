@@ -25,7 +25,7 @@ class _NewAccountRepository extends AuthRepository {
   final List<bool?> googleCalls = [];
 
   @override
-  Future<AuthSession> google({required String idToken, bool? isAdult}) async {
+  Future<AuthSession> google({required String idToken, bool? isAdult, String? referralCode, String? deviceId}) async {
     googleCalls.add(isAdult);
     if (isAdult == null) throw _ageRequired;
     return const AuthSession(

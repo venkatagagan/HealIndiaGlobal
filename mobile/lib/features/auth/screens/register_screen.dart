@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_controller.dart';
+import '../../../core/auth/pending_referral.dart';
 import '../../../core/auth/roles.dart';
 import '../../../core/config/app_preferences.dart';
 import '../../../core/models/models.dart';
@@ -24,11 +25,17 @@ import '../widgets/auth_widgets.dart';
 /// Every sign-up answers the age question (CG-24, `is_adult`): patients pick "18 or older" or "under 18
 /// with a parent or guardian's consent"; agents and hospital users must tick "I confirm I am 18 or older."
 ///
-/// Route: `/auth/register?from=&role=` · Owner: fl-onboarding.
+/// A referral code from an invite link (`?ref=`, or kept by [pendingReferralCodeProvider]) is filled in;
+/// the sign-up also sends the install id (`device_id`) and `X-Client-App: mobile` for attribution.
+///
+/// Route: `/auth/register?from=&role=&ref=` · Owner: fl-onboarding.
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key, this.from, this.initialRole});
+  const RegisterScreen({super.key, this.from, this.initialRole, this.referralCode});
 
   final String? from;
+
+  /// Referral code to fill in (invite deep link `healindia://register?ref=CODE`).
+  final String? referralCode;
 
   /// Preselected tab (`?role=agent|hospital`); defaults to patient.
   final UserRole? initialRole;
@@ -60,6 +67,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Map<String, String> _fieldErrors = const {};
 
   String get _target => returnPathOrHome(widget.from);
+
+  @override
+  void initState() {
+    super.initState();
+    final code = widget.referralCode ?? ref.read(pendingReferralCodeProvider);
+    if (code != null && code.isNotEmpty) _referral.text = code;
+  }
 
   static String _roleLabel(AppLocalizations l, UserRole role) => switch (role) {
     UserRole.agent => l.enumUserRoleAgent,
@@ -130,7 +144,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!mounted) return;
       setState(() {
         _fieldErrors = e.fieldErrors;
-        _error = e.isConflict ? context.l10n.registerConflict : e.message;
+        if (e.code == 'invalid_referral_code') {
+          _fieldErrors = {..._fieldErrors, 'referral_code': context.l10n.referralCodeInvalid};
+          _error = null;
+        } else {
+          _error = e.isConflict ? context.l10n.registerConflict : e.message;
+        }
       });
     } on Object catch (e) {
       if (mounted) setState(() => _error = errorMessage(e));
@@ -305,12 +324,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 if (role == UserRole.patient && !isGuest) ...[
                   const SizedBox(height: 12),
                   TextFormField(
+                    key: const Key('register-referral'),
                     controller: _referral,
                     textCapitalization: TextCapitalization.characters,
+                    autocorrect: false,
                     maxLength: 16,
                     decoration: InputDecoration(
-                      labelText: l10n.registerReferralCodeOptional,
-                      prefixIcon: const Icon(Icons.badge_outlined),
+                      labelText: l10n.referralCodeFieldLabel,
+                      helperText: l10n.referralCodeFieldHelper,
+                      prefixIcon: const Icon(Icons.card_giftcard_rounded),
                       errorText: _fieldErrors['referral_code'],
                       counterText: '',
                     ),

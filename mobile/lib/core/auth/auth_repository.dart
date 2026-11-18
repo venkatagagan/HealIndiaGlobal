@@ -10,6 +10,9 @@ import 'token_storage.dart';
 class AuthRepository {
   AuthRepository(this._api, this._tokens);
 
+  /// `X-Client-App` header of sign-ups: attribution channel of a referral (`mobile`).
+  static const clientAppHeaders = {'X-Client-App': 'mobile'};
+
   final ApiClient _api;
   final TokenStorage _tokens;
 
@@ -27,6 +30,7 @@ class AuthRepository {
     String? phone,
     String? countryCode,
     String? referralCode,
+    String? deviceId,
     String? agencyName,
     String? hospitalName,
     String? city,
@@ -42,12 +46,14 @@ class AuthRepository {
         'phone': phone,
         'country_code': countryCode,
         'referral_code': role == UserRole.patient ? referralCode : null,
+        'device_id': deviceId,
         'agency_name': role == UserRole.agent ? agencyName?.trim() : null,
         'hospital_name': role == UserRole.hospital ? hospitalName?.trim() : null,
         'city': role == UserRole.hospital ? city?.trim() : null,
         'accept_terms': acceptTerms,
         'is_adult': isAdult,
       }, dropEmptyStrings: true),
+      headers: clientAppHeaders,
       extra: ApiClient.noAuth,
     );
     return _persist(data);
@@ -67,10 +73,18 @@ class AuthRepository {
   ///
   /// [isAdult] is only needed when the call creates a new account: without it the API answers 400
   /// `age_attestation_required` and the caller asks the 18+ question and retries (CG-24).
-  Future<AuthSession> google({required String idToken, bool? isAdult}) async {
+  /// [referralCode] / [deviceId] only matter when the call creates the account (referral attribution).
+  Future<AuthSession> google({required String idToken, bool? isAdult, String? referralCode, String? deviceId}) async {
     final data = await _api.post(
       '/auth/google',
-      data: compactJson({'id_token': idToken, 'role': UserRole.patient.json, 'is_adult': isAdult}),
+      data: compactJson({
+        'id_token': idToken,
+        'role': UserRole.patient.json,
+        'is_adult': isAdult,
+        'referral_code': referralCode,
+        'device_id': deviceId,
+      }, dropEmptyStrings: true),
+      headers: clientAppHeaders,
       extra: ApiClient.noAuth,
     );
     return _persist(data);
@@ -85,6 +99,8 @@ class AuthRepository {
     String? authorizationCode,
     String? fullName,
     bool? isAdult,
+    String? referralCode,
+    String? deviceId,
   }) async {
     final data = await _api.post(
       '/auth/apple',
@@ -95,7 +111,10 @@ class AuthRepository {
         'full_name': fullName,
         'role': UserRole.patient.json,
         'is_adult': isAdult,
+        'referral_code': referralCode,
+        'device_id': deviceId,
       }, dropEmptyStrings: true),
+      headers: clientAppHeaders,
       extra: ApiClient.noAuth,
     );
     return _persist(data);

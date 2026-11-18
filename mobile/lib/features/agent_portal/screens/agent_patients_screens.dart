@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/document_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
@@ -14,6 +15,9 @@ import '../../trips/services/file_actions.dart';
 import '../agent_routes.dart';
 import '../data/agent_models.dart';
 import '../data/agent_repository.dart';
+import '../data/crm_models.dart';
+import '../data/crm_repository.dart';
+import '../shared/consent_attestation_fields.dart';
 import '../shared/portal_widgets.dart';
 
 // ------------------------------------------------------------------------------------------ list
@@ -141,11 +145,16 @@ class _PatientTile extends StatelessWidget {
 
 // ------------------------------------------------------------------------------------------ form
 
-/// Add a patient (`POST /agent-portal/patients`) or edit one ([patientId] set).
+/// Add a patient (`POST /agent-portal/patients`), edit one ([patientId] set) or convert a CRM lead into a
+/// patient ([leadId] set: prefilled from the lead, `POST /agent-portal/leads/{id}/convert`). Adding and
+/// converting require the agent's consent attestation.
 class AgentPatientFormScreen extends ConsumerStatefulWidget {
-  const AgentPatientFormScreen({super.key, this.patientId});
+  const AgentPatientFormScreen({super.key, this.patientId, this.leadId});
 
   final String? patientId;
+
+  /// Lead to convert.
+  final String? leadId;
 
   @override
   ConsumerState<AgentPatientFormScreen> createState() => _AgentPatientFormScreenState();
@@ -167,15 +176,60 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
   Gender? _gender;
   bool _saving = false;
   bool _loaded = false;
+  final _consentNote = TextEditingController();
+  bool _consentAttested = false;
+  bool _showConsentError = false;
+  AgentConsentAttestation _consent = const AgentConsentAttestation();
 
   bool get _isEdit => widget.patientId != null;
+  bool get _isConvert => !_isEdit && widget.leadId != null;
 
   @override
   void dispose() {
-    for (final c in [_first, _last, _email, _phone, _nationality, _history, _passport, _allergies, _blood]) {
+    for (final c in [
+      _first,
+      _last,
+      _email,
+      _phone,
+      _nationality,
+      _history,
+      _passport,
+      _allergies,
+      _blood,
+      _consentNote,
+    ]) {
       c.dispose();
     }
     super.dispose();
+  }
+
+  /// Prefills the form from the lead being converted (name split, country -> nationality, e-mail, phone).
+  void _fillFromLead(Lead lead) {
+    if (_loaded) return;
+    _loaded = true;
+    final (first, last) = lead.splitName;
+    _first.text = first;
+    _last.text = last;
+    _email.text = lead.email ?? '';
+    _phone.text = lead.phone ?? lead.whatsapp ?? '';
+    _nationality.text = lead.country ?? '';
+  }
+
+  AgentConsentAttestation get _consentWithNote => AgentConsentAttestation(
+    method: _consent.method,
+    shareWithHospitals: _consent.shareWithHospitals,
+    note: _consentNote.text,
+  );
+
+  String? _knownErrorMessage(Object e) {
+    if (e is! ApiException) return null;
+    final l10n = context.l10n;
+    return switch (e.code) {
+      'lead_converted' => l10n.crmErrorLeadConverted,
+      'email_taken' => l10n.crmErrorEmailTaken,
+      'agent_not_active' => l10n.crmErrorAgentNotActive,
+      _ => null,
+    };
   }
 
   void _fill(AgentPatient p) {
@@ -206,7 +260,9 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
   }
 
   Future<void> _save() async {
-    if (!(_form.currentState?.validate() ?? false)) return;
+    final valid = _form.currentState?.validate() ?? false;
+    if (!_isEdit && !_consentAttested) setState(() => _showConsentError = true);
+    if (!valid || (!_isEdit && !_consentAttested)) return;
     setState(() => _saving = true);
     final input = AgentPatientInput(
       firstName: _first.text,
@@ -224,20 +280,45 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
     );
     final repo = ref.read(agentRepositoryProvider);
     try {
-      final saved = _isEdit ? await repo.updatePatient(widget.patientId!, input) : await repo.createPatient(input);
+      final AgentPatient saved;
+      if (_isEdit) {
+        saved = await repo.updatePatient(widget.patientId!, input);
+      } else if (_isConvert) {
+        saved = await ref.read(crmRepositoryProvider).convert(widget.leadId!, input, _consentWithNote);
+        ref
+          ..invalidate(leadsProvider)
+          ..invalidate(leadPipelineProvider)
+          ..invalidate(leadProvider(widget.leadId!));
+      } else {
+        saved = await repo.createPatient(input, consent: _consentWithNote);
+      }
       ref
         ..invalidate(agentPatientsProvider)
         ..invalidate(agentPatientProvider(saved.id))
         ..invalidate(agentDashboardProvider);
       if (!mounted) return;
-      showInfoSnack(context, _isEdit ? context.l10n.agentPatientUpdated : context.l10n.agentPatientAdded);
+      final l10n = context.l10n;
+      showInfoSnack(
+        context,
+        _isEdit
+            ? l10n.agentPatientUpdated
+            : _isConvert
+            ? l10n.crmConverted
+            : l10n.agentPatientAdded,
+      );
       if (_isEdit) {
         context.pop();
       } else {
         context.pushReplacement(AgentRoutes.patient(saved.id));
       }
     } catch (e) {
-      if (mounted) showErrorSnack(context, e);
+      if (!mounted) return;
+      final known = _knownErrorMessage(e);
+      if (known != null) {
+        showInfoSnack(context, known);
+      } else {
+        showErrorSnack(context, e);
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -262,13 +343,54 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
       }
       _fill(existing.requireValue);
     }
+    if (_isConvert) {
+      final lead = ref.watch(leadProvider(widget.leadId!));
+      if (!lead.hasValue) {
+        return Scaffold(
+          appBar: AppBar(title: Text(l10n.crmConvertTitle)),
+          body: AsyncValueView(
+            value: lead,
+            onRetry: () => ref.invalidate(leadProvider(widget.leadId!)),
+            data: (_) => const SizedBox.shrink(),
+          ),
+        );
+      }
+      final l = lead.requireValue;
+      if (l.isConverted && !_saving) {
+        return Scaffold(
+          appBar: AppBar(title: Text(l10n.crmConvertTitle)),
+          body: EmptyView(
+            icon: Icons.verified_user_outlined,
+            title: l10n.crmAlreadyConverted,
+            actionLabel: l10n.crmViewPatient,
+            onAction: () => context.pushReplacement(AgentRoutes.patient(l.convertedPatientId!)),
+          ),
+        );
+      }
+      _fillFromLead(l);
+    }
     return Scaffold(
-      appBar: AppBar(title: Text(_isEdit ? l10n.agentEditPatient : l10n.agentAddPatient)),
+      appBar: AppBar(
+        title: Text(
+          _isEdit
+              ? l10n.agentEditPatient
+              : _isConvert
+              ? l10n.crmConvertTitle
+              : l10n.agentAddPatient,
+        ),
+      ),
       body: Form(
         key: _form,
         child: ListView(
           padding: AppSpacing.pageAll,
           children: [
+            if (_isConvert) ...[
+              Text(
+                l10n.crmConvertIntro,
+                style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
+              ),
+              const SizedBox(height: 16),
+            ],
             Row(
               children: [
                 Expanded(
@@ -388,10 +510,26 @@ class _AgentPatientFormScreenState extends ConsumerState<AgentPatientFormScreen>
                 ],
               ),
             ],
+            if (!_isEdit)
+              ConsentAttestationFields(
+                attested: _consentAttested,
+                onAttestedChanged: (v) => setState(() {
+                  _consentAttested = v;
+                  if (v) _showConsentError = false;
+                }),
+                value: _consent,
+                onChanged: (v) => setState(() => _consent = v),
+                noteController: _consentNote,
+                showError: _showConsentError,
+              ),
             const SizedBox(height: 24),
             PrimaryButton(
               key: const ValueKey('patient-save'),
-              label: _isEdit ? l10n.agentSaveChanges : l10n.agentAddPatient,
+              label: _isEdit
+                  ? l10n.agentSaveChanges
+                  : _isConvert
+                  ? l10n.crmConvertToPatient
+                  : l10n.agentAddPatient,
               loading: _saving,
               onPressed: _saving ? null : _save,
             ),

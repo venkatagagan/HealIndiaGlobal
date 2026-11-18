@@ -15376,6 +15376,1170 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Treatment'**
   String get inviteMissingTreatment;
+
+  /// Payment gateway: paid with referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral credit'**
+  String get enumPaymentGatewayPlatformCredit;
+
+  /// Payment method: card.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get enumPaymentMethodCard;
+
+  /// Payment method: UPI (India).
+  ///
+  /// In en, this message translates to:
+  /// **'UPI'**
+  String get enumPaymentMethodUpi;
+
+  /// Payment method: net banking.
+  ///
+  /// In en, this message translates to:
+  /// **'Net banking'**
+  String get enumPaymentMethodNetbanking;
+
+  /// Payment method: bank transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get enumPaymentMethodBankTransfer;
+
+  /// Payment method: mobile wallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get enumPaymentMethodWallet;
+
+  /// Payment method: EMI (equated monthly instalments).
+  ///
+  /// In en, this message translates to:
+  /// **'EMI'**
+  String get enumPaymentMethodEmi;
+
+  /// Payment method: simulated test payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Test payment'**
+  String get enumPaymentMethodMock;
+
+  /// Payment method: paid with referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral credit'**
+  String get enumPaymentMethodPlatformCredit;
+
+  /// Referral screen title and profile entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer a friend'**
+  String get referralTitle;
+
+  /// Profile entry subtitle of the referral screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends and earn treatment credit'**
+  String get referralProfileSubtitle;
+
+  /// Referral screen banner when the programme is switched off.
+  ///
+  /// In en, this message translates to:
+  /// **'The referral programme is paused'**
+  String get referralProgrammeOffTitle;
+
+  /// Referral screen banner body when the programme is off.
+  ///
+  /// In en, this message translates to:
+  /// **'You can still use the credit you already have on your bookings.'**
+  String get referralProgrammeOffBody;
+
+  /// Referral headline when both sides get a reward. Amounts are formatted money.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend gets {friendReward} off their first treatment, and you get {yourReward} in credit once it\'s completed.'**
+  String referralHeroBoth(String friendReward, String yourReward);
+
+  /// Referral headline when only the referrer is rewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Get {yourReward} in credit when a friend you invite completes their first treatment.'**
+  String referralHeroReferrerOnly(String yourReward);
+
+  /// Referral headline when only the invited friend is rewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend gets {friendReward} in credit for their first treatment.'**
+  String referralHeroRefereeOnly(String friendReward);
+
+  /// Referral headline when no reward is configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends and family who are planning treatment in India.'**
+  String get referralHeroGeneric;
+
+  /// Label above the personal referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Your referral code'**
+  String get referralYourCode;
+
+  /// Tooltip: copy the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get referralCopyCode;
+
+  /// Snack bar after copying the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get referralCodeCopied;
+
+  /// Button: open the system share sheet with the invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Share invite'**
+  String get referralShare;
+
+  /// Button: copy the invite text with the link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy invite'**
+  String get referralCopyLink;
+
+  /// Snack bar after copying the invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite copied'**
+  String get referralLinkCopied;
+
+  /// Subject of the shared invite (e-mail apps).
+  ///
+  /// In en, this message translates to:
+  /// **'Join me on Heal India Global'**
+  String get referralShareSubject;
+
+  /// Invite text shared with a friend; code and web link are inserted.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m using Heal India Global to plan treatment in India. Sign up with my code {code}: {link}'**
+  String referralShareMessage(String code, String link);
+
+  /// Credit balance card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit'**
+  String get referralCreditTitle;
+
+  /// Credit is kept in INR; shows the INR amount under the display-currency amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Held in Indian rupees: {amount}'**
+  String referralCreditBase(String amount);
+
+  /// Part of the credit expiring within 30 days.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} expires on {date}'**
+  String referralCreditExpiringSoon(String amount, String date);
+
+  /// Where credit can be spent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it on the payment screen of a booking.'**
+  String get referralCreditUseHint;
+
+  /// Credit card when the balance is zero.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit yet. Invite a friend to earn some.'**
+  String get referralCreditNone;
+
+  /// Section title: how the referral programme works.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get referralHowItWorksTitle;
+
+  /// How it works, step 1.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your code or invite link with a friend.'**
+  String get referralStep1;
+
+  /// How it works, step 2.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend signs up with it and books treatment.'**
+  String get referralStep2;
+
+  /// How it works, step 3.
+  ///
+  /// In en, this message translates to:
+  /// **'When their first treatment is completed, the credit is added to your account.'**
+  String get referralStep3;
+
+  /// Credit validity in days.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Credit can be used on booking payments for 1 day.} other{Credit can be used on booking payments for {days} days.}}'**
+  String referralTermsValidity(int days);
+
+  /// Yearly cap of rewarded friends.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{You can earn a reward for 1 friend a year.} other{You can earn rewards for up to {count} friends a year.}}'**
+  String referralTermsMaxPerYear(int count);
+
+  /// Referral terms: no cash, no self-referral.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit cannot be exchanged for cash. Signing up yourself with your own code is not rewarded.'**
+  String get referralTermsNoCash;
+
+  /// Section title: friends who signed up with the code.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends you invited'**
+  String get referralFriendsTitle;
+
+  /// Empty friends list.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends have joined with your code yet.'**
+  String get referralFriendsEmpty;
+
+  /// Chip with a referral status and how many friends are in it.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {count}'**
+  String referralCountChip(String label, int count);
+
+  /// Date a friend signed up.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String referralFriendJoined(String date);
+
+  /// Credit earned for a rewarded friend.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} credit'**
+  String referralFriendReward(String amount);
+
+  /// Referral status: friend signed up, treatment not completed yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up'**
+  String get referralStatusPending;
+
+  /// Referral status: first treatment completed, reward not issued yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Treatment completed'**
+  String get referralStatusQualified;
+
+  /// Referral status: credit issued.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewarded'**
+  String get referralStatusRewarded;
+
+  /// Referral status: void (expired, self-referral or cancelled by staff).
+  ///
+  /// In en, this message translates to:
+  /// **'Not eligible'**
+  String get referralStatusVoid;
+
+  /// Section title: credit ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit history'**
+  String get referralHistoryTitle;
+
+  /// Empty credit ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit activity yet.'**
+  String get referralHistoryEmpty;
+
+  /// Ledger entry: credit granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit added'**
+  String get referralMovementGrant;
+
+  /// Ledger entry: credit spent on a booking payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Used on a booking'**
+  String get referralMovementRedeem;
+
+  /// Ledger entry: credit given back after a refund.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned after a refund'**
+  String get referralMovementReinstate;
+
+  /// Ledger entry: credit expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get referralMovementExpire;
+
+  /// Ledger entry: credit cancelled by staff.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get referralMovementVoid;
+
+  /// Credit kind: referrer reward.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward for inviting a friend'**
+  String get referralCreditKindReferrer;
+
+  /// Credit kind: reward of the invited friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome credit'**
+  String get referralCreditKindReferee;
+
+  /// Credit kind: credit returned after a refund.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned credit'**
+  String get referralCreditKindReinstated;
+
+  /// Expiry date of one credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String referralCreditExpires(String date);
+
+  /// Sign-up field: referral code of a friend or facilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code (optional)'**
+  String get referralCodeFieldLabel;
+
+  /// Sign-up field helper of the referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'From a friend or a medical-travel facilitator'**
+  String get referralCodeFieldHelper;
+
+  /// Sign-up error: unknown referral code.
+  ///
+  /// In en, this message translates to:
+  /// **'This referral code is not valid. Check it or leave the field empty.'**
+  String get referralCodeInvalid;
+
+  /// Pay screen: referral credit card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my credit'**
+  String get referralPayUseCreditTitle;
+
+  /// Pay screen: credit available and the part that will be applied.
+  ///
+  /// In en, this message translates to:
+  /// **'{available} available · {apply} will be applied'**
+  String referralPayUseCreditBody(String available, String apply);
+
+  /// Pay screen: credit pays everything.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit covers the full amount due now.'**
+  String get referralPayCoversAll;
+
+  /// Pay screen: amount still to pay after the credit.
+  ///
+  /// In en, this message translates to:
+  /// **'You will pay the remaining {amount} with the method below.'**
+  String referralPayRemaining(String amount);
+
+  /// Pay screen button: apply referral credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my credit'**
+  String get referralPayApplyButton;
+
+  /// Confirm dialog title before applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your credit?'**
+  String get referralPayConfirmTitle;
+
+  /// Confirm dialog body before applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} of your referral credit will be applied to this booking payment now. If the payment is refunded later, the credit is returned to you.'**
+  String referralPayConfirmBody(String amount);
+
+  /// Confirm dialog button.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply credit'**
+  String get referralPayConfirmButton;
+
+  /// Snack bar after applying credit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} of credit applied'**
+  String referralPayApplied(String amount);
+
+  /// Error 409 credit_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit changed. Check the amount and try again.'**
+  String get referralPayCreditChanged;
+
+  /// Error 409 payment_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment for this booking is already in progress. Try again in a few minutes.'**
+  String get referralPayInProgress;
+
+  /// Error 400 credit_not_applicable.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit can\'t be used on this payment.'**
+  String get referralPayNotApplicable;
+
+  /// Pay screen note: credit not usable with instalments.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit can\'t be used on instalment plans.'**
+  String get referralPayNotForInstallments;
+
+  /// Pay screen note: credit below the minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Your credit is too small to apply to this payment.'**
+  String get referralPayAmountTooSmall;
+
+  /// Agent CRM: lead list title and dashboard card.
+  ///
+  /// In en, this message translates to:
+  /// **'Leads'**
+  String get crmLeadsTitle;
+
+  /// Button: add a lead.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lead'**
+  String get crmAddLead;
+
+  /// Lead search hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, email or phone'**
+  String get crmSearchHint;
+
+  /// Tooltip of the source filter menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by source'**
+  String get crmFilterSource;
+
+  /// Source filter: no filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Any source'**
+  String get crmFilterAnySource;
+
+  /// Follow-up filter chip: no filter.
+  ///
+  /// In en, this message translates to:
+  /// **'All leads'**
+  String get crmFilterAllLeads;
+
+  /// Follow-up filter: due by the end of today (overdue included).
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get crmFilterDueToday;
+
+  /// Follow-up filter: overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get crmFilterOverdue;
+
+  /// Follow-up filter: no follow-up scheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'No follow-up'**
+  String get crmFilterNoFollowUp;
+
+  /// Filter chip with a count.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} ({count})'**
+  String crmChipCount(String label, int count);
+
+  /// Pipeline summary: open leads.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No open leads} =1{1 open lead} other{{count} open leads}}'**
+  String crmPipelineOpen(int count);
+
+  /// Follow-ups due today (overdue included).
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No follow-ups due today} =1{1 follow-up due today} other{{count} follow-ups due today}}'**
+  String crmFollowUpsDueToday(int count);
+
+  /// Overdue follow-ups.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 overdue} other{{count} overdue}}'**
+  String crmFollowUpsOverdue(int count);
+
+  /// Pipeline conversion rate (e.g. 25%).
+  ///
+  /// In en, this message translates to:
+  /// **'{rate} converted'**
+  String crmPipelineConversion(String rate);
+
+  /// Empty lead list title.
+  ///
+  /// In en, this message translates to:
+  /// **'No leads yet'**
+  String get crmLeadsEmpty;
+
+  /// Empty lead list hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the people who contact you so you can follow up and turn them into patients.'**
+  String get crmLeadsEmptyHint;
+
+  /// Lead list empty with filters.
+  ///
+  /// In en, this message translates to:
+  /// **'No leads match these filters.'**
+  String get crmLeadsNoMatch;
+
+  /// Lead tile: next follow-up date and time.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow up {date}'**
+  String crmFollowUpOn(String date);
+
+  /// Badge: follow-up is due.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get crmFollowUpDueBadge;
+
+  /// Lead detail title fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get crmLeadDetailTitle;
+
+  /// Lead detail section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get crmDetailsTitle;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get crmFieldPhone;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get crmFieldWhatsapp;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get crmFieldEmail;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get crmFieldCountry;
+
+  /// Lead field: preferred language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get crmFieldLanguage;
+
+  /// Lead field: where the lead came from.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get crmFieldSource;
+
+  /// Lead field: medical specialty of interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get crmFieldSpecialty;
+
+  /// Lead field: procedure of interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure'**
+  String get crmFieldProcedure;
+
+  /// Lead field: short interest note.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest'**
+  String get crmFieldInterest;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get crmFieldBudget;
+
+  /// Lead field.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get crmFieldTags;
+
+  /// Lead field: team member responsible.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get crmFieldOwner;
+
+  /// Lead field: why the lead was lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason lost'**
+  String get crmFieldLostReason;
+
+  /// Lead field: creation date.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get crmFieldCreated;
+
+  /// Lead section: next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up'**
+  String get crmFieldNextFollowUp;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get crmStatusNew;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get crmStatusContacted;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Qualified'**
+  String get crmStatusQualified;
+
+  /// Lead stage: health screening in progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Screening'**
+  String get crmStatusScreening;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote requested'**
+  String get crmStatusQuoteRequested;
+
+  /// Lead stage: converted to a patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Won'**
+  String get crmStatusWon;
+
+  /// Lead stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get crmStatusLost;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in'**
+  String get crmSourceWalkIn;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get crmSourceWhatsapp;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get crmSourceFacebook;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get crmSourceReferral;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get crmSourceEvent;
+
+  /// Lead source.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get crmSourceOther;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get crmActivityCall;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get crmActivityMessage;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting'**
+  String get crmActivityMeeting;
+
+  /// Lead activity kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get crmActivityNote;
+
+  /// Lead activity kind (written by the server).
+  ///
+  /// In en, this message translates to:
+  /// **'Status change'**
+  String get crmActivityStatusChange;
+
+  /// Button / sheet title: log a call, message, meeting or note.
+  ///
+  /// In en, this message translates to:
+  /// **'Log activity'**
+  String get crmLogActivity;
+
+  /// Button / sheet title.
+  ///
+  /// In en, this message translates to:
+  /// **'Change status'**
+  String get crmChangeStatus;
+
+  /// Status sheet button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save status'**
+  String get crmStatusSave;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated'**
+  String get crmStatusUpdated;
+
+  /// Lost reason field.
+  ///
+  /// In en, this message translates to:
+  /// **'Why was the lead lost?'**
+  String get crmLostReasonLabel;
+
+  /// Lost reason validation / API error lost_reason_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the reason the lead was lost.'**
+  String get crmLostReasonRequired;
+
+  /// Hint / API error lead_convert_required.
+  ///
+  /// In en, this message translates to:
+  /// **'To mark a lead as won, convert it to a patient.'**
+  String get crmWonViaConvert;
+
+  /// Tooltip: pick the next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule follow-up'**
+  String get crmScheduleFollowUp;
+
+  /// Tooltip: remove the follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear follow-up'**
+  String get crmClearFollowUp;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up scheduled'**
+  String get crmFollowUpScheduled;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up cleared'**
+  String get crmFollowUpCleared;
+
+  /// Lead detail: no follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'No follow-up scheduled'**
+  String get crmNoFollowUp;
+
+  /// Activity sheet: text field.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened? (optional)'**
+  String get crmActivityBodyLabel;
+
+  /// Activity sheet: pick the next follow-up.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up (optional)'**
+  String get crmActivityNextFollowUp;
+
+  /// Activity sheet button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save activity'**
+  String get crmActivitySave;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity logged'**
+  String get crmActivityLogged;
+
+  /// Lead detail section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get crmTimelineTitle;
+
+  /// Empty timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity yet.'**
+  String get crmTimelineEmpty;
+
+  /// Timeline entry of a status change.
+  ///
+  /// In en, this message translates to:
+  /// **'Status changed from {fromStatus} to {toStatus}'**
+  String crmTimelineStatusChange(String fromStatus, String toStatus);
+
+  /// Timeline entry: first status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status set to {status}'**
+  String crmTimelineStatusSet(String status);
+
+  /// Timeline entry author.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String crmTimelineBy(String name);
+
+  /// Button: convert the lead to a managed patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to patient'**
+  String get crmConvertToPatient;
+
+  /// Convert screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to patient'**
+  String get crmConvertTitle;
+
+  /// Convert screen intro.
+  ///
+  /// In en, this message translates to:
+  /// **'Creates a managed patient from this lead. Check the details and confirm the patient\'s consent.'**
+  String get crmConvertIntro;
+
+  /// Snack bar after converting.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient created from the lead'**
+  String get crmConverted;
+
+  /// Lead detail banner / convert screen when already converted.
+  ///
+  /// In en, this message translates to:
+  /// **'This lead is already a patient.'**
+  String get crmAlreadyConverted;
+
+  /// Button: open the converted patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Open patient'**
+  String get crmViewPatient;
+
+  /// Menu item / confirm button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete lead'**
+  String get crmDeleteLead;
+
+  /// Confirm dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this lead?'**
+  String get crmDeleteConfirmTitle;
+
+  /// Confirm dialog body.
+  ///
+  /// In en, this message translates to:
+  /// **'The lead and its timeline are removed. This cannot be undone.'**
+  String get crmDeleteConfirmBody;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead deleted'**
+  String get crmLeadDeleted;
+
+  /// Snack bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead added'**
+  String get crmLeadAdded;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get crmFormFullName;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get crmFormPhone;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp (optional)'**
+  String get crmFormWhatsapp;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get crmFormEmail;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get crmFormEmailInvalid;
+
+  /// Lead form field: ISO 2-letter country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code (optional, e.g. NG)'**
+  String get crmFormCountry;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a 2-letter country code, e.g. NG.'**
+  String get crmFormCountryInvalid;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get crmFormSource;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Source details (optional)'**
+  String get crmFormSourceDetail;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest (optional)'**
+  String get crmFormInterest;
+
+  /// Lead form helper: no medical history in the CRM.
+  ///
+  /// In en, this message translates to:
+  /// **'A short note such as \"knee replacement\". Do not enter medical history.'**
+  String get crmFormInterestHelper;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget (optional)'**
+  String get crmFormBudget;
+
+  /// Lead form field: budget currency (ISO code).
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get crmFormBudgetCurrency;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount and 3-letter currency.'**
+  String get crmFormBudgetInvalid;
+
+  /// Lead form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up (optional)'**
+  String get crmFormFollowUp;
+
+  /// Lead form field: first timeline note.
+  ///
+  /// In en, this message translates to:
+  /// **'First note (optional)'**
+  String get crmFormNote;
+
+  /// Lead form validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get crmFormRequired;
+
+  /// Dashboard leads card subtitle while loading / unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Track enquiries and follow-ups'**
+  String get crmDashboardHint;
+
+  /// API error lead_converted.
+  ///
+  /// In en, this message translates to:
+  /// **'This lead was already converted to a patient.'**
+  String get crmErrorLeadConverted;
+
+  /// API error email_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get crmErrorEmailTaken;
+
+  /// API error agent_not_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Your agency account must be approved before you can add patients.'**
+  String get crmErrorAgentNotActive;
+
+  /// Add-patient / convert form: consent section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient consent'**
+  String get crmConsentSection;
+
+  /// Consent attestation checkbox (legal).
+  ///
+  /// In en, this message translates to:
+  /// **'I confirm the patient has agreed to the Terms of Service and Privacy Policy'**
+  String get crmConsentAttest;
+
+  /// Consent attestation hint (legal).
+  ///
+  /// In en, this message translates to:
+  /// **'Your attestation is recorded with your name and time. The patient confirms it on first sign-in.'**
+  String get crmConsentAttestHint;
+
+  /// Optional consent: share records with hospitals.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient also agreed to share their records with the hospitals I contact for them'**
+  String get crmConsentShare;
+
+  /// Consent method field.
+  ///
+  /// In en, this message translates to:
+  /// **'How was consent obtained?'**
+  String get crmConsentMethod;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'In person'**
+  String get crmConsentMethodInPerson;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone call'**
+  String get crmConsentMethodPhone;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Video call'**
+  String get crmConsentMethodVideoCall;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Written / signed form'**
+  String get crmConsentMethodWritten;
+
+  /// Consent method.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get crmConsentMethodEmail;
+
+  /// Consent note field.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get crmConsentNote;
+
+  /// Consent note hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Signed form on file'**
+  String get crmConsentNoteHint;
+
+  /// Consent validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm that the patient has given consent before adding them.'**
+  String get crmConsentRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

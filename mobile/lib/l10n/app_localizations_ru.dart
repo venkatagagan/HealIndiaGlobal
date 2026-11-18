@@ -8937,4 +8937,685 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Лечение';
+
+  @override
+  String get enumPaymentGatewayPlatformCredit => 'Реферальный кредит';
+
+  @override
+  String get enumPaymentMethodCard => 'Карта';
+
+  @override
+  String get enumPaymentMethodUpi => 'UPI';
+
+  @override
+  String get enumPaymentMethodNetbanking => 'Интернет-банк';
+
+  @override
+  String get enumPaymentMethodBankTransfer => 'Банковский перевод';
+
+  @override
+  String get enumPaymentMethodWallet => 'Электронный кошелёк';
+
+  @override
+  String get enumPaymentMethodEmi => 'Ежемесячные платежи (EMI)';
+
+  @override
+  String get enumPaymentMethodMock => 'Тестовый платёж';
+
+  @override
+  String get enumPaymentMethodPlatformCredit => 'Реферальный кредит';
+
+  @override
+  String get referralTitle => 'Пригласить друга';
+
+  @override
+  String get referralProfileSubtitle => 'Приглашайте друзей и получайте кредит на лечение';
+
+  @override
+  String get referralProgrammeOffTitle => 'Реферальная программа приостановлена';
+
+  @override
+  String get referralProgrammeOffBody => 'Вы по-прежнему можете использовать имеющийся кредит для бронирований.';
+
+  @override
+  String referralHeroBoth(String friendReward, String yourReward) {
+    return 'Ваш друг получит скидку $friendReward на первое лечение, а вы — кредит $yourReward после его завершения.';
+  }
+
+  @override
+  String referralHeroReferrerOnly(String yourReward) {
+    return 'Получите кредит $yourReward, когда приглашённый вами друг завершит первое лечение.';
+  }
+
+  @override
+  String referralHeroRefereeOnly(String friendReward) {
+    return 'Ваш друг получит кредит $friendReward на первое лечение.';
+  }
+
+  @override
+  String get referralHeroGeneric => 'Пригласите друзей и родных, которые планируют лечение в Индии.';
+
+  @override
+  String get referralYourCode => 'Ваш реферальный код';
+
+  @override
+  String get referralCopyCode => 'Скопировать код';
+
+  @override
+  String get referralCodeCopied => 'Код скопирован';
+
+  @override
+  String get referralShare => 'Поделиться приглашением';
+
+  @override
+  String get referralCopyLink => 'Скопировать приглашение';
+
+  @override
+  String get referralLinkCopied => 'Приглашение скопировано';
+
+  @override
+  String get referralShareSubject => 'Присоединяйся к Heal India Global';
+
+  @override
+  String referralShareMessage(String code, String link) {
+    return 'Я планирую лечение в Индии с Heal India Global. Зарегистрируйся по моему коду $code: $link';
+  }
+
+  @override
+  String get referralCreditTitle => 'Ваш кредит';
+
+  @override
+  String referralCreditBase(String amount) {
+    return 'Хранится в индийских рупиях: $amount';
+  }
+
+  @override
+  String referralCreditExpiringSoon(String amount, String date) {
+    return 'Срок действия $amount истекает $date';
+  }
+
+  @override
+  String get referralCreditUseHint => 'Используйте его на экране оплаты бронирования.';
+
+  @override
+  String get referralCreditNone => 'Кредита пока нет. Пригласите друга, чтобы его получить.';
+
+  @override
+  String get referralHowItWorksTitle => 'Как это работает';
+
+  @override
+  String get referralStep1 => 'Поделитесь своим кодом или ссылкой-приглашением с другом.';
+
+  @override
+  String get referralStep2 => 'Друг регистрируется по ней и бронирует лечение.';
+
+  @override
+  String get referralStep3 => 'Когда его первое лечение завершено, кредит зачисляется на ваш счёт.';
+
+  @override
+  String referralTermsValidity(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Кредит можно использовать для оплаты бронирований в течение $days дня.',
+      many: 'Кредит можно использовать для оплаты бронирований в течение $days дней.',
+      few: 'Кредит можно использовать для оплаты бронирований в течение $days дней.',
+      one: 'Кредит можно использовать для оплаты бронирований в течение $days дня.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String referralTermsMaxPerYear(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Вознаграждение можно получить максимум за $count друга в год.',
+      many: 'Вознаграждение можно получить максимум за $count друзей в год.',
+      few: 'Вознаграждение можно получить максимум за $count друзей в год.',
+      one: 'Вознаграждение можно получить максимум за $count друга в год.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get referralTermsNoCash =>
+      'Кредит нельзя обменять на деньги. Регистрация по собственному коду не вознаграждается.';
+
+  @override
+  String get referralFriendsTitle => 'Приглашённые друзья';
+
+  @override
+  String get referralFriendsEmpty => 'По вашему коду пока никто не зарегистрировался.';
+
+  @override
+  String referralCountChip(String label, int count) {
+    return '$label: $count';
+  }
+
+  @override
+  String referralFriendJoined(String date) {
+    return 'Присоединился: $date';
+  }
+
+  @override
+  String referralFriendReward(String amount) {
+    return '+$amount кредита';
+  }
+
+  @override
+  String get referralStatusPending => 'Зарегистрирован';
+
+  @override
+  String get referralStatusQualified => 'Лечение завершено';
+
+  @override
+  String get referralStatusRewarded => 'Вознаграждение начислено';
+
+  @override
+  String get referralStatusVoid => 'Не подходит';
+
+  @override
+  String get referralHistoryTitle => 'История кредита';
+
+  @override
+  String get referralHistoryEmpty => 'Операций с кредитом пока нет.';
+
+  @override
+  String get referralMovementGrant => 'Кредит начислен';
+
+  @override
+  String get referralMovementRedeem => 'Использован для бронирования';
+
+  @override
+  String get referralMovementReinstate => 'Возвращён после возврата платежа';
+
+  @override
+  String get referralMovementExpire => 'Срок истёк';
+
+  @override
+  String get referralMovementVoid => 'Аннулирован';
+
+  @override
+  String get referralCreditKindReferrer => 'Вознаграждение за приглашение друга';
+
+  @override
+  String get referralCreditKindReferee => 'Приветственный кредит';
+
+  @override
+  String get referralCreditKindReinstated => 'Возвращённый кредит';
+
+  @override
+  String referralCreditExpires(String date) {
+    return 'Действует до $date';
+  }
+
+  @override
+  String get referralCodeFieldLabel => 'Реферальный код (необязательно)';
+
+  @override
+  String get referralCodeFieldHelper => 'От друга или посредника по медицинскому туризму';
+
+  @override
+  String get referralCodeInvalid => 'Этот реферальный код недействителен. Проверьте его или оставьте поле пустым.';
+
+  @override
+  String get referralPayUseCreditTitle => 'Использовать мой кредит';
+
+  @override
+  String referralPayUseCreditBody(String available, String apply) {
+    return 'Доступно $available · будет списано $apply';
+  }
+
+  @override
+  String get referralPayCoversAll => 'Ваш кредит покрывает всю сумму к оплате.';
+
+  @override
+  String referralPayRemaining(String amount) {
+    return 'Оставшиеся $amount вы оплатите способом ниже.';
+  }
+
+  @override
+  String get referralPayApplyButton => 'Использовать мой кредит';
+
+  @override
+  String get referralPayConfirmTitle => 'Использовать кредит?';
+
+  @override
+  String referralPayConfirmBody(String amount) {
+    return '$amount реферального кредита будут сейчас зачтены в оплату этого бронирования. Если платёж позже вернут, кредит вернётся к вам.';
+  }
+
+  @override
+  String get referralPayConfirmButton => 'Применить кредит';
+
+  @override
+  String referralPayApplied(String amount) {
+    return 'Зачтено кредита: $amount';
+  }
+
+  @override
+  String get referralPayCreditChanged => 'Ваш кредит изменился. Проверьте сумму и попробуйте снова.';
+
+  @override
+  String get referralPayInProgress => 'Оплата этого бронирования уже выполняется. Попробуйте через несколько минут.';
+
+  @override
+  String get referralPayNotApplicable => 'Кредит нельзя использовать для этого платежа.';
+
+  @override
+  String get referralPayNotForInstallments => 'Кредит нельзя использовать при оплате в рассрочку.';
+
+  @override
+  String get referralPayAmountTooSmall => 'Ваш кредит слишком мал, чтобы применить его к этому платежу.';
+
+  @override
+  String get crmLeadsTitle => 'Лиды';
+
+  @override
+  String get crmAddLead => 'Добавить лид';
+
+  @override
+  String get crmSearchHint => 'Поиск по имени, e-mail или телефону';
+
+  @override
+  String get crmFilterSource => 'Фильтр по источнику';
+
+  @override
+  String get crmFilterAnySource => 'Любой источник';
+
+  @override
+  String get crmFilterAllLeads => 'Все лиды';
+
+  @override
+  String get crmFilterDueToday => 'На сегодня';
+
+  @override
+  String get crmFilterOverdue => 'Просрочено';
+
+  @override
+  String get crmFilterNoFollowUp => 'Без контакта';
+
+  @override
+  String crmChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String crmPipelineOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count открытого лида',
+      many: '$count открытых лидов',
+      few: '$count открытых лида',
+      one: '$count открытый лид',
+      zero: 'Нет открытых лидов',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsDueToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count контакта на сегодня',
+      many: '$count контактов на сегодня',
+      few: '$count контакта на сегодня',
+      one: '$count контакт на сегодня',
+      zero: 'На сегодня контактов нет',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmFollowUpsOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count просрочено',
+      many: '$count просрочено',
+      few: '$count просрочено',
+      one: '$count просрочен',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crmPipelineConversion(String rate) {
+    return 'Конверсия: $rate';
+  }
+
+  @override
+  String get crmLeadsEmpty => 'Лидов пока нет';
+
+  @override
+  String get crmLeadsEmptyHint =>
+      'Добавляйте людей, которые к вам обращаются, чтобы связываться с ними и превращать их в пациентов.';
+
+  @override
+  String get crmLeadsNoMatch => 'Нет лидов, подходящих под эти фильтры.';
+
+  @override
+  String crmFollowUpOn(String date) {
+    return 'Связаться: $date';
+  }
+
+  @override
+  String get crmFollowUpDueBadge => 'Пора';
+
+  @override
+  String get crmLeadDetailTitle => 'Лид';
+
+  @override
+  String get crmDetailsTitle => 'Подробности';
+
+  @override
+  String get crmFieldPhone => 'Телефон';
+
+  @override
+  String get crmFieldWhatsapp => 'WhatsApp';
+
+  @override
+  String get crmFieldEmail => 'E-mail';
+
+  @override
+  String get crmFieldCountry => 'Страна';
+
+  @override
+  String get crmFieldLanguage => 'Язык';
+
+  @override
+  String get crmFieldSource => 'Источник';
+
+  @override
+  String get crmFieldSpecialty => 'Специальность';
+
+  @override
+  String get crmFieldProcedure => 'Процедура';
+
+  @override
+  String get crmFieldInterest => 'Интерес';
+
+  @override
+  String get crmFieldBudget => 'Бюджет';
+
+  @override
+  String get crmFieldTags => 'Метки';
+
+  @override
+  String get crmFieldOwner => 'Ответственный';
+
+  @override
+  String get crmFieldLostReason => 'Причина потери';
+
+  @override
+  String get crmFieldCreated => 'Добавлен';
+
+  @override
+  String get crmFieldNextFollowUp => 'Следующий контакт';
+
+  @override
+  String get crmStatusNew => 'Новый';
+
+  @override
+  String get crmStatusContacted => 'Связались';
+
+  @override
+  String get crmStatusQualified => 'Квалифицирован';
+
+  @override
+  String get crmStatusScreening => 'Обследование';
+
+  @override
+  String get crmStatusQuoteRequested => 'Запрошено предложение';
+
+  @override
+  String get crmStatusWon => 'Успех';
+
+  @override
+  String get crmStatusLost => 'Потерян';
+
+  @override
+  String get crmSourceWalkIn => 'Личный визит';
+
+  @override
+  String get crmSourceWhatsapp => 'WhatsApp';
+
+  @override
+  String get crmSourceFacebook => 'Facebook';
+
+  @override
+  String get crmSourceReferral => 'Рекомендация';
+
+  @override
+  String get crmSourceEvent => 'Мероприятие';
+
+  @override
+  String get crmSourceOther => 'Другое';
+
+  @override
+  String get crmActivityCall => 'Звонок';
+
+  @override
+  String get crmActivityMessage => 'Сообщение';
+
+  @override
+  String get crmActivityMeeting => 'Встреча';
+
+  @override
+  String get crmActivityNote => 'Заметка';
+
+  @override
+  String get crmActivityStatusChange => 'Смена статуса';
+
+  @override
+  String get crmLogActivity => 'Записать действие';
+
+  @override
+  String get crmChangeStatus => 'Изменить статус';
+
+  @override
+  String get crmStatusSave => 'Сохранить статус';
+
+  @override
+  String get crmStatusUpdated => 'Статус обновлён';
+
+  @override
+  String get crmLostReasonLabel => 'Почему лид потерян?';
+
+  @override
+  String get crmLostReasonRequired => 'Укажите причину потери лида.';
+
+  @override
+  String get crmWonViaConvert => 'Чтобы отметить лид как успешный, преобразуйте его в пациента.';
+
+  @override
+  String get crmScheduleFollowUp => 'Запланировать контакт';
+
+  @override
+  String get crmClearFollowUp => 'Убрать контакт';
+
+  @override
+  String get crmFollowUpScheduled => 'Контакт запланирован';
+
+  @override
+  String get crmFollowUpCleared => 'Контакт убран';
+
+  @override
+  String get crmNoFollowUp => 'Контакт не запланирован';
+
+  @override
+  String get crmActivityBodyLabel => 'Что произошло? (необязательно)';
+
+  @override
+  String get crmActivityNextFollowUp => 'Следующий контакт (необязательно)';
+
+  @override
+  String get crmActivitySave => 'Сохранить действие';
+
+  @override
+  String get crmActivityLogged => 'Действие записано';
+
+  @override
+  String get crmTimelineTitle => 'Хронология';
+
+  @override
+  String get crmTimelineEmpty => 'Действий пока нет.';
+
+  @override
+  String crmTimelineStatusChange(String fromStatus, String toStatus) {
+    return 'Статус изменён: $fromStatus → $toStatus';
+  }
+
+  @override
+  String crmTimelineStatusSet(String status) {
+    return 'Статус: $status';
+  }
+
+  @override
+  String crmTimelineBy(String name) {
+    return 'автор: $name';
+  }
+
+  @override
+  String get crmConvertToPatient => 'Преобразовать в пациента';
+
+  @override
+  String get crmConvertTitle => 'Преобразование в пациента';
+
+  @override
+  String get crmConvertIntro =>
+      'Создаёт управляемого пациента из этого лида. Проверьте данные и подтвердите согласие пациента.';
+
+  @override
+  String get crmConverted => 'Пациент создан из лида';
+
+  @override
+  String get crmAlreadyConverted => 'Этот лид уже стал пациентом.';
+
+  @override
+  String get crmViewPatient => 'Открыть пациента';
+
+  @override
+  String get crmDeleteLead => 'Удалить лид';
+
+  @override
+  String get crmDeleteConfirmTitle => 'Удалить этот лид?';
+
+  @override
+  String get crmDeleteConfirmBody => 'Лид и его хронология будут удалены. Это действие нельзя отменить.';
+
+  @override
+  String get crmLeadDeleted => 'Лид удалён';
+
+  @override
+  String get crmLeadAdded => 'Лид добавлен';
+
+  @override
+  String get crmFormFullName => 'Полное имя';
+
+  @override
+  String get crmFormPhone => 'Телефон (необязательно)';
+
+  @override
+  String get crmFormWhatsapp => 'WhatsApp (необязательно)';
+
+  @override
+  String get crmFormEmail => 'E-mail (необязательно)';
+
+  @override
+  String get crmFormEmailInvalid => 'Введите корректный адрес e-mail.';
+
+  @override
+  String get crmFormCountry => 'Код страны (необязательно, напр. NG)';
+
+  @override
+  String get crmFormCountryInvalid => 'Используйте двухбуквенный код страны, напр. NG.';
+
+  @override
+  String get crmFormSource => 'Источник';
+
+  @override
+  String get crmFormSourceDetail => 'Подробности источника (необязательно)';
+
+  @override
+  String get crmFormInterest => 'Интерес (необязательно)';
+
+  @override
+  String get crmFormInterestHelper =>
+      'Короткая заметка, например «замена коленного сустава». Не вводите историю болезни.';
+
+  @override
+  String get crmFormBudget => 'Бюджет (необязательно)';
+
+  @override
+  String get crmFormBudgetCurrency => 'Валюта';
+
+  @override
+  String get crmFormBudgetInvalid => 'Введите корректную сумму и трёхбуквенный код валюты.';
+
+  @override
+  String get crmFormFollowUp => 'Следующий контакт (необязательно)';
+
+  @override
+  String get crmFormNote => 'Первая заметка (необязательно)';
+
+  @override
+  String get crmFormRequired => 'Обязательно';
+
+  @override
+  String get crmDashboardHint => 'Отслеживайте обращения и контакты';
+
+  @override
+  String get crmErrorLeadConverted => 'Этот лид уже преобразован в пациента.';
+
+  @override
+  String get crmErrorEmailTaken => 'Аккаунт с этим e-mail уже существует.';
+
+  @override
+  String get crmErrorAgentNotActive =>
+      'Аккаунт вашего агентства должен быть одобрен, прежде чем вы сможете добавлять пациентов.';
+
+  @override
+  String get crmConsentSection => 'Согласие пациента';
+
+  @override
+  String get crmConsentAttest => 'Подтверждаю, что пациент принял Условия обслуживания и Политику конфиденциальности';
+
+  @override
+  String get crmConsentAttestHint =>
+      'Ваше подтверждение сохраняется с вашим именем и временем. Пациент подтверждает его при первом входе.';
+
+  @override
+  String get crmConsentShare =>
+      'Пациент также согласился передавать свои медицинские документы больницам, с которыми я связываюсь от его имени';
+
+  @override
+  String get crmConsentMethod => 'Как было получено согласие?';
+
+  @override
+  String get crmConsentMethodInPerson => 'Лично';
+
+  @override
+  String get crmConsentMethodPhone => 'Телефонный звонок';
+
+  @override
+  String get crmConsentMethodVideoCall => 'Видеозвонок';
+
+  @override
+  String get crmConsentMethodWritten => 'Письменная / подписанная форма';
+
+  @override
+  String get crmConsentMethodEmail => 'E-mail';
+
+  @override
+  String get crmConsentNote => 'Заметка (необязательно)';
+
+  @override
+  String get crmConsentNoteHint => 'напр. Подписанная форма хранится у нас';
+
+  @override
+  String get crmConsentRequired => 'Подтвердите, что пациент дал согласие, прежде чем добавлять его.';
 }

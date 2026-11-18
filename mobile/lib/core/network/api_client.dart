@@ -79,13 +79,14 @@ class ApiClient {
   Future<dynamic> get(
     String path, {
     Map<String, Object?>? query,
+    Map<String, String>? headers,
     Map<String, Object?>? extra,
     CancelToken? cancelToken,
   }) => _send(
     () => dio.get<dynamic>(
       path,
       queryParameters: _query(query),
-      options: Options(extra: extra),
+      options: Options(headers: headers, extra: extra),
       cancelToken: cancelToken,
     ),
   );

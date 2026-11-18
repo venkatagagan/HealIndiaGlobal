@@ -4,6 +4,7 @@ import '../../../core/models/models.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/repositories/document_repository.dart';
 import 'agent_models.dart';
+import 'crm_models.dart';
 
 /// Agent-portal endpoints (PLAN §8.10) plus the agent-specific variants of cases / screenings
 /// (`patient_id` on behalf of a managed patient, PLAN §8.6-8.7).
@@ -36,8 +37,11 @@ class AgentPortalRepository {
       AgentPatient.fromJson(asJsonMap(await _api.get('/agent-portal/patients/$id')));
 
   /// `POST /agent-portal/patients` — creates the patient account (invite e-mailed when an e-mail is given).
-  Future<AgentPatient> createPatient(AgentPatientInput input) async =>
-      AgentPatient.fromJson(asJsonMap(await _api.post('/agent-portal/patients', data: input.toCreateJson())));
+  /// The API requires the agent's [consent] attestation (`consent_attested: true`, terms + privacy).
+  Future<AgentPatient> createPatient(AgentPatientInput input, {AgentConsentAttestation? consent}) async =>
+      AgentPatient.fromJson(
+        asJsonMap(await _api.post('/agent-portal/patients', data: {...input.toCreateJson(), ...?consent?.toJson()})),
+      );
 
   /// `PATCH /agent-portal/patients/{id}`
   Future<AgentPatient> updatePatient(String id, AgentPatientInput input) async =>
