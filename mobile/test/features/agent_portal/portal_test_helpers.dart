@@ -238,6 +238,7 @@ Future<void> pumpPortal(
   required String initialLocation,
   required User user,
   required RoutedAdapter adapter,
+  TransitionBuilder? builder,
 }) async {
   tester.view
     ..physicalSize = const Size(1200, 2800)
@@ -259,7 +260,7 @@ Future<void> pumpPortal(
         apiClientProvider.overrideWithValue(api),
         authControllerProvider.overrideWith(() => PortalFakeAuth(user)),
       ],
-      child: MaterialApp.router(theme: AppTheme.dark(), routerConfig: router),
+      child: MaterialApp.router(theme: AppTheme.dark(), routerConfig: router, builder: builder),
     ),
   );
   await tester.pumpAndSettle();

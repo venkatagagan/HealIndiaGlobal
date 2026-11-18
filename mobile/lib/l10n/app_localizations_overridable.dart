@@ -2249,6 +2249,13 @@ class OverridableLocalizations extends AppLocalizations {
     'reportSheetTitleReview' => reportSheetTitleReview,
     'reportSheetIntroReview' => reportSheetIntroReview,
     'reviewReportAction' => reviewReportAction,
+    'orgSuspendedTitle' => orgSuspendedTitle,
+    'orgSuspendedBodyAgent' => orgSuspendedBodyAgent,
+    'orgSuspendedBodyHospital' => orgSuspendedBodyHospital,
+    'orgSuspendedCallSupport' => orgSuspendedCallSupport,
+    'orgSuspendedWhatsAppSupport' => orgSuspendedWhatsAppSupport,
+    'orgSuspendedNoContact' => orgSuspendedNoContact,
+    'orgSuspendedCheckAgain' => orgSuspendedCheckAgain,
     _ => null,
   };
 
@@ -9898,6 +9905,27 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get reviewReportAction => _t('reviewReportAction') ?? base.reviewReportAction;
+
+  @override
+  String get orgSuspendedTitle => _t('orgSuspendedTitle') ?? base.orgSuspendedTitle;
+
+  @override
+  String get orgSuspendedBodyAgent => _t('orgSuspendedBodyAgent') ?? base.orgSuspendedBodyAgent;
+
+  @override
+  String get orgSuspendedBodyHospital => _t('orgSuspendedBodyHospital') ?? base.orgSuspendedBodyHospital;
+
+  @override
+  String get orgSuspendedCallSupport => _t('orgSuspendedCallSupport') ?? base.orgSuspendedCallSupport;
+
+  @override
+  String get orgSuspendedWhatsAppSupport => _t('orgSuspendedWhatsAppSupport') ?? base.orgSuspendedWhatsAppSupport;
+
+  @override
+  String get orgSuspendedNoContact => _t('orgSuspendedNoContact') ?? base.orgSuspendedNoContact;
+
+  @override
+  String get orgSuspendedCheckAgain => _t('orgSuspendedCheckAgain') ?? base.orgSuspendedCheckAgain;
 }
 
 /// Every ARB key, in template order.
@@ -12451,4 +12479,11 @@ const List<String> kL10nKeys = [
   'reportSheetTitleReview',
   'reportSheetIntroReview',
   'reviewReportAction',
+  'orgSuspendedTitle',
+  'orgSuspendedBodyAgent',
+  'orgSuspendedBodyHospital',
+  'orgSuspendedCallSupport',
+  'orgSuspendedWhatsAppSupport',
+  'orgSuspendedNoContact',
+  'orgSuspendedCheckAgain',
 ];

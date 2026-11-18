@@ -8947,4 +8947,28 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reviewReportAction => 'Пожаловаться на отзыв';
+
+  @override
+  String get orgSuspendedTitle => 'Ваша учётная запись приостановлена';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'Учётная запись вашего агентства приостановлена, поэтому пациенты, обращения и бронирования сейчас недоступны в приложении. Свяжитесь с нашей службой поддержки, чтобы узнать причину и дальнейшие шаги.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'Учётная запись вашей больницы приостановлена, поэтому запросы, пациенты и расчёты сейчас недоступны в приложении. Свяжитесь с нашей службой поддержки, чтобы узнать причину и дальнейшие шаги.';
+
+  @override
+  String get orgSuspendedCallSupport => 'Позвонить в поддержку';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'Написать в поддержку в WhatsApp';
+
+  @override
+  String get orgSuspendedNoContact =>
+      'Не удалось загрузить контакты поддержки. Проверьте подключение и попробуйте ещё раз.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'Проверить снова';
 }

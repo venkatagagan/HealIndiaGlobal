@@ -15394,6 +15394,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report review'**
   String get reviewReportAction;
+
+  /// Full-screen message in the agent / hospital app when the API answers 403 organisation_suspended
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is suspended'**
+  String get orgSuspendedTitle;
+
+  /// Explanation for an agent whose agency account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your agency account has been suspended, so patients, cases and bookings cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyAgent;
+
+  /// Explanation for a hospital team member whose hospital account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your hospital\'s account has been suspended, so enquiries, patients and settlements cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyHospital;
+
+  /// Button: call the support helpline from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Call support'**
+  String get orgSuspendedCallSupport;
+
+  /// Button: open a WhatsApp chat with support from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Message support on WhatsApp'**
+  String get orgSuspendedWhatsAppSupport;
+
+  /// Shown on the suspended-account screen when the support phone numbers could not be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the support contact details. Check your connection and try again.'**
+  String get orgSuspendedNoContact;
+
+  /// Button on the suspended-account screen: try loading the app again (e.g. after support re-activated the account)
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get orgSuspendedCheckAgain;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

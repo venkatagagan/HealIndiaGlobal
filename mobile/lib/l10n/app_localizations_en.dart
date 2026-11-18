@@ -8607,4 +8607,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewReportAction => 'Report review';
+
+  @override
+  String get orgSuspendedTitle => 'Your account is suspended';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'Your agency account has been suspended, so patients, cases and bookings cannot be opened in the app for now. Please contact our support team to find out why and what to do next.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'Your hospital\'s account has been suspended, so enquiries, patients and settlements cannot be opened in the app for now. Please contact our support team to find out why and what to do next.';
+
+  @override
+  String get orgSuspendedCallSupport => 'Call support';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'Message support on WhatsApp';
+
+  @override
+  String get orgSuspendedNoContact =>
+      'We could not load the support contact details. Check your connection and try again.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'Check again';
 }

@@ -8971,4 +8971,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewReportAction => 'الإبلاغ عن التقييم';
+
+  @override
+  String get orgSuspendedTitle => 'حسابك موقوف';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'تم إيقاف حساب وكالتك، لذلك لا يمكن فتح المرضى والحالات والحجوزات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'تم إيقاف حساب مستشفاك، لذلك لا يمكن فتح الاستفسارات والمرضى والتسويات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+
+  @override
+  String get orgSuspendedCallSupport => 'الاتصال بالدعم';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'مراسلة الدعم عبر واتساب';
+
+  @override
+  String get orgSuspendedNoContact => 'تعذّر تحميل بيانات الاتصال بالدعم. تحقّق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'التحقق مرة أخرى';
 }

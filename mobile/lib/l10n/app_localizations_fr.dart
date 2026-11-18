@@ -8795,4 +8795,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reviewReportAction => 'Signaler l\'avis';
+
+  @override
+  String get orgSuspendedTitle => 'Votre compte est suspendu';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'Le compte de votre agence a été suspendu : les patients, dossiers et réservations ne peuvent pas être ouverts dans l\'application pour le moment. Contactez notre équipe d\'assistance pour en connaître la raison et la marche à suivre.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'Le compte de votre hôpital a été suspendu : les demandes, patients et règlements ne peuvent pas être ouverts dans l\'application pour le moment. Contactez notre équipe d\'assistance pour en connaître la raison et la marche à suivre.';
+
+  @override
+  String get orgSuspendedCallSupport => 'Appeler l\'assistance';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'Écrire à l\'assistance sur WhatsApp';
+
+  @override
+  String get orgSuspendedNoContact =>
+      'Impossible de charger les coordonnées de l\'assistance. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'Vérifier à nouveau';
 }

@@ -12405,5 +12405,33 @@
   "reviewReportAction": "Report review",
   "@reviewReportAction": {
     "description": "Tooltip / semantics label of the flag button on a published review"
+  },
+  "orgSuspendedTitle": "Your account is suspended",
+  "@orgSuspendedTitle": {
+    "description": "Full-screen message in the agent / hospital app when the API answers 403 organisation_suspended"
+  },
+  "orgSuspendedBodyAgent": "Your agency account has been suspended, so patients, cases and bookings cannot be opened in the app for now. Please contact our support team to find out why and what to do next.",
+  "@orgSuspendedBodyAgent": {
+    "description": "Explanation for an agent whose agency account was suspended by the platform"
+  },
+  "orgSuspendedBodyHospital": "Your hospital's account has been suspended, so enquiries, patients and settlements cannot be opened in the app for now. Please contact our support team to find out why and what to do next.",
+  "@orgSuspendedBodyHospital": {
+    "description": "Explanation for a hospital team member whose hospital account was suspended by the platform"
+  },
+  "orgSuspendedCallSupport": "Call support",
+  "@orgSuspendedCallSupport": {
+    "description": "Button: call the support helpline from the suspended-account screen"
+  },
+  "orgSuspendedWhatsAppSupport": "Message support on WhatsApp",
+  "@orgSuspendedWhatsAppSupport": {
+    "description": "Button: open a WhatsApp chat with support from the suspended-account screen"
+  },
+  "orgSuspendedNoContact": "We could not load the support contact details. Check your connection and try again.",
+  "@orgSuspendedNoContact": {
+    "description": "Shown on the suspended-account screen when the support phone numbers could not be loaded"
+  },
+  "orgSuspendedCheckAgain": "Check again",
+  "@orgSuspendedCheckAgain": {
+    "description": "Button on the suspended-account screen: try loading the app again (e.g. after support re-activated the account)"
   }
 }

@@ -8683,4 +8683,28 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get reviewReportAction => 'রিভিউ রিপোর্ট করুন';
+
+  @override
+  String get orgSuspendedTitle => 'আপনার অ্যাকাউন্ট স্থগিত করা হয়েছে';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'আপনার এজেন্সির অ্যাকাউন্ট স্থগিত করা হয়েছে, তাই এখন অ্যাপে রোগী, কেস ও বুকিং খোলা যাবে না। কারণ এবং পরবর্তী করণীয় জানতে আমাদের সাপোর্ট টিমের সঙ্গে যোগাযোগ করুন।';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'আপনার হাসপাতালের অ্যাকাউন্ট স্থগিত করা হয়েছে, তাই এখন অ্যাপে অনুসন্ধান, রোগী ও সেটেলমেন্ট খোলা যাবে না। কারণ এবং পরবর্তী করণীয় জানতে আমাদের সাপোর্ট টিমের সঙ্গে যোগাযোগ করুন।';
+
+  @override
+  String get orgSuspendedCallSupport => 'সাপোর্টে কল করুন';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'হোয়াটসঅ্যাপে সাপোর্টকে বার্তা পাঠান';
+
+  @override
+  String get orgSuspendedNoContact =>
+      'সাপোর্টের যোগাযোগের তথ্য লোড করা যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get orgSuspendedCheckAgain => 'আবার যাচাই করুন';
 }
