@@ -79,8 +79,49 @@ class ScreeningResumeBanner extends StatelessWidget {
   }
 }
 
+/// "Rate your hospital" after a completed treatment (`/me/reviews/eligible`).
+class RateHospitalBanner extends StatelessWidget {
+  const RateHospitalBanner({super.key, required this.booking});
+
+  final ReviewableBooking booking;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return _BannerCard(
+      key: const ValueKey('banner-rate-hospital'),
+      gradient: const LinearGradient(colors: [Color(0xFFB45309), Color(0xFFDB2777)]),
+      icon: Icons.star_rate_rounded,
+      eyebrow: l10n.reviewBannerEyebrow,
+      title: l10n.reviewBannerTitle(booking.hospital.name),
+      subtitle: booking.procedure?.name ?? l10n.reviewBannerSubtitle,
+      onTap: () => context.push(Routes.writeReview(booking.bookingId)),
+    );
+  }
+}
+
+/// Guests: the one free 15-minute video consultation with a medical coordinator.
+class FreeConsultationBanner extends StatelessWidget {
+  const FreeConsultationBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return _BannerCard(
+      key: const ValueKey('banner-free-consultation'),
+      gradient: const LinearGradient(colors: [Color(0xFF0E7490), Color(0xFF2563EB)]),
+      icon: Icons.video_call_rounded,
+      eyebrow: l10n.guestFreeEyebrow,
+      title: l10n.guestFreeTitle,
+      subtitle: l10n.guestFreeSubtitle,
+      onTap: () => context.push(Routes.freeConsultation),
+    );
+  }
+}
+
 class _BannerCard extends StatelessWidget {
   const _BannerCard({
+    super.key,
     required this.gradient,
     required this.icon,
     required this.eyebrow,

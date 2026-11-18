@@ -239,7 +239,11 @@ class _BookScreenState extends ConsumerState<BookScreen> {
               _quoteId = accepted.id;
               _packageId = null;
             }),
-            trailing: _PriceColumn(minor: accepted.totalMinor, currency: accepted.currency),
+            trailing: _PriceColumn(
+              minor: accepted.totalMinor,
+              currency: accepted.currency,
+              display: accepted.displayTotal,
+            ),
           ),
         if (hospitalAsync.isLoading)
           const Padding(
@@ -270,6 +274,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
               minor: p.package.priceMinor,
               currency: p.package.currency,
               savingsMinor: p.package.savingsMinor,
+              display: p.package.displayPrice,
             ),
           ),
         SectionTitle(l10n.bookPaymentOptionSection),
@@ -437,11 +442,12 @@ class _BookScreenState extends ConsumerState<BookScreen> {
 
 /// Price + "Save $500" column on a package card.
 class _PriceColumn extends StatelessWidget {
-  const _PriceColumn({required this.minor, required this.currency, this.savingsMinor = 0});
+  const _PriceColumn({required this.minor, required this.currency, this.savingsMinor = 0, this.display});
 
   final int minor;
   final String currency;
   final int savingsMinor;
+  final DisplayMoney? display;
 
   @override
   Widget build(BuildContext context) {
@@ -457,7 +463,7 @@ class _PriceColumn extends StatelessWidget {
             prefix: context.l10n.bookSavePrefix,
             style: context.text.labelMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w700),
           ),
-        ApproxMoneyText(minor, currency),
+        ApproxMoneyText(minor, currency, display: display),
       ],
     );
   }

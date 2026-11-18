@@ -15,6 +15,7 @@ import '../../trips/services/file_actions.dart';
 import '../data/hospital_models.dart';
 import '../data/hospital_repository.dart';
 import '../hospital_routes.dart';
+import '../widgets/checkins_section.dart';
 
 // ------------------------------------------------------------------------------------------ inbox
 
@@ -75,6 +76,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                             CaseTile(
                               medicalCase: c,
                               showHospital: false,
+                              forHospital: true,
                               onTap: () => context.push(HospitalRoutes.caseDetail(c.id)),
                             ),
                         ],
@@ -218,9 +220,20 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
             InfoRow(l10n.hpInfoViaAgent, c.agent?.agencyName),
             InfoRow(l10n.hpInfoCoordinator, c.coordinator?.fullName),
             InfoRow(l10n.hpInfoReceived, Dates.dayTime(c.createdAt)),
+            if (c.awaitingQuote) ...[
+              const SizedBox(height: 8),
+              QuoteCountdown(
+                key: const ValueKey('hospital-respond-by'),
+                dueAt: c.quoteDueAt!,
+                overdue: c.quoteOverdue,
+                forHospital: true,
+              ),
+            ],
           ],
         ),
       ),
+      if (c.status == CaseStatus.completed || c.booking?.status == BookingStatus.completed)
+        HospitalCheckinsSection(caseId: c.id),
       if (c.booking != null) ...[
         const SizedBox(height: 12),
         AppCard(

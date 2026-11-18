@@ -292,12 +292,22 @@ String money(int minor, String currency, {bool compact = false}) => formatMoney(
 
 /// Case row: number, patient, hospital / procedure, status, latest quote.
 class CaseTile extends StatelessWidget {
-  const CaseTile({super.key, required this.medicalCase, this.onTap, this.showHospital = true, this.showPatient = true});
+  const CaseTile({
+    super.key,
+    required this.medicalCase,
+    this.onTap,
+    this.showHospital = true,
+    this.showPatient = true,
+    this.forHospital = false,
+  });
 
   final MedicalCase medicalCase;
   final VoidCallback? onTap;
   final bool showHospital;
   final bool showPatient;
+
+  /// Hospital wording for the quote countdown ("Respond by" / "Overdue").
+  final bool forHospital;
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +345,10 @@ class CaseTile extends StatelessWidget {
             ].where((s) => s.isNotEmpty).join(' · '),
             style: context.text.bodySmall?.copyWith(color: context.palette.textSecondary),
           ),
+          if (c.awaitingQuote) ...[
+            const SizedBox(height: 8),
+            QuoteCountdown(dueAt: c.quoteDueAt!, overdue: c.quoteOverdue, forHospital: forHospital, dense: true),
+          ],
           if (q != null) ...[
             const SizedBox(height: 8),
             Wrap(

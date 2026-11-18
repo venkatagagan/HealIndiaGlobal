@@ -8,6 +8,7 @@ export 'brand_header.dart';
 export 'buttons.dart';
 export 'chip_toggle.dart';
 export 'earliest_dates.dart';
+export 'guardian_consent_sheet.dart';
 export 'money_text.dart';
 export 'price_text.dart';
 export 'quote_countdown.dart';

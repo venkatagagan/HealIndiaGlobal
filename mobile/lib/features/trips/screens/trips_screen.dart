@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/models.dart';
 import '../../../core/network/realtime_service.dart';
 import '../../../core/repositories/patient_repository.dart';
+import '../../../core/repositories/trust_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
@@ -16,6 +17,7 @@ import '../widgets/checklist_tile.dart';
 import '../widgets/emergency_contacts_sheet.dart';
 import 'pre_arrival_guide_screen.dart';
 import 'travel_screen.dart';
+import 'visa_guide_screen.dart';
 
 /// Pre-Arrival Dashboard: "Until Treatment N days", checklist, quick actions (upload documents,
 /// chat with coordinator, emergency contacts, pre-arrival guide) and links to travel and support.
@@ -143,6 +145,14 @@ class _Dashboard extends ConsumerWidget {
             ),
           ],
         ),
+        if (ref.watch(eligibleReviewsProvider).value case [final toReview, ...])
+          _LinkCard(
+            key: const ValueKey('trips-rate-hospital'),
+            icon: Icons.star_rate_rounded,
+            title: l10n.reviewBannerTitle(toReview.hospital.name),
+            subtitle: l10n.reviewBannerSubtitle,
+            onTap: () => context.push(Routes.writeReview(toReview.bookingId)),
+          ),
         SectionTitle(l10n.journeySectionTitle),
         if (booking != null)
           _LinkCard(
@@ -151,6 +161,22 @@ class _Dashboard extends ConsumerWidget {
             subtitle: l10n.tripsTravelSubtitle,
             onTap: () => _openTravel(context, booking),
           ),
+        _LinkCard(
+          key: const ValueKey('trips-visa-guide'),
+          icon: Icons.assignment_ind_outlined,
+          title: l10n.visaGuideTitle,
+          subtitle: l10n.visaGuideLinkSubtitle,
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute<void>(builder: (_) => VisaGuideScreen(caseId: booking?.caseId))),
+        ),
+        _LinkCard(
+          key: const ValueKey('trips-aftercare'),
+          icon: Icons.healing_outlined,
+          title: l10n.aftercareTitle,
+          subtitle: l10n.aftercareLinkSubtitle,
+          onTap: () => context.push(Routes.aftercare),
+        ),
         _LinkCard(
           icon: Icons.support_agent_rounded,
           title: l10n.tripsSupportTitle,
@@ -296,9 +322,11 @@ class _BalanceCard extends StatelessWidget {
                   booking.isPendingPayment ? context.l10n.tripsPaymentNeeded : context.l10n.tripsBalanceDue,
                   style: context.text.labelMedium?.copyWith(color: context.palette.textSecondary),
                 ),
-                MoneyText(
+                PriceText(
                   booking.balanceDueMinor,
                   booking.currency,
+                  display: booking.displayBalanceDue,
+                  estimateWhenMissing: false,
                   style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                 ),
               ],
@@ -386,7 +414,7 @@ class _QuickAction extends StatelessWidget {
 }
 
 class _LinkCard extends StatelessWidget {
-  const _LinkCard({required this.icon, required this.title, required this.subtitle, required this.onTap});
+  const _LinkCard({super.key, required this.icon, required this.title, required this.subtitle, required this.onTap});
 
   final IconData icon;
   final String title;

@@ -42,6 +42,44 @@ abstract final class Routes {
   static const reportCapture = '/reports/capture';
   static const voiceIntake = '/voice/intake';
 
+  // phase 1: quick quotes, reviews, aftercare, visa guide, guest intro call
+  static const quickQuoteNew = '/quote/new';
+  static const myReviews = '/reviews';
+  static const writeReviewPath = '/reviews/write';
+  static const aftercare = '/aftercare';
+  static const visaGuidePath = '/visa-guide';
+  static const freeConsultation = '/free-consultation';
+  static const freeConsultationStatus = '/free-consultation/status';
+
+  /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
+  static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
+
+  /// `/quote/new?hospitals=<id1>,<id2>&procedure=<slug>&procedure_id=&doctor=&specialty=&screening=`
+  static String quickQuote({
+    required List<String> hospitalIds,
+    String? procedureSlug,
+    String? procedureId,
+    String? doctorId,
+    String? specialtyId,
+    String? screeningId,
+  }) => _q(quickQuoteNew, {
+    'hospitals': hospitalIds.join(','),
+    'procedure': procedureSlug,
+    'procedure_id': procedureId,
+    'doctor': doctorId,
+    'specialty': specialtyId,
+    'screening': screeningId,
+  });
+
+  /// `/quotes/:groupId` — every hospital's quote side by side.
+  static String quoteGroup(String groupId) => '/quotes/$groupId';
+
+  /// `/reviews/write?booking=<id>` — rate the hospital of a completed booking.
+  static String writeReview(String bookingId) => _q(writeReviewPath, {'booking': bookingId});
+
+  /// `/visa-guide?nationality=XX`
+  static String visaGuide({String? nationality}) => _q(visaGuidePath, {'nationality': nationality});
+
   // role shells (PLAN §3.1: one public door, routed by role after sign-in)
   /// Agent / facilitator shell root (`features/agent_portal`).
   static const agentHome = '/agent';
@@ -181,4 +219,13 @@ abstract final class RouteNames {
   static const reportCapture = 'report-capture';
   static const reportAnalysis = 'report-analysis';
   static const voiceIntake = 'voice-intake';
+  static const procedureEarliest = 'procedure-earliest';
+  static const quickQuote = 'quick-quote';
+  static const quoteGroup = 'quote-group';
+  static const myReviews = 'my-reviews';
+  static const writeReview = 'write-review';
+  static const aftercare = 'aftercare';
+  static const visaGuide = 'visa-guide';
+  static const freeConsultation = 'free-consultation';
+  static const freeConsultationStatus = 'free-consultation-status';
 }

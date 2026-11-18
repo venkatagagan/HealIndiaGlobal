@@ -27,7 +27,13 @@ class PriceText extends ConsumerWidget {
     this.showOriginal = true,
     this.textAlign,
     this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.estimateWhenMissing = true,
   });
+
+  /// Without a server [display] amount, estimate one from `/content/fx-rates` (catalog prices). Cases,
+  /// quotes and bookings pass false: the API sends `display_*` for patients, and other viewers see the
+  /// amount the hospital charges.
+  final bool estimateWhenMissing;
 
   /// Original amount (what the hospital charges) in minor units of [currency].
   final int minor;
@@ -92,6 +98,7 @@ class PriceText extends ConsumerWidget {
       return (d.minor, hi, d.currency);
     }
     // Fallback: client-side estimate (only when the API sent no display amount).
+    if (!estimateWhenMissing) return null;
     final preferred = ref.watch(preferredCurrencyProvider).toUpperCase();
     if (preferred == from) return null;
     final fx = ref.watch(fxRatesProvider).value;

@@ -7,10 +7,12 @@ import '../../../core/config/app_preferences.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/repositories/patient_repository.dart';
+import '../../../core/repositories/trust_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
+import '../widgets/cost_highlights_block.dart';
 import '../widgets/home_banners.dart';
 import '../widgets/specialty_tile.dart';
 
@@ -45,7 +47,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _refresh() async {
-    ref.invalidate(specialtiesProvider);
+    ref
+      ..invalidate(specialtiesProvider)
+      ..invalidate(costHighlightsProvider)
+      ..invalidate(eligibleReviewsProvider);
     if (ref.read(authStateProvider).hasSession) ref.invalidate(patientDashboardProvider);
     await ref.read(specialtiesProvider.future).catchError((_) => const <Specialty>[]);
   }
@@ -160,7 +165,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     ..._banners(dashboard),
-                    const SizedBox(height: 16),
+                    if (auth.isGuest) ...[const SizedBox(height: 12), const FreeConsultationBanner()],
+                    if (ref.watch(eligibleReviewsProvider).value case [final first, ...]) ...[
+                      const SizedBox(height: 12),
+                      RateHospitalBanner(booking: first),
+                    ],
+                    // Cost and time-to-treatment lead the home screen; specialties follow below.
+                    const CostHighlightsBlock(),
+                    SectionTitle(l10n.homeBrowseSpecialties, padding: const EdgeInsets.only(top: 16, bottom: 10)),
                   ],
                 ),
               ),

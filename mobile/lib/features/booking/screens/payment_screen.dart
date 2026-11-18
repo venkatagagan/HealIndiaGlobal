@@ -545,7 +545,20 @@ class _PriceSummary extends StatelessWidget {
                     key: const ValueKey('due-now'),
                     style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: AppColors.violet),
                   ),
-                  ApproxMoneyText(due.amountMinor, due.currency),
+                  ApproxMoneyText(
+                    due.amountMinor,
+                    due.currency,
+                    // Server display amounts when the due amount is the booking's balance / deposit / total.
+                    display: due.currency.toUpperCase() != b.currency.toUpperCase()
+                        ? null
+                        : due.amountMinor == b.balanceDueMinor
+                        ? b.displayBalanceDue
+                        : due.amountMinor == b.depositMinor
+                        ? b.displayDeposit
+                        : due.amountMinor == b.totalMinor
+                        ? b.displayTotal
+                        : null,
+                  ),
                 ],
               ),
             ],

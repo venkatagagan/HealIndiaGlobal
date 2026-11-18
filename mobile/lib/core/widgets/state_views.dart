@@ -1,10 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../l10n/l10n.dart';
 import '../network/api_exception.dart';
+import '../router/routes.dart';
 import '../theme/app_theme.dart';
 import 'buttons.dart';
+import 'guardian_consent_sheet.dart';
+
+/// "Create a free account" for a guest who used today's free AI scans (returns here afterwards).
+void openGuestUpgrade(BuildContext context) {
+  String here;
+  try {
+    here = GoRouterState.of(context).uri.toString();
+  } on Object {
+    here = Routes.home;
+  }
+  context.push(Routes.registerFrom(here));
+}
+
+/// Extra action for errors the app can resolve itself (guest AI quota, guardian consent), or null.
+Widget? _errorAction(BuildContext context, Object? error) {
+  if (error == null) return null;
+  final api = ApiException.from(error);
+  final l10n = context.l10n;
+  if (api.isGuestAiLimit) {
+    return PrimaryButton(
+      key: const ValueKey('error-guest-upgrade'),
+      label: l10n.guestCreateFreeAccount,
+      icon: Icons.person_add_alt_1_rounded,
+      expand: false,
+      onPressed: () => openGuestUpgrade(context),
+    );
+  }
+  if (api.isGuardianConsentRequired) {
+    return PrimaryButton(
+      key: const ValueKey('error-guardian-consent'),
+      label: l10n.guardianAddConsent,
+      icon: Icons.family_restroom_rounded,
+      expand: false,
+      onPressed: () => showGuardianConsentSheet(context),
+    );
+  }
+  return null;
+}
 
 /// Centered spinner with optional message.
 class LoadingView extends StatelessWidget {
@@ -135,6 +175,7 @@ class ErrorView extends StatelessWidget {
               style: context.text.bodyMedium?.copyWith(color: context.palette.textSecondary),
               textAlign: TextAlign.center,
             ),
+            if (_errorAction(context, error) case final action?) ...[const SizedBox(height: 20), action],
             if (onRetry != null) ...[
               const SizedBox(height: 20),
               SecondaryButton(
@@ -189,10 +230,25 @@ class AsyncValueView<T> extends StatelessWidget {
 }
 
 /// Shows a floating snackbar with the error message of [error].
+///
+/// A minor's `guardian_consent_required` opens the guardian consent form instead; a guest's daily AI
+/// limit gets a "Create a free account" action.
 void showErrorSnack(BuildContext context, Object error) {
+  final api = ApiException.from(error);
+  if (api.isGuardianConsentRequired) {
+    showGuardianConsentSheet(context);
+    return;
+  }
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(errorMessage(error))));
+    ..showSnackBar(
+      SnackBar(
+        content: Text(errorMessage(error)),
+        action: api.isGuestAiLimit
+            ? SnackBarAction(label: context.l10n.guestCreateFreeAccount, onPressed: () => openGuestUpgrade(context))
+            : null,
+      ),
+    );
 }
 
 /// Shows a floating success / info snackbar.
