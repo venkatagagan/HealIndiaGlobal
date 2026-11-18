@@ -8,6 +8,7 @@ import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Pagination, Sk
 import { optionsFromRows, useHospitalOptions } from '../../lib/lookups';
 import { languageOptions } from '../../lib/constants';
 import { useAppTranslation } from '../../i18n';
+import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
 import { qk, useSpecialties } from '../../lib/queries';
 import { filterParam, formatMoney, formatNumber, useDocumentTitle, useTableState } from '../../lib/shared';
 
@@ -41,8 +42,9 @@ export function HospitalsPage() {
   const hospitals = useHospitalOptions();
   const cityOptions = optionsFromRows(hospitals.data ?? [], (h) => (h.description ? { value: h.description, label: h.description } : null));
 
+  const currency = useDisplayCurrency();
   const query = useQuery({
-    queryKey: qk.hospitals({ ...filters, page }),
+    queryKey: qk.hospitals({ ...filters, page, currency }),
     queryFn: () =>
       catalogApi.listHospitals({
         q: filters.q.trim() || undefined,
@@ -53,6 +55,7 @@ export function HospitalsPage() {
         sort: filters.order || 'rating',
         page,
         page_size: 12,
+        currency,
       }),
     placeholderData: keepPreviousData,
   });
@@ -189,7 +192,8 @@ export function HospitalCardView({ hospital: h }: { hospital: HospitalCard }) {
               i18nKey="hospitals.fromPrice"
               values={{ price: formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true }) }}
               components={{ 0: <span className="font-semibold" /> }}
-            />
+            />{' '}
+            <ApproxMoney display={h.display_starting_price} original={h.currency} />
           </p>
         )}
       </div>

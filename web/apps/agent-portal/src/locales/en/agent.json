@@ -221,7 +221,8 @@
       "total": "Total",
       "paid": "Paid",
       "balanceDue": "Balance due"
-    }
+    },
+    "quoteGroup": "All quotes for this request"
   },
   "quotes": {
     "columns": {
@@ -404,7 +405,10 @@
     "message": "Message to the hospitals",
     "messageHint": "Summary of the condition, expectations, preferred dates",
     "consent": "The patient consents to sharing their information with these hospitals",
-    "consentHint": "Their profile, screening and uploaded reports are shared with the selected hospitals only."
+    "consentHint": "Their profile, screening and uploaded reports are shared with the selected hospitals only.",
+    "shareReports": "Share reports with the hospitals",
+    "shareReportsHint": "Optional. The selected reports go to every hospital in this enquiry (up to {{max}}).",
+    "groupedHint": "The hospitals are asked together. Each one has a deadline to reply; you can follow the countdown and compare the quotes side by side."
   },
   "compare": {
     "title": "Compare quotes",
@@ -526,7 +530,8 @@
     "notifications": "Notifications",
     "account": "Account",
     "profileKyc": "Profile & KYC",
-    "referral": "Referral program"
+    "referral": "Referral program",
+    "aftercare": "Aftercare"
   },
   "layout": {
     "subtitle": "Agent portal",
@@ -1337,5 +1342,97 @@
     "pctRange": "{{min}}–{{max}}%",
     "compareCaption": "Compare matched hospitals and doctors",
     "matchColumn": "Match"
+  },
+  "displayCurrency": {
+    "label": "Display currency",
+    "hint": "Prices are also shown approximately in this currency. Payments always use the original currency.",
+    "approxTitle": "Approximate amount in {{currency}}. Exchange rates change; the hospital is paid in the original currency.",
+    "approxSr": "(approximate)"
+  },
+  "quoteDeadline": {
+    "dueAt": "Quote due by {{date}}",
+    "overdue": "Quote overdue",
+    "leftDays": "Quote due in {{days}} d {{hours}} h",
+    "leftHours": "Quote due in {{hours}} h {{minutes}} min",
+    "leftMinutes": "Quote due in {{minutes}} min"
+  },
+  "quoteGroup": {
+    "title": "Quote request",
+    "back": "Cases",
+    "generalEnquiry": "General enquiry",
+    "description": "{{patient}} · {{treatment}} · sent {{date}}",
+    "compareDetail": "Compare in detail",
+    "waiting_one": "Waiting for {{count}} hospital to reply.",
+    "waiting_other": "Waiting for {{count}} hospitals to reply.",
+    "allAnswered": "Every hospital has replied.",
+    "empty": "No hospitals in this request.",
+    "lowest": "Lowest",
+    "total": "Total quote",
+    "sentAt": "Sent {{date}}",
+    "awaiting": "Waiting for the hospital's quote.",
+    "noQuote": "No quote for this enquiry.",
+    "openCase": "Open case"
+  },
+  "aftercare": {
+    "title": "Aftercare",
+    "description": "Recovery check-ins and follow-up video consultations for your patients after treatment.",
+    "emptyTitle": "No patients in aftercare",
+    "emptyDescription": "Patients appear here once their treatment has started. Check-ins and follow-ups are planned when they are discharged.",
+    "dueTitle": "Check-ins to answer now",
+    "dueHint": "Answer together with the patient. Fever, breathing problems, wound problems or severe pain alert the hospital and the coordinator.",
+    "noneDue": "No check-ins are due.",
+    "followupsTitle": "Follow-up consultations",
+    "followupsHint": "Video calls with the treating hospital. The hospital confirms the exact time.",
+    "noFollowups": "No follow-up consultations are planned.",
+    "upcomingTitle": "Upcoming check-ins",
+    "noUpcoming": "No upcoming check-ins.",
+    "casesTitle": "Patients in aftercare",
+    "history": "Check-ins",
+    "historyTitle": "Check-in answers",
+    "noAnswers": "No answered check-ins yet.",
+    "dischargedUntil": "Discharged {{discharged}} · aftercare until {{until}}",
+    "inTreatment": "In treatment",
+    "checkinDay": "Day {{day}} check-in",
+    "dueOn": "Due {{date}}",
+    "answer": "Answer",
+    "followupDay": "Day {{day}} follow-up",
+    "followup": "Follow-up consultation",
+    "scheduledFor": "Scheduled for {{date}}",
+    "dueAround": "Due around {{date}}",
+    "awaitingTime": "Waiting for the hospital to set a time",
+    "join": "Join call",
+    "status": {
+      "scheduled": "Scheduled",
+      "requested": "Requested"
+    },
+    "redFlags": {
+      "fever": "Fever",
+      "breathlessness": "Breathing problems",
+      "severe_pain": "Severe pain",
+      "wound_concerns": "Wound problems"
+    },
+    "form": {
+      "title": "Day {{day}} check-in",
+      "intro": "Ask the patient how they feel today and record their answers. Each check-in can be answered only once.",
+      "pain": "Pain right now",
+      "painHint": "0 = no pain, 10 = worst pain imaginable",
+      "painValue": "Pain {{value}} of 10",
+      "fever": "Fever",
+      "wound": "Problems with the wound",
+      "woundHint": "Redness, swelling, discharge, bleeding or the wound opening",
+      "breathless": "Shortness of breath",
+      "medication": "Prescribed medicines",
+      "adherence": {
+        "all": "All doses taken",
+        "some": "Some doses missed",
+        "none": "Not taking them"
+      },
+      "notes": "Anything else (optional)",
+      "redFlagWarning": "These answers alert the hospital and the coordinator. If the patient has severe or worsening symptoms, chest pain or trouble breathing, call local emergency services now.",
+      "cancel": "Cancel",
+      "submit": "Send answers",
+      "sent": "Check-in sent.",
+      "sentFlagged": "Check-in sent. The hospital and the coordinator have been alerted."
+    }
   }
 }

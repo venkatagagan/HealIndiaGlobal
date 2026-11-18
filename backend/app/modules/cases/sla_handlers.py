@@ -19,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.enums import UserRole
 from app.core.events import subscribe
 from app.core.jobs import periodic
+from app.i18n import Msg, MsgList
 from app.models import Case, Consultation, IntroConsultation, VisaRequest
 from app.models.sequences import IST
 from app.modules.cases.aftercare import create_aftercare_plan, run_consultation_reminders
@@ -88,10 +89,10 @@ async def on_quote_reminder_due(db: AsyncSession, payload: dict[str, Any]) -> No
         db,
         await mpolicies.hospital_member_user_ids(db, case.hospital_id),
         "quote.reminder_due",
-        f"Quote due soon for case {case.case_number}",
-        f"The patient is waiting for your quote. Please send it within {hours} hours "
-        f"(by {_when(payload.get('quote_due_at'))}).",
-        {"case_id": str(case.id), "link": f"/cases/{case.id}"},
+        data={"case_id": str(case.id), "link": f"/cases/{case.id}"},
+        title_key="notifications.quote_reminder_due.title",
+        body_key="notifications.quote_reminder_due.body",
+        params={"case_number": case.case_number, "hours": hours, "when": _when(payload.get("quote_due_at"))},
         dedupe_key=f"quote.reminder_due:{case.id}",
     )
 
@@ -104,34 +105,38 @@ async def on_quote_overdue(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     data = {"case_id": str(case.id), "link": f"/cases/{case.id}"}
     key = f"quote.overdue:{case.id}"
+    prefix = "notifications.quote_overdue"
+    params = {"case_number": case.case_number}
     await notify_many(
         db,
         await mpolicies.hospital_member_user_ids(db, case.hospital_id),
         "quote.overdue",
-        f"Quote overdue for case {case.case_number}",
-        "The quote promised to the patient is overdue. Please send it now.",
-        data,
+        data=data,
         dedupe_key=key,
         email=True,
+        title_key=f"{prefix}.hospital_title",
+        body_key=f"{prefix}.hospital_body",
+        params=params,
     )
     await notify_many(
         db,
         await _coordinators(db, case),
         "quote.overdue",
-        f"Hospital quote overdue: case {case.case_number}",
-        "The hospital has not sent a quote in time. Please follow up with the hospital.",
-        data,
+        data=data,
         dedupe_key=key,
+        title_key=f"{prefix}.coordinator_title",
+        body_key=f"{prefix}.coordinator_body",
+        params=params,
     )
     await notify_many(
         db,
         await _patient_side(db, case),
         "quote.overdue",
-        "We're chasing the hospital for your quote",
-        f"Your quote for case {case.case_number} is taking longer than promised. Our team is following up "
-        "with the hospital and will update you soon.",
-        data,
+        data=data,
         dedupe_key=key,
+        title_key=f"{prefix}.patient_title",
+        body_key=f"{prefix}.patient_body",
+        params=params,
     )
 
 
@@ -143,32 +148,47 @@ async def on_discharge_plan_aftercare(db: AsyncSession, payload: dict[str, Any])
         await create_aftercare_plan(db, booking_id)
 
 
+#: red flags of a check-in with a translated label (``notifications.aftercare_red_flag.flags.<flag>``)
+RED_FLAGS: frozenset[str] = frozenset({"fever", "breathlessness", "severe_pain", "wound_concerns"})
+
+
+def _red_flag_label(flag: str) -> Msg | str:
+    if flag in RED_FLAGS:
+        return Msg(f"notifications.aftercare_red_flag.flags.{flag}")
+    return flag.replace("_", " ")
+
+
 @subscribe("aftercare.red_flag")
 async def on_aftercare_red_flag(db: AsyncSession, payload: dict[str, Any]) -> None:
     case_id = _uuid(payload, "case_id")
     case = await db.get(Case, case_id) if case_id else None
     if case is None:
         return
-    flags = ", ".join(str(f).replace("_", " ") for f in payload.get("red_flags") or [])
+    flags = MsgList(tuple(_red_flag_label(str(f)) for f in payload.get("red_flags") or []))
     data = {"case_id": str(case.id), "checkin_id": payload.get("checkin_id"), "link": f"/cases/{case.id}"}
     key = f"aftercare.red_flag:{payload.get('checkin_id')}"
-    title = f"URGENT: recovery warning signs, case {case.case_number}"
-    body = (
-        f"The patient reported {flags} in their day-{payload.get('day')} check-in. "
-        "Please contact the patient now."
-    )
+    prefix = "notifications.aftercare_red_flag"
     recipients = await mpolicies.hospital_member_user_ids(db, case.hospital_id)
     recipients += await _coordinators(db, case)
-    await notify_many(db, recipients, "aftercare.red_flag", title, body, data, dedupe_key=key, email=True)
+    await notify_many(
+        db,
+        recipients,
+        "aftercare.red_flag",
+        data=data,
+        dedupe_key=key,
+        email=True,
+        title_key=f"{prefix}.title",
+        body_key=f"{prefix}.body",
+        params={"case_number": case.case_number, "flags": flags, "day": payload.get("day")},
+    )
     await notify_many(
         db,
         await _patient_side(db, case),
         "aftercare.red_flag",
-        "Your care team has been alerted",
-        "Thank you for your check-in. Your hospital and our coordinator have been told and will contact you. "
-        "If you feel very unwell, call your local emergency number or go to the nearest hospital now.",
-        data,
+        data=data,
         dedupe_key=key,
+        title_key=f"{prefix}.patient_title",
+        body_key=f"{prefix}.patient_body",
     )
 
 
@@ -184,7 +204,9 @@ async def consultation_reminders_job(db: AsyncSession, payload: dict[str, Any]) 
 async def on_consultation_reminder(db: AsyncSession, payload: dict[str, Any]) -> None:
     window = str(payload.get("window") or "")
     when = _when(payload.get("scheduled_at"))
-    starts = "in 1 hour" if window == "1h" else "tomorrow"
+    # "... starts in 1 hour" / "... starts tomorrow": one catalog key per window
+    starts = "soon" if window == "1h" else "tomorrow"
+    prefix = "notifications.consultation_reminder"
     consultation_id = _uuid(payload, "consultation_id")
     if consultation_id is not None:
         item = await db.get(Consultation, consultation_id)
@@ -197,19 +219,21 @@ async def on_consultation_reminder(db: AsyncSession, payload: dict[str, Any]) ->
             db,
             await _patient_side(db, case),
             "consultation.reminder",
-            f"Your video consultation starts {starts}",
-            f"Your consultation is at {when}. Join from the app using the video link.",
-            data,
+            data=data,
             dedupe_key=key,
+            title_key=f"{prefix}.patient_title_{starts}",
+            body_key=f"{prefix}.patient_body",
+            params={"when": when},
         )
         await notify_many(
             db,
             await mpolicies.hospital_member_user_ids(db, case.hospital_id),
             "consultation.reminder",
-            f"Consultation {starts}: case {case.case_number}",
-            f"A video consultation is scheduled at {when}.",
-            data,
+            data=data,
             dedupe_key=key,
+            title_key=f"{prefix}.hospital_title_{starts}",
+            body_key=f"{prefix}.hospital_body",
+            params={"when": when, "case_number": case.case_number},
         )
         return
     intro_id = _uuid(payload, "intro_consultation_id")
@@ -222,19 +246,21 @@ async def on_consultation_reminder(db: AsyncSession, payload: dict[str, Any]) ->
         db,
         [intro.user_id],
         "consultation.reminder",
-        f"Your free call with our medical coordinator starts {starts}",
-        f"Your 15-minute video call is at {when}. Join using the video link.",
-        data,
+        data=data,
         dedupe_key=key,
+        title_key=f"{prefix}.intro_title_{starts}",
+        body_key=f"{prefix}.intro_body",
+        params={"when": when},
     )
     await notify_many(
         db,
         [intro.coordinator_user_id],
         "consultation.reminder",
-        f"Intro call {starts}",
-        f"Free intro call with {intro.full_name} at {when}.",
-        data,
+        data=data,
         dedupe_key=key,
+        title_key=f"{prefix}.coordinator_title_{starts}",
+        body_key=f"{prefix}.coordinator_body",
+        params={"when": when, "name": intro.full_name},
     )
 
 
@@ -250,14 +276,14 @@ async def on_visa_invitation_issued(db: AsyncSession, payload: dict[str, Any]) -
         db,
         await _patient_side(db, case),
         "visa.invitation_issued",
-        "Your hospital invitation letter is ready",
-        "Download the invitation letter from your documents and use it for your visa application.",
-        {
+        data={
             "case_id": str(case.id),
             "visa_request_id": str(visa.id),
             "document_id": payload.get("document_id"),
             "link": "/travel/visa",
         },
+        title_key="notifications.visa_invitation_issued.title",
+        body_key="notifications.visa_invitation_issued.body",
         dedupe_key=f"visa.invitation_issued:{visa.id}:{payload.get('document_id')}",
         email=True,
     )
@@ -273,9 +299,9 @@ async def on_intro_requested(db: AsyncSession, payload: dict[str, Any]) -> None:
         db,
         await mpolicies.staff_user_ids(db, OPS_ROLES),
         "intro_consultation.requested",
-        "New free intro call request",
-        "A visitor asked for a free 15-minute call with a medical coordinator. Please schedule it.",
-        {"intro_consultation_id": str(intro_id), "link": "/intro-consultations"},
+        data={"intro_consultation_id": str(intro_id), "link": "/intro-consultations"},
+        title_key="notifications.intro_requested.title",
+        body_key="notifications.intro_requested.body",
         dedupe_key=f"intro_consultation.requested:{intro_id}",
     )
 
@@ -290,8 +316,9 @@ async def on_intro_scheduled(db: AsyncSession, payload: dict[str, Any]) -> None:
         db,
         [intro.user_id],
         "intro_consultation.scheduled",
-        "Your free call is booked",
-        f"Your 15-minute video call with our medical coordinator is at {_when(intro.scheduled_at)}.",
-        {"intro_consultation_id": str(intro.id), "meeting_url": intro.meeting_url},
+        data={"intro_consultation_id": str(intro.id), "meeting_url": intro.meeting_url},
+        title_key="notifications.intro_scheduled.title",
+        body_key="notifications.intro_scheduled.body",
+        params={"when": _when(intro.scheduled_at)},
         dedupe_key=f"intro_consultation.scheduled:{intro.id}:{_stamp(intro.scheduled_at)}",
     )

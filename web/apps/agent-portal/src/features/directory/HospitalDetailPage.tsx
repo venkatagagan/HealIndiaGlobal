@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, BadgeCheck, BedDouble, Calendar, Globe, Globe2, MapPin, Phone, Plane, Send, Star } from 'lucide-react';
-import { PACKAGE_TIER_LABELS, catalogApi, type HospitalProcedureOut } from '@hig/shared/api';
+import { PACKAGE_TIER_LABELS, type HospitalProcedureOut } from '@hig/shared/api';
 import { Badge, Button, Card, CardHeader, EmptyState, ErrorState, LoadingBlock, Money, PageHeader, Tabs } from '../../components/ui';
 import { qk } from '../../lib/queries';
 import { formatDate, formatMoneyRange, formatNumber, useDocumentTitle } from '../../lib/shared';
 import { languageLabel } from '../../lib/constants';
 import { useAppTranslation } from '../../i18n';
+import { approxRangeText, ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
+import { phase1Api } from '../../lib/phase1Api';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 import { DoctorCardView } from './DoctorsPage';
 
@@ -16,7 +18,8 @@ type Tab = 'overview' | 'doctors' | 'procedures' | 'reviews';
 export function HospitalDetailPage() {
   const { t } = useAppTranslation();
   const { slug = '' } = useParams();
-  const query = useQuery({ queryKey: qk.hospital(slug), queryFn: () => catalogApi.getHospital(slug) });
+  const currency = useDisplayCurrency();
+  const query = useQuery({ queryKey: [...qk.hospital(slug), { currency }], queryFn: () => phase1Api.getHospital(slug, currency) });
   const h = query.data;
   useDocumentTitle(h?.name ?? t('hospitalDetail.fallbackTitle'));
   const [tab, setTab] = useState<Tab>('overview');
@@ -162,6 +165,7 @@ export function HospitalDetailPage() {
                   description={
                     <>
                       {formatMoneyRange(p.price_min_minor, p.price_max_minor, p.currency)}
+                      {approxRangeText(p.display_price_min, p.display_price_max, p.currency) ? ` (${approxRangeText(p.display_price_min, p.display_price_max, p.currency)})` : ''}
                       {p.hospital_stay_days ? ` · ${t('hospitalDetail.stayDays', { count: p.hospital_stay_days })}` : ''}
                       {p.success_rate_pct != null ? ` · ${t('hospitalDetail.successRate', { pct: formatNumber(Number(p.success_rate_pct), { maximumFractionDigits: 0 }) })}` : ''}
                     </>
@@ -192,6 +196,7 @@ export function HospitalDetailPage() {
                             <p className="font-medium">{pk.name}</p>
                             <p className="mt-1 font-semibold">
                               <Money minor={pk.price_minor} currency={pk.currency} />
+                              <ApproxMoney display={pk.display_price} original={pk.currency} block />
                             </p>
                             {pk.description && <p className="mt-1 text-xs text-muted">{pk.description}</p>}
                           </div>

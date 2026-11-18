@@ -30,6 +30,8 @@ const AvailabilityPage = lazyPage(() => import('./features/doctors/AvailabilityP
 const ProceduresPage = lazyPage(() => import('./features/procedures/ProceduresPage'), 'ProceduresPage');
 const TeamPage = lazyPage(() => import('./features/team/TeamPage'), 'TeamPage');
 const ReviewsPage = lazyPage(() => import('./features/reviews/ReviewsPage'), 'ReviewsPage');
+const AftercarePage = lazyPage(() => import('./features/aftercare/AftercarePage'), 'AftercarePage');
+const AccreditationsPage = lazyPage(() => import('./features/accreditations/AccreditationsPage'), 'AccreditationsPage');
 const FinancePage = lazyPage(() => import('./features/finance/FinancePage'), 'FinancePage');
 const MessagesPage = lazyPage(() => import('./features/messages/MessagesPage'), 'MessagesPage');
 const NotificationsPage = lazyPage(() => import('./features/notifications/NotificationsPage'), 'NotificationsPage');
@@ -93,6 +95,8 @@ export const router = createBrowserRouter([
           { path: 'doctors/:doctorId/availability', element: <AvailabilityPage /> },
           { path: 'procedures', element: <ProceduresPage /> },
           { path: 'team', element: <TeamPage /> },
+          { path: 'aftercare', element: <AftercarePage /> },
+          { path: 'accreditations', element: <AccreditationsPage /> },
           { path: 'reviews', element: <ReviewsPage /> },
           { path: 'finance', element: <FinancePage /> },
           { path: 'messages', element: <MessagesPage /> },

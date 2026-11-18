@@ -34,7 +34,10 @@ import {
   Users,
   UsersRound,
   Globe,
+  MessageSquareQuote,
+  Stamp,
   Type,
+  Video,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { RouteObject } from 'react-router';
@@ -73,6 +76,9 @@ export const opsRoutes: RouteObject[] = [
   { path: 'privacy-requests', lazy: page(() => import('./pages/PrivacyRequestsPage')) },
   { path: 'moderation', lazy: page(() => import('./pages/ModerationPage')) },
   { path: 'enquiries', lazy: page(() => import('./pages/EnquiriesPage')) },
+  { path: 'reviews', lazy: page(() => import('./pages/ReviewsPage')) },
+  { path: 'intro-calls', lazy: page(() => import('./pages/IntroConsultationsPage')) },
+  { path: 'visa-rules', lazy: page(() => import('./pages/VisaRulesPage')) },
 ];
 
 export interface OpsNavItem {
@@ -114,12 +120,15 @@ export const opsNav: OpsNavItem[] = [
   { to: opsPaths.travel, label: 'Travel desk', labelKey: 'nav.travel', icon: Plane, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.messages, label: 'Support inbox', labelKey: 'nav.messages', icon: MessagesSquare, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.moderation, label: 'Reports', labelKey: 'nav.moderation', icon: Flag, roles: OPS_STAFF, group: 'operations' },
+  { to: opsPaths.introCalls, label: 'Free intro calls', labelKey: 'nav.introCalls', icon: Video, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.enquiries, label: 'Website enquiries', labelKey: 'nav.enquiries', icon: Inbox, roles: OPS_STAFF, group: 'operations' },
+  { to: opsPaths.reviews, label: 'Reviews', labelKey: 'nav.reviews', icon: MessageSquareQuote, roles: ALL_STAFF, group: 'partners' },
   { to: opsPaths.users, label: 'Users', labelKey: 'nav.users', icon: Users, roles: ALL_STAFF, group: 'people' },
   { to: opsPaths.staff, label: 'Staff', labelKey: 'nav.staff', icon: ShieldCheck, roles: ADMINS, group: 'people' },
   { to: opsPaths.privacy, label: 'Privacy requests', labelKey: 'nav.privacy', icon: Scale, roles: OPS_STAFF, group: 'people' },
   { to: opsPaths.catalog, label: 'Catalog', labelKey: 'nav.catalog', icon: BookOpen, roles: ALL_STAFF, group: 'catalog' },
   { to: opsPaths.content, label: 'Content', labelKey: 'nav.content', icon: Newspaper, roles: ALL_STAFF, group: 'catalog' },
+  { to: opsPaths.visaRules, label: 'Visa rules', labelKey: 'nav.visaRules', icon: Stamp, roles: ALL_STAFF, group: 'catalog' },
   { to: opsPaths.settings, label: 'Settings', labelKey: 'nav.settings', icon: Settings, roles: ALL_STAFF, group: 'system', end: true },
   { to: opsPaths.website, label: 'Website & contact', labelKey: 'nav.website', icon: Globe, roles: ALL_STAFF, group: 'system' },
   { to: opsPaths.languages, label: 'Languages', labelKey: 'nav.languages', icon: Languages, roles: ADMINS, group: 'system' },

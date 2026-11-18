@@ -16,11 +16,11 @@ import { opsKeys, useOpsMutation } from '../lib/mutations';
 import { opsPaths } from '../lib/paths';
 import { useCurrentUser } from '../lib/session';
 import { useListParams } from '../lib/useListParams';
+import { useAppTranslation } from '../../../i18n';
 
 const PAGE = 30;
 const KIND_TABS = ['support', 'case', 'direct'] as const;
 type KindTab = (typeof KIND_TABS)[number];
-const KIND_TAB_LABELS: Record<KindTab, string> = { support: 'Support', case: 'Cases', direct: 'Direct' };
 
 function conversationTitle(c: ConversationOut, myId: string | undefined): string {
   if (c.subject) return c.subject;
@@ -29,7 +29,8 @@ function conversationTitle(c: ConversationOut, myId: string | undefined): string
 }
 
 export default function MessagesPage() {
-  useDocumentTitle('Support inbox');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('messages.title'));
   const me = useCurrentUser();
   const { values, set } = useListParams(['kind', 'c', 'case_id', 'q'] as const);
   const list = useQuery({
@@ -64,7 +65,7 @@ export default function MessagesPage() {
 
   const startCaseConversation = useOpsMutation({
     mutationFn: () => messagingApi.createConversation({ case_id: values.case_id }),
-    success: 'Conversation started',
+    success: t('messages.started'),
     invalidate: [opsKeys.conversations],
     onSuccess: (c) => set({ c: c.id }),
   });
@@ -72,29 +73,29 @@ export default function MessagesPage() {
   return (
     <div>
       <PageHeader
-        title="Support inbox"
-        description={unreadTotal > 0 ? `${unreadTotal} unread message${unreadTotal === 1 ? '' : 's'}` : 'Conversations with patients, agents and hospitals.'}
+        title={t('messages.title')}
+        description={unreadTotal > 0 ? t('messages.unread', { count: unreadTotal }) : t('messages.description')}
       />
       {values.case_id && !caseConversation && list.isSuccess && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm dark:border-slate-700 dark:bg-[#161B22]">
-          <span>You are not yet part of a conversation for this case.</span>
+          <span>{t('messages.notInCase')}</span>
           <Button size="sm" icon={<MessageSquarePlus className="size-4" />} loading={startCaseConversation.isPending} onClick={() => startCaseConversation.mutate()}>
-            Open case conversation
+            {t('messages.openCaseConversation')}
           </Button>
         </div>
       )}
       <div className="grid h-[calc(100vh-14rem)] min-h-[28rem] grid-cols-1 gap-4 md:grid-cols-[20rem_minmax(0,1fr)]">
         <Card className={cn('flex min-h-0 flex-col', selected && 'hidden md:flex')} bodyClassName="flex min-h-0 flex-1 flex-col p-0">
           <div className="space-y-2 border-b border-slate-200 p-3 dark:border-slate-700/60">
-            <FilterSearch value={values.q} onChange={(q) => set({ q })} placeholder="Search people or messages…" label="Search conversations" />
+            <FilterSearch value={values.q} onChange={(q) => set({ q })} placeholder={t('messages.searchPlaceholder')} label={t('messages.searchLabel')} />
             <QuickFilters
-              label="Conversation type"
+              label={t('messages.typeFilter')}
               className="-mx-1"
               value={(KIND_TABS as readonly string[]).includes(values.kind) ? (values.kind as KindTab) : ''}
               onChange={(kind) => set({ kind })}
               items={[
-                { value: '', label: 'All', count: list.data?.length },
-                ...KIND_TABS.map((k) => ({ value: k, label: KIND_TAB_LABELS[k], count: (list.data ?? []).filter((c) => c.kind === k).length })),
+                { value: '', label: t('messages.all'), count: list.data?.length },
+                ...KIND_TABS.map((k) => ({ value: k, label: t(`messages.kinds.${k}`), count: (list.data ?? []).filter((c) => c.kind === k).length })),
               ]}
             />
           </div>
@@ -104,7 +105,7 @@ export default function MessagesPage() {
             ) : list.error ? (
               <ErrorState error={list.error} onRetry={() => void list.refetch()} />
             ) : filtered.length === 0 ? (
-              <EmptyState title="No conversations" />
+              <EmptyState title={t('messages.empty')} />
             ) : (
               <ul className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filtered.map((c) => (
@@ -113,7 +114,7 @@ export default function MessagesPage() {
                       type="button"
                       onClick={() => set({ c: c.id, case_id: null })}
                       className={cn(
-                        'flex w-full flex-col gap-0.5 px-3 py-2.5 text-left hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none dark:hover:bg-[#1F2630]',
+                        'flex w-full flex-col gap-0.5 px-3 py-2.5 text-start hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none dark:hover:bg-[#1F2630]',
                         c.id === values.c && 'bg-green-50 dark:bg-green-500/10',
                       )}
                     >
@@ -125,7 +126,7 @@ export default function MessagesPage() {
                           <span className="rounded-full bg-green-700 px-1.5 text-[11px] font-semibold text-white">{c.unread_count}</span>
                         )}
                       </span>
-                      <span className="truncate text-xs text-slate-500">{c.last_message?.body ?? 'No messages yet'}</span>
+                      <span className="truncate text-xs text-slate-500">{c.last_message?.body ?? t('messages.noMessages')}</span>
                       <span className="flex items-center gap-2 text-[11px] text-slate-400">
                         <Badge tone={c.kind === 'support' ? 'amber' : c.kind === 'case' ? 'blue' : 'neutral'}>
                           {CONVERSATION_KIND_LABELS[c.kind]}
@@ -143,7 +144,7 @@ export default function MessagesPage() {
           {selected ? (
             <Thread conversation={selected} myId={me.data?.id} onBack={() => set({ c: null })} />
           ) : (
-            <EmptyState title="Select a conversation" description="Pick a conversation on the left to read and reply." />
+            <EmptyState title={t('messages.selectTitle')} description={t('messages.selectDescription')} />
           )}
         </Card>
       </div>
@@ -152,6 +153,7 @@ export default function MessagesPage() {
 }
 
 function Thread({ conversation, myId, onBack }: { conversation: ConversationOut; myId: string | undefined; onBack: () => void }) {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
   const key = [...opsKeys.conversations, 'messages', conversation.id];
   const messages = useInfiniteQuery({
@@ -202,7 +204,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
   return (
     <>
       <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-700/60">
-        <Button variant="ghost" size="sm" className="md:hidden" aria-label="Back to conversations" icon={<ArrowLeft className="size-4" />} onClick={onBack} />
+        <Button variant="ghost" size="sm" className="md:hidden" aria-label={t('messages.back')} icon={<ArrowLeft className="size-4 rtl:-scale-x-100" />} onClick={onBack} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{conversationTitle(conversation, myId)}</p>
           <p className="truncate text-xs text-slate-500">
@@ -211,7 +213,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
         </div>
         {conversation.case_id && (
           <Link to={opsPaths.case(conversation.case_id)} className="shrink-0 text-xs text-green-700 hover:underline dark:text-green-400">
-            Open case
+            {t('messages.openCase')}
           </Link>
         )}
       </header>
@@ -219,7 +221,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
         {messages.hasNextPage && (
           <div className="text-center">
             <Button variant="ghost" size="sm" loading={messages.isFetchingNextPage} onClick={() => void messages.fetchNextPage()}>
-              Load earlier messages
+              {t('messages.loadEarlier')}
             </Button>
           </div>
         )}
@@ -230,7 +232,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
         ) : messages.error ? (
           <ErrorState error={messages.error} onRetry={() => void messages.refetch()} />
         ) : ordered.length === 0 ? (
-          <EmptyState title="No messages yet" description="Send the first message below." />
+          <EmptyState title={t('messages.noMessages')} description={t('messages.sendFirst')} />
         ) : (
           ordered.map((m) => {
             const mine = m.sender.id === myId;
@@ -239,7 +241,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
                 <div
                   className={cn(
                     'max-w-[80%] rounded-2xl px-3 py-2 text-sm',
-                    mine ? 'rounded-br-sm bg-green-700 text-white' : 'rounded-bl-sm bg-slate-100 text-slate-900 dark:bg-[#1F2630] dark:text-slate-100',
+                    mine ? 'rounded-ee-sm bg-green-700 text-white' : 'rounded-es-sm bg-slate-100 text-slate-900 dark:bg-[#1F2630] dark:text-slate-100',
                   )}
                 >
                   {!mine && (
@@ -250,16 +252,15 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
                   <p className="whitespace-pre-wrap break-words">{m.body}</p>
                   {m.attachment_document_ids.length > 0 && (
                     <p className="mt-1 flex items-center gap-1 text-[11px] opacity-80">
-                      <Paperclip className="size-3" aria-hidden /> {m.attachment_document_ids.length} attachment
-                      {m.attachment_document_ids.length === 1 ? '' : 's'} (see case documents)
+                      <Paperclip className="size-3" aria-hidden /> {t('messages.attachments', { count: m.attachment_document_ids.length })}
                     </p>
                   )}
-                  <p className={cn('mt-0.5 text-right text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>
+                  <p className={cn('mt-0.5 text-end text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>
                     {formatDateTime(m.created_at, 'd MMM, HH:mm')}
                   </p>
                   {m.hidden && (
                     <p className={cn('mt-1 flex items-center gap-1 text-[11px]', mine ? 'text-white/90' : 'text-slate-500')}>
-                      <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                      <EyeOff className="size-3" aria-hidden /> {t('messages.hidden')}
                     </p>
                   )}
                 </div>
@@ -271,11 +272,11 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
       </div>
       <form onSubmit={submit} className="flex items-end gap-2 border-t border-slate-200 p-3 dark:border-slate-700/60">
         <Textarea
-          aria-label="Message"
+          aria-label={t('messages.messageLabel')}
           rows={2}
           value={body}
           maxLength={5000}
-          placeholder="Write a reply… (Ctrl+Enter to send)"
+          placeholder={t('messages.replyPlaceholder')}
           onChange={(e) => setBody(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -286,7 +287,7 @@ function Thread({ conversation, myId, onBack }: { conversation: ConversationOut;
           }}
         />
         <Button type="submit" loading={send.isPending} disabled={!body.trim()} icon={<Send className="size-4" />}>
-          Send
+          {t('messages.send')}
         </Button>
       </form>
     </>

@@ -72,15 +72,14 @@ async def create_enquiry(db: AsyncSession, body: EnquiryCreate, request: Request
     )
     db.add(enquiry)
     await db.flush()
-    topic = f" ({enquiry.topic})" if enquiry.topic else ""
     await notify_many(
         db,
         await messaging_policies.staff_user_ids(db, [UserRole.SUPPORT, UserRole.ADMIN]),
         "site_enquiry.created",
-        "New website enquiry",
-        f"{enquiry.name} sent an enquiry through the website contact form{topic}. Please reply within one "
-        "working day.",
-        {"enquiry_id": str(enquiry.id), "link": f"/enquiries?enquiry={enquiry.id}"},
+        data={"enquiry_id": str(enquiry.id), "link": f"/enquiries?enquiry={enquiry.id}"},
+        title_key="notifications.site_enquiry.title",
+        body_key=f"notifications.site_enquiry.{'body_topic' if enquiry.topic else 'body'}",
+        params={"name": enquiry.name, "topic": enquiry.topic or ""},
         dedupe_key=f"site_enquiry.created:{enquiry.id}",
     )
     await db.commit()

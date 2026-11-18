@@ -1052,7 +1052,9 @@
       "country": "Country",
       "homeCost": "Home cost",
       "wait": "Wait",
-      "source": "Source"
+      "source": "Source",
+      "priceYear": "Year",
+      "confidence": "Confidence"
     },
     "fields": {
       "name": "Name",
@@ -1084,7 +1086,15 @@
       "waitTime": "Typical wait time",
       "waitTimeHint": "e.g. 3–6 months",
       "source": "Source",
-      "sourceHint": "Where the figure comes from"
+      "sourceHint": "Where the figure comes from",
+      "sourceUrl": "Source link",
+      "sourceUrlHint": "Web page or report the price comes from (https://…)",
+      "priceYear": "Price year",
+      "priceYearHint": "Year the source price applies to, e.g. 2025",
+      "confidence": "Confidence",
+      "confidenceHint": "How reliable the source is for this country",
+      "waitSource": "Wait time source",
+      "waitSourceHint": "Where the typical wait time comes from"
     },
     "entities": {
       "specialty": "specialty",
@@ -1107,7 +1117,15 @@
       "stayValue": "{{stay}} / {{recovery}} days"
     },
     "benchmarks": {
-      "description": "Typical self-pay cost in the patient's home country; drives the savings shown to patients."
+      "description": "Typical self-pay cost in the patient's home country; drives the savings shown to patients.",
+      "priceYear": "Prices of {{year}}",
+      "waitSource": "Wait: {{source}}",
+      "noConfidence": "Not rated"
+    },
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     }
   },
   "content": {
@@ -1508,7 +1526,10 @@
     "audit": "Audit log",
     "moderation": "Reports",
     "enquiries": "Website enquiries",
-    "privacy": "Privacy requests"
+    "privacy": "Privacy requests",
+    "reviews": "Reviews",
+    "introCalls": "Free intro calls",
+    "visaRules": "Visa rules"
   },
   "ui": {
     "loading": "Loading…",
@@ -1991,5 +2012,557 @@
       "tagsNote": "The English text marks links or bold words with numbered tags such as <0>…</0>. Your text is saved as plain text: these tags are removed, so the link or bold style is lost.",
       "plainText": "Plain text only: HTML is removed when you save. Every change is recorded in the audit log."
     }
+  },
+  "security": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "withdraw": "Withdraw",
+    "requestedByYou": "you",
+    "requestedByOther": "another finance user",
+    "requestedAtBy": "Requested {{when}} by {{name}}",
+    "needsSecondApprover": "A second finance user must approve this change.",
+    "financeOnly": "Only finance can approve or reject this change.",
+    "diff": {
+      "caption": "Current and proposed values",
+      "field": "Field",
+      "current": "Current",
+      "proposed": "Proposed",
+      "removed": "(removed)"
+    },
+    "fx": {
+      "pendingTitle_one": "{{count}} exchange-rate change is waiting for approval",
+      "pendingTitle_other": "{{count}} exchange-rate changes are waiting for approval",
+      "pendingBody": "Changes of more than 10% are applied only after a second finance user approves them. Until then, payments use the current rate.",
+      "pendingBadge": "Pending: ₹{{rate}}",
+      "approved": "New {{currency}} rate approved and applied.",
+      "rejected": "Pending {{currency}} rate change dropped.",
+      "dualControlNote": "A change of more than 10% waits for a second finance user to approve it.",
+      "financeOnlyNote": "Only finance users can change exchange rates."
+    },
+    "setting": {
+      "pendingTitle": "Change waiting for a second approver",
+      "checkBody": "Check every changed field against the bank's confirmation before approving.",
+      "dualControlNote": "Every change is applied only after a second finance user approves it.",
+      "sentForApproval": "{{label}}: change sent for approval by a second finance user.",
+      "approved": "{{label}} updated.",
+      "rejected": "Pending change of {{label}} dropped.",
+      "rejectTitle": "Reject this change?",
+      "withdrawTitle": "Withdraw your change?",
+      "rejectDescription": "The current value stays in use. The reason is kept in the audit log.",
+      "rejectReason": "Reason (optional)"
+    },
+    "profile": {
+      "title_one": "{{count}} profile change is waiting for review",
+      "title_other": "{{count}} profile changes are waiting for review",
+      "body": "The hospital asked to change its identity or accreditation details. Patients keep seeing the current values until you approve.",
+      "approve": "Approve changes",
+      "reject": "Reject changes",
+      "approveTitle": "Approve these profile changes?",
+      "rejectTitle": "Reject these profile changes?",
+      "approveMessage": "The new details are published on the profile of {{name}}. Check them against the KYC documents first.",
+      "rejectMessage": "The requested changes for {{name}} are dropped and the current details stay.",
+      "approved": "Profile changes approved.",
+      "rejected": "Profile changes rejected.",
+      "fields": {
+        "name": "Hospital name",
+        "legal_name": "Legal name",
+        "gstin": "GSTIN",
+        "pan": "PAN",
+        "email": "Email",
+        "website": "Website",
+        "accreditations": "Accreditations"
+      }
+    }
+  },
+  "accreditations": {
+    "tab": "Accreditations",
+    "title": "Accreditations",
+    "description": "Certificates the hospital claims. Only verified certificates that have not expired are shown to patients.",
+    "add": "Add accreditation",
+    "empty": "No accreditations",
+    "emptyDescription": "Add the hospital's JCI, NABH or other certificates to show them on its profile once verified.",
+    "status": {
+      "public": "Verified · shown publicly",
+      "verifiedExpired": "Verified · expired",
+      "unverified": "Not verified"
+    },
+    "expiry": {
+      "expired_one": "Expired {{count}} day ago",
+      "expired_other": "Expired {{count}} days ago",
+      "today": "Expires today",
+      "soon_one": "Expires in {{count}} day",
+      "soon_other": "Expires in {{count}} days"
+    },
+    "expiryTitle": "Certificates need renewal",
+    "expiredCount_one": "{{count}} certificate has expired and is no longer shown to patients.",
+    "expiredCount_other": "{{count}} certificates have expired and are no longer shown to patients.",
+    "soonCount_one": "{{count}} certificate expires within {{days}} days.",
+    "soonCount_other": "{{count}} certificates expire within {{days}} days.",
+    "unverifiedCount_one": "{{count}} accreditation is waiting for verification.",
+    "unverifiedCount_other": "{{count}} accreditations are waiting for verification.",
+    "certificateNo": "Certificate {{number}}",
+    "noCertificateNo": "No certificate number",
+    "validUntil": "Valid until {{date}}",
+    "noExpiry": "No expiry date",
+    "verifiedOn": "Verified on {{date}}",
+    "certificate": "Certificate",
+    "verify": "Verify",
+    "unverify": "Remove verification",
+    "cannotVerifyExpired": "An expired certificate cannot be verified. Ask the hospital for the renewed certificate.",
+    "editLabel": "Edit {{body}}",
+    "deleteLabel": "Delete {{body}}",
+    "verifyHint": "Verify only after checking the certificate on the accrediting body's website or register.",
+    "deleteTitle": "Delete this accreditation?",
+    "deleteMessage": "{{body}} is removed from the hospital. This cannot be undone.",
+    "delete": "Delete",
+    "toast": {
+      "verified": "{{body}} verified.",
+      "unverified": "Verification of {{body}} removed.",
+      "deleted": "Accreditation deleted.",
+      "created": "Accreditation added.",
+      "updated": "Accreditation updated."
+    },
+    "form": {
+      "newTitle": "Add accreditation",
+      "editTitle": "Edit accreditation",
+      "body": "Accrediting body",
+      "choose": "Choose…",
+      "other": "Other",
+      "code": "Short code",
+      "codeHint": "Letters, digits and dashes, e.g. cap or iso-9001",
+      "bodyError": "Choose a body or enter a short code (2–20 letters, digits or dashes).",
+      "certificateNumber": "Certificate number",
+      "validUntil": "Valid until",
+      "reverifyNote": "Saving changes removes the verification. Verify it again after checking the new details.",
+      "certificateNote": "Certificates that expire within {{days}} days are flagged here and on the hospital portal.",
+      "save": "Save changes",
+      "create": "Add"
+    }
+  },
+  "reviews": {
+    "title": "Reviews",
+    "description": "Patient reviews of hospitals and doctors. Publish them after checking they follow the review guidelines; hide abusive or false ones with a reason.",
+    "all": "All",
+    "statusFilter": "Review status",
+    "hospitalFilter": "Hospital",
+    "status": {
+      "pending": "Waiting",
+      "published": "Published",
+      "hidden": "Hidden"
+    },
+    "columns": {
+      "review": "Review",
+      "hospital": "Hospital",
+      "patient": "Patient",
+      "status": "Status",
+      "submitted": "Submitted"
+    },
+    "stars_one": "{{count}} star out of 5",
+    "stars_other": "{{count}} stars out of 5",
+    "noText": "No written review",
+    "anonymous": "Anonymous patient",
+    "verifiedPatient": "Verified patient",
+    "notVerified": "Not verified",
+    "openRow": "Open review of {{hospital}}",
+    "empty": "No reviews",
+    "emptyPending": "No reviews waiting",
+    "emptyDescription": "Reviews appear here when patients rate a completed treatment.",
+    "drawerTitle": "Review of {{hospital}}",
+    "hide": "Hide review",
+    "publish": "Publish review",
+    "republish": "Publish again",
+    "hideTitle": "Hide this review?",
+    "hideDescription": "The review is removed from the hospital and doctor pages and the ratings are recalculated. The patient sees your reason.",
+    "hiddenReason": "Hidden: reason shown to the patient",
+    "unverifiedTitle": "Not linked to a completed booking",
+    "unverifiedBody": "This patient's treatment at the hospital could not be confirmed. Check the content carefully before publishing.",
+    "adminOnly": "Only admins can publish or hide reviews.",
+    "fields": {
+      "hospital": "Hospital",
+      "doctor": "Doctor",
+      "treatment": "Treatment",
+      "patient": "Patient",
+      "booking": "Booking",
+      "submitted": "Submitted",
+      "published": "Published",
+      "moderated": "Last moderated"
+    },
+    "toast": {
+      "published": "Review published.",
+      "hidden": "Review hidden."
+    }
+  },
+  "intro": {
+    "title": "Free intro calls",
+    "description": "Free 15-minute video calls requested by guests and new patients. Schedule them, add notes and mark them done.",
+    "all": "All",
+    "statusFilter": "Call status",
+    "mineOnly": "Assigned to me",
+    "status": {
+      "requested": "Requested",
+      "scheduled": "Scheduled",
+      "completed": "Done",
+      "cancelled": "Cancelled"
+    },
+    "columns": {
+      "person": "Person",
+      "contact": "Contact",
+      "when": "When",
+      "coordinator": "Coordinator",
+      "status": "Status",
+      "requested": "Requested"
+    },
+    "guest": "Guest",
+    "registered": "Registered patient",
+    "unassigned": "Not assigned",
+    "anyTime": "Any time",
+    "window": "Prefers {{from}} – {{to}}",
+    "openRow": "Open intro call with {{name}}",
+    "empty": "No intro calls",
+    "emptyDescription": "Requests for the free intro call appear here.",
+    "drawerSubtitle": "{{minutes}}-minute call · requested {{date}}",
+    "meetingLink": "Meeting link",
+    "callAt": "Call on {{when}}",
+    "copyLink": "Copy link",
+    "join": "Join",
+    "noQuestion": "No question was added.",
+    "attachments_one": "{{count}} item shared",
+    "attachments_other": "{{count}} items shared",
+    "channels": {
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "fields": {
+      "contact": "Contact",
+      "channel": "Verified by",
+      "preferred": "Preferred time",
+      "timezone": "Time zone",
+      "coordinator": "Coordinator",
+      "attachments": "Shared with the request",
+      "question": "Question from the person"
+    },
+    "form": {
+      "when": "Call date and time",
+      "whenHint": "Your local time. The person gets an email or SMS with the link.",
+      "coordinator": "Coordinator",
+      "coordinatorPlaceholder": "Choose a coordinator",
+      "meetingUrl": "Meeting link",
+      "meetingUrlHint": "Leave empty to create a Jitsi video link automatically.",
+      "notes": "Coordinator notes",
+      "notesHint": "Staff only. Do not paste medical reports here.",
+      "invalidDate": "Enter a valid date and time.",
+      "pastDate": "Choose a time in the future.",
+      "httpsOnly": "The meeting link must start with https://",
+      "selfAssign": "If no coordinator is chosen, the call is assigned to you when you schedule it."
+    },
+    "actions": {
+      "schedule": "Schedule call",
+      "save": "Save",
+      "complete": "Mark as done",
+      "cancel": "Cancel call"
+    },
+    "confirm": {
+      "cancelTitle": "Cancel this intro call?",
+      "cancelMessage": "The person is told that the call is cancelled. They cannot request another free intro call.",
+      "completeTitle": "Mark this call as done?",
+      "completeMessage": "Use this after the call took place. Your notes are kept with the request."
+    },
+    "toast": {
+      "scheduled": "Call scheduled for {{when}}.",
+      "saved": "Changes saved.",
+      "completed": "Call marked as done.",
+      "cancelled": "Call cancelled.",
+      "noChanges": "Nothing to save.",
+      "linkCopied": "Link copied.",
+      "copyFailed": "Could not copy the link."
+    }
+  },
+  "visaRules": {
+    "title": "Visa rules",
+    "description": "How patients of each nationality get a visa for treatment in India, and the documents they need. Patients see this guide in the apps; hospitals use it for invitation letters.",
+    "tabs": {
+      "rules": "Country rules",
+      "checklist": "Document checklist"
+    },
+    "routes": {
+      "e_visa": "e-Medical visa",
+      "regular_visa": "Regular medical visa",
+      "not_required": "No visa needed"
+    },
+    "rulesDescription": "One rule per nationality. Countries without a rule get the default route. Always check the official link before changing a rule.",
+    "checklistDescription": "Documents listed for each visa route. Leave the nationality empty for items that apply to everyone on that route.",
+    "allNationalities": "All nationalities",
+    "noOfficialLink": "No official link",
+    "required": "Required",
+    "optional": "Optional",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "entities": {
+      "rule": "rule",
+      "rules": "rules",
+      "item": "checklist item",
+      "items": "checklist items"
+    },
+    "columns": {
+      "country": "Country",
+      "route": "Visa route",
+      "attendants": "Attendants",
+      "processing": "Processing",
+      "official": "Official link",
+      "notes": "Notes",
+      "item": "Document",
+      "appliesTo": "Applies to",
+      "required": "Required",
+      "order": "Order"
+    },
+    "filters": {
+      "route": "Visa route",
+      "appliesTo": "Applies to"
+    },
+    "fields": {
+      "nationality": "Nationality (ISO-2)",
+      "nationalityHint": "e.g. NG, BD, US. Cannot be changed later.",
+      "countryName": "Country name",
+      "countryNameHint": "Optional; the standard name is used when empty",
+      "route": "Visa route",
+      "maxAttendants": "Attendants allowed",
+      "processingDays": "Typical processing (days)",
+      "officialUrl": "Official link",
+      "notes": "Notes for patients",
+      "notesHint": "Shown in the visa guide, e.g. where to apply or extra rules",
+      "source": "Source (staff only)",
+      "sourceHint": "Where this rule was checked and when",
+      "onlyNationality": "Only for nationality (ISO-2)",
+      "onlyNationalityHint": "Leave empty for all nationalities on this route",
+      "itemKey": "Item key",
+      "itemKeyHint": "Lowercase letters, digits and _, e.g. passport_copy",
+      "title": "Document",
+      "description": "Explanation",
+      "sortOrder": "Sort order",
+      "required": "Required document"
+    },
+    "defaults": {
+      "button": "Load defaults",
+      "title": "Load the default visa rules?",
+      "message": "Built-in rules and checklist items that are missing are added. Rules and items you edited are kept.",
+      "confirm": "Load defaults",
+      "loaded": "{{rules}} rules and {{items}} checklist items added."
+    }
+  },
+  "privacy": {
+    "title": "Privacy requests",
+    "description": "Data-rights requests and grievances. Reply before the due date; the requester is told when the status changes.",
+    "filterLabel": "Filter requests",
+    "views": {
+      "open": "Open",
+      "overdue": "Overdue",
+      "all": "All"
+    },
+    "kinds": {
+      "access": "Access to my data",
+      "correction": "Correct my data",
+      "erasure": "Erase my data",
+      "nomination": "Nomination",
+      "withdraw_consent": "Withdraw consent",
+      "complaint": "Complaint",
+      "other": "Other privacy question"
+    },
+    "statuses": {
+      "received": "Received",
+      "in_progress": "In progress",
+      "awaiting_requester": "Waiting for requester",
+      "completed": "Completed",
+      "rejected": "Rejected"
+    },
+    "loading": "Loading…",
+    "empty": "No requests here.",
+    "overdue": "Overdue",
+    "due": "Due {{date}}",
+    "onBehalfOf": "on behalf of {{name}}",
+    "signedIn": "signed-in account",
+    "noAccount": "no account",
+    "via": "via {{channel}}",
+    "answer": "Answer: {{text}}",
+    "work": "Work on this request",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{pages}}",
+    "toast": {
+      "updated": "{{reference}} updated"
+    },
+    "form": {
+      "status": "Status",
+      "answer": "Answer to the requester",
+      "answerHint": "The requester sees this text in the app and by email.",
+      "notes": "Internal notes",
+      "notesHint": "Staff only. Never paste copies of ID documents here.",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "guardian": {
+      "title": "Guardian consents to verify",
+      "description": "Patients under 18 cannot be screened, use AI features or book until a parent's or guardian's identity is checked.",
+      "checkedBy": "checked by {{method}}",
+      "checkedByRef": "checked by {{method}} ({{reference}})",
+      "markVerified": "Mark as verified",
+      "verified": "Guardian consent verified"
+    }
+  },
+  "moderation": {
+    "title": "Reports",
+    "description": "Content people reported: chat messages, AI screening results, AI document analyses and reviews.",
+    "caption": "Content reports",
+    "all": "All",
+    "statusFilter": "Report status",
+    "contentType": "Content type",
+    "status": {
+      "open": "Open",
+      "actioned": "Actioned",
+      "dismissed": "Dismissed"
+    },
+    "targets": {
+      "message": "Chat message",
+      "screening_result": "AI screening result",
+      "document_analysis": "AI document analysis",
+      "review": "Review"
+    },
+    "actions": {
+      "dismiss": "Dismissed",
+      "hide_message": "Message hidden",
+      "warn": "Author warned",
+      "suspend": "Author suspended"
+    },
+    "columns": {
+      "reason": "Reason",
+      "content": "Content",
+      "reporter": "Reporter",
+      "author": "Author",
+      "reports": "Reports",
+      "status": "Status",
+      "reported": "Reported"
+    },
+    "noPreview": "No preview",
+    "noPreviewAvailable": "No preview available.",
+    "deletedUser": "Deleted user",
+    "openRow": "Open report: {{reason}}",
+    "emptyOpen": "No open reports",
+    "empty": "No reports",
+    "emptyDescription": "Reports appear here when someone flags content in the apps.",
+    "drawerTitle": "Report: {{reason}}",
+    "drawerTitleEmpty": "Report",
+    "buttons": {
+      "dismiss": "Dismiss",
+      "hideMessage": "Hide message",
+      "warn": "Warn author",
+      "suspend": "Suspend author"
+    },
+    "multipleTitle_one": "{{count}} open report on this content",
+    "multipleTitle_other": "{{count}} open reports on this content",
+    "multipleBody": "Resolving this report also closes the other open reports on the same content.",
+    "reportedContent": "Reported content",
+    "hiddenByModerators": "Hidden by moderators",
+    "openConversation": "Open conversation",
+    "noAuthor": "No author (for example an AI result)",
+    "fields": {
+      "status": "Status",
+      "openReports": "Open reports on this content",
+      "reporter": "Reporter",
+      "author": "Author",
+      "reporterNote": "Reporter note",
+      "targetId": "Target id",
+      "action": "Action",
+      "resolved": "Resolved",
+      "resolvedBy": "Resolved by",
+      "note": "Note"
+    },
+    "resolution": "Resolution",
+    "moderatorNote": "Moderator note",
+    "moderatorNoteHint": "Optional, kept with the report (up to {{max}} characters).",
+    "authorIsStaff": "The author is a staff member, so warn and suspend are not available.",
+    "noAuthorToAct": "There is no author to warn or suspend.",
+    "suspendTitle": "Suspend this account?",
+    "suspendMessage": "<0>{{name}}</0> will be signed out and cannot sign in until an admin activates the account again. The report is closed as actioned.",
+    "toast": {
+      "resolved": "Report resolved: {{action}}.",
+      "done": "done"
+    }
+  },
+  "enquiries": {
+    "title": "Website enquiries",
+    "description": "Messages sent through the contact form on the public website.",
+    "all": "All",
+    "statusFilter": "Enquiry status",
+    "status": {
+      "new": "New",
+      "in_progress": "In progress",
+      "closed": "Closed"
+    },
+    "topics": {
+      "patient": "Patient",
+      "agent": "Agent",
+      "hospital": "Hospital",
+      "media": "Media",
+      "other": "Other"
+    },
+    "columns": {
+      "from": "From",
+      "topic": "Topic",
+      "message": "Message",
+      "country": "Country",
+      "status": "Status",
+      "received": "Received"
+    },
+    "openRow": "Open enquiry from {{name}}",
+    "empty": "No enquiries",
+    "emptyDescription": "Messages from the website contact form appear here.",
+    "drawerTitle": "Enquiry from {{name}}",
+    "drawerTitleEmpty": "Enquiry",
+    "fields": {
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "topic": "Topic",
+      "status": "Status",
+      "handledBy": "Handled by",
+      "message": "Message"
+    },
+    "changeStatus": "Change status",
+    "toast": {
+      "new": "Marked as new.",
+      "in_progress": "Marked as in progress.",
+      "closed": "Marked as closed."
+    }
+  },
+  "messages": {
+    "title": "Support inbox",
+    "description": "Conversations with patients, agents and hospitals.",
+    "unread_one": "{{count}} unread message",
+    "unread_other": "{{count}} unread messages",
+    "started": "Conversation started",
+    "notInCase": "You are not yet part of a conversation for this case.",
+    "openCaseConversation": "Open case conversation",
+    "searchPlaceholder": "Search people or messages…",
+    "searchLabel": "Search conversations",
+    "typeFilter": "Conversation type",
+    "all": "All",
+    "kinds": {
+      "support": "Support",
+      "case": "Cases",
+      "direct": "Direct"
+    },
+    "empty": "No conversations",
+    "noMessages": "No messages yet",
+    "selectTitle": "Select a conversation",
+    "selectDescription": "Pick a conversation on the left to read and reply.",
+    "back": "Back to conversations",
+    "openCase": "Open case",
+    "loadEarlier": "Load earlier messages",
+    "sendFirst": "Send the first message below.",
+    "attachments_one": "{{count}} attachment (see case documents)",
+    "attachments_other": "{{count}} attachments (see case documents)",
+    "hidden": "Hidden by moderators",
+    "messageLabel": "Message",
+    "replyPlaceholder": "Write a reply… (Ctrl+Enter to send)",
+    "send": "Send"
   }
 }

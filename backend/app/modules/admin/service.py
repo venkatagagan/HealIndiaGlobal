@@ -1268,20 +1268,25 @@ async def _finance_user_ids(db: AsyncSession, exclude: uuid.UUID | None = None) 
     return list((await db.execute(stmt)).scalars().all())
 
 
-async def _notify_finance(
-    db: AsyncSession, actor: User, key: str, title: str, body: str, *, request_id: str
-) -> None:
+async def _notify_finance(db: AsyncSession, actor: User, key: str, text_key: str, *, request_id: str) -> None:
+    """Tell the other finance users about a dual-control setting change. ``text_key``: catalog prefix
+    (``<text_key>.title`` / ``.body``), rendered in each recipient's language."""
+    from app.i18n import Msg, t
     from app.modules.messaging.notifications import notify_many
 
+    params = {"name": actor.full_name or Msg("common.a_finance_user")}
+    # The dedupe key keeps the English title (stable whatever the recipients' languages).
+    title_en = t(f"{text_key}.title", "en", **params)
     await notify_many(
         db,
         await _finance_user_ids(db, exclude=actor.id),
         "settings.change",
-        title,
-        body,
-        {"key": key, "request_id": request_id, "link": "/settings"},
-        dedupe_key=f"settings.change:{key}:{request_id}:{title}",
+        data={"key": key, "request_id": request_id, "link": "/settings"},
+        dedupe_key=f"settings.change:{key}:{request_id}:{title_en}",
         email=True,
+        title_key=f"{text_key}.title",
+        body_key=f"{text_key}.body",
+        params=params,
     )
 
 
@@ -1320,9 +1325,7 @@ async def _request_setting_change(
         db,
         actor,
         key,
-        "Bank transfer details change needs approval",
-        f"{actor.full_name or 'A finance user'} asked to change the bank account shown to patients. "
-        "A second finance user must review and approve it before it takes effect.",
+        "notifications.bank_details_change_requested",
         request_id=request_id,
     )
     clear_settings_cache()
@@ -1368,8 +1371,7 @@ async def approve_setting_change(
         db,
         actor,
         key,
-        "Bank transfer details changed",
-        "The bank account shown to patients for bank transfers has been changed and approved.",
+        "notifications.bank_details_changed",
         request_id=str(data.get("id")),
     )
     clear_settings_cache()

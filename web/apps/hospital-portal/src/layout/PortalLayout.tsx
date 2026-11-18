@@ -2,6 +2,8 @@ import { Link, Outlet } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
+  Activity,
+  Award,
   Bell,
   Building,
   Building2,
@@ -51,6 +53,7 @@ function buildNav(t: TFunction, { unread, canFinance }: { unread: number; canFin
       children: [
         { to: '/cases', label: t('nav.cases'), icon: Inbox },
         { to: '/bookings', label: t('nav.bookings'), icon: CalendarCheck },
+        { to: '/aftercare', label: t('nav.aftercare'), icon: Activity },
       ],
     },
     {
@@ -70,6 +73,7 @@ function buildNav(t: TFunction, { unread, canFinance }: { unread: number; canFin
       accent: 'cyan',
       children: [
         { to: '/profile', label: t('nav.profile'), icon: Building2 },
+        { to: '/accreditations', label: t('nav.accreditations'), icon: Award },
         { to: '/team', label: t('nav.team'), icon: Users },
       ],
     },

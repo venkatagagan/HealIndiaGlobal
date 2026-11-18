@@ -37,6 +37,7 @@ __all__ = [
     "SUPPORTED_LANGUAGES",
     "LanguageInfo",
     "Msg",
+    "MsgList",
     "enabled_languages",
     "format_text",
     "has_key",
@@ -262,6 +263,18 @@ class Msg:
         return t(self.key, locale, **dict(self.params or {}))
 
 
+@dataclass(frozen=True, slots=True)
+class MsgList:
+    """A list parameter (``"fever, severe pain"``): each item a :class:`Msg` or literal text, joined with the
+    locale's ``common.list_separator`` (resolved in the same locale as the message that uses it)."""
+
+    items: tuple[Msg | str, ...]
+
+    def render(self, locale: str | None) -> str:
+        parts = [i.render(locale) if isinstance(i, Msg) else str(i) for i in self.items]
+        return t("common.list_separator", locale).join(parts)
+
+
 def _lookup(key: str, locale: str) -> str | None:
     text = STATE.overrides.get(locale, {}).get(key)
     if text:
@@ -282,5 +295,5 @@ def t(key: str, locale: str | None = None, /, **params: Any) -> str:
         code_used = code
     if text is None:
         return key
-    resolved = {k: (v.render(code_used) if isinstance(v, Msg) else v) for k, v in params.items()}
+    resolved = {k: (v.render(code_used) if isinstance(v, Msg | MsgList) else v) for k, v in params.items()}
     return format_text(text, resolved)

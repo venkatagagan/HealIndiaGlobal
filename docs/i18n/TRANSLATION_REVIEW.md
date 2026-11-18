@@ -191,3 +191,60 @@ are new or rephrased for the web and should be checked first.
 - Payment / refund: `legal.placeholders.refunds.*`, `home.trust.priceBody`, `home.savingsNote`,
   `forHospitals.*.termsNote`, `forAgents.*.termsNote`.
 - Long-form guides, cost guides, patient stories and procedure x city pages stay English (see website/README.md).
+
+## Phase-1 staff and partner screens (added 2026-11)
+
+Machine-assisted like the rest; same review rules. Arabic uses all six plural forms, Russian one/few/many/other.
+
+### Server notifications (`backend/app/i18n/<lng>.json`, now 327 keys; 168 new)
+
+- Emergency / medical (highest priority): `notifications.screening_emergency_staff.*`,
+  `notifications.aftercare_red_flag.*` (title is "URGENT: recovery warning signs"; `flags.*` are joined with
+  `common.list_separator`), `notifications.consultation_*`, `notifications.consultation_reminder.*`.
+- Money: `notifications.installment_due.*`, `notifications.installment_overdue.*`,
+  `notifications.settlement_batch_pending.*`, `notifications.fx_rate_change.*`,
+  `notifications.bank_details_change_requested.*`, `notifications.bank_details_changed.*`,
+  `notifications.quote_rejected.*`, `notifications.quote_expired.*`, `notifications.quote_reminder_due.*`,
+  `notifications.quote_overdue.*`, `common.payee.*`.
+- Privacy / legal: `notifications.privacy_request_received.*` (incl. `kinds.*`), `notifications.privacy_request_updated.*`,
+  `notifications.privacy_request_due.*`, `notifications.guardian_consent_pending.*`, `notifications.breach_recorded.*`,
+  `notifications.inactivity_notice.*`, `notifications.deletion_requested.*`, `notifications.break_glass.*`,
+  `notifications.agent_consent.*`, `notifications.moderation_warning.*`, `notifications.review_moderated.hidden_body`.
+- Visa: `notifications.visa_invitation_issued.*`, `notifications.travel_status.*` (`items.*` + `statuses.*` are
+  combined into one sentence - check word order and agreement in every language).
+
+### Admin portal (`admin:`)
+
+- Security / money (dual control): `security.*` - especially `security.fx.pendingBody`, `security.fx.dualControlNote`,
+  `security.setting.checkBody`, `security.setting.rejectDescription`, `security.profile.body`,
+  `security.profile.approveMessage`; benchmark sources `catalog.fields.{sourceUrl,priceYear,confidence,waitSource}*`,
+  `catalog.confidence.*`.
+- Trust: `accreditations.*` (`description`, `verifyHint`, `cannotVerifyExpired`, `form.reverifyNote`, `expiry.*`),
+  `reviews.*` (`description`, `hideDescription`, `unverifiedBody`, `verifiedPatient`).
+- Visa: `visaRules.*` (`routes.*`: "e-Medical visa", "Regular medical visa", "No visa needed"; `rulesDescription`,
+  `defaults.message`, `fields.notesHint`).
+- Free intro calls: `intro.*` (`form.notesHint` "Do not paste medical reports here", `confirm.cancelMessage`).
+- Privacy (extracted, English unchanged): `privacy.*` - `privacy.guardian.description` (under-18 rule),
+  `privacy.form.notesHint`, `privacy.kinds.*` (DPDP/GDPR request types; "Nomination" is the DPDP right to name
+  someone - fr "Désignation d'un mandataire", ar "تعيين من ينوب عني", ru "Назначение доверенного лица").
+- Moderation (extracted): `moderation.suspendMessage`, `moderation.noAuthor`, `moderation.actions.*`.
+- Reviewer notes: ar uses الموافقة for approve on the finance/profile screens (the older agent/dashboard pages use
+  اعتماد); ar sentences with `{{days}}` use يومًا (right for 11-99, not 3-10); ru writes "дн." inside sentences where
+  `{{days}}` is not a plural key; fr `security.fx.pendingBadge` keeps "₹{{rate}}" (the rest of fr puts ₹ after the number).
+
+### Hospital portal (`hospital:`)
+
+- Medical: `aftercare.flags.*`, `aftercare.adherence.*`, `aftercare.checkins.*` (main: `aftercare.checkins.description`
+  "Red flags are shown first: contact the patient quickly"), `aftercare.consultations.*`, `aftercare.schedule.*`.
+- Visa / legal: `bookings.letter.*` (`previewDescription`, `form.*Hint`, `missing.*`, `missingTitle`, `missingHint`).
+- Trust: `accreditations.*` (`howBody`, `status.*`, `form.reverifyBody`, `expiringBody`), `reviews.verifiedPatient*`,
+  `onboarding.pending.*`, `cases.documents.shared*`.
+- Quote SLA: `cases.respondBy.*`. Fixed: `procedures.includes.nightsStay_one` ("{{count}} night stay").
+
+### Agent portal (`agent:`)
+
+- Medical / emergency: `aftercare.dueHint`, `aftercare.redFlags.*`, `aftercare.form.*` (pain scale, wound, breathing,
+  adherence) and `aftercare.form.redFlagWarning` ("call local emergency services now") - highest priority.
+- Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
+- Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
+  currency), `quoteGroup.total`.

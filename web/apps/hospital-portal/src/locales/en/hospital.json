@@ -111,7 +111,9 @@
     "finance": "Finance",
     "inbox": "Messages & alerts",
     "messages": "Messages",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "aftercare": "Aftercare",
+    "accreditations": "Accreditations"
   },
   "layout": {
     "subtitle": "Hospital portal",
@@ -240,7 +242,10 @@
         "reason": "Reason",
         "placeholder": "e.g. MRI report is incomplete - please upload all pages",
         "confirm": "Reject document"
-      }
+      },
+      "sharedBadge": "Shared report",
+      "sharedSummary_one": "{{count}} report shared by the patient from their records",
+      "sharedSummary_other": "{{count}} reports shared by the patient from their records"
     },
     "screening": {
       "emptyHeader": "AI screening",
@@ -311,6 +316,20 @@
       "amountIn": "Amount ({{currency}})",
       "removeLine": "Remove line item",
       "total": "Total"
+    },
+    "respondBy": {
+      "header": "Respond by",
+      "overdue": "Overdue",
+      "wasDue": "Was due {{date}}",
+      "underAnHour": "Less than 1 hour left",
+      "hoursLeft_one": "{{count}} hour left",
+      "hoursLeft_other": "{{count}} hours left",
+      "sortButton": "Respond-by first",
+      "alertOverdueTitle": "Quote overdue",
+      "alertOverdueBody": "The patient was promised a quote by {{date}}. Please send it as soon as you can, or decline the enquiry.",
+      "alertDueTitle": "Please send a quote by {{date}}",
+      "groupTitle": "The patient asked several hospitals",
+      "groupBody": "This patient asked up to 3 hospitals for a quote and will compare them side by side."
     }
   },
   "dashboard": {
@@ -362,7 +381,10 @@
     "stars_one": "{{count}} star",
     "stars_other": "{{count}} stars",
     "threeOrLess": "3 or less",
-    "emptyFilter": "No reviews in this filter"
+    "emptyFilter": "No reviews in this filter",
+    "verifiedPatient": "Verified patient",
+    "verifiedPatientHint": "Written by a patient after a completed treatment at your hospital",
+    "treatment": "Treatment: {{name}}"
   },
   "account": {
     "title": "My account",
@@ -533,6 +555,59 @@
       "caption": "Travel and transfers",
       "emptyTitle": "No travel booked yet",
       "title": "Travel & transfers"
+    },
+    "letter": {
+      "title": "Invitation letter",
+      "hint": "Create the letter from the case details on your letterhead, check it, then send it to the patient.",
+      "generate": "Generate invitation letter",
+      "regenerate": "Generate again",
+      "generated": "Draft invitation letter created",
+      "draftOn": "Draft created {{date}} - check it and approve to send it to the patient",
+      "approvedOn": "Approved and sent to the patient {{date}}",
+      "preview": "Preview draft",
+      "approveSend": "Approve and send",
+      "approved": "Invitation letter approved and shared with the patient",
+      "uploadOwn": "Upload your own letter",
+      "missingTitle": "Some details are missing from the letter",
+      "missingHint": "Add them (on the case or in the form) and generate the letter again.",
+      "missing": {
+        "passport_number": "Patient's passport number",
+        "nationality": "Patient's nationality",
+        "estimated_arrival_date": "Estimated arrival date",
+        "treating_doctor": "Treating doctor"
+      },
+      "previewTitle": "Invitation letter draft",
+      "previewDescription": "Check every detail. Once approved, the patient can download the letter and use it for their visa application.",
+      "loadingPreview": "Loading the draft...",
+      "previewError": "The draft could not be loaded",
+      "download": "Download",
+      "form": {
+        "title": "Generate invitation letter",
+        "description": "Everything is optional: empty fields are filled from the booking, the quote and the patient's profile.",
+        "arrival": "Estimated arrival date",
+        "duration": "Estimated stay (days)",
+        "fromBooking": "Leave empty to use the booking",
+        "durationError": "Enter a number of days between 1 and 365.",
+        "doctor": "Treating doctor",
+        "doctorHint": "Leave empty to use the doctor of the booking or case",
+        "doctorDefault": "Doctor of the booking or case",
+        "attendants": "Attendants",
+        "attendantsOverride": "Name the attendants on the letter myself",
+        "attendantsHint": "Otherwise the companions saved in the patient's profile are used (up to the number allowed for their nationality).",
+        "attendantName": "Full name (as in passport)",
+        "relationship": "Relationship",
+        "passport": "Passport number",
+        "addAttendant": "Add attendant",
+        "removeAttendant": "Remove attendant {{number}}",
+        "attendantNameError": "Enter the full name of every attendant, or remove the empty rows.",
+        "contactName": "Contact person",
+        "contactPhone": "Contact phone",
+        "contactEmail": "Contact email",
+        "contactHint": "The hospital contact printed on the letter for the embassy. Leave empty to use your hospital's details.",
+        "notes": "Additional notes",
+        "notesHint": "Printed on the letter, for example the planned treatment schedule.",
+        "submit": "Generate draft"
+      }
     }
   },
   "finance": {
@@ -799,7 +874,7 @@
     "days_one": "{{count}} days",
     "days_other": "{{count}} days",
     "includes": {
-      "nightsStay_one": "{{count}} nights stay",
+      "nightsStay_one": "{{count}} night stay",
       "nightsStay_other": "{{count}} nights stay",
       "airportPickup": "Airport pickup",
       "translator": "Translator",
@@ -1081,6 +1156,159 @@
       "suspendedTitle": "Your hospital is suspended",
       "suspendedBody": "New enquiries are paused. Please contact Heal India Global support.",
       "suspendedBodyReason": "New enquiries are paused. Please contact Heal India Global support. Reason: {{reason}}"
+    },
+    "pending": {
+      "title": "Changes waiting for review",
+      "body": "Our team is reviewing these changes. Until they are approved, your public profile keeps the previous details:",
+      "fields": {
+        "name": "Hospital name",
+        "legal_name": "Legal name",
+        "gstin": "GSTIN",
+        "pan": "PAN",
+        "email": "Email",
+        "website": "Website",
+        "accreditations": "Accreditations"
+      }
+    }
+  },
+  "aftercare": {
+    "title": "Aftercare",
+    "description": "Recovery check-ins and follow-up video calls of your patients after discharge.",
+    "flags": {
+      "fever": "Fever",
+      "breathlessness": "Breathlessness",
+      "severe_pain": "Severe pain",
+      "wound_concerns": "Wound concerns"
+    },
+    "adherence": {
+      "all": "All medicines taken",
+      "some": "Some medicines missed",
+      "none": "Not taking medicines"
+    },
+    "checkins": {
+      "title": "Recovery check-ins",
+      "description": "Answers from patients after discharge. Red flags are shown first: contact the patient quickly.",
+      "caseTitle": "Recovery check-ins",
+      "caseDescription": "Red flags first",
+      "tabFlagged": "Red flags",
+      "tabAnswered": "All answers",
+      "tabAwaiting": "Not answered",
+      "day": "Day {{day}} check-in",
+      "answered": "Answered {{date}}",
+      "notAnswered": "Due {{date}} - not answered yet",
+      "dueOn": "Due {{date}}",
+      "noFlags": "No red flags",
+      "awaiting": "Awaiting answer",
+      "upcoming": "Upcoming",
+      "pain": "Pain",
+      "painValue": "{{value}}/10",
+      "fever": "Fever",
+      "wound": "Wound concerns",
+      "breathlessness": "Breathlessness",
+      "medication": "Medicines",
+      "yes": "Yes",
+      "no": "No",
+      "empty": "No check-ins here",
+      "emptyFlagged": "No red flags",
+      "emptyDescription": "Check-ins are sent to patients 1, 3, 7, 14 and 30 days after discharge.",
+      "emptyCase": "No check-ins for this case yet"
+    },
+    "consultations": {
+      "title": "Video consultations",
+      "description": "Follow-up calls are requested automatically after discharge. Confirm a time; a private video link is created for you.",
+      "caseTitle": "Video consultations",
+      "tabToSchedule": "To schedule",
+      "tabUpcoming": "Upcoming",
+      "tabPast": "Past",
+      "standard": "Consultation",
+      "followup": "Follow-up",
+      "followupDay": "Day {{day}} follow-up",
+      "scheduledFor": "{{date}} ({{minutes}} min)",
+      "dueAround": "Due around {{date}} ({{relative}})",
+      "requestedOn": "Requested {{date}}",
+      "join": "Join call",
+      "opensNewTab": "(opens in a new tab)",
+      "schedule": "Schedule",
+      "reschedule": "Reschedule",
+      "markDone": "Mark as done",
+      "cancel": "Cancel call",
+      "cancelTitle": "Cancel this video consultation?",
+      "cancelDescription": "The patient is told that the call is cancelled.",
+      "cancelNote": "Reason (shown to the patient)",
+      "cancelConfirm": "Cancel call",
+      "scheduledToast": "Video consultation scheduled",
+      "completedToast": "Consultation marked as done",
+      "cancelledToast": "Consultation cancelled",
+      "empty": "Nothing here",
+      "emptyDescription": "Follow-up calls appear here after a patient is discharged.",
+      "emptyCase": "No video consultations for this case"
+    },
+    "schedule": {
+      "title": "Schedule video consultation",
+      "rescheduleTitle": "Reschedule video consultation",
+      "description": "With {{patient}}. The patient gets the time and the link by email and in the app.",
+      "dueHint": "Recommended around {{date}}.",
+      "when": "Date and time",
+      "timezone": "In your computer's time zone",
+      "duration": "Duration (minutes)",
+      "link": "Video link (optional)",
+      "linkHint": "Leave empty and a private video room is created automatically.",
+      "submit": "Save time",
+      "whenRequired": "Choose a date and time.",
+      "future": "Choose a time in the future.",
+      "durationError": "Enter a duration between 5 and 240 minutes.",
+      "httpsOnly": "The video link must start with https://"
+    }
+  },
+  "accreditations": {
+    "title": "Accreditations",
+    "description": "Your certificates (JCI, NABH, NABL ...). Verified, valid accreditations are shown on your public profile.",
+    "add": "Add accreditation",
+    "added": "Accreditation added - our team will verify it",
+    "updated": "Accreditation updated - our team will verify it again",
+    "deleted": "Accreditation removed",
+    "howTitle": "How verification works",
+    "howBody": "Upload the certificate. Our team checks it before it appears on your public profile. Changing an accreditation removes its verification until it is checked again.",
+    "expiringTitle_one": "{{count}} accreditation expires soon or has expired",
+    "expiringTitle_other": "{{count}} accreditations expire soon or have expired",
+    "expiringBody": "Upload the renewed certificate and the new validity date so patients keep seeing it.",
+    "emptyTitle": "No accreditations yet",
+    "emptyDescription": "Add your JCI, NABH or NABL certificates so patients can see them.",
+    "certificateNo": "Certificate no. {{number}}",
+    "noCertificateNo": "No certificate number",
+    "validUntil": "Valid until",
+    "noExpiry": "No expiry date",
+    "expired": "Expired",
+    "expiresToday": "Expires today",
+    "expiresIn_one": "Expires in {{count}} day",
+    "expiresIn_other": "Expires in {{count}} days",
+    "verifiedOn": "Verified {{date}}",
+    "status": {
+      "public": "Verified - on your profile",
+      "pending": "Awaiting verification",
+      "verifiedExpired": "Verified - expired, not shown"
+    },
+    "downloadAria": "Download the {{body}} certificate",
+    "editAria": "Edit {{body}}",
+    "deleteAria": "Remove {{body}}",
+    "deleteTitle": "Remove the {{body}} accreditation?",
+    "deleteDescription": "It is no longer shown on your public profile.",
+    "form": {
+      "addTitle": "Add accreditation",
+      "editTitle": "Edit accreditation",
+      "body": "Accrediting body",
+      "otherBody": "Other",
+      "otherCode": "Short code",
+      "otherHint": "For example iso-9001 (letters, numbers and dashes).",
+      "bodyError": "Enter a short code of 2 to 20 letters, numbers or dashes.",
+      "certificateNo": "Certificate number",
+      "certificate": "Certificate",
+      "certificateHint": "PDF or image of the certificate, up to 20 MB.",
+      "uploadFile": "Upload certificate",
+      "replaceFile": "Replace file",
+      "fileAttached": "Certificate attached",
+      "reverifyTitle": "This accreditation is verified",
+      "reverifyBody": "Saving changes removes the verification until our team checks it again."
     }
   }
 }

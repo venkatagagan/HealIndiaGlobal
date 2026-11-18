@@ -111,7 +111,9 @@
     "finance": "Finances",
     "inbox": "Messages et alertes",
     "messages": "Messages",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "aftercare": "Suivi post-traitement",
+    "accreditations": "Accréditations"
   },
   "layout": {
     "subtitle": "Portail hôpital",
@@ -240,7 +242,10 @@
         "reason": "Motif",
         "placeholder": "ex. Le compte rendu d'IRM est incomplet - veuillez téléverser toutes les pages",
         "confirm": "Refuser le document"
-      }
+      },
+      "sharedBadge": "Rapport partagé",
+      "sharedSummary_one": "{{count}} rapport partagé par le patient depuis son dossier",
+      "sharedSummary_other": "{{count}} rapports partagés par le patient depuis son dossier"
     },
     "screening": {
       "emptyHeader": "Pré-évaluation par IA",
@@ -311,6 +316,20 @@
       "amountIn": "Montant ({{currency}})",
       "removeLine": "Supprimer la ligne",
       "total": "Total"
+    },
+    "respondBy": {
+      "header": "Répondre avant",
+      "overdue": "En retard",
+      "wasDue": "Attendu le {{date}}",
+      "underAnHour": "Moins d'une heure restante",
+      "hoursLeft_one": "{{count}} heure restante",
+      "hoursLeft_other": "{{count}} heures restantes",
+      "sortButton": "Échéance d'abord",
+      "alertOverdueTitle": "Devis en retard",
+      "alertOverdueBody": "Un devis a été promis au patient pour le {{date}}. Envoyez-le dès que possible ou refusez la demande.",
+      "alertDueTitle": "Merci d'envoyer un devis avant le {{date}}",
+      "groupTitle": "Le patient a contacté plusieurs hôpitaux",
+      "groupBody": "Ce patient a demandé un devis à 3 hôpitaux au maximum et les comparera côte à côte."
     }
   },
   "dashboard": {
@@ -362,7 +381,10 @@
     "stars_one": "{{count}} étoile",
     "stars_other": "{{count}} étoiles",
     "threeOrLess": "3 ou moins",
-    "emptyFilter": "Aucun avis pour ce filtre"
+    "emptyFilter": "Aucun avis pour ce filtre",
+    "verifiedPatient": "Patient vérifié",
+    "verifiedPatientHint": "Écrit par un patient après un traitement terminé dans votre hôpital",
+    "treatment": "Traitement : {{name}}"
   },
   "account": {
     "title": "Mon compte",
@@ -533,6 +555,59 @@
       "caption": "Trajets et transferts",
       "emptyTitle": "Aucun trajet réservé pour l'instant",
       "title": "Trajets et transferts"
+    },
+    "letter": {
+      "title": "Lettre d'invitation",
+      "hint": "Créez la lettre à partir du dossier, sur votre papier à en-tête, vérifiez-la, puis envoyez-la au patient.",
+      "generate": "Générer la lettre d'invitation",
+      "regenerate": "Générer à nouveau",
+      "generated": "Brouillon de lettre d'invitation créé",
+      "draftOn": "Brouillon créé le {{date}} - vérifiez-le et approuvez-le pour l'envoyer au patient",
+      "approvedOn": "Approuvée et envoyée au patient le {{date}}",
+      "preview": "Voir le brouillon",
+      "approveSend": "Approuver et envoyer",
+      "approved": "Lettre d'invitation approuvée et partagée avec le patient",
+      "uploadOwn": "Téléverser votre propre lettre",
+      "missingTitle": "Il manque des informations dans la lettre",
+      "missingHint": "Ajoutez-les (dans le dossier ou le formulaire) et générez la lettre à nouveau.",
+      "missing": {
+        "passport_number": "Numéro de passeport du patient",
+        "nationality": "Nationalité du patient",
+        "estimated_arrival_date": "Date d'arrivée prévue",
+        "treating_doctor": "Médecin traitant"
+      },
+      "previewTitle": "Brouillon de la lettre d'invitation",
+      "previewDescription": "Vérifiez chaque information. Une fois approuvée, le patient peut télécharger la lettre pour sa demande de visa.",
+      "loadingPreview": "Chargement du brouillon...",
+      "previewError": "Le brouillon n'a pas pu être chargé",
+      "download": "Télécharger",
+      "form": {
+        "title": "Générer la lettre d'invitation",
+        "description": "Tout est facultatif : les champs vides sont remplis à partir de la réservation, du devis et du profil du patient.",
+        "arrival": "Date d'arrivée prévue",
+        "duration": "Séjour prévu (jours)",
+        "fromBooking": "Laissez vide pour utiliser la réservation",
+        "durationError": "Saisissez un nombre de jours entre 1 et 365.",
+        "doctor": "Médecin traitant",
+        "doctorHint": "Laissez vide pour utiliser le médecin de la réservation ou du dossier",
+        "doctorDefault": "Médecin de la réservation ou du dossier",
+        "attendants": "Accompagnants",
+        "attendantsOverride": "Indiquer moi-même les accompagnants sur la lettre",
+        "attendantsHint": "Sinon, les accompagnants enregistrés dans le profil du patient sont utilisés (dans la limite autorisée pour sa nationalité).",
+        "attendantName": "Nom complet (comme sur le passeport)",
+        "relationship": "Lien de parenté",
+        "passport": "Numéro de passeport",
+        "addAttendant": "Ajouter un accompagnant",
+        "removeAttendant": "Retirer l'accompagnant {{number}}",
+        "attendantNameError": "Saisissez le nom complet de chaque accompagnant ou supprimez les lignes vides.",
+        "contactName": "Personne à contacter",
+        "contactPhone": "Téléphone de contact",
+        "contactEmail": "E-mail de contact",
+        "contactHint": "Contact de l'hôpital imprimé sur la lettre pour l'ambassade. Laissez vide pour utiliser les coordonnées de votre hôpital.",
+        "notes": "Remarques complémentaires",
+        "notesHint": "Imprimées sur la lettre, par exemple le calendrier prévu du traitement.",
+        "submit": "Générer le brouillon"
+      }
     }
   },
   "finance": {
@@ -1081,6 +1156,159 @@
       "suspendedTitle": "Votre hôpital est suspendu",
       "suspendedBody": "Les nouvelles demandes sont suspendues. Veuillez contacter l'assistance Heal India Global.",
       "suspendedBodyReason": "Les nouvelles demandes sont suspendues. Veuillez contacter l'assistance Heal India Global. Motif : {{reason}}"
+    },
+    "pending": {
+      "title": "Modifications en attente de validation",
+      "body": "Notre équipe examine ces modifications. Tant qu'elles ne sont pas approuvées, votre profil public garde les informations précédentes :",
+      "fields": {
+        "name": "Nom de l'hôpital",
+        "legal_name": "Raison sociale",
+        "gstin": "GSTIN",
+        "pan": "PAN",
+        "email": "E-mail",
+        "website": "Site web",
+        "accreditations": "Accréditations"
+      }
+    }
+  },
+  "aftercare": {
+    "title": "Suivi post-traitement",
+    "description": "Questionnaires de rétablissement et appels vidéo de suivi de vos patients après leur sortie.",
+    "flags": {
+      "fever": "Fièvre",
+      "breathlessness": "Essoufflement",
+      "severe_pain": "Douleur intense",
+      "wound_concerns": "Problème de plaie"
+    },
+    "adherence": {
+      "all": "Tous les médicaments pris",
+      "some": "Certains médicaments oubliés",
+      "none": "Aucun médicament pris"
+    },
+    "checkins": {
+      "title": "Questionnaires de rétablissement",
+      "description": "Réponses des patients après leur sortie. Les signaux d'alerte apparaissent en premier : contactez rapidement le patient.",
+      "caseTitle": "Questionnaires de rétablissement",
+      "caseDescription": "Signaux d'alerte en premier",
+      "tabFlagged": "Signaux d'alerte",
+      "tabAnswered": "Toutes les réponses",
+      "tabAwaiting": "Sans réponse",
+      "day": "Questionnaire du jour {{day}}",
+      "answered": "Répondu le {{date}}",
+      "notAnswered": "Prévu le {{date}} - pas encore de réponse",
+      "dueOn": "Prévu le {{date}}",
+      "noFlags": "Aucun signal d'alerte",
+      "awaiting": "En attente de réponse",
+      "upcoming": "À venir",
+      "pain": "Douleur",
+      "painValue": "{{value}}/10",
+      "fever": "Fièvre",
+      "wound": "Problème de plaie",
+      "breathlessness": "Essoufflement",
+      "medication": "Médicaments",
+      "yes": "Oui",
+      "no": "Non",
+      "empty": "Aucun questionnaire ici",
+      "emptyFlagged": "Aucun signal d'alerte",
+      "emptyDescription": "Les questionnaires sont envoyés aux patients 1, 3, 7, 14 et 30 jours après leur sortie.",
+      "emptyCase": "Pas encore de questionnaire pour ce dossier"
+    },
+    "consultations": {
+      "title": "Consultations vidéo",
+      "description": "Les appels de suivi sont demandés automatiquement après la sortie. Confirmez un horaire ; un lien vidéo privé est créé pour vous.",
+      "caseTitle": "Consultations vidéo",
+      "tabToSchedule": "À planifier",
+      "tabUpcoming": "À venir",
+      "tabPast": "Passées",
+      "standard": "Consultation",
+      "followup": "Suivi",
+      "followupDay": "Suivi du jour {{day}}",
+      "scheduledFor": "{{date}} ({{minutes}} min)",
+      "dueAround": "Prévu vers le {{date}} ({{relative}})",
+      "requestedOn": "Demandée le {{date}}",
+      "join": "Rejoindre l'appel",
+      "opensNewTab": "(s'ouvre dans un nouvel onglet)",
+      "schedule": "Planifier",
+      "reschedule": "Replanifier",
+      "markDone": "Marquer comme terminée",
+      "cancel": "Annuler l'appel",
+      "cancelTitle": "Annuler cette consultation vidéo ?",
+      "cancelDescription": "Le patient est informé de l'annulation de l'appel.",
+      "cancelNote": "Motif (visible par le patient)",
+      "cancelConfirm": "Annuler l'appel",
+      "scheduledToast": "Consultation vidéo planifiée",
+      "completedToast": "Consultation marquée comme terminée",
+      "cancelledToast": "Consultation annulée",
+      "empty": "Rien ici",
+      "emptyDescription": "Les appels de suivi apparaissent ici après la sortie d'un patient.",
+      "emptyCase": "Aucune consultation vidéo pour ce dossier"
+    },
+    "schedule": {
+      "title": "Planifier la consultation vidéo",
+      "rescheduleTitle": "Replanifier la consultation vidéo",
+      "description": "Avec {{patient}}. Le patient reçoit l'horaire et le lien par e-mail et dans l'application.",
+      "dueHint": "Recommandé vers le {{date}}.",
+      "when": "Date et heure",
+      "timezone": "Dans le fuseau horaire de votre ordinateur",
+      "duration": "Durée (minutes)",
+      "link": "Lien vidéo (facultatif)",
+      "linkHint": "Laissez vide : une salle vidéo privée est créée automatiquement.",
+      "submit": "Enregistrer l'horaire",
+      "whenRequired": "Choisissez une date et une heure.",
+      "future": "Choisissez un horaire dans le futur.",
+      "durationError": "Saisissez une durée entre 5 et 240 minutes.",
+      "httpsOnly": "Le lien vidéo doit commencer par https://"
+    }
+  },
+  "accreditations": {
+    "title": "Accréditations",
+    "description": "Vos certificats (JCI, NABH, NABL ...). Les accréditations vérifiées et valides sont affichées sur votre profil public.",
+    "add": "Ajouter une accréditation",
+    "added": "Accréditation ajoutée - notre équipe va la vérifier",
+    "updated": "Accréditation modifiée - notre équipe va la vérifier à nouveau",
+    "deleted": "Accréditation supprimée",
+    "howTitle": "Comment fonctionne la vérification",
+    "howBody": "Téléversez le certificat. Notre équipe le vérifie avant qu'il n'apparaisse sur votre profil public. Modifier une accréditation retire sa vérification jusqu'à un nouveau contrôle.",
+    "expiringTitle_one": "{{count}} accréditation expire bientôt ou a expiré",
+    "expiringTitle_other": "{{count}} accréditations expirent bientôt ou ont expiré",
+    "expiringBody": "Téléversez le certificat renouvelé et la nouvelle date de validité pour que les patients continuent de le voir.",
+    "emptyTitle": "Aucune accréditation pour l'instant",
+    "emptyDescription": "Ajoutez vos certificats JCI, NABH ou NABL pour que les patients puissent les voir.",
+    "certificateNo": "Certificat n° {{number}}",
+    "noCertificateNo": "Pas de numéro de certificat",
+    "validUntil": "Valable jusqu'au",
+    "noExpiry": "Pas de date d'expiration",
+    "expired": "Expirée",
+    "expiresToday": "Expire aujourd'hui",
+    "expiresIn_one": "Expire dans {{count}} jour",
+    "expiresIn_other": "Expire dans {{count}} jours",
+    "verifiedOn": "Vérifiée le {{date}}",
+    "status": {
+      "public": "Vérifiée - sur votre profil",
+      "pending": "En attente de vérification",
+      "verifiedExpired": "Vérifiée - expirée, non affichée"
+    },
+    "downloadAria": "Télécharger le certificat {{body}}",
+    "editAria": "Modifier {{body}}",
+    "deleteAria": "Supprimer {{body}}",
+    "deleteTitle": "Supprimer l'accréditation {{body}} ?",
+    "deleteDescription": "Elle ne sera plus affichée sur votre profil public.",
+    "form": {
+      "addTitle": "Ajouter une accréditation",
+      "editTitle": "Modifier l'accréditation",
+      "body": "Organisme d'accréditation",
+      "otherBody": "Autre",
+      "otherCode": "Code court",
+      "otherHint": "Par exemple iso-9001 (lettres, chiffres et tirets).",
+      "bodyError": "Saisissez un code court de 2 à 20 lettres, chiffres ou tirets.",
+      "certificateNo": "Numéro de certificat",
+      "certificate": "Certificat",
+      "certificateHint": "PDF ou image du certificat, 20 MB maximum.",
+      "uploadFile": "Téléverser le certificat",
+      "replaceFile": "Remplacer le fichier",
+      "fileAttached": "Certificat joint",
+      "reverifyTitle": "Cette accréditation est vérifiée",
+      "reverifyBody": "Enregistrer des modifications retire la vérification jusqu'à un nouveau contrôle par notre équipe."
     }
   }
 }

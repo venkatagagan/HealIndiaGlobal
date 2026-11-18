@@ -13,6 +13,7 @@ import {
 } from '@hig/shared/ui';
 import { useAppTranslation } from '../../i18n';
 import { countryName, formatRelative, fromMinor } from '../../lib/format';
+import { RespondBy, respondByText, sla } from './sla';
 
 type TFn = ReturnType<typeof useAppTranslation>['t'];
 
@@ -86,6 +87,17 @@ export function caseColumns(t: TFn): DataTableColumn<CaseOut>[] {
       exportValue: (c) => CASE_STATUS_LABELS[c.status],
     },
     {
+      key: 'respondBy',
+      header: t('cases.respondBy.header'),
+      sortable: true,
+      sortKey: 'quote_due_at',
+      mobile: 'badge',
+      sortValue: (c) => sla(c).quote_due_at ?? '',
+      cell: (c) => <RespondBy value={c} />,
+      mobileCell: (c) => (sla(c).quote_overdue || sla(c).hours_left != null ? <RespondBy value={c} compact /> : null),
+      exportValue: (c) => respondByText(c, t),
+    },
+    {
       key: 'urgency',
       header: t('cases.table.urgency'),
       mobile: 'badge',
@@ -129,7 +141,7 @@ export function caseColumns(t: TFn): DataTableColumn<CaseOut>[] {
   ];
 }
 
-const RECENT_KEYS = ['case', 'patient', 'treatment', 'status', 'quote', 'received'];
+const RECENT_KEYS = ['case', 'patient', 'treatment', 'status', 'respondBy', 'quote', 'received'];
 
 /** Compact, read-only list (dashboard "recent enquiries"). */
 export function RecentCasesTable({ cases }: { cases: CaseOut[] }) {

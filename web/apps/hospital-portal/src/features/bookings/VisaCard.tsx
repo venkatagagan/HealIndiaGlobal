@@ -30,6 +30,7 @@ import { formatNumber } from '@hig/shared/lib';
 import { formatDateTime } from '../../lib/format';
 import { qk } from '../../lib/queries';
 import { useAppTranslation } from '../../i18n';
+import { InvitationLetterSection, type VisaRequestWithLetter } from './InvitationLetter';
 
 type TFn = ReturnType<typeof useAppTranslation>['t'];
 
@@ -97,6 +98,7 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
         <StatusBadge status={request.status} label={VISA_STATUS_LABELS[request.status]} />
       </div>
       {request.notes && <p className="text-sm text-slate-600 dark:text-slate-300">{request.notes}</p>}
+      <InvitationLetterSection request={request as VisaRequestWithLetter} caseId={caseId} />
       <div className="flex flex-wrap items-center gap-2">
         {request.invitation_letter_document_id ? (
           <Button variant="outline" size="sm" icon={<Download className="h-4 w-4" aria-hidden />} onClick={() => void downloadLetter()}>
@@ -104,13 +106,13 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
           </Button>
         ) : null}
         <FileButton
-          variant={request.invitation_letter_document_id ? 'ghost' : 'primary'}
+          variant="ghost"
           loading={uploadLetter.isPending}
           onFile={(file) => uploadLetter.mutate(file)}
           onInvalid={(m) => toast.error(m)}
           accept=".pdf,application/pdf,image/*"
         >
-          {request.invitation_letter_document_id ? t('bookings.visa.replaceLetter') : t('bookings.visa.uploadLetter')}
+          {request.invitation_letter_document_id ? t('bookings.visa.replaceLetter') : t('bookings.letter.uploadOwn')}
         </FileButton>
         {!['approved', 'rejected', 'applied'].includes(request.status) && (
           <div className="w-52">

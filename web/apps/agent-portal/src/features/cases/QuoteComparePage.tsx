@@ -17,6 +17,8 @@ import { cn, daysUntil, formatDate, formatNumber, useDocumentTitle } from '../..
 import { Trans } from 'react-i18next';
 import { useAppTranslation } from '../../i18n';
 import { AcceptQuoteDialog, RejectQuoteDialog, isQuoteActionable } from './quotes';
+import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
+import { phase1Api } from '../../lib/phase1Api';
 
 function currentQuote(c: CaseDetail): QuoteOut | null {
   if (c.latest_quote) return c.latest_quote;
@@ -45,6 +47,7 @@ export function QuoteComparePage() {
     .filter(Boolean)
     .slice(0, MAX_COMPARE);
   const [differencesOnly, setDifferencesOnly] = useState(false);
+  const displayCurrency = useDisplayCurrency();
 
   const byPatient = useQuery({
     queryKey: qk.cases({ patient_id: patientId, page_size: 50 }),
@@ -60,7 +63,10 @@ export function QuoteComparePage() {
           .map((c) => c.id);
 
   const details = useQueries({
-    queries: ids.map((id) => ({ queryKey: qk.case(id), queryFn: () => casesApi.get(id) })),
+    queries: ids.map((id) => ({
+      queryKey: [...qk.case(id), { currency: displayCurrency }],
+      queryFn: () => phase1Api.getCase(id, displayCurrency),
+    })),
   });
 
   const [accepting, setAccepting] = useState<{ c: CaseDetail; q: QuoteOut } | null>(null);
@@ -250,7 +256,10 @@ export function QuoteComparePage() {
                     </span>
                     <span className="mt-2 flex flex-wrap items-center gap-1.5">
                       {q ? (
-                        <Money minor={q.total_minor} currency={q.currency} className={cn('text-lg font-bold tabular-nums', winner && 'text-success-ink')} />
+                        <>
+                          <Money minor={q.total_minor} currency={q.currency} className={cn('text-lg font-bold tabular-nums', winner && 'text-success-ink')} />
+                          <ApproxMoney display={q.display_total} original={q.currency} />
+                        </>
                       ) : (
                         <span className="text-sm text-muted">{t('compare.awaitingQuote')}</span>
                       )}
@@ -315,6 +324,7 @@ export function QuoteComparePage() {
                 q ? (
                   <div className={cn('-mx-2 rounded-lg px-2 py-1', totalWinners.has(i) && 'bg-success-soft ring-1 ring-success/30')}>
                     <Money minor={q.total_minor} currency={q.currency} className={cn('text-lg font-bold tabular-nums', totalWinners.has(i) && 'text-success-ink')} />
+                    <ApproxMoney display={q.display_total} original={q.currency} block />
                   </div>
                 ) : (
                   <span className="text-muted">—</span>

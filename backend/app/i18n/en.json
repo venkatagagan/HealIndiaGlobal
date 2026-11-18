@@ -4,7 +4,24 @@
     "the_hospital": "the hospital",
     "reason": "Reason: {reason}.",
     "note": "Note: {note}",
-    "message": "Message: {message}"
+    "message": "Message: {message}",
+    "the_doctor": "the doctor",
+    "a_coordinator": "A coordinator",
+    "a_finance_user": "A finance user",
+    "a_support_user": "A support user",
+    "a_user": "A user",
+    "someone": "Someone",
+    "list_separator": ", ",
+    "payee": {
+      "hospital": "hospital",
+      "agent": "agent",
+      "vendor": "vendor"
+    },
+    "role": {
+      "patient": "patient",
+      "agent": "agent",
+      "hospital": "hospital"
+    }
   },
   "email": {
     "common": {
@@ -184,6 +201,253 @@
     "message_created": {
       "title": "New message from {sender}",
       "attachment": "Sent an attachment"
+    },
+    "screening_emergency_staff": {
+      "title": "Urgent: possible emergency for {patient}",
+      "body": "A screening for {patient} was flagged as a possible medical emergency. The patient has been told to seek local emergency care. Please contact them now."
+    },
+    "travel_status": {
+      "title": "Travel update for case {case_number}",
+      "body": "{item} {status} (case {case_number}).",
+      "visa_applied_body": "Your medical visa application has been submitted for case {case_number}.",
+      "items": {
+        "visa": "Your medical visa",
+        "accommodation": "Your accommodation booking",
+        "flight": "Your flight booking",
+        "airport_pickup": "Your airport pickup",
+        "airport_drop": "Your airport drop-off",
+        "local_transport": "Your local transport booking",
+        "translator": "Your translator booking",
+        "local_guide": "Your local guide booking",
+        "transport": "Your transport booking",
+        "travel_agent": "Your travel agent booking",
+        "insurance": "Your travel insurance",
+        "other": "Your travel arrangement"
+      },
+      "statuses": {
+        "documents_pending": "needs documents from you",
+        "invitation_issued": "has an invitation letter from the hospital",
+        "applied": "application has been submitted",
+        "approved": "has been approved",
+        "rejected": "was not approved. Your coordinator will help you with next steps",
+        "quoted": "has a price quote ready for you to review",
+        "confirmed": "is confirmed",
+        "completed": "is complete",
+        "cancelled": "has been cancelled"
+      }
+    },
+    "consultation_scheduled": {
+      "title": "Consultation scheduled for case {num}",
+      "body": "Your tele-consultation with {doctor} is scheduled for {when}. The joining link is in the case."
+    },
+    "consultation_rescheduled": {
+      "title": "Consultation changed for case {num}",
+      "body": "Your tele-consultation with {doctor} has changed. New time: {when}. Check the case for the current joining link."
+    },
+    "consultation_cancelled": {
+      "title": "Consultation cancelled for case {num}",
+      "body": "The tele-consultation with {doctor} for case {num} has been cancelled. You can request a new one from the case."
+    },
+    "coordinator_assigned": {
+      "title": "Your coordinator for case {case_number}",
+      "body": "{name} from Heal India Global is now your care coordinator. Message them from the case any time.",
+      "coordinator_title": "You are coordinating case {case_number}",
+      "coordinator_body": "You have been assigned as the coordinator for {patient} (case {case_number})."
+    },
+    "quote_rejected": {
+      "title": "Quote declined for {case_number}",
+      "body": "{patient} declined your quote for case {case_number}.",
+      "reason": "Reason: {reason}",
+      "next": "You can send a revised quote."
+    },
+    "quote_expired": {
+      "hospital_title": "Quote expired for {case_number}",
+      "hospital_body": "Your quote for case {case_number} passed its validity date without being accepted. Send a new quote if the patient still needs treatment.",
+      "title": "Your quote from {hospital} has expired",
+      "body": "The quote for case {case_number} is no longer valid. Ask the hospital or your coordinator for a new quote."
+    },
+    "installment_due": {
+      "title": "Payment reminder",
+      "body_today": "Instalment {seq} of {amount} for booking {booking_number} is due today.",
+      "body_date": "Instalment {seq} of {amount} for booking {booking_number} is due on {date}."
+    },
+    "installment_overdue": {
+      "title": "Payment overdue",
+      "body": "Instalment {seq} of {amount} for booking {booking_number} was due on {date} and is still unpaid. Please pay it or talk to your coordinator."
+    },
+    "settlement_batch_pending": {
+      "title": "Settlement batch {batch_number} needs approval",
+      "body": "A {payee_type} settlement batch of {count} items ({amount} net) is waiting for a second approver."
+    },
+    "quote_reminder_due": {
+      "title": "Quote due soon for case {case_number}",
+      "body": "The patient is waiting for your quote. Please send it within {hours} hours (by {when})."
+    },
+    "quote_overdue": {
+      "hospital_title": "Quote overdue for case {case_number}",
+      "hospital_body": "The quote promised to the patient is overdue. Please send it now.",
+      "coordinator_title": "Hospital quote overdue: case {case_number}",
+      "coordinator_body": "The hospital has not sent a quote in time. Please follow up with the hospital.",
+      "patient_title": "We're chasing the hospital for your quote",
+      "patient_body": "Your quote for case {case_number} is taking longer than promised. Our team is following up with the hospital and will update you soon."
+    },
+    "aftercare_red_flag": {
+      "title": "URGENT: recovery warning signs, case {case_number}",
+      "body": "The patient reported {flags} in their day-{day} check-in. Please contact the patient now.",
+      "patient_title": "Your care team has been alerted",
+      "patient_body": "Thank you for your check-in. Your hospital and our coordinator have been told and will contact you. If you feel very unwell, call your local emergency number or go to the nearest hospital now.",
+      "flags": {
+        "fever": "fever",
+        "breathlessness": "breathlessness",
+        "severe_pain": "severe pain",
+        "wound_concerns": "wound concerns"
+      }
+    },
+    "consultation_reminder": {
+      "patient_title_soon": "Your video consultation starts in 1 hour",
+      "patient_title_tomorrow": "Your video consultation starts tomorrow",
+      "patient_body": "Your consultation is at {when}. Join from the app using the video link.",
+      "hospital_title_soon": "Consultation in 1 hour: case {case_number}",
+      "hospital_title_tomorrow": "Consultation tomorrow: case {case_number}",
+      "hospital_body": "A video consultation is scheduled at {when}.",
+      "intro_title_soon": "Your free call with our medical coordinator starts in 1 hour",
+      "intro_title_tomorrow": "Your free call with our medical coordinator starts tomorrow",
+      "intro_body": "Your 15-minute video call is at {when}. Join using the video link.",
+      "coordinator_title_soon": "Intro call in 1 hour",
+      "coordinator_title_tomorrow": "Intro call tomorrow",
+      "coordinator_body": "Free intro call with {name} at {when}."
+    },
+    "visa_invitation_issued": {
+      "title": "Your hospital invitation letter is ready",
+      "body": "Download the invitation letter from your documents and use it for your visa application."
+    },
+    "intro_requested": {
+      "title": "New free intro call request",
+      "body": "A visitor asked for a free 15-minute call with a medical coordinator. Please schedule it."
+    },
+    "intro_scheduled": {
+      "title": "Your free call is booked",
+      "body": "Your 15-minute video call with our medical coordinator is at {when}."
+    },
+    "fx_rate_change": {
+      "title": "Exchange rate change for {currency} needs approval",
+      "body": "{name} asked to change the {currency} rate from {old_rate} to {new_rate} INR. A second finance user must approve it before it is used for payments."
+    },
+    "bank_details_change_requested": {
+      "title": "Bank transfer details change needs approval",
+      "body": "{name} asked to change the bank account shown to patients. A second finance user must review and approve it before it takes effect."
+    },
+    "bank_details_changed": {
+      "title": "Bank transfer details changed",
+      "body": "The bank account shown to patients for bank transfers has been changed and approved."
+    },
+    "agent_consent": {
+      "title": "Please confirm your consent",
+      "body": "{agency} registered you on Heal India Global and confirmed that you agreed to our terms and privacy policy. Please review and confirm these consents when you sign in."
+    },
+    "agent_kyc_submitted": {
+      "title": "Agent KYC submitted",
+      "body": "{agency} ({code}) submitted KYC documents for review."
+    },
+    "deletion_requested": {
+      "title": "Account deletion request",
+      "body": "A {role} account asked to be deleted; deletion is blocked until open items are resolved."
+    },
+    "break_glass": {
+      "title": "Emergency document access",
+      "body": "{name} opened a document outside their cases. Reason: {reason}"
+    },
+    "support_conversation": {
+      "title": "New support conversation",
+      "body": "{name} started a support conversation: {subject}"
+    },
+    "conversation_created": {
+      "title": "New conversation",
+      "body": "{name} started a conversation with you"
+    },
+    "site_enquiry": {
+      "title": "New website enquiry",
+      "body": "{name} sent an enquiry through the website contact form. Please reply within one working day.",
+      "body_topic": "{name} sent an enquiry through the website contact form ({topic}). Please reply within one working day."
+    },
+    "content_report": {
+      "title": "New content report",
+      "body": "A user reported a {target} ({reason}). Please review it in the moderation queue.",
+      "targets": {
+        "message": "message",
+        "screening_result": "screening result",
+        "document_analysis": "document analysis",
+        "review": "review"
+      },
+      "reasons": {
+        "spam": "spam",
+        "abusive": "abusive",
+        "inappropriate": "inappropriate",
+        "inaccurate": "inaccurate",
+        "privacy": "privacy",
+        "other": "other"
+      }
+    },
+    "moderation_warning": {
+      "title": "A message from the Heal India Global team",
+      "body": "Our team reviewed content you posted and found that it breaks our community rules. Please keep conversations respectful and on topic. Repeated problems can lead to your account being suspended."
+    },
+    "privacy_request_received": {
+      "title": "New data-rights request",
+      "body": "{reference}: {kind}. Reply by {date}.",
+      "kinds": {
+        "access": "access to your data",
+        "correction": "correction of your data",
+        "erasure": "erasure of your data",
+        "nomination": "a nomination",
+        "withdraw_consent": "withdrawal of consent",
+        "complaint": "a complaint",
+        "other": "a privacy question"
+      }
+    },
+    "privacy_request_updated": {
+      "title": "Update on your request {reference}",
+      "answer": "Our answer: {resolution}",
+      "status": {
+        "in_progress": "We are working on your request.",
+        "awaiting_requester": "We need more information from you to continue.",
+        "completed": "Your request is complete.",
+        "rejected": "We could not carry out your request.",
+        "received": "Your request is open again."
+      }
+    },
+    "guardian_consent_pending": {
+      "title": "Guardian consent to verify",
+      "body": "A parent or guardian gave consent for a patient under 18. Check their identity and verify it."
+    },
+    "breach_recorded": {
+      "title": "Personal data breach {reference}",
+      "body": "{severity} severity. Notifications are due by {deadline} UTC.",
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      }
+    },
+    "inactivity_notice": {
+      "title": "Your account will be deleted soon",
+      "body": "You have not signed in for a long time. Sign in within {days} days to keep your account; otherwise we will delete it and your data as described in our privacy policy."
+    },
+    "privacy_request_due": {
+      "title_overdue": "Data-rights request {reference} is overdue",
+      "title_due_soon": "Data-rights request {reference} is due soon",
+      "body": "Reply by {date}."
+    },
+    "review_submitted": {
+      "title": "New review to moderate",
+      "body": "A patient left a {rating}-star review of {hospital}. Please check it in the review moderation queue."
+    },
+    "review_moderated": {
+      "published_title": "Your review is live",
+      "published_body": "Thank you. Your review of {hospital} is now published.",
+      "hidden_title": "Your review was not published",
+      "hidden_body": "Your review of {hospital} was not published because it does not meet our review guidelines."
     }
   },
   "errors": {

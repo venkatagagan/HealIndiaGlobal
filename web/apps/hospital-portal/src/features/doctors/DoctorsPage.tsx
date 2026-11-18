@@ -26,6 +26,7 @@ import {
 import { useHospital } from '../../auth/HospitalProvider';
 import { Stars } from '../../components/ui';
 import { qk, useHospitalDoctors } from '../../lib/queries';
+import { fromMinor } from '../../lib/format';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
 import { useAppTranslation } from '../../i18n';
 import { DoctorFormModal } from './DoctorFormModal';
@@ -223,7 +224,7 @@ export function DoctorsPage() {
             }
           />
         ),
-        exportValue: (d) => (d.consultation_fee_minor != null ? d.consultation_fee_minor / 100 : ''),
+        exportValue: (d) => (d.consultation_fee_minor != null ? fromMinor(d.consultation_fee_minor, d.currency || 'INR') : ''),
       },
       {
         key: 'status',

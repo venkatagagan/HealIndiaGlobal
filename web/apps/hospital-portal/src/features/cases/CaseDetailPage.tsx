@@ -39,6 +39,8 @@ import { ConfirmedAnalysesList } from '@hig/shared/docai';
 import { CaseDocuments } from './CaseDocuments';
 import { QuoteFormModal } from './QuoteFormModal';
 import { ScreeningSummary } from './ScreeningSummary';
+import { QuoteSlaAlert } from './sla';
+import { CaseCheckinsCard, CaseConsultationsList } from '../aftercare/aftercare';
 
 type LineRow = QuoteLineItem & { index: number; currency: string };
 
@@ -235,6 +237,7 @@ export function CaseDetailPage() {
           </>
         }
       />
+      <QuoteSlaAlert value={c} />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
         <div className="space-y-6">
@@ -308,6 +311,16 @@ export function CaseDetailPage() {
           </Card>
         </div>
         <div className="space-y-6">
+          {(c.status === 'completed' || c.status === 'in_treatment') && (
+            <Card>
+              <CardHeader title={t('aftercare.checkins.caseTitle')} description={t('aftercare.checkins.caseDescription')} />
+              <CaseCheckinsCard caseId={c.id} />
+            </Card>
+          )}
+          <Card>
+            <CardHeader title={t('aftercare.consultations.caseTitle')} />
+            <CaseConsultationsList caseId={c.id} />
+          </Card>
           <Timeline detail={c} />
         </div>
       </div>

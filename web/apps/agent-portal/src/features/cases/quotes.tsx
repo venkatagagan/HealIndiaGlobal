@@ -15,6 +15,7 @@ import { Button, Checkbox, ConfirmDialog, Modal, Money, StatusBadge } from '../.
 import { Trans } from 'react-i18next';
 import { daysUntil, formatDate, formatNumber, i18n } from '../../lib/shared';
 import { useAppTranslation, type AppT } from '../../i18n';
+import { ApproxMoney } from '../../lib/displayCurrency';
 
 export function isQuoteActionable(caseStatus: CaseOut['status'], quote: QuoteOut): boolean {
   if (quote.status !== 'sent' || caseStatus !== 'quoted') return false;
@@ -57,7 +58,12 @@ function lineColumns(t: AppT, quote: QuoteOut): DataTableColumn<LineRow>[] {
       sortable: true,
       sortDescFirst: true,
       sortValue: (item) => item.amount_minor,
-      cell: (item) => <MoneyCell minor={item.amount_minor} currency={quote.currency} />,
+      cell: (item) => (
+        <span className="inline-flex flex-col items-end">
+          <MoneyCell minor={item.amount_minor} currency={quote.currency} />
+          <ApproxMoney display={item.display_amount} original={quote.currency} />
+        </span>
+      ),
     },
   ];
 }
@@ -95,7 +101,10 @@ export function QuoteDetails({ quote }: { quote: QuoteOut }) {
           {t('quotes.total')}
           {quote.estimated_stay_days ? <span className="ms-1 font-normal text-muted">· {t('quotes.stayDays', { count: quote.estimated_stay_days })}</span> : null}
         </span>
-        <Money minor={quote.total_minor} currency={quote.currency} className="text-lg font-bold tabular-nums" />
+        <span className="text-end">
+          <Money minor={quote.total_minor} currency={quote.currency} className="text-lg font-bold tabular-nums" />
+          <ApproxMoney display={quote.display_total} original={quote.currency} block />
+        </span>
       </div>
     </div>
   );
@@ -209,7 +218,8 @@ export function AcceptQuoteDialog({
         </p>
         {quote && (
           <p>
-            <Trans t={t} i18nKey="quotes.totalLine" components={{ 0: <Money minor={quote.total_minor} currency={quote.currency} className="font-semibold" /> }} />
+            <Trans t={t} i18nKey="quotes.totalLine" components={{ 0: <Money minor={quote.total_minor} currency={quote.currency} className="font-semibold" /> }} />{' '}
+            <ApproxMoney display={quote.display_total} original={quote.currency} />
           </p>
         )}
         {openSiblings.length > 0 && (

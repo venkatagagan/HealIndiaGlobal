@@ -4,7 +4,24 @@
     "the_hospital": "المستشفى",
     "reason": "السبب: {reason}.",
     "note": "ملاحظة: {note}",
-    "message": "الرسالة: {message}"
+    "message": "الرسالة: {message}",
+    "the_doctor": "الطبيب",
+    "a_coordinator": "منسق",
+    "a_finance_user": "أحد أعضاء الفريق المالي",
+    "a_support_user": "أحد أعضاء فريق الدعم",
+    "a_user": "أحد المستخدمين",
+    "someone": "شخص ما",
+    "list_separator": "، ",
+    "payee": {
+      "hospital": "مستشفى",
+      "agent": "وكيل",
+      "vendor": "مورّد"
+    },
+    "role": {
+      "patient": "مريض",
+      "agent": "وكيل",
+      "hospital": "مستشفى"
+    }
   },
   "email": {
     "common": {
@@ -184,6 +201,253 @@
     "message_created": {
       "title": "رسالة جديدة من {sender}",
       "attachment": "تم إرسال مرفق"
+    },
+    "screening_emergency_staff": {
+      "title": "عاجل: حالة طارئة محتملة لدى {patient}",
+      "body": "تم تصنيف التقييم الأولي الخاص بـ {patient} على أنه حالة طبية طارئة محتملة. وقد طُلب من المريض التوجه إلى خدمات الطوارئ المحلية. يُرجى التواصل معه الآن."
+    },
+    "travel_status": {
+      "title": "تحديث بشأن السفر للحالة {case_number}",
+      "body": "{item}: {status} (الحالة {case_number}).",
+      "visa_applied_body": "تم تقديم طلب تأشيرتكم الطبية للحالة {case_number}.",
+      "items": {
+        "visa": "تأشيرتكم الطبية",
+        "accommodation": "حجز الإقامة",
+        "flight": "حجز الرحلة الجوية",
+        "airport_pickup": "الاستقبال من المطار",
+        "airport_drop": "التوصيل إلى المطار",
+        "local_transport": "حجز النقل المحلي",
+        "translator": "حجز المترجم",
+        "local_guide": "حجز المرشد المحلي",
+        "transport": "حجز النقل",
+        "travel_agent": "حجز وكيل السفر",
+        "insurance": "تأمين السفر",
+        "other": "ترتيبات السفر"
+      },
+      "statuses": {
+        "documents_pending": "مطلوب منكم تقديم مستندات",
+        "invitation_issued": "صدرت رسالة دعوة من المستشفى",
+        "applied": "تم تقديم الطلب",
+        "approved": "تمت الموافقة",
+        "rejected": "لم تتم الموافقة. سيساعدكم المنسق في الخطوات التالية",
+        "quoted": "عرض سعر جاهز لمراجعتكم",
+        "confirmed": "تم التأكيد",
+        "completed": "اكتمل",
+        "cancelled": "تم الإلغاء"
+      }
+    },
+    "consultation_scheduled": {
+      "title": "تم تحديد موعد استشارة للحالة {num}",
+      "body": "موعد استشارتكم عن بُعد مع {doctor} هو {when}. رابط الانضمام موجود في صفحة الحالة."
+    },
+    "consultation_rescheduled": {
+      "title": "تم تغيير موعد الاستشارة للحالة {num}",
+      "body": "تغيّر موعد استشارتكم عن بُعد مع {doctor}. الموعد الجديد: {when}. راجعوا صفحة الحالة للحصول على رابط الانضمام الحالي."
+    },
+    "consultation_cancelled": {
+      "title": "تم إلغاء الاستشارة للحالة {num}",
+      "body": "تم إلغاء الاستشارة عن بُعد مع {doctor} للحالة {num}. يمكنكم طلب استشارة جديدة من صفحة الحالة."
+    },
+    "coordinator_assigned": {
+      "title": "منسق الرعاية للحالة {case_number}",
+      "body": "أصبح {name} من Heal India Global منسق الرعاية الخاص بكم. يمكنكم مراسلته من صفحة الحالة في أي وقت.",
+      "coordinator_title": "أنتم الآن منسقو الحالة {case_number}",
+      "coordinator_body": "تم تعيينكم منسقين لـ {patient} (الحالة {case_number})."
+    },
+    "quote_rejected": {
+      "title": "تم رفض عرض السعر للحالة {case_number}",
+      "body": "رفض {patient} عرض السعر الخاص بكم للحالة {case_number}.",
+      "reason": "السبب: {reason}",
+      "next": "يمكنكم إرسال عرض سعر معدّل."
+    },
+    "quote_expired": {
+      "hospital_title": "انتهت صلاحية عرض السعر للحالة {case_number}",
+      "hospital_body": "انتهت مدة صلاحية عرض السعر الخاص بكم للحالة {case_number} دون قبوله. أرسلوا عرض سعر جديدًا إذا كان المريض لا يزال بحاجة إلى العلاج.",
+      "title": "انتهت صلاحية عرض السعر من {hospital}",
+      "body": "لم يعد عرض السعر للحالة {case_number} صالحًا. اطلبوا عرض سعر جديدًا من المستشفى أو من المنسق."
+    },
+    "installment_due": {
+      "title": "تذكير بالدفع",
+      "body_today": "يستحق اليوم سداد القسط {seq} بمبلغ {amount} للحجز {booking_number}.",
+      "body_date": "يستحق سداد القسط {seq} بمبلغ {amount} للحجز {booking_number} في {date}."
+    },
+    "installment_overdue": {
+      "title": "دفعة متأخرة",
+      "body": "كان القسط {seq} بمبلغ {amount} للحجز {booking_number} مستحقًا في {date} ولم يُسدَّد بعد. يُرجى سداده أو التحدث إلى المنسق."
+    },
+    "settlement_batch_pending": {
+      "title": "دفعة التسوية {batch_number} بحاجة إلى موافقة",
+      "body": "دفعة تسوية ({payee_type}) تضم {count} بندًا (صافي {amount}) بانتظار موافقة شخص ثانٍ."
+    },
+    "quote_reminder_due": {
+      "title": "عرض السعر للحالة {case_number} مستحق قريبًا",
+      "body": "المريض بانتظار عرض السعر الخاص بكم. يُرجى إرساله خلال {hours} ساعة (قبل {when})."
+    },
+    "quote_overdue": {
+      "hospital_title": "تأخر عرض السعر للحالة {case_number}",
+      "hospital_body": "تأخر عرض السعر الذي وُعد به المريض. يُرجى إرساله الآن.",
+      "coordinator_title": "تأخر عرض سعر المستشفى: الحالة {case_number}",
+      "coordinator_body": "لم يرسل المستشفى عرض السعر في الوقت المحدد. يُرجى المتابعة مع المستشفى.",
+      "patient_title": "نتابع مع المستشفى بشأن عرض السعر الخاص بكم",
+      "patient_body": "يستغرق عرض السعر للحالة {case_number} وقتًا أطول من المتوقع. يتابع فريقنا الأمر مع المستشفى وسنوافيكم بالمستجدات قريبًا."
+    },
+    "aftercare_red_flag": {
+      "title": "عاجل: علامات تحذيرية أثناء التعافي، الحالة {case_number}",
+      "body": "أبلغ المريض عن: {flags} في متابعة اليوم {day}. يُرجى التواصل مع المريض الآن.",
+      "patient_title": "تم تنبيه فريق الرعاية الخاص بكم",
+      "patient_body": "شكرًا لكم على إرسال المتابعة. تم إبلاغ المستشفى والمنسق وسيتواصلون معكم. إذا شعرتم بتوعك شديد، فاتصلوا برقم الطوارئ المحلي أو توجهوا إلى أقرب مستشفى الآن.",
+      "flags": {
+        "fever": "حمّى",
+        "breathlessness": "ضيق في التنفس",
+        "severe_pain": "ألم شديد",
+        "wound_concerns": "مشكلة في الجرح"
+      }
+    },
+    "consultation_reminder": {
+      "patient_title_soon": "تبدأ استشارتكم بالفيديو خلال ساعة",
+      "patient_title_tomorrow": "استشارتكم بالفيديو غدًا",
+      "patient_body": "موعد استشارتكم {when}. انضموا من التطبيق باستخدام رابط الفيديو.",
+      "hospital_title_soon": "استشارة خلال ساعة: الحالة {case_number}",
+      "hospital_title_tomorrow": "استشارة غدًا: الحالة {case_number}",
+      "hospital_body": "توجد استشارة بالفيديو في {when}.",
+      "intro_title_soon": "تبدأ مكالمتكم المجانية مع منسقنا الطبي خلال ساعة",
+      "intro_title_tomorrow": "مكالمتكم المجانية مع منسقنا الطبي غدًا",
+      "intro_body": "موعد مكالمة الفيديو التي مدتها 15 دقيقة هو {when}. انضموا باستخدام رابط الفيديو.",
+      "coordinator_title_soon": "مكالمة تعريفية خلال ساعة",
+      "coordinator_title_tomorrow": "مكالمة تعريفية غدًا",
+      "coordinator_body": "مكالمة تعريفية مجانية مع {name} في {when}."
+    },
+    "visa_invitation_issued": {
+      "title": "رسالة الدعوة من المستشفى جاهزة",
+      "body": "نزّلوا رسالة الدعوة من مستنداتكم واستخدموها في طلب التأشيرة."
+    },
+    "intro_requested": {
+      "title": "طلب جديد لمكالمة تعريفية مجانية",
+      "body": "طلب أحد الزوار مكالمة مجانية مدتها 15 دقيقة مع منسق طبي. يُرجى تحديد موعدها."
+    },
+    "intro_scheduled": {
+      "title": "تم حجز مكالمتكم المجانية",
+      "body": "موعد مكالمة الفيديو التي مدتها 15 دقيقة مع منسقنا الطبي هو {when}."
+    },
+    "fx_rate_change": {
+      "title": "تغيير سعر صرف {currency} بحاجة إلى موافقة",
+      "body": "طلب {name} تغيير سعر صرف {currency} من {old_rate} إلى {new_rate} روبية هندية (INR). يجب أن يوافق عليه عضو ثانٍ من الفريق المالي قبل استخدامه في المدفوعات."
+    },
+    "bank_details_change_requested": {
+      "title": "تغيير بيانات التحويل البنكي بحاجة إلى موافقة",
+      "body": "طلب {name} تغيير الحساب البنكي المعروض للمرضى. يجب أن يراجعه عضو ثانٍ من الفريق المالي ويوافق عليه قبل أن يسري."
+    },
+    "bank_details_changed": {
+      "title": "تم تغيير بيانات التحويل البنكي",
+      "body": "تم تغيير الحساب البنكي المعروض للمرضى للتحويلات البنكية والموافقة عليه."
+    },
+    "agent_consent": {
+      "title": "يُرجى تأكيد موافقتكم",
+      "body": "سجّلكم {agency} في Heal India Global وأكّد أنكم وافقتم على شروطنا وسياسة الخصوصية. يُرجى مراجعة هذه الموافقات وتأكيدها عند تسجيل الدخول."
+    },
+    "agent_kyc_submitted": {
+      "title": "تم تقديم مستندات KYC لوكيل",
+      "body": "قدّم {agency} ({code}) مستندات KYC للمراجعة."
+    },
+    "deletion_requested": {
+      "title": "طلب حذف حساب",
+      "body": "طلب حساب من نوع {role} حذفه؛ والحذف متوقف إلى أن تُحل البنود المفتوحة."
+    },
+    "break_glass": {
+      "title": "وصول طارئ إلى مستند",
+      "body": "فتح {name} مستندًا خارج الحالات المسندة إليه. السبب: {reason}"
+    },
+    "support_conversation": {
+      "title": "محادثة دعم جديدة",
+      "body": "بدأ {name} محادثة دعم: {subject}"
+    },
+    "conversation_created": {
+      "title": "محادثة جديدة",
+      "body": "بدأ {name} محادثة معكم"
+    },
+    "site_enquiry": {
+      "title": "استفسار جديد عبر الموقع",
+      "body": "أرسل {name} استفسارًا عبر نموذج التواصل في الموقع. يُرجى الرد خلال يوم عمل واحد.",
+      "body_topic": "أرسل {name} استفسارًا عبر نموذج التواصل في الموقع ({topic}). يُرجى الرد خلال يوم عمل واحد."
+    },
+    "content_report": {
+      "title": "بلاغ جديد عن محتوى",
+      "body": "أبلغ أحد المستخدمين عن محتوى: {target} ({reason}). يُرجى مراجعته في قائمة الإشراف.",
+      "targets": {
+        "message": "رسالة",
+        "screening_result": "نتيجة تقييم أولي",
+        "document_analysis": "تحليل مستند",
+        "review": "تقييم"
+      },
+      "reasons": {
+        "spam": "رسائل مزعجة",
+        "abusive": "محتوى مسيء",
+        "inappropriate": "محتوى غير لائق",
+        "inaccurate": "معلومات غير دقيقة",
+        "privacy": "الخصوصية",
+        "other": "أخرى"
+      }
+    },
+    "moderation_warning": {
+      "title": "رسالة من فريق Heal India Global",
+      "body": "راجع فريقنا محتوى نشرتموه ووجد أنه يخالف قواعد المجتمع لدينا. يُرجى الحفاظ على محادثات محترمة وضمن الموضوع. قد يؤدي تكرار المخالفات إلى تعليق حسابكم."
+    },
+    "privacy_request_received": {
+      "title": "طلب جديد بشأن الحقوق في البيانات",
+      "body": "{reference}: {kind}. يجب الرد قبل {date}.",
+      "kinds": {
+        "access": "الاطلاع على البيانات",
+        "correction": "تصحيح البيانات",
+        "erasure": "محو البيانات",
+        "nomination": "تعيين شخص مفوَّض",
+        "withdraw_consent": "سحب الموافقة",
+        "complaint": "شكوى",
+        "other": "سؤال يتعلق بالخصوصية"
+      }
+    },
+    "privacy_request_updated": {
+      "title": "تحديث بشأن طلبكم {reference}",
+      "answer": "ردّنا: {resolution}",
+      "status": {
+        "in_progress": "نعمل على طلبكم.",
+        "awaiting_requester": "نحتاج إلى مزيد من المعلومات منكم للمتابعة.",
+        "completed": "اكتمل طلبكم.",
+        "rejected": "تعذّر علينا تنفيذ طلبكم.",
+        "received": "أُعيد فتح طلبكم."
+      }
+    },
+    "guardian_consent_pending": {
+      "title": "موافقة وليّ أمر بحاجة إلى تحقق",
+      "body": "قدّم أحد الوالدين أو وليّ الأمر موافقة لمريض دون 18 عامًا. تحققوا من هويته ثم أكّدوا الموافقة."
+    },
+    "breach_recorded": {
+      "title": "خرق للبيانات الشخصية {reference}",
+      "body": "درجة الخطورة: {severity}. يجب إرسال الإخطارات قبل {deadline} بالتوقيت العالمي (UTC).",
+      "severity": {
+        "low": "منخفضة",
+        "medium": "متوسطة",
+        "high": "عالية",
+        "critical": "حرجة"
+      }
+    },
+    "inactivity_notice": {
+      "title": "سيُحذف حسابكم قريبًا",
+      "body": "لم تسجّلوا الدخول منذ مدة طويلة. سجّلوا الدخول خلال {days} يومًا للاحتفاظ بحسابكم؛ وإلا فسنحذفه ونحذف بياناتكم كما هو موضح في سياسة الخصوصية."
+    },
+    "privacy_request_due": {
+      "title_overdue": "تأخر الرد على طلب البيانات {reference}",
+      "title_due_soon": "يقترب موعد الرد على طلب البيانات {reference}",
+      "body": "يجب الرد قبل {date}."
+    },
+    "review_submitted": {
+      "title": "تقييم جديد بانتظار الإشراف",
+      "body": "ترك أحد المرضى تقييمًا بعدد {rating} نجوم لـ {hospital}. يُرجى مراجعته في قائمة الإشراف على التقييمات."
+    },
+    "review_moderated": {
+      "published_title": "تم نشر تقييمكم",
+      "published_body": "شكرًا لكم. تم نشر تقييمكم لـ {hospital}.",
+      "hidden_title": "لم يُنشر تقييمكم",
+      "hidden_body": "لم يُنشر تقييمكم لـ {hospital} لأنه لا يتوافق مع إرشادات التقييم لدينا."
     }
   },
   "errors": {

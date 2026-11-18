@@ -209,9 +209,10 @@ async def submit_kyc(db: AsyncSession, user: User, request: Request | None = Non
         db,
         await staff_user_ids(db, [UserRole.ADMIN]),
         "agent.kyc_submitted",
-        "Agent KYC submitted",
-        f"{agent.agency_name} ({agent.agent_code}) submitted KYC documents for review.",
-        {"agent_id": str(agent.id), "link": f"/agents/{agent.id}"},
+        data={"agent_id": str(agent.id), "link": f"/agents/{agent.id}"},
+        title_key="notifications.agent_kyc_submitted.title",
+        body_key="notifications.agent_kyc_submitted.body",
+        params={"agency": agent.agency_name, "code": agent.agent_code},
         dedupe_key=f"agent.kyc_submitted:{agent.id}:{datetime.now(UTC).date().isoformat()}",
         email=False,
     )

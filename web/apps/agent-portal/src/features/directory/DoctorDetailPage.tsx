@@ -8,12 +8,15 @@ import { qk } from '../../lib/queries';
 import { cn, formatDate, formatMoney, formatMoneyRange, formatNumber, isoDateFromToday, useDocumentTitle } from '../../lib/shared';
 import { languageLabel } from '../../lib/constants';
 import { useAppTranslation } from '../../i18n';
+import { approxRangeText, approxText, useDisplayCurrency } from '../../lib/displayCurrency';
+import { phase1Api } from '../../lib/phase1Api';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 
 export function DoctorDetailPage() {
   const { t } = useAppTranslation();
   const { doctorId = '' } = useParams();
-  const query = useQuery({ queryKey: qk.doctor(doctorId), queryFn: () => catalogApi.getDoctor(doctorId) });
+  const currency = useDisplayCurrency();
+  const query = useQuery({ queryKey: [...qk.doctor(doctorId), { currency }], queryFn: () => phase1Api.getDoctor(doctorId, currency) });
   const d = query.data;
   useDocumentTitle(d?.full_name ?? t('doctorDetail.fallbackTitle'));
   const from = isoDateFromToday(1);
@@ -86,6 +89,7 @@ export function DoctorDetailPage() {
                     <Badge tone="accent">
                       <Video className="h-3 w-3" aria-hidden /> {t('doctorDetail.teleconsult')}
                       {d.consultation_fee_minor != null ? ` · ${formatMoney(d.consultation_fee_minor, d.currency)}` : ''}
+                      {approxText(d.display_consultation_fee, d.currency) ? ` (${approxText(d.display_consultation_fee, d.currency)})` : ''}
                     </Badge>
                   )}
                 </div>
@@ -114,6 +118,7 @@ export function DoctorDetailPage() {
                       <p className="text-sm font-medium">{p.procedure.name}</p>
                       <p className="text-xs text-muted">
                         {formatMoneyRange(p.price_min_minor, p.price_max_minor, p.currency)}
+                        {approxRangeText(p.display_price_min, p.display_price_max, p.currency) ? ` (${approxRangeText(p.display_price_min, p.display_price_max, p.currency)})` : ''}
                         {p.hospital_stay_days ? ` · ${t('doctorDetail.stayDays', { count: p.hospital_stay_days })}` : ''}
                       </p>
                     </div>

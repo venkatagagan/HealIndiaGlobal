@@ -179,13 +179,11 @@ async def attest_patient_consent(
         db,
         patient_user.id,
         CONSENT_NOTIFICATION_KIND,
-        "Please confirm your consent",
-        (
-            f"{agent.agency_name} registered you on Heal India Global and confirmed that you agreed to our "
-            "terms and privacy policy. Please review and confirm these consents when you sign in."
-        ),
-        {"agent_id": str(agent.id), "kinds": [k.value for k in body.consent_kinds], "version": version},
+        data={"agent_id": str(agent.id), "kinds": [k.value for k in body.consent_kinds], "version": version},
         dedupe_key=f"{version}:{','.join(sorted(k.value for k in body.consent_kinds))}",
         email=False,
+        title_key="notifications.agent_consent.title",
+        body_key="notifications.agent_consent.body",
+        params={"agency": agent.agency_name},
     )
     return entry
