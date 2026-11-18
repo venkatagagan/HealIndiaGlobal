@@ -164,6 +164,12 @@ class ConsentKind(StrEnum):
     # sign-up age attestation (CG-24): granted = "I am 18 or older"; granted=False = a patient under 18
     # (a parent or guardian must consent - see ``User.is_adult``)
     AGE_18_PLUS = "age_18_plus"
+    # WhatsApp journey updates to a verified phone number (opt-out: reply STOP or switch off in settings)
+    WHATSAPP_UPDATES = "whatsapp_updates"
+    # the patient shares a discharge summary with their home doctor through a time-limited link
+    SHARE_WITH_HOME_DOCTOR = "share_with_home_doctor"
+    # daily reminders for the medicines on a discharge summary
+    MEDICATION_REMINDERS = "medication_reminders"
 
 
 class SavedEntityType(StrEnum):
@@ -463,7 +469,28 @@ class DocumentKind(StrEnum):
     KYC_ID_PROOF = "kyc_id_proof"
     BANK_PROOF = "bank_proof"
     PAYMENT_PROOF = "payment_proof"
+    DISCHARGE_SUMMARY = "discharge_summary"
     OTHER = "other"
+
+
+class WhatsAppOptInStatus(StrEnum):
+    PENDING = "pending"  # code sent, phone not verified yet
+    ACTIVE = "active"  # verified and opted in
+    OPTED_OUT = "opted_out"  # replied STOP or switched off in settings
+
+
+class WhatsAppMessageStatus(StrEnum):
+    QUEUED = "queued"
+    SENT = "sent"
+    DELIVERED = "delivered"
+    READ = "read"
+    FAILED = "failed"
+    SKIPPED = "skipped"  # rate limit / opted out between enqueue and send
+
+
+class DischargeSummaryStatus(StrEnum):
+    DRAFT = "draft"
+    FINAL = "final"
 
 
 class DocumentStatus(StrEnum):

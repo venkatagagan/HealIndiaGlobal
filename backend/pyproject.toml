@@ -59,7 +59,13 @@ where = ["."]
 include = ["app*"]
 
 [tool.setuptools.package-data]
-app = ["templates/**/*", "i18n/*.json", "i18n/catalogs/*.json"]
+app = [
+    "templates/**/*",
+    "i18n/*.json",
+    "i18n/catalogs/*.json",
+    "assets/fonts/*",
+    "modules/messaging/whatsapp_templates/*.json",
+]
 
 [tool.ruff]
 line-length = 110

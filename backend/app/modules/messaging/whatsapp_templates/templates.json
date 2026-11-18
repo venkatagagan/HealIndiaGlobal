@@ -1,0 +1,201 @@
+{
+  "$comment": "WhatsApp message templates to submit in Meta WhatsApp Manager (docs/integrations/WHATSAPP.md). The name, category and body text of every language must match what Meta approved. Parameters {{1}}.. are filled in order from 'params'. Never put diagnoses, procedures, documents' content or other health details in a template.",
+  "languages": {
+    "en": "en",
+    "ar": "ar",
+    "fr": "fr",
+    "bn": "bn",
+    "ru": "ru"
+  },
+  "name_fallback": {
+    "en": "there",
+    "ar": "عزيزنا المريض",
+    "fr": "à vous",
+    "bn": "বন্ধু",
+    "ru": "уважаемый пациент"
+  },
+  "templates": [
+    {
+      "name": "hig_verification_code",
+      "category": "AUTHENTICATION",
+      "kinds": ["whatsapp.verification"],
+      "roles": [],
+      "params": ["code"],
+      "otp_button": true,
+      "examples": ["482913"],
+      "body": {
+        "en": "{{1}} is your verification code. For your security, do not share this code.",
+        "ar": "{{1}} هو رمز التحقق الخاص بكم. حفاظًا على أمانكم، لا تشاركوا هذا الرمز.",
+        "fr": "{{1}} est votre code de vérification. Pour votre sécurité, ne communiquez pas ce code.",
+        "bn": "{{1}} আপনার যাচাইকরণ কোড। আপনার নিরাপত্তার জন্য এই কোডটি কারও সঙ্গে শেয়ার করবেন না।",
+        "ru": "{{1}} — ваш код подтверждения. В целях безопасности никому не сообщайте этот код."
+      }
+    },
+    {
+      "name": "hig_quote_ready",
+      "category": "UTILITY",
+      "kinds": ["quote.sent"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name", "case_number"],
+      "examples": ["Amara", "HIG-C-2026-000123"],
+      "body": {
+        "en": "Hello {{1}}, a new treatment quote is ready for your case {{2}}. Please open the Heal India Global app to review it.",
+        "ar": "مرحبًا {{1}}، عرض سعر جديد للعلاج جاهز لحالتكم {{2}}. يُرجى فتح تطبيق Heal India Global لمراجعته.",
+        "fr": "Bonjour {{1}}, un nouveau devis de traitement est prêt pour votre dossier {{2}}. Ouvrez l'application Heal India Global pour le consulter.",
+        "bn": "হ্যালো {{1}}, আপনার কেস {{2}}-এর জন্য চিকিৎসার একটি নতুন কোটেশন প্রস্তুত। এটি দেখতে Heal India Global অ্যাপটি খুলুন।",
+        "ru": "Здравствуйте, {{1}}! По вашему обращению {{2}} готово новое предложение по стоимости лечения. Откройте приложение Heal India Global, чтобы ознакомиться с ним."
+      }
+    },
+    {
+      "name": "hig_quote_followup",
+      "category": "UTILITY",
+      "kinds": ["quote.overdue"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name", "case_number"],
+      "examples": ["Amara", "HIG-C-2026-000123"],
+      "body": {
+        "en": "Hello {{1}}, the quote for your case {{2}} is taking longer than expected. Our team is following up with the hospital and will update you soon.",
+        "ar": "مرحبًا {{1}}، يستغرق عرض السعر لحالتكم {{2}} وقتًا أطول من المتوقع. يتابع فريقنا الأمر مع المستشفى وسنوافيكم بالمستجدات قريبًا.",
+        "fr": "Bonjour {{1}}, le devis de votre dossier {{2}} prend plus de temps que prévu. Notre équipe relance l'hôpital et vous tiendra informé très bientôt.",
+        "bn": "হ্যালো {{1}}, আপনার কেস {{2}}-এর কোটেশন আসতে প্রত্যাশার চেয়ে বেশি সময় লাগছে। আমাদের টিম হাসপাতালের সঙ্গে যোগাযোগ করছে এবং শীঘ্রই আপনাকে জানাবে।",
+        "ru": "Здравствуйте, {{1}}! Подготовка предложения по обращению {{2}} занимает больше времени, чем ожидалось. Наша команда связалась с клиникой и скоро сообщит вам новости."
+      }
+    },
+    {
+      "name": "hig_quote_due_hospital",
+      "category": "UTILITY",
+      "kinds": ["quote.reminder_due", "quote.overdue"],
+      "roles": ["hospital"],
+      "params": ["case_number"],
+      "examples": ["HIG-C-2026-000123"],
+      "body": {
+        "en": "Reminder: a patient is waiting for your quote for case {{1}}. Please send it from the Heal India Global hospital portal.",
+        "ar": "تذكير: مريض بانتظار عرض السعر الخاص بكم للحالة {{1}}. يُرجى إرساله من بوابة المستشفيات في Heal India Global.",
+        "fr": "Rappel : un patient attend votre devis pour le dossier {{1}}. Merci de l'envoyer depuis le portail hôpital Heal India Global.",
+        "bn": "রিমাইন্ডার: একজন রোগী কেস {{1}}-এর জন্য আপনার কোটেশনের অপেক্ষায় আছেন। অনুগ্রহ করে Heal India Global হাসপাতাল পোর্টাল থেকে এটি পাঠান।",
+        "ru": "Напоминание: пациент ждёт вашего предложения по обращению {{1}}. Пожалуйста, отправьте его через портал клиники Heal India Global."
+      }
+    },
+    {
+      "name": "hig_booking_confirmed",
+      "category": "UTILITY",
+      "kinds": ["booking.confirmed"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name", "booking_number"],
+      "examples": ["Amara", "HIG-B-2026-000045"],
+      "body": {
+        "en": "Hello {{1}}, your booking {{2}} is confirmed. Open the Heal India Global app to see the next steps for your trip.",
+        "ar": "مرحبًا {{1}}، تم تأكيد حجزكم {{2}}. افتحوا تطبيق Heal India Global للاطلاع على الخطوات التالية لرحلتكم.",
+        "fr": "Bonjour {{1}}, votre réservation {{2}} est confirmée. Ouvrez l'application Heal India Global pour voir les prochaines étapes de votre voyage.",
+        "bn": "হ্যালো {{1}}, আপনার বুকিং {{2}} নিশ্চিত হয়েছে। আপনার যাত্রার পরবর্তী ধাপগুলো দেখতে Heal India Global অ্যাপটি খুলুন।",
+        "ru": "Здравствуйте, {{1}}! Ваше бронирование {{2}} подтверждено. Откройте приложение Heal India Global, чтобы узнать следующие шаги вашей поездки."
+      }
+    },
+    {
+      "name": "hig_consultation_reminder",
+      "category": "UTILITY",
+      "kinds": ["consultation.reminder"],
+      "roles": ["patient", "agent", "hospital"],
+      "params": ["first_name", "when", "join_link"],
+      "examples": ["Amara", "12 Dec 2026, 10:30 IST", "https://meet.jit.si/hig-3f9c2a7d"],
+      "body": {
+        "en": "Hello {{1}}, reminder: your video consultation is on {{2}}. Join the call with this link: {{3}} (please join a few minutes early).",
+        "ar": "مرحبًا {{1}}، تذكير: موعد استشارتكم بالفيديو {{2}}. انضموا إلى المكالمة عبر هذا الرابط: {{3}} (يُرجى الانضمام قبل الموعد ببضع دقائق).",
+        "fr": "Bonjour {{1}}, rappel : votre téléconsultation vidéo a lieu le {{2}}. Rejoignez l'appel avec ce lien : {{3}} (connectez-vous quelques minutes en avance).",
+        "bn": "হ্যালো {{1}}, রিমাইন্ডার: আপনার ভিডিও কনসালটেশন {{2}}-এ। এই লিঙ্ক দিয়ে কলে যোগ দিন: {{3}} (অনুগ্রহ করে কয়েক মিনিট আগে যোগ দিন)।",
+        "ru": "Здравствуйте, {{1}}! Напоминаем: ваша видеоконсультация состоится {{2}}. Подключитесь к звонку по ссылке: {{3}} (пожалуйста, подключитесь за несколько минут)."
+      }
+    },
+    {
+      "name": "hig_visa_letter_ready",
+      "category": "UTILITY",
+      "kinds": ["visa.invitation_issued"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name"],
+      "examples": ["Amara"],
+      "body": {
+        "en": "Hello {{1}}, the hospital invitation letter for your visa application is ready. You can download it from your documents in the Heal India Global app.",
+        "ar": "مرحبًا {{1}}، رسالة الدعوة من المستشفى لطلب التأشيرة جاهزة. يمكنكم تنزيلها من مستنداتكم في تطبيق Heal India Global.",
+        "fr": "Bonjour {{1}}, la lettre d'invitation de l'hôpital pour votre demande de visa est prête. Vous pouvez la télécharger depuis vos documents dans l'application Heal India Global.",
+        "bn": "হ্যালো {{1}}, আপনার ভিসার আবেদনের জন্য হাসপাতালের আমন্ত্রণপত্র প্রস্তুত। Heal India Global অ্যাপে আপনার নথি থেকে এটি ডাউনলোড করতে পারবেন।",
+        "ru": "Здравствуйте, {{1}}! Приглашение от клиники для оформления визы готово. Вы можете скачать его в разделе документов в приложении Heal India Global."
+      }
+    },
+    {
+      "name": "hig_payment_received",
+      "category": "UTILITY",
+      "kinds": ["payment.captured"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name", "amount"],
+      "examples": ["Amara", "USD 1,200.00"],
+      "body": {
+        "en": "Hello {{1}}, we have received your payment of {{2}}. Thank you! Your receipt is available in the Heal India Global app.",
+        "ar": "مرحبًا {{1}}، استلمنا دفعتكم بمبلغ {{2}}. شكرًا لكم! الإيصال متاح في تطبيق Heal India Global.",
+        "fr": "Bonjour {{1}}, nous avons bien reçu votre paiement de {{2}}. Merci ! Votre reçu est disponible dans l'application Heal India Global.",
+        "bn": "হ্যালো {{1}}, আমরা আপনার {{2}} পেমেন্ট পেয়েছি। ধন্যবাদ! আপনার রসিদ Heal India Global অ্যাপে পাওয়া যাবে।",
+        "ru": "Здравствуйте, {{1}}! Мы получили ваш платёж на сумму {{2}}. Спасибо! Квитанция доступна в приложении Heal India Global."
+      }
+    },
+    {
+      "name": "hig_installment_due",
+      "category": "UTILITY",
+      "kinds": ["installment.due"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name", "amount", "booking_number", "date"],
+      "examples": ["Amara", "USD 400.00", "HIG-B-2026-000045", "2026-12-15"],
+      "body": {
+        "en": "Hello {{1}}, a payment of {{2}} for booking {{3}} is due on {{4}}. You can pay securely in the Heal India Global app.",
+        "ar": "مرحبًا {{1}}، يستحق سداد دفعة بمبلغ {{2}} للحجز {{3}} في {{4}}. يمكنكم الدفع بأمان في تطبيق Heal India Global.",
+        "fr": "Bonjour {{1}}, un paiement de {{2}} pour la réservation {{3}} est dû le {{4}}. Vous pouvez payer en toute sécurité dans l'application Heal India Global.",
+        "bn": "হ্যালো {{1}}, বুকিং {{3}}-এর জন্য {{2}} পেমেন্ট {{4}} তারিখে দিতে হবে। Heal India Global অ্যাপে নিরাপদে পেমেন্ট করতে পারবেন।",
+        "ru": "Здравствуйте, {{1}}! Платёж на сумму {{2}} по бронированию {{3}} нужно внести до {{4}}. Оплатить можно безопасно в приложении Heal India Global."
+      }
+    },
+    {
+      "name": "hig_aftercare_checkin",
+      "category": "UTILITY",
+      "kinds": ["aftercare.checkin_due"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name"],
+      "examples": ["Amara"],
+      "body": {
+        "en": "Hello {{1}}, it is time for your recovery check-in. Please answer a few short questions in the Heal India Global app so your care team can follow your progress.",
+        "ar": "مرحبًا {{1}}، حان وقت متابعة تعافيكم. يُرجى الإجابة عن بضعة أسئلة قصيرة في تطبيق Heal India Global ليتمكن فريق الرعاية من متابعة تقدّمكم.",
+        "fr": "Bonjour {{1}}, c'est le moment de votre suivi de convalescence. Répondez à quelques questions rapides dans l'application Heal India Global pour que votre équipe soignante suive vos progrès.",
+        "bn": "হ্যালো {{1}}, আপনার সেরে ওঠার চেক-ইনের সময় হয়েছে। আপনার চিকিৎসা দল যাতে আপনার অগ্রগতি জানতে পারে, সেজন্য Heal India Global অ্যাপে কয়েকটি ছোট প্রশ্নের উত্তর দিন।",
+        "ru": "Здравствуйте, {{1}}! Пора пройти контроль восстановления. Ответьте на несколько коротких вопросов в приложении Heal India Global, чтобы ваша медицинская команда могла следить за вашим состоянием."
+      }
+    },
+    {
+      "name": "hig_sos_acknowledged",
+      "category": "UTILITY",
+      "kinds": ["sos.updated"],
+      "roles": ["patient", "agent"],
+      "when": {"status": "acknowledged"},
+      "params": ["first_name"],
+      "examples": ["Amara"],
+      "body": {
+        "en": "Hello {{1}}, our support team has received your SOS and is following up now. Please keep your phone with you.",
+        "ar": "مرحبًا {{1}}، استلم فريق الدعم لدينا نداء SOS الخاص بكم ويتابعه الآن. يُرجى إبقاء هاتفكم بالقرب منكم.",
+        "fr": "Bonjour {{1}}, notre équipe d'assistance a bien reçu votre SOS et s'en occupe dès maintenant. Gardez votre téléphone près de vous.",
+        "bn": "হ্যালো {{1}}, আমাদের সাপোর্ট টিম আপনার SOS পেয়েছে এবং এখনই ব্যবস্থা নিচ্ছে। আপনার ফোন সবসময় সাথে রাখুন।",
+        "ru": "Здравствуйте, {{1}}! Наша служба поддержки получила ваш сигнал SOS и уже занимается им. Пожалуйста, держите телефон при себе."
+      }
+    },
+    {
+      "name": "hig_document_ready",
+      "category": "UTILITY",
+      "kinds": ["discharge_summary.finalized"],
+      "roles": ["patient", "agent"],
+      "params": ["first_name"],
+      "examples": ["Amara"],
+      "body": {
+        "en": "Hello {{1}}, your hospital has shared a new document with you. Open the Heal India Global app to view and download it.",
+        "ar": "مرحبًا {{1}}، شارك المستشفى معكم مستندًا جديدًا. افتحوا تطبيق Heal India Global لعرضه وتنزيله.",
+        "fr": "Bonjour {{1}}, votre hôpital a partagé un nouveau document avec vous. Ouvrez l'application Heal India Global pour le consulter et le télécharger.",
+        "bn": "হ্যালো {{1}}, আপনার হাসপাতাল আপনার সঙ্গে একটি নতুন নথি শেয়ার করেছে। এটি দেখতে ও ডাউনলোড করতে Heal India Global অ্যাপটি খুলুন।",
+        "ru": "Здравствуйте, {{1}}! Клиника отправила вам новый документ. Откройте приложение Heal India Global, чтобы просмотреть и скачать его."
+      }
+    }
+  ]
+}

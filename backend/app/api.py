@@ -15,6 +15,7 @@ from app.modules.agents.router import router as agents_router
 from app.modules.auth.router import router as auth_router
 from app.modules.cases.router import router as cases_router
 from app.modules.catalog.router import router as catalog_router
+from app.modules.discharge.router import router as discharge_router
 from app.modules.docai.router import router as docai_router
 from app.modules.documents.router import router as documents_router
 from app.modules.guests.router import router as guests_router
@@ -22,6 +23,7 @@ from app.modules.hospitals.router import router as hospitals_router
 from app.modules.i18n.router import router as i18n_router
 from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
+from app.modules.messaging.whatsapp_router import router as whatsapp_router
 from app.modules.moderation.router import router as moderation_router
 from app.modules.patients.router import router as patients_router
 from app.modules.payments.router import router as payments_router
@@ -57,5 +59,7 @@ for _router in (
     trust_router,
     guests_router,
     i18n_router,
+    whatsapp_router,
+    discharge_router,
 ):
     api_router.include_router(_router)

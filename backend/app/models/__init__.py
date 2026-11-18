@@ -16,6 +16,7 @@ from app.models.cases import (
     Quote,
 )
 from app.models.catalog import CostBenchmark, CulturalTip, FxRate, PlatformSetting, Procedure, Specialty
+from app.models.discharge import DischargeShare, DischargeSummary, MedicationReminder
 from app.models.docai import DocumentAnalysis
 from app.models.documents import Document
 from app.models.guests import GuestAiUsage, GuestContactVerification, IntroConsultation
@@ -61,6 +62,7 @@ from app.models.travel import (
     VisaRequest,
 )
 from app.models.voice import VoiceTranscription
+from app.models.whatsapp import WhatsAppMessage, WhatsAppOptIn
 
 #: PostgreSQL extensions the schema needs (create before ``metadata.create_all``).
 REQUIRED_EXTENSIONS: tuple[str, ...] = ("citext", "pg_trgm", "btree_gin", "pgcrypto")
@@ -155,4 +157,10 @@ __all__ = [
     "VoiceTranscription",
     "WebhookEvent",
     "next_number",
+    # WhatsApp channel + discharge summaries (feat-whatsapp-fhir)
+    "DischargeShare",
+    "DischargeSummary",
+    "MedicationReminder",
+    "WhatsAppMessage",
+    "WhatsAppOptIn",
 ]

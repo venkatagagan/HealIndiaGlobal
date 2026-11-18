@@ -6,7 +6,9 @@
 
 ``notify`` adds a ``notifications`` row in the caller's transaction (no commit), queues the realtime event
 ``notification.created`` for after the commit, and - for important kinds, when the user has an email -
-enqueues the ``messaging.send_email`` job. With ``dedupe_key`` it is idempotent per user.
+enqueues the ``messaging.send_email`` job (plus ``messaging.send_push`` for registered devices and
+``messaging.send_whatsapp`` for users who opted in to WhatsApp and kinds with an approved template). With
+``dedupe_key`` it is idempotent per user.
 
 Translated notifications (preferred): pass catalog keys instead of English text; they are rendered in each
 RECIPIENT's language (``app.i18n.recipient_locale``: their ``preferred_language`` when it is enabled, else
@@ -37,7 +39,7 @@ from app.core.jobs import enqueue
 from app.i18n import Msg, recipient_locale, t
 from app.i18n import runtime as i18n_runtime
 from app.models import Notification, User
-from app.modules.messaging import push
+from app.modules.messaging import push, whatsapp
 from app.modules.messaging.outbox import queue_realtime
 from app.modules.messaging.policies import is_active_user
 from app.modules.messaging.schemas import NotificationOut
@@ -198,6 +200,9 @@ async def notify(
             {"notification_id": str(notification.id)},
             dedupe_key=f"notif-push:{notification.id}",
         )
+    if whatsapp.whatsapp_configured():
+        # Opted-in users also get the kind's pre-approved WhatsApp template (generic, non-clinical text).
+        await whatsapp.maybe_enqueue(db, user, notification, params)
     return notification
 
 

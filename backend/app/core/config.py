@@ -222,6 +222,25 @@ class Settings(BaseSettings):
     # and tests only); "none" means phone codes cannot be sent (guests verify by email instead).
     SMS_PROVIDER: Literal["console", "none"] = "console"
 
+    # --- WhatsApp channel (docs/integrations/WHATSAPP.md) -------------------------------------------------
+    # "meta" = Meta WhatsApp Cloud API (Graph API). "none" disables WhatsApp cleanly (no jobs, opt-in shows
+    # "not available"). Business-initiated messages only use the pre-approved templates in
+    # app/modules/messaging/whatsapp_templates/templates.json. WHATSAPP_ACCESS_TOKEN is a secret (system-user
+    # token); WHATSAPP_APP_SECRET signs webhooks (X-Hub-Signature-256); WHATSAPP_VERIFY_TOKEN answers Meta's
+    # webhook verification challenge.
+    WHATSAPP_PROVIDER: Literal["none", "meta"] = "none"
+    WHATSAPP_PHONE_NUMBER_ID: str = ""
+    WHATSAPP_ACCESS_TOKEN: str = ""
+    WHATSAPP_APP_SECRET: str = ""
+    WHATSAPP_VERIFY_TOKEN: str = ""
+    WHATSAPP_GRAPH_API_VERSION: str = Field(default="v21.0", pattern=r"^v\d{1,3}\.\d{1,3}$")
+    # Business-initiated template messages per user per day (anti-spam; verification codes excluded).
+    WHATSAPP_USER_DAILY_LIMIT: int = Field(default=10, ge=1, le=100)
+
+    # --- discharge summaries / home-doctor share ------------------------------------------------------------
+    DISCHARGE_SHARE_DEFAULT_DAYS: int = Field(default=14, ge=1, le=90)
+    DISCHARGE_SHARE_MAX_DAYS: int = Field(default=30, ge=1, le=365)
+
     # --- worker / ops --------------------------------------------------------------------------------------
     RUN_WORKER_IN_API: bool = True
     WORKER_POLL_INTERVAL_SECONDS: float = Field(default=2.0, gt=0)
