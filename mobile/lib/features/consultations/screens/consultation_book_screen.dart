@@ -201,7 +201,9 @@ class _ConsultationBookScreenState extends ConsumerState<ConsultationBookScreen>
     final hospital = ref.watch(hospitalDetailProvider(widget.hospitalId)).value;
     final list = doctors.value ?? const <DoctorCard>[];
     final doctor = list.where((d) => d.id == _doctorId).firstOrNull ?? (list.length == 1 ? list.first : null);
-    if (doctor != null && _doctorId == null) _doctorId = doctor.id;
+    // Only a tele-consult doctor of this hospital can be booked; a preselected doctor who does not offer video
+    // consultations is dropped (the only such doctor, if there is just one, is picked).
+    if (doctors.hasValue) _doctorId = doctor?.id;
     final hospitalName = hospital?.name ?? doctor?.hospital.name ?? '';
     return Scaffold(
       appBar: AppBar(title: Text(l10n.consultBookTitle)),
