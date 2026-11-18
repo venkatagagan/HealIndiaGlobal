@@ -1473,5 +1473,35 @@
       "caseClosed": "Le dossier du patient avec cet hôpital est clos. Envoyez d'abord une nouvelle demande.",
       "failed": "La demande de consultation n'a pas pu être envoyée. Veuillez réessayer."
     }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Assistance",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "contactSupport": "Contacter l'assistance",
+    "emptyTitle": "Aucune conversation pour l'instant",
+    "noMessages": "Aucun message pour l'instant",
+    "openingCase": "Ouverture de la conversation du dossier...",
+    "notFound": "Conversation introuvable",
+    "notFoundText": "Elle a peut-être été supprimée ou vous n'y avez plus accès.",
+    "selectTitle": "Sélectionnez une conversation",
+    "backToConversations": "Retour aux conversations",
+    "openCase": "Ouvrir le dossier",
+    "loadEarlier": "Charger les messages précédents",
+    "sayHello": "Aucun message pour l'instant. Dites bonjour !",
+    "hidden": "Masqué par les modérateurs",
+    "reportFrom": "Signaler le message de {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Écrivez un message... (Entrée pour envoyer, Maj+Entrée pour aller à la ligne)",
+    "send": "Envoyer le message",
+    "supportReply": "Notre équipe de prise en charge répond généralement en quelques heures.",
+    "cancel": "Annuler",
+    "start": "Démarrer la conversation",
+    "subject": "Objet",
+    "description": "Échangez avec les hôpitaux, les coordinateurs et l'assistance au sujet de vos dossiers.",
+    "emptyText": "Une conversation est créée automatiquement pour chaque dossier.",
+    "attachments_one": "{{count}} pièce jointe - voir les documents du dossier",
+    "attachments_other": "{{count}} pièces jointes - voir les documents du dossier"
   }
 }

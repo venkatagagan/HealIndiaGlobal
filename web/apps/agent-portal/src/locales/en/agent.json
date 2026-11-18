@@ -1473,5 +1473,35 @@
       "caseClosed": "The patient's case with this hospital is closed. Send a new enquiry first.",
       "failed": "The consultation request could not be sent. Please try again."
     }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Support",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "contactSupport": "Contact support",
+    "emptyTitle": "No conversations yet",
+    "noMessages": "No messages yet",
+    "openingCase": "Opening case conversation...",
+    "notFound": "Conversation not found",
+    "notFoundText": "It may have been removed or you no longer have access.",
+    "selectTitle": "Select a conversation",
+    "backToConversations": "Back to conversations",
+    "openCase": "Open case",
+    "loadEarlier": "Load earlier messages",
+    "sayHello": "No messages yet. Say hello!",
+    "hidden": "Hidden by moderators",
+    "reportFrom": "Report message from {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Write a message... (Enter to send, Shift+Enter for a new line)",
+    "send": "Send message",
+    "supportReply": "Our patient-care team usually replies within a few hours.",
+    "cancel": "Cancel",
+    "start": "Start conversation",
+    "subject": "Subject",
+    "description": "Talk to hospitals, coordinators and support about your cases.",
+    "emptyText": "A conversation is created automatically for every case.",
+    "attachments_one": "{{count}} attachment - see case documents",
+    "attachments_other": "{{count}} attachments - see case documents"
   }
 }

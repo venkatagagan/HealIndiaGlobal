@@ -919,6 +919,75 @@
       "passwordSame": "Choose a different password",
       "phone": "Enter a valid phone number with country code",
       "required": "Required"
+    },
+    "privacyData": {
+      "cancel": "Cancel",
+      "download": {
+        "title": "Download my data",
+        "description": "Get a copy of everything we hold about you: a ZIP file with your data in a machine-readable format (JSON) and your documents.",
+        "button": "Download my data",
+        "started": "Your data is downloading"
+      },
+      "nominee": {
+        "title": "Nominee",
+        "description": "Choose someone who can use your privacy rights for you if you die or cannot act yourself.",
+        "fullName": "Full name",
+        "relationship": "Relationship to you",
+        "email": "Email",
+        "phone": "Phone",
+        "contactHint": "Email or phone is needed",
+        "save": "Save nominee",
+        "saved": "Nominee saved",
+        "removed": "Nominee removed",
+        "change": "Change",
+        "remove": "Remove",
+        "add": "Add a nominee"
+      },
+      "log": {
+        "title": "Who viewed my records",
+        "description": "Every time someone other than you opens your documents, screenings, AI results or medical history, we record it here.",
+        "empty": "Nobody else has viewed your records yet",
+        "someone": "Someone",
+        "reason": "Reason: {{reason}}",
+        "roles": {
+          "hospital": "Hospital",
+          "agent": "Your agent",
+          "staff": "Heal India Global staff",
+          "support": "Care coordinator",
+          "finance": "Finance team"
+        },
+        "actions": {
+          "view": "{{who}} ({{role}}) viewed {{what}}",
+          "download": "{{who}} ({{role}}) downloaded {{what}}",
+          "list": "{{who}} ({{role}}) saw {{what}} in a list",
+          "breakGlass": "{{who}} ({{role}}) used emergency access to {{what}}"
+        },
+        "resources": {
+          "document": "a document",
+          "screening": "a screening",
+          "documentAnalysis": "an AI report reading",
+          "voiceTranscription": "a voice transcript",
+          "patientProfile": "your medical history",
+          "record": "a record"
+        }
+      },
+      "requests": {
+        "title": "Privacy requests and complaints",
+        "kind": "What do you need?",
+        "details": "Details",
+        "detailsHint": "At least 10 characters",
+        "send": "Send request",
+        "sent": "Request sent. Your reference is {{reference}}.",
+        "replyBy": "Reply by {{date}}",
+        "answer": "Our answer: {{answer}}",
+        "description_one": "Ask us to correct or erase data, withdraw a consent, or raise a complaint. We reply within {{count}} day.",
+        "description_other": "Ask us to correct or erase data, withdraw a consent, or raise a complaint. We reply within {{count}} days."
+      },
+      "officer": {
+        "title": "Grievance Officer",
+        "inPolicy": "Contact details are listed in our privacy policy.",
+        "board": "If you are not happy with our answer, you can complain to the Data Protection Board of India."
+      }
     }
   },
   "razorpay": {
@@ -1313,7 +1382,74 @@
       "voicePrompt": "<0>Prefer to talk?</0> Describe your problem by voice in your own language - we fill in the answers and you check them before anything is saved."
     },
     "results": {
-      "requestQuotes": "Request quotes"
+      "requestQuotes": "Request quotes",
+      "title": "Your top matches",
+      "basedOn": "Based on your {{specialty}} answers.",
+      "basedOnGeneral": "Based on your screening answers.",
+      "newScreening": "New screening",
+      "emergencyBody": "Your answers include warning signs that need immediate medical attention. Please do not wait to travel - call your local emergency number or go to the nearest emergency department now.",
+      "summary": "Screening summary",
+      "aiAssisted": "AI assisted",
+      "ruleBased": "Rule-based",
+      "possibleConditions": "Possible conditions to discuss with a doctor",
+      "likelihood": "{{level}} likelihood",
+      "suggestedSpecialties": "Suggested specialties",
+      "procedures": "Procedures that may be considered",
+      "disclaimer": "This is not a medical diagnosis. It is a triage summary to help you find the right specialists. A qualified doctor will review your case.",
+      "report": "Report this result",
+      "noSummary": "No summary is available for this screening.",
+      "prepare": "Prepare for your consultation",
+      "urgencyLabel": "Urgency:",
+      "tests": "Recommended tests",
+      "questions": "Questions for your doctor",
+      "travelAdvice": "Travel advice",
+      "laterReference": "Specialists for later reference",
+      "matched": "Matched doctors & hospitals",
+      "laterReferenceHint": "Once you have been seen locally and are stable, you can come back to request quotes.",
+      "matchedHint": "Narrow the list with the filters, select up to {{max}} to compare side by side, or request a quote directly.",
+      "ratingAtLeast": "{{rating}} and above",
+      "noFiltered": "No matches with these filters",
+      "noMatchesTitle": "No matches found yet",
+      "noMatchesText": "We could not find a suitable specialist automatically. Our coordinators can help - send us a message.",
+      "messageCoordinator": "Message a coordinator",
+      "compare": "Compare",
+      "urgency": {
+        "routine": {
+          "title": "Routine - plan at your convenience",
+          "body": "Your answers do not suggest an urgent problem. You can plan treatment in your preferred travel window."
+        },
+        "soon": {
+          "title": "Recommended soon",
+          "body": "We suggest arranging a consultation within the next few weeks."
+        },
+        "urgent": {
+          "title": "Urgent - please see a doctor soon",
+          "body": "Some answers need prompt medical attention. Please see a doctor locally in the next few days, even while you plan treatment in India."
+        },
+        "emergency": {
+          "title": "Emergency - seek local care now",
+          "body": "Your answers include warning signs that need immediate medical attention."
+        }
+      },
+      "sort": {
+        "bestMatch": "Best match",
+        "lowestCost": "Lowest cost",
+        "highestRated": "Highest rated",
+        "successRate": "Success rate"
+      },
+      "filters": {
+        "specialty": "Specialty",
+        "language": "Language",
+        "budget": "Within my budget",
+        "city": "City",
+        "accreditation": "Accreditation",
+        "price": "Price",
+        "rating": "Rating"
+      },
+      "resultCount_one": "{{shown}} of {{total}} match",
+      "resultCount_other": "{{shown}} of {{total}} matches",
+      "selectedForCompare_one": "{{n}}/{{max}} selected for comparison",
+      "selectedForCompare_other": "{{n}}/{{max}} selected for comparison"
     }
   },
   "shell": {
@@ -2246,6 +2382,40 @@
       "summary": "Summary",
       "doctor": "Doctor",
       "time": "Time"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Support",
+    "conversation": "Conversation",
+    "supportFailed": "Could not reach support.",
+    "live": "Live",
+    "connecting": "Connecting...",
+    "contactSupport": "Contact support",
+    "emptyTitle": "No conversations yet",
+    "noMessages": "No messages yet",
+    "notFound": "Conversation not found",
+    "backToMessages": "Back to messages",
+    "selectTitle": "Select a conversation",
+    "selectText": "Chat with your coordinator and the hospital team.",
+    "sharedDocument": "Shared a document",
+    "notSent": "Message not sent.",
+    "backToConversations": "Back to conversations",
+    "viewCase": "View case",
+    "sayHello": "No messages yet. Say hello!",
+    "removeAttachment": "Remove {{name}}",
+    "placeholder": "Write a message...",
+    "messageLabel": "Message",
+    "send": "Send message",
+    "attachmentUnavailable": "Attachment unavailable.",
+    "attachment": "Attachment {{n}}",
+    "hidden": "Hidden by moderators",
+    "reportFrom": "Report message from {{name}}",
+    "emptyText": "A conversation with the hospital opens automatically when you request a quote.",
+    "roles": {
+      "hospital": "Hospital",
+      "patient": "Patient",
+      "team": "Heal India Global"
     }
   }
 }

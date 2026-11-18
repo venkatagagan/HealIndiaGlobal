@@ -14,6 +14,7 @@ import {
   privacyApi,
   type DataRightsRequestKind,
 } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { formatDate, formatDateTime } from '../../lib/shared';
 import {
   Badge,
@@ -37,35 +38,37 @@ const keys = {
   contact: ['privacy', 'contact'] as const,
 };
 
-const ACTION_LABELS: Record<string, string> = {
-  'phi.view': 'Viewed',
-  'phi.download': 'Downloaded',
-  'phi.list': 'Saw in a list',
-  'phi.break_glass': 'Emergency access',
+/** Access-log codes -> catalog keys (`profile.privacyData.log.*`); unknown codes fall back to a generic text. */
+const ACTION_KEYS: Record<string, string> = {
+  'phi.view': 'view',
+  'phi.download': 'download',
+  'phi.list': 'list',
+  'phi.break_glass': 'breakGlass',
 };
-const RESOURCE_LABELS: Record<string, string> = {
-  document: 'a document',
-  screening: 'a screening',
-  document_analysis: 'an AI report reading',
-  voice_transcription: 'a voice transcript',
-  patient_profile: 'your medical history',
+const RESOURCE_KEYS: Record<string, string> = {
+  document: 'document',
+  screening: 'screening',
+  document_analysis: 'documentAnalysis',
+  voice_transcription: 'voiceTranscription',
+  patient_profile: 'patientProfile',
 };
-const ROLE_LABELS: Record<string, string> = {
-  hospital: 'Hospital',
-  agent: 'Your agent',
-  admin: 'Heal India Global staff',
-  super_admin: 'Heal India Global staff',
-  support: 'Care coordinator',
-  finance: 'Finance team',
+const ROLE_KEYS: Record<string, string> = {
+  hospital: 'hospital',
+  agent: 'agent',
+  admin: 'staff',
+  super_admin: 'staff',
+  support: 'support',
+  finance: 'finance',
 };
 
 export function DownloadMyDataCard() {
+  const { t } = useAppTranslation();
   const [busy, setBusy] = useState(false);
   const download = async () => {
     setBusy(true);
     try {
       await privacyApi.downloadMyData('zip');
-      toast.success('Your data is downloading');
+      toast.success(t('profile.privacyData.download.started'));
     } catch (err) {
       toast.error(errorMessage(err));
     } finally {
@@ -75,12 +78,12 @@ export function DownloadMyDataCard() {
   return (
     <Card>
       <CardHeader
-        title="Download my data"
-        description="Get a copy of everything we hold about you: a ZIP file with your data in a machine-readable format (JSON) and your documents."
+        title={t('profile.privacyData.download.title')}
+        description={t('profile.privacyData.download.description')}
       />
       <CardBody>
         <Button icon={<Download className="size-4" aria-hidden />} loading={busy} onClick={() => void download()}>
-          Download my data
+          {t('profile.privacyData.download.button')}
         </Button>
       </CardBody>
     </Card>
@@ -88,6 +91,7 @@ export function DownloadMyDataCard() {
 }
 
 export function NomineeCard() {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
   const nominee = useQuery({ queryKey: keys.nominee, queryFn: privacyApi.nominee });
   const [form, setForm] = useState({ full_name: '', relationship: '', email: '', phone: '' });
@@ -101,7 +105,7 @@ export function NomineeCard() {
         phone: form.phone || null,
       }),
     onSuccess: () => {
-      toast.success('Nominee saved');
+      toast.success(t('profile.privacyData.nominee.saved'));
       setEditing(false);
       void qc.invalidateQueries({ queryKey: keys.nominee });
     },
@@ -110,7 +114,7 @@ export function NomineeCard() {
   const remove = useMutation({
     mutationFn: privacyApi.removeNominee,
     onSuccess: () => {
-      toast.success('Nominee removed');
+      toast.success(t('profile.privacyData.nominee.removed'));
       void qc.invalidateQueries({ queryKey: keys.nominee });
     },
     onError: (err) => toast.error(errorMessage(err)),
@@ -129,8 +133,8 @@ export function NomineeCard() {
   return (
     <Card>
       <CardHeader
-        title="Nominee"
-        description="Choose someone who can use your privacy rights for you if you die or cannot act yourself."
+        title={t('profile.privacyData.nominee.title')}
+        description={t('profile.privacyData.nominee.description')}
       />
       <CardBody className="space-y-4">
         {nominee.isPending ? (
@@ -145,7 +149,7 @@ export function NomineeCard() {
               save.mutate();
             }}
           >
-            <Field label="Full name" htmlFor="nominee-name" required>
+            <Field label={t('profile.privacyData.nominee.fullName')} htmlFor="nominee-name" required>
               <Input
                 id="nominee-name"
                 value={form.full_name}
@@ -154,7 +158,7 @@ export function NomineeCard() {
                 minLength={2}
               />
             </Field>
-            <Field label="Relationship to you" htmlFor="nominee-rel" required>
+            <Field label={t('profile.privacyData.nominee.relationship')} htmlFor="nominee-rel" required>
               <Input
                 id="nominee-rel"
                 value={form.relationship}
@@ -163,18 +167,18 @@ export function NomineeCard() {
                 minLength={2}
               />
             </Field>
-            <Field label="Email" htmlFor="nominee-email" hint="Email or phone is needed">
+            <Field label={t('profile.privacyData.nominee.email')} htmlFor="nominee-email" hint={t('profile.privacyData.nominee.contactHint')}>
               <Input id="nominee-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </Field>
-            <Field label="Phone" htmlFor="nominee-phone">
+            <Field label={t('profile.privacyData.nominee.phone')} htmlFor="nominee-phone">
               <Input id="nominee-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </Field>
             <div className="flex gap-2 sm:col-span-2">
               <Button type="submit" loading={save.isPending}>
-                Save nominee
+                {t('profile.privacyData.nominee.save')}
               </Button>
               <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
-                Cancel
+                {t('profile.privacyData.cancel')}
               </Button>
             </div>
           </form>
@@ -188,16 +192,16 @@ export function NomineeCard() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={startEdit}>
-                Change
+                {t('profile.privacyData.nominee.change')}
               </Button>
               <Button variant="ghost" size="sm" loading={remove.isPending} onClick={() => remove.mutate()}>
-                Remove
+                {t('profile.privacyData.nominee.remove')}
               </Button>
             </div>
           </div>
         ) : (
           <Button variant="outline" icon={<UserRoundCheck className="size-4" aria-hidden />} onClick={startEdit}>
-            Add a nominee
+            {t('profile.privacyData.nominee.add')}
           </Button>
         )}
       </CardBody>
@@ -206,12 +210,15 @@ export function NomineeCard() {
 }
 
 export function AccessLogCard() {
+  const { t } = useAppTranslation();
+  const roleLabel = (role: string | null | undefined) =>
+    role && ROLE_KEYS[role] ? t(`profile.privacyData.log.roles.${ROLE_KEYS[role]}`) : (role ?? '');
   const log = useQuery({ queryKey: keys.accessLog, queryFn: privacyApi.accessLog });
   return (
     <Card>
       <CardHeader
-        title="Who viewed my records"
-        description="Every time someone other than you opens your documents, screenings, AI results or medical history, we record it here."
+        title={t('profile.privacyData.log.title')}
+        description={t('profile.privacyData.log.description')}
       />
       <CardBody>
         {log.isPending ? (
@@ -219,18 +226,20 @@ export function AccessLogCard() {
         ) : log.isError ? (
           <ErrorState error={log.error} onRetry={() => void log.refetch()} />
         ) : log.data.length === 0 ? (
-          <EmptyState icon={<Eye className="size-6" aria-hidden />} title="Nobody else has viewed your records yet" />
+          <EmptyState icon={<Eye className="size-6" aria-hidden />} title={t('profile.privacyData.log.empty')} />
         ) : (
           <ul className="divide-y divide-border">
             {log.data.slice(0, 50).map((entry, index) => (
               <li key={`${entry.at}-${index}`} className="flex flex-wrap items-baseline justify-between gap-2 py-2 text-sm">
                 <span>
-                  <span className="font-medium text-fg">
-                    {entry.viewer_name || ROLE_LABELS[entry.viewer_role ?? ''] || 'Someone'}
-                  </span>{' '}
-                  <span className="text-muted">({ROLE_LABELS[entry.viewer_role ?? ''] ?? entry.viewer_role})</span>{' '}
-                  {(ACTION_LABELS[entry.action] ?? 'Viewed').toLowerCase()} {RESOURCE_LABELS[entry.resource_type ?? ''] ?? 'a record'}
-                  {entry.reason ? <span className="block text-xs text-muted">Reason: {entry.reason}</span> : null}
+                  {t(`profile.privacyData.log.actions.${ACTION_KEYS[entry.action] ?? 'view'}`, {
+                    who: entry.viewer_name || roleLabel(entry.viewer_role) || t('profile.privacyData.log.someone'),
+                    role: roleLabel(entry.viewer_role),
+                    what: t(`profile.privacyData.log.resources.${RESOURCE_KEYS[entry.resource_type ?? ''] ?? 'record'}`),
+                  })}
+                  {entry.reason ? (
+                    <span className="block text-xs text-muted">{t('profile.privacyData.log.reason', { reason: entry.reason })}</span>
+                  ) : null}
                 </span>
                 <span className="text-xs text-muted">{formatDateTime(entry.at)}</span>
               </li>
@@ -243,6 +252,7 @@ export function AccessLogCard() {
 }
 
 export function PrivacyRequestsCard() {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
   const requests = useQuery({ queryKey: keys.requests, queryFn: privacyApi.myRequests });
   const contact = useQuery({ queryKey: keys.contact, queryFn: privacyApi.contact, staleTime: 5 * 60_000 });
@@ -251,7 +261,7 @@ export function PrivacyRequestsCard() {
   const create = useMutation({
     mutationFn: () => privacyApi.createRequest({ kind, details, channel: 'web' }),
     onSuccess: (out) => {
-      toast.success(`Request sent. Your reference is ${out.reference}.`);
+      toast.success(t('profile.privacyData.requests.sent', { reference: out.reference }));
       setDetails('');
       void qc.invalidateQueries({ queryKey: keys.requests });
     },
@@ -262,8 +272,8 @@ export function PrivacyRequestsCard() {
   return (
     <Card>
       <CardHeader
-        title="Privacy requests and complaints"
-        description={`Ask us to correct or erase data, withdraw a consent, or raise a complaint. We reply within ${contact.data?.response_days ?? 30} days.`}
+        title={t('profile.privacyData.requests.title')}
+        description={t('profile.privacyData.requests.description', { count: contact.data?.response_days ?? 30 })}
       />
       <CardBody className="space-y-5">
         <form
@@ -273,7 +283,7 @@ export function PrivacyRequestsCard() {
             create.mutate();
           }}
         >
-          <Field label="What do you need?" htmlFor="privacy-kind">
+          <Field label={t('profile.privacyData.requests.kind')} htmlFor="privacy-kind">
             <Select id="privacy-kind" value={kind} onChange={(e) => setKind(e.target.value as DataRightsRequestKind)}>
               {DATA_RIGHTS_REQUEST_KINDS.map((k) => (
                 <option key={k} value={k}>
@@ -282,7 +292,7 @@ export function PrivacyRequestsCard() {
               ))}
             </Select>
           </Field>
-          <Field label="Details" htmlFor="privacy-details" hint="At least 10 characters" required>
+          <Field label={t('profile.privacyData.requests.details')} htmlFor="privacy-details" hint={t('profile.privacyData.requests.detailsHint')} required>
             <Textarea
               id="privacy-details"
               rows={3}
@@ -294,7 +304,7 @@ export function PrivacyRequestsCard() {
             />
           </Field>
           <Button type="submit" loading={create.isPending} disabled={details.trim().length < 10}>
-            Send request
+            {t('profile.privacyData.requests.send')}
           </Button>
         </form>
 
@@ -312,9 +322,9 @@ export function PrivacyRequestsCard() {
                   <Badge tone={r.status === 'completed' ? 'green' : r.status === 'rejected' ? 'red' : 'blue'}>
                     {DATA_RIGHTS_REQUEST_STATUS_LABELS[r.status]}
                   </Badge>
-                  <span className="text-xs text-muted">Reply by {formatDate(r.due_at)}</span>
+                  <span className="text-xs text-muted">{t('profile.privacyData.requests.replyBy', { date: formatDate(r.due_at) })}</span>
                 </div>
-                {r.resolution ? <p className="text-muted">Our answer: {r.resolution}</p> : null}
+                {r.resolution ? <p className="text-muted">{t('profile.privacyData.requests.answer', { answer: r.resolution })}</p> : null}
               </li>
             ))}
           </ul>
@@ -322,16 +332,14 @@ export function PrivacyRequestsCard() {
 
         <div className="rounded-lg bg-surface-2 p-3 text-sm">
           <p className="flex items-center gap-2 font-medium text-fg">
-            <Mail className="size-4" aria-hidden /> Grievance Officer
+            <Mail className="size-4" aria-hidden /> {t('profile.privacyData.officer.title')}
           </p>
           {officer?.email || officer?.name ? (
             <p className="text-muted">{[officer.name, officer.email, officer.phone].filter(Boolean).join(' · ')}</p>
           ) : (
-            <p className="text-muted">Contact details are listed in our privacy policy.</p>
+            <p className="text-muted">{t('profile.privacyData.officer.inPolicy')}</p>
           )}
-          <p className="mt-1 text-xs text-muted">
-            If you are not happy with our answer, you can complain to the Data Protection Board of India.
-          </p>
+          <p className="mt-1 text-xs text-muted">{t('profile.privacyData.officer.board')}</p>
         </div>
       </CardBody>
     </Card>

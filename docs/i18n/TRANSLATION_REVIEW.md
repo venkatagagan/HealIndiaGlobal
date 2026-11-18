@@ -257,3 +257,10 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
   (refund via support - no refund promise), `consult.errors.*`. Times are labelled "India time" (IST) on purpose.
 - Agent portal (`agent:`): `teleconsult.consent` / `teleconsult.consentHint` (agent confirms the patient agreed to
   share with the hospital), `teleconsult.payNote`.
+- Patient web extracted (English unchanged): `screening.results.*` - medical, check first: `urgency.*.title|body`,
+  `emergencyBody` ("call your local emergency number ... now"), `disclaimer` ("not a medical diagnosis");
+  `profile.privacyData.*` - legal: `nominee.description` (DPDP nomination), `requests.description_*`,
+  `officer.board` (Data Protection Board of India), `log.actions.*` (ru uses "{{who}} ({{role}}): просмотр — {{what}}"
+  to avoid gendered past-tense verbs); `messages.*`.
+- Agent / hospital portals: `messages.*` (new). Shared `common:report.*` (report dialog) and `common:orgSuspended.*`
+  (suspended agency / hospital screen).

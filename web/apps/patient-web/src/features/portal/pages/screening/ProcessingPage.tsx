@@ -53,7 +53,7 @@ export function ProcessingPage() {
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-xl flex-col items-center justify-center">
       <div className="relative w-full overflow-hidden rounded-3xl bg-gradient-to-b from-[#2A1458] via-[#1B1240] to-[#0B0F14] px-6 py-12 text-white shadow-xl sm:px-10">
-        <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-violet-600/30 blur-3xl" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-64 w-64 rounded-full bg-violet-600/30 blur-3xl" aria-hidden />
         <div className="relative">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center">
             <span className={cn('absolute h-20 w-20 rounded-full bg-violet-500/30', !failed && !done && 'animate-ping')} aria-hidden />

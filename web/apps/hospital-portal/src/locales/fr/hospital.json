@@ -1310,5 +1310,30 @@
       "reverifyTitle": "Cette accréditation est vérifiée",
       "reverifyBody": "Enregistrer des modifications retire la vérification jusqu'à un nouveau contrôle par notre équipe."
     }
+  },
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "noMessages": "Aucun message pour l'instant",
+    "openCase": "Ouvrir le dossier",
+    "startText": "Démarrez la conversation avec le patient et son coordinateur.",
+    "loadEarlier": "Charger les messages précédents",
+    "hidden": "Masqué par les modérateurs",
+    "reportFrom": "Signaler le message de {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Écrivez un message... (Entrée pour envoyer, Maj+Entrée pour aller à la ligne)",
+    "send": "Envoyer le message",
+    "liveConnected": "Mises à jour en direct connectées",
+    "reconnecting": "Reconnexion...",
+    "live": "En direct",
+    "offline": "Hors ligne",
+    "emptyTitle": "Aucune conversation pour l'instant",
+    "notFound": "Conversation introuvable",
+    "selectTitle": "Sélectionnez une conversation",
+    "description": "Conversations des dossiers avec les patients, les agents et les coordinateurs de soins.",
+    "emptyText": "Une conversation est créée automatiquement pour chaque nouveau dossier.",
+    "attachments_one": "{{count}} pièce jointe - voir les documents du dossier",
+    "attachments_other": "{{count}} pièces jointes - voir les documents du dossier"
   }
 }
