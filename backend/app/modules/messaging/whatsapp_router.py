@@ -118,4 +118,3 @@ async def whatsapp_admin_messages(
     return await paginate(
         db, stmt, params, transform=lambda rows: [whatsapp.WhatsAppMessageOut.model_validate(r) for r in rows]
     )
-

@@ -487,5 +487,71 @@
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
     "default_language_required": "English is the default language and cannot be switched off."
+  },
+  "discharge": {
+    "notifications": {
+      "finalized": {
+        "title": "Your discharge summary is ready",
+        "body": "Your hospital has finalized the discharge summary for case {case_number}.",
+        "updated": "This is an updated version (version {version}).",
+        "share_hint": "You can download it or share it securely with your doctor at home."
+      },
+      "medication_reminder": {
+        "title": "Time for your medicines",
+        "body": "Today's medicines from your discharge summary: {medicines}."
+      },
+      "checkin_due": {
+        "title": "Your recovery check-in is due",
+        "body": "Please answer a few short questions about how you are feeling (case {case_number})."
+      }
+    },
+    "share_email": {
+      "subject": "Discharge summary of {patient} shared with you",
+      "title": "A patient has shared their discharge summary with you",
+      "body": "{patient} has shared the discharge summary from their treatment in India with you through Heal India Global. The secure link below is valid until {date}.",
+      "privacy": "The link shows confidential health information. Please do not forward it. Every view is recorded in the patient's access log.",
+      "action": "View discharge summary"
+    },
+    "pdf": {
+      "title": "Discharge summary",
+      "reference": "Reference {reference} (version {version})",
+      "issued": "Issued {date}",
+      "not_recorded": "Not recorded",
+      "patient": "Patient",
+      "date_of_birth": "Date of birth",
+      "sex": "Sex",
+      "sex_male": "Male",
+      "sex_female": "Female",
+      "sex_other": "Other",
+      "sex_unknown": "Not stated",
+      "nationality": "Nationality",
+      "case": "Case / booking",
+      "admission": "Admitted",
+      "discharge": "Discharged",
+      "treating_doctor": "Treating doctor",
+      "registration": "Reg. no. {number}",
+      "diagnosis": "Diagnosis",
+      "procedure": "Procedure performed",
+      "performed_on": "performed on {date}",
+      "hospital_course": "Hospital course",
+      "investigations": "Investigations",
+      "allergies": "Allergies",
+      "no_known_allergies": "No known allergies",
+      "medications": "Medications on discharge",
+      "med_name": "Medicine",
+      "med_dose": "Dose",
+      "med_frequency": "Frequency",
+      "med_duration": "Duration",
+      "med_instructions": "Route / instructions",
+      "days": "{count} days",
+      "ongoing": "Ongoing",
+      "no_medications": "No medicines prescribed on discharge.",
+      "follow_up": "Follow-up instructions",
+      "red_flags": "Seek medical help urgently if you notice",
+      "attachments": "Attached documents",
+      "signed_for": "For {hospital}",
+      "finalized_at": "Finalized electronically on {when}",
+      "footer": "Issued through {app} on behalf of the hospital. An electronic copy (PDF and HL7 FHIR) is available to the patient and to the doctors they share it with."
+    }
   }
 }

@@ -487,5 +487,71 @@
     "unknown_locale": "هذه اللغة غير متاحة.",
     "unknown_translation_key": "مفتاح الترجمة هذا غير موجود.",
     "default_language_required": "الإنجليزية هي اللغة الافتراضية ولا يمكن إيقافها."
+  },
+  "discharge": {
+    "notifications": {
+      "finalized": {
+        "title": "ملخص الخروج الخاص بكم جاهز",
+        "body": "أنهى المستشفى إعداد ملخص الخروج للحالة {case_number}.",
+        "updated": "هذه نسخة محدَّثة (النسخة {version}).",
+        "share_hint": "يمكنكم تنزيله أو مشاركته بأمان مع طبيبكم في بلدكم."
+      },
+      "medication_reminder": {
+        "title": "حان وقت أدويتكم",
+        "body": "أدوية اليوم بحسب ملخص الخروج: {medicines}."
+      },
+      "checkin_due": {
+        "title": "حان موعد متابعة تعافيكم",
+        "body": "يُرجى الإجابة عن بضعة أسئلة قصيرة حول حالتكم الصحية (الحالة {case_number})."
+      }
+    },
+    "share_email": {
+      "subject": "ملخص خروج {patient} تمت مشاركته معكم",
+      "title": "شارك أحد المرضى ملخص خروجه معكم",
+      "body": "شارك {patient} معكم عبر Heal India Global ملخص الخروج الخاص بعلاجه في الهند. الرابط الآمن أدناه صالح حتى {date}.",
+      "privacy": "يعرض هذا الرابط معلومات صحية سرية. يُرجى عدم إعادة توجيهه. يُسجَّل كل اطلاع في سجل الوصول الخاص بالمريض.",
+      "action": "عرض ملخص الخروج"
+    },
+    "pdf": {
+      "title": "ملخص الخروج",
+      "reference": "المرجع {reference} (النسخة {version})",
+      "issued": "تاريخ الإصدار {date}",
+      "not_recorded": "غير مسجَّل",
+      "patient": "المريض",
+      "date_of_birth": "تاريخ الميلاد",
+      "sex": "الجنس",
+      "sex_male": "ذكر",
+      "sex_female": "أنثى",
+      "sex_other": "آخر",
+      "sex_unknown": "غير محدد",
+      "nationality": "الجنسية",
+      "case": "الحالة / الحجز",
+      "admission": "تاريخ الدخول",
+      "discharge": "تاريخ الخروج",
+      "treating_doctor": "الطبيب المعالج",
+      "registration": "رقم التسجيل {number}",
+      "diagnosis": "التشخيص",
+      "procedure": "الإجراء المُنفَّذ",
+      "performed_on": "أُجري في {date}",
+      "hospital_course": "سير الحالة في المستشفى",
+      "investigations": "الفحوصات",
+      "allergies": "الحساسية",
+      "no_known_allergies": "لا توجد حساسية معروفة",
+      "medications": "الأدوية عند الخروج",
+      "med_name": "الدواء",
+      "med_dose": "الجرعة",
+      "med_frequency": "عدد المرات",
+      "med_duration": "المدة",
+      "med_instructions": "طريقة الإعطاء / التعليمات",
+      "days": "{count} يوم",
+      "ongoing": "مستمر",
+      "no_medications": "لم توصف أدوية عند الخروج.",
+      "follow_up": "تعليمات المتابعة",
+      "red_flags": "اطلبوا المساعدة الطبية فورًا إذا لاحظتم",
+      "attachments": "المستندات المرفقة",
+      "signed_for": "عن {hospital}",
+      "finalized_at": "اعتُمد إلكترونيًا في {when}",
+      "footer": "صدر عبر {app} نيابةً عن المستشفى. تتوفر نسخة إلكترونية (PDF وHL7 FHIR) للمريض وللأطباء الذين يشاركها معهم."
+    }
   }
 }

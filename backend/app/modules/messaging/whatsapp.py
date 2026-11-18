@@ -7,9 +7,9 @@
   (``whatsapp_templates/templates.json``) maps notification kinds (+ recipient role) to a template, its
   parameters and the body text per language (en/ar/fr/bn/ru, mapped to Meta language codes). Template text is
   generic and non-clinical: never diagnoses, procedures or document content.
-* ``notifications.notify`` calls :func:`maybe_enqueue` for every notification; when WhatsApp is configured, the
-  kind has a template and the user opted in, the job ``messaging.send_whatsapp`` is enqueued (deduplicated per
-  notification). The job logs the attempt in ``whatsapp_messages`` (template, language, status - never the
+* ``notifications.notify`` calls :func:`maybe_enqueue` for every notification; when WhatsApp is configured,
+  the kind has a template and the user opted in, the job ``messaging.send_whatsapp`` is enqueued (deduplicated
+  per notification). The job logs the attempt in ``whatsapp_messages`` (template, language, status - never the
   text or its parameters) and enforces a per-user daily limit.
 * **Webhook** ``POST /api/v1/webhooks/whatsapp`` (X-Hub-Signature-256 = HMAC-SHA256 of the raw body with the
   app secret) updates delivery statuses and handles STOP replies; ``GET`` answers Meta's verification
@@ -117,7 +117,7 @@ def webhook_configured() -> bool:
     return bool(settings.WHATSAPP_PROVIDER == "meta" and settings.WHATSAPP_APP_SECRET)
 
 
-# =========================================================================================== template registry
+# ======================================================================================= template registry
 @dataclass(frozen=True, slots=True)
 class WhatsAppTemplate:
     name: str
@@ -174,7 +174,9 @@ def registry() -> TemplateRegistry:
         for t in raw["templates"]
     )
     return TemplateRegistry(
-        languages=dict(raw["languages"]), name_fallback=dict(raw.get("name_fallback") or {}), templates=templates
+        languages=dict(raw["languages"]),
+        name_fallback=dict(raw.get("name_fallback") or {}),
+        templates=templates,
     )
 
 
@@ -182,7 +184,7 @@ def render_preview(template: WhatsAppTemplate, locale: str, values: list[str]) -
     """The text the recipient sees (tests/docs only - the rendered text is never stored)."""
     text = template.body.get(locale) or template.body["en"]
     for i, value in enumerate(values, start=1):
-        text = text.replace("{{%d}}" % i, value)
+        text = text.replace("{{" + str(i) + "}}", value)
     return text
 
 
@@ -223,7 +225,12 @@ def build_template_payload(
     if template.otp_button and values:
         # Authentication templates: the copy-code button carries the code as its URL parameter.
         components.append(
-            {"type": "button", "sub_type": "url", "index": "0", "parameters": [{"type": "text", "text": values[0]}]}
+            {
+                "type": "button",
+                "sub_type": "url",
+                "index": "0",
+                "parameters": [{"type": "text", "text": values[0]}],
+            }
         )
     return {
         "messaging_product": "whatsapp",
@@ -234,7 +241,9 @@ def build_template_payload(
     }
 
 
-async def send_template(to_e164: str, template: WhatsAppTemplate, language_code: str, values: list[str]) -> str:
+async def send_template(
+    to_e164: str, template: WhatsAppTemplate, language_code: str, values: list[str]
+) -> str:
     """POST one template message to the Cloud API; returns Meta's message id (``wamid...``)."""
     url = GRAPH_URL.format(
         version=settings.WHATSAPP_GRAPH_API_VERSION, phone_number_id=settings.WHATSAPP_PHONE_NUMBER_ID
@@ -556,7 +565,9 @@ async def _sent_today(db: AsyncSession, user_id: uuid.UUID) -> int:
     )
 
 
-async def _deliver(db: AsyncSession, log: WhatsAppMessage, to: str, template: WhatsAppTemplate, values: list[str]) -> None:
+async def _deliver(
+    db: AsyncSession, log: WhatsAppMessage, to: str, template: WhatsAppTemplate, values: list[str]
+) -> None:
     """Send and record the outcome on ``log`` (commits). Transient errors propagate for a job retry."""
     try:
         message_id = await send_template(to, template, log.language_code, values)
@@ -835,11 +846,7 @@ class WhatsAppMessageOut(BaseModel):
 
 async def provider_status(db: AsyncSession) -> WhatsAppProviderStatusOut:
     counts = dict(
-        (
-            await db.execute(
-                select(WhatsAppOptIn.status, func.count()).group_by(WhatsAppOptIn.status)
-            )
-        ).all()
+        (await db.execute(select(WhatsAppOptIn.status, func.count()).group_by(WhatsAppOptIn.status))).all()
     )
     since = datetime.now(UTC) - timedelta(hours=24)
     by_status = dict(

@@ -24,9 +24,7 @@ class WhatsAppOptIn(UUIDPkMixin, TimestampMixin, Base):
     number) finds the user when a STOP reply arrives on the webhook."""
 
     __tablename__ = "whatsapp_optins"
-    __table_args__ = (
-        sa.CheckConstraint("code_attempts >= 0 AND codes_sent >= 0", name="counters_nonneg"),
-    )
+    __table_args__ = (sa.CheckConstraint("code_attempts >= 0 AND codes_sent >= 0", name="counters_nonneg"),)
 
     user_id: Mapped[uuid.UUID] = fk("users.id", ondelete="CASCADE", index=False, unique=True)
     phone_e164: Mapped[str] = mapped_column(EncryptedString(), nullable=False)

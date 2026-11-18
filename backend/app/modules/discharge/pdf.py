@@ -164,7 +164,9 @@ def render_discharge_summary(ctx: DischargePdfContext) -> bytes:
 
     diagnosis = (ctx.diagnosis or "").strip()
     if ctx.diagnosis_code:
-        diagnosis = f"{diagnosis} (ICD-10: {ctx.diagnosis_code})" if diagnosis else f"ICD-10: {ctx.diagnosis_code}"
+        diagnosis = (
+            f"{diagnosis} (ICD-10: {ctx.diagnosis_code})" if diagnosis else f"ICD-10: {ctx.diagnosis_code}"
+        )
     section(L("diagnosis"), diagnosis)
     procedure = (ctx.procedure_name or "").strip()
     if procedure or ctx.procedure_date:

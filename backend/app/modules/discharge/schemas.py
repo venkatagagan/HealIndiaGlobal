@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import re
 import uuid
 from datetime import date, datetime
 from typing import Annotated
-import re
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
