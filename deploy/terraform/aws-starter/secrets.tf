@@ -67,10 +67,11 @@ locals {
       STAFF_ALLOWED_IPS    = join(",", var.allowed_staff_cidrs)
       ADMIN_MFA_REQUIRED   = "true"
       COOKIE_SECURE        = "true"
-      TRUSTED_HOSTS        = "${local.site_host},${local.staff_host}"
-      LOG_LEVEL            = "INFO"
-      LOG_JSON             = "true"
-      ENABLE_DOCS          = "false"
+      # Public hosts + the in-network names: website SSR calls http://api:8000, container health checks 127.0.0.1.
+      TRUSTED_HOSTS = "${local.site_host},${local.staff_host},api,127.0.0.1,localhost"
+      LOG_LEVEL     = "INFO"
+      LOG_JSON      = "true"
+      ENABLE_DOCS   = "false"
 
       AWS_REGION         = var.aws_region
       AWS_DEFAULT_REGION = var.aws_region
