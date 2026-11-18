@@ -2931,6 +2931,8 @@ export interface CommissionRuleOut {
   is_active: boolean;
   created_by?: Uuid | null;
   created_at: IsoDateTime;
+  /** SEC-044: change waiting for a second approver (a new rule waits for `{ is_active: true }`) */
+  pending_change?: CommissionChangeOut | null;
 }
 
 export interface CommissionRuleIn {
@@ -3119,6 +3121,42 @@ export interface AdminHospitalDetail extends HospitalProfileOut {
   /** Active doctors without a medical registration; approval warns, never blocks. */
   doctors_missing_registration?: number;
   warnings?: string[];
+  /** SEC-044: requested commission rate waiting for a second approver */
+  pending_commission_change?: CommissionChangeOut | null;
+}
+
+// ------------------------------------------------------------------------------------- commission changes
+/** SEC-044: what a commission change request applies to. */
+export type CommissionChangeTarget = 'hospital' | 'agent' | 'commission_rule';
+export type CommissionChangeStatus = 'pending' | 'approved' | 'rejected' | 'withdrawn' | 'superseded';
+
+/**
+ * `GET /admin/commission-changes`: a commission rate change (hospital/agent rate, commission rule) waiting
+ * for (or decided by) an admin/finance user other than the requester. `changes` / `before` map field names
+ * (`commission_rate_bps`, `rate_bps`, `effective_from`, `effective_to`, `is_active`) to values.
+ */
+export interface CommissionChangeOut {
+  id: Uuid;
+  target_type: CommissionChangeTarget;
+  target_id: Uuid;
+  target_name?: string | null;
+  changes: Record<string, unknown>;
+  before: Record<string, unknown>;
+  status: CommissionChangeStatus;
+  requested_by?: Uuid | null;
+  requested_by_name?: string | null;
+  decided_by?: Uuid | null;
+  decided_by_name?: string | null;
+  decided_at?: IsoDateTime | null;
+  reason?: string | null;
+  created_at: IsoDateTime;
+}
+
+export interface CommissionChangeListParams {
+  /** default `pending` */
+  status?: CommissionChangeStatus;
+  target_type?: CommissionChangeTarget;
+  target_id?: Uuid;
 }
 
 export interface AdminDoctorOut {
@@ -3158,6 +3196,8 @@ export interface AdminAgentListParams extends PageParams {
 export interface AdminAgentOut extends AgentProfileOut {
   kyc_documents?: DocumentOut[];
   patients_count?: number;
+  /** SEC-044: requested commission rate waiting for a second approver */
+  pending_commission_change?: CommissionChangeOut | null;
 }
 
 export interface AdminAgentUpdateIn {

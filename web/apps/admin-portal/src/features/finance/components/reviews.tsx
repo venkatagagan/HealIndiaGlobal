@@ -631,6 +631,7 @@ const REVIEW_ROWS: { key: keyof FinanceReviewCounts; labelKey: string; to: strin
   { key: 'markPaidApprovals', labelKey: 'reviews.queue.markPaidApprovals', to: `${financePath('reconciliation')}?status=approval` },
   { key: 'refunds', labelKey: 'reviews.queue.refunds', to: `${financePath('refunds')}?status=requested` },
   { key: 'refundPayouts', labelKey: 'reviews.queue.refundPayouts', to: `${financePath('refunds')}?status=awaiting_payout` },
+  { key: 'commissionChanges', labelKey: 'reviews.queue.commissionChanges', to: financePath('commission-changes') },
   { key: 'batches', labelKey: 'reviews.queue.batches', to: `${financePath('settlements/batches')}?status=pending_approval` },
   { key: 'payoutConfirmations', labelKey: 'reviews.queue.payoutConfirmations', to: `${financePath('settlements/payouts')}?queue=confirm` },
   { key: 'payoutReconciliations', labelKey: 'reviews.queue.payoutReconciliations', to: `${financePath('settlements/payouts')}?queue=reconcile` },

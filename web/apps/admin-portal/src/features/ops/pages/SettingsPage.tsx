@@ -6,7 +6,7 @@ import { Trans } from 'react-i18next';
 import { adminApi, type PlatformSettingOut } from '@hig/shared/api';
 import { useAppTranslation } from '../../../i18n';
 import { Badge, Button, Card, ErrorState, Input, LoadingState, PageHeader, Textarea } from '../ui';
-import { bpsToPctInput, formatDateTime, formatMoney, pctInputToBps, useDocumentTitle } from '../lib/format';
+import { bpsToPctInput, formatBps, formatDateTime, formatMoney, pctInputToBps, useDocumentTitle } from '../lib/format';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
 import { isFinanceSettingKey } from '../lib/permissions';
 import { useOpsPermissions } from '../lib/session';
@@ -15,8 +15,15 @@ import { opsPaths } from '../lib/paths';
 import { SettingPendingChange } from '../components/DualControl';
 import type { SettingWithPending } from '../lib/phase1Api';
 
-/** SEC-011: changes of these keys wait for a second finance user. */
-const DUAL_CONTROL_KEYS: ReadonlySet<string> = new Set(['bank_transfer_details']);
+/** SEC-011 / SEC-044: changes of these keys wait for a second finance user. */
+const DUAL_CONTROL_KEYS: ReadonlySet<string> = new Set([
+  'bank_transfer_details',
+  'default_commission_bps',
+  'default_agent_commission_bps',
+]);
+/** SEC-044: default commission rates (shown as percentages in the pending-change banner). */
+const COMMISSION_KEYS: ReadonlySet<string> = new Set(['default_commission_bps', 'default_agent_commission_bps']);
+const bpsText = (value: unknown): string => (typeof value === 'number' ? formatBps(value) : String(value ?? '—'));
 
 type EditorKind =
   | 'bps'
@@ -191,7 +198,15 @@ function SettingRow({ setting, canEdit, finance }: { setting: PlatformSettingOut
         )}
       </div>
       <div className="space-y-2">
-        {dualControl && <SettingPendingChange setting={setting as SettingWithPending} label={meta.label} />}
+        {dualControl && (
+          <SettingPendingChange
+            setting={setting as SettingWithPending}
+            label={meta.label}
+            {...(COMMISSION_KEYS.has(setting.key)
+              ? { formatValue: bpsText, checkBody: t('commissionApproval.settingCheckBody') }
+              : {})}
+          />
+        )}
         {dualControl && canEdit && <p className="text-xs text-muted">{t('security.setting.dualControlNote')}</p>}
         <SettingEditor key={version} kind={meta.editor} value={draft} disabled={!canEdit} onChange={onChange} />
         {error && (

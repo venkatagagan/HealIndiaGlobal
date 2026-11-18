@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Pencil, Plus } from 'lucide-react';
 import {
@@ -33,6 +34,8 @@ import { PayeePicker } from '../components/settlements';
 import { useFinancePermissions } from '../lib/permissions';
 import { bpsToPercentText, percentToBps } from '../lib/rates';
 import { Button, Callout, Field, Input, Modal, Select } from '../components/ui';
+import { CommissionChangeActions, CommissionChangeDiff, PendingCommissionBadge } from '../components/CommissionChanges';
+import { financePath } from '../paths';
 
 /** What a rule applies to, in the current UI language (call at render time). */
 function scopeTarget(r: CommissionRuleOut): string {
@@ -70,6 +73,18 @@ function ruleState(r: CommissionRuleOut, today: string): RuleState {
   if (r.effective_from > today) return 'scheduled';
   if (r.effective_to && r.effective_to < today) return 'expired';
   return 'active';
+}
+
+/** SEC-044: a rule created inactive whose pending change only activates it ("pending activation"). */
+function isNewRuleActivation(r: CommissionRuleOut): boolean {
+  const changes = r.pending_change?.changes ?? {};
+  return !r.is_active && changes.is_active === true && Object.keys(changes).length === 1;
+}
+
+/** Toast after a save: the change is applied at once or waits for a second approver. */
+function savedMessage(result: CommissionRuleOut, fallback: string): string {
+  if (result.pending_change?.status !== 'pending') return fallback;
+  return isNewRuleActivation(result) ? ft('commissionChanges.ruleCreatedPending') : ft('commissionChanges.sentForApproval');
 }
 
 /** The rule is in effect on at least one day of the [from, to] window. */
@@ -150,9 +165,12 @@ function baseColumns(t: FinanceT, today: string): DataTableColumn<CommissionRule
       cell: (r) => {
         const s = ruleState(r, today);
         return (
-          <Badge tone={STATE_TONES[s]} dot>
-            {stateLabel(s)}
-          </Badge>
+          <span className="flex flex-wrap items-center gap-1">
+            <Badge tone={STATE_TONES[s]} dot>
+              {stateLabel(s)}
+            </Badge>
+            {r.pending_change?.status === 'pending' && <PendingCommissionBadge newRule={isNewRuleActivation(r)} />}
+          </span>
         );
       },
       exportValue: (r) => stateLabel(ruleState(r, today)),
@@ -207,8 +225,23 @@ export default function CommissionRulesPage() {
     return out;
   }, [rules.data]);
 
+  const pendingRules = (rules.data ?? []).filter((r) => r.pending_change?.status === 'pending');
   const columns: DataTableColumn<CommissionRuleOut>[] = [
     ...baseColumns(t, today),
+    {
+      key: 'pending',
+      header: t('commissionChanges.columns.pendingChange'),
+      exportable: false,
+      cell: (r) =>
+        r.pending_change?.status === 'pending' ? (
+          <div className="flex flex-col gap-1.5">
+            <CommissionChangeDiff change={r.pending_change} />
+            <CommissionChangeActions change={r.pending_change} />
+          </div>
+        ) : (
+          <span className="text-muted">—</span>
+        ),
+    },
     {
       key: 'actions',
       header: <span className="sr-only">{t('orderDetail.actions')}</span>,
@@ -231,7 +264,8 @@ export default function CommissionRulesPage() {
                 toggle.mutate(
                   { id: r.id, is_active: !r.is_active },
                   {
-                    onSuccess: () => notifySuccess(r.is_active ? ft('commissionRules.deactivated') : ft('commissionRules.activated')),
+                    onSuccess: (result) =>
+                      notifySuccess(savedMessage(result, r.is_active ? ft('commissionRules.deactivated') : ft('commissionRules.activated'))),
                     onError: (e) => notifyError(e, ft('commissionRules.updateFailed')),
                   },
                 )
@@ -262,6 +296,14 @@ export default function CommissionRulesPage() {
           )
         }
       />
+      <div className="mb-4">
+        <Callout tone={pendingRules.length ? 'warning' : 'info'} title={pendingRules.length ? t('commissionChanges.rulesPendingTitle', { n: formatNumber(pendingRules.length) }) : undefined}>
+          {t('commissionChanges.rulesNote')}{' '}
+          <Link to={financePath('commission-changes')} className="font-medium underline">
+            {t('commissionChanges.openQueue')}
+          </Link>
+        </Callout>
+      </div>
       <DataTable
         id="admin.finance.commission-rules"
         caption={t('nav.items.commissionRules')}
@@ -366,8 +408,8 @@ function RuleForm({ rule, onDone }: { rule: CommissionRuleOut | null; onDone: ()
     save.mutate(
       { id: rule?.id, body },
       {
-        onSuccess: () => {
-          notifySuccess(rule ? ft('commissionRules.form.updated') : ft('commissionRules.form.created'));
+        onSuccess: (result) => {
+          notifySuccess(savedMessage(result, rule ? ft('commissionRules.form.updated') : ft('commissionRules.form.created')));
           onDone();
         },
         onError: (e) => notifyError(e, ft('commissionRules.form.saveFailed')),

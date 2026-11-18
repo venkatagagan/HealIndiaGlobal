@@ -2075,6 +2075,11 @@
       }
     }
   },
+  "commissionApproval": {
+    "sentForApproval": "Enregistré. Le nouveau taux de commission ne s'applique qu'après l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "note": "Une modification du taux de commission ne s'applique qu'après l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "settingCheckBody": "Vérifiez le nouveau taux de commission par défaut par rapport aux conditions commerciales signées avant d'approuver. Il s'applique à chaque hôpital ou agent sans taux propre."
+  },
   "accreditations": {
     "tab": "Accréditations",
     "title": "Accréditations",

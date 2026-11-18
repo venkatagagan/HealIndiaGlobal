@@ -278,3 +278,16 @@ Money texts - review before switching a language on:
 - `finance:enums.status.awaiting_payout`, `finance:reviews.queue.refundPayouts`,
   `finance:reviews.approval.differentUser.refundPayout`; shared `common:enums.refundStatus.awaiting_payout`
   ("Awaiting payout", shown wherever a refund status badge appears).
+
+## Commission changes (second approver, added 2026-11-18, SEC-044)
+
+Commercial / money texts - review before switching a language on:
+
+- `finance:commissionChanges.*` (new section, 60 keys): the approvals queue, the pending-change block on the
+  hospital page, agent drawer and commission rules, toasts and errors. Priority: `description`, `rule`
+  (maker-checker; fr "double contrôle", ar "الرقابة المزدوجة", ru "принцип двух ключей", bn "দ্বৈত নিয়ন্ত্রণ"),
+  `sentForApproval`, `ruleCreatedPending`, `rejectBody`, `errors.*`. `rulesPendingTitle` avoids plural forms
+  ("{{n}}" as a count after a colon in ar/ru/bn).
+- `finance:nav.items.commissionChanges`, `finance:reviews.queue.commissionChanges`.
+- `admin:commissionApproval.*` (hospital/agent pages and Settings): `sentForApproval`, `note`, `settingCheckBody`
+  (check the default rate against the signed commercial terms).

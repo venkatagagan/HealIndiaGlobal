@@ -17,7 +17,8 @@
       "payoutAccounts": "Payout accounts",
       "commissionRules": "Commission rules",
       "ledger": "Ledger",
-      "reports": "Reports"
+      "reports": "Reports",
+      "commissionChanges": "Commission changes"
     }
   },
   "guard": {
@@ -188,7 +189,8 @@
       "payoutReconciliations": "Payouts needing reconciliation",
       "payoutReversals": "Payout failures awaiting 2nd approval",
       "adjustments": "Ledger adjustments to approve",
-      "refundPayouts": "Bank refunds awaiting payout"
+      "refundPayouts": "Bank refunds awaiting payout",
+      "commissionChanges": "Commission changes awaiting 2nd approval"
     }
   },
   "settlementUi": {
@@ -975,6 +977,78 @@
       "searchProcedures": "Search procedures",
       "searchProceduresPlaceholder": "Search procedures…",
       "selectProcedure": "Select a procedure"
+    }
+  },
+  "commissionChanges": {
+    "title": "Commission changes",
+    "description": "Changes to hospital and agent commission rates and to commission rules wait here until an admin or finance user other than the requester approves them.",
+    "rule": "Maker-checker: the person who asked for a change cannot approve it (they can withdraw it). The default platform rates are approved on the Settings page.",
+    "statusLabel": "Request status",
+    "targetLabel": "Applies to",
+    "allTargets": "All types",
+    "statuses": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn",
+      "superseded": "Superseded"
+    },
+    "targets": {
+      "hospital": "Hospital rate",
+      "agent": "Agent rate",
+      "commission_rule": "Commission rule"
+    },
+    "columns": {
+      "target": "Applies to",
+      "change": "Change",
+      "requested": "Requested",
+      "status": "Status",
+      "decided": "Decided",
+      "pendingChange": "Pending change"
+    },
+    "fields": {
+      "commission_rate_bps": "Commission rate",
+      "rate_bps": "Rate",
+      "is_active": "Status",
+      "effective_from": "Effective from",
+      "effective_to": "Effective to"
+    },
+    "platformDefault": "Platform default",
+    "openEnded": "Open-ended",
+    "active": "Active",
+    "inactive": "Inactive",
+    "pendingBadge": "Awaiting 2nd approval",
+    "pendingActivation": "Pending activation",
+    "pendingTitle": "Commission change waiting for a second approver",
+    "requestedAtBy": "Requested by {{name}} · {{when}}",
+    "you": "you",
+    "someone": "another user",
+    "sameUser": "You requested this change: another admin or finance user must approve it.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "withdraw": "Withdraw",
+    "approved": "Commission change approved and applied",
+    "approveFailed": "Could not approve the commission change",
+    "rejectTitle": "Reject this commission change?",
+    "withdrawTitle": "Withdraw your commission change?",
+    "rejectBody": "The current commission stays in use. The reason is kept in the audit log.",
+    "reasonOptional": "Reason (optional)",
+    "reasonValue": "Reason: {{reason}}",
+    "rejected": "Commission change rejected",
+    "withdrawn": "Commission change withdrawn",
+    "rejectFailed": "Could not reject the commission change",
+    "sentForApproval": "Saved. The change is applied only after a second admin or finance user approves it.",
+    "ruleCreatedPending": "Rule created. It stays inactive until a second admin or finance user approves it.",
+    "rulesNote": "New rules and changes to rates, dates or activation wait for a second admin or finance user.",
+    "rulesPendingTitle": "{{n}} rule change(s) awaiting approval",
+    "openQueue": "Open the commission changes queue",
+    "emptyPending": "No commission changes awaiting approval",
+    "emptyPendingHint": "Rate changes made on hospital, agent and commission rule pages appear here.",
+    "empty": "No commission changes with this status",
+    "errors": {
+      "differentUser": "A different admin or finance user must approve this commission change: you requested it, so you cannot also approve it.",
+      "requestChanged": "This request is no longer pending (it was replaced or decided). The list has been reloaded.",
+      "targetChanged": "The commission changed after this request was made. Reject it and ask for a new change."
     }
   },
   "payoutAccounts": {

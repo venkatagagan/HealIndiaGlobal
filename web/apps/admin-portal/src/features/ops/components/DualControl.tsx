@@ -201,8 +201,22 @@ function ValueDiff({ current, proposed }: { current: unknown; proposed: unknown 
   );
 }
 
-/** Pending change of a dual-control setting with approve / reject (or withdraw for the requester). */
-export function SettingPendingChange({ setting, label }: { setting: SettingWithPending; label: string }) {
+/**
+ * Pending change of a dual-control setting with approve / reject (or withdraw for the requester).
+ * `formatValue` shows a scalar setting as "current -> proposed" (e.g. commission rates as %); `checkBody`
+ * replaces the checker's hint.
+ */
+export function SettingPendingChange({
+  setting,
+  label,
+  formatValue,
+  checkBody,
+}: {
+  setting: SettingWithPending;
+  label: string;
+  formatValue?: (value: unknown) => string;
+  checkBody?: string;
+}) {
   const { t } = useAppTranslation();
   const perms = useOpsPermissions();
   const [rejecting, setRejecting] = useState(false);
@@ -257,9 +271,21 @@ export function SettingPendingChange({ setting, label }: { setting: SettingWithP
         <p>
           {t('security.requestedAtBy', { when: formatDateTime(change.requested_at), name: requester })}
           {' · '}
-          {mine ? t('security.needsSecondApprover') : perms.editFinanceSettings ? t('security.setting.checkBody') : t('security.financeOnly')}
+          {mine
+            ? t('security.needsSecondApprover')
+            : perms.editFinanceSettings
+              ? (checkBody ?? t('security.setting.checkBody'))
+              : t('security.financeOnly')}
         </p>
-        <ValueDiff current={setting.value} proposed={change.value} />
+        {formatValue ? (
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="tabular-nums">{formatValue(setting.value)}</span>
+            <ArrowRight className="size-3.5 text-muted rtl:-scale-x-100" aria-hidden />
+            <span className="font-semibold tabular-nums">{formatValue(change.value)}</span>
+          </p>
+        ) : (
+          <ValueDiff current={setting.value} proposed={change.value} />
+        )}
       </Banner>
       <ReasonDialog
         open={rejecting}

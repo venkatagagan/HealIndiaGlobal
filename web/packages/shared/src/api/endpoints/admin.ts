@@ -8,6 +8,8 @@ import type {
   AdminAgentListParams,
   AdminAgentOut,
   AdminAgentUpdateIn,
+  CommissionChangeListParams,
+  CommissionChangeOut,
   AdminDashboard,
   AdminFacets,
   AdminHospitalDetail,
@@ -105,8 +107,9 @@ export const adminApi = {
     api.post<HospitalProfileOut>(`/admin/hospitals/${seg(id)}/reject`, body),
   suspendHospital: (id: Uuid, body: Partial<ReasonIn> = {}) =>
     api.post<HospitalProfileOut>(`/admin/hospitals/${seg(id)}/suspend`, body),
+  /** SEC-044: a `commission_rate_bps` change is not applied at once; see `pending_commission_change` */
   updateHospital: (id: Uuid, body: AdminHospitalUpdateIn) =>
-    api.patch<HospitalProfileOut>(`/admin/hospitals/${seg(id)}`, body),
+    api.patch<AdminHospitalDetail>(`/admin/hospitals/${seg(id)}`, body),
 
   // agents
   listAgents: (params?: AdminAgentListParams) => api.get<Page<AdminAgentOut>>('/admin/agents', params),
@@ -117,8 +120,19 @@ export const adminApi = {
   rejectAgent: (id: Uuid, body: ReasonIn) => api.post<AdminAgentOut>(`/admin/agents/${seg(id)}/reject`, body),
   suspendAgent: (id: Uuid, body: Partial<ReasonIn> = {}) =>
     api.post<AdminAgentOut>(`/admin/agents/${seg(id)}/suspend`, body),
+  /** SEC-044: a `commission_rate_bps` change is not applied at once; see `pending_commission_change` */
   updateAgent: (id: Uuid, body: AdminAgentUpdateIn) =>
     api.patch<AdminAgentOut>(`/admin/agents/${seg(id)}`, body),
+
+  // commission changes (SEC-044, admin | finance | super_admin; approve/reject by a user other than the requester)
+  commissionChanges: (params?: CommissionChangeListParams) =>
+    api.get<CommissionChangeOut[]>('/admin/commission-changes', params),
+  /** 403 `second_approver_required` (requester), 409 `request_changed` / `target_changed` */
+  approveCommissionChange: (id: Uuid) =>
+    api.post<CommissionChangeOut>(`/admin/commission-changes/${seg(id)}/approve`, {}),
+  /** reject (another user) or withdraw (the requester) */
+  rejectCommissionChange: (id: Uuid, body: Partial<ReasonIn> = {}) =>
+    api.post<CommissionChangeOut>(`/admin/commission-changes/${seg(id)}/reject`, body),
 
   // catalog & content CRUD (AD)
   specialties: crud<SpecialtyOut, SpecialtyIn>('/admin/specialties'),

@@ -2075,6 +2075,11 @@
       }
     }
   },
+  "commissionApproval": {
+    "sentForApproval": "Saved. The new commission rate is applied only after a second admin or finance user approves it.",
+    "note": "A commission rate change is applied only after a second admin or finance user approves it.",
+    "settingCheckBody": "Check the new default commission rate against the signed commercial terms before approving. It applies to every hospital or agent without its own rate."
+  },
   "accreditations": {
     "tab": "Accreditations",
     "title": "Accreditations",
