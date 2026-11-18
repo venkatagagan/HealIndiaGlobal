@@ -161,7 +161,7 @@ class DoctorDetailScreen extends ConsumerWidget {
               Text(l10n.reviewsEmptyMessage, style: context.text.bodySmall)
             else
               for (final r in d.reviews.take(3))
-                Padding(padding: const EdgeInsets.only(bottom: 10), child: ReviewTile(review: r, showHospital: true)),
+                Padding(padding: const EdgeInsets.only(bottom: 10), child: ReviewTile(review: r, showHospital: true, reportable: true)),
             if (d.reviews.isNotEmpty)
               SecondaryButton(
                 key: const ValueKey('doctor-all-reviews'),

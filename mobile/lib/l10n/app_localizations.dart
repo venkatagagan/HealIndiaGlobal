@@ -15376,6 +15376,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Treatment'**
   String get inviteMissingTreatment;
+
+  /// Title of the report sheet opened from a published hospital or doctor review
+  ///
+  /// In en, this message translates to:
+  /// **'Report this review'**
+  String get reportSheetTitleReview;
+
+  /// Intro of the report sheet for a review: what to report and that moderators check it; the author is not told who reported it
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong with this review, for example spam, abuse, false claims or someone\'s personal details. Our moderation team will check it. The author is not told who reported it.'**
+  String get reportSheetIntroReview;
+
+  /// Tooltip / semantics label of the flag button on a published review
+  ///
+  /// In en, this message translates to:
+  /// **'Report review'**
+  String get reviewReportAction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

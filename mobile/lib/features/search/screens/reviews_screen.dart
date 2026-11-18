@@ -39,7 +39,7 @@ class ReviewsScreen extends ConsumerWidget {
       body: PagedList<Review>(
         key: ValueKey('reviews-$doctor-$id'),
         fetch: (page) => doctor ? repo.doctorReviews(id, page: page) : repo.hospitalReviews(id, page: page),
-        itemBuilder: (context, r) => ReviewTile(review: r, showHospital: doctor),
+        itemBuilder: (context, r) => ReviewTile(review: r, showHospital: doctor, reportable: true),
         empty: EmptyView(icon: Icons.rate_review_outlined, title: l10n.reviewsEmptyTitle, message: l10n.reviewsEmptyMessage),
       ),
     );

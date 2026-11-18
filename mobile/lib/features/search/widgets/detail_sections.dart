@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/auth/auth_controller.dart';
 import '../../../core/models/models.dart';
+import '../../../core/repositories/report_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
+import '../../../core/widgets/report_sheet.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import 'catalog_cards.dart';
@@ -144,18 +148,25 @@ class HospitalProcedureCard extends StatelessWidget {
 }
 
 /// Published review: stars, "Verified patient · treatment", text and author.
-class ReviewTile extends StatelessWidget {
-  const ReviewTile({super.key, required this.review, this.showHospital = false});
+///
+/// With [reportable] (hospital / doctor pages) a signed-in viewer gets a flag button that opens the shared
+/// report sheet (`POST /reports`, target type `review`).
+class ReviewTile extends ConsumerWidget {
+  const ReviewTile({super.key, required this.review, this.showHospital = false, this.reportable = false});
 
   final Review review;
 
   /// Also show the hospital name (a doctor's reviews, "My reviews").
   final bool showHospital;
 
+  /// Offer "Report review" (never on the patient's own reviews).
+  final bool reportable;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final r = review;
     final l10n = context.l10n;
+    final canReport = reportable && r.id.isNotEmpty && ref.watch(authStateProvider).hasSession;
     final treatment = (r.treatmentName ?? '').isNotEmpty ? r.treatmentName : null;
     final when = r.publishedAt ?? r.createdAt;
     final names = [
@@ -175,6 +186,15 @@ class ReviewTile extends StatelessWidget {
               ),
               const Spacer(),
               if (when != null) Text(Dates.relative(when), style: context.text.labelSmall),
+              if (canReport)
+                IconButton(
+                  key: ValueKey('review-report-${r.id}'),
+                  tooltip: l10n.reviewReportAction,
+                  visualDensity: VisualDensity.compact,
+                  iconSize: 18,
+                  icon: const Icon(Icons.flag_outlined),
+                  onPressed: () => showReportSheet(context, type: ReportTargetType.review, targetId: r.id),
+                ),
             ],
           ),
           if (r.verifiedPatient) ...[

@@ -8785,4 +8785,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Traitement';
+
+  @override
+  String get reportSheetTitleReview => 'Signaler cet avis';
+
+  @override
+  String get reportSheetIntroReview =>
+      'Dites-nous ce qui ne va pas avec cet avis, par exemple du spam, des propos abusifs, de fausses affirmations ou les données personnelles de quelqu\'un. Notre équipe de modération l\'examinera. L\'auteur ne saura pas qui l\'a signalé.';
+
+  @override
+  String get reviewReportAction => 'Signaler l\'avis';
 }

@@ -8597,4 +8597,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Treatment';
+
+  @override
+  String get reportSheetTitleReview => 'Report this review';
+
+  @override
+  String get reportSheetIntroReview =>
+      'Tell us what is wrong with this review, for example spam, abuse, false claims or someone\'s personal details. Our moderation team will check it. The author is not told who reported it.';
+
+  @override
+  String get reviewReportAction => 'Report review';
 }

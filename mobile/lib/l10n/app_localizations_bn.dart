@@ -8673,4 +8673,14 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'চিকিৎসা';
+
+  @override
+  String get reportSheetTitleReview => 'এই রিভিউটি রিপোর্ট করুন';
+
+  @override
+  String get reportSheetIntroReview =>
+      'এই রিভিউতে কী সমস্যা তা আমাদের জানান, যেমন স্প্যাম, অপমানজনক ভাষা, মিথ্যা দাবি বা কারও ব্যক্তিগত তথ্য। আমাদের মডারেশন দল এটি যাচাই করবে। লেখককে জানানো হয় না কে রিপোর্ট করেছে।';
+
+  @override
+  String get reviewReportAction => 'রিভিউ রিপোর্ট করুন';
 }

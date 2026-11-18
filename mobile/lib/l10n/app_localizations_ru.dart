@@ -8937,4 +8937,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Лечение';
+
+  @override
+  String get reportSheetTitleReview => 'Пожаловаться на отзыв';
+
+  @override
+  String get reportSheetIntroReview =>
+      'Расскажите, что не так с этим отзывом: например, спам, оскорбления, ложные утверждения или чьи-то личные данные. Наши модераторы его проверят. Автор не узнает, кто пожаловался.';
+
+  @override
+  String get reviewReportAction => 'Пожаловаться на отзыв';
 }

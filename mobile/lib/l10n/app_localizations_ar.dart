@@ -8961,4 +8961,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'العلاج';
+
+  @override
+  String get reportSheetTitleReview => 'الإبلاغ عن هذا التقييم';
+
+  @override
+  String get reportSheetIntroReview =>
+      'أخبرنا بالمشكلة في هذا التقييم، مثل الرسائل المزعجة أو الإساءة أو الادعاءات الكاذبة أو البيانات الشخصية لأحد الأشخاص. سيراجعه فريق الإشراف لدينا. لن يُبلَّغ كاتب التقييم بهوية من أبلغ.';
+
+  @override
+  String get reviewReportAction => 'الإبلاغ عن التقييم';
 }

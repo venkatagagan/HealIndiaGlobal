@@ -2246,6 +2246,9 @@ class OverridableLocalizations extends AppLocalizations {
     'inviteMissingArrival' => inviteMissingArrival,
     'inviteMissingDuration' => inviteMissingDuration,
     'inviteMissingTreatment' => inviteMissingTreatment,
+    'reportSheetTitleReview' => reportSheetTitleReview,
+    'reportSheetIntroReview' => reportSheetIntroReview,
+    'reviewReportAction' => reviewReportAction,
     _ => null,
   };
 
@@ -9886,6 +9889,15 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
+
+  @override
+  String get reportSheetTitleReview => _t('reportSheetTitleReview') ?? base.reportSheetTitleReview;
+
+  @override
+  String get reportSheetIntroReview => _t('reportSheetIntroReview') ?? base.reportSheetIntroReview;
+
+  @override
+  String get reviewReportAction => _t('reviewReportAction') ?? base.reviewReportAction;
 }
 
 /// Every ARB key, in template order.
@@ -12436,4 +12448,7 @@ const List<String> kL10nKeys = [
   'inviteMissingArrival',
   'inviteMissingDuration',
   'inviteMissingTreatment',
+  'reportSheetTitleReview',
+  'reportSheetIntroReview',
+  'reviewReportAction',
 ];
