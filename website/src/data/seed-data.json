@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T15:07:41+00:00",
+ "generated_at": "2026-11-09T12:04:11+00:00",
  "source": "backend/scripts/seed_data",
  "note": "Illustrative demo catalogue (fictional hospitals); used only when the API is unavailable.",
  "specialties": [
@@ -1572,7 +1572,11 @@
    "cost_min_minor": 7000000,
    "cost_max_minor": 20000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1581,7 +1585,11 @@
    "cost_min_minor": 1800000,
    "cost_max_minor": 5300000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1590,7 +1598,11 @@
    "cost_min_minor": 3700000,
    "cost_max_minor": 11000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1599,7 +1611,11 @@
    "cost_min_minor": 4500000,
    "cost_max_minor": 13000000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1608,7 +1624,11 @@
    "cost_min_minor": 9800000,
    "cost_max_minor": 28000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1617,7 +1637,11 @@
    "cost_min_minor": 8700000,
    "cost_max_minor": 25000000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1626,7 +1650,11 @@
    "cost_min_minor": 2300000000,
    "cost_max_minor": 6700000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1635,7 +1663,11 @@
    "cost_min_minor": 160000000,
    "cost_max_minor": 470000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1644,7 +1676,11 @@
    "cost_min_minor": 68000000,
    "cost_max_minor": 200000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cabg",
@@ -1653,7 +1689,11 @@
    "cost_min_minor": 8100000,
    "cost_max_minor": 23000000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1662,7 +1702,11 @@
    "cost_min_minor": 3000000,
    "cost_max_minor": 6000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1671,7 +1715,11 @@
    "cost_min_minor": 790000,
    "cost_max_minor": 1600000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1680,7 +1728,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 3200000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1689,7 +1741,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 3900000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1698,7 +1754,11 @@
    "cost_min_minor": 4200000,
    "cost_max_minor": 8400000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1707,7 +1767,11 @@
    "cost_min_minor": 3700000,
    "cost_max_minor": 7400000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1716,7 +1780,11 @@
    "cost_min_minor": 1000000000,
    "cost_max_minor": 2000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1725,7 +1793,11 @@
    "cost_min_minor": 70000000,
    "cost_max_minor": 140000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1734,7 +1806,11 @@
    "cost_min_minor": 29000000,
    "cost_max_minor": 59000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "angioplasty",
@@ -1743,7 +1819,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 6900000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1752,7 +1832,11 @@
    "cost_min_minor": 8000000,
    "cost_max_minor": 20000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1761,7 +1845,11 @@
    "cost_min_minor": 2100000,
    "cost_max_minor": 5300000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1770,7 +1858,11 @@
    "cost_min_minor": 4200000,
    "cost_max_minor": 11000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1779,7 +1871,11 @@
    "cost_min_minor": 5200000,
    "cost_max_minor": 13000000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1788,7 +1884,11 @@
    "cost_min_minor": 11000000,
    "cost_max_minor": 28000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1797,7 +1897,11 @@
    "cost_min_minor": 9900000,
    "cost_max_minor": 25000000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1806,7 +1910,11 @@
    "cost_min_minor": 2700000000,
    "cost_max_minor": 6700000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1815,7 +1923,11 @@
    "cost_min_minor": 190000000,
    "cost_max_minor": 470000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1824,7 +1936,11 @@
    "cost_min_minor": 78000000,
    "cost_max_minor": 200000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "heart-valve-replacement",
@@ -1833,7 +1949,11 @@
    "cost_min_minor": 9300000,
    "cost_max_minor": 23000000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1842,7 +1962,11 @@
    "cost_min_minor": 3000000,
    "cost_max_minor": 7000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1851,7 +1975,11 @@
    "cost_min_minor": 790000,
    "cost_max_minor": 1800000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1860,7 +1988,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 3700000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1869,7 +2001,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 4500000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1878,7 +2014,11 @@
    "cost_min_minor": 4200000,
    "cost_max_minor": 9800000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1887,7 +2027,11 @@
    "cost_min_minor": 3700000,
    "cost_max_minor": 8700000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1896,7 +2040,11 @@
    "cost_min_minor": 1000000000,
    "cost_max_minor": 2300000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1905,7 +2053,11 @@
    "cost_min_minor": 70000000,
    "cost_max_minor": 160000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1914,7 +2066,11 @@
    "cost_min_minor": 29000000,
    "cost_max_minor": 68000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "pacemaker-implantation",
@@ -1923,7 +2079,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 8100000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1932,7 +2092,11 @@
    "cost_min_minor": 7000000,
    "cost_max_minor": 12000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1941,7 +2105,11 @@
    "cost_min_minor": 1700000,
    "cost_max_minor": 2900000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1950,7 +2118,11 @@
    "cost_min_minor": 3400000,
    "cost_max_minor": 5900000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1959,7 +2131,11 @@
    "cost_min_minor": 4100000,
    "cost_max_minor": 7000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1968,7 +2144,11 @@
    "cost_min_minor": 9000000,
    "cost_max_minor": 15000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1977,7 +2157,11 @@
    "cost_min_minor": 7900000,
    "cost_max_minor": 13000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1986,7 +2170,11 @@
    "cost_min_minor": 1300000000,
    "cost_max_minor": 2200000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -1995,7 +2183,11 @@
    "cost_min_minor": 91000000,
    "cost_max_minor": 160000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -2004,7 +2196,11 @@
    "cost_min_minor": 51000000,
    "cost_max_minor": 88000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "tavi",
@@ -2013,7 +2209,11 @@
    "cost_min_minor": 7600000,
    "cost_max_minor": 13000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2022,7 +2222,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 5500000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2031,7 +2235,11 @@
    "cost_min_minor": 920000,
    "cost_max_minor": 1500000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2040,7 +2248,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 2900000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2049,7 +2261,11 @@
    "cost_min_minor": 2300000,
    "cost_max_minor": 3600000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2058,7 +2274,11 @@
    "cost_min_minor": 4900000,
    "cost_max_minor": 7700000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2067,7 +2287,11 @@
    "cost_min_minor": 4300000,
    "cost_max_minor": 6800000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2076,7 +2300,11 @@
    "cost_min_minor": 1200000000,
    "cost_max_minor": 1800000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2085,7 +2313,11 @@
    "cost_min_minor": 82000000,
    "cost_max_minor": 130000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2094,7 +2326,11 @@
    "cost_min_minor": 34000000,
    "cost_max_minor": 54000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-knee-replacement",
@@ -2103,7 +2339,11 @@
    "cost_min_minor": 4100000,
    "cost_max_minor": 6400000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2112,7 +2352,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 6000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2121,7 +2365,11 @@
    "cost_min_minor": 920000,
    "cost_max_minor": 1600000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2130,7 +2378,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 3200000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2139,7 +2391,11 @@
    "cost_min_minor": 2300000,
    "cost_max_minor": 3900000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2148,7 +2404,11 @@
    "cost_min_minor": 4900000,
    "cost_max_minor": 8400000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2157,7 +2417,11 @@
    "cost_min_minor": 4300000,
    "cost_max_minor": 7400000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2166,7 +2430,11 @@
    "cost_min_minor": 1200000000,
    "cost_max_minor": 2000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2175,7 +2443,11 @@
    "cost_min_minor": 82000000,
    "cost_max_minor": 140000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2184,7 +2456,11 @@
    "cost_min_minor": 34000000,
    "cost_max_minor": 59000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "total-hip-replacement",
@@ -2193,7 +2469,11 @@
    "cost_min_minor": 4100000,
    "cost_max_minor": 6900000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2202,7 +2482,11 @@
    "cost_min_minor": 2000000,
    "cost_max_minor": 5000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2211,7 +2495,11 @@
    "cost_min_minor": 530000,
    "cost_max_minor": 1300000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2220,7 +2508,11 @@
    "cost_min_minor": 1100000,
    "cost_max_minor": 2700000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2229,7 +2521,11 @@
    "cost_min_minor": 1300000,
    "cost_max_minor": 3200000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2238,7 +2534,11 @@
    "cost_min_minor": 2800000,
    "cost_max_minor": 7000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2247,7 +2547,11 @@
    "cost_min_minor": 2500000,
    "cost_max_minor": 6200000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2256,7 +2560,11 @@
    "cost_min_minor": 670000000,
    "cost_max_minor": 1700000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2265,7 +2573,11 @@
    "cost_min_minor": 47000000,
    "cost_max_minor": 120000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2274,7 +2586,11 @@
    "cost_min_minor": 20000000,
    "cost_max_minor": 49000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "acl-reconstruction",
@@ -2283,7 +2599,11 @@
    "cost_min_minor": 2300000,
    "cost_max_minor": 5800000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2292,7 +2612,11 @@
    "cost_min_minor": 8000000,
    "cost_max_minor": 15000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2301,7 +2625,11 @@
    "cost_min_minor": 2100000,
    "cost_max_minor": 4000000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2310,7 +2638,11 @@
    "cost_min_minor": 4200000,
    "cost_max_minor": 8000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2319,7 +2651,11 @@
    "cost_min_minor": 5200000,
    "cost_max_minor": 9700000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2328,7 +2664,11 @@
    "cost_min_minor": 11000000,
    "cost_max_minor": 21000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2337,7 +2677,11 @@
    "cost_min_minor": 9900000,
    "cost_max_minor": 19000000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2346,7 +2690,11 @@
    "cost_min_minor": 2700000000,
    "cost_max_minor": 5000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2355,7 +2703,11 @@
    "cost_min_minor": 190000000,
    "cost_max_minor": 350000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2364,7 +2716,11 @@
    "cost_min_minor": 78000000,
    "cost_max_minor": 150000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "spinal-fusion",
@@ -2373,7 +2729,11 @@
    "cost_min_minor": 9300000,
    "cost_max_minor": 17000000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2382,7 +2742,11 @@
    "cost_min_minor": 4500000,
    "cost_max_minor": 10000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2391,7 +2755,11 @@
    "cost_min_minor": 1200000,
    "cost_max_minor": 2600000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2400,7 +2768,11 @@
    "cost_min_minor": 2400000,
    "cost_max_minor": 5300000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2409,7 +2781,11 @@
    "cost_min_minor": 2900000,
    "cost_max_minor": 6500000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2418,7 +2794,11 @@
    "cost_min_minor": 6300000,
    "cost_max_minor": 14000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2427,7 +2807,11 @@
    "cost_min_minor": 5600000,
    "cost_max_minor": 12000000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2436,7 +2820,11 @@
    "cost_min_minor": 1500000000,
    "cost_max_minor": 3300000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2445,7 +2833,11 @@
    "cost_min_minor": 100000000,
    "cost_max_minor": 230000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2454,7 +2846,11 @@
    "cost_min_minor": 44000000,
    "cost_max_minor": 98000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "disc-replacement",
@@ -2463,7 +2859,11 @@
    "cost_min_minor": 5200000,
    "cost_max_minor": 12000000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2472,7 +2872,11 @@
    "cost_min_minor": 800000,
    "cost_max_minor": 2500000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2481,7 +2885,11 @@
    "cost_min_minor": 210000,
    "cost_max_minor": 660000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2490,7 +2898,11 @@
    "cost_min_minor": 420000,
    "cost_max_minor": 1300000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2499,7 +2911,11 @@
    "cost_min_minor": 520000,
    "cost_max_minor": 1600000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2508,7 +2924,11 @@
    "cost_min_minor": 1100000,
    "cost_max_minor": 3500000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2517,7 +2937,11 @@
    "cost_min_minor": 990000,
    "cost_max_minor": 3100000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2526,7 +2950,11 @@
    "cost_min_minor": 270000000,
    "cost_max_minor": 830000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2535,7 +2963,11 @@
    "cost_min_minor": 19000000,
    "cost_max_minor": 58000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2544,7 +2976,11 @@
    "cost_min_minor": 7800000,
    "cost_max_minor": 24000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "chemotherapy-cycle",
@@ -2553,7 +2989,11 @@
    "cost_min_minor": 930000,
    "cost_max_minor": 2900000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2562,7 +3002,11 @@
    "cost_min_minor": 3000000,
    "cost_max_minor": 6000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2571,7 +3015,11 @@
    "cost_min_minor": 790000,
    "cost_max_minor": 1600000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2580,7 +3028,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 3200000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2589,7 +3041,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 3900000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2598,7 +3054,11 @@
    "cost_min_minor": 4200000,
    "cost_max_minor": 8400000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2607,7 +3067,11 @@
    "cost_min_minor": 3700000,
    "cost_max_minor": 7400000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2616,7 +3080,11 @@
    "cost_min_minor": 1000000000,
    "cost_max_minor": 2000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2625,7 +3093,11 @@
    "cost_min_minor": 70000000,
    "cost_max_minor": 140000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2634,7 +3106,11 @@
    "cost_min_minor": 29000000,
    "cost_max_minor": 59000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "radiation-therapy",
@@ -2643,7 +3119,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 6900000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2652,7 +3132,11 @@
    "cost_min_minor": 2500000,
    "cost_max_minor": 5500000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2661,7 +3145,11 @@
    "cost_min_minor": 660000,
    "cost_max_minor": 1500000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2670,7 +3158,11 @@
    "cost_min_minor": 1300000,
    "cost_max_minor": 2900000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2679,7 +3171,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 3600000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2688,7 +3184,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 7700000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2697,7 +3197,11 @@
    "cost_min_minor": 3100000,
    "cost_max_minor": 6800000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2706,7 +3210,11 @@
    "cost_min_minor": 830000000,
    "cost_max_minor": 1800000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2715,7 +3223,11 @@
    "cost_min_minor": 58000000,
    "cost_max_minor": 130000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2724,7 +3236,11 @@
    "cost_min_minor": 24000000,
    "cost_max_minor": 54000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "breast-cancer-surgery",
@@ -2733,7 +3249,11 @@
    "cost_min_minor": 2900000,
    "cost_max_minor": 6400000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2742,7 +3262,11 @@
    "cost_min_minor": 45000000,
    "cost_max_minor": 80000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2751,7 +3275,11 @@
    "cost_min_minor": 11000000,
    "cost_max_minor": 19000000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2760,7 +3288,11 @@
    "cost_min_minor": 22000000,
    "cost_max_minor": 39000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2769,7 +3301,11 @@
    "cost_min_minor": 26000000,
    "cost_max_minor": 47000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2778,7 +3314,11 @@
    "cost_min_minor": 58000000,
    "cost_max_minor": 100000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2787,7 +3327,11 @@
    "cost_min_minor": 51000000,
    "cost_max_minor": 90000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2796,7 +3340,11 @@
    "cost_min_minor": 8200000000,
    "cost_max_minor": 15000000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2805,7 +3353,11 @@
    "cost_min_minor": 580000000,
    "cost_max_minor": 1000000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2814,7 +3366,11 @@
    "cost_min_minor": 330000000,
    "cost_max_minor": 590000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liver-transplant",
@@ -2823,7 +3379,11 @@
    "cost_min_minor": 49000000,
    "cost_max_minor": 86000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2832,7 +3392,11 @@
    "cost_min_minor": 25000000,
    "cost_max_minor": 45000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2841,7 +3405,11 @@
    "cost_min_minor": 6000000,
    "cost_max_minor": 11000000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2850,7 +3418,11 @@
    "cost_min_minor": 12000000,
    "cost_max_minor": 22000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2859,7 +3431,11 @@
    "cost_min_minor": 15000000,
    "cost_max_minor": 26000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2868,7 +3444,11 @@
    "cost_min_minor": 32000000,
    "cost_max_minor": 58000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2877,7 +3457,11 @@
    "cost_min_minor": 28000000,
    "cost_max_minor": 51000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2886,7 +3470,11 @@
    "cost_min_minor": 4600000000,
    "cost_max_minor": 8200000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2895,7 +3483,11 @@
    "cost_min_minor": 320000000,
    "cost_max_minor": 580000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2904,7 +3496,11 @@
    "cost_min_minor": 180000000,
    "cost_max_minor": 330000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "kidney-transplant",
@@ -2913,7 +3509,11 @@
    "cost_min_minor": 27000000,
    "cost_max_minor": 49000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2922,7 +3522,11 @@
    "cost_min_minor": 35000000,
    "cost_max_minor": 90000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2931,7 +3535,11 @@
    "cost_min_minor": 8400000,
    "cost_max_minor": 22000000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2940,7 +3548,11 @@
    "cost_min_minor": 17000000,
    "cost_max_minor": 44000000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2949,7 +3561,11 @@
    "cost_min_minor": 21000000,
    "cost_max_minor": 53000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2958,7 +3574,11 @@
    "cost_min_minor": 45000000,
    "cost_max_minor": 120000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2967,7 +3587,11 @@
    "cost_min_minor": 39000000,
    "cost_max_minor": 100000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2976,7 +3600,11 @@
    "cost_min_minor": 6400000000,
    "cost_max_minor": 16000000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2985,7 +3613,11 @@
    "cost_min_minor": 450000000,
    "cost_max_minor": 1200000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -2994,7 +3626,11 @@
    "cost_min_minor": 260000000,
    "cost_max_minor": 660000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "bone-marrow-transplant",
@@ -3003,7 +3639,11 @@
    "cost_min_minor": 38000000,
    "cost_max_minor": 97000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3012,7 +3652,11 @@
    "cost_min_minor": 9000000,
    "cost_max_minor": 20000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3021,7 +3665,11 @@
    "cost_min_minor": 2200000,
    "cost_max_minor": 4800000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3030,7 +3678,11 @@
    "cost_min_minor": 4400000,
    "cost_max_minor": 9800000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3039,7 +3691,11 @@
    "cost_min_minor": 5300000,
    "cost_max_minor": 12000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3048,7 +3704,11 @@
    "cost_min_minor": 12000000,
    "cost_max_minor": 26000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3057,7 +3717,11 @@
    "cost_min_minor": 10000000,
    "cost_max_minor": 22000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3066,7 +3730,11 @@
    "cost_min_minor": 1600000000,
    "cost_max_minor": 3600000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3075,7 +3743,11 @@
    "cost_min_minor": 120000000,
    "cost_max_minor": 260000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3084,7 +3756,11 @@
    "cost_min_minor": 66000000,
    "cost_max_minor": 150000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "brain-tumor-surgery",
@@ -3093,7 +3769,11 @@
    "cost_min_minor": 9700000,
    "cost_max_minor": 22000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3102,7 +3782,11 @@
    "cost_min_minor": 7000000,
    "cost_max_minor": 14000000,
    "wait_time_text": "4–12 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3111,7 +3795,11 @@
    "cost_min_minor": 1700000,
    "cost_max_minor": 3400000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3120,7 +3808,11 @@
    "cost_min_minor": 3400000,
    "cost_max_minor": 6800000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3129,7 +3821,11 @@
    "cost_min_minor": 4100000,
    "cost_max_minor": 8200000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3138,7 +3834,11 @@
    "cost_min_minor": 9000000,
    "cost_max_minor": 18000000,
    "wait_time_text": "4–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3147,7 +3847,11 @@
    "cost_min_minor": 7900000,
    "cost_max_minor": 16000000,
    "wait_time_text": "3–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3156,7 +3860,11 @@
    "cost_min_minor": 1300000000,
    "cost_max_minor": 2500000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3165,7 +3873,11 @@
    "cost_min_minor": 91000000,
    "cost_max_minor": 180000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3174,7 +3886,11 @@
    "cost_min_minor": 51000000,
    "cost_max_minor": 100000000,
    "wait_time_text": "Limited local availability",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "deep-brain-stimulation",
@@ -3183,7 +3899,11 @@
    "cost_min_minor": 7600000,
    "cost_max_minor": 15000000,
    "wait_time_text": "3–9 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3192,7 +3912,11 @@
    "cost_min_minor": 1500000,
    "cost_max_minor": 3000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3201,7 +3925,11 @@
    "cost_min_minor": 720000,
    "cost_max_minor": 1400000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3210,7 +3938,11 @@
    "cost_min_minor": 1500000,
    "cost_max_minor": 2900000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3219,7 +3951,11 @@
    "cost_min_minor": 1700000,
    "cost_max_minor": 3500000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3228,7 +3964,11 @@
    "cost_min_minor": 3600000,
    "cost_max_minor": 7200000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3237,7 +3977,11 @@
    "cost_min_minor": 3100000,
    "cost_max_minor": 6200000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3246,7 +3990,11 @@
    "cost_min_minor": 800000000,
    "cost_max_minor": 1600000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3255,7 +4003,11 @@
    "cost_min_minor": 58000000,
    "cost_max_minor": 120000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3264,7 +4016,11 @@
    "cost_min_minor": 28000000,
    "cost_max_minor": 55000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "ivf-cycle",
@@ -3273,7 +4029,11 @@
    "cost_min_minor": 2900000,
    "cost_max_minor": 5800000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3282,7 +4042,11 @@
    "cost_min_minor": 1800000,
    "cost_max_minor": 3500000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3291,7 +4055,11 @@
    "cost_min_minor": 860000,
    "cost_max_minor": 1700000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3300,7 +4068,11 @@
    "cost_min_minor": 1800000,
    "cost_max_minor": 3400000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3309,7 +4081,11 @@
    "cost_min_minor": 2100000,
    "cost_max_minor": 4100000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3318,7 +4094,11 @@
    "cost_min_minor": 4300000,
    "cost_max_minor": 8300000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3327,7 +4107,11 @@
    "cost_min_minor": 3700000,
    "cost_max_minor": 7200000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3336,7 +4120,11 @@
    "cost_min_minor": 960000000,
    "cost_max_minor": 1900000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3345,7 +4133,11 @@
    "cost_min_minor": 70000000,
    "cost_max_minor": 140000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3354,7 +4146,11 @@
    "cost_min_minor": 33000000,
    "cost_max_minor": 64000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "icsi",
@@ -3363,7 +4159,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 6800000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3372,7 +4172,11 @@
    "cost_min_minor": 1800000,
    "cost_max_minor": 3000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3381,7 +4185,11 @@
    "cost_min_minor": 480000,
    "cost_max_minor": 790000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3390,7 +4198,11 @@
    "cost_min_minor": 960000,
    "cost_max_minor": 1600000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3399,7 +4211,11 @@
    "cost_min_minor": 1200000,
    "cost_max_minor": 1900000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3408,7 +4224,11 @@
    "cost_min_minor": 2500000,
    "cost_max_minor": 4200000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3417,7 +4237,11 @@
    "cost_min_minor": 2200000,
    "cost_max_minor": 3700000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3426,7 +4250,11 @@
    "cost_min_minor": 600000000,
    "cost_max_minor": 1000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3435,7 +4263,11 @@
    "cost_min_minor": 42000000,
    "cost_max_minor": 70000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3444,7 +4276,11 @@
    "cost_min_minor": 18000000,
    "cost_max_minor": 29000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "sleeve-gastrectomy",
@@ -3453,7 +4289,11 @@
    "cost_min_minor": 2100000,
    "cost_max_minor": 3500000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3462,7 +4302,11 @@
    "cost_min_minor": 2200000,
    "cost_max_minor": 3500000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3471,7 +4315,11 @@
    "cost_min_minor": 580000,
    "cost_max_minor": 920000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3480,7 +4328,11 @@
    "cost_min_minor": 1200000,
    "cost_max_minor": 1900000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3489,7 +4341,11 @@
    "cost_min_minor": 1400000,
    "cost_max_minor": 2300000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3498,7 +4354,11 @@
    "cost_min_minor": 3100000,
    "cost_max_minor": 4900000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3507,7 +4367,11 @@
    "cost_min_minor": 2700000,
    "cost_max_minor": 4300000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3516,7 +4380,11 @@
    "cost_min_minor": 730000000,
    "cost_max_minor": 1200000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3525,7 +4393,11 @@
    "cost_min_minor": 51000000,
    "cost_max_minor": 82000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3534,7 +4406,11 @@
    "cost_min_minor": 22000000,
    "cost_max_minor": 34000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "gastric-bypass",
@@ -3543,7 +4419,11 @@
    "cost_min_minor": 2500000,
    "cost_max_minor": 4100000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3552,7 +4432,11 @@
    "cost_min_minor": 400000,
    "cost_max_minor": 600000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3561,7 +4445,11 @@
    "cost_min_minor": 190000,
    "cost_max_minor": 290000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3570,7 +4458,11 @@
    "cost_min_minor": 390000,
    "cost_max_minor": 590000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3579,7 +4471,11 @@
    "cost_min_minor": 460000,
    "cost_max_minor": 690000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3588,7 +4484,11 @@
    "cost_min_minor": 950000,
    "cost_max_minor": 1400000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3597,7 +4497,11 @@
    "cost_min_minor": 820000,
    "cost_max_minor": 1200000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3606,7 +4510,11 @@
    "cost_min_minor": 210000000,
    "cost_max_minor": 320000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3615,7 +4523,11 @@
    "cost_min_minor": 16000000,
    "cost_max_minor": 23000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3624,7 +4536,11 @@
    "cost_min_minor": 7300000,
    "cost_max_minor": 11000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "lasik",
@@ -3633,7 +4549,11 @@
    "cost_min_minor": 770000,
    "cost_max_minor": 1200000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3642,7 +4562,11 @@
    "cost_min_minor": 350000,
    "cost_max_minor": 700000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3651,7 +4575,11 @@
    "cost_min_minor": 170000,
    "cost_max_minor": 340000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3660,7 +4588,11 @@
    "cost_min_minor": 340000,
    "cost_max_minor": 680000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3669,7 +4601,11 @@
    "cost_min_minor": 410000,
    "cost_max_minor": 810000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3678,7 +4614,11 @@
    "cost_min_minor": 830000,
    "cost_max_minor": 1700000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3687,7 +4627,11 @@
    "cost_min_minor": 720000,
    "cost_max_minor": 1400000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3696,7 +4640,11 @@
    "cost_min_minor": 190000000,
    "cost_max_minor": 370000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3705,7 +4653,11 @@
    "cost_min_minor": 14000000,
    "cost_max_minor": 27000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3714,7 +4666,11 @@
    "cost_min_minor": 6400000,
    "cost_max_minor": 13000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "cataract-surgery",
@@ -3723,7 +4679,11 @@
    "cost_min_minor": 680000,
    "cost_max_minor": 1400000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3732,7 +4692,11 @@
    "cost_min_minor": 800000,
    "cost_max_minor": 1500000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3741,7 +4705,11 @@
    "cost_min_minor": 380000,
    "cost_max_minor": 720000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3750,7 +4718,11 @@
    "cost_min_minor": 780000,
    "cost_max_minor": 1500000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3759,7 +4731,11 @@
    "cost_min_minor": 930000,
    "cost_max_minor": 1700000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3768,7 +4744,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 3600000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3777,7 +4757,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 3100000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3786,7 +4770,11 @@
    "cost_min_minor": 420000000,
    "cost_max_minor": 800000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3795,7 +4783,11 @@
    "cost_min_minor": 31000000,
    "cost_max_minor": 58000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3804,7 +4796,11 @@
    "cost_min_minor": 15000000,
    "cost_max_minor": 28000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "rhinoplasty",
@@ -3813,7 +4809,11 @@
    "cost_min_minor": 1500000,
    "cost_max_minor": 2900000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3822,7 +4822,11 @@
    "cost_min_minor": 800000,
    "cost_max_minor": 2000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3831,7 +4835,11 @@
    "cost_min_minor": 380000,
    "cost_max_minor": 960000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3840,7 +4848,11 @@
    "cost_min_minor": 780000,
    "cost_max_minor": 2000000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3849,7 +4861,11 @@
    "cost_min_minor": 930000,
    "cost_max_minor": 2300000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3858,7 +4874,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 4800000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3867,7 +4887,11 @@
    "cost_min_minor": 1600000,
    "cost_max_minor": 4100000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3876,7 +4900,11 @@
    "cost_min_minor": 420000000,
    "cost_max_minor": 1100000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3885,7 +4913,11 @@
    "cost_min_minor": 31000000,
    "cost_max_minor": 78000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3894,7 +4926,11 @@
    "cost_min_minor": 15000000,
    "cost_max_minor": 37000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "hair-transplant",
@@ -3903,7 +4939,11 @@
    "cost_min_minor": 1500000,
    "cost_max_minor": 3900000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3912,7 +4952,11 @@
    "cost_min_minor": 600000,
    "cost_max_minor": 1200000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3921,7 +4965,11 @@
    "cost_min_minor": 290000,
    "cost_max_minor": 580000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3930,7 +4978,11 @@
    "cost_min_minor": 590000,
    "cost_max_minor": 1200000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3939,7 +4991,11 @@
    "cost_min_minor": 690000,
    "cost_max_minor": 1400000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3948,7 +5004,11 @@
    "cost_min_minor": 1400000,
    "cost_max_minor": 2900000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3957,7 +5017,11 @@
    "cost_min_minor": 1200000,
    "cost_max_minor": 2500000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3966,7 +5030,11 @@
    "cost_min_minor": 320000000,
    "cost_max_minor": 640000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3975,7 +5043,11 @@
    "cost_min_minor": 23000000,
    "cost_max_minor": 47000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3984,7 +5056,11 @@
    "cost_min_minor": 11000000,
    "cost_max_minor": 22000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "liposuction",
@@ -3993,7 +5069,11 @@
    "cost_min_minor": 1200000,
    "cost_max_minor": 2300000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4002,7 +5082,11 @@
    "cost_min_minor": 350000,
    "cost_max_minor": 600000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4011,7 +5095,11 @@
    "cost_min_minor": 170000,
    "cost_max_minor": 290000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4020,7 +5108,11 @@
    "cost_min_minor": 340000,
    "cost_max_minor": 590000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4029,7 +5121,11 @@
    "cost_min_minor": 410000,
    "cost_max_minor": 690000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4038,7 +5134,11 @@
    "cost_min_minor": 830000,
    "cost_max_minor": 1400000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4047,7 +5147,11 @@
    "cost_min_minor": 720000,
    "cost_max_minor": 1200000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4056,7 +5160,11 @@
    "cost_min_minor": 190000000,
    "cost_max_minor": 320000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4065,7 +5173,11 @@
    "cost_min_minor": 14000000,
    "cost_max_minor": 23000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4074,7 +5186,11 @@
    "cost_min_minor": 6400000,
    "cost_max_minor": 11000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "dental-implants",
@@ -4083,7 +5199,11 @@
    "cost_min_minor": 680000,
    "cost_max_minor": 1200000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4092,7 +5212,11 @@
    "cost_min_minor": 4000000,
    "cost_max_minor": 9000000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4101,7 +5225,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 4300000,
    "wait_time_text": "4–12 weeks (private)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4110,7 +5238,11 @@
    "cost_min_minor": 3900000,
    "cost_max_minor": 8800000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4119,7 +5251,11 @@
    "cost_min_minor": 4600000,
    "cost_max_minor": 10000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4128,7 +5264,11 @@
    "cost_min_minor": 9500000,
    "cost_max_minor": 21000000,
    "wait_time_text": "1–2 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4137,7 +5277,11 @@
    "cost_min_minor": 8200000,
    "cost_max_minor": 19000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4146,7 +5290,11 @@
    "cost_min_minor": 2100000000,
    "cost_max_minor": 4800000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4155,7 +5303,11 @@
    "cost_min_minor": 160000000,
    "cost_max_minor": 350000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4164,7 +5316,11 @@
    "cost_min_minor": 73000000,
    "cost_max_minor": 170000000,
    "wait_time_text": "2–6 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "full-mouth-rehabilitation",
@@ -4173,7 +5329,11 @@
    "cost_min_minor": 7700000,
    "cost_max_minor": 17000000,
    "wait_time_text": "1–2 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4182,7 +5342,11 @@
    "cost_min_minor": 3500000,
    "cost_max_minor": 6000000,
    "wait_time_text": "2–8 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4191,7 +5355,11 @@
    "cost_min_minor": 920000,
    "cost_max_minor": 1600000,
    "wait_time_text": "6–18 months (NHS)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4200,7 +5368,11 @@
    "cost_min_minor": 1900000,
    "cost_max_minor": 3200000,
    "wait_time_text": "6–12 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4209,7 +5381,11 @@
    "cost_min_minor": 2300000,
    "cost_max_minor": 3900000,
    "wait_time_text": "3–12 months (public)",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4218,7 +5394,11 @@
    "cost_min_minor": 4900000,
    "cost_max_minor": 8400000,
    "wait_time_text": "1–4 weeks",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4227,7 +5407,11 @@
    "cost_min_minor": 4300000,
    "cost_max_minor": 7400000,
    "wait_time_text": "1–3 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4236,7 +5420,11 @@
    "cost_min_minor": 1200000000,
    "cost_max_minor": 2000000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4245,7 +5433,11 @@
    "cost_min_minor": 82000000,
    "cost_max_minor": 140000000,
    "wait_time_text": "2–6 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4254,7 +5446,11 @@
    "cost_min_minor": 34000000,
    "cost_max_minor": 59000000,
    "wait_time_text": "1–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   },
   {
    "procedure": "robotic-prostatectomy",
@@ -4263,7 +5459,11 @@
    "cost_min_minor": 4100000,
    "cost_max_minor": 6900000,
    "wait_time_text": "2–4 months",
-   "source": "Illustrative estimate - self-pay, private sector (demo data)"
+   "source": "Illustrative estimate - self-pay, private sector (demo data)",
+   "source_url": null,
+   "price_year": 2025,
+   "confidence": "low",
+   "wait_source": "Illustrative typical waiting time (demo data)"
   }
  ],
  "hospitals": [

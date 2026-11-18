@@ -104,6 +104,8 @@ function syncContent() {
 }
 
 // ------------------------------------------------------------------------------------------------ legal
+const INTERNAL_LEGAL = new Set(['ROPA.MD', 'DPIA.MD', 'BREACH_RESPONSE.MD']);
+
 function syncLegal() {
   if (!isDir(LEGAL_SRC)) {
     log(`legal: ${LEGAL_SRC} not found - keeping existing snapshot`);
@@ -113,6 +115,8 @@ function syncLegal() {
   let n = 0;
   for (const rel of walk(LEGAL_SRC)) {
     if (!MARKDOWN.has(path.extname(rel).toLowerCase())) continue;
+    // internal compliance records (processing register, impact assessment, breach runbook) never ship with the site
+    if (INTERNAL_LEGAL.has(path.basename(rel).toUpperCase())) continue;
     copyFile(path.join(LEGAL_SRC, rel), path.join(LEGAL_OUT, rel));
     n += 1;
   }

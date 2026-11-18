@@ -27,6 +27,7 @@ India.
 - Your screening answers: the body areas affected, your pain level, your symptoms, how long you have had them and
   how severe they are, treatments you have already tried, and any notes you typed.
 - Your preferences (languages, doctor gender, budget, travel dates) and your home country.
+- Your age and gender, and the medical history and allergies saved in your profile.
 - Up to 3 medical reports you choose to attach to this screening (PDF or images).
 
 We do **not** send your name, email address, phone number or passport details. Your notes and reports may contain
@@ -68,8 +69,9 @@ More detail: [Privacy Policy, section 5](PRIVACY_POLICY.md#5-ai-screening)
 
 ## Short version (small screens)
 
-> **AI screening (optional).** We can send your screening answers, preferences and up to 3 reports you attach —
-> not your name, contact or passport details — to our AI provider, Anthropic, which may process them outside
+> **AI screening (optional).** We can send your screening answers, preferences, age, gender, medical history and
+> allergies, and up to 3 reports you attach — not your name, contact or passport details — to our AI provider,
+> Anthropic, which may process them outside
 > India. The result is **not a diagnosis**; a hospital doctor reviews your case. **In an emergency, call your local
 > emergency number (112 in India).** Prefer not to? Use rules-based matching instead.
 > [Read full details]
@@ -99,6 +101,38 @@ Shown instead of the default checkbox when the patient profile belongs to a pers
 > screening answers, and any reports I attach, to its AI provider to produce a screening summary. I understand
 > that the summary is not a diagnosis.
 
+## Variant: reading a medical report with AI (document AI)
+
+Shown before "Read with AI" on a document (web and app). Same consent record (`ai_processing`), same
+version rules; the request is `POST /documents/analyses {consent_ai: true}`.
+
+> **Read this report with AI?** We send the pages you choose (up to [[10]] pages of one report) to our AI
+> provider, Anthropic, which may process them outside India, including in the United States. The AI drafts a
+> summary in plain English, the main findings, lab values and medicines. **The draft can be wrong. Check it and
+> correct it before you confirm it;** hospitals only see the version you confirm. It is not a diagnosis.
+> Photos are cleaned of location and camera details before they are sent.
+>
+> ☐ I agree to send these pages to the AI service to read them.
+
+## Variant: describing symptoms by voice
+
+Shown before the first recording (web and app), after the microphone permission explanation. Same consent
+record (`ai_processing`); the upload is `POST /voice/transcriptions` with `consent_ai=true`.
+
+> **Describe your symptoms by voice?** Your recording is turned into text on our own servers and then deleted;
+> the recording itself is not sent to the AI service. The text is sent to our AI provider, Anthropic (which may
+> process it outside India), to suggest answers for your screening form. **Nothing is added until you review
+> and confirm it.** Please speak English. In an emergency, call your local emergency number (112 in India).
+>
+> ☐ I agree to have my recording transcribed and the text sent to the AI service.
+
+## Variant: patient under 18
+
+Before any of the AI features above can be used for a patient under 18, a parent or legal guardian must give
+consent through the guardian consent form (`POST /privacy/guardian-consent`) and our staff must verify it. Until
+then the API answers `403 guardian_consent_required`; show: "A parent or guardian needs to give consent, and we
+need to verify it, before we can use AI for this patient."
+
 ## Withdrawal confirmation (profile → privacy and consents)
 
 > **Stop using AI for screenings?** Future screenings will use our rules-based matching. Past AI screening results
@@ -121,9 +155,13 @@ Shown instead of the default checkbox when the patient profile belongs to a pers
    granted: true}` and `POST /screenings/{id}/submit {consent_ai: true}`. If not agreed, submit with
    `consent_ai: false` and `preferences.use_ai = false`, so the rules engine runs (PLAN §7).
 3. **The payload must match "What we send".** The AI request may contain only the screening fields, preferences,
-   home country and up to 3 attached reports (PDF/image, ≤ 10 MB each) listed above — never name, email, phone,
-   date of birth, passport or insurance numbers, address or emergency contact. If be-screening adds a field (for
-   example age or sex), update this text and bump the version **before** shipping. If preferences are removed from
+   home country, the patient's age and gender, the profile's medical history and allergies (as sent by
+   `screening/ai/prompts.py` since 2026-11) and up to 3 attached reports (PDF/image, ≤ 10 MB each) listed above —
+   never name, email, phone, the date of birth itself, passport or insurance numbers, address or emergency
+   contact. If be-screening adds a field, update this text and bump the version **before** shipping. Document AI
+   sends the selected page images/PDF pages only; voice intake sends the transcript text only (speech-to-text
+   runs on our servers, `STT_PROVIDER=local_whisper`, and the audio is deleted after transcription,
+   `VOICE_RETAIN_AUDIO=false`). If preferences are removed from
    the payload (data minimisation — recommended, as triage does not need budget or travel dates), delete that
    bullet.
 4. **No patient data in the JSON schema** used for structured outputs; Anthropic caches schemas separately from
