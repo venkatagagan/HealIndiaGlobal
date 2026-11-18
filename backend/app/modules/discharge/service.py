@@ -963,7 +963,12 @@ def share_out(share: DischargeShare, now: datetime | None = None) -> s.ShareOut:
 
 
 def share_url(token: str) -> str:
-    return f"{settings.PATIENT_WEB_URL.rstrip('/')}/share/{token}"
+    """Public page of the patient portal. The portal SPA is served under ``/app/`` (dev server and edge
+    nginx), while ``PATIENT_WEB_URL`` is the site root in deployments."""
+    base = settings.PATIENT_WEB_URL.rstrip("/")
+    if not base.endswith("/app"):
+        base = f"{base}/app"
+    return f"{base}/share/{token}"
 
 
 async def _shareable_document_ids(db: AsyncSession, user: User, summary: DischargeSummary) -> set[uuid.UUID]:
