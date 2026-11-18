@@ -18,7 +18,7 @@ export interface PricesForLabels {
 }
 
 const fill = (template: string, vars: Record<string, string>) =>
-  template.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? vars[k] : m));
+  template.replace(/\{(\w+)\}/g, (m, k: string) => vars[k] ?? m);
 
 export function useCountryName(): (code: string) => string {
   const intl = useIntlLocale();

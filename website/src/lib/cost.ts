@@ -121,7 +121,7 @@ export const DISPLAY_CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'SAR', 'OMR', 'QA
 export function displayCurrencies(fx: FxTable): string[] {
   const known = DISPLAY_CURRENCIES.filter((c) => c === 'INR' || fx[c]);
   const extra = Object.keys(fx)
-    .filter((c) => /^[A-Z]{3}$/.test(c) && fx[c] > 0 && !known.includes(c))
+    .filter((c) => /^[A-Z]{3}$/.test(c) && (fx[c] ?? 0) > 0 && !known.includes(c))
     .sort();
   return [...known, ...extra];
 }
