@@ -49,6 +49,7 @@ import { Banner, DetailHero, DetailTabs, FactList, FieldGrid, Panel, StatusTrack
 import { DocumentList } from '../components/DocumentList';
 import { AccreditationsPanel } from '../components/AccreditationsPanel';
 import { ProfileChangesPanel } from '../components/DualControl';
+import { TranslationsButton } from '../components/ContentTranslations';
 import type { AdminHospitalWithPending } from '../lib/phase1Api';
 import { bpsToPctInput, cn, formatBps, formatDate, formatDateTime, pctInputToBps, useDocumentTitle } from '../lib/format';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
@@ -194,6 +195,7 @@ export default function HospitalDetailPage() {
         }
         actions={
           <>
+            <TranslationsButton entityType="hospital" entityId={h.id} label={h.name} size="md" withText />
             {canSuspend && (
               <Button variant="outline" size="sm" leftIcon={<Ban className="size-4" aria-hidden />} onClick={() => setDialog('suspend')}>
                 {t('hospitalDetail.actions.suspend')}
@@ -542,6 +544,15 @@ function DoctorsTab({
           )}
         </span>
       ),
+    },
+    {
+      key: 'translations',
+      header: '',
+      title: t('contentTranslations.button'),
+      hideable: false,
+      align: 'end' as const,
+      exportable: false,
+      cell: (d: AdminDoctorOut) => <TranslationsButton entityType="doctor" entityId={d.id} label={d.full_name} />,
     },
     ...(canVerify
       ? [

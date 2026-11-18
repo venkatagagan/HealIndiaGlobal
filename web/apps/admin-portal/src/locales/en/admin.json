@@ -2564,5 +2564,38 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Write a reply… (Ctrl+Enter to send)",
     "send": "Send"
+  },
+  "contentTranslations": {
+    "title": "Translations: {{label}}",
+    "help": "Patient-facing text in each language. Leave a box empty to use the shipped translation (or English when there is none). Medical and visa texts need a native-speaker review before they are published.",
+    "loading": "Loading…",
+    "loadError": "Could not load the translations.",
+    "language": "Language",
+    "english": "English",
+    "translation": "{{language}} translation",
+    "shippedHint": "Shipped translation in use: {{text}}",
+    "updatedAt": "Saved {{date}}",
+    "status": {
+      "custom": "Custom",
+      "shipped": "Shipped",
+      "english": "English fallback"
+    },
+    "saved": "Translations saved",
+    "open": "Translations of {{label}}",
+    "button": "Translations",
+    "save_one": "Save {{count}} change",
+    "save_other": "Save {{count}} changes",
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "full_name": "Full name",
+      "bio": "Biography",
+      "title": "Title",
+      "body": "Text",
+      "notes": "Notes",
+      "wait_time_text": "Waiting time",
+      "source": "Source",
+      "wait_source": "Waiting-time source"
+    }
   }
 }

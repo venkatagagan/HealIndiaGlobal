@@ -158,6 +158,7 @@ function TipsSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(tip) => tip.id}
       rowLabel={(tip) => tip.title}
       canEdit={canEdit}
+      translations={{ entityType: 'cultural_tip' }}
       searchText={(tip) => `${tip.title} ${tip.body} ${tip.category ?? ''}`}
       filterRow={(tip) => (!filters.category || tip.category === filters.category) && matchesActive(filters.active, tip.is_active)}
       filters={

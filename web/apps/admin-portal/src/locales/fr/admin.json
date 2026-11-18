@@ -2564,5 +2564,39 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Rédigez une réponse… (Ctrl+Enter pour envoyer)",
     "send": "Envoyer"
+  },
+  "contentTranslations": {
+    "title": "Traductions : {{label}}",
+    "help": "Texte vu par les patients dans chaque langue. Laissez un champ vide pour utiliser la traduction fournie (ou l'anglais s'il n'y en a pas). Les textes médicaux et de visa doivent être relus par un locuteur natif avant publication.",
+    "loading": "Chargement…",
+    "loadError": "Impossible de charger les traductions.",
+    "language": "Langue",
+    "english": "Anglais",
+    "translation": "Traduction ({{language}})",
+    "shippedHint": "Traduction fournie utilisée : {{text}}",
+    "updatedAt": "Enregistré le {{date}}",
+    "status": {
+      "custom": "Personnalisée",
+      "shipped": "Fournie",
+      "english": "Anglais (par défaut)"
+    },
+    "saved": "Traductions enregistrées",
+    "open": "Traductions de {{label}}",
+    "button": "Traductions",
+    "save_one": "Enregistrer {{count}} modification",
+    "save_many": "Enregistrer {{count}} modifications",
+    "save_other": "Enregistrer {{count}} modifications",
+    "fields": {
+      "name": "Nom",
+      "description": "Description",
+      "full_name": "Nom complet",
+      "bio": "Biographie",
+      "title": "Titre",
+      "body": "Texte",
+      "notes": "Notes",
+      "wait_time_text": "Délai d'attente",
+      "source": "Source",
+      "wait_source": "Source du délai d'attente"
+    }
   }
 }
