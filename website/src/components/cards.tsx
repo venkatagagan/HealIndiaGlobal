@@ -1,7 +1,7 @@
 import Link from '@/components/link';
-import { ArrowRight, BadgeCheck, Building2, Clock, Languages, MapPin, Star, Video } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Building2, CalendarCheck, Clock, Languages, MapPin, ShieldCheck, Star, Video } from 'lucide-react';
 import type { Dictionary } from '@/i18n';
-import { fmt, plural } from '@/i18n/format';
+import { fmt, formatDate, plural } from '@/i18n/format';
 import { href, routes } from '@/lib/routes';
 import { toNumber } from '@/lib/money';
 import type { DoctorCard as Doctor, FxTable, HospitalCard as Hospital, Procedure, Specialty } from '@/lib/data/types';
@@ -178,6 +178,46 @@ export function AccreditationBadges({ t, items, dark = false }: { t: Dictionary;
   );
 }
 
+/** An ISO date that is today or later (UTC), else null: cached pages never advertise a slot that has passed. */
+export function upcoming(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const day = iso.slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= new Date().toISOString().slice(0, 10) ? day : null;
+}
+
+/** "Earliest consultation: 3 December 2026" / "Earliest admission: …" (free slots published by the hospital). */
+export function EarliestAvailability({
+  t,
+  consultation,
+  admission,
+  className = '',
+}: {
+  t: Dictionary;
+  consultation?: string | null;
+  admission?: string | null;
+  className?: string;
+}) {
+  const c = upcoming(consultation);
+  const a = upcoming(admission);
+  if (!c && !a) return null;
+  return (
+    <ul className={`space-y-0.5 text-sm text-health-800 ${className}`} aria-label={t.prices.availabilityTitle}>
+      {c ? (
+        <li className="flex items-center gap-1.5">
+          <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {fmt(t.prices.earliestConsultation, { date: formatDate(c) })}
+        </li>
+      ) : null}
+      {a ? (
+        <li className="flex items-center gap-1.5">
+          <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {fmt(t.prices.earliestAdmission, { date: formatDate(a) })}
+        </li>
+      ) : null}
+    </ul>
+  );
+}
+
 function Initials({ name, className }: { name: string; className: string }) {
   const initials = name
     .replace(/^Dr\.?\s+/i, '')
@@ -242,6 +282,7 @@ export function HospitalCard({
             </span>
           </p>
         ) : null}
+        <EarliestAvailability t={t} consultation={hospital.next_available_consultation} admission={hospital.next_available_admission} />
         <div className="mt-auto border-t border-slate-100 pt-3 text-sm">
           {priceOverride ? (
             <>
@@ -304,6 +345,7 @@ export function DoctorCard({ t, doctor }: { t: Dictionary; doctor: Doctor }) {
             {t.doctors.teleconsult}
           </p>
         ) : null}
+        <EarliestAvailability t={t} consultation={doctor.next_available_consultation} admission={doctor.next_available_admission} />
       </div>
     </article>
   );

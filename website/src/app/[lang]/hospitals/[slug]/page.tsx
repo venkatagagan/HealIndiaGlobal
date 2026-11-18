@@ -10,7 +10,7 @@ import { hospitalLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata, shortName, truncate } from '@/lib/seo';
 import { PageHero } from '@/components/page-hero';
-import { AccreditationBadges, DoctorCard, Rating } from '@/components/cards';
+import { AccreditationBadges, DoctorCard, EarliestAvailability, Rating } from '@/components/cards';
 import { AssessmentCta } from '@/components/cta';
 import { JsonLd } from '@/components/json-ld';
 import { PriceRange } from '@/components/price';
@@ -119,6 +119,7 @@ export default async function HospitalPage({ params }: Props) {
                 />
               ) : null}
             </dl>
+            <EarliestAvailability t={t} consultation={h.next_available_consultation} admission={h.next_available_admission} className="mt-4" />
             <div className="mt-4 border-t border-slate-100 pt-4">
               <h3 className="text-sm font-semibold text-slate-800">{t.hospitals.accreditationsTitle}</h3>
               <div className="mt-2">
@@ -200,6 +201,7 @@ export default async function HospitalPage({ params }: Props) {
                         </div>
                       ) : null}
                     </dl>
+                    <EarliestAvailability t={t} admission={hp.next_available_admission} className="-mt-2 mb-4" />
                     {hp.inclusions.length || hp.exclusions.length ? (
                       <details className="group mt-3 mb-4 rounded-xl bg-slate-50 px-3 py-2 text-sm">
                         <summary className="flex items-center justify-between gap-2 font-medium text-primary-800">

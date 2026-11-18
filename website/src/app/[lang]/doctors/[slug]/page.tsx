@@ -10,7 +10,7 @@ import { physicianLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata, truncate } from '@/lib/seo';
 import { PageHero } from '@/components/page-hero';
-import { AccreditationBadges, Rating } from '@/components/cards';
+import { AccreditationBadges, EarliestAvailability, Rating } from '@/components/cards';
 import { AssessmentCta } from '@/components/cta';
 import { JsonLd } from '@/components/json-ld';
 import { PriceRange } from '@/components/price';
@@ -123,6 +123,12 @@ export default async function DoctorPage({ params }: Props) {
                 <Fact label={t.doctors.consultationFee} value={formatMoney(d.consultation_fee_minor, d.currency, intl)} />
               ) : null}
             </dl>
+            <EarliestAvailability
+              t={t}
+              consultation={d.next_available_consultation ?? d.next_available_date}
+              admission={d.next_available_admission}
+              className="mt-4"
+            />
             {d.hospital?.accreditations.length ? (
               <div className="mt-4">
                 <AccreditationBadges t={t} items={d.hospital.accreditations} />
