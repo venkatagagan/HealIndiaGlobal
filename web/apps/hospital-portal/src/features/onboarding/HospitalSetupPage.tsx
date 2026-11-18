@@ -2,9 +2,9 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Check, CheckCircle2, Circle, Send } from 'lucide-react';
+import { Check, CheckCircle2, Circle, Clock, Send } from 'lucide-react';
 import { errorMessage, financeApi, hospitalPortalApi, type HospitalProfileOut } from '@hig/shared/api';
-import { Button, Card, CardBody, CardHeader, ErrorState, PageHeader, PageLoader, StatusBadge, Tabs } from '../../components/ui';
+import { Alert, Button, Card, CardBody, CardHeader, ErrorState, PageHeader, PageLoader, StatusBadge, Tabs } from '../../components/ui';
 import { useHospital } from '../../auth/HospitalProvider';
 import { useAppTranslation } from '../../i18n';
 import { cn } from '../../lib/format';
@@ -156,6 +156,29 @@ function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: 
   );
 }
 
+/** SEC-020 fields of an active hospital that wait for staff review (GET /hospital-portal/profile `pending_changes`). */
+const REVIEWED_FIELDS = ['name', 'legal_name', 'gstin', 'pan', 'email', 'website', 'accreditations'] as const;
+
+/** Notice listing the profile changes an admin still has to approve (the public profile keeps the old values). */
+function PendingChangesNotice({ profile }: { profile: HospitalProfileOut }) {
+  const { t } = useAppTranslation();
+  const pending = (profile as HospitalProfileOut & { pending_changes?: string[] }).pending_changes ?? [];
+  if (pending.length === 0) return null;
+  const labels = pending.map((f) => ((REVIEWED_FIELDS as readonly string[]).includes(f) ? t(`onboarding.pending.fields.${f}`) : f));
+  return (
+    <div className="mb-4">
+      <Alert tone="amber" icon={<Clock className="size-5" aria-hidden />} title={t('onboarding.pending.title')}>
+        <p>{t('onboarding.pending.body')}</p>
+        <ul className="mt-1 list-disc ps-5">
+          {labels.map((l) => (
+            <li key={l}>{l}</li>
+          ))}
+        </ul>
+      </Alert>
+    </div>
+  );
+}
+
 /**
  * Onboarding wizard (draft / rejected hospitals) and the editable hospital profile (all statuses).
  * `mode="onboarding"` shows a stepper with "Save & continue"; `mode="profile"` shows tabs.
@@ -229,6 +252,7 @@ export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) 
           description={t('onboarding.page.profileDescription')}
           actions={<StatusBadge status={data.status} />}
         />
+        <PendingChangesNotice profile={data} />
         <Card>
           <Tabs
             className="px-3"
