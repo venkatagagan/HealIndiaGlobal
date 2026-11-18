@@ -32,6 +32,8 @@ from app.core.enums import ConsultationStatus, ContactChannel, DocumentKind, Use
 from app.core.errors import BadRequest, Conflict, Forbidden, NotFound, RateLimited
 from app.core.events import publish
 from app.core.jobs import enqueue
+from app.i18n import recipient_locale, resolve_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import Document, GuestContactVerification, IntroConsultation, Screening, User
 from app.modules.cases import policies
 from app.modules.cases.common import utcnow
@@ -194,20 +196,38 @@ def _ensure_patient(user: User) -> None:
         raise Forbidden("The free consultation is for visitors and patients")
 
 
-async def _send_code(channel: ContactChannel, contact: str, code: str, db: AsyncSession) -> None:
-    text = f"Your {settings.APP_NAME} code is {code}. It expires in 10 minutes. Do not share it."
+def guest_locale(user: User, request: Request | None) -> str:
+    """E6: the language for a guest's emails/SMS. A guest has no profile language of its own, so the request
+    language wins (``?lang=`` / ``Accept-Language``: the app language) and is remembered on the account, so
+    later messages sent by staff (the free-call confirmation) use it too. Signed-up users: their language."""
+    if request is not None and getattr(user, "is_guest", False):
+        query = request.query_params.get("lang")
+        header = request.headers.get("accept-language")
+        if query or header:
+            locale = resolve_locale(query=query, accept_language=header)
+            user.preferred_language = locale
+            return locale
+    return recipient_locale(user)
+
+
+async def _send_code(
+    channel: ContactChannel, contact: str, code: str, db: AsyncSession, locale: str = "en"
+) -> None:
+    await i18n_runtime.ensure_fresh()
+    minutes = int(CODE_TTL.total_seconds() // 60)
+    text = t("email.guest_code.sms", locale, app_name=settings.APP_NAME, code=code, minutes=minutes)
     if channel == ContactChannel.EMAIL:
         await enqueue(
             db,
             "email.send",
             {
                 "to": contact,
-                "subject": f"Your {settings.APP_NAME} verification code",
+                "subject": t("email.guest_code.subject", locale, app_name=settings.APP_NAME),
+                "locale": locale,
                 "template": "generic_notification.html",
                 "context": {
-                    "title": "Your verification code",
-                    "body": f"Your code is {code}.\n\nIt expires in 10 minutes. If you did not ask for it, "
-                    "you can ignore this email.",
+                    "title": t("email.guest_code.title", locale),
+                    "body": t("email.guest_code.body", locale, code=code, minutes=minutes),
                 },
             },
             max_attempts=3,
@@ -252,7 +272,7 @@ async def start_verification(
     row.code_hash = _code_hash(row.id, code)
     db.add(row)
     await db.flush()
-    await _send_code(body.channel, normalized, code, db)
+    await _send_code(body.channel, normalized, code, db, guest_locale(user, request))
     await audit_log(
         db,
         actor=user,
@@ -593,20 +613,23 @@ async def update_intro(
         await publish(db, "intro_consultation.scheduled", {"intro_consultation_id": str(item.id)})
         if ContactChannel(item.contact_channel) == ContactChannel.EMAIL and item.scheduled_at is not None:
             when = item.scheduled_at.strftime("%d %b %Y, %H:%M UTC")
+            await i18n_runtime.ensure_fresh()
+            guest = await db.get(User, item.user_id) if item.user_id else None
+            locale = recipient_locale(guest)  # E6: the guest's language (saved at verification)
             await enqueue(
                 db,
                 "email.send",
                 {
                     "to": item.contact_value,
-                    "subject": "Your free call with our medical coordinator",
+                    "subject": t("email.intro_scheduled.subject", locale),
+                    "locale": locale,
                     "template": "generic_notification.html",
                     "context": {
-                        "title": "Your free call is booked",
+                        "title": t("email.intro_scheduled.title", locale),
                         "name": item.full_name,
-                        "body": f"Your 15-minute video call is on {when}.\n\nJoin with the button below "
-                        "at that time. No app or account is needed.",
+                        "body": t("email.intro_scheduled.body", locale, when=when),
                         "url": item.meeting_url,
-                        "action_label": "Join the video call",
+                        "action_label": t("email.intro_scheduled.button", locale),
                     },
                 },
                 dedupe_key=f"intro-scheduled:{item.id}:{item.scheduled_at.isoformat()}",

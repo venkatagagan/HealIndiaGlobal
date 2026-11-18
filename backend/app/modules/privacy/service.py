@@ -19,7 +19,9 @@ from app.core.deps import PageQuery, is_staff
 from app.core.enums import ConsentKind, UserRole, UserStatus
 from app.core.errors import BadRequest, Forbidden, NotFound
 from app.core.jobs import enqueue
-from app.i18n import Msg
+from app.core.locale import request_locale
+from app.i18n import Msg, enabled_languages, normalize_locale, recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import Case, PatientProfile, User
 from app.models.privacy import (
     BreachIncident,
@@ -59,15 +61,6 @@ OPEN_REQUEST_STATUSES = (
     DataRightsRequestStatus.AWAITING_REQUESTER,
 )
 CLOSED_REQUEST_STATUSES = (DataRightsRequestStatus.COMPLETED, DataRightsRequestStatus.REJECTED)
-_KIND_LABELS = {
-    DataRightsRequestKind.ACCESS: "access to your data",
-    DataRightsRequestKind.CORRECTION: "correction of your data",
-    DataRightsRequestKind.ERASURE: "erasure of your data",
-    DataRightsRequestKind.NOMINATION: "a nomination",
-    DataRightsRequestKind.WITHDRAW_CONSENT: "withdrawal of consent",
-    DataRightsRequestKind.COMPLAINT: "a complaint",
-    DataRightsRequestKind.OTHER: "a privacy question",
-}
 
 
 def utcnow() -> datetime:
@@ -149,6 +142,12 @@ async def create_request(
         details=body.details,
         due_at=now + timedelta(days=settings.DATA_RIGHTS_SLA_DAYS),
         acknowledged_at=now,
+        # E6: replies go out in the requester's language (account language, else the request locale)
+        requester_language=(
+            recipient_locale(user)
+            if user is not None and user.preferred_language
+            else (request_locale(request) if request is not None else "en")
+        ),
     )
     db.add(row)
     await db.flush()
@@ -180,23 +179,28 @@ async def create_request(
         email=False,
     )
     if email:
+        await i18n_runtime.ensure_fresh()
+        locale = _requester_locale(row)
         await enqueue(
             db,
             "email.send",
             {
                 "to": email,
-                "subject": f"We received your request {row.reference}",
+                "subject": t("email.privacy_request.received_subject", locale, reference=row.reference),
+                "locale": locale,
                 "template": "generic_notification.html",
                 "context": {
-                    "title": "We received your request",
-                    "body": (
-                        f"Thank you. We received your request about {_KIND_LABELS[body.kind]} "
-                        f"(reference {row.reference}). We will reply by {row.due_at:%d %B %Y}. If you are "
-                        "not happy with our answer, you can complain to the Data Protection Board of India."
+                    "title": t("email.privacy_request.received_title", locale),
+                    "body": t(
+                        "email.privacy_request.received_body",
+                        locale,
+                        kind=Msg(f"notifications.privacy_request_received.kinds.{body.kind.value}"),
+                        reference=row.reference,
+                        date=f"{row.due_at:%d %b %Y}",
                     ),
                     "name": name or "there",
                     "url": settings.PUBLIC_SITE_URL.rstrip("/") + "/privacy",
-                    "action_label": "Privacy policy",
+                    "action_label": t("email.privacy_request.button", locale),
                 },
             },
         )
@@ -292,15 +296,12 @@ async def admin_update_request(
     return row
 
 
+def _requester_locale(row: DataRightsRequest) -> str:
+    code = normalize_locale(row.requester_language)
+    return code if code is not None and code in enabled_languages() else "en"
+
+
 async def _tell_requester(db: AsyncSession, row: DataRightsRequest) -> None:
-    status_text = {
-        DataRightsRequestStatus.IN_PROGRESS: "We are working on your request.",
-        DataRightsRequestStatus.AWAITING_REQUESTER: "We need more information from you to continue.",
-        DataRightsRequestStatus.COMPLETED: "Your request is complete.",
-        DataRightsRequestStatus.REJECTED: "We could not carry out your request.",
-        DataRightsRequestStatus.RECEIVED: "Your request is open again.",
-    }[DataRightsRequestStatus(row.status)]
-    body = status_text + (f" Our answer: {row.resolution}" if row.resolution else "")
     if row.user_id is not None:
         from app.modules.messaging.notifications import notify
 
@@ -320,19 +321,27 @@ async def _tell_requester(db: AsyncSession, row: DataRightsRequest) -> None:
             params={"reference": row.reference, "resolution": row.resolution or ""},
         )
     if row.requester_email:
+        await i18n_runtime.ensure_fresh()
+        account = await db.get(User, row.user_id) if row.user_id is not None else None
+        locale = recipient_locale(account) if account is not None else _requester_locale(row)
+        prefix = "notifications.privacy_request_updated"
+        body = t(f"{prefix}.status.{DataRightsRequestStatus(row.status).value}", locale)
+        if row.resolution:
+            body += " " + t(f"{prefix}.answer", locale, resolution=row.resolution)
         await enqueue(
             db,
             "email.send",
             {
                 "to": row.requester_email,
-                "subject": f"Update on your request {row.reference}",
+                "subject": t(f"{prefix}.title", locale, reference=row.reference),
+                "locale": locale,
                 "template": "generic_notification.html",
                 "context": {
-                    "title": f"Update on your request {row.reference}",
+                    "title": t(f"{prefix}.title", locale, reference=row.reference),
                     "body": body,
                     "name": row.requester_name or "there",
                     "url": settings.PUBLIC_SITE_URL.rstrip("/") + "/privacy",
-                    "action_label": "Privacy policy",
+                    "action_label": t("email.privacy_request.button", locale),
                 },
             },
         )

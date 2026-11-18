@@ -37,6 +37,8 @@ from app.core.config import settings
 from app.core.enums import DevicePlatform
 from app.core.ids import uuid7
 from app.core.jobs import PermanentJobError, task
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import DeviceToken, Notification, User
 from app.modules.messaging.policies import is_active_user
 
@@ -45,7 +47,7 @@ logger = structlog.get_logger(__name__)
 FCM_SCOPE = "https://www.googleapis.com/auth/firebase.messaging"
 DEFAULT_TOKEN_URI = "https://oauth2.googleapis.com/token"  # noqa: S105 - public endpoint, not a secret
 FCM_SEND_URL = "https://fcm.googleapis.com/v1/projects/{project}/messages:send"
-PUSH_TITLE = "Heal India Global"
+PUSH_TITLE = "Heal India Global"  # fallback; the title is translated (``push.title``)
 PUSH_TASK = "messaging.send_push"
 
 # Kinds that never produce a push (the user is in the app when they happen).
@@ -55,23 +57,34 @@ SendResult = Literal["sent", "unregistered", "invalid"]
 
 
 # ------------------------------------------------------------------------------------------- generic text
-def push_body_for(kind: str) -> str:
-    """Generic push text for a notification kind - never health, document or payment details."""
+def push_key_for(kind: str) -> str:
+    """Catalog key of the generic push text for a notification kind."""
     if kind.startswith("message.") or kind in ("conversation.created", "support.conversation_created"):
-        return "You have a new message."
+        return "push.message"
     if kind.startswith("sos.") or kind == "screening.emergency":
-        return "You have an urgent update. Please open the app."
+        return "push.urgent"
     if kind.startswith(("payment.", "refund.", "installment.", "payout.", "settlement_batch.")):
-        return "You have an update about a payment."
+        return "push.payment"
     if kind.startswith(("travel.", "booking.")):
-        return "You have an update about your trip."
+        return "push.trip"
     if kind.startswith("consultation."):
-        return "You have an update about a consultation."
+        return "push.consultation"
     if kind.startswith("moderation."):
-        return "You have a message from our team."
+        return "push.team"
     if kind.startswith("site_enquiry."):
-        return "A new website enquiry has arrived."
-    return "You have an update on your case."
+        return "push.enquiry"
+    return "push.case"
+
+
+def push_body_for(kind: str, locale: str | None = None) -> str:
+    """Generic push text for a notification kind in ``locale`` (the recipient's language) - never health,
+    document or payment details (lock screens are public)."""
+    return t(push_key_for(kind), locale or "en")
+
+
+def push_title(locale: str | None = None) -> str:
+    text = t("push.title", locale or "en", app_name=settings.APP_NAME)
+    return text if text != "push.title" else PUSH_TITLE
 
 
 # ------------------------------------------------------------------------------------------- configuration
@@ -151,13 +164,15 @@ def _error_code(resp: httpx.Response) -> str:
     return str(error.get("status") or "")
 
 
-async def send_to_token(client: httpx.AsyncClient, token: str, body: str, data: dict[str, str]) -> SendResult:
+async def send_to_token(
+    client: httpx.AsyncClient, token: str, body: str, data: dict[str, str], title: str = PUSH_TITLE
+) -> SendResult:
     """Send one message. Raises on transient failures (the job retries); returns the token's fate."""
     access = await _access_token(client)
     message = {
         "message": {
             "token": token,
-            "notification": {"title": PUSH_TITLE, "body": body},
+            "notification": {"title": title, "body": body},
             "data": data,
             "android": {"priority": "high", "notification": {"tag": data.get("kind", "")[:64]}},
             "apns": {"payload": {"aps": {"sound": "default"}}},
@@ -254,14 +269,17 @@ async def send_notification_push(db: AsyncSession, payload: dict[str, Any]) -> N
         .all()
     )
     pushed: set[str] = set((notification.data or {}).get("pushed_devices") or [])
-    body = push_body_for(notification.kind)
+    await i18n_runtime.ensure_fresh()
+    locale = recipient_locale(user)
+    body = push_body_for(notification.kind, locale)
+    title = push_title(locale)
     data = push_data(notification)
     sent = gone = 0
     async with httpx.AsyncClient(timeout=10) as client:
         for device in tokens:
             if str(device.id) in pushed:
                 continue
-            result = await send_to_token(client, device.token, body, data)
+            result = await send_to_token(client, device.token, body, data, title)
             if result == "unregistered":
                 await db.execute(delete(DeviceToken).where(DeviceToken.id == device.id))
                 gone += 1
