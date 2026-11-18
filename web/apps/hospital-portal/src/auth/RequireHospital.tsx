@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ShieldAlert } from 'lucide-react';
 import { RequireAuth } from '@hig/shared/auth';
+import { OrganisationSuspendedGate } from '@hig/shared/ui';
 import type { UserOut } from '@hig/shared/api';
 import { Button, EmptyState, PageLoader } from '../components/ui';
 import { useAppTranslation } from '../i18n';
@@ -37,6 +38,7 @@ function NoMembership() {
  */
 export function RequireHospital({ children }: { children: ReactNode }) {
   const { t } = useAppTranslation();
+  const { logout } = useAuth();
   return (
     <RequireAuth
       roles={HOSPITAL_ONLY}
@@ -45,7 +47,10 @@ export function RequireHospital({ children }: { children: ReactNode }) {
       forbidden={<NoMembership />}
       fallback={<PageLoader label={t('auth.restoringSession')} />}
     >
-      {children}
+      {/* 403 organisation_suspended from any API call: one full-screen message with a support link */}
+      <OrganisationSuspendedGate audience="hospital" onSignOut={() => void logout()}>
+        {children}
+      </OrganisationSuspendedGate>
     </RequireAuth>
   );
 }

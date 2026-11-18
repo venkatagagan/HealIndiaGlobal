@@ -157,6 +157,7 @@ const config: ClientConfig = {
 };
 
 const sessionExpiredListeners = new Set<() => void>();
+const apiErrorListeners = new Set<(error: ApiError) => void>();
 const tokenRefreshedListeners = new Set<(token: TokenOut) => void>();
 
 /**
@@ -198,6 +199,15 @@ export function getRefreshPath(): string {
 export function onSessionExpired(listener: () => void): () => void {
   sessionExpiredListeners.add(listener);
   return () => sessionExpiredListeners.delete(listener);
+}
+
+/**
+ * Called for every error response of the API (before it is thrown), e.g. to switch the whole portal to the
+ * "organisation suspended" screen on a 403 `organisation_suspended`.
+ */
+export function onApiError(listener: (error: ApiError) => void): () => void {
+  apiErrorListeners.add(listener);
+  return () => apiErrorListeners.delete(listener);
 }
 
 /** Called after every successful refresh with the new TokenOut (AuthProvider keeps `user` in sync). */
@@ -331,6 +341,18 @@ function mergeHeaders(target: Headers, source?: Record<string, string | null | u
 }
 
 async function toApiError(response: Response): Promise<ApiError> {
+  const error = await buildApiError(response);
+  for (const listener of apiErrorListeners) {
+    try {
+      listener(error);
+    } catch {
+      // a listener must never hide the original error
+    }
+  }
+  return error;
+}
+
+async function buildApiError(response: Response): Promise<ApiError> {
   let body: unknown;
   const contentType = response.headers.get('content-type') ?? '';
   try {

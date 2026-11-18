@@ -817,5 +817,18 @@
       "result": "Report this result",
       "review": "Report this review"
     }
+  },
+  "orgSuspended": {
+    "agency": {
+      "title": "Your agency account is suspended",
+      "body": "You cannot work with patients, cases or payments while the agency is suspended. Please contact support to find out why and how to restore access."
+    },
+    "hospital": {
+      "title": "Your hospital's account is suspended",
+      "body": "The hospital cannot receive cases, send quotes or manage bookings while it is suspended. Please contact support to find out why and how to restore access."
+    },
+    "dataSafe": "Your data is kept safe while the account is suspended.",
+    "contactSupport": "Contact support",
+    "signOut": "Sign out"
   }
 }

@@ -817,5 +817,18 @@
       "result": "Signaler ce résultat",
       "review": "Signaler cet avis"
     }
+  },
+  "orgSuspended": {
+    "agency": {
+      "title": "Le compte de votre agence est suspendu",
+      "body": "Vous ne pouvez pas gérer de patients, de dossiers ni de paiements tant que l'agence est suspendue. Contactez l'assistance pour en connaître la raison et rétablir l'accès."
+    },
+    "hospital": {
+      "title": "Le compte de votre hôpital est suspendu",
+      "body": "L'hôpital ne peut ni recevoir de dossiers, ni envoyer de devis, ni gérer de réservations tant qu'il est suspendu. Contactez l'assistance pour en connaître la raison et rétablir l'accès."
+    },
+    "dataSafe": "Vos données restent protégées pendant la suspension du compte.",
+    "contactSupport": "Contacter l'assistance",
+    "signOut": "Se déconnecter"
   }
 }
