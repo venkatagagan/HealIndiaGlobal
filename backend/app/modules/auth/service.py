@@ -1557,6 +1557,13 @@ async def _consent_scope(
         raise BadRequest(
             "Guardian consent is recorded through the guardian consent form", code="consent_not_applicable"
         )
+    if kind in (
+        ConsentKind.WHATSAPP_UPDATES,
+        ConsentKind.SHARE_WITH_HOME_DOCTOR,
+        ConsentKind.MEDICATION_REMINDERS,
+    ):
+        # Recorded by their own flows (phone verification, share link, reminder opt-in).
+        raise BadRequest("This consent is recorded by its own setting", code="consent_not_applicable")
     if kind == ConsentKind.SHARE_WITH_AGENT and role != UserRole.PATIENT:
         raise BadRequest("This consent applies to patient accounts", code="consent_not_applicable")
     if case_id or hospital_id:

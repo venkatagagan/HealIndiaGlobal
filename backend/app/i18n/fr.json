@@ -597,5 +597,71 @@
     "team": "Vous avez un message de notre équipe.",
     "enquiry": "Une nouvelle demande est arrivée depuis le site.",
     "case": "Vous avez une mise à jour concernant votre dossier."
+  },
+  "discharge": {
+    "notifications": {
+      "finalized": {
+        "title": "Votre compte rendu de sortie est prêt",
+        "body": "Votre hôpital a finalisé le compte rendu de sortie du dossier {case_number}.",
+        "updated": "Il s'agit d'une version mise à jour (version {version}).",
+        "share_hint": "Vous pouvez le télécharger ou le partager en toute sécurité avec votre médecin traitant."
+      },
+      "medication_reminder": {
+        "title": "C'est l'heure de vos médicaments",
+        "body": "Médicaments du jour selon votre compte rendu de sortie : {medicines}."
+      },
+      "checkin_due": {
+        "title": "Votre suivi de convalescence vous attend",
+        "body": "Répondez à quelques questions rapides sur votre état de santé (dossier {case_number})."
+      }
+    },
+    "share_email": {
+      "subject": "Compte rendu de sortie de {patient} partagé avec vous",
+      "title": "Un patient a partagé son compte rendu de sortie avec vous",
+      "body": "{patient} a partagé avec vous, via Heal India Global, le compte rendu de sortie de son traitement en Inde. Le lien sécurisé ci-dessous est valable jusqu'au {date}.",
+      "privacy": "Ce lien donne accès à des informations médicales confidentielles. Merci de ne pas le transférer. Chaque consultation est enregistrée dans le journal d'accès du patient.",
+      "action": "Voir le compte rendu de sortie"
+    },
+    "pdf": {
+      "title": "Compte rendu de sortie",
+      "reference": "Référence {reference} (version {version})",
+      "issued": "Émis le {date}",
+      "not_recorded": "Non renseigné",
+      "patient": "Patient",
+      "date_of_birth": "Date de naissance",
+      "sex": "Sexe",
+      "sex_male": "Masculin",
+      "sex_female": "Féminin",
+      "sex_other": "Autre",
+      "sex_unknown": "Non précisé",
+      "nationality": "Nationalité",
+      "case": "Dossier / réservation",
+      "admission": "Admission",
+      "discharge": "Sortie",
+      "treating_doctor": "Médecin traitant",
+      "registration": "N° d'inscription {number}",
+      "diagnosis": "Diagnostic",
+      "procedure": "Intervention réalisée",
+      "performed_on": "réalisée le {date}",
+      "hospital_course": "Évolution pendant l'hospitalisation",
+      "investigations": "Examens complémentaires",
+      "allergies": "Allergies",
+      "no_known_allergies": "Aucune allergie connue",
+      "medications": "Traitement de sortie",
+      "med_name": "Médicament",
+      "med_dose": "Dose",
+      "med_frequency": "Fréquence",
+      "med_duration": "Durée",
+      "med_instructions": "Voie / consignes",
+      "days": "{count} jours",
+      "ongoing": "En cours",
+      "no_medications": "Aucun médicament prescrit à la sortie.",
+      "follow_up": "Consignes de suivi",
+      "red_flags": "Consultez d'urgence en cas de",
+      "attachments": "Documents joints",
+      "signed_for": "Pour {hospital}",
+      "finalized_at": "Finalisé électroniquement le {when}",
+      "footer": "Émis via {app} pour le compte de l'hôpital. Une copie électronique (PDF et HL7 FHIR) est disponible pour le patient et pour les médecins avec qui il la partage."
+    }
   }
 }

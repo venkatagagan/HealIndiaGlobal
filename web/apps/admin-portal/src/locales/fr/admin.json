@@ -3152,5 +3152,68 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Rédigez une réponse… (Ctrl+Enter pour envoyer)",
     "send": "Envoyer"
+  },
+  "whatsapp": {
+    "nav": "WhatsApp",
+    "title": "WhatsApp",
+    "description": "Notifications WhatsApp Business : configuration du fournisseur, modèles de messages, inscriptions et journal d'envoi. Le texte des messages n'est jamais conservé.",
+    "notConfigured": "WhatsApp n'est pas configuré sur ce serveur. Les utilisateurs ne peuvent pas activer les notifications WhatsApp tant que les identifiants WhatsApp Business ne sont pas définis dans l'environnement du serveur.",
+    "stats": {
+      "optedIn": "Inscrits",
+      "pending": "En attente du code",
+      "optedOut": "Désinscrits",
+      "sent24h": "Envoyés (24 dernières h)",
+      "failed24h": "Échecs (24 dernières h)"
+    },
+    "provider": {
+      "title": "Fournisseur",
+      "provider": "Fournisseur",
+      "configured": "Envoi",
+      "webhook": "Webhook (statut de remise et STOP)",
+      "verifyToken": "Jeton de vérification du webhook",
+      "phoneNumberId": "ID du numéro de téléphone",
+      "apiVersion": "Version de la Graph API",
+      "dailyLimit": "Messages par utilisateur et par jour",
+      "set": "Configuré",
+      "notSet": "Non configuré",
+      "secretsNote": "Les secrets (jeton d'accès, secret de l'application) sont définis dans l'environnement du serveur et ne sont jamais affichés ici."
+    },
+    "templates": {
+      "title": "Modèles de messages",
+      "description": "Chaque modèle doit être approuvé dans Meta Business Manager avec le même nom et les mêmes langues.",
+      "empty": "Aucun modèle",
+      "columns": {
+        "name": "Modèle",
+        "category": "Catégorie",
+        "kinds": "Utilisé pour",
+        "languages": "Langues"
+      }
+    },
+    "log": {
+      "title": "Messages récents",
+      "description": "Seuls le modèle, le numéro masqué et le statut de remise sont conservés, jamais le texte du message.",
+      "empty": "Aucun message WhatsApp pour le moment",
+      "columns": {
+        "created": "Créé",
+        "template": "Modèle",
+        "language": "Langue",
+        "phone": "Numéro",
+        "status": "Statut",
+        "delivery": "Dernière mise à jour",
+        "error": "Erreur"
+      },
+      "filters": {
+        "status": "Statut",
+        "template": "Modèle"
+      }
+    },
+    "status": {
+      "queued": "En file",
+      "sent": "Envoyé",
+      "delivered": "Remis",
+      "read": "Lu",
+      "failed": "Échec",
+      "skipped": "Ignoré"
+    }
   }
 }

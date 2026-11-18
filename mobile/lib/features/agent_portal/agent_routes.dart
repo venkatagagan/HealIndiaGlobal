@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/routes.dart';
 import '../aftercare/screens/aftercare_screen.dart';
+import '../discharge/screens/discharge_screens.dart';
 import 'agent_shell.dart';
 import 'screens/agent_bookings_screens.dart';
 import 'screens/agent_cases_screens.dart';
@@ -45,6 +46,9 @@ abstract final class AgentRoutes {
 
   /// Aftercare of the agent's patients (follow-up calls, check-ins).
   static const aftercare = '$home/aftercare';
+
+  /// A patient's discharge summary, read-only (`discharge_summary.finalized` notification).
+  static String dischargeSummary(String id) => '$home/discharge-summaries/$id';
 }
 
 /// Route tree of the agent shell, mounted by `core/router/app_router.dart` under [Routes.agentHome].
@@ -98,6 +102,10 @@ List<RouteBase> agentPortalRoutes() => [
         builder: (_, s) => AgentBookingDetailScreen(bookingId: s.pathParameters['id']!),
       ),
       GoRoute(path: 'aftercare', builder: (_, _) => const AftercareScreen(forAgent: true)),
+      GoRoute(
+        path: 'discharge-summaries/:id',
+        builder: (_, s) => DischargeDetailScreen(summaryId: s.pathParameters['id']!, patientActions: false),
+      ),
     ],
   ),
 ];

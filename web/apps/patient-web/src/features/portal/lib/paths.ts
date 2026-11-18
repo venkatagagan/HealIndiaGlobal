@@ -81,6 +81,10 @@ export const paths = {
     for (const [k, v] of Object.entries(params)) if (v) search.set(k, v);
     return `${PORTAL_BASE}/consultations/book?${search.toString()}`;
   },
+  dischargeSummaries: `${PORTAL_BASE}/discharge-summaries`,
+  dischargeSummary: (id: Uuid) => `${PORTAL_BASE}/discharge-summaries/${encodeURIComponent(id)}`,
+  /** public, read-only home-doctor view (no login) */
+  dischargeShare: (token: string) => `${PORTAL_BASE}/share/${encodeURIComponent(token)}`,
   freeCall: (screeningId?: Uuid) =>
     `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
   freeCallStatus: `${PORTAL_BASE}/free-call/status`,

@@ -2246,220 +2246,144 @@ class OverridableLocalizations extends AppLocalizations {
     'inviteMissingArrival' => inviteMissingArrival,
     'inviteMissingDuration' => inviteMissingDuration,
     'inviteMissingTreatment' => inviteMissingTreatment,
-    'reportSheetTitleReview' => reportSheetTitleReview,
-    'reportSheetIntroReview' => reportSheetIntroReview,
-    'reviewReportAction' => reviewReportAction,
-    'orgSuspendedTitle' => orgSuspendedTitle,
-    'orgSuspendedBodyAgent' => orgSuspendedBodyAgent,
-    'orgSuspendedBodyHospital' => orgSuspendedBodyHospital,
-    'orgSuspendedCallSupport' => orgSuspendedCallSupport,
-    'orgSuspendedWhatsAppSupport' => orgSuspendedWhatsAppSupport,
-    'orgSuspendedNoContact' => orgSuspendedNoContact,
-    'orgSuspendedCheckAgain' => orgSuspendedCheckAgain,
-    'hpAvailabilityTitle' => hpAvailabilityTitle,
-    'hpMoreAvailabilitySubtitle' => hpMoreAvailabilitySubtitle,
-    'hpAvailabilityIntroDoctor' => hpAvailabilityIntroDoctor,
-    'hpAvailabilityIntroHospital' => hpAvailabilityIntroHospital,
-    'hpAvailabilityConsultShort' => hpAvailabilityConsultShort,
-    'hpAvailabilityAdmitShort' => hpAvailabilityAdmitShort,
-    'hpAvailabilityInvalidNumber' => hpAvailabilityInvalidNumber,
-    'hpAvailabilityQuickFill' => hpAvailabilityQuickFill,
-    'hpAvailabilityWeekdaysOnly' => hpAvailabilityWeekdaysOnly,
-    'hpAvailabilityApply' => hpAvailabilityApply,
-    'hpAvailabilitySaved' => hpAvailabilitySaved,
-    'hpAvailabilityFixErrors' => hpAvailabilityFixErrors,
-    'hpAvailabilityBelowBookedError' => hpAvailabilityBelowBookedError,
-    'hpAvailabilityDiscardTitle' => hpAvailabilityDiscardTitle,
-    'hpAvailabilityDiscard' => hpAvailabilityDiscard,
-    'hpAvailabilityKeepEditing' => hpAvailabilityKeepEditing,
-    'hpAvailabilityEditButton' => hpAvailabilityEditButton,
-    'hpAvailabilityPastDay' => hpAvailabilityPastDay,
-    'privacyRequestsTitle' => privacyRequestsTitle,
-    'privacyRequestsSubtitle' => privacyRequestsSubtitle,
-    'privacyRequestsEmpty' => privacyRequestsEmpty,
-    'privacyRequestNew' => privacyRequestNew,
-    'privacyRequestFormIntro' => privacyRequestFormIntro,
-    'privacyRequestKindLabel' => privacyRequestKindLabel,
-    'privacyRequestKindAccess' => privacyRequestKindAccess,
-    'privacyRequestKindCorrection' => privacyRequestKindCorrection,
-    'privacyRequestKindErasure' => privacyRequestKindErasure,
-    'privacyRequestKindNomination' => privacyRequestKindNomination,
-    'privacyRequestKindWithdrawConsent' => privacyRequestKindWithdrawConsent,
-    'privacyRequestKindComplaint' => privacyRequestKindComplaint,
-    'privacyRequestKindOther' => privacyRequestKindOther,
-    'privacyRequestDetailsLabel' => privacyRequestDetailsLabel,
-    'privacyRequestDetailsHint' => privacyRequestDetailsHint,
-    'privacyRequestDetailsTooShort' => privacyRequestDetailsTooShort,
-    'privacyRequestOnBehalfLabel' => privacyRequestOnBehalfLabel,
-    'privacyRequestOnBehalfHint' => privacyRequestOnBehalfHint,
-    'privacyRequestSubmit' => privacyRequestSubmit,
-    'privacyRequestStatusReceived' => privacyRequestStatusReceived,
-    'privacyRequestStatusInProgress' => privacyRequestStatusInProgress,
-    'privacyRequestStatusAwaitingRequester' => privacyRequestStatusAwaitingRequester,
-    'privacyRequestStatusCompleted' => privacyRequestStatusCompleted,
-    'privacyRequestStatusRejected' => privacyRequestStatusRejected,
-    'privacyRequestOverdue' => privacyRequestOverdue,
-    'privacyRequestYourRequest' => privacyRequestYourRequest,
-    'privacyRequestResolution' => privacyRequestResolution,
-    'privacyRequestNoAnswerYet' => privacyRequestNoAnswerYet,
-    'privacyNomineeTitle' => privacyNomineeTitle,
-    'privacyNomineeSubtitleNone' => privacyNomineeSubtitleNone,
-    'privacyNomineeIntro' => privacyNomineeIntro,
-    'privacyNomineeName' => privacyNomineeName,
-    'privacyNomineeRelationship' => privacyNomineeRelationship,
-    'privacyNomineeEmail' => privacyNomineeEmail,
-    'privacyNomineePhone' => privacyNomineePhone,
-    'privacyNomineeContactRequired' => privacyNomineeContactRequired,
-    'privacyNomineeTooShort' => privacyNomineeTooShort,
-    'privacyNomineeSave' => privacyNomineeSave,
-    'privacyNomineeSaved' => privacyNomineeSaved,
-    'privacyNomineeRemove' => privacyNomineeRemove,
-    'privacyNomineeRemoveConfirm' => privacyNomineeRemoveConfirm,
-    'privacyNomineeRemoved' => privacyNomineeRemoved,
-    'privacyShareHospitalsTitle' => privacyShareHospitalsTitle,
-    'privacyShareHospitalsOn' => privacyShareHospitalsOn,
-    'privacyShareHospitalsOff' => privacyShareHospitalsOff,
-    'privacyShareHospitalsWithdrawTitle' => privacyShareHospitalsWithdrawTitle,
-    'privacyShareHospitalsWithdrawBody' => privacyShareHospitalsWithdrawBody,
-    'privacyShareAgentTitle' => privacyShareAgentTitle,
-    'privacyShareAgentOn' => privacyShareAgentOn,
-    'privacyShareAgentOff' => privacyShareAgentOff,
-    'privacyShareAgentWithdrawTitle' => privacyShareAgentWithdrawTitle,
-    'privacyShareAgentWithdrawBody' => privacyShareAgentWithdrawBody,
-    'privacyShareWithdraw' => privacyShareWithdraw,
-    'privacyShareUpdated' => privacyShareUpdated,
-    'privacyContactTitle' => privacyContactTitle,
-    'privacyContactSubtitle' => privacyContactSubtitle,
-    'privacyContactGrievance' => privacyContactGrievance,
-    'privacyContactDpo' => privacyContactDpo,
-    'privacyContactAddress' => privacyContactAddress,
-    'privacyContactBoard' => privacyContactBoard,
-    'privacyContactBoardLink' => privacyContactBoardLink,
-    'privacyContactNotPublished' => privacyContactNotPublished,
-    'consultBookTitle' => consultBookTitle,
-    'consultBookIntro' => consultBookIntro,
-    'consultDoctorSection' => consultDoctorSection,
-    'consultRequestQuoteInstead' => consultRequestQuoteInstead,
-    'consultDateSection' => consultDateSection,
-    'consultDateHint' => consultDateHint,
-    'consultTimeSection' => consultTimeSection,
-    'consultQuestionLabel' => consultQuestionLabel,
-    'consultQuestionHint' => consultQuestionHint,
-    'consultReportsSection' => consultReportsSection,
-    'consultReportsHint' => consultReportsHint,
-    'consultUpload' => consultUpload,
-    'consultFeeLabel' => consultFeeLabel,
-    'consultFeeFree' => consultFeeFree,
-    'consultFeePayNote' => consultFeePayNote,
-    'consultSubmit' => consultSubmit,
-    'consultPickDoctor' => consultPickDoctor,
-    'consultPickSlot' => consultPickSlot,
-    'consultRequestedSnack' => consultRequestedSnack,
-    'consultErrorExists' => consultErrorExists,
-    'consultErrorUnavailable' => consultErrorUnavailable,
-    'consultErrorDoctorRequired' => consultErrorDoctorRequired,
-    'consultErrorInvalidDoctor' => consultErrorInvalidDoctor,
-    'consultMineTitle' => consultMineTitle,
-    'consultMineSubtitle' => consultMineSubtitle,
-    'consultListEmpty' => consultListEmpty,
-    'consultListEmptyBody' => consultListEmptyBody,
-    'consultFindDoctor' => consultFindDoctor,
-    'consultDetailTitle' => consultDetailTitle,
-    'consultDoctorTbc' => consultDoctorTbc,
-    'consultAwaitingTime' => consultAwaitingTime,
-    'consultJoinVideo' => consultJoinVideo,
-    'consultJoinHint' => consultJoinHint,
-    'consultLinkSoon' => consultLinkSoon,
-    'consultReminderScheduled' => consultReminderScheduled,
-    'consultReminderPending' => consultReminderPending,
-    'consultPaid' => consultPaid,
-    'consultPaymentDue' => consultPaymentDue,
-    'consultPaymentPending' => consultPaymentPending,
-    'consultPayTitle' => consultPayTitle,
-    'consultPaySuccess' => consultPaySuccess,
-    'consultPayFailed' => consultPayFailed,
-    'consultPayPending' => consultPayPending,
-    'consultCancel' => consultCancel,
-    'consultCancelConfirmTitle' => consultCancelConfirmTitle,
-    'consultCancelConfirmBody' => consultCancelConfirmBody,
-    'consultKeep' => consultKeep,
-    'consultCancelled' => consultCancelled,
-    'consultNotesSection' => consultNotesSection,
-    'consultBookVideoButton' => consultBookVideoButton,
-    'insuranceScreenTitle' => insuranceScreenTitle,
-    'insuranceTabInsurance' => insuranceTabInsurance,
-    'insuranceTabPayLater' => insuranceTabPayLater,
-    'insuranceTabRequests' => insuranceTabRequests,
-    'insuranceDisclaimer' => insuranceDisclaimer,
-    'financingDisclaimer' => financingDisclaimer,
-    'financingPartnerDecides' => financingPartnerDecides,
-    'insuranceCountryAll' => insuranceCountryAll,
-    'insuranceCountryPick' => insuranceCountryPick,
-    'insuranceEmptyTitle' => insuranceEmptyTitle,
-    'insuranceEmptyBody' => insuranceEmptyBody,
-    'financingEmptyTitle' => financingEmptyTitle,
-    'financingEmptyBody' => financingEmptyBody,
-    'insuranceCategoryMedicalTravel' => insuranceCategoryMedicalTravel,
-    'insuranceCategoryComplication' => insuranceCategoryComplication,
-    'insuranceCategoryHealth' => insuranceCategoryHealth,
-    'insuranceCategoryOther' => insuranceCategoryOther,
-    'insuranceEligibleAll' => insuranceEligibleAll,
-    'insuranceNotInYourCountry' => insuranceNotInYourCountry,
-    'insurancePriceOnRequest' => insurancePriceOnRequest,
-    'insuranceRequestQuote' => insuranceRequestQuote,
-    'insuranceVisitWebsite' => insuranceVisitWebsite,
-    'insuranceCouldNotOpen' => insuranceCouldNotOpen,
-    'financingCheckEligibility' => financingCheckEligibility,
-    'insuranceFormTitle' => insuranceFormTitle,
-    'financingFormTitle' => financingFormTitle,
-    'insuranceFieldName' => insuranceFieldName,
-    'insuranceFieldEmail' => insuranceFieldEmail,
-    'insuranceFieldPhone' => insuranceFieldPhone,
-    'insuranceNameRequired' => insuranceNameRequired,
-    'insuranceEmailInvalid' => insuranceEmailInvalid,
-    'insuranceContactRequired' => insuranceContactRequired,
-    'insurancePreferredContact' => insurancePreferredContact,
-    'insuranceContactEmail' => insuranceContactEmail,
-    'insuranceContactPhone' => insuranceContactPhone,
-    'insuranceContactWhatsapp' => insuranceContactWhatsapp,
-    'insuranceFieldCountry' => insuranceFieldCountry,
-    'insuranceFieldCountryNotSet' => insuranceFieldCountryNotSet,
-    'insuranceFieldMessage' => insuranceFieldMessage,
-    'insuranceMessageHint' => insuranceMessageHint,
-    'insuranceConsentRequired' => insuranceConsentRequired,
-    'insuranceLinkedToBooking' => insuranceLinkedToBooking,
-    'insuranceSend' => insuranceSend,
-    'insuranceSentTitle' => insuranceSentTitle,
-    'insuranceContinueOnPartner' => insuranceContinueOnPartner,
-    'insuranceErrorConsentRequired' => insuranceErrorConsentRequired,
-    'insuranceErrorCountryNotEligible' => insuranceErrorCountryNotEligible,
-    'insuranceErrorDuplicate' => insuranceErrorDuplicate,
-    'insuranceErrorNotFound' => insuranceErrorNotFound,
-    'insuranceErrorNotOpen' => insuranceErrorNotOpen,
-    'insuranceRequestsEmptyTitle' => insuranceRequestsEmptyTitle,
-    'insuranceRequestsEmptyBody' => insuranceRequestsEmptyBody,
-    'insuranceKindQuote' => insuranceKindQuote,
-    'financingKindEligibility' => financingKindEligibility,
-    'insuranceStatusNew' => insuranceStatusNew,
-    'insuranceStatusInProgress' => insuranceStatusInProgress,
-    'insuranceStatusShared' => insuranceStatusShared,
-    'insuranceStatusClosed' => insuranceStatusClosed,
-    'insuranceStatusCancelled' => insuranceStatusCancelled,
-    'insuranceWithdraw' => insuranceWithdraw,
-    'insuranceWithdrawTitle' => insuranceWithdrawTitle,
-    'insuranceWithdrawn' => insuranceWithdrawn,
-    'insuranceProfileGroup' => insuranceProfileGroup,
-    'insuranceProfileTile' => insuranceProfileTile,
-    'insuranceProfileTileSubtitle' => insuranceProfileTileSubtitle,
-    'insuranceBookCardTitle' => insuranceBookCardTitle,
-    'insuranceBookCardBody' => insuranceBookCardBody,
-    'insuranceBookCardAction' => insuranceBookCardAction,
-    'financingInstallmentsSubtitle' => financingInstallmentsSubtitle,
-    'financingPickDateFirst' => financingPickDateFirst,
-    'financingInstallmentsUnavailable' => financingInstallmentsUnavailable,
-    'financingScheduleEstimate' => financingScheduleEstimate,
-    'financingSeePartners' => financingSeePartners,
-    'financingInstallmentsPastTreatment' => financingInstallmentsPastTreatment,
+    'whatsappTitle' => whatsappTitle,
+    'whatsappTileSubtitle' => whatsappTileSubtitle,
+    'whatsappIntro' => whatsappIntro,
+    'whatsappPrivacyNote' => whatsappPrivacyNote,
+    'whatsappStopNote' => whatsappStopNote,
+    'whatsappUnavailable' => whatsappUnavailable,
+    'whatsappStatusOn' => whatsappStatusOn,
+    'whatsappStatusOff' => whatsappStatusOff,
+    'whatsappStatusPending' => whatsappStatusPending,
+    'whatsappActiveTitle' => whatsappActiveTitle,
+    'whatsappPhoneLabel' => whatsappPhoneLabel,
+    'whatsappPhoneHint' => whatsappPhoneHint,
+    'whatsappPhoneHelper' => whatsappPhoneHelper,
+    'whatsappPhoneInvalid' => whatsappPhoneInvalid,
+    'whatsappSendCode' => whatsappSendCode,
+    'whatsappCodeSent' => whatsappCodeSent,
+    'whatsappCodeLabel' => whatsappCodeLabel,
+    'whatsappCodeInvalid' => whatsappCodeInvalid,
+    'whatsappConfirmCode' => whatsappConfirmCode,
+    'whatsappResendCode' => whatsappResendCode,
+    'whatsappChangeNumber' => whatsappChangeNumber,
+    'whatsappTurnOff' => whatsappTurnOff,
+    'whatsappTurnOffConfirmTitle' => whatsappTurnOffConfirmTitle,
+    'whatsappTurnOffConfirmBody' => whatsappTurnOffConfirmBody,
+    'whatsappTurnedOn' => whatsappTurnedOn,
+    'whatsappTurnedOff' => whatsappTurnedOff,
+    'whatsappErrorCodeExpired' => whatsappErrorCodeExpired,
+    'whatsappErrorTooManyAttempts' => whatsappErrorTooManyAttempts,
+    'whatsappErrorNoPendingCode' => whatsappErrorNoPendingCode,
+    'dischargeTitle' => dischargeTitle,
+    'dischargeListTitle' => dischargeListTitle,
+    'dischargeTileSubtitle' => dischargeTileSubtitle,
+    'dischargeEmptyTitle' => dischargeEmptyTitle,
+    'dischargeEmptyMessage' => dischargeEmptyMessage,
+    'dischargeStatusDraft' => dischargeStatusDraft,
+    'dischargeStatusFinal' => dischargeStatusFinal,
+    'dischargeStatusSuperseded' => dischargeStatusSuperseded,
+    'dischargeSupersededNote' => dischargeSupersededNote,
+    'dischargeRedFlagsTitle' => dischargeRedFlagsTitle,
+    'dischargeRedFlagsEmergency' => dischargeRedFlagsEmergency,
+    'dischargeSectionDiagnosis' => dischargeSectionDiagnosis,
+    'dischargeSectionStay' => dischargeSectionStay,
+    'dischargeAdmissionDate' => dischargeAdmissionDate,
+    'dischargeDischargeDate' => dischargeDischargeDate,
+    'dischargeSectionProcedure' => dischargeSectionProcedure,
+    'dischargeProcedureCode' => dischargeProcedureCode,
+    'dischargeProcedureDate' => dischargeProcedureDate,
+    'dischargeDoctor' => dischargeDoctor,
+    'dischargeDoctorRegistration' => dischargeDoctorRegistration,
+    'dischargeSectionHospitalCourse' => dischargeSectionHospitalCourse,
+    'dischargeSectionMedications' => dischargeSectionMedications,
+    'dischargeNoMedications' => dischargeNoMedications,
+    'dischargeMedicationOngoing' => dischargeMedicationOngoing,
+    'dischargeSectionFollowUp' => dischargeSectionFollowUp,
+    'dischargeSectionAllergies' => dischargeSectionAllergies,
+    'dischargeSectionInvestigations' => dischargeSectionInvestigations,
+    'dischargeSectionAttachments' => dischargeSectionAttachments,
+    'dischargeDownloadPdf' => dischargeDownloadPdf,
+    'dischargeDownloadFhir' => dischargeDownloadFhir,
+    'dischargeFhirHint' => dischargeFhirHint,
+    'dischargeConfidential' => dischargeConfidential,
+    'dischargeShareWithDoctor' => dischargeShareWithDoctor,
+    'dischargeShareIntro' => dischargeShareIntro,
+    'dischargeShareDoctorEmail' => dischargeShareDoctorEmail,
+    'dischargeShareDoctorEmailInvalid' => dischargeShareDoctorEmailInvalid,
+    'dischargeShareDoctorName' => dischargeShareDoctorName,
+    'dischargeShareDocuments' => dischargeShareDocuments,
+    'dischargeShareDocumentsHint' => dischargeShareDocumentsHint,
+    'dischargeShareFromHospital' => dischargeShareFromHospital,
+    'dischargeShareYourDocuments' => dischargeShareYourDocuments,
+    'dischargeShareNoDocuments' => dischargeShareNoDocuments,
+    'dischargeShareValidity' => dischargeShareValidity,
+    'dischargeShareLanguage' => dischargeShareLanguage,
+    'dischargeShareConsent' => dischargeShareConsent,
+    'dischargeShareConsentRequired' => dischargeShareConsentRequired,
+    'dischargeShareSend' => dischargeShareSend,
+    'dischargeShareSentTitle' => dischargeShareSentTitle,
+    'dischargeShareLinkOnce' => dischargeShareLinkOnce,
+    'dischargeShareCopy' => dischargeShareCopy,
+    'dischargeShareCopied' => dischargeShareCopied,
+    'dischargeSharesTitle' => dischargeSharesTitle,
+    'dischargeSharesEmpty' => dischargeSharesEmpty,
+    'dischargeShareExpired' => dischargeShareExpired,
+    'dischargeShareRevoked' => dischargeShareRevoked,
+    'dischargeShareRevoke' => dischargeShareRevoke,
+    'dischargeShareRevokeTitle' => dischargeShareRevokeTitle,
+    'dischargeShareRevokeBody' => dischargeShareRevokeBody,
+    'dischargeShareRevokedSnack' => dischargeShareRevokedSnack,
+    'dischargeRemindersTitle' => dischargeRemindersTitle,
+    'dischargeRemindersSwitch' => dischargeRemindersSwitch,
+    'dischargeRemindersHint' => dischargeRemindersHint,
+    'dischargeRemindersTime' => dischargeRemindersTime,
+    'dischargeRemindersOn' => dischargeRemindersOn,
+    'dischargeRemindersOff' => dischargeRemindersOff,
+    'dischargeHpMoreSubtitle' => dischargeHpMoreSubtitle,
+    'dischargeHpEmpty' => dischargeHpEmpty,
+    'dischargeHpEmptyAll' => dischargeHpEmptyAll,
+    'dischargeHpStart' => dischargeHpStart,
+    'dischargeHpDraftExists' => dischargeHpDraftExists,
+    'dischargeHpFinalExists' => dischargeHpFinalExists,
+    'dischargeHpEditorTitle' => dischargeHpEditorTitle,
+    'dischargeHpDoctorSection' => dischargeHpDoctorSection,
+    'dischargeHpChooseDoctor' => dischargeHpChooseDoctor,
+    'dischargeHpDoctorName' => dischargeHpDoctorName,
+    'dischargeHpDoctorRegistration' => dischargeHpDoctorRegistration,
+    'dischargeHpPickDate' => dischargeHpPickDate,
+    'dischargeHpDiagnosisCode' => dischargeHpDiagnosisCode,
+    'dischargeHpProcedureCode' => dischargeHpProcedureCode,
+    'dischargeHpCodeInvalid' => dischargeHpCodeInvalid,
+    'dischargeHpRequiredToFinalize' => dischargeHpRequiredToFinalize,
+    'dischargeHpRedFlagsLabel' => dischargeHpRedFlagsLabel,
+    'dischargeHpRedFlagsHint' => dischargeHpRedFlagsHint,
+    'dischargeHpAddMedication' => dischargeHpAddMedication,
+    'dischargeHpEditMedication' => dischargeHpEditMedication,
+    'dischargeHpMedName' => dischargeHpMedName,
+    'dischargeHpMedDose' => dischargeHpMedDose,
+    'dischargeHpMedFrequency' => dischargeHpMedFrequency,
+    'dischargeHpMedDuration' => dischargeHpMedDuration,
+    'dischargeHpMedRoute' => dischargeHpMedRoute,
+    'dischargeHpMedInstructions' => dischargeHpMedInstructions,
+    'dischargeHpMedNameRequired' => dischargeHpMedNameRequired,
+    'dischargeHpMedDurationInvalid' => dischargeHpMedDurationInvalid,
+    'dischargeHpAttachmentsHint' => dischargeHpAttachmentsHint,
+    'dischargeHpNoDocuments' => dischargeHpNoDocuments,
+    'dischargeHpSaveDraft' => dischargeHpSaveDraft,
+    'dischargeHpSaved' => dischargeHpSaved,
+    'dischargeHpFinalize' => dischargeHpFinalize,
+    'dischargeHpFinalizeTitle' => dischargeHpFinalizeTitle,
+    'dischargeHpFinalizeBody' => dischargeHpFinalizeBody,
+    'dischargeHpFinalized' => dischargeHpFinalized,
+    'dischargeHpDiscard' => dischargeHpDiscard,
+    'dischargeHpDiscardTitle' => dischargeHpDiscardTitle,
+    'dischargeHpDiscardBody' => dischargeHpDiscardBody,
+    'dischargeHpDiscarded' => dischargeHpDiscarded,
+    'dischargeHpNewVersion' => dischargeHpNewVersion,
+    'dischargeHpNewVersionTitle' => dischargeHpNewVersionTitle,
+    'dischargeHpDatesInvalid' => dischargeHpDatesInvalid,
+    'dischargeHpLockedNote' => dischargeHpLockedNote,
     _ => null,
   };
 
@@ -10102,739 +10026,472 @@ class OverridableLocalizations extends AppLocalizations {
   String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
 
   @override
-  String get reportSheetTitleReview => _t('reportSheetTitleReview') ?? base.reportSheetTitleReview;
+  String get whatsappTitle => _t('whatsappTitle') ?? base.whatsappTitle;
 
   @override
-  String get reportSheetIntroReview => _t('reportSheetIntroReview') ?? base.reportSheetIntroReview;
+  String get whatsappTileSubtitle => _t('whatsappTileSubtitle') ?? base.whatsappTileSubtitle;
 
   @override
-  String get reviewReportAction => _t('reviewReportAction') ?? base.reviewReportAction;
+  String get whatsappIntro => _t('whatsappIntro') ?? base.whatsappIntro;
 
   @override
-  String get orgSuspendedTitle => _t('orgSuspendedTitle') ?? base.orgSuspendedTitle;
+  String get whatsappPrivacyNote => _t('whatsappPrivacyNote') ?? base.whatsappPrivacyNote;
 
   @override
-  String get orgSuspendedBodyAgent => _t('orgSuspendedBodyAgent') ?? base.orgSuspendedBodyAgent;
+  String get whatsappStopNote => _t('whatsappStopNote') ?? base.whatsappStopNote;
 
   @override
-  String get orgSuspendedBodyHospital => _t('orgSuspendedBodyHospital') ?? base.orgSuspendedBodyHospital;
+  String get whatsappUnavailable => _t('whatsappUnavailable') ?? base.whatsappUnavailable;
 
   @override
-  String get orgSuspendedCallSupport => _t('orgSuspendedCallSupport') ?? base.orgSuspendedCallSupport;
+  String get whatsappStatusOn => _t('whatsappStatusOn') ?? base.whatsappStatusOn;
 
   @override
-  String get orgSuspendedWhatsAppSupport => _t('orgSuspendedWhatsAppSupport') ?? base.orgSuspendedWhatsAppSupport;
+  String get whatsappStatusOff => _t('whatsappStatusOff') ?? base.whatsappStatusOff;
 
   @override
-  String get orgSuspendedNoContact => _t('orgSuspendedNoContact') ?? base.orgSuspendedNoContact;
+  String get whatsappStatusPending => _t('whatsappStatusPending') ?? base.whatsappStatusPending;
 
   @override
-  String get orgSuspendedCheckAgain => _t('orgSuspendedCheckAgain') ?? base.orgSuspendedCheckAgain;
+  String get whatsappActiveTitle => _t('whatsappActiveTitle') ?? base.whatsappActiveTitle;
 
   @override
-  String get hpAvailabilityTitle => _t('hpAvailabilityTitle') ?? base.hpAvailabilityTitle;
+  String whatsappActiveNumber(String phone) => _f('whatsappActiveNumber', {'phone': phone}) ?? base.whatsappActiveNumber(phone);
 
   @override
-  String hpAvailabilityDoctorTitle(String name) => _f('hpAvailabilityDoctorTitle', {'name': name}) ?? base.hpAvailabilityDoctorTitle(name);
+  String whatsappVerifiedOn(String date) => _f('whatsappVerifiedOn', {'date': date}) ?? base.whatsappVerifiedOn(date);
 
   @override
-  String get hpMoreAvailabilitySubtitle => _t('hpMoreAvailabilitySubtitle') ?? base.hpMoreAvailabilitySubtitle;
+  String whatsappOptedOutNote(String date) => _f('whatsappOptedOutNote', {'date': date}) ?? base.whatsappOptedOutNote(date);
 
   @override
-  String get hpAvailabilityIntroDoctor => _t('hpAvailabilityIntroDoctor') ?? base.hpAvailabilityIntroDoctor;
+  String get whatsappPhoneLabel => _t('whatsappPhoneLabel') ?? base.whatsappPhoneLabel;
 
   @override
-  String get hpAvailabilityIntroHospital => _t('hpAvailabilityIntroHospital') ?? base.hpAvailabilityIntroHospital;
+  String get whatsappPhoneHint => _t('whatsappPhoneHint') ?? base.whatsappPhoneHint;
 
   @override
-  String get hpAvailabilityConsultShort => _t('hpAvailabilityConsultShort') ?? base.hpAvailabilityConsultShort;
+  String get whatsappPhoneHelper => _t('whatsappPhoneHelper') ?? base.whatsappPhoneHelper;
 
   @override
-  String get hpAvailabilityAdmitShort => _t('hpAvailabilityAdmitShort') ?? base.hpAvailabilityAdmitShort;
+  String get whatsappPhoneInvalid => _t('whatsappPhoneInvalid') ?? base.whatsappPhoneInvalid;
 
   @override
-  String hpAvailabilityBooked(int count) => _f('hpAvailabilityBooked', {'count': count}) ?? base.hpAvailabilityBooked(count);
+  String get whatsappSendCode => _t('whatsappSendCode') ?? base.whatsappSendCode;
 
   @override
-  String hpAvailabilityBelowBooked(int count) => _f('hpAvailabilityBelowBooked', {'count': count}) ?? base.hpAvailabilityBelowBooked(count);
+  String get whatsappCodeSent => _t('whatsappCodeSent') ?? base.whatsappCodeSent;
 
   @override
-  String get hpAvailabilityInvalidNumber => _t('hpAvailabilityInvalidNumber') ?? base.hpAvailabilityInvalidNumber;
+  String whatsappCodeSentTo(String phone) => _f('whatsappCodeSentTo', {'phone': phone}) ?? base.whatsappCodeSentTo(phone);
 
   @override
-  String get hpAvailabilityQuickFill => _t('hpAvailabilityQuickFill') ?? base.hpAvailabilityQuickFill;
+  String whatsappCodeExpiresAt(String time) => _f('whatsappCodeExpiresAt', {'time': time}) ?? base.whatsappCodeExpiresAt(time);
 
   @override
-  String hpAvailabilityQuickFillHint(String month) => _f('hpAvailabilityQuickFillHint', {'month': month}) ?? base.hpAvailabilityQuickFillHint(month);
+  String get whatsappCodeLabel => _t('whatsappCodeLabel') ?? base.whatsappCodeLabel;
 
   @override
-  String get hpAvailabilityWeekdaysOnly => _t('hpAvailabilityWeekdaysOnly') ?? base.hpAvailabilityWeekdaysOnly;
+  String get whatsappCodeInvalid => _t('whatsappCodeInvalid') ?? base.whatsappCodeInvalid;
 
   @override
-  String get hpAvailabilityApply => _t('hpAvailabilityApply') ?? base.hpAvailabilityApply;
+  String get whatsappConfirmCode => _t('whatsappConfirmCode') ?? base.whatsappConfirmCode;
 
   @override
-  String get hpAvailabilitySaved => _t('hpAvailabilitySaved') ?? base.hpAvailabilitySaved;
+  String get whatsappResendCode => _t('whatsappResendCode') ?? base.whatsappResendCode;
 
   @override
-  String get hpAvailabilityFixErrors => _t('hpAvailabilityFixErrors') ?? base.hpAvailabilityFixErrors;
+  String get whatsappChangeNumber => _t('whatsappChangeNumber') ?? base.whatsappChangeNumber;
 
   @override
-  String get hpAvailabilityBelowBookedError => _t('hpAvailabilityBelowBookedError') ?? base.hpAvailabilityBelowBookedError;
+  String get whatsappTurnOff => _t('whatsappTurnOff') ?? base.whatsappTurnOff;
 
   @override
-  String get hpAvailabilityDiscardTitle => _t('hpAvailabilityDiscardTitle') ?? base.hpAvailabilityDiscardTitle;
+  String get whatsappTurnOffConfirmTitle => _t('whatsappTurnOffConfirmTitle') ?? base.whatsappTurnOffConfirmTitle;
 
   @override
-  String get hpAvailabilityDiscard => _t('hpAvailabilityDiscard') ?? base.hpAvailabilityDiscard;
+  String get whatsappTurnOffConfirmBody => _t('whatsappTurnOffConfirmBody') ?? base.whatsappTurnOffConfirmBody;
 
   @override
-  String get hpAvailabilityKeepEditing => _t('hpAvailabilityKeepEditing') ?? base.hpAvailabilityKeepEditing;
+  String get whatsappTurnedOn => _t('whatsappTurnedOn') ?? base.whatsappTurnedOn;
 
   @override
-  String get hpAvailabilityEditButton => _t('hpAvailabilityEditButton') ?? base.hpAvailabilityEditButton;
+  String get whatsappTurnedOff => _t('whatsappTurnedOff') ?? base.whatsappTurnedOff;
 
   @override
-  String get hpAvailabilityPastDay => _t('hpAvailabilityPastDay') ?? base.hpAvailabilityPastDay;
+  String whatsappErrorInvalidCode(int count) => _f('whatsappErrorInvalidCode', {'count': count}) ?? base.whatsappErrorInvalidCode(count);
 
   @override
-  String get privacyRequestsTitle => _t('privacyRequestsTitle') ?? base.privacyRequestsTitle;
+  String get whatsappErrorCodeExpired => _t('whatsappErrorCodeExpired') ?? base.whatsappErrorCodeExpired;
 
   @override
-  String get privacyRequestsSubtitle => _t('privacyRequestsSubtitle') ?? base.privacyRequestsSubtitle;
+  String get whatsappErrorTooManyAttempts => _t('whatsappErrorTooManyAttempts') ?? base.whatsappErrorTooManyAttempts;
 
   @override
-  String get privacyRequestsEmpty => _t('privacyRequestsEmpty') ?? base.privacyRequestsEmpty;
+  String get whatsappErrorNoPendingCode => _t('whatsappErrorNoPendingCode') ?? base.whatsappErrorNoPendingCode;
 
   @override
-  String get privacyRequestNew => _t('privacyRequestNew') ?? base.privacyRequestNew;
+  String get dischargeTitle => _t('dischargeTitle') ?? base.dischargeTitle;
 
   @override
-  String get privacyRequestFormIntro => _t('privacyRequestFormIntro') ?? base.privacyRequestFormIntro;
+  String get dischargeListTitle => _t('dischargeListTitle') ?? base.dischargeListTitle;
 
   @override
-  String get privacyRequestKindLabel => _t('privacyRequestKindLabel') ?? base.privacyRequestKindLabel;
+  String get dischargeTileSubtitle => _t('dischargeTileSubtitle') ?? base.dischargeTileSubtitle;
 
   @override
-  String get privacyRequestKindAccess => _t('privacyRequestKindAccess') ?? base.privacyRequestKindAccess;
+  String get dischargeEmptyTitle => _t('dischargeEmptyTitle') ?? base.dischargeEmptyTitle;
 
   @override
-  String get privacyRequestKindCorrection => _t('privacyRequestKindCorrection') ?? base.privacyRequestKindCorrection;
+  String get dischargeEmptyMessage => _t('dischargeEmptyMessage') ?? base.dischargeEmptyMessage;
 
   @override
-  String get privacyRequestKindErasure => _t('privacyRequestKindErasure') ?? base.privacyRequestKindErasure;
+  String dischargeVersion(int version) => _f('dischargeVersion', {'version': version}) ?? base.dischargeVersion(version);
 
   @override
-  String get privacyRequestKindNomination => _t('privacyRequestKindNomination') ?? base.privacyRequestKindNomination;
+  String get dischargeStatusDraft => _t('dischargeStatusDraft') ?? base.dischargeStatusDraft;
 
   @override
-  String get privacyRequestKindWithdrawConsent => _t('privacyRequestKindWithdrawConsent') ?? base.privacyRequestKindWithdrawConsent;
+  String get dischargeStatusFinal => _t('dischargeStatusFinal') ?? base.dischargeStatusFinal;
 
   @override
-  String get privacyRequestKindComplaint => _t('privacyRequestKindComplaint') ?? base.privacyRequestKindComplaint;
+  String get dischargeStatusSuperseded => _t('dischargeStatusSuperseded') ?? base.dischargeStatusSuperseded;
 
   @override
-  String get privacyRequestKindOther => _t('privacyRequestKindOther') ?? base.privacyRequestKindOther;
+  String get dischargeSupersededNote => _t('dischargeSupersededNote') ?? base.dischargeSupersededNote;
 
   @override
-  String get privacyRequestDetailsLabel => _t('privacyRequestDetailsLabel') ?? base.privacyRequestDetailsLabel;
+  String dischargeFinalizedOn(String date) => _f('dischargeFinalizedOn', {'date': date}) ?? base.dischargeFinalizedOn(date);
 
   @override
-  String get privacyRequestDetailsHint => _t('privacyRequestDetailsHint') ?? base.privacyRequestDetailsHint;
+  String dischargeDischargedOn(String date) => _f('dischargeDischargedOn', {'date': date}) ?? base.dischargeDischargedOn(date);
 
   @override
-  String get privacyRequestDetailsTooShort => _t('privacyRequestDetailsTooShort') ?? base.privacyRequestDetailsTooShort;
+  String get dischargeRedFlagsTitle => _t('dischargeRedFlagsTitle') ?? base.dischargeRedFlagsTitle;
 
   @override
-  String get privacyRequestOnBehalfLabel => _t('privacyRequestOnBehalfLabel') ?? base.privacyRequestOnBehalfLabel;
+  String get dischargeRedFlagsEmergency => _t('dischargeRedFlagsEmergency') ?? base.dischargeRedFlagsEmergency;
 
   @override
-  String get privacyRequestOnBehalfHint => _t('privacyRequestOnBehalfHint') ?? base.privacyRequestOnBehalfHint;
+  String get dischargeSectionDiagnosis => _t('dischargeSectionDiagnosis') ?? base.dischargeSectionDiagnosis;
 
   @override
-  String get privacyRequestSubmit => _t('privacyRequestSubmit') ?? base.privacyRequestSubmit;
+  String dischargeCode(String code) => _f('dischargeCode', {'code': code}) ?? base.dischargeCode(code);
 
   @override
-  String privacyRequestSent(String reference, String date) => _f('privacyRequestSent', {'reference': reference, 'date': date}) ?? base.privacyRequestSent(reference, date);
+  String get dischargeSectionStay => _t('dischargeSectionStay') ?? base.dischargeSectionStay;
 
   @override
-  String get privacyRequestStatusReceived => _t('privacyRequestStatusReceived') ?? base.privacyRequestStatusReceived;
+  String get dischargeAdmissionDate => _t('dischargeAdmissionDate') ?? base.dischargeAdmissionDate;
 
   @override
-  String get privacyRequestStatusInProgress => _t('privacyRequestStatusInProgress') ?? base.privacyRequestStatusInProgress;
+  String get dischargeDischargeDate => _t('dischargeDischargeDate') ?? base.dischargeDischargeDate;
 
   @override
-  String get privacyRequestStatusAwaitingRequester => _t('privacyRequestStatusAwaitingRequester') ?? base.privacyRequestStatusAwaitingRequester;
+  String get dischargeSectionProcedure => _t('dischargeSectionProcedure') ?? base.dischargeSectionProcedure;
 
   @override
-  String get privacyRequestStatusCompleted => _t('privacyRequestStatusCompleted') ?? base.privacyRequestStatusCompleted;
+  String get dischargeProcedureCode => _t('dischargeProcedureCode') ?? base.dischargeProcedureCode;
 
   @override
-  String get privacyRequestStatusRejected => _t('privacyRequestStatusRejected') ?? base.privacyRequestStatusRejected;
+  String get dischargeProcedureDate => _t('dischargeProcedureDate') ?? base.dischargeProcedureDate;
 
   @override
-  String privacyRequestDueBy(String date) => _f('privacyRequestDueBy', {'date': date}) ?? base.privacyRequestDueBy(date);
+  String get dischargeDoctor => _t('dischargeDoctor') ?? base.dischargeDoctor;
 
   @override
-  String get privacyRequestOverdue => _t('privacyRequestOverdue') ?? base.privacyRequestOverdue;
+  String get dischargeDoctorRegistration => _t('dischargeDoctorRegistration') ?? base.dischargeDoctorRegistration;
 
   @override
-  String privacyRequestSentOn(String date) => _f('privacyRequestSentOn', {'date': date}) ?? base.privacyRequestSentOn(date);
+  String get dischargeSectionHospitalCourse => _t('dischargeSectionHospitalCourse') ?? base.dischargeSectionHospitalCourse;
 
   @override
-  String privacyRequestClosedOn(String date) => _f('privacyRequestClosedOn', {'date': date}) ?? base.privacyRequestClosedOn(date);
+  String get dischargeSectionMedications => _t('dischargeSectionMedications') ?? base.dischargeSectionMedications;
 
   @override
-  String get privacyRequestYourRequest => _t('privacyRequestYourRequest') ?? base.privacyRequestYourRequest;
+  String get dischargeNoMedications => _t('dischargeNoMedications') ?? base.dischargeNoMedications;
 
   @override
-  String get privacyRequestResolution => _t('privacyRequestResolution') ?? base.privacyRequestResolution;
+  String dischargeMedicationDuration(int days) => _f('dischargeMedicationDuration', {'days': days}) ?? base.dischargeMedicationDuration(days);
 
   @override
-  String get privacyRequestNoAnswerYet => _t('privacyRequestNoAnswerYet') ?? base.privacyRequestNoAnswerYet;
+  String get dischargeMedicationOngoing => _t('dischargeMedicationOngoing') ?? base.dischargeMedicationOngoing;
 
   @override
-  String get privacyNomineeTitle => _t('privacyNomineeTitle') ?? base.privacyNomineeTitle;
+  String dischargeReminderUntil(String date) => _f('dischargeReminderUntil', {'date': date}) ?? base.dischargeReminderUntil(date);
 
   @override
-  String get privacyNomineeSubtitleNone => _t('privacyNomineeSubtitleNone') ?? base.privacyNomineeSubtitleNone;
+  String get dischargeSectionFollowUp => _t('dischargeSectionFollowUp') ?? base.dischargeSectionFollowUp;
 
   @override
-  String privacyNomineeSubtitleSet(String name, String relationship) => _f('privacyNomineeSubtitleSet', {'name': name, 'relationship': relationship}) ?? base.privacyNomineeSubtitleSet(name, relationship);
+  String get dischargeSectionAllergies => _t('dischargeSectionAllergies') ?? base.dischargeSectionAllergies;
 
   @override
-  String get privacyNomineeIntro => _t('privacyNomineeIntro') ?? base.privacyNomineeIntro;
+  String get dischargeSectionInvestigations => _t('dischargeSectionInvestigations') ?? base.dischargeSectionInvestigations;
 
   @override
-  String get privacyNomineeName => _t('privacyNomineeName') ?? base.privacyNomineeName;
+  String get dischargeSectionAttachments => _t('dischargeSectionAttachments') ?? base.dischargeSectionAttachments;
 
   @override
-  String get privacyNomineeRelationship => _t('privacyNomineeRelationship') ?? base.privacyNomineeRelationship;
+  String get dischargeDownloadPdf => _t('dischargeDownloadPdf') ?? base.dischargeDownloadPdf;
 
   @override
-  String get privacyNomineeEmail => _t('privacyNomineeEmail') ?? base.privacyNomineeEmail;
+  String get dischargeDownloadFhir => _t('dischargeDownloadFhir') ?? base.dischargeDownloadFhir;
 
   @override
-  String get privacyNomineePhone => _t('privacyNomineePhone') ?? base.privacyNomineePhone;
+  String get dischargeFhirHint => _t('dischargeFhirHint') ?? base.dischargeFhirHint;
 
   @override
-  String get privacyNomineeContactRequired => _t('privacyNomineeContactRequired') ?? base.privacyNomineeContactRequired;
+  String get dischargeConfidential => _t('dischargeConfidential') ?? base.dischargeConfidential;
 
   @override
-  String get privacyNomineeTooShort => _t('privacyNomineeTooShort') ?? base.privacyNomineeTooShort;
+  String get dischargeShareWithDoctor => _t('dischargeShareWithDoctor') ?? base.dischargeShareWithDoctor;
 
   @override
-  String get privacyNomineeSave => _t('privacyNomineeSave') ?? base.privacyNomineeSave;
+  String get dischargeShareIntro => _t('dischargeShareIntro') ?? base.dischargeShareIntro;
 
   @override
-  String get privacyNomineeSaved => _t('privacyNomineeSaved') ?? base.privacyNomineeSaved;
+  String get dischargeShareDoctorEmail => _t('dischargeShareDoctorEmail') ?? base.dischargeShareDoctorEmail;
 
   @override
-  String get privacyNomineeRemove => _t('privacyNomineeRemove') ?? base.privacyNomineeRemove;
+  String get dischargeShareDoctorEmailInvalid => _t('dischargeShareDoctorEmailInvalid') ?? base.dischargeShareDoctorEmailInvalid;
 
   @override
-  String get privacyNomineeRemoveConfirm => _t('privacyNomineeRemoveConfirm') ?? base.privacyNomineeRemoveConfirm;
+  String get dischargeShareDoctorName => _t('dischargeShareDoctorName') ?? base.dischargeShareDoctorName;
 
   @override
-  String get privacyNomineeRemoved => _t('privacyNomineeRemoved') ?? base.privacyNomineeRemoved;
+  String get dischargeShareDocuments => _t('dischargeShareDocuments') ?? base.dischargeShareDocuments;
 
   @override
-  String get privacyShareHospitalsTitle => _t('privacyShareHospitalsTitle') ?? base.privacyShareHospitalsTitle;
+  String get dischargeShareDocumentsHint => _t('dischargeShareDocumentsHint') ?? base.dischargeShareDocumentsHint;
 
   @override
-  String get privacyShareHospitalsOn => _t('privacyShareHospitalsOn') ?? base.privacyShareHospitalsOn;
+  String get dischargeShareFromHospital => _t('dischargeShareFromHospital') ?? base.dischargeShareFromHospital;
 
   @override
-  String get privacyShareHospitalsOff => _t('privacyShareHospitalsOff') ?? base.privacyShareHospitalsOff;
+  String get dischargeShareYourDocuments => _t('dischargeShareYourDocuments') ?? base.dischargeShareYourDocuments;
 
   @override
-  String get privacyShareHospitalsWithdrawTitle => _t('privacyShareHospitalsWithdrawTitle') ?? base.privacyShareHospitalsWithdrawTitle;
+  String get dischargeShareNoDocuments => _t('dischargeShareNoDocuments') ?? base.dischargeShareNoDocuments;
 
   @override
-  String get privacyShareHospitalsWithdrawBody => _t('privacyShareHospitalsWithdrawBody') ?? base.privacyShareHospitalsWithdrawBody;
+  String get dischargeShareValidity => _t('dischargeShareValidity') ?? base.dischargeShareValidity;
 
   @override
-  String get privacyShareAgentTitle => _t('privacyShareAgentTitle') ?? base.privacyShareAgentTitle;
+  String dischargeShareDays(int days) => _f('dischargeShareDays', {'days': days}) ?? base.dischargeShareDays(days);
 
   @override
-  String get privacyShareAgentOn => _t('privacyShareAgentOn') ?? base.privacyShareAgentOn;
+  String get dischargeShareLanguage => _t('dischargeShareLanguage') ?? base.dischargeShareLanguage;
 
   @override
-  String get privacyShareAgentOff => _t('privacyShareAgentOff') ?? base.privacyShareAgentOff;
+  String get dischargeShareConsent => _t('dischargeShareConsent') ?? base.dischargeShareConsent;
 
   @override
-  String get privacyShareAgentWithdrawTitle => _t('privacyShareAgentWithdrawTitle') ?? base.privacyShareAgentWithdrawTitle;
+  String get dischargeShareConsentRequired => _t('dischargeShareConsentRequired') ?? base.dischargeShareConsentRequired;
 
   @override
-  String get privacyShareAgentWithdrawBody => _t('privacyShareAgentWithdrawBody') ?? base.privacyShareAgentWithdrawBody;
+  String get dischargeShareSend => _t('dischargeShareSend') ?? base.dischargeShareSend;
 
   @override
-  String get privacyShareWithdraw => _t('privacyShareWithdraw') ?? base.privacyShareWithdraw;
+  String get dischargeShareSentTitle => _t('dischargeShareSentTitle') ?? base.dischargeShareSentTitle;
 
   @override
-  String get privacyShareUpdated => _t('privacyShareUpdated') ?? base.privacyShareUpdated;
+  String dischargeShareSentBody(String email, String date) => _f('dischargeShareSentBody', {'email': email, 'date': date}) ?? base.dischargeShareSentBody(email, date);
 
   @override
-  String get privacyContactTitle => _t('privacyContactTitle') ?? base.privacyContactTitle;
+  String get dischargeShareLinkOnce => _t('dischargeShareLinkOnce') ?? base.dischargeShareLinkOnce;
 
   @override
-  String get privacyContactSubtitle => _t('privacyContactSubtitle') ?? base.privacyContactSubtitle;
+  String get dischargeShareCopy => _t('dischargeShareCopy') ?? base.dischargeShareCopy;
 
   @override
-  String get privacyContactGrievance => _t('privacyContactGrievance') ?? base.privacyContactGrievance;
+  String get dischargeShareCopied => _t('dischargeShareCopied') ?? base.dischargeShareCopied;
 
   @override
-  String get privacyContactDpo => _t('privacyContactDpo') ?? base.privacyContactDpo;
+  String get dischargeSharesTitle => _t('dischargeSharesTitle') ?? base.dischargeSharesTitle;
 
   @override
-  String get privacyContactAddress => _t('privacyContactAddress') ?? base.privacyContactAddress;
+  String get dischargeSharesEmpty => _t('dischargeSharesEmpty') ?? base.dischargeSharesEmpty;
 
   @override
-  String privacyContactResponse(int days) => _f('privacyContactResponse', {'days': days}) ?? base.privacyContactResponse(days);
+  String dischargeShareExpires(String date) => _f('dischargeShareExpires', {'date': date}) ?? base.dischargeShareExpires(date);
 
   @override
-  String get privacyContactBoard => _t('privacyContactBoard') ?? base.privacyContactBoard;
+  String get dischargeShareExpired => _t('dischargeShareExpired') ?? base.dischargeShareExpired;
 
   @override
-  String get privacyContactBoardLink => _t('privacyContactBoardLink') ?? base.privacyContactBoardLink;
+  String get dischargeShareRevoked => _t('dischargeShareRevoked') ?? base.dischargeShareRevoked;
 
   @override
-  String get privacyContactNotPublished => _t('privacyContactNotPublished') ?? base.privacyContactNotPublished;
+  String dischargeShareViews(int count) => _f('dischargeShareViews', {'count': count}) ?? base.dischargeShareViews(count);
 
   @override
-  String get consultBookTitle => _t('consultBookTitle') ?? base.consultBookTitle;
+  String get dischargeShareRevoke => _t('dischargeShareRevoke') ?? base.dischargeShareRevoke;
 
   @override
-  String get consultBookIntro => _t('consultBookIntro') ?? base.consultBookIntro;
+  String get dischargeShareRevokeTitle => _t('dischargeShareRevokeTitle') ?? base.dischargeShareRevokeTitle;
 
   @override
-  String get consultDoctorSection => _t('consultDoctorSection') ?? base.consultDoctorSection;
+  String get dischargeShareRevokeBody => _t('dischargeShareRevokeBody') ?? base.dischargeShareRevokeBody;
 
   @override
-  String consultNoTeleconsultDoctors(String hospital) => _f('consultNoTeleconsultDoctors', {'hospital': hospital}) ?? base.consultNoTeleconsultDoctors(hospital);
+  String get dischargeShareRevokedSnack => _t('dischargeShareRevokedSnack') ?? base.dischargeShareRevokedSnack;
 
   @override
-  String get consultRequestQuoteInstead => _t('consultRequestQuoteInstead') ?? base.consultRequestQuoteInstead;
+  String get dischargeRemindersTitle => _t('dischargeRemindersTitle') ?? base.dischargeRemindersTitle;
 
   @override
-  String get consultDateSection => _t('consultDateSection') ?? base.consultDateSection;
+  String get dischargeRemindersSwitch => _t('dischargeRemindersSwitch') ?? base.dischargeRemindersSwitch;
 
   @override
-  String get consultDateHint => _t('consultDateHint') ?? base.consultDateHint;
+  String get dischargeRemindersHint => _t('dischargeRemindersHint') ?? base.dischargeRemindersHint;
 
   @override
-  String get consultTimeSection => _t('consultTimeSection') ?? base.consultTimeSection;
+  String get dischargeRemindersTime => _t('dischargeRemindersTime') ?? base.dischargeRemindersTime;
 
   @override
-  String consultTimesLocal(String zone) => _f('consultTimesLocal', {'zone': zone}) ?? base.consultTimesLocal(zone);
+  String get dischargeRemindersOn => _t('dischargeRemindersOn') ?? base.dischargeRemindersOn;
 
   @override
-  String get consultQuestionLabel => _t('consultQuestionLabel') ?? base.consultQuestionLabel;
+  String get dischargeRemindersOff => _t('dischargeRemindersOff') ?? base.dischargeRemindersOff;
 
   @override
-  String get consultQuestionHint => _t('consultQuestionHint') ?? base.consultQuestionHint;
+  String get dischargeHpMoreSubtitle => _t('dischargeHpMoreSubtitle') ?? base.dischargeHpMoreSubtitle;
 
   @override
-  String get consultReportsSection => _t('consultReportsSection') ?? base.consultReportsSection;
+  String get dischargeHpEmpty => _t('dischargeHpEmpty') ?? base.dischargeHpEmpty;
 
   @override
-  String get consultReportsHint => _t('consultReportsHint') ?? base.consultReportsHint;
+  String get dischargeHpEmptyAll => _t('dischargeHpEmptyAll') ?? base.dischargeHpEmptyAll;
 
   @override
-  String consultReportsExistingCase(String caseNumber, String hospital) => _f('consultReportsExistingCase', {'caseNumber': caseNumber, 'hospital': hospital}) ?? base.consultReportsExistingCase(caseNumber, hospital);
+  String get dischargeHpStart => _t('dischargeHpStart') ?? base.dischargeHpStart;
 
   @override
-  String get consultUpload => _t('consultUpload') ?? base.consultUpload;
+  String get dischargeHpDraftExists => _t('dischargeHpDraftExists') ?? base.dischargeHpDraftExists;
 
   @override
-  String get consultFeeLabel => _t('consultFeeLabel') ?? base.consultFeeLabel;
+  String get dischargeHpFinalExists => _t('dischargeHpFinalExists') ?? base.dischargeHpFinalExists;
 
   @override
-  String get consultFeeFree => _t('consultFeeFree') ?? base.consultFeeFree;
+  String get dischargeHpEditorTitle => _t('dischargeHpEditorTitle') ?? base.dischargeHpEditorTitle;
 
   @override
-  String get consultFeePayNote => _t('consultFeePayNote') ?? base.consultFeePayNote;
+  String get dischargeHpDoctorSection => _t('dischargeHpDoctorSection') ?? base.dischargeHpDoctorSection;
 
   @override
-  String get consultSubmit => _t('consultSubmit') ?? base.consultSubmit;
+  String get dischargeHpChooseDoctor => _t('dischargeHpChooseDoctor') ?? base.dischargeHpChooseDoctor;
 
   @override
-  String get consultPickDoctor => _t('consultPickDoctor') ?? base.consultPickDoctor;
+  String get dischargeHpDoctorName => _t('dischargeHpDoctorName') ?? base.dischargeHpDoctorName;
 
   @override
-  String get consultPickSlot => _t('consultPickSlot') ?? base.consultPickSlot;
+  String get dischargeHpDoctorRegistration => _t('dischargeHpDoctorRegistration') ?? base.dischargeHpDoctorRegistration;
 
   @override
-  String get consultRequestedSnack => _t('consultRequestedSnack') ?? base.consultRequestedSnack;
+  String get dischargeHpPickDate => _t('dischargeHpPickDate') ?? base.dischargeHpPickDate;
 
   @override
-  String get consultErrorExists => _t('consultErrorExists') ?? base.consultErrorExists;
+  String get dischargeHpDiagnosisCode => _t('dischargeHpDiagnosisCode') ?? base.dischargeHpDiagnosisCode;
 
   @override
-  String get consultErrorUnavailable => _t('consultErrorUnavailable') ?? base.consultErrorUnavailable;
+  String get dischargeHpProcedureCode => _t('dischargeHpProcedureCode') ?? base.dischargeHpProcedureCode;
 
   @override
-  String get consultErrorDoctorRequired => _t('consultErrorDoctorRequired') ?? base.consultErrorDoctorRequired;
+  String get dischargeHpCodeInvalid => _t('dischargeHpCodeInvalid') ?? base.dischargeHpCodeInvalid;
 
   @override
-  String get consultErrorInvalidDoctor => _t('consultErrorInvalidDoctor') ?? base.consultErrorInvalidDoctor;
+  String get dischargeHpRequiredToFinalize => _t('dischargeHpRequiredToFinalize') ?? base.dischargeHpRequiredToFinalize;
 
   @override
-  String get consultMineTitle => _t('consultMineTitle') ?? base.consultMineTitle;
+  String get dischargeHpRedFlagsLabel => _t('dischargeHpRedFlagsLabel') ?? base.dischargeHpRedFlagsLabel;
 
   @override
-  String get consultMineSubtitle => _t('consultMineSubtitle') ?? base.consultMineSubtitle;
+  String get dischargeHpRedFlagsHint => _t('dischargeHpRedFlagsHint') ?? base.dischargeHpRedFlagsHint;
 
   @override
-  String get consultListEmpty => _t('consultListEmpty') ?? base.consultListEmpty;
+  String get dischargeHpAddMedication => _t('dischargeHpAddMedication') ?? base.dischargeHpAddMedication;
 
   @override
-  String get consultListEmptyBody => _t('consultListEmptyBody') ?? base.consultListEmptyBody;
+  String get dischargeHpEditMedication => _t('dischargeHpEditMedication') ?? base.dischargeHpEditMedication;
 
   @override
-  String get consultFindDoctor => _t('consultFindDoctor') ?? base.consultFindDoctor;
+  String get dischargeHpMedName => _t('dischargeHpMedName') ?? base.dischargeHpMedName;
 
   @override
-  String get consultDetailTitle => _t('consultDetailTitle') ?? base.consultDetailTitle;
+  String get dischargeHpMedDose => _t('dischargeHpMedDose') ?? base.dischargeHpMedDose;
 
   @override
-  String consultWithDoctor(String doctor) => _f('consultWithDoctor', {'doctor': doctor}) ?? base.consultWithDoctor(doctor);
+  String get dischargeHpMedFrequency => _t('dischargeHpMedFrequency') ?? base.dischargeHpMedFrequency;
 
   @override
-  String consultFollowupWith(String doctor) => _f('consultFollowupWith', {'doctor': doctor}) ?? base.consultFollowupWith(doctor);
+  String get dischargeHpMedDuration => _t('dischargeHpMedDuration') ?? base.dischargeHpMedDuration;
 
   @override
-  String get consultDoctorTbc => _t('consultDoctorTbc') ?? base.consultDoctorTbc;
+  String get dischargeHpMedRoute => _t('dischargeHpMedRoute') ?? base.dischargeHpMedRoute;
 
   @override
-  String consultScheduledAt(String when, int minutes) => _f('consultScheduledAt', {'when': when, 'minutes': minutes}) ?? base.consultScheduledAt(when, minutes);
+  String get dischargeHpMedInstructions => _t('dischargeHpMedInstructions') ?? base.dischargeHpMedInstructions;
 
   @override
-  String get consultAwaitingTime => _t('consultAwaitingTime') ?? base.consultAwaitingTime;
+  String get dischargeHpMedNameRequired => _t('dischargeHpMedNameRequired') ?? base.dischargeHpMedNameRequired;
 
   @override
-  String consultPreferredTime(String when) => _f('consultPreferredTime', {'when': when}) ?? base.consultPreferredTime(when);
+  String get dischargeHpMedDurationInvalid => _t('dischargeHpMedDurationInvalid') ?? base.dischargeHpMedDurationInvalid;
 
   @override
-  String get consultJoinVideo => _t('consultJoinVideo') ?? base.consultJoinVideo;
+  String get dischargeHpAttachmentsHint => _t('dischargeHpAttachmentsHint') ?? base.dischargeHpAttachmentsHint;
 
   @override
-  String get consultJoinHint => _t('consultJoinHint') ?? base.consultJoinHint;
+  String get dischargeHpNoDocuments => _t('dischargeHpNoDocuments') ?? base.dischargeHpNoDocuments;
 
   @override
-  String get consultLinkSoon => _t('consultLinkSoon') ?? base.consultLinkSoon;
+  String get dischargeHpSaveDraft => _t('dischargeHpSaveDraft') ?? base.dischargeHpSaveDraft;
 
   @override
-  String get consultReminderScheduled => _t('consultReminderScheduled') ?? base.consultReminderScheduled;
+  String get dischargeHpSaved => _t('dischargeHpSaved') ?? base.dischargeHpSaved;
 
   @override
-  String get consultReminderPending => _t('consultReminderPending') ?? base.consultReminderPending;
+  String get dischargeHpFinalize => _t('dischargeHpFinalize') ?? base.dischargeHpFinalize;
 
   @override
-  String get consultPaid => _t('consultPaid') ?? base.consultPaid;
+  String get dischargeHpFinalizeTitle => _t('dischargeHpFinalizeTitle') ?? base.dischargeHpFinalizeTitle;
 
   @override
-  String get consultPaymentDue => _t('consultPaymentDue') ?? base.consultPaymentDue;
+  String get dischargeHpFinalizeBody => _t('dischargeHpFinalizeBody') ?? base.dischargeHpFinalizeBody;
 
   @override
-  String get consultPaymentPending => _t('consultPaymentPending') ?? base.consultPaymentPending;
+  String get dischargeHpFinalized => _t('dischargeHpFinalized') ?? base.dischargeHpFinalized;
 
   @override
-  String consultPayButton(String amount) => _f('consultPayButton', {'amount': amount}) ?? base.consultPayButton(amount);
+  String dischargeHpMissing(String fields) => _f('dischargeHpMissing', {'fields': fields}) ?? base.dischargeHpMissing(fields);
 
   @override
-  String get consultPayTitle => _t('consultPayTitle') ?? base.consultPayTitle;
+  String get dischargeHpDiscard => _t('dischargeHpDiscard') ?? base.dischargeHpDiscard;
 
   @override
-  String get consultPaySuccess => _t('consultPaySuccess') ?? base.consultPaySuccess;
+  String get dischargeHpDiscardTitle => _t('dischargeHpDiscardTitle') ?? base.dischargeHpDiscardTitle;
 
   @override
-  String get consultPayFailed => _t('consultPayFailed') ?? base.consultPayFailed;
+  String get dischargeHpDiscardBody => _t('dischargeHpDiscardBody') ?? base.dischargeHpDiscardBody;
 
   @override
-  String get consultPayPending => _t('consultPayPending') ?? base.consultPayPending;
+  String get dischargeHpDiscarded => _t('dischargeHpDiscarded') ?? base.dischargeHpDiscarded;
 
   @override
-  String get consultCancel => _t('consultCancel') ?? base.consultCancel;
+  String get dischargeHpNewVersion => _t('dischargeHpNewVersion') ?? base.dischargeHpNewVersion;
 
   @override
-  String get consultCancelConfirmTitle => _t('consultCancelConfirmTitle') ?? base.consultCancelConfirmTitle;
+  String get dischargeHpNewVersionTitle => _t('dischargeHpNewVersionTitle') ?? base.dischargeHpNewVersionTitle;
 
   @override
-  String get consultCancelConfirmBody => _t('consultCancelConfirmBody') ?? base.consultCancelConfirmBody;
+  String dischargeHpNewVersionBody(int version, int next) => _f('dischargeHpNewVersionBody', {'version': version, 'next': next}) ?? base.dischargeHpNewVersionBody(version, next);
 
   @override
-  String get consultKeep => _t('consultKeep') ?? base.consultKeep;
+  String get dischargeHpDatesInvalid => _t('dischargeHpDatesInvalid') ?? base.dischargeHpDatesInvalid;
 
   @override
-  String get consultCancelled => _t('consultCancelled') ?? base.consultCancelled;
-
-  @override
-  String consultOpenCase(String caseNumber) => _f('consultOpenCase', {'caseNumber': caseNumber}) ?? base.consultOpenCase(caseNumber);
-
-  @override
-  String get consultNotesSection => _t('consultNotesSection') ?? base.consultNotesSection;
-
-  @override
-  String get consultBookVideoButton => _t('consultBookVideoButton') ?? base.consultBookVideoButton;
-
-  @override
-  String get insuranceScreenTitle => _t('insuranceScreenTitle') ?? base.insuranceScreenTitle;
-
-  @override
-  String get insuranceTabInsurance => _t('insuranceTabInsurance') ?? base.insuranceTabInsurance;
-
-  @override
-  String get insuranceTabPayLater => _t('insuranceTabPayLater') ?? base.insuranceTabPayLater;
-
-  @override
-  String get insuranceTabRequests => _t('insuranceTabRequests') ?? base.insuranceTabRequests;
-
-  @override
-  String get insuranceDisclaimer => _t('insuranceDisclaimer') ?? base.insuranceDisclaimer;
-
-  @override
-  String get financingDisclaimer => _t('financingDisclaimer') ?? base.financingDisclaimer;
-
-  @override
-  String get financingPartnerDecides => _t('financingPartnerDecides') ?? base.financingPartnerDecides;
-
-  @override
-  String insuranceCountryFor(String country) => _f('insuranceCountryFor', {'country': country}) ?? base.insuranceCountryFor(country);
-
-  @override
-  String get insuranceCountryAll => _t('insuranceCountryAll') ?? base.insuranceCountryAll;
-
-  @override
-  String get insuranceCountryPick => _t('insuranceCountryPick') ?? base.insuranceCountryPick;
-
-  @override
-  String get insuranceEmptyTitle => _t('insuranceEmptyTitle') ?? base.insuranceEmptyTitle;
-
-  @override
-  String get insuranceEmptyBody => _t('insuranceEmptyBody') ?? base.insuranceEmptyBody;
-
-  @override
-  String get financingEmptyTitle => _t('financingEmptyTitle') ?? base.financingEmptyTitle;
-
-  @override
-  String get financingEmptyBody => _t('financingEmptyBody') ?? base.financingEmptyBody;
-
-  @override
-  String get insuranceCategoryMedicalTravel => _t('insuranceCategoryMedicalTravel') ?? base.insuranceCategoryMedicalTravel;
-
-  @override
-  String get insuranceCategoryComplication => _t('insuranceCategoryComplication') ?? base.insuranceCategoryComplication;
-
-  @override
-  String get insuranceCategoryHealth => _t('insuranceCategoryHealth') ?? base.insuranceCategoryHealth;
-
-  @override
-  String get insuranceCategoryOther => _t('insuranceCategoryOther') ?? base.insuranceCategoryOther;
-
-  @override
-  String get insuranceEligibleAll => _t('insuranceEligibleAll') ?? base.insuranceEligibleAll;
-
-  @override
-  String insuranceEligibleCountries(String countries) => _f('insuranceEligibleCountries', {'countries': countries}) ?? base.insuranceEligibleCountries(countries);
-
-  @override
-  String get insuranceNotInYourCountry => _t('insuranceNotInYourCountry') ?? base.insuranceNotInYourCountry;
-
-  @override
-  String insurancePriceIndicative(String price) => _f('insurancePriceIndicative', {'price': price}) ?? base.insurancePriceIndicative(price);
-
-  @override
-  String get insurancePriceOnRequest => _t('insurancePriceOnRequest') ?? base.insurancePriceOnRequest;
-
-  @override
-  String get insuranceRequestQuote => _t('insuranceRequestQuote') ?? base.insuranceRequestQuote;
-
-  @override
-  String get insuranceVisitWebsite => _t('insuranceVisitWebsite') ?? base.insuranceVisitWebsite;
-
-  @override
-  String get insuranceCouldNotOpen => _t('insuranceCouldNotOpen') ?? base.insuranceCouldNotOpen;
-
-  @override
-  String get financingCheckEligibility => _t('financingCheckEligibility') ?? base.financingCheckEligibility;
-
-  @override
-  String get insuranceFormTitle => _t('insuranceFormTitle') ?? base.insuranceFormTitle;
-
-  @override
-  String get financingFormTitle => _t('financingFormTitle') ?? base.financingFormTitle;
-
-  @override
-  String insuranceFormIntro(String provider) => _f('insuranceFormIntro', {'provider': provider}) ?? base.insuranceFormIntro(provider);
-
-  @override
-  String financingFormIntro(String provider) => _f('financingFormIntro', {'provider': provider}) ?? base.financingFormIntro(provider);
-
-  @override
-  String get insuranceFieldName => _t('insuranceFieldName') ?? base.insuranceFieldName;
-
-  @override
-  String get insuranceFieldEmail => _t('insuranceFieldEmail') ?? base.insuranceFieldEmail;
-
-  @override
-  String get insuranceFieldPhone => _t('insuranceFieldPhone') ?? base.insuranceFieldPhone;
-
-  @override
-  String get insuranceNameRequired => _t('insuranceNameRequired') ?? base.insuranceNameRequired;
-
-  @override
-  String get insuranceEmailInvalid => _t('insuranceEmailInvalid') ?? base.insuranceEmailInvalid;
-
-  @override
-  String get insuranceContactRequired => _t('insuranceContactRequired') ?? base.insuranceContactRequired;
-
-  @override
-  String get insurancePreferredContact => _t('insurancePreferredContact') ?? base.insurancePreferredContact;
-
-  @override
-  String get insuranceContactEmail => _t('insuranceContactEmail') ?? base.insuranceContactEmail;
-
-  @override
-  String get insuranceContactPhone => _t('insuranceContactPhone') ?? base.insuranceContactPhone;
-
-  @override
-  String get insuranceContactWhatsapp => _t('insuranceContactWhatsapp') ?? base.insuranceContactWhatsapp;
-
-  @override
-  String get insuranceFieldCountry => _t('insuranceFieldCountry') ?? base.insuranceFieldCountry;
-
-  @override
-  String get insuranceFieldCountryNotSet => _t('insuranceFieldCountryNotSet') ?? base.insuranceFieldCountryNotSet;
-
-  @override
-  String get insuranceFieldMessage => _t('insuranceFieldMessage') ?? base.insuranceFieldMessage;
-
-  @override
-  String get insuranceMessageHint => _t('insuranceMessageHint') ?? base.insuranceMessageHint;
-
-  @override
-  String insuranceConsentText(String provider) => _f('insuranceConsentText', {'provider': provider}) ?? base.insuranceConsentText(provider);
-
-  @override
-  String get insuranceConsentRequired => _t('insuranceConsentRequired') ?? base.insuranceConsentRequired;
-
-  @override
-  String get insuranceLinkedToBooking => _t('insuranceLinkedToBooking') ?? base.insuranceLinkedToBooking;
-
-  @override
-  String get insuranceSend => _t('insuranceSend') ?? base.insuranceSend;
-
-  @override
-  String get insuranceSentTitle => _t('insuranceSentTitle') ?? base.insuranceSentTitle;
-
-  @override
-  String insuranceSentBody(String provider) => _f('insuranceSentBody', {'provider': provider}) ?? base.insuranceSentBody(provider);
-
-  @override
-  String get insuranceContinueOnPartner => _t('insuranceContinueOnPartner') ?? base.insuranceContinueOnPartner;
-
-  @override
-  String get insuranceErrorConsentRequired => _t('insuranceErrorConsentRequired') ?? base.insuranceErrorConsentRequired;
-
-  @override
-  String get insuranceErrorCountryNotEligible => _t('insuranceErrorCountryNotEligible') ?? base.insuranceErrorCountryNotEligible;
-
-  @override
-  String get insuranceErrorDuplicate => _t('insuranceErrorDuplicate') ?? base.insuranceErrorDuplicate;
-
-  @override
-  String get insuranceErrorNotFound => _t('insuranceErrorNotFound') ?? base.insuranceErrorNotFound;
-
-  @override
-  String get insuranceErrorNotOpen => _t('insuranceErrorNotOpen') ?? base.insuranceErrorNotOpen;
-
-  @override
-  String get insuranceRequestsEmptyTitle => _t('insuranceRequestsEmptyTitle') ?? base.insuranceRequestsEmptyTitle;
-
-  @override
-  String get insuranceRequestsEmptyBody => _t('insuranceRequestsEmptyBody') ?? base.insuranceRequestsEmptyBody;
-
-  @override
-  String get insuranceKindQuote => _t('insuranceKindQuote') ?? base.insuranceKindQuote;
-
-  @override
-  String get financingKindEligibility => _t('financingKindEligibility') ?? base.financingKindEligibility;
-
-  @override
-  String get insuranceStatusNew => _t('insuranceStatusNew') ?? base.insuranceStatusNew;
-
-  @override
-  String get insuranceStatusInProgress => _t('insuranceStatusInProgress') ?? base.insuranceStatusInProgress;
-
-  @override
-  String get insuranceStatusShared => _t('insuranceStatusShared') ?? base.insuranceStatusShared;
-
-  @override
-  String get insuranceStatusClosed => _t('insuranceStatusClosed') ?? base.insuranceStatusClosed;
-
-  @override
-  String get insuranceStatusCancelled => _t('insuranceStatusCancelled') ?? base.insuranceStatusCancelled;
-
-  @override
-  String insuranceStatusSemantics(String status) => _f('insuranceStatusSemantics', {'status': status}) ?? base.insuranceStatusSemantics(status);
-
-  @override
-  String insuranceRequestSentOn(String date) => _f('insuranceRequestSentOn', {'date': date}) ?? base.insuranceRequestSentOn(date);
-
-  @override
-  String get insuranceWithdraw => _t('insuranceWithdraw') ?? base.insuranceWithdraw;
-
-  @override
-  String get insuranceWithdrawTitle => _t('insuranceWithdrawTitle') ?? base.insuranceWithdrawTitle;
-
-  @override
-  String insuranceWithdrawBody(String provider) => _f('insuranceWithdrawBody', {'provider': provider}) ?? base.insuranceWithdrawBody(provider);
-
-  @override
-  String get insuranceWithdrawn => _t('insuranceWithdrawn') ?? base.insuranceWithdrawn;
-
-  @override
-  String get insuranceProfileGroup => _t('insuranceProfileGroup') ?? base.insuranceProfileGroup;
-
-  @override
-  String get insuranceProfileTile => _t('insuranceProfileTile') ?? base.insuranceProfileTile;
-
-  @override
-  String get insuranceProfileTileSubtitle => _t('insuranceProfileTileSubtitle') ?? base.insuranceProfileTileSubtitle;
-
-  @override
-  String get insuranceBookCardTitle => _t('insuranceBookCardTitle') ?? base.insuranceBookCardTitle;
-
-  @override
-  String get insuranceBookCardBody => _t('insuranceBookCardBody') ?? base.insuranceBookCardBody;
-
-  @override
-  String get insuranceBookCardAction => _t('insuranceBookCardAction') ?? base.insuranceBookCardAction;
-
-  @override
-  String get financingInstallmentsSubtitle => _t('financingInstallmentsSubtitle') ?? base.financingInstallmentsSubtitle;
-
-  @override
-  String get financingPickDateFirst => _t('financingPickDateFirst') ?? base.financingPickDateFirst;
-
-  @override
-  String get financingInstallmentsUnavailable => _t('financingInstallmentsUnavailable') ?? base.financingInstallmentsUnavailable;
-
-  @override
-  String financingInterestFreeNote(String date) => _f('financingInterestFreeNote', {'date': date}) ?? base.financingInterestFreeNote(date);
-
-  @override
-  String financingScheduleItem(int seq, String date) => _f('financingScheduleItem', {'seq': seq, 'date': date}) ?? base.financingScheduleItem(seq, date);
-
-  @override
-  String get financingScheduleEstimate => _t('financingScheduleEstimate') ?? base.financingScheduleEstimate;
-
-  @override
-  String get financingSeePartners => _t('financingSeePartners') ?? base.financingSeePartners;
-
-  @override
-  String get financingInstallmentsPastTreatment => _t('financingInstallmentsPastTreatment') ?? base.financingInstallmentsPastTreatment;
+  String get dischargeHpLockedNote => _t('dischargeHpLockedNote') ?? base.dischargeHpLockedNote;
 }
 
 /// Every ARB key, in template order.
@@ -13385,249 +13042,160 @@ const List<String> kL10nKeys = [
   'inviteMissingArrival',
   'inviteMissingDuration',
   'inviteMissingTreatment',
-  'reportSheetTitleReview',
-  'reportSheetIntroReview',
-  'reviewReportAction',
-  'orgSuspendedTitle',
-  'orgSuspendedBodyAgent',
-  'orgSuspendedBodyHospital',
-  'orgSuspendedCallSupport',
-  'orgSuspendedWhatsAppSupport',
-  'orgSuspendedNoContact',
-  'orgSuspendedCheckAgain',
-  'hpAvailabilityTitle',
-  'hpAvailabilityDoctorTitle',
-  'hpMoreAvailabilitySubtitle',
-  'hpAvailabilityIntroDoctor',
-  'hpAvailabilityIntroHospital',
-  'hpAvailabilityConsultShort',
-  'hpAvailabilityAdmitShort',
-  'hpAvailabilityBooked',
-  'hpAvailabilityBelowBooked',
-  'hpAvailabilityInvalidNumber',
-  'hpAvailabilityQuickFill',
-  'hpAvailabilityQuickFillHint',
-  'hpAvailabilityWeekdaysOnly',
-  'hpAvailabilityApply',
-  'hpAvailabilitySaved',
-  'hpAvailabilityFixErrors',
-  'hpAvailabilityBelowBookedError',
-  'hpAvailabilityDiscardTitle',
-  'hpAvailabilityDiscard',
-  'hpAvailabilityKeepEditing',
-  'hpAvailabilityEditButton',
-  'hpAvailabilityPastDay',
-  'privacyRequestsTitle',
-  'privacyRequestsSubtitle',
-  'privacyRequestsEmpty',
-  'privacyRequestNew',
-  'privacyRequestFormIntro',
-  'privacyRequestKindLabel',
-  'privacyRequestKindAccess',
-  'privacyRequestKindCorrection',
-  'privacyRequestKindErasure',
-  'privacyRequestKindNomination',
-  'privacyRequestKindWithdrawConsent',
-  'privacyRequestKindComplaint',
-  'privacyRequestKindOther',
-  'privacyRequestDetailsLabel',
-  'privacyRequestDetailsHint',
-  'privacyRequestDetailsTooShort',
-  'privacyRequestOnBehalfLabel',
-  'privacyRequestOnBehalfHint',
-  'privacyRequestSubmit',
-  'privacyRequestSent',
-  'privacyRequestStatusReceived',
-  'privacyRequestStatusInProgress',
-  'privacyRequestStatusAwaitingRequester',
-  'privacyRequestStatusCompleted',
-  'privacyRequestStatusRejected',
-  'privacyRequestDueBy',
-  'privacyRequestOverdue',
-  'privacyRequestSentOn',
-  'privacyRequestClosedOn',
-  'privacyRequestYourRequest',
-  'privacyRequestResolution',
-  'privacyRequestNoAnswerYet',
-  'privacyNomineeTitle',
-  'privacyNomineeSubtitleNone',
-  'privacyNomineeSubtitleSet',
-  'privacyNomineeIntro',
-  'privacyNomineeName',
-  'privacyNomineeRelationship',
-  'privacyNomineeEmail',
-  'privacyNomineePhone',
-  'privacyNomineeContactRequired',
-  'privacyNomineeTooShort',
-  'privacyNomineeSave',
-  'privacyNomineeSaved',
-  'privacyNomineeRemove',
-  'privacyNomineeRemoveConfirm',
-  'privacyNomineeRemoved',
-  'privacyShareHospitalsTitle',
-  'privacyShareHospitalsOn',
-  'privacyShareHospitalsOff',
-  'privacyShareHospitalsWithdrawTitle',
-  'privacyShareHospitalsWithdrawBody',
-  'privacyShareAgentTitle',
-  'privacyShareAgentOn',
-  'privacyShareAgentOff',
-  'privacyShareAgentWithdrawTitle',
-  'privacyShareAgentWithdrawBody',
-  'privacyShareWithdraw',
-  'privacyShareUpdated',
-  'privacyContactTitle',
-  'privacyContactSubtitle',
-  'privacyContactGrievance',
-  'privacyContactDpo',
-  'privacyContactAddress',
-  'privacyContactResponse',
-  'privacyContactBoard',
-  'privacyContactBoardLink',
-  'privacyContactNotPublished',
-  'consultBookTitle',
-  'consultBookIntro',
-  'consultDoctorSection',
-  'consultNoTeleconsultDoctors',
-  'consultRequestQuoteInstead',
-  'consultDateSection',
-  'consultDateHint',
-  'consultTimeSection',
-  'consultTimesLocal',
-  'consultQuestionLabel',
-  'consultQuestionHint',
-  'consultReportsSection',
-  'consultReportsHint',
-  'consultReportsExistingCase',
-  'consultUpload',
-  'consultFeeLabel',
-  'consultFeeFree',
-  'consultFeePayNote',
-  'consultSubmit',
-  'consultPickDoctor',
-  'consultPickSlot',
-  'consultRequestedSnack',
-  'consultErrorExists',
-  'consultErrorUnavailable',
-  'consultErrorDoctorRequired',
-  'consultErrorInvalidDoctor',
-  'consultMineTitle',
-  'consultMineSubtitle',
-  'consultListEmpty',
-  'consultListEmptyBody',
-  'consultFindDoctor',
-  'consultDetailTitle',
-  'consultWithDoctor',
-  'consultFollowupWith',
-  'consultDoctorTbc',
-  'consultScheduledAt',
-  'consultAwaitingTime',
-  'consultPreferredTime',
-  'consultJoinVideo',
-  'consultJoinHint',
-  'consultLinkSoon',
-  'consultReminderScheduled',
-  'consultReminderPending',
-  'consultPaid',
-  'consultPaymentDue',
-  'consultPaymentPending',
-  'consultPayButton',
-  'consultPayTitle',
-  'consultPaySuccess',
-  'consultPayFailed',
-  'consultPayPending',
-  'consultCancel',
-  'consultCancelConfirmTitle',
-  'consultCancelConfirmBody',
-  'consultKeep',
-  'consultCancelled',
-  'consultOpenCase',
-  'consultNotesSection',
-  'consultBookVideoButton',
-  'insuranceScreenTitle',
-  'insuranceTabInsurance',
-  'insuranceTabPayLater',
-  'insuranceTabRequests',
-  'insuranceDisclaimer',
-  'financingDisclaimer',
-  'financingPartnerDecides',
-  'insuranceCountryFor',
-  'insuranceCountryAll',
-  'insuranceCountryPick',
-  'insuranceEmptyTitle',
-  'insuranceEmptyBody',
-  'financingEmptyTitle',
-  'financingEmptyBody',
-  'insuranceCategoryMedicalTravel',
-  'insuranceCategoryComplication',
-  'insuranceCategoryHealth',
-  'insuranceCategoryOther',
-  'insuranceEligibleAll',
-  'insuranceEligibleCountries',
-  'insuranceNotInYourCountry',
-  'insurancePriceIndicative',
-  'insurancePriceOnRequest',
-  'insuranceRequestQuote',
-  'insuranceVisitWebsite',
-  'insuranceCouldNotOpen',
-  'financingCheckEligibility',
-  'insuranceFormTitle',
-  'financingFormTitle',
-  'insuranceFormIntro',
-  'financingFormIntro',
-  'insuranceFieldName',
-  'insuranceFieldEmail',
-  'insuranceFieldPhone',
-  'insuranceNameRequired',
-  'insuranceEmailInvalid',
-  'insuranceContactRequired',
-  'insurancePreferredContact',
-  'insuranceContactEmail',
-  'insuranceContactPhone',
-  'insuranceContactWhatsapp',
-  'insuranceFieldCountry',
-  'insuranceFieldCountryNotSet',
-  'insuranceFieldMessage',
-  'insuranceMessageHint',
-  'insuranceConsentText',
-  'insuranceConsentRequired',
-  'insuranceLinkedToBooking',
-  'insuranceSend',
-  'insuranceSentTitle',
-  'insuranceSentBody',
-  'insuranceContinueOnPartner',
-  'insuranceErrorConsentRequired',
-  'insuranceErrorCountryNotEligible',
-  'insuranceErrorDuplicate',
-  'insuranceErrorNotFound',
-  'insuranceErrorNotOpen',
-  'insuranceRequestsEmptyTitle',
-  'insuranceRequestsEmptyBody',
-  'insuranceKindQuote',
-  'financingKindEligibility',
-  'insuranceStatusNew',
-  'insuranceStatusInProgress',
-  'insuranceStatusShared',
-  'insuranceStatusClosed',
-  'insuranceStatusCancelled',
-  'insuranceStatusSemantics',
-  'insuranceRequestSentOn',
-  'insuranceWithdraw',
-  'insuranceWithdrawTitle',
-  'insuranceWithdrawBody',
-  'insuranceWithdrawn',
-  'insuranceProfileGroup',
-  'insuranceProfileTile',
-  'insuranceProfileTileSubtitle',
-  'insuranceBookCardTitle',
-  'insuranceBookCardBody',
-  'insuranceBookCardAction',
-  'financingInstallmentsSubtitle',
-  'financingPickDateFirst',
-  'financingInstallmentsUnavailable',
-  'financingInterestFreeNote',
-  'financingScheduleItem',
-  'financingScheduleEstimate',
-  'financingSeePartners',
-  'financingInstallmentsPastTreatment',
+  'whatsappTitle',
+  'whatsappTileSubtitle',
+  'whatsappIntro',
+  'whatsappPrivacyNote',
+  'whatsappStopNote',
+  'whatsappUnavailable',
+  'whatsappStatusOn',
+  'whatsappStatusOff',
+  'whatsappStatusPending',
+  'whatsappActiveTitle',
+  'whatsappActiveNumber',
+  'whatsappVerifiedOn',
+  'whatsappOptedOutNote',
+  'whatsappPhoneLabel',
+  'whatsappPhoneHint',
+  'whatsappPhoneHelper',
+  'whatsappPhoneInvalid',
+  'whatsappSendCode',
+  'whatsappCodeSent',
+  'whatsappCodeSentTo',
+  'whatsappCodeExpiresAt',
+  'whatsappCodeLabel',
+  'whatsappCodeInvalid',
+  'whatsappConfirmCode',
+  'whatsappResendCode',
+  'whatsappChangeNumber',
+  'whatsappTurnOff',
+  'whatsappTurnOffConfirmTitle',
+  'whatsappTurnOffConfirmBody',
+  'whatsappTurnedOn',
+  'whatsappTurnedOff',
+  'whatsappErrorInvalidCode',
+  'whatsappErrorCodeExpired',
+  'whatsappErrorTooManyAttempts',
+  'whatsappErrorNoPendingCode',
+  'dischargeTitle',
+  'dischargeListTitle',
+  'dischargeTileSubtitle',
+  'dischargeEmptyTitle',
+  'dischargeEmptyMessage',
+  'dischargeVersion',
+  'dischargeStatusDraft',
+  'dischargeStatusFinal',
+  'dischargeStatusSuperseded',
+  'dischargeSupersededNote',
+  'dischargeFinalizedOn',
+  'dischargeDischargedOn',
+  'dischargeRedFlagsTitle',
+  'dischargeRedFlagsEmergency',
+  'dischargeSectionDiagnosis',
+  'dischargeCode',
+  'dischargeSectionStay',
+  'dischargeAdmissionDate',
+  'dischargeDischargeDate',
+  'dischargeSectionProcedure',
+  'dischargeProcedureCode',
+  'dischargeProcedureDate',
+  'dischargeDoctor',
+  'dischargeDoctorRegistration',
+  'dischargeSectionHospitalCourse',
+  'dischargeSectionMedications',
+  'dischargeNoMedications',
+  'dischargeMedicationDuration',
+  'dischargeMedicationOngoing',
+  'dischargeReminderUntil',
+  'dischargeSectionFollowUp',
+  'dischargeSectionAllergies',
+  'dischargeSectionInvestigations',
+  'dischargeSectionAttachments',
+  'dischargeDownloadPdf',
+  'dischargeDownloadFhir',
+  'dischargeFhirHint',
+  'dischargeConfidential',
+  'dischargeShareWithDoctor',
+  'dischargeShareIntro',
+  'dischargeShareDoctorEmail',
+  'dischargeShareDoctorEmailInvalid',
+  'dischargeShareDoctorName',
+  'dischargeShareDocuments',
+  'dischargeShareDocumentsHint',
+  'dischargeShareFromHospital',
+  'dischargeShareYourDocuments',
+  'dischargeShareNoDocuments',
+  'dischargeShareValidity',
+  'dischargeShareDays',
+  'dischargeShareLanguage',
+  'dischargeShareConsent',
+  'dischargeShareConsentRequired',
+  'dischargeShareSend',
+  'dischargeShareSentTitle',
+  'dischargeShareSentBody',
+  'dischargeShareLinkOnce',
+  'dischargeShareCopy',
+  'dischargeShareCopied',
+  'dischargeSharesTitle',
+  'dischargeSharesEmpty',
+  'dischargeShareExpires',
+  'dischargeShareExpired',
+  'dischargeShareRevoked',
+  'dischargeShareViews',
+  'dischargeShareRevoke',
+  'dischargeShareRevokeTitle',
+  'dischargeShareRevokeBody',
+  'dischargeShareRevokedSnack',
+  'dischargeRemindersTitle',
+  'dischargeRemindersSwitch',
+  'dischargeRemindersHint',
+  'dischargeRemindersTime',
+  'dischargeRemindersOn',
+  'dischargeRemindersOff',
+  'dischargeHpMoreSubtitle',
+  'dischargeHpEmpty',
+  'dischargeHpEmptyAll',
+  'dischargeHpStart',
+  'dischargeHpDraftExists',
+  'dischargeHpFinalExists',
+  'dischargeHpEditorTitle',
+  'dischargeHpDoctorSection',
+  'dischargeHpChooseDoctor',
+  'dischargeHpDoctorName',
+  'dischargeHpDoctorRegistration',
+  'dischargeHpPickDate',
+  'dischargeHpDiagnosisCode',
+  'dischargeHpProcedureCode',
+  'dischargeHpCodeInvalid',
+  'dischargeHpRequiredToFinalize',
+  'dischargeHpRedFlagsLabel',
+  'dischargeHpRedFlagsHint',
+  'dischargeHpAddMedication',
+  'dischargeHpEditMedication',
+  'dischargeHpMedName',
+  'dischargeHpMedDose',
+  'dischargeHpMedFrequency',
+  'dischargeHpMedDuration',
+  'dischargeHpMedRoute',
+  'dischargeHpMedInstructions',
+  'dischargeHpMedNameRequired',
+  'dischargeHpMedDurationInvalid',
+  'dischargeHpAttachmentsHint',
+  'dischargeHpNoDocuments',
+  'dischargeHpSaveDraft',
+  'dischargeHpSaved',
+  'dischargeHpFinalize',
+  'dischargeHpFinalizeTitle',
+  'dischargeHpFinalizeBody',
+  'dischargeHpFinalized',
+  'dischargeHpMissing',
+  'dischargeHpDiscard',
+  'dischargeHpDiscardTitle',
+  'dischargeHpDiscardBody',
+  'dischargeHpDiscarded',
+  'dischargeHpNewVersion',
+  'dischargeHpNewVersionTitle',
+  'dischargeHpNewVersionBody',
+  'dischargeHpDatesInvalid',
+  'dischargeHpLockedNote',
 ];

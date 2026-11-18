@@ -41,6 +41,8 @@ const ConsultationsPage = lazy(() => import('./pages/consultations/Consultations
 const ConsultationDetailPage = lazy(() => import('./pages/consultations/ConsultationsPage').then((m) => ({ default: m.ConsultationDetailPage })));
 const BookConsultationPage = lazy(() => import('./pages/consultations/BookConsultationPage').then((m) => ({ default: m.BookConsultationPage })));
 const ConsultationPayPage = lazy(() => import('./pages/consultations/ConsultationPayPage').then((m) => ({ default: m.ConsultationPayPage })));
+const DischargeListPage = lazy(() => import('./pages/discharge/DischargeListPage').then((m) => ({ default: m.DischargeListPage })));
+const DischargeDetailPage = lazy(() => import('./pages/discharge/DischargeDetailPage').then((m) => ({ default: m.DischargeDetailPage })));
 const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
 const InsurancePage = lazy(() => import('./pages/insurance/InsurancePage').then((m) => ({ default: m.InsurancePage })));
 const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
@@ -87,6 +89,8 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'consultations/book', element: <BookConsultationPage /> },
   { path: 'consultations/:id', element: <ConsultationDetailPage /> },
   { path: 'consultations/:id/pay', element: <ConsultationPayPage /> },
+  { path: 'discharge-summaries', element: <DischargeListPage /> },
+  { path: 'discharge-summaries/:id', element: <DischargeDetailPage /> },
   { path: 'free-call', element: <FreeCallPage /> },
   { path: 'free-call/status', element: <FreeCallStatusPage /> },
   { path: 'insurance', element: <InsurancePage /> },

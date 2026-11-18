@@ -13565,5 +13565,732 @@
   "financingInstallmentsPastTreatment": "Instalments must be paid in full before your admission date. Choose fewer months, pay the deposit, or pick a later date.",
   "@financingInstallmentsPastTreatment": {
     "description": "Error installments_past_treatment: the plan would run past the treatment date. Financial wording: translate faithfully."
+  },
+  "whatsappTitle": "WhatsApp updates",
+  "@whatsappTitle": {
+    "description": "Title of the WhatsApp updates screen and its profile tile."
+  },
+  "whatsappTileSubtitle": "Booking, travel and appointment updates on WhatsApp",
+  "@whatsappTileSubtitle": {
+    "description": "Profile tile subtitle for WhatsApp updates."
+  },
+  "whatsappIntro": "Get short updates about your bookings, travel and appointments on WhatsApp.",
+  "@whatsappIntro": {
+    "description": "Intro text of the WhatsApp screen."
+  },
+  "whatsappPrivacyNote": "WhatsApp messages only carry general updates. Medical details are never sent on WhatsApp; open the app to read them.",
+  "@whatsappPrivacyNote": {
+    "description": "Privacy promise: no medical details on WhatsApp."
+  },
+  "whatsappStopNote": "You can stop at any time here, or by replying STOP to any of our WhatsApp messages.",
+  "@whatsappStopNote": {
+    "description": "How to opt out (keep the word STOP in Latin capitals: it is the keyword the system recognises)."
+  },
+  "whatsappUnavailable": "WhatsApp updates are not available yet. We will let you know when you can turn them on.",
+  "@whatsappUnavailable": {
+    "description": "Shown when WhatsApp is not configured on the server; the controls are disabled."
+  },
+  "whatsappStatusOn": "On",
+  "@whatsappStatusOn": {
+    "description": "Status badge: WhatsApp updates active."
+  },
+  "whatsappStatusOff": "Off",
+  "@whatsappStatusOff": {
+    "description": "Status badge: WhatsApp updates not active."
+  },
+  "whatsappStatusPending": "Waiting for code",
+  "@whatsappStatusPending": {
+    "description": "Status badge: a verification code was sent."
+  },
+  "whatsappActiveTitle": "WhatsApp updates are on",
+  "@whatsappActiveTitle": {
+    "description": "Heading when WhatsApp updates are active."
+  },
+  "whatsappActiveNumber": "Updates go to {phone}.",
+  "@whatsappActiveNumber": {
+    "description": "Masked number receiving WhatsApp updates.",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsappVerifiedOn": "Number verified on {date}.",
+  "@whatsappVerifiedOn": {
+    "description": "When the WhatsApp number was verified.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsappOptedOutNote": "You turned off WhatsApp updates on {date}.",
+  "@whatsappOptedOutNote": {
+    "description": "Shown after opting out (also via STOP).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsappPhoneLabel": "WhatsApp number",
+  "@whatsappPhoneLabel": {
+    "description": "Phone field label."
+  },
+  "whatsappPhoneHint": "+234 803 123 4567",
+  "@whatsappPhoneHint": {
+    "description": "Example phone number in international format (keep digits as they are)."
+  },
+  "whatsappPhoneHelper": "Include the country code, starting with +.",
+  "@whatsappPhoneHelper": {
+    "description": "Helper under the phone field."
+  },
+  "whatsappPhoneInvalid": "Enter your WhatsApp number with the country code, e.g. +234 803 123 4567.",
+  "@whatsappPhoneInvalid": {
+    "description": "Phone validation error."
+  },
+  "whatsappSendCode": "Send code",
+  "@whatsappSendCode": {
+    "description": "Button: send the verification code on WhatsApp."
+  },
+  "whatsappCodeSent": "Code sent. Check WhatsApp.",
+  "@whatsappCodeSent": {
+    "description": "Snack after sending the code."
+  },
+  "whatsappCodeSentTo": "We sent a 6-digit code to {phone} on WhatsApp.",
+  "@whatsappCodeSentTo": {
+    "description": "Shown while a code is pending.",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsappCodeExpiresAt": "The code expires at {time}.",
+  "@whatsappCodeExpiresAt": {
+    "description": "Expiry time of the pending code.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsappCodeLabel": "6-digit code",
+  "@whatsappCodeLabel": {
+    "description": "Code field label."
+  },
+  "whatsappCodeInvalid": "Enter the 6 digits from the WhatsApp message.",
+  "@whatsappCodeInvalid": {
+    "description": "Code validation error."
+  },
+  "whatsappConfirmCode": "Confirm code",
+  "@whatsappConfirmCode": {
+    "description": "Button: confirm the verification code."
+  },
+  "whatsappResendCode": "Send a new code",
+  "@whatsappResendCode": {
+    "description": "Button: request another code."
+  },
+  "whatsappChangeNumber": "Use a different number",
+  "@whatsappChangeNumber": {
+    "description": "Button: enter another phone number."
+  },
+  "whatsappTurnOff": "Turn off WhatsApp updates",
+  "@whatsappTurnOff": {
+    "description": "Button / confirm action: opt out."
+  },
+  "whatsappTurnOffConfirmTitle": "Turn off WhatsApp updates?",
+  "@whatsappTurnOffConfirmTitle": {
+    "description": "Confirm dialog title."
+  },
+  "whatsappTurnOffConfirmBody": "You will still get updates in the app and by email.",
+  "@whatsappTurnOffConfirmBody": {
+    "description": "Confirm dialog body."
+  },
+  "whatsappTurnedOn": "WhatsApp updates are on.",
+  "@whatsappTurnedOn": {
+    "description": "Snack after confirming the code."
+  },
+  "whatsappTurnedOff": "WhatsApp updates are off.",
+  "@whatsappTurnedOff": {
+    "description": "Snack after opting out."
+  },
+  "whatsappErrorInvalidCode": "{count, plural, =0{The code is not correct. Ask for a new code.} =1{The code is not correct. 1 attempt left.} other{The code is not correct. {count} attempts left.}}",
+  "@whatsappErrorInvalidCode": {
+    "description": "Wrong code; count = attempts left.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "whatsappErrorCodeExpired": "This code has expired. Ask for a new code.",
+  "@whatsappErrorCodeExpired": {
+    "description": "Error: code expired."
+  },
+  "whatsappErrorTooManyAttempts": "Too many wrong codes. Ask for a new code.",
+  "@whatsappErrorTooManyAttempts": {
+    "description": "Error: too many attempts."
+  },
+  "whatsappErrorNoPendingCode": "No code is waiting. Ask for a new code.",
+  "@whatsappErrorNoPendingCode": {
+    "description": "Error: no verification pending."
+  },
+  "dischargeTitle": "Discharge summary",
+  "@dischargeTitle": {
+    "description": "Title of one discharge summary / entry links."
+  },
+  "dischargeListTitle": "Discharge summaries",
+  "@dischargeListTitle": {
+    "description": "List title."
+  },
+  "dischargeTileSubtitle": "Your hospital's summary, medicines and warning signs",
+  "@dischargeTileSubtitle": {
+    "description": "Entry tile subtitle."
+  },
+  "dischargeEmptyTitle": "No discharge summary yet",
+  "@dischargeEmptyTitle": {
+    "description": "Empty list title."
+  },
+  "dischargeEmptyMessage": "Your hospital adds the discharge summary when you leave the hospital. We will notify you.",
+  "@dischargeEmptyMessage": {
+    "description": "Empty list message."
+  },
+  "dischargeVersion": "Version {version}",
+  "@dischargeVersion": {
+    "description": "Version number of a summary.",
+    "placeholders": {
+      "version": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "dischargeStatusDraft": "Draft",
+  "@dischargeStatusDraft": {
+    "description": "Status: draft (hospital only)."
+  },
+  "dischargeStatusFinal": "Final",
+  "@dischargeStatusFinal": {
+    "description": "Status: finalized."
+  },
+  "dischargeStatusSuperseded": "Older version",
+  "@dischargeStatusSuperseded": {
+    "description": "Status: replaced by a newer version."
+  },
+  "dischargeSupersededNote": "A newer version of this summary exists. Open the list to see the latest one.",
+  "@dischargeSupersededNote": {
+    "description": "Banner on an older version."
+  },
+  "dischargeFinalizedOn": "Finalized on {date}",
+  "@dischargeFinalizedOn": {
+    "description": "When the summary was finalized.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeDischargedOn": "Discharged {date}",
+  "@dischargeDischargedOn": {
+    "description": "Discharge date in a list.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeRedFlagsTitle": "Get medical help straight away if you notice:",
+  "@dischargeRedFlagsTitle": {
+    "description": "Heading of the red-flag (warning signs) card."
+  },
+  "dischargeRedFlagsEmergency": "In an emergency, call your local emergency number first.",
+  "@dischargeRedFlagsEmergency": {
+    "description": "Emergency advice under the warning signs."
+  },
+  "dischargeSectionDiagnosis": "Diagnosis",
+  "@dischargeSectionDiagnosis": {
+    "description": "Section / field: diagnosis."
+  },
+  "dischargeCode": "Code: {code}",
+  "@dischargeCode": {
+    "description": "Diagnosis code (ICD-10).",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeSectionStay": "Hospital stay",
+  "@dischargeSectionStay": {
+    "description": "Section: dates, procedure and doctor."
+  },
+  "dischargeAdmissionDate": "Admission date",
+  "@dischargeAdmissionDate": {
+    "description": "Field: admission date."
+  },
+  "dischargeDischargeDate": "Discharge date",
+  "@dischargeDischargeDate": {
+    "description": "Field: discharge date."
+  },
+  "dischargeSectionProcedure": "Procedure",
+  "@dischargeSectionProcedure": {
+    "description": "Field: procedure performed."
+  },
+  "dischargeProcedureCode": "Procedure code",
+  "@dischargeProcedureCode": {
+    "description": "Field: procedure code."
+  },
+  "dischargeProcedureDate": "Procedure date",
+  "@dischargeProcedureDate": {
+    "description": "Field: procedure date."
+  },
+  "dischargeDoctor": "Treating doctor",
+  "@dischargeDoctor": {
+    "description": "Field: treating doctor."
+  },
+  "dischargeDoctorRegistration": "Registration no.",
+  "@dischargeDoctorRegistration": {
+    "description": "Field: doctor's medical registration number."
+  },
+  "dischargeSectionHospitalCourse": "Treatment in hospital",
+  "@dischargeSectionHospitalCourse": {
+    "description": "Section: hospital course."
+  },
+  "dischargeSectionMedications": "Medicines",
+  "@dischargeSectionMedications": {
+    "description": "Section: medicines at discharge."
+  },
+  "dischargeNoMedications": "No medicines were prescribed at discharge.",
+  "@dischargeNoMedications": {
+    "description": "No medicines."
+  },
+  "dischargeMedicationDuration": "{days, plural, =1{For 1 day} other{For {days} days}}",
+  "@dischargeMedicationDuration": {
+    "description": "How long to take a medicine.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "dischargeMedicationOngoing": "Ongoing",
+  "@dischargeMedicationOngoing": {
+    "description": "Medicine without an end date."
+  },
+  "dischargeReminderUntil": "Until {date}",
+  "@dischargeReminderUntil": {
+    "description": "Last reminder day of a medicine.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeSectionFollowUp": "Follow-up instructions",
+  "@dischargeSectionFollowUp": {
+    "description": "Section / field: follow-up instructions."
+  },
+  "dischargeSectionAllergies": "Allergies",
+  "@dischargeSectionAllergies": {
+    "description": "Section: allergies."
+  },
+  "dischargeSectionInvestigations": "Test results",
+  "@dischargeSectionInvestigations": {
+    "description": "Section: investigations summary."
+  },
+  "dischargeSectionAttachments": "Attached documents",
+  "@dischargeSectionAttachments": {
+    "description": "Section: attached documents."
+  },
+  "dischargeDownloadPdf": "Download PDF",
+  "@dischargeDownloadPdf": {
+    "description": "Button: download the summary PDF."
+  },
+  "dischargeDownloadFhir": "Download FHIR file",
+  "@dischargeDownloadFhir": {
+    "description": "Button: download the HL7 FHIR JSON file."
+  },
+  "dischargeFhirHint": "A standard medical record file (HL7 FHIR) that doctors' systems can import.",
+  "@dischargeFhirHint": {
+    "description": "Explains the FHIR file."
+  },
+  "dischargeConfidential": "This summary contains confidential medical information. Share it only with doctors you trust.",
+  "@dischargeConfidential": {
+    "description": "Confidentiality note."
+  },
+  "dischargeShareWithDoctor": "Share with my doctor",
+  "@dischargeShareWithDoctor": {
+    "description": "Button / heading: share with the home doctor."
+  },
+  "dischargeShareIntro": "Send your doctor at home a secure link to this summary. They can open it without an account until the link expires.",
+  "@dischargeShareIntro": {
+    "description": "Explains sharing."
+  },
+  "dischargeShareDoctorEmail": "Doctor's email",
+  "@dischargeShareDoctorEmail": {
+    "description": "Field: doctor's email."
+  },
+  "dischargeShareDoctorEmailInvalid": "Enter a valid email address.",
+  "@dischargeShareDoctorEmailInvalid": {
+    "description": "Email validation error."
+  },
+  "dischargeShareDoctorName": "Doctor's name (optional)",
+  "@dischargeShareDoctorName": {
+    "description": "Field: doctor's name."
+  },
+  "dischargeShareDocuments": "Documents to include",
+  "@dischargeShareDocuments": {
+    "description": "Heading: documents to share."
+  },
+  "dischargeShareDocumentsHint": "The summary PDF is always included.",
+  "@dischargeShareDocumentsHint": {
+    "description": "Hint: the PDF is always shared."
+  },
+  "dischargeShareFromHospital": "From the hospital",
+  "@dischargeShareFromHospital": {
+    "description": "Group: documents attached by the hospital."
+  },
+  "dischargeShareYourDocuments": "Your documents",
+  "@dischargeShareYourDocuments": {
+    "description": "Group: the patient's own documents."
+  },
+  "dischargeShareNoDocuments": "No other documents.",
+  "@dischargeShareNoDocuments": {
+    "description": "No own documents to add."
+  },
+  "dischargeShareValidity": "Link valid for",
+  "@dischargeShareValidity": {
+    "description": "Field: link validity."
+  },
+  "dischargeShareDays": "{days, plural, =1{1 day} other{{days} days}}",
+  "@dischargeShareDays": {
+    "description": "Number of days.",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "dischargeShareLanguage": "Email language",
+  "@dischargeShareLanguage": {
+    "description": "Field: language of the email to the doctor."
+  },
+  "dischargeShareConsent": "I agree to share this discharge summary and the selected documents with this doctor. I understand the doctor can open them until the link expires, and that every view is recorded.",
+  "@dischargeShareConsent": {
+    "description": "Consent checkbox to share medical data with a doctor (legal)."
+  },
+  "dischargeShareConsentRequired": "Please tick the box to agree before sharing.",
+  "@dischargeShareConsentRequired": {
+    "description": "Consent not given."
+  },
+  "dischargeShareSend": "Send link",
+  "@dischargeShareSend": {
+    "description": "Button: create and email the link."
+  },
+  "dischargeShareSentTitle": "Link sent",
+  "@dischargeShareSentTitle": {
+    "description": "Dialog title after sharing."
+  },
+  "dischargeShareSentBody": "We emailed a link to {email}. It works until {date}.",
+  "@dischargeShareSentBody": {
+    "description": "Dialog body after sharing.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeShareLinkOnce": "You can also copy the link now. It is shown only once.",
+  "@dischargeShareLinkOnce": {
+    "description": "The link is shown once."
+  },
+  "dischargeShareCopy": "Copy link",
+  "@dischargeShareCopy": {
+    "description": "Button: copy the link."
+  },
+  "dischargeShareCopied": "Link copied",
+  "@dischargeShareCopied": {
+    "description": "Snack after copying."
+  },
+  "dischargeSharesTitle": "Shared with",
+  "@dischargeSharesTitle": {
+    "description": "Heading of the list of share links."
+  },
+  "dischargeSharesEmpty": "You have not shared this summary yet.",
+  "@dischargeSharesEmpty": {
+    "description": "No share links."
+  },
+  "dischargeShareExpires": "Expires {date}",
+  "@dischargeShareExpires": {
+    "description": "Expiry date of a link.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeShareExpired": "Expired",
+  "@dischargeShareExpired": {
+    "description": "Link status: expired."
+  },
+  "dischargeShareRevoked": "Revoked",
+  "@dischargeShareRevoked": {
+    "description": "Link status: revoked."
+  },
+  "dischargeShareViews": "{count, plural, =0{Not opened yet} =1{Opened once} other{Opened {count} times}}",
+  "@dischargeShareViews": {
+    "description": "How often the doctor opened the link.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "dischargeShareRevoke": "Revoke",
+  "@dischargeShareRevoke": {
+    "description": "Button: revoke a link."
+  },
+  "dischargeShareRevokeTitle": "Revoke this link?",
+  "@dischargeShareRevokeTitle": {
+    "description": "Confirm revoke title."
+  },
+  "dischargeShareRevokeBody": "The doctor will no longer be able to open the summary with this link.",
+  "@dischargeShareRevokeBody": {
+    "description": "Confirm revoke body."
+  },
+  "dischargeShareRevokedSnack": "Link revoked",
+  "@dischargeShareRevokedSnack": {
+    "description": "Snack after revoking."
+  },
+  "dischargeRemindersTitle": "Medicine reminders",
+  "@dischargeRemindersTitle": {
+    "description": "Section: medicine reminders."
+  },
+  "dischargeRemindersSwitch": "Daily reminder",
+  "@dischargeRemindersSwitch": {
+    "description": "Switch label."
+  },
+  "dischargeRemindersHint": "One notification a day while your medicines are due. Always follow your doctor's instructions on dose and timing.",
+  "@dischargeRemindersHint": {
+    "description": "Explains the reminders (medical caution)."
+  },
+  "dischargeRemindersTime": "Reminder time",
+  "@dischargeRemindersTime": {
+    "description": "Hour picker label."
+  },
+  "dischargeRemindersOn": "Medicine reminders are on.",
+  "@dischargeRemindersOn": {
+    "description": "Snack."
+  },
+  "dischargeRemindersOff": "Medicine reminders are off.",
+  "@dischargeRemindersOff": {
+    "description": "Snack."
+  },
+  "dischargeHpMoreSubtitle": "Write, finalize and update patients' discharge summaries",
+  "@dischargeHpMoreSubtitle": {
+    "description": "Hospital More link subtitle."
+  },
+  "dischargeHpEmpty": "No discharge summary for this patient yet.",
+  "@dischargeHpEmpty": {
+    "description": "Empty list for a case."
+  },
+  "dischargeHpEmptyAll": "No discharge summaries yet.",
+  "@dischargeHpEmptyAll": {
+    "description": "Empty list of the hospital."
+  },
+  "dischargeHpStart": "Start discharge summary",
+  "@dischargeHpStart": {
+    "description": "Button: create a prefilled draft."
+  },
+  "dischargeHpDraftExists": "A draft already exists. Opening it.",
+  "@dischargeHpDraftExists": {
+    "description": "Draft already exists."
+  },
+  "dischargeHpFinalExists": "This case already has a final summary. Open it and choose \"Edit as new version\".",
+  "@dischargeHpFinalExists": {
+    "description": "Final already exists."
+  },
+  "dischargeHpEditorTitle": "Edit discharge summary",
+  "@dischargeHpEditorTitle": {
+    "description": "Editor title."
+  },
+  "dischargeHpDoctorSection": "Doctor",
+  "@dischargeHpDoctorSection": {
+    "description": "Editor section: doctor."
+  },
+  "dischargeHpChooseDoctor": "Choose a doctor",
+  "@dischargeHpChooseDoctor": {
+    "description": "Button / sheet title: pick a doctor of the hospital."
+  },
+  "dischargeHpDoctorName": "Doctor's name",
+  "@dischargeHpDoctorName": {
+    "description": "Field: doctor's name."
+  },
+  "dischargeHpDoctorRegistration": "Medical registration number",
+  "@dischargeHpDoctorRegistration": {
+    "description": "Field: registration number."
+  },
+  "dischargeHpPickDate": "Pick a date",
+  "@dischargeHpPickDate": {
+    "description": "Date tile placeholder."
+  },
+  "dischargeHpDiagnosisCode": "ICD-10 code (optional)",
+  "@dischargeHpDiagnosisCode": {
+    "description": "Field: ICD-10 code."
+  },
+  "dischargeHpProcedureCode": "Procedure code (optional)",
+  "@dischargeHpProcedureCode": {
+    "description": "Field: procedure code."
+  },
+  "dischargeHpCodeInvalid": "Use letters, digits, dots or dashes (max 20).",
+  "@dischargeHpCodeInvalid": {
+    "description": "Code validation error."
+  },
+  "dischargeHpRequiredToFinalize": "Required to finalize",
+  "@dischargeHpRequiredToFinalize": {
+    "description": "Helper on required fields."
+  },
+  "dischargeHpRedFlagsLabel": "Warning signs (red flags)",
+  "@dischargeHpRedFlagsLabel": {
+    "description": "Field: red-flag symptoms."
+  },
+  "dischargeHpRedFlagsHint": "Symptoms that mean the patient must get medical help straight away",
+  "@dischargeHpRedFlagsHint": {
+    "description": "Helper for red-flag symptoms."
+  },
+  "dischargeHpAddMedication": "Add medicine",
+  "@dischargeHpAddMedication": {
+    "description": "Button: add a medicine."
+  },
+  "dischargeHpEditMedication": "Edit medicine",
+  "@dischargeHpEditMedication": {
+    "description": "Dialog title."
+  },
+  "dischargeHpMedName": "Medicine name",
+  "@dischargeHpMedName": {
+    "description": "Field."
+  },
+  "dischargeHpMedDose": "Dose",
+  "@dischargeHpMedDose": {
+    "description": "Field: dose."
+  },
+  "dischargeHpMedFrequency": "How often",
+  "@dischargeHpMedFrequency": {
+    "description": "Field: frequency."
+  },
+  "dischargeHpMedDuration": "Number of days (empty = ongoing)",
+  "@dischargeHpMedDuration": {
+    "description": "Field: duration in days."
+  },
+  "dischargeHpMedRoute": "Route (e.g. oral)",
+  "@dischargeHpMedRoute": {
+    "description": "Field: route of administration."
+  },
+  "dischargeHpMedInstructions": "Instructions",
+  "@dischargeHpMedInstructions": {
+    "description": "Field: instructions."
+  },
+  "dischargeHpMedNameRequired": "Enter the medicine name.",
+  "@dischargeHpMedNameRequired": {
+    "description": "Validation."
+  },
+  "dischargeHpMedDurationInvalid": "Enter a number of days from 1 to 3650.",
+  "@dischargeHpMedDurationInvalid": {
+    "description": "Validation."
+  },
+  "dischargeHpAttachmentsHint": "Documents of this case to attach to the summary.",
+  "@dischargeHpAttachmentsHint": {
+    "description": "Attachments helper."
+  },
+  "dischargeHpNoDocuments": "No documents on this case yet.",
+  "@dischargeHpNoDocuments": {
+    "description": "No documents."
+  },
+  "dischargeHpSaveDraft": "Save draft",
+  "@dischargeHpSaveDraft": {
+    "description": "Button."
+  },
+  "dischargeHpSaved": "Draft saved",
+  "@dischargeHpSaved": {
+    "description": "Snack."
+  },
+  "dischargeHpFinalize": "Finalize",
+  "@dischargeHpFinalize": {
+    "description": "Button: finalize."
+  },
+  "dischargeHpFinalizeTitle": "Finalize this summary?",
+  "@dischargeHpFinalizeTitle": {
+    "description": "Confirm title."
+  },
+  "dischargeHpFinalizeBody": "It will be locked, a PDF is created and the patient is notified. Later changes create a new version.",
+  "@dischargeHpFinalizeBody": {
+    "description": "Confirm body."
+  },
+  "dischargeHpFinalized": "Summary finalized and sent to the patient",
+  "@dischargeHpFinalized": {
+    "description": "Snack."
+  },
+  "dischargeHpMissing": "Fill in before finalizing: {fields}",
+  "@dischargeHpMissing": {
+    "description": "Missing required fields.",
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "dischargeHpDiscard": "Discard draft",
+  "@dischargeHpDiscard": {
+    "description": "Button."
+  },
+  "dischargeHpDiscardTitle": "Discard this draft?",
+  "@dischargeHpDiscardTitle": {
+    "description": "Confirm title."
+  },
+  "dischargeHpDiscardBody": "The draft is deleted. Final versions are not affected.",
+  "@dischargeHpDiscardBody": {
+    "description": "Confirm body."
+  },
+  "dischargeHpDiscarded": "Draft discarded",
+  "@dischargeHpDiscarded": {
+    "description": "Snack."
+  },
+  "dischargeHpNewVersion": "Edit as new version",
+  "@dischargeHpNewVersion": {
+    "description": "Button: create a new draft version from a final summary."
+  },
+  "dischargeHpNewVersionTitle": "Create a new version?",
+  "@dischargeHpNewVersionTitle": {
+    "description": "Confirm title."
+  },
+  "dischargeHpNewVersionBody": "Version {version} stays as it is. Your changes go into a new draft, version {next}, which you finalize when ready.",
+  "@dischargeHpNewVersionBody": {
+    "description": "Confirm body.",
+    "placeholders": {
+      "version": {
+        "type": "int",
+        "example": "3"
+      },
+      "next": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "dischargeHpDatesInvalid": "The discharge date cannot be before the admission date.",
+  "@dischargeHpDatesInvalid": {
+    "description": "Date validation."
+  },
+  "dischargeHpLockedNote": "Final summaries are locked. To change this one, create a new version.",
+  "@dischargeHpLockedNote": {
+    "description": "Note on a final summary."
   }
 }

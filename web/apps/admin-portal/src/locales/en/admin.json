@@ -3152,5 +3152,68 @@
     "messageLabel": "Message",
     "replyPlaceholder": "Write a reply… (Ctrl+Enter to send)",
     "send": "Send"
+  },
+  "whatsapp": {
+    "nav": "WhatsApp",
+    "title": "WhatsApp",
+    "description": "WhatsApp Business updates: provider set-up, message templates, opt-ins and the delivery log. Message text is never stored.",
+    "notConfigured": "WhatsApp is not configured on this server. People cannot turn on WhatsApp updates until the WhatsApp Business credentials are set in the server environment.",
+    "stats": {
+      "optedIn": "Opted in",
+      "pending": "Waiting for code",
+      "optedOut": "Opted out",
+      "sent24h": "Sent (last 24 h)",
+      "failed24h": "Failed (last 24 h)"
+    },
+    "provider": {
+      "title": "Provider",
+      "provider": "Provider",
+      "configured": "Sending",
+      "webhook": "Webhook (delivery status and STOP)",
+      "verifyToken": "Webhook verify token",
+      "phoneNumberId": "Phone number ID",
+      "apiVersion": "Graph API version",
+      "dailyLimit": "Messages per user per day",
+      "set": "Configured",
+      "notSet": "Not configured",
+      "secretsNote": "Secrets (access token, app secret) are set in the server environment and are never shown here."
+    },
+    "templates": {
+      "title": "Message templates",
+      "description": "Each template must be approved in Meta Business Manager with the same name and languages.",
+      "empty": "No templates",
+      "columns": {
+        "name": "Template",
+        "category": "Category",
+        "kinds": "Used for",
+        "languages": "Languages"
+      }
+    },
+    "log": {
+      "title": "Recent messages",
+      "description": "Only the template, the masked number and the delivery status are kept, never the message text.",
+      "empty": "No WhatsApp messages yet",
+      "columns": {
+        "created": "Created",
+        "template": "Template",
+        "language": "Language",
+        "phone": "Number",
+        "status": "Status",
+        "delivery": "Last update",
+        "error": "Error"
+      },
+      "filters": {
+        "status": "Status",
+        "template": "Template"
+      }
+    },
+    "status": {
+      "queued": "Queued",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "read": "Read",
+      "failed": "Failed",
+      "skipped": "Skipped"
+    }
   }
 }

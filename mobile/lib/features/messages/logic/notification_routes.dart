@@ -21,7 +21,12 @@ String? notificationTarget(AppNotification n) {
   final caseId = id('case_id');
   final order = id('order_id');
   final installment = id('installment_id');
+  final discharge = id('discharge_summary_id');
 
+  // Discharge summary ready / daily medicine reminder: open the summary.
+  if ((kind.startsWith('discharge_summary.') || kind == 'aftercare.medication_reminder') && discharge != null) {
+    return Routes.dischargeSummary(discharge);
+  }
   if (kind.startsWith('message.') && conversation != null) return Routes.chat(conversation);
   // Treatment completed: invite the patient to rate the hospital.
   if (kind == 'booking.completed' && booking != null) return Routes.writeReview(booking);
@@ -57,15 +62,18 @@ String pushLinkRoute(String? link, UserRole role, {String? kind}) {
 
   switch (role) {
     case UserRole.agent:
+      if (idAfter('discharge-summaries') case final id?) return AgentRoutes.dischargeSummary(id);
       if (idAfter('cases') case final id?) return AgentRoutes.caseDetail(id);
       if (idAfter('bookings') case final id?) return AgentRoutes.booking(id);
       if (idAfter('screening') case final id?) return AgentRoutes.screening(id);
       return AgentRoutes.home;
     case UserRole.hospital:
+      if (idAfter('discharge-summaries') case final id?) return HospitalRoutes.dischargeSummary(id);
       if (idAfter('cases') case final id?) return HospitalRoutes.caseDetail(id);
       if (idAfter('bookings') case final id?) return HospitalRoutes.booking(id);
       return HospitalRoutes.home;
     default:
+      if (idAfter('discharge-summaries') case final id?) return Routes.dischargeSummary(id);
       if (idAfter('cases') case final id?) return Routes.caseDetail(id);
       if (idAfter('messages') case final id?) return Routes.chat(id);
       if (idAfter('screening') case final id?) return Routes.matches(id);
@@ -87,6 +95,7 @@ String pushLinkRoute(String? link, UserRole role, {String? kind}) {
     'booking' => (Icons.event_available_rounded, AppColors.violet),
     'quote' => (Icons.request_quote_outlined, AppColors.violet),
     'case' => (Icons.folder_shared_outlined, AppColors.violet),
+    'discharge_summary' => (Icons.summarize_outlined, AppColors.violet),
     'screening' => (Icons.psychology_alt_outlined, AppColors.cyan),
     'sos' => (Icons.sos_rounded, AppColors.danger),
     'visa' || 'travel' => (Icons.flight_rounded, AppColors.info),

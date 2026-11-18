@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/repositories/aftercare_repository.dart';
 import '../../../core/repositories/case_repository.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/dates.dart';
 import '../../../core/widgets/widgets.dart';
@@ -114,6 +116,13 @@ class AftercareScreen extends ConsumerWidget {
                               icon: Icons.video_call_outlined,
                               onPressed: c.canRequestFollowup ? () => _requestFollowup(context, ref, c) : null,
                             ),
+                            if (!forAgent)
+                              TextButton.icon(
+                                key: ValueKey('aftercare-discharge-${c.caseId}'),
+                                icon: const Icon(Icons.summarize_outlined),
+                                label: Text(l10n.dischargeTitle),
+                                onPressed: () => context.push(Routes.dischargeSummariesFor(caseId: c.caseId)),
+                              ),
                           ],
                         ),
                       ),

@@ -232,6 +232,24 @@ class _HospitalCaseDetailScreenState extends ConsumerState<HospitalCaseDetailScr
           ],
         ),
       ),
+      if (c.status == CaseStatus.completed ||
+          c.status == CaseStatus.inTreatment ||
+          c.booking?.status == BookingStatus.admitted ||
+          c.booking?.status == BookingStatus.completed) ...[
+        const SizedBox(height: 12),
+        AppCard(
+          key: const ValueKey('hospital-discharge-summaries'),
+          onTap: () => context.push(HospitalRoutes.dischargeSummaries(caseId: c.id, bookingId: c.booking?.id)),
+          child: Row(
+            children: [
+              const Icon(Icons.summarize_outlined, color: AppColors.violet),
+              const SizedBox(width: 12),
+              Expanded(child: Text(l10n.dischargeTitle, style: context.text.titleSmall)),
+              const Icon(Icons.chevron_right_rounded),
+            ],
+          ),
+        ),
+      ],
       if (c.status == CaseStatus.completed || c.booking?.status == BookingStatus.completed)
         HospitalCheckinsSection(caseId: c.id),
       if (c.booking != null) ...[

@@ -27,6 +27,9 @@ abstract final class Routes {
   static const companions = '/profile/companions';
   static const saved = '/profile/saved';
 
+  /// WhatsApp updates (verify a number, turn off).
+  static const whatsapp = '/profile/whatsapp';
+
   // screening & matches
   static const screeningNew = '/screening/new';
   static const compare = '/compare';
@@ -74,6 +77,14 @@ abstract final class Routes {
       _q('$consultations/${Uri.encodeComponent(id)}', {'pay': pay ? '1' : null});
   // insurance & pay-later partners (CG-18)
   static const insurance = '/insurance';
+  // discharge summaries (also the `data.link` of `discharge_summary.finalized` / medication reminders)
+  static const dischargeSummaries = '/discharge-summaries';
+
+  /// `/discharge-summaries?case=<id>`
+  static String dischargeSummariesFor({String? caseId}) => _q(dischargeSummaries, {'case': caseId});
+
+  /// `/discharge-summaries/:id`
+  static String dischargeSummary(String id) => '$dischargeSummaries/$id';
 
   /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
   static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
@@ -261,4 +272,7 @@ abstract final class RouteNames {
   static const consultationBook = 'consultation-book';
   static const consultationDetail = 'consultation-detail';
   static const insurance = 'insurance';
+  static const whatsapp = 'whatsapp';
+  static const dischargeSummaries = 'discharge-summaries';
+  static const dischargeSummary = 'discharge-summary';
 }

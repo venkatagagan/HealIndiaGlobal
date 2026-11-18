@@ -41,6 +41,7 @@ import { QuoteFormModal } from './QuoteFormModal';
 import { ScreeningSummary } from './ScreeningSummary';
 import { QuoteSlaAlert } from './sla';
 import { CaseCheckinsCard, CaseConsultationsList } from '../aftercare/aftercare';
+import { CaseDischargeCard } from '../discharge/CaseDischargeCard';
 
 type LineRow = QuoteLineItem & { index: number; currency: string };
 
@@ -311,6 +312,9 @@ export function CaseDetailPage() {
           </Card>
         </div>
         <div className="space-y-6">
+          {['booked', 'in_treatment', 'completed'].includes(c.status) && (
+            <CaseDischargeCard caseId={c.id} bookingId={c.booking?.id} canStart />
+          )}
           {(c.status === 'completed' || c.status === 'in_treatment') && (
             <Card>
               <CardHeader title={t('aftercare.checkins.caseTitle')} description={t('aftercare.checkins.caseDescription')} />

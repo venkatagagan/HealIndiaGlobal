@@ -6807,7 +6807,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hpActingFor => 'العمل لصالح';
 
   @override
-  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والأسعار متاح على بوابة المستشفى على الويب.';
+  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والتوفر والأسعار متاح على بوابة المستشفى على الويب.';
 
   @override
   String get hpNoVisaRequests => 'لا توجد طلبات تأشيرة';
@@ -8963,818 +8963,545 @@ class AppLocalizationsAr extends AppLocalizations {
   String get inviteMissingTreatment => 'العلاج';
 
   @override
-  String get reportSheetTitleReview => 'الإبلاغ عن هذا التقييم';
+  String get whatsappTitle => 'تحديثات واتساب';
 
   @override
-  String get reportSheetIntroReview =>
-      'أخبرنا بالمشكلة في هذا التقييم، مثل الرسائل المزعجة أو الإساءة أو الادعاءات الكاذبة أو البيانات الشخصية لأحد الأشخاص. سيراجعه فريق الإشراف لدينا. لن يُبلَّغ كاتب التقييم بهوية من أبلغ.';
+  String get whatsappTileSubtitle => 'تحديثات الحجز والسفر والمواعيد على واتساب';
 
   @override
-  String get reviewReportAction => 'الإبلاغ عن التقييم';
+  String get whatsappIntro => 'احصل على تحديثات قصيرة عن حجوزاتك وسفرك ومواعيدك على واتساب.';
 
   @override
-  String get orgSuspendedTitle => 'حسابك موقوف';
+  String get whatsappPrivacyNote =>
+      'رسائل واتساب تحمل تحديثات عامة فقط. لا نرسل أي تفاصيل طبية عبر واتساب أبدًا؛ افتح التطبيق لقراءتها.';
 
   @override
-  String get orgSuspendedBodyAgent =>
-      'تم إيقاف حساب وكالتك، لذلك لا يمكن فتح المرضى والحالات والحجوزات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+  String get whatsappStopNote => 'يمكنك الإيقاف في أي وقت من هنا، أو بالرد بكلمة STOP على أي رسالة منا على واتساب.';
 
   @override
-  String get orgSuspendedBodyHospital =>
-      'تم إيقاف حساب مستشفاك، لذلك لا يمكن فتح الاستفسارات والمرضى والتسويات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+  String get whatsappUnavailable => 'تحديثات واتساب غير متاحة بعد. سنخبرك عندما يمكنك تفعيلها.';
 
   @override
-  String get orgSuspendedCallSupport => 'الاتصال بالدعم';
+  String get whatsappStatusOn => 'مفعّل';
 
   @override
-  String get orgSuspendedWhatsAppSupport => 'مراسلة الدعم عبر واتساب';
+  String get whatsappStatusOff => 'متوقف';
 
   @override
-  String get orgSuspendedNoContact => 'تعذّر تحميل بيانات الاتصال بالدعم. تحقّق من اتصالك وحاول مرة أخرى.';
+  String get whatsappStatusPending => 'بانتظار الرمز';
 
   @override
-  String get orgSuspendedCheckAgain => 'التحقق مرة أخرى';
+  String get whatsappActiveTitle => 'تحديثات واتساب مفعّلة';
 
   @override
-  String get hpAvailabilityTitle => 'توفّر المستشفى';
-
-  @override
-  String hpAvailabilityDoctorTitle(String name) {
-    return 'التوفّر: $name';
+  String whatsappActiveNumber(String phone) {
+    return 'تُرسل التحديثات إلى $phone.';
   }
 
   @override
-  String get hpMoreAvailabilitySubtitle => 'سعة الدخول والاستشارات لكل يوم';
-
-  @override
-  String get hpAvailabilityIntroDoctor =>
-      'حدّد عدد الاستشارات بالفيديو وحالات الدخول التي يمكن لهذا الطبيب استقبالها كل يوم. يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
-
-  @override
-  String get hpAvailabilityIntroHospital =>
-      'سعة المستشفى ككل، غير مرتبطة بطبيب محدد (مثل الأسرّة لحالات الدخول). يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
-
-  @override
-  String get hpAvailabilityConsultShort => 'الاستشارات';
-
-  @override
-  String get hpAvailabilityAdmitShort => 'حالات الدخول';
-
-  @override
-  String hpAvailabilityBooked(int count) {
-    return 'المحجوز: $count';
+  String whatsappVerifiedOn(String date) {
+    return 'تم التحقق من الرقم في $date.';
   }
 
   @override
-  String hpAvailabilityBelowBooked(int count) {
-    return '$count على الأقل';
+  String whatsappOptedOutNote(String date) {
+    return 'لقد أوقفت تحديثات واتساب في $date.';
   }
 
   @override
-  String get hpAvailabilityInvalidNumber => 'من 0 إلى 1000';
+  String get whatsappPhoneLabel => 'رقم واتساب';
 
   @override
-  String get hpAvailabilityQuickFill => 'تعبئة سريعة';
+  String get whatsappPhoneHint => '+234 803 123 4567';
 
   @override
-  String hpAvailabilityQuickFillHint(String month) {
-    return 'يضبط السعة نفسها لكل الأيام المتبقية من $month. راجع الأيام ثم احفظ.';
+  String get whatsappPhoneHelper => 'أدخل رمز الدولة مبتدئًا بعلامة +.';
+
+  @override
+  String get whatsappPhoneInvalid => 'أدخل رقم واتساب مع رمز الدولة، مثل +234 803 123 4567.';
+
+  @override
+  String get whatsappSendCode => 'إرسال الرمز';
+
+  @override
+  String get whatsappCodeSent => 'تم إرسال الرمز. تحقق من واتساب.';
+
+  @override
+  String whatsappCodeSentTo(String phone) {
+    return 'أرسلنا رمزًا من 6 أرقام إلى $phone على واتساب.';
   }
 
   @override
-  String get hpAvailabilityWeekdaysOnly => 'أيام العمل فقط (باستثناء السبت والأحد)';
-
-  @override
-  String get hpAvailabilityApply => 'تعبئة الشهر';
-
-  @override
-  String get hpAvailabilitySaved => 'تم حفظ التوفّر';
-
-  @override
-  String get hpAvailabilityFixErrors => 'صحّح الأيام المميّزة قبل الحفظ.';
-
-  @override
-  String get hpAvailabilityBelowBookedError =>
-      'إحدى السعات أقل من عدد الأماكن المحجوزة في ذلك اليوم. ارفعها واحفظ مرة أخرى.';
-
-  @override
-  String get hpAvailabilityDiscardTitle => 'تجاهل التغييرات غير المحفوظة؟';
-
-  @override
-  String get hpAvailabilityDiscard => 'تجاهل';
-
-  @override
-  String get hpAvailabilityKeepEditing => 'متابعة التعديل';
-
-  @override
-  String get hpAvailabilityEditButton => 'التوفّر';
-
-  @override
-  String get hpAvailabilityPastDay => 'يوم مضى';
-
-  @override
-  String get privacyRequestsTitle => 'طلبات حقوق البيانات';
-
-  @override
-  String get privacyRequestsSubtitle => 'اطلب نسخة من بياناتك أو تصحيحها أو حذفها، أو قدّم شكوى';
-
-  @override
-  String get privacyRequestsEmpty => 'لم تقدّم أي طلبات تتعلق بحقوق البيانات بعد.';
-
-  @override
-  String get privacyRequestNew => 'طلب جديد';
-
-  @override
-  String get privacyRequestFormIntro =>
-      'نسجّل طلبك ونردّ عليه قبل الموعد المحدد الذي يظهر بعد إرساله. قد نطلب منك تأكيد هويتك قبل تنفيذه.';
-
-  @override
-  String get privacyRequestKindLabel => 'ماذا تريد أن تفعل؟';
-
-  @override
-  String get privacyRequestKindAccess => 'الحصول على نسخة من بياناتي';
-
-  @override
-  String get privacyRequestKindCorrection => 'تصحيح بياناتي';
-
-  @override
-  String get privacyRequestKindErasure => 'حذف بياناتي';
-
-  @override
-  String get privacyRequestKindNomination => 'تعيين شخص لممارسة حقوقي في البيانات';
-
-  @override
-  String get privacyRequestKindWithdrawConsent => 'سحب موافقة';
-
-  @override
-  String get privacyRequestKindComplaint => 'شكوى (تظلّم)';
-
-  @override
-  String get privacyRequestKindOther => 'أمر آخر';
-
-  @override
-  String get privacyRequestDetailsLabel => 'التفاصيل';
-
-  @override
-  String get privacyRequestDetailsHint => 'أخبرنا بما تحتاجه، مثلًا أي البيانات غير صحيحة وما الذي يجب أن تكون عليه.';
-
-  @override
-  String get privacyRequestDetailsTooShort => 'يُرجى كتابة 10 أحرف على الأقل.';
-
-  @override
-  String get privacyRequestOnBehalfLabel => 'نيابةً عن (اختياري)';
-
-  @override
-  String get privacyRequestOnBehalfHint => 'اسم الشخص الذي تنوب عنه، إن لم يكن أنت';
-
-  @override
-  String get privacyRequestSubmit => 'إرسال الطلب';
-
-  @override
-  String privacyRequestSent(String reference, String date) {
-    return 'تم إرسال الطلب $reference. موعد الرد: $date.';
+  String whatsappCodeExpiresAt(String time) {
+    return 'تنتهي صلاحية الرمز في الساعة $time.';
   }
 
   @override
-  String get privacyRequestStatusReceived => 'تم الاستلام';
+  String get whatsappCodeLabel => 'الرمز المكوّن من 6 أرقام';
 
   @override
-  String get privacyRequestStatusInProgress => 'قيد المعالجة';
+  String get whatsappCodeInvalid => 'أدخل الأرقام الستة الموجودة في رسالة واتساب.';
 
   @override
-  String get privacyRequestStatusAwaitingRequester => 'بانتظار ردّك';
+  String get whatsappConfirmCode => 'تأكيد الرمز';
 
   @override
-  String get privacyRequestStatusCompleted => 'مكتمل';
+  String get whatsappResendCode => 'إرسال رمز جديد';
 
   @override
-  String get privacyRequestStatusRejected => 'مرفوض';
+  String get whatsappChangeNumber => 'استخدام رقم آخر';
 
   @override
-  String privacyRequestDueBy(String date) {
-    return 'موعد الرد: $date';
+  String get whatsappTurnOff => 'إيقاف تحديثات واتساب';
+
+  @override
+  String get whatsappTurnOffConfirmTitle => 'هل تريد إيقاف تحديثات واتساب؟';
+
+  @override
+  String get whatsappTurnOffConfirmBody => 'ستظل تصلك التحديثات في التطبيق وعبر البريد الإلكتروني.';
+
+  @override
+  String get whatsappTurnedOn => 'تم تفعيل تحديثات واتساب.';
+
+  @override
+  String get whatsappTurnedOff => 'تم إيقاف تحديثات واتساب.';
+
+  @override
+  String whatsappErrorInvalidCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'الرمز غير صحيح. بقيت $count محاولة.',
+      few: 'الرمز غير صحيح. بقيت $count محاولات.',
+      two: 'الرمز غير صحيح. بقيت محاولتان.',
+      one: 'الرمز غير صحيح. بقيت محاولة واحدة.',
+      zero: 'الرمز غير صحيح. اطلب رمزًا جديدًا.',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get privacyRequestOverdue => 'متأخر';
+  String get whatsappErrorCodeExpired => 'انتهت صلاحية هذا الرمز. اطلب رمزًا جديدًا.';
 
   @override
-  String privacyRequestSentOn(String date) {
-    return 'أُرسل في $date';
+  String get whatsappErrorTooManyAttempts => 'أُدخلت رموز خاطئة كثيرة. اطلب رمزًا جديدًا.';
+
+  @override
+  String get whatsappErrorNoPendingCode => 'لا يوجد رمز بانتظار التأكيد. اطلب رمزًا جديدًا.';
+
+  @override
+  String get dischargeTitle => 'ملخص الخروج';
+
+  @override
+  String get dischargeListTitle => 'ملخصات الخروج';
+
+  @override
+  String get dischargeTileSubtitle => 'ملخص المستشفى والأدوية وعلامات الخطر';
+
+  @override
+  String get dischargeEmptyTitle => 'لا يوجد ملخص خروج بعد';
+
+  @override
+  String get dischargeEmptyMessage => 'يضيف المستشفى ملخص الخروج عند مغادرتك. سنرسل لك إشعارًا.';
+
+  @override
+  String dischargeVersion(int version) {
+    return 'الإصدار $version';
   }
 
   @override
-  String privacyRequestClosedOn(String date) {
-    return 'أُغلق في $date';
+  String get dischargeStatusDraft => 'مسودة';
+
+  @override
+  String get dischargeStatusFinal => 'نهائي';
+
+  @override
+  String get dischargeStatusSuperseded => 'إصدار أقدم';
+
+  @override
+  String get dischargeSupersededNote => 'يوجد إصدار أحدث من هذا الملخص. افتح القائمة لعرض الأحدث.';
+
+  @override
+  String dischargeFinalizedOn(String date) {
+    return 'اعتُمد في $date';
   }
 
   @override
-  String get privacyRequestYourRequest => 'طلبك';
-
-  @override
-  String get privacyRequestResolution => 'ردّنا';
-
-  @override
-  String get privacyRequestNoAnswerYet => 'لم نردّ بعد. ستتلقى إشعارًا عند الرد.';
-
-  @override
-  String get privacyNomineeTitle => 'الشخص المعيَّن';
-
-  @override
-  String get privacyNomineeSubtitleNone => 'اختر شخصًا يمارس حقوقك في البيانات إذا لم تتمكن من ذلك';
-
-  @override
-  String privacyNomineeSubtitleSet(String name, String relationship) {
-    return '$name ($relationship)';
+  String dischargeDischargedOn(String date) {
+    return 'تاريخ الخروج $date';
   }
 
   @override
-  String get privacyNomineeIntro =>
-      'بموجب قانون حماية البيانات الشخصية الرقمية في الهند، يمكنك تعيين شخص يمارس حقوقك في البيانات في حال وفاتك أو عجزك عن التصرف بنفسك. أدخل بريده الإلكتروني أو رقم هاتفه.';
+  String get dischargeRedFlagsTitle => 'اطلب المساعدة الطبية فورًا إذا لاحظت ما يلي:';
 
   @override
-  String get privacyNomineeName => 'الاسم الكامل';
+  String get dischargeRedFlagsEmergency => 'في حالة الطوارئ، اتصل أولًا برقم الطوارئ المحلي.';
 
   @override
-  String get privacyNomineeRelationship => 'صلة القرابة (مثل الزوج/الزوجة أو الابن)';
+  String get dischargeSectionDiagnosis => 'التشخيص';
 
   @override
-  String get privacyNomineeEmail => 'البريد الإلكتروني';
-
-  @override
-  String get privacyNomineePhone => 'الهاتف';
-
-  @override
-  String get privacyNomineeContactRequired => 'أدخل بريدًا إلكترونيًا أو رقم هاتف.';
-
-  @override
-  String get privacyNomineeTooShort => 'أدخل حرفين على الأقل.';
-
-  @override
-  String get privacyNomineeSave => 'حفظ الشخص المعيَّن';
-
-  @override
-  String get privacyNomineeSaved => 'تم حفظ الشخص المعيَّن';
-
-  @override
-  String get privacyNomineeRemove => 'إزالة الشخص المعيَّن';
-
-  @override
-  String get privacyNomineeRemoveConfirm => 'هل تريد إزالة الشخص المعيَّن؟ لن يتمكن بعد ذلك من التصرف نيابةً عنك.';
-
-  @override
-  String get privacyNomineeRemoved => 'تمت إزالة الشخص المعيَّن';
-
-  @override
-  String get privacyShareHospitalsTitle => 'مشاركة سجلاتي مع المستشفيات';
-
-  @override
-  String get privacyShareHospitalsOn => 'يمكن للمستشفيات التي تتواصل معها فتح التقارير التي تشاركها معها';
-
-  @override
-  String get privacyShareHospitalsOff => 'تم السحب: لا يمكن للمستشفيات فتح تقاريرك المشتركة';
-
-  @override
-  String get privacyShareHospitalsWithdrawTitle => 'إيقاف المشاركة مع المستشفيات؟';
-
-  @override
-  String get privacyShareHospitalsWithdrawBody =>
-      'لن تتمكن المستشفيات بعد الآن من فتح التقارير والمستندات التي شاركتها معها، لذا قد تتأخر عروض الأسعار والاستشارات حتى تشاركها مرة أخرى. لا يتأثر ما يلزم المستشفى قانونًا بالاحتفاظ به من سجلات.';
-
-  @override
-  String get privacyShareAgentTitle => 'مشاركة سجلاتي مع وكيلي';
-
-  @override
-  String get privacyShareAgentOn => 'يمكن لوكيلك أو الميسّر فتح مستنداتك';
-
-  @override
-  String get privacyShareAgentOff => 'لا يمكن لوكيلك أو الميسّر فتح مستنداتك';
-
-  @override
-  String get privacyShareAgentWithdrawTitle => 'إيقاف المشاركة مع وكيلك؟';
-
-  @override
-  String get privacyShareAgentWithdrawBody =>
-      'لن يتمكن وكيلك أو الميسّر بعد الآن من فتح مستنداتك. يمكنك مشاركتها مرة أخرى في أي وقت.';
-
-  @override
-  String get privacyShareWithdraw => 'إيقاف المشاركة';
-
-  @override
-  String get privacyShareUpdated => 'تم حفظ اختيارك بشأن المشاركة';
-
-  @override
-  String get privacyContactTitle => 'مسؤول التظلّمات ومسؤول حماية البيانات';
-
-  @override
-  String get privacyContactSubtitle => 'بمن تتواصل بشأن بياناتك الشخصية';
-
-  @override
-  String get privacyContactGrievance => 'مسؤول التظلّمات';
-
-  @override
-  String get privacyContactDpo => 'مسؤول حماية البيانات';
-
-  @override
-  String get privacyContactAddress => 'العنوان البريدي';
-
-  @override
-  String privacyContactResponse(int days) {
-    return 'نردّ على طلبات حقوق البيانات والتظلّمات خلال $days يومًا.';
+  String dischargeCode(String code) {
+    return 'الرمز: $code';
   }
 
   @override
-  String get privacyContactBoard => 'إذا لم تكن راضيًا عن ردّنا، يمكنك تقديم شكوى إلى مجلس حماية البيانات في الهند.';
+  String get dischargeSectionStay => 'الإقامة في المستشفى';
 
   @override
-  String get privacyContactBoardLink => 'موقع مجلس حماية البيانات';
+  String get dischargeAdmissionDate => 'تاريخ الدخول';
 
   @override
-  String get privacyContactNotPublished => 'لم تُنشر بيانات الاتصال بعد';
+  String get dischargeDischargeDate => 'تاريخ الخروج';
 
   @override
-  String get consultBookTitle => 'حجز استشارة بالفيديو';
+  String get dischargeSectionProcedure => 'الإجراء الطبي';
 
   @override
-  String get consultBookIntro =>
-      'تحدّث مع طبيب مختص عبر الفيديو قبل سفرك. يؤكّد المستشفى الموعد الدقيق ويرسل إليك رابط الفيديو.';
+  String get dischargeProcedureCode => 'رمز الإجراء';
 
   @override
-  String get consultDoctorSection => 'الطبيب';
+  String get dischargeProcedureDate => 'تاريخ الإجراء';
 
   @override
-  String consultNoTeleconsultDoctors(String hospital) {
-    return 'لا يقدّم أي طبيب في $hospital استشارات بالفيديو بعد. يمكنك طلب عرض سعر بدلًا من ذلك.';
+  String get dischargeDoctor => 'الطبيب المعالج';
+
+  @override
+  String get dischargeDoctorRegistration => 'رقم التسجيل';
+
+  @override
+  String get dischargeSectionHospitalCourse => 'العلاج في المستشفى';
+
+  @override
+  String get dischargeSectionMedications => 'الأدوية';
+
+  @override
+  String get dischargeNoMedications => 'لم توصف أي أدوية عند الخروج.';
+
+  @override
+  String dischargeMedicationDuration(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'لمدة $days يومًا',
+      few: 'لمدة $days أيام',
+      two: 'لمدة يومين',
+      one: 'لمدة يوم واحد',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get consultRequestQuoteInstead => 'طلب عرض سعر بدلًا من ذلك';
+  String get dischargeMedicationOngoing => 'مستمر';
 
   @override
-  String get consultDateSection => 'اليوم المفضّل';
-
-  @override
-  String get consultDateHint => 'الأيام الخضراء فيها أماكن متاحة للاستشارة.';
-
-  @override
-  String get consultTimeSection => 'الوقت المفضّل';
-
-  @override
-  String consultTimesLocal(String zone) {
-    return 'تُعرض الأوقات حسب منطقتك الزمنية ($zone).';
+  String dischargeReminderUntil(String date) {
+    return 'حتى $date';
   }
 
   @override
-  String get consultQuestionLabel => 'ماذا تودّ أن تسأل الطبيب؟';
+  String get dischargeSectionFollowUp => 'تعليمات المتابعة';
 
   @override
-  String get consultQuestionHint => 'أعراضك، والعلاج الذي تفكر فيه، وأسئلتك عن السفر والتعافي...';
+  String get dischargeSectionAllergies => 'الحساسية';
 
   @override
-  String get consultReportsSection => 'التقارير المراد مشاركتها';
+  String get dischargeSectionInvestigations => 'نتائج الفحوصات';
 
   @override
-  String get consultReportsHint => 'يمكن للطبيب قراءتها قبل المكالمة.';
+  String get dischargeSectionAttachments => 'المستندات المرفقة';
 
   @override
-  String consultReportsExistingCase(String caseNumber, String hospital) {
-    return 'تُضاف التقارير التي ترفعها هنا إلى حالتك $caseNumber لدى $hospital.';
+  String get dischargeDownloadPdf => 'تنزيل PDF';
+
+  @override
+  String get dischargeDownloadFhir => 'تنزيل ملف FHIR';
+
+  @override
+  String get dischargeFhirHint => 'ملف سجل طبي قياسي (HL7 FHIR) يمكن لأنظمة الأطباء استيراده.';
+
+  @override
+  String get dischargeConfidential => 'يحتوي هذا الملخص على معلومات طبية سرية. شاركه فقط مع أطباء تثق بهم.';
+
+  @override
+  String get dischargeShareWithDoctor => 'المشاركة مع طبيبي';
+
+  @override
+  String get dischargeShareIntro =>
+      'أرسل إلى طبيبك في بلدك رابطًا آمنًا لهذا الملخص. يمكنه فتحه دون حساب حتى تنتهي صلاحية الرابط.';
+
+  @override
+  String get dischargeShareDoctorEmail => 'البريد الإلكتروني للطبيب';
+
+  @override
+  String get dischargeShareDoctorEmailInvalid => 'أدخل عنوان بريد إلكتروني صحيحًا.';
+
+  @override
+  String get dischargeShareDoctorName => 'اسم الطبيب (اختياري)';
+
+  @override
+  String get dischargeShareDocuments => 'المستندات المرفقة بالمشاركة';
+
+  @override
+  String get dischargeShareDocumentsHint => 'يُرفق ملف PDF للملخص دائمًا.';
+
+  @override
+  String get dischargeShareFromHospital => 'من المستشفى';
+
+  @override
+  String get dischargeShareYourDocuments => 'مستنداتك';
+
+  @override
+  String get dischargeShareNoDocuments => 'لا توجد مستندات أخرى.';
+
+  @override
+  String get dischargeShareValidity => 'صلاحية الرابط';
+
+  @override
+  String dischargeShareDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days يومًا',
+      few: '$days أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get consultUpload => 'رفع تقرير';
+  String get dischargeShareLanguage => 'لغة البريد الإلكتروني';
 
   @override
-  String get consultFeeLabel => 'رسوم الاستشارة';
+  String get dischargeShareConsent =>
+      'أوافق على مشاركة ملخص الخروج هذا والمستندات المختارة مع هذا الطبيب. أفهم أن الطبيب يمكنه فتحها حتى تنتهي صلاحية الرابط، وأن كل مشاهدة تُسجَّل.';
 
   @override
-  String get consultFeeFree => 'مجانًا';
+  String get dischargeShareConsentRequired => 'يرجى وضع علامة في المربع للموافقة قبل المشاركة.';
 
   @override
-  String get consultFeePayNote => 'تدفع الرسوم بالبطاقة مباشرةً بعد إرسال الطلب، ثم يؤكّد المستشفى الموعد.';
+  String get dischargeShareSend => 'إرسال الرابط';
 
   @override
-  String get consultSubmit => 'طلب الاستشارة';
+  String get dischargeShareSentTitle => 'تم إرسال الرابط';
 
   @override
-  String get consultPickDoctor => 'اختر طبيبًا.';
-
-  @override
-  String get consultPickSlot => 'اختر يومًا ووقتًا.';
-
-  @override
-  String get consultRequestedSnack => 'تم طلب الاستشارة. سيؤكّد المستشفى الموعد.';
-
-  @override
-  String get consultErrorExists => 'لديك بالفعل استشارة مفتوحة مع هذا الطبيب. تجدها ضمن استشاراتي.';
-
-  @override
-  String get consultErrorUnavailable => 'لا يقدّم هذا الطبيب استشارات بالفيديو. يُرجى اختيار طبيب آخر.';
-
-  @override
-  String get consultErrorDoctorRequired => 'يُرجى اختيار طبيب للاستشارة.';
-
-  @override
-  String get consultErrorInvalidDoctor => 'لا يعمل هذا الطبيب في هذا المستشفى. يُرجى اختيار طبيب آخر.';
-
-  @override
-  String get consultMineTitle => 'استشاراتي';
-
-  @override
-  String get consultMineSubtitle => 'مكالمات فيديو مع الأطباء قبل العلاج وبعده';
-
-  @override
-  String get consultListEmpty => 'لا توجد استشارات بعد';
-
-  @override
-  String get consultListEmptyBody => 'احجز استشارة بالفيديو من صفحة الطبيب أو من المستشفيات المقترحة لك.';
-
-  @override
-  String get consultFindDoctor => 'ابحث عن طبيب';
-
-  @override
-  String get consultDetailTitle => 'الاستشارة';
-
-  @override
-  String consultWithDoctor(String doctor) {
-    return 'استشارة بالفيديو مع $doctor';
+  String dischargeShareSentBody(String email, String date) {
+    return 'أرسلنا رابطًا بالبريد الإلكتروني إلى $email. يعمل الرابط حتى $date.';
   }
 
   @override
-  String consultFollowupWith(String doctor) {
-    return 'متابعة ما بعد العلاج مع $doctor';
+  String get dischargeShareLinkOnce => 'يمكنك أيضًا نسخ الرابط الآن. لن يظهر إلا مرة واحدة.';
+
+  @override
+  String get dischargeShareCopy => 'نسخ الرابط';
+
+  @override
+  String get dischargeShareCopied => 'تم نسخ الرابط';
+
+  @override
+  String get dischargeSharesTitle => 'تمت المشاركة مع';
+
+  @override
+  String get dischargeSharesEmpty => 'لم تشارك هذا الملخص بعد.';
+
+  @override
+  String dischargeShareExpires(String date) {
+    return 'ينتهي في $date';
   }
 
   @override
-  String get consultDoctorTbc => 'طبيب المستشفى';
+  String get dischargeShareExpired => 'منتهي الصلاحية';
 
   @override
-  String consultScheduledAt(String when, int minutes) {
-    return 'الموعد: $when (المدة $minutes دقيقة)';
+  String get dischargeShareRevoked => 'ملغى';
+
+  @override
+  String dischargeShareViews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'فُتح $count مرة',
+      few: 'فُتح $count مرات',
+      two: 'فُتح مرتين',
+      one: 'فُتح مرة واحدة',
+      zero: 'لم يُفتح بعد',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get consultAwaitingTime => 'بانتظار تأكيد المستشفى للموعد.';
+  String get dischargeShareRevoke => 'إلغاء';
 
   @override
-  String consultPreferredTime(String when) {
-    return 'الموعد الذي طلبته: $when.';
+  String get dischargeShareRevokeTitle => 'هل تريد إلغاء هذا الرابط؟';
+
+  @override
+  String get dischargeShareRevokeBody => 'لن يتمكن الطبيب بعد الآن من فتح الملخص بهذا الرابط.';
+
+  @override
+  String get dischargeShareRevokedSnack => 'تم إلغاء الرابط';
+
+  @override
+  String get dischargeRemindersTitle => 'تذكيرات الأدوية';
+
+  @override
+  String get dischargeRemindersSwitch => 'تذكير يومي';
+
+  @override
+  String get dischargeRemindersHint =>
+      'إشعار واحد يوميًا طوال مدة أدويتك. اتبع دائمًا تعليمات طبيبك بشأن الجرعة والتوقيت.';
+
+  @override
+  String get dischargeRemindersTime => 'وقت التذكير';
+
+  @override
+  String get dischargeRemindersOn => 'تم تفعيل تذكيرات الأدوية.';
+
+  @override
+  String get dischargeRemindersOff => 'تم إيقاف تذكيرات الأدوية.';
+
+  @override
+  String get dischargeHpMoreSubtitle => 'كتابة ملخصات خروج المرضى واعتمادها وتحديثها';
+
+  @override
+  String get dischargeHpEmpty => 'لا يوجد ملخص خروج لهذا المريض بعد.';
+
+  @override
+  String get dischargeHpEmptyAll => 'لا توجد ملخصات خروج بعد.';
+
+  @override
+  String get dischargeHpStart => 'بدء ملخص الخروج';
+
+  @override
+  String get dischargeHpDraftExists => 'توجد مسودة بالفعل. جارٍ فتحها.';
+
+  @override
+  String get dischargeHpFinalExists => 'لهذه الحالة ملخص نهائي بالفعل. افتحه واختر \"تعديل كإصدار جديد\".';
+
+  @override
+  String get dischargeHpEditorTitle => 'تعديل ملخص الخروج';
+
+  @override
+  String get dischargeHpDoctorSection => 'الطبيب';
+
+  @override
+  String get dischargeHpChooseDoctor => 'اختر طبيبًا';
+
+  @override
+  String get dischargeHpDoctorName => 'اسم الطبيب';
+
+  @override
+  String get dischargeHpDoctorRegistration => 'رقم التسجيل الطبي';
+
+  @override
+  String get dischargeHpPickDate => 'اختر تاريخًا';
+
+  @override
+  String get dischargeHpDiagnosisCode => 'رمز ICD-10 (اختياري)';
+
+  @override
+  String get dischargeHpProcedureCode => 'رمز الإجراء (اختياري)';
+
+  @override
+  String get dischargeHpCodeInvalid => 'استخدم حروفًا أو أرقامًا أو نقاطًا أو شرطات (20 حدًا أقصى).';
+
+  @override
+  String get dischargeHpRequiredToFinalize => 'مطلوب للاعتماد';
+
+  @override
+  String get dischargeHpRedFlagsLabel => 'علامات الخطر';
+
+  @override
+  String get dischargeHpRedFlagsHint => 'أعراض تعني أن على المريض طلب المساعدة الطبية فورًا';
+
+  @override
+  String get dischargeHpAddMedication => 'إضافة دواء';
+
+  @override
+  String get dischargeHpEditMedication => 'تعديل الدواء';
+
+  @override
+  String get dischargeHpMedName => 'اسم الدواء';
+
+  @override
+  String get dischargeHpMedDose => 'الجرعة';
+
+  @override
+  String get dischargeHpMedFrequency => 'عدد المرات';
+
+  @override
+  String get dischargeHpMedDuration => 'عدد الأيام (فارغ = مستمر)';
+
+  @override
+  String get dischargeHpMedRoute => 'طريقة الإعطاء (مثل: بالفم)';
+
+  @override
+  String get dischargeHpMedInstructions => 'التعليمات';
+
+  @override
+  String get dischargeHpMedNameRequired => 'أدخل اسم الدواء.';
+
+  @override
+  String get dischargeHpMedDurationInvalid => 'أدخل عدد أيام من 1 إلى 3650.';
+
+  @override
+  String get dischargeHpAttachmentsHint => 'مستندات هذه الحالة لإرفاقها بالملخص.';
+
+  @override
+  String get dischargeHpNoDocuments => 'لا توجد مستندات في هذه الحالة بعد.';
+
+  @override
+  String get dischargeHpSaveDraft => 'حفظ المسودة';
+
+  @override
+  String get dischargeHpSaved => 'تم حفظ المسودة';
+
+  @override
+  String get dischargeHpFinalize => 'اعتماد';
+
+  @override
+  String get dischargeHpFinalizeTitle => 'هل تريد اعتماد هذا الملخص؟';
+
+  @override
+  String get dischargeHpFinalizeBody =>
+      'سيُقفل الملخص ويُنشأ ملف PDF ويُبلَّغ المريض. أي تعديل لاحق يُنشئ إصدارًا جديدًا.';
+
+  @override
+  String get dischargeHpFinalized => 'تم اعتماد الملخص وإرساله إلى المريض';
+
+  @override
+  String dischargeHpMissing(String fields) {
+    return 'املأ قبل الاعتماد: $fields';
   }
 
   @override
-  String get consultJoinVideo => 'الانضمام إلى مكالمة الفيديو';
+  String get dischargeHpDiscard => 'تجاهل المسودة';
 
   @override
-  String get consultJoinHint => 'يفتح غرفة الفيديو الخاصة في متصفحك أو في تطبيق Jitsi Meet.';
+  String get dischargeHpDiscardTitle => 'هل تريد تجاهل هذه المسودة؟';
 
   @override
-  String get consultLinkSoon => 'سيظهر رابط الفيديو هنا بعد أن يؤكّد المستشفى الموعد.';
+  String get dischargeHpDiscardBody => 'ستُحذف المسودة. لن تتأثر الإصدارات النهائية.';
 
   @override
-  String get consultReminderScheduled => 'سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+  String get dischargeHpDiscarded => 'تم تجاهل المسودة';
 
   @override
-  String get consultReminderPending => 'بعد تأكيد الموعد، سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+  String get dischargeHpNewVersion => 'تعديل كإصدار جديد';
 
   @override
-  String get consultPaid => 'مدفوع';
+  String get dischargeHpNewVersionTitle => 'هل تريد إنشاء إصدار جديد؟';
 
   @override
-  String get consultPaymentDue => 'بانتظار الدفع';
-
-  @override
-  String get consultPaymentPending => 'جارٍ تأكيد الدفع';
-
-  @override
-  String consultPayButton(String amount) {
-    return 'ادفع $amount';
+  String dischargeHpNewVersionBody(int version, int next) {
+    return 'يبقى الإصدار $version كما هو. تُحفظ تعديلاتك في مسودة جديدة، الإصدار $next، تعتمدها عندما تكون جاهزة.';
   }
 
   @override
-  String get consultPayTitle => 'دفع رسوم الاستشارة';
+  String get dischargeHpDatesInvalid => 'لا يمكن أن يكون تاريخ الخروج قبل تاريخ الدخول.';
 
   @override
-  String get consultPaySuccess => 'تم استلام الدفعة. شكرًا لك.';
-
-  @override
-  String get consultPayFailed => 'لم تتم عملية الدفع ولم يُخصم أي مبلغ. يمكنك المحاولة مرة أخرى.';
-
-  @override
-  String get consultPayPending => 'جارٍ تأكيد دفعتك. ستُحدَّث هذه الصفحة عند الانتهاء.';
-
-  @override
-  String get consultCancel => 'إلغاء الاستشارة';
-
-  @override
-  String get consultCancelConfirmTitle => 'إلغاء هذه الاستشارة؟';
-
-  @override
-  String get consultCancelConfirmBody => 'سيتم إبلاغ المستشفى. إذا كنت قد دفعت الرسوم، فسيتواصل معك فريقنا بشأنها.';
-
-  @override
-  String get consultKeep => 'الإبقاء عليها';
-
-  @override
-  String get consultCancelled => 'تم إلغاء الاستشارة';
-
-  @override
-  String consultOpenCase(String caseNumber) {
-    return 'فتح الحالة $caseNumber';
-  }
-
-  @override
-  String get consultNotesSection => 'ملاحظاتك';
-
-  @override
-  String get consultBookVideoButton => 'حجز استشارة بالفيديو';
-
-  @override
-  String get insuranceScreenTitle => 'التأمين والدفع لاحقًا';
-
-  @override
-  String get insuranceTabInsurance => 'التأمين';
-
-  @override
-  String get insuranceTabPayLater => 'الدفع لاحقًا';
-
-  @override
-  String get insuranceTabRequests => 'طلباتي';
-
-  @override
-  String get insuranceDisclaimer =>
-      'لا تبيع Heal India Global التأمين وليست وسيط تأمين. نعرض منتجات الشركاء للعلم فقط. شركة التأمين هي التي تحدد التغطية والسعر والشروط؛ اقرأ وثائق الوثيقة قبل الشراء.';
-
-  @override
-  String get financingDisclaimer =>
-      'لا تُقرض Heal India Global المال ولا تتخذ قرارات ائتمانية. خطط الدفع لاحقًا والقروض يقدمها الشريك وفق شروطه وبعد إجراء فحوصاته الخاصة. خطط التقسيط الخاصة بنا بدون فوائد ويجب سدادها بالكامل قبل موعد علاجك.';
-
-  @override
-  String get financingPartnerDecides =>
-      'يتحقق الشريك من أهليتك ويتخذ القرار على موقعه الخاص ووفق شروطه. لا تتخذ Heal India Global أي قرار ائتماني.';
-
-  @override
-  String insuranceCountryFor(String country) {
-    return 'الخيارات المتاحة في: $country';
-  }
-
-  @override
-  String get insuranceCountryAll => 'الخيارات لجميع الدول';
-
-  @override
-  String get insuranceCountryPick => 'اختر بلدك';
-
-  @override
-  String get insuranceEmptyTitle => 'لا توجد خيارات تأمين بعد';
-
-  @override
-  String get insuranceEmptyBody => 'لا يوجد لدينا حاليًا تأمين من شركاء لهذا البلد. تحقق لاحقًا أو اسأل فريقنا.';
-
-  @override
-  String get financingEmptyTitle => 'لا يوجد شركاء للدفع لاحقًا بعد';
-
-  @override
-  String get financingEmptyBody =>
-      'لا يوجد حاليًا شريك للدفع لاحقًا لهذا البلد. لا تزال خطة التقسيط بدون فوائد متاحة عند الحجز.';
-
-  @override
-  String get insuranceCategoryMedicalTravel => 'تأمين السفر العلاجي';
-
-  @override
-  String get insuranceCategoryComplication => 'تغطية المضاعفات';
-
-  @override
-  String get insuranceCategoryHealth => 'تأمين صحي';
-
-  @override
-  String get insuranceCategoryOther => 'تغطية أخرى';
-
-  @override
-  String get insuranceEligibleAll => 'متاح في جميع الدول';
-
-  @override
-  String insuranceEligibleCountries(String countries) {
-    return 'متاح في: $countries';
-  }
-
-  @override
-  String get insuranceNotInYourCountry => 'لا يذكر هذا الشريك بلدك.';
-
-  @override
-  String insurancePriceIndicative(String price) {
-    return 'سعر تقريبي: $price';
-  }
-
-  @override
-  String get insurancePriceOnRequest => 'السعر عند الطلب من الشريك';
-
-  @override
-  String get insuranceRequestQuote => 'اطلب عرض سعر من شركة التأمين';
-
-  @override
-  String get insuranceVisitWebsite => 'موقع الشريك';
-
-  @override
-  String get insuranceCouldNotOpen => 'تعذر فتح موقع الشريك.';
-
-  @override
-  String get financingCheckEligibility => 'تحقق من الأهلية';
-
-  @override
-  String get insuranceFormTitle => 'اطلب عرض سعر من شركة التأمين';
-
-  @override
-  String get financingFormTitle => 'تحقق من أهليتك';
-
-  @override
-  String insuranceFormIntro(String provider) {
-    return 'نرسل بيانات الاتصال الخاصة بك إلى $provider. سيتواصل معك مباشرة بعرض سعر.';
-  }
-
-  @override
-  String financingFormIntro(String provider) {
-    return 'نرسل بيانات الاتصال الخاصة بك إلى $provider. سيتحقق من أهليتك ويتواصل معك مباشرة.';
-  }
-
-  @override
-  String get insuranceFieldName => 'اسمك';
-
-  @override
-  String get insuranceFieldEmail => 'البريد الإلكتروني';
-
-  @override
-  String get insuranceFieldPhone => 'الهاتف (مع رمز الدولة)';
-
-  @override
-  String get insuranceNameRequired => 'أدخل اسمك.';
-
-  @override
-  String get insuranceEmailInvalid => 'أدخل بريدًا إلكترونيًا صحيحًا.';
-
-  @override
-  String get insuranceContactRequired => 'أدخل بريدًا إلكترونيًا أو رقم هاتف.';
-
-  @override
-  String get insurancePreferredContact => 'كيف تفضل أن يتواصلوا معك؟';
-
-  @override
-  String get insuranceContactEmail => 'البريد الإلكتروني';
-
-  @override
-  String get insuranceContactPhone => 'الهاتف';
-
-  @override
-  String get insuranceContactWhatsapp => 'واتساب';
-
-  @override
-  String get insuranceFieldCountry => 'بلد الإقامة';
-
-  @override
-  String get insuranceFieldCountryNotSet => 'غير محدد';
-
-  @override
-  String get insuranceFieldMessage => 'رسالة (اختياري)';
-
-  @override
-  String get insuranceMessageHint => 'لا تذكر أي معلومات طبية.';
-
-  @override
-  String insuranceConsentText(String provider) {
-    return 'أوافق على أن تشارك Heal India Global اسمي وبيانات الاتصال الخاصة بي مع $provider ليتمكن من التواصل معي بشأن هذا الطلب. لا تتم مشاركة أي معلومات طبية.';
-  }
-
-  @override
-  String get insuranceConsentRequired => 'ضع علامة في المربع للموافقة قبل إرسال الطلب.';
-
-  @override
-  String get insuranceLinkedToBooking => 'هذا الطلب مرتبط بملف علاجك.';
-
-  @override
-  String get insuranceSend => 'إرسال الطلب';
-
-  @override
-  String get insuranceSentTitle => 'تم إرسال الطلب';
-
-  @override
-  String insuranceSentBody(String provider) {
-    return 'سيتواصل معك $provider. يمكنك متابعة هذا الطلب في «طلباتي».';
-  }
-
-  @override
-  String get insuranceContinueOnPartner => 'المتابعة على موقع الشريك';
-
-  @override
-  String get insuranceErrorConsentRequired => 'يُرجى الموافقة أولًا على مشاركة بيانات الاتصال الخاصة بك.';
-
-  @override
-  String get insuranceErrorCountryNotEligible => 'لا يخدم هذا الشريك بلدك. اختر خيارًا آخر أو غيّر البلد.';
-
-  @override
-  String get insuranceErrorDuplicate => 'لديك بالفعل طلب مفتوح لدى هذا الشريك.';
-
-  @override
-  String get insuranceErrorNotFound => 'لم يعد هذا الخيار متاحًا. حدّث القائمة.';
-
-  @override
-  String get insuranceErrorNotOpen => 'تم إغلاق هذا الطلب بالفعل.';
-
-  @override
-  String get insuranceRequestsEmptyTitle => 'لا توجد طلبات بعد';
-
-  @override
-  String get insuranceRequestsEmptyBody =>
-      'تظهر هنا طلبات عروض الأسعار وطلبات التحقق من الأهلية التي ترسلها إلى الشركاء.';
-
-  @override
-  String get insuranceKindQuote => 'عرض سعر تأمين';
-
-  @override
-  String get financingKindEligibility => 'أهلية الدفع لاحقًا';
-
-  @override
-  String get insuranceStatusNew => 'مُرسل';
-
-  @override
-  String get insuranceStatusInProgress => 'قيد المعالجة';
-
-  @override
-  String get insuranceStatusShared => 'أُرسل إلى الشريك';
-
-  @override
-  String get insuranceStatusClosed => 'مغلق';
-
-  @override
-  String get insuranceStatusCancelled => 'مسحوب';
-
-  @override
-  String insuranceStatusSemantics(String status) {
-    return 'الحالة: $status';
-  }
-
-  @override
-  String insuranceRequestSentOn(String date) {
-    return 'أُرسل في $date';
-  }
-
-  @override
-  String get insuranceWithdraw => 'سحب';
-
-  @override
-  String get insuranceWithdrawTitle => 'هل تريد سحب هذا الطلب؟';
-
-  @override
-  String insuranceWithdrawBody(String provider) {
-    return 'يؤدي هذا أيضًا إلى سحب موافقتك على مشاركة بيانات الاتصال الخاصة بك مع $provider. إذا كان قد تلقى بياناتك بالفعل، فاطلب منه مباشرة حذفها.';
-  }
-
-  @override
-  String get insuranceWithdrawn => 'تم سحب الطلب.';
-
-  @override
-  String get insuranceProfileGroup => 'التأمين والمدفوعات';
-
-  @override
-  String get insuranceProfileTile => 'التأمين والدفع لاحقًا';
-
-  @override
-  String get insuranceProfileTileSubtitle => 'تأمين الشركاء وخيارات الدفع لاحقًا وطلباتك';
-
-  @override
-  String get insuranceBookCardTitle => 'خيارات التأمين';
-
-  @override
-  String get insuranceBookCardBody =>
-      'قارن تأمين الشركاء لرحلتك وعلاجك. نحن لا نبيع التأمين؛ شركة التأمين هي التي تحدد التغطية والسعر.';
-
-  @override
-  String get insuranceBookCardAction => 'عرض خيارات التأمين';
-
-  @override
-  String get financingInstallmentsSubtitle => 'بدون فوائد، وتُسدَّد قبل دخولك المستشفى';
-
-  @override
-  String get financingPickDateFirst => 'اختر تاريخ الدخول لعرض جدول الأقساط.';
-
-  @override
-  String get financingInstallmentsUnavailable =>
-      'التقسيط غير ممكن لتاريخ الدخول هذا: يجب سداد الأقساط قبل علاجك. ادفع المبلغ كاملًا أو ادفع العربون أو اختر تاريخًا لاحقًا.';
-
-  @override
-  String financingInterestFreeNote(String date) {
-    return 'بدون فوائد. يستحق القسط الأخير قبل دخولك المستشفى في $date.';
-  }
-
-  @override
-  String financingScheduleItem(int seq, String date) {
-    return 'القسط $seq، يستحق في $date';
-  }
-
-  @override
-  String get financingScheduleEstimate => 'مبالغ تقديرية قبل الرسوم. يُحدَّد الجدول النهائي عند الحجز.';
-
-  @override
-  String get financingSeePartners => 'تحتاج إلى مدة أطول للدفع؟ اطّلع على شركاء الدفع لاحقًا';
-
-  @override
-  String get financingInstallmentsPastTreatment =>
-      'يجب سداد الأقساط بالكامل قبل تاريخ دخولك المستشفى. اختر عددًا أقل من الأشهر أو ادفع العربون أو اختر تاريخًا لاحقًا.';
+  String get dischargeHpLockedNote => 'الملخصات النهائية مقفلة. لتغيير هذا الملخص، أنشئ إصدارًا جديدًا.';
 }
