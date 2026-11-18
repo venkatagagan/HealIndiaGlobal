@@ -85,22 +85,39 @@ class Detection:
     def emergency(self) -> bool:
         return bool(self.families)
 
-    def red_flags(self, limit: int = 8) -> list[str]:
+    def red_flags(self, limit: int = 8, locale: str | None = None) -> list[str]:
         """Human-readable labels: a single decisive signal is named directly, a combination is named by its
-        family with the findings that triggered it."""
+        family with the findings that triggered it. ``locale`` gives the patient's-language version (labels
+        from the shipped content translations, English where missing), in the same order."""
+        from app.i18n import t
+        from app.i18n.content import localize_text
+
+        english = locale in (None, "en")
+
+        def label(text: str) -> str:
+            return text if english else (localize_text(text, locale) or text)
+
         out: list[str] = []
         for family, rules in self.families:
             combined: list[str] = []
             for rule in rules:
                 if len(rule) == 1:
-                    text = signal_label(rule[0])
+                    text = label(signal_label(rule[0]))
                     if text not in out:
                         out.append(text)
                     continue
                 combined.extend(s for s in rule if s not in combined)
             if combined:
-                findings = ", ".join(signal_label(s).lower() for s in combined[:5])
-                text = f"{family.label}: {findings}"
+                findings = ", ".join(label(signal_label(s)).lower() for s in combined[:5])
+                if english:
+                    text = f"{family.label}: {findings}"
+                else:
+                    text = t(
+                        "screening.rules.red_flag_family",
+                        locale,
+                        family=label(family.label),
+                        findings=findings,
+                    )
                 if text not in out:
                     out.append(text)
         return out[:limit]

@@ -79,6 +79,50 @@ class RecommendedProcedure(BaseModel):
         return _clip(v, 1000)
 
 
+class LocalizedCondition(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = ""
+    notes: str = ""
+
+    @field_validator("name", "notes", mode="before")
+    @classmethod
+    def _clip_text(cls, v: Any) -> Any:
+        return _clip(v, 1000)
+
+
+class PatientLocalized(BaseModel):
+    """The patient-facing parts of a result in the patient's language (E7). Lists are parallel to the English
+    ones (same order and length); the English result stays canonical for hospitals, agents and staff."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    language: str = "en"
+    possible_conditions: list[LocalizedCondition] = Field(default_factory=list)
+    red_flags: list[str] = Field(default_factory=list)
+    recommended_tests: list[str] = Field(default_factory=list)
+    questions_for_doctor: list[str] = Field(default_factory=list)
+    travel_advice: str = ""
+    disclaimer: str = ""
+
+    @field_validator("travel_advice", "disclaimer", mode="before")
+    @classmethod
+    def _clip_long(cls, v: Any) -> Any:
+        return _clip(v, MAX_TEXT)
+
+    @field_validator("red_flags", "recommended_tests", "questions_for_doctor", mode="before")
+    @classmethod
+    def _clip_list(cls, v: Any) -> Any:
+        if isinstance(v, list):
+            return [str(x).strip()[:300] for x in v if str(x).strip()][:MAX_ITEMS]
+        return v
+
+    @field_validator("possible_conditions", mode="after")
+    @classmethod
+    def _limit(cls, v: list[Any]) -> list[Any]:
+        return v[:MAX_ITEMS]
+
+
 class TriageResult(BaseModel):
     """Stored in ``screenings.ai_result`` and returned in ``ScreeningOut.ai_result``."""
 
@@ -103,6 +147,10 @@ class TriageResult(BaseModel):
     summary_localized: str = ""
     #: API responses only: the English summary (hospitals/agents/staff read ``summary`` = this)
     summary_en: str | None = None
+    #: stored: condition notes, red flags, tests, questions, travel advice and disclaimer in the patient's
+    #: language (Claude's ``patient_localized`` block, or the rules engine's translated templates); ``None``
+    #: for English patients. Patients get these fields swapped in; nobody else sees the block.
+    patient_localized: PatientLocalized | None = None
 
     @field_validator("summary", "travel_advice", "disclaimer", "summary_localized", mode="before")
     @classmethod
@@ -124,6 +172,38 @@ class TriageResult(BaseModel):
 
 def _str_array() -> dict[str, Any]:
     return {"type": "array", "items": {"type": "string"}}
+
+
+#: JSON schema of the localized block requested from Claude for a non-English patient (``language`` is set by
+#: the server).
+PATIENT_LOCALIZED_JSON_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": [
+        "possible_conditions",
+        "red_flags",
+        "recommended_tests",
+        "questions_for_doctor",
+        "travel_advice",
+        "disclaimer",
+    ],
+    "properties": {
+        "possible_conditions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["name", "notes"],
+                "properties": {"name": {"type": "string"}, "notes": {"type": "string"}},
+            },
+        },
+        "red_flags": {"type": "array", "items": {"type": "string"}},
+        "recommended_tests": {"type": "array", "items": {"type": "string"}},
+        "questions_for_doctor": {"type": "array", "items": {"type": "string"}},
+        "travel_advice": {"type": "string"},
+        "disclaimer": {"type": "string"},
+    },
+}
 
 
 TRIAGE_JSON_SCHEMA: dict[str, Any] = {

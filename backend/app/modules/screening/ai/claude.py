@@ -27,8 +27,10 @@ from app.core.enums import AIRequestStatus
 from app.i18n import language_name, normalize_locale
 from app.modules.screening.ai.prompts import build_system_prompt, build_user_text
 from app.modules.screening.ai.schema import (
+    PATIENT_LOCALIZED_JSON_SCHEMA,
     TRIAGE_JSON_SCHEMA,
     CatalogSnapshot,
+    PatientLocalized,
     TriageResult,
     sanitize_result,
 )
@@ -130,8 +132,9 @@ def _schema_for(language: str) -> dict[str, Any]:
     if language == "en":
         return TRIAGE_JSON_SCHEMA
     schema = copy.deepcopy(TRIAGE_JSON_SCHEMA)
-    schema["required"].append("summary_localized")
+    schema["required"] += ["summary_localized", "patient_localized"]
     schema["properties"]["summary_localized"] = {"type": "string"}
+    schema["properties"]["patient_localized"] = copy.deepcopy(PATIENT_LOCALIZED_JSON_SCHEMA)
     return schema
 
 
@@ -141,8 +144,24 @@ def _language_note(language: str) -> str:
     name = language_name(language)
     return (
         f"\n\nThe patient's language is {name} ({language}). Write every field in English as usual, and also "
-        f"write summary_localized: the same summary in {name}, in plain, calm words for a non-medical reader."
+        f"write summary_localized: the same summary in {name}, in plain, calm words for a non-medical "
+        f"reader; and patient_localized: possible_conditions (name and notes, same order and number as in "
+        f"English), red_flags, recommended_tests and questions_for_doctor (same order and number), "
+        f"travel_advice and disclaimer, each a faithful {name} translation of the English field for the "
+        f"patient. Never soften a warning or urgent advice in translation."
     )
+
+
+def _patient_block(value: Any, language: str) -> PatientLocalized | None:
+    """The localized block when it is well-formed; a malformed one is dropped (the patient then reads the
+    English fields) rather than failing the whole screening."""
+    if language == "en" or not isinstance(value, dict):
+        return None
+    try:
+        return PatientLocalized.model_validate({**value, "language": language})
+    except ValidationError:
+        logger.warning("screening_ai_localized_block_invalid", language=language)
+        return None
 
 
 def build_request(
@@ -273,6 +292,7 @@ async def triage_with_claude(
         for server_field in ("engine", "summary_language", "summary_en"):
             data.pop(server_field, None)
         localized = str(data.pop("summary_localized", "") or "").strip() if language != "en" else ""
+        patient_block = data.pop("patient_localized", None)
         data.update(
             {
                 "engine": "claude",
@@ -281,6 +301,7 @@ async def triage_with_claude(
             }
         )
         result = TriageResult.model_validate(data)
+        result = result.model_copy(update={"patient_localized": _patient_block(patient_block, language)})
     except (ValueError, ValidationError) as exc:
         detail = _safe_error(exc)
         logger.warning("screening_ai_invalid_output", error=detail, stop_reason=response.stop_reason)
