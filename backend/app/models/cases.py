@@ -338,6 +338,8 @@ class AftercareCheckin(UUIDPkMixin, TimestampMixin, Base):
     answers: Mapped[dict[str, Any]] = json_obj_col()
     free_text: Mapped[str | None] = mapped_column(EncryptedString())
     red_flags: Mapped[list[str]] = json_list_col()
+    # set when the "check-in due" reminder was sent (one reminder per check-in)
+    reminder_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ChecklistItem(UUIDPkMixin, TimestampMixin, Base):
