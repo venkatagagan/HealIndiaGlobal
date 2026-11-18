@@ -51,6 +51,8 @@ from app.core.errors import BadRequest, Conflict, Forbidden, NotFound, Unauthori
 from app.core.events import publish
 from app.core.ids import uuid7
 from app.core.jobs import enqueue
+from app.core.rate_limit import count as rate_limit_count
+from app.core.rate_limit import peek as rate_limit_peek
 from app.core.security import (
     create_access_token,
     hash_password,
@@ -110,8 +112,15 @@ STAFF_REFRESH_COOKIE_PATH = "/api/v1/auth/staff"
 TERMS_VERSION = "2026-10"
 AGREEMENT_VERSION = "2026-10"
 AGE_ATTESTATION_VERSION = "2026-11"
-LOCKOUT_THRESHOLD = 5
+# SEC-017: failed sign-ins are first throttled per (account, client IP): after LOGIN_PAIR_THRESHOLD failures
+# in a LOCKOUT_MINUTES window that IP cannot sign in to that account until the window ends, but the owner can
+# still sign in from anywhere else. Throttled attempts are not counted further, so one IP cannot lock the
+# account. Only distributed failures (LOCKOUT_THRESHOLD within one window, i.e. several IPs) lock the
+# account itself for LOCKOUT_MINUTES.
+LOGIN_PAIR_THRESHOLD = 5
+LOCKOUT_THRESHOLD = 20
 LOCKOUT_MINUTES = 15
+LOGIN_WINDOW_SECONDS = LOCKOUT_MINUTES * 60
 VERIFY_EMAIL_TTL_HOURS = 48
 RESET_PASSWORD_TTL_MINUTES = 60
 MFA_ENROLMENT_TTL_HOURS = 24
@@ -624,19 +633,47 @@ async def register(db: AsyncSession, body: RegisterIn, request: Request) -> Issu
 
 
 # --- login -----------------------------------------------------------------------------------------------
+def _login_pair(user: User, request: Request) -> str:
+    return f"{user.id}:{get_client_ip(request) or 'unknown'}"
+
+
+async def _pair_throttle_seconds(user: User, request: Request) -> int:
+    """Seconds this (account, client IP) pair stays throttled (0 = not throttled). SEC-017."""
+    failures, retry_after = await rate_limit_peek(
+        "auth.login_fail_pair", _login_pair(user, request), LOGIN_WINDOW_SECONDS
+    )
+    return retry_after if failures >= LOGIN_PAIR_THRESHOLD else 0
+
+
+def _raise_throttled(retry_after: int) -> None:
+    raise Forbidden(
+        "Too many failed sign-in attempts from this network. Try again later.",
+        code="login_throttled",
+        details={"retry_after_seconds": retry_after},
+        headers={"Retry-After": str(max(1, retry_after))},
+    )
+
+
 async def _register_failure(db: AsyncSession, user: User, request: Request, reason: str) -> datetime | None:
-    """Count a failed attempt atomically; lock the account at the threshold. Commits."""
-    count = (
-        await db.execute(
-            update(User)
-            .where(User.id == user.id)
-            .values(failed_login_count=User.failed_login_count + 1)
-            .returning(User.failed_login_count)
-            .execution_options(synchronize_session=False)
+    """Count a failed attempt for the (account, IP) pair and - while that pair is not throttled - toward
+    the account-wide window; lock the account when the distributed threshold is reached (SEC-017).
+    ``failed_login_count`` keeps the running total since the last success (shown to staff). Commits."""
+    pair_count, _ = await rate_limit_count(
+        "auth.login_fail_pair", _login_pair(user, request), LOGIN_WINDOW_SECONDS
+    )
+    account_count = 0
+    if pair_count <= LOGIN_PAIR_THRESHOLD:
+        account_count, _ = await rate_limit_count(
+            "auth.login_fail_account", str(user.id), LOGIN_WINDOW_SECONDS
         )
-    ).scalar_one()
+    await db.execute(
+        update(User)
+        .where(User.id == user.id)
+        .values(failed_login_count=User.failed_login_count + 1)
+        .execution_options(synchronize_session=False)
+    )
     locked: datetime | None = None
-    if count >= LOCKOUT_THRESHOLD:
+    if account_count >= LOCKOUT_THRESHOLD:
         locked = utcnow() + timedelta(minutes=LOCKOUT_MINUTES)
         await db.execute(
             update(User)
@@ -651,7 +688,11 @@ async def _register_failure(db: AsyncSession, user: User, request: Request, reas
         action="auth.login_failed",
         entity_type="user",
         entity_id=user.id,
-        after={"reason": reason, "locked": locked is not None},
+        after={
+            "reason": reason,
+            "locked": locked is not None,
+            "ip_throttled": pair_count >= LOGIN_PAIR_THRESHOLD,
+        },
         request=request,
     )
     if locked is not None:
@@ -700,6 +741,12 @@ async def _password_or_fail(db: AsyncSession, user: User, password: str, request
     if locked is not None:
         if password_ok:
             _raise_locked(locked)
+        raise _generic_login_failure()
+    throttled = await _pair_throttle_seconds(user, request)
+    if throttled:
+        # SEC-017: this IP is throttled for this account only; not counted again (one IP cannot lock it)
+        if password_ok:
+            _raise_throttled(throttled)
         raise _generic_login_failure()
     if not password_ok:
         await _register_failure(db, user, request, "invalid_password")

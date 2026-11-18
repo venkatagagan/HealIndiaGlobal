@@ -192,21 +192,63 @@ async def test_login_success_and_failures(client, make_user) -> None:
     assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
 
 
-async def test_login_lockout_after_five_failures(client, db, make_user) -> None:
+async def _login_from(client, ip: str, email: str, password: str = PASSWORD):
+    return await client.post(
+        f"{API}/auth/login",
+        json={"email": email, "password": password},
+        headers={**MOBILE, "CloudFront-Viewer-Address": f"{ip}:443"},
+    )
+
+
+async def test_failed_logins_from_one_ip_do_not_lock_the_owner_out(
+    client, db, make_user, monkeypatch
+) -> None:
+    """SEC-017: failures are throttled per (account, IP); the owner still signs in from elsewhere."""
+    monkeypatch.setattr(settings, "TRUST_CLOUDFRONT_VIEWER_ADDRESS", True)
+    user = await make_user(role="patient", email="target@example.test", password=PASSWORD)
+    user_id = user.id
+    attacker, owner = "203.0.113.7", "198.51.100.20"
+    for _ in range(auth_service.LOGIN_PAIR_THRESHOLD + 10):
+        r = await _login_from(client, attacker, "target@example.test", "WrongPassword1")
+        # no oracle: the throttle is not revealed to someone who does not know the password
+        assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
+    # the right password from the throttled IP is refused, and only then is the throttle shown
+    r = await _login_from(client, attacker, "target@example.test")
+    assert r.status_code == 403 and r.json()["error"]["code"] == "login_throttled"
+    assert int(r.headers["retry-after"]) > 0
+    # the owner, from another network, is not locked out
+    r = await _login_from(client, owner, "target@example.test")
+    assert r.status_code == 200, r.text
+    db.expire_all()
+    row = await db.get(User, user_id)
+    assert row is not None and row.locked_until is None
+    actions = (
+        (await db.execute(select(AuditLog.action).where(AuditLog.entity_id == str(user_id)))).scalars().all()
+    )
+    # throttled attempts are not counted (nor audited as failures) any more
+    assert actions.count("auth.login_failed") == auth_service.LOGIN_PAIR_THRESHOLD
+    assert "auth.account_locked" not in actions
+
+
+async def test_login_lockout_after_distributed_failures(client, db, make_user, monkeypatch) -> None:
+    monkeypatch.setattr(settings, "TRUST_CLOUDFRONT_VIEWER_ADDRESS", True)
     user = await make_user(role="patient", email="lock.me@example.test", password=PASSWORD)
     user_id = user.id
     # SEC-017: a session opened before the lock survives it
     session = (await login(client, "lock.me@example.test")).json()
     live_headers = {"Authorization": f"Bearer {session['access_token']}"}
-    for _ in range(5):
-        r = await login(client, "lock.me@example.test", "WrongPassword1")
-        # the lock is not revealed to someone who does not know the password (no existence oracle)
-        assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
-    r = await login(client, "lock.me@example.test", "WrongPassword1")
+    per_ip = auth_service.LOGIN_PAIR_THRESHOLD
+    ips = [f"192.0.2.{n}" for n in range(1, auth_service.LOCKOUT_THRESHOLD // per_ip + 1)]
+    for ip in ips:
+        for _ in range(per_ip):
+            r = await _login_from(client, ip, "lock.me@example.test", "WrongPassword1")
+            # the lock is not revealed to someone who does not know the password (no existence oracle)
+            assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
+    r = await _login_from(client, "192.0.2.200", "lock.me@example.test", "WrongPassword1")
     assert r.status_code == 401 and r.json()["error"]["code"] == "invalid_credentials"
 
-    # The right password is refused while locked, and only then is the lock shown.
-    r = await login(client, "lock.me@example.test")
+    # The right password is refused while locked (from any network), and only then is the lock shown.
+    r = await _login_from(client, "192.0.2.201", "lock.me@example.test")
     assert r.status_code == 403 and r.json()["error"]["code"] == "account_locked"
     assert int(r.headers["retry-after"]) > 0
     assert (await client.get(f"{API}/auth/me", headers=live_headers)).status_code == 200
@@ -218,7 +260,8 @@ async def test_login_lockout_after_five_failures(client, db, make_user) -> None:
     actions = (
         (await db.execute(select(AuditLog.action).where(AuditLog.entity_id == str(user_id)))).scalars().all()
     )
-    assert actions.count("auth.login_failed") == 5 and "auth.account_locked" in actions
+    assert actions.count("auth.login_failed") == auth_service.LOCKOUT_THRESHOLD
+    assert "auth.account_locked" in actions
 
     # After the lock expires the account works again and the counter is reset.
     locked.locked_until = datetime.now(UTC) - timedelta(seconds=1)

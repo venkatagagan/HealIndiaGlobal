@@ -508,6 +508,7 @@
     "service_unavailable": "The service is temporarily unavailable. Please try again later.",
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
-    "default_language_required": "English is the default language and cannot be switched off."
+    "default_language_required": "English is the default language and cannot be switched off.",
+    "login_throttled": "Too many failed sign-in attempts from this network. Try again later."
   }
 }
