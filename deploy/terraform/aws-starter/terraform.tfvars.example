@@ -1,0 +1,89 @@
+# Heal India Global - AWS starter (one EC2 box + RDS, ~USD 150/month). Copy to terraform.tfvars and adjust.
+# NEVER put secrets here: application secrets are generated on the box or set with deploy/starter/set-secret.sh.
+#
+#   terraform init && terraform apply
+#
+# Runbook: deploy/starter/README.md
+
+project     = "hig"
+environment = "production"
+aws_region  = "us-east-2" # US East (Ohio): all personal data
+dr_region   = "us-west-2" # US West (Oregon): backup copies
+
+tags = {
+  Owner = "heal-india-global"
+}
+
+# ---- Domain / DNS ----------------------------------------------------------------------------------
+# The healindiaglobal.ai hosted zone already exists in Route 53: it is looked up by name.
+domain_name             = "healindiaglobal.ai"
+manage_dns              = true
+create_hosted_zone      = false
+route53_zone_id         = ""    # optional: pin the zone id instead of the name lookup
+staff_console_subdomain = "ops" # staff console: https://ops.healindiaglobal.ai/gahi/
+# No fixed office IPs yet: the console is protected by its own origin + MFA. To add an allow-list later:
+# allowed_staff_cidrs = ["203.0.113.0/24"]
+allowed_staff_cidrs = []
+
+# ---- Alerts / cost ---------------------------------------------------------------------------------
+alert_email         = "contact@healindiaglobal.ai" # confirm the two SNS subscription e-mails
+monthly_budget_usd  = 150
+log_retention_days  = 30
+ship_container_logs = true
+
+# ---- Box ------------------------------------------------------------------------------------------
+instance_type  = "t4g.large" # 2 vCPU / 8 GiB Graviton
+root_volume_gb = 60
+swap_gb        = 4
+
+# ---- Database --------------------------------------------------------------------------------------
+rds_instance_class        = "db.t4g.small"
+rds_allocated_storage     = 50
+rds_max_allocated_storage = 200
+rds_backup_retention_days = 7
+rds_deletion_protection   = true
+# First deploy needs these permissions; set false and apply again once the site is up (runbook step 9).
+bootstrap_mode = true
+
+# ---- Backups ---------------------------------------------------------------------------------------
+backup_daily_retention_days  = 7
+backup_weekly_retention_days = 28
+backup_documents_bucket      = true
+
+# ---- Email (SES) / SMS (SNS) ------------------------------------------------------------------------
+email_from          = "Heal India Global <no-reply@healindiaglobal.ai>"
+mail_from_subdomain = "mail"
+create_dmarc_record = true # false if healindiaglobal.ai already has a _dmarc record
+dmarc_policy        = "quarantine"
+
+enable_sms                  = true
+sms_monthly_spend_limit_usd = 1  # raise the account SMS quota with AWS Support first
+sms_origination_number      = "" # e.g. "+18885550100" (toll-free, registered) - needed for US numbers
+sms_sender_id               = ""
+sms_allowed_country_codes   = [] # e.g. ["1", "44", "234", "254", "971"] - TODO-BUSINESS: target markets
+
+# ---- Application -----------------------------------------------------------------------------------
+payment_gateways  = ["razorpay", "bank_transfer"]
+ai_enabled        = true
+ai_model          = "claude-opus-5-5"
+ai_effort         = "medium"
+whisper_model     = "small"
+web_concurrency   = 3
+google_client_ids = [] # public OAuth client ids (web first)
+apple_client_ids  = []
+apple_team_id     = ""
+apple_key_id      = ""
+fcm_project_id    = ""
+
+extra_app_environment = {
+  # Published privacy contacts (GET /site-config/privacy-contact). TODO-BUSINESS: fill before launch.
+  # GRIEVANCE_OFFICER_NAME  = ""
+  # GRIEVANCE_OFFICER_EMAIL = "contact@healindiaglobal.ai"
+  # DPO_EMAIL               = "contact@healindiaglobal.ai"
+  # PRIVACY_POSTAL_ADDRESS  = ""
+}
+
+# ---- CI/CD -----------------------------------------------------------------------------------------
+github_repository           = "venkatagagan/HealIndiaGlobal"
+github_deploy_branch        = "main"
+create_github_oidc_provider = true
