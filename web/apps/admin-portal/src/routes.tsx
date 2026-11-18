@@ -62,6 +62,7 @@ function useNav(): NavItem[] {
     ...opsNav.filter((item) => item.group === null).map((item) => link(item, t)),
     opsSection('operations'),
     opsSection('partners'),
+    opsSection('insurance'),
     ...financeSections,
     opsSection('catalog'),
     opsSection('people'),

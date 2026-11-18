@@ -9473,4 +9473,297 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get consultBookVideoButton => 'Записаться на видеоконсультацию';
+
+  @override
+  String get insuranceScreenTitle => 'Страхование и оплата позже';
+
+  @override
+  String get insuranceTabInsurance => 'Страхование';
+
+  @override
+  String get insuranceTabPayLater => 'Оплата позже';
+
+  @override
+  String get insuranceTabRequests => 'Мои запросы';
+
+  @override
+  String get insuranceDisclaimer =>
+      'Heal India Global не продаёт страховки и не является страховым посредником. Мы показываем продукты партнёров только для информации. Страховщик сам определяет покрытие, цену и условия; прочитайте документы полиса перед покупкой.';
+
+  @override
+  String get financingDisclaimer =>
+      'Heal India Global не выдаёт займы и не принимает кредитных решений. Оплату позже и кредиты предлагает партнёр на своих условиях после собственной проверки. Наши планы рассрочки беспроцентные и должны быть полностью оплачены до даты лечения.';
+
+  @override
+  String get financingPartnerDecides =>
+      'Партнёр проверяет, подходите ли вы, и принимает решение на своём сайте на своих условиях. Heal India Global не принимает кредитных решений.';
+
+  @override
+  String insuranceCountryFor(String country) {
+    return 'Варианты для страны: $country';
+  }
+
+  @override
+  String get insuranceCountryAll => 'Варианты для всех стран';
+
+  @override
+  String get insuranceCountryPick => 'Выберите страну';
+
+  @override
+  String get insuranceEmptyTitle => 'Пока нет вариантов страхования';
+
+  @override
+  String get insuranceEmptyBody =>
+      'Сейчас у нас нет страховых партнёров для этой страны. Проверьте позже или спросите нашу команду.';
+
+  @override
+  String get financingEmptyTitle => 'Пока нет партнёров по оплате позже';
+
+  @override
+  String get financingEmptyBody =>
+      'Сейчас для этой страны нет партнёра по оплате позже. Наша беспроцентная рассрочка по-прежнему доступна при бронировании.';
+
+  @override
+  String get insuranceCategoryMedicalTravel => 'Страхование медицинской поездки';
+
+  @override
+  String get insuranceCategoryComplication => 'Покрытие осложнений';
+
+  @override
+  String get insuranceCategoryHealth => 'Медицинское страхование';
+
+  @override
+  String get insuranceCategoryOther => 'Другое покрытие';
+
+  @override
+  String get insuranceEligibleAll => 'Доступно во всех странах';
+
+  @override
+  String insuranceEligibleCountries(String countries) {
+    return 'Доступно в странах: $countries';
+  }
+
+  @override
+  String get insuranceNotInYourCountry => 'Этот партнёр не указывает вашу страну.';
+
+  @override
+  String insurancePriceIndicative(String price) {
+    return 'Ориентировочная цена: $price';
+  }
+
+  @override
+  String get insurancePriceOnRequest => 'Цена по запросу у партнёра';
+
+  @override
+  String get insuranceRequestQuote => 'Запросить предложение у страховщика';
+
+  @override
+  String get insuranceVisitWebsite => 'Сайт партнёра';
+
+  @override
+  String get insuranceCouldNotOpen => 'Не удалось открыть сайт партнёра.';
+
+  @override
+  String get financingCheckEligibility => 'Проверить возможность';
+
+  @override
+  String get insuranceFormTitle => 'Запросить предложение у страховщика';
+
+  @override
+  String get financingFormTitle => 'Проверьте, подходите ли вы';
+
+  @override
+  String insuranceFormIntro(String provider) {
+    return 'Мы передаём ваши контактные данные партнёру: $provider. Он свяжется с вами напрямую с предложением.';
+  }
+
+  @override
+  String financingFormIntro(String provider) {
+    return 'Мы передаём ваши контактные данные партнёру: $provider. Он проверит, подходите ли вы, и свяжется с вами напрямую.';
+  }
+
+  @override
+  String get insuranceFieldName => 'Ваше имя';
+
+  @override
+  String get insuranceFieldEmail => 'Эл. почта';
+
+  @override
+  String get insuranceFieldPhone => 'Телефон (с кодом страны)';
+
+  @override
+  String get insuranceNameRequired => 'Введите имя.';
+
+  @override
+  String get insuranceEmailInvalid => 'Введите корректный адрес эл. почты.';
+
+  @override
+  String get insuranceContactRequired => 'Укажите адрес эл. почты или номер телефона.';
+
+  @override
+  String get insurancePreferredContact => 'Как с вами связаться?';
+
+  @override
+  String get insuranceContactEmail => 'Эл. почта';
+
+  @override
+  String get insuranceContactPhone => 'Телефон';
+
+  @override
+  String get insuranceContactWhatsapp => 'WhatsApp';
+
+  @override
+  String get insuranceFieldCountry => 'Страна проживания';
+
+  @override
+  String get insuranceFieldCountryNotSet => 'Не указана';
+
+  @override
+  String get insuranceFieldMessage => 'Сообщение (необязательно)';
+
+  @override
+  String get insuranceMessageHint => 'Не указывайте медицинские сведения.';
+
+  @override
+  String insuranceConsentText(String provider) {
+    return 'Я согласен(на), что Heal India Global может передать моё имя и контактные данные партнёру ($provider), чтобы он связался со мной по этому запросу. Медицинские сведения не передаются.';
+  }
+
+  @override
+  String get insuranceConsentRequired => 'Отметьте согласие, прежде чем отправить запрос.';
+
+  @override
+  String get insuranceLinkedToBooking => 'Этот запрос связан с вашим делом о лечении.';
+
+  @override
+  String get insuranceSend => 'Отправить запрос';
+
+  @override
+  String get insuranceSentTitle => 'Запрос отправлен';
+
+  @override
+  String insuranceSentBody(String provider) {
+    return 'С вами свяжется партнёр: $provider. Следить за запросом можно в разделе «Мои запросы».';
+  }
+
+  @override
+  String get insuranceContinueOnPartner => 'Продолжить на сайте партнёра';
+
+  @override
+  String get insuranceErrorConsentRequired => 'Сначала дайте согласие на передачу контактных данных.';
+
+  @override
+  String get insuranceErrorCountryNotEligible =>
+      'Этот партнёр не работает с вашей страной. Выберите другой вариант или смените страну.';
+
+  @override
+  String get insuranceErrorDuplicate => 'У вас уже есть открытый запрос к этому партнёру.';
+
+  @override
+  String get insuranceErrorNotFound => 'Этот вариант больше недоступен. Обновите список.';
+
+  @override
+  String get insuranceErrorNotOpen => 'Этот запрос уже закрыт.';
+
+  @override
+  String get insuranceRequestsEmptyTitle => 'Запросов пока нет';
+
+  @override
+  String get insuranceRequestsEmptyBody =>
+      'Здесь появятся запросы предложений и проверки возможности оплаты позже, отправленные партнёрам.';
+
+  @override
+  String get insuranceKindQuote => 'Страховое предложение';
+
+  @override
+  String get financingKindEligibility => 'Проверка оплаты позже';
+
+  @override
+  String get insuranceStatusNew => 'Отправлен';
+
+  @override
+  String get insuranceStatusInProgress => 'В работе';
+
+  @override
+  String get insuranceStatusShared => 'Передан партнёру';
+
+  @override
+  String get insuranceStatusClosed => 'Закрыт';
+
+  @override
+  String get insuranceStatusCancelled => 'Отозван';
+
+  @override
+  String insuranceStatusSemantics(String status) {
+    return 'Статус: $status';
+  }
+
+  @override
+  String insuranceRequestSentOn(String date) {
+    return 'Отправлен: $date';
+  }
+
+  @override
+  String get insuranceWithdraw => 'Отозвать';
+
+  @override
+  String get insuranceWithdrawTitle => 'Отозвать этот запрос?';
+
+  @override
+  String insuranceWithdrawBody(String provider) {
+    return 'Так вы также отзовёте согласие на передачу контактных данных партнёру ($provider). Если он уже получил ваши данные, попросите его напрямую их удалить.';
+  }
+
+  @override
+  String get insuranceWithdrawn => 'Запрос отозван.';
+
+  @override
+  String get insuranceProfileGroup => 'Страхование и платежи';
+
+  @override
+  String get insuranceProfileTile => 'Страхование и оплата позже';
+
+  @override
+  String get insuranceProfileTileSubtitle => 'Страховки партнёров, оплата позже и ваши запросы';
+
+  @override
+  String get insuranceBookCardTitle => 'Варианты страхования';
+
+  @override
+  String get insuranceBookCardBody =>
+      'Сравните страховки партнёров для поездки и лечения. Мы не продаём страховки; покрытие и цену определяет страховщик.';
+
+  @override
+  String get insuranceBookCardAction => 'Посмотреть варианты страхования';
+
+  @override
+  String get financingInstallmentsSubtitle => 'Без процентов, оплата до госпитализации';
+
+  @override
+  String get financingPickDateFirst => 'Выберите дату госпитализации, чтобы увидеть график платежей.';
+
+  @override
+  String get financingInstallmentsUnavailable =>
+      'Рассрочка невозможна для этой даты госпитализации: её нужно выплатить до лечения. Оплатите полностью, внесите депозит или выберите более позднюю дату.';
+
+  @override
+  String financingInterestFreeNote(String date) {
+    return 'Без процентов. Последний платёж нужно внести до госпитализации ($date).';
+  }
+
+  @override
+  String financingScheduleItem(int seq, String date) {
+    return 'Платёж $seq, срок: $date';
+  }
+
+  @override
+  String get financingScheduleEstimate =>
+      'Ориентировочные суммы без сборов. Окончательный график устанавливается при бронировании.';
+
+  @override
+  String get financingSeePartners => 'Нужно больше времени на оплату? Партнёры по оплате позже';
+
+  @override
+  String get financingInstallmentsPastTreatment =>
+      'Рассрочку нужно полностью выплатить до даты госпитализации. Выберите меньше месяцев, внесите депозит или выберите более позднюю дату.';
 }

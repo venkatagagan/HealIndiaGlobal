@@ -713,6 +713,35 @@ The finance module is still being extended; Swagger is authoritative for these s
 
 Staff lists of cases, bookings and payments come from §10.8 and §10.12 (staff scope = all).
 
+### 10.14b Analytics (S; finance figures AD or F)
+
+All aggregates (no patient rows). Query: `from`, `to` (inclusive **IST** days, default last 30), `granularity=day|week|month`
+(auto when omitted), filters `country` (patient's home country, ISO-2), `specialty_id`, `hospital_id`, `agent_id`,
+`channel=direct|agent`. Every response has `meta {date_from, date_to, granularity, timezone: "Asia/Kolkata", filters,
+generated_at, min_cell: 5}`. Breakdown cells with 1-4 are `null` + `suppressed: true`. Cached 60 s.
+
+| Endpoint | Content |
+|---|---|
+| GET `/admin/analytics/overview` | KPIs, funnel (guest sessions → guest scans → registrations → screenings → cases → quotes sent → accepted → bookings → completed → reviews; event counts in the window, pre-case steps `null` when a filter is set), series |
+| GET `/admin/analytics/quote-sla` | median / p90 hours to first quote, % within 24 h / 48 h / SLA, overdue now, per hospital |
+| GET `/admin/analytics/finance?currency=` | AD/F only: GMV, refunds, commission, service fee by month and by payment currency, converted from INR at the current `fx_rates` row (rate + `as_of` returned); outstanding instalments incl. `past_treatment_count` (must be 0, CG-18) |
+| GET `/admin/analytics/patients` | by home country, specialty, procedure (suppressed small cells) |
+| GET `/admin/analytics/hospitals` · `/agents` | top hospitals (bookings, conversion, quote time, ratings); agent leads/patients/cases/bookings, commission only for AD/F |
+| GET `/admin/analytics/aftercare` · `/intro-calls` · `/ai-usage` · `/notifications` | check-in completion + red flags; intro calls requested → scheduled → done → converted; AI requests vs `AI_GLOBAL_DAILY_LIMIT`; notification delivery by kind |
+| GET `/hospital-portal/performance` (H) · `/agent-portal/performance` (A) | the caller's own enquiries, quote time vs SLA, conversion, bookings, ratings / leads, bookings, commission; default 90 days |
+
+### 10.14c Insurance and pay-later partners (no selling, no lending)
+
+| Area | Endpoints |
+|---|---|
+| Public | GET `/insurance/products?country=` · GET `/financing/partners?country=` (active entries for the country; empty `countries` = all) |
+| Patient (guests too) | POST `/insurance/requests` `{product_id, case_id?, booking_id?, contact_name, contact_email?, contact_phone?, preferred_contact?, country?, message?, consent_share_contact: true}` → 201 (records consent `share_with_insurer`; 400 `consent_required`, 400 `partner_country_not_eligible`, 404 `offering_not_found`, 409 `duplicate_request`) · GET `/insurance/requests` · POST `/insurance/requests/{id}/cancel` (also records the consent withdrawal). Same under `/financing/eligibility-checks` with `partner_id` (consent `share_with_financing_partner`) |
+| Any signed-in user | GET `/financing/installment-plan?admission_date=&months=&total_minor=&deposit_minor=&country=` → `{max_months, allowed_months, last_due_by, schedule, interest_free, partner_financing_available}` (`deposit_minor` defaults to the `deposit_pct` setting) |
+| Staff | GET/POST `/admin/insurance/products`, PATCH/DELETE `/admin/insurance/products/{id}` (writes AD) · GET `/admin/insurance/requests?status=&page=` · GET `/admin/insurance/requests/status-counts` · PATCH `/admin/insurance/requests/{id}` `{status?, staff_note?}`. Same for `/admin/financing/partners` and `/admin/financing/requests` |
+
+`POST /bookings` with `payment_option=installments` answers 400 `installments_past_treatment` `{max_months, last_due_by}`
+when the last monthly instalment would fall on or after the admission date (CG-18).
+
 ### 10.14a Privacy and data rights (DPDP Act 2023 + Rules 2025, GDPR)
 
 | Area | Endpoints |

@@ -31,7 +31,7 @@ import hashlib
 import json
 import uuid
 from dataclasses import dataclass
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import TYPE_CHECKING, Any
 
@@ -2347,11 +2347,17 @@ async def create_installment_schedule(db: AsyncSession, booking_id: uuid.UUID) -
     ).scalar_one()
     if exists:
         return 0
+    start = datetime.now(timezone(timedelta(hours=5, minutes=30))).date()  # IST, like the CG-18 check
     plan = installment_plan(
-        booking.total_minor, booking.deposit_minor, booking.installment_months or 1, datetime.now(UTC).date()
+        booking.total_minor, booking.deposit_minor, booking.installment_months or 1, start
     )
     if not plan:
         return 0
+    if booking.admission_date is not None:
+        # CG-18 safety net (booking creation already refuses longer plans): never schedule an instalment on or
+        # after the admission date - such a plan would be credit.
+        last_ok = max(booking.admission_date - timedelta(days=1), start)
+        plan = [(min(due, last_ok), amount) for due, amount in plan]
     stmt = (
         pg_insert(Installment)
         .values(

@@ -113,7 +113,9 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "aftercare": "Suivi post-traitement",
-    "accreditations": "Accréditations"
+    "accreditations": "Accréditations",
+    "performance": "Performance",
+    "performanceReviews": "Performance et avis"
   },
   "layout": {
     "subtitle": "Portail hôpital",
@@ -1335,5 +1337,91 @@
     "emptyText": "Une conversation est créée automatiquement pour chaque nouveau dossier.",
     "attachments_one": "{{count}} pièce jointe - voir les documents du dossier",
     "attachments_other": "{{count}} pièces jointes - voir les documents du dossier"
+  },
+  "analytics": {
+    "title": "Performance",
+    "description": "Comment vos demandes se transforment en devis, réservations et traitements terminés.",
+    "timezoneNote": "Dates à l’heure normale de l’Inde (IST)",
+    "downloadCsv": "Télécharger le CSV",
+    "hours": "{{value}} h",
+    "range": {
+      "label": "Période",
+      "last30": "30 derniers jours",
+      "last90": "90 derniers jours",
+      "last180": "180 derniers jours",
+      "last365": "365 derniers jours",
+      "custom": "Personnalisée",
+      "from": "Du",
+      "to": "Au",
+      "groupBy": "Regrouper par",
+      "auto": "Automatique",
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois",
+      "period": "{{from}} – {{to}}",
+      "invalidOrder": "La date de début doit être antérieure ou égale à la date de fin.",
+      "tooLong": "La période ne peut pas dépasser 2 ans."
+    },
+    "tiles": {
+      "enquiries": "Demandes",
+      "quoted": "Demandes chiffrées",
+      "quotedHint": "Demandes ayant reçu au moins un devis",
+      "quotesSent": "Devis envoyés",
+      "accepted": "Devis acceptés",
+      "bookings": "Réservations",
+      "completed": "Traitements terminés",
+      "conversionRate": "Taux de conversion",
+      "conversionHint": "Réservations rapportées aux demandes"
+    },
+    "sla": {
+      "title": "Délai avant le premier devis",
+      "description": "Objectif : premier devis dans les {{hours}} heures suivant la demande",
+      "median": "Délai médian avant le premier devis",
+      "within": "Dans le délai convenu",
+      "over": "Délai convenu dépassé",
+      "withinPct": "{{value}} des premiers devis ont été envoyés dans le délai convenu",
+      "noData": "Aucun premier devis sur cette période.",
+      "p90": "90e percentile",
+      "overdueNow": "En retard actuellement",
+      "overdueHint": "Demandes ouvertes au-delà du délai convenu",
+      "platformMedian": "Médiane de la plateforme",
+      "platformHint": "Tous les hôpitaux, même période"
+    },
+    "rating": {
+      "title": "Note des patients",
+      "count_one": "{{formatted}} note",
+      "count_other": "{{formatted}} notes",
+      "allTime": "Note globale sur l’ensemble des avis publiés",
+      "none": "Aucune note pour le moment",
+      "inPeriod": "Avis sur cette période",
+      "avgInPeriod": "Note moyenne sur cette période"
+    },
+    "series": {
+      "title": "Activité dans le temps",
+      "description": "Demandes, devis envoyés et réservations par période",
+      "enquiries": "Demandes",
+      "quotesSent": "Devis envoyés",
+      "bookings": "Réservations",
+      "chartSummary": "Graphique en barres : {{name}} du {{from}} au {{to}}, total {{total}}",
+      "viewTable": "Afficher sous forme de tableau",
+      "period": "Période",
+      "weekOf": "Semaine du {{date}}"
+    },
+    "countries": {
+      "title": "Patients par pays de résidence",
+      "description": "Pays de résidence des patients qui vous ont contacté",
+      "country": "Pays",
+      "patients": "Patients",
+      "cases": "Dossiers",
+      "bookings": "Réservations",
+      "suppressed": "<{{min}}",
+      "notAvailable": "n.d.",
+      "privacyNote": "Les groupes de moins de {{min}} personnes sont masqués pour protéger la vie privée des patients",
+      "empty": "Aucun patient sur cette période"
+    },
+    "empty": {
+      "title": "Aucune activité sur cette période",
+      "description": "Essayez une période plus longue."
+    }
   }
 }

@@ -12,6 +12,7 @@ from fastapi import APIRouter
 from app.modules.admin.router import router as admin_router
 from app.modules.admin.site_config import router as site_config_router
 from app.modules.agents.router import router as agents_router
+from app.modules.analytics.router import router as analytics_router
 from app.modules.auth.router import router as auth_router
 from app.modules.cases.router import router as cases_router
 from app.modules.catalog.router import router as catalog_router
@@ -23,6 +24,7 @@ from app.modules.i18n.router import router as i18n_router
 from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
 from app.modules.moderation.router import router as moderation_router
+from app.modules.partners.router import router as partners_router
 from app.modules.patients.router import router as patients_router
 from app.modules.payments.router import router as payments_router
 from app.modules.privacy.router import router as privacy_router
@@ -51,6 +53,8 @@ for _router in (
     ledger_router,
     settlements_router,
     admin_router,
+    analytics_router,
+    partners_router,
     moderation_router,  # after admin_router: /admin/reports/{report_id} vs /admin/reports/revenue
     voice_router,
     privacy_router,

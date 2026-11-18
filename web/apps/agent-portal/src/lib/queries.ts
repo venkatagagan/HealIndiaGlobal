@@ -5,6 +5,7 @@ import { agentPortalApi, catalogApi, notificationsApi } from '@hig/shared/api';
 export const qk = {
   profile: ['agent-profile'] as const,
   dashboard: ['agent-dashboard'] as const,
+  performance: (params: object) => ['agent-performance', params] as const,
   patients: (params: object) => ['agent-patients', params] as const,
   patient: (id: string) => ['agent-patients', id] as const,
   screenings: (params: object) => ['screenings', params] as const,

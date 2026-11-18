@@ -9201,4 +9201,295 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get consultBookVideoButton => 'ভিডিও পরামর্শ বুক করুন';
+
+  @override
+  String get insuranceScreenTitle => 'বিমা ও পরে পরিশোধ';
+
+  @override
+  String get insuranceTabInsurance => 'বিমা';
+
+  @override
+  String get insuranceTabPayLater => 'পরে পরিশোধ';
+
+  @override
+  String get insuranceTabRequests => 'আমার অনুরোধ';
+
+  @override
+  String get insuranceDisclaimer =>
+      'Heal India Global বিমা বিক্রি করে না এবং বিমা মধ্যস্থতাকারী নয়। আমরা শুধু তথ্যের জন্য অংশীদারদের পণ্য দেখাই। কভার, মূল্য ও শর্ত বিমাকারী ঠিক করে; কেনার আগে তাদের পলিসির নথি পড়ুন।';
+
+  @override
+  String get financingDisclaimer =>
+      'Heal India Global টাকা ধার দেয় না এবং ঋণ সংক্রান্ত সিদ্ধান্ত নেয় না। পরে পরিশোধের পরিকল্পনা ও ঋণ অংশীদার নিজের শর্তে, নিজের যাচাইয়ের পরে দেয়। আমাদের নিজস্ব কিস্তি পরিকল্পনা সুদমুক্ত এবং আপনার চিকিৎসার তারিখের আগেই সম্পূর্ণ পরিশোধ করতে হবে।';
+
+  @override
+  String get financingPartnerDecides =>
+      'অংশীদার নিজের ওয়েবসাইটে, নিজের শর্তে আপনার যোগ্যতা যাচাই করে সিদ্ধান্ত নেয়। Heal India Global কোনো ঋণ সংক্রান্ত সিদ্ধান্ত নেয় না।';
+
+  @override
+  String insuranceCountryFor(String country) {
+    return 'যে দেশের জন্য বিকল্প: $country';
+  }
+
+  @override
+  String get insuranceCountryAll => 'সব দেশের জন্য বিকল্প';
+
+  @override
+  String get insuranceCountryPick => 'আপনার দেশ বেছে নিন';
+
+  @override
+  String get insuranceEmptyTitle => 'এখনও কোনো বিমার বিকল্প নেই';
+
+  @override
+  String get insuranceEmptyBody =>
+      'এই দেশের জন্য এখন আমাদের কোনো অংশীদার বিমা নেই। পরে আবার দেখুন বা আমাদের দলকে জিজ্ঞাসা করুন।';
+
+  @override
+  String get financingEmptyTitle => 'এখনও কোনো পরে-পরিশোধ অংশীদার নেই';
+
+  @override
+  String get financingEmptyBody =>
+      'এই দেশের জন্য এখন কোনো পরে-পরিশোধ অংশীদার নেই। বুকিংয়ের সময় আমাদের সুদমুক্ত কিস্তি পরিকল্পনা এখনও পাওয়া যায়।';
+
+  @override
+  String get insuranceCategoryMedicalTravel => 'চিকিৎসা ভ্রমণ বিমা';
+
+  @override
+  String get insuranceCategoryComplication => 'জটিলতার কভার';
+
+  @override
+  String get insuranceCategoryHealth => 'স্বাস্থ্য বিমা';
+
+  @override
+  String get insuranceCategoryOther => 'অন্যান্য কভার';
+
+  @override
+  String get insuranceEligibleAll => 'সব দেশে পাওয়া যায়';
+
+  @override
+  String insuranceEligibleCountries(String countries) {
+    return 'পাওয়া যায়: $countries';
+  }
+
+  @override
+  String get insuranceNotInYourCountry => 'এই অংশীদারের তালিকায় আপনার দেশ নেই।';
+
+  @override
+  String insurancePriceIndicative(String price) {
+    return 'আনুমানিক মূল্য: $price';
+  }
+
+  @override
+  String get insurancePriceOnRequest => 'মূল্য অংশীদারের কাছে অনুরোধ করে জানুন';
+
+  @override
+  String get insuranceRequestQuote => 'বিমাকারীর কাছে কোটেশন চান';
+
+  @override
+  String get insuranceVisitWebsite => 'অংশীদারের ওয়েবসাইট';
+
+  @override
+  String get insuranceCouldNotOpen => 'অংশীদারের ওয়েবসাইট খোলা যায়নি।';
+
+  @override
+  String get financingCheckEligibility => 'যোগ্যতা যাচাই করুন';
+
+  @override
+  String get insuranceFormTitle => 'বিমাকারীর কাছে কোটেশন চান';
+
+  @override
+  String get financingFormTitle => 'আপনার যোগ্যতা যাচাই করুন';
+
+  @override
+  String insuranceFormIntro(String provider) {
+    return 'আমরা আপনার যোগাযোগের তথ্য পাঠাই: $provider। তারা সরাসরি কোটেশন নিয়ে আপনার সাথে যোগাযোগ করবে।';
+  }
+
+  @override
+  String financingFormIntro(String provider) {
+    return 'আমরা আপনার যোগাযোগের তথ্য পাঠাই: $provider। তারা আপনার যোগ্যতা যাচাই করে সরাসরি যোগাযোগ করবে।';
+  }
+
+  @override
+  String get insuranceFieldName => 'আপনার নাম';
+
+  @override
+  String get insuranceFieldEmail => 'ইমেল';
+
+  @override
+  String get insuranceFieldPhone => 'ফোন (দেশের কোডসহ)';
+
+  @override
+  String get insuranceNameRequired => 'আপনার নাম লিখুন।';
+
+  @override
+  String get insuranceEmailInvalid => 'একটি সঠিক ইমেল ঠিকানা লিখুন।';
+
+  @override
+  String get insuranceContactRequired => 'একটি ইমেল ঠিকানা বা ফোন নম্বর দিন।';
+
+  @override
+  String get insurancePreferredContact => 'তারা কীভাবে আপনার সাথে যোগাযোগ করবে?';
+
+  @override
+  String get insuranceContactEmail => 'ইমেল';
+
+  @override
+  String get insuranceContactPhone => 'ফোন';
+
+  @override
+  String get insuranceContactWhatsapp => 'WhatsApp';
+
+  @override
+  String get insuranceFieldCountry => 'বসবাসের দেশ';
+
+  @override
+  String get insuranceFieldCountryNotSet => 'নির্ধারিত নয়';
+
+  @override
+  String get insuranceFieldMessage => 'বার্তা (ঐচ্ছিক)';
+
+  @override
+  String get insuranceMessageHint => 'কোনো চিকিৎসা সংক্রান্ত তথ্য লিখবেন না।';
+
+  @override
+  String insuranceConsentText(String provider) {
+    return 'আমি সম্মত যে Heal India Global আমার নাম ও যোগাযোগের তথ্য এই অংশীদারের সাথে শেয়ার করতে পারে: $provider, যাতে তারা এই অনুরোধ নিয়ে আমার সাথে যোগাযোগ করতে পারে। কোনো চিকিৎসা সংক্রান্ত তথ্য শেয়ার করা হয় না।';
+  }
+
+  @override
+  String get insuranceConsentRequired => 'অনুরোধ পাঠানোর আগে সম্মতি দিতে বাক্সে টিক দিন।';
+
+  @override
+  String get insuranceLinkedToBooking => 'এই অনুরোধটি আপনার চিকিৎসার কেসের সাথে যুক্ত।';
+
+  @override
+  String get insuranceSend => 'অনুরোধ পাঠান';
+
+  @override
+  String get insuranceSentTitle => 'অনুরোধ পাঠানো হয়েছে';
+
+  @override
+  String insuranceSentBody(String provider) {
+    return 'আপনার সাথে যোগাযোগ করবে: $provider। \"আমার অনুরোধ\"-এ এই অনুরোধটি অনুসরণ করতে পারবেন।';
+  }
+
+  @override
+  String get insuranceContinueOnPartner => 'অংশীদারের সাইটে চালিয়ে যান';
+
+  @override
+  String get insuranceErrorConsentRequired => 'প্রথমে আপনার যোগাযোগের তথ্য শেয়ার করতে সম্মতি দিন।';
+
+  @override
+  String get insuranceErrorCountryNotEligible =>
+      'এই অংশীদার আপনার দেশে পরিষেবা দেয় না। অন্য বিকল্প বেছে নিন বা দেশ পরিবর্তন করুন।';
+
+  @override
+  String get insuranceErrorDuplicate => 'এই অংশীদারের কাছে আপনার একটি খোলা অনুরোধ ইতিমধ্যে আছে।';
+
+  @override
+  String get insuranceErrorNotFound => 'এই বিকল্পটি আর পাওয়া যায় না। তালিকাটি রিফ্রেশ করুন।';
+
+  @override
+  String get insuranceErrorNotOpen => 'এই অনুরোধটি ইতিমধ্যে বন্ধ হয়ে গেছে।';
+
+  @override
+  String get insuranceRequestsEmptyTitle => 'এখনও কোনো অনুরোধ নেই';
+
+  @override
+  String get insuranceRequestsEmptyBody => 'অংশীদারদের কাছে পাঠানো কোটেশনের অনুরোধ ও যোগ্যতা যাচাই এখানে দেখা যাবে।';
+
+  @override
+  String get insuranceKindQuote => 'বিমার কোটেশন';
+
+  @override
+  String get financingKindEligibility => 'পরে পরিশোধের যোগ্যতা';
+
+  @override
+  String get insuranceStatusNew => 'পাঠানো হয়েছে';
+
+  @override
+  String get insuranceStatusInProgress => 'প্রক্রিয়াধীন';
+
+  @override
+  String get insuranceStatusShared => 'অংশীদারের কাছে পাঠানো হয়েছে';
+
+  @override
+  String get insuranceStatusClosed => 'বন্ধ';
+
+  @override
+  String get insuranceStatusCancelled => 'প্রত্যাহার করা হয়েছে';
+
+  @override
+  String insuranceStatusSemantics(String status) {
+    return 'অবস্থা: $status';
+  }
+
+  @override
+  String insuranceRequestSentOn(String date) {
+    return 'পাঠানোর তারিখ: $date';
+  }
+
+  @override
+  String get insuranceWithdraw => 'প্রত্যাহার করুন';
+
+  @override
+  String get insuranceWithdrawTitle => 'এই অনুরোধটি প্রত্যাহার করবেন?';
+
+  @override
+  String insuranceWithdrawBody(String provider) {
+    return 'এতে আপনার যোগাযোগের তথ্য শেয়ার করার সম্মতিও প্রত্যাহার হবে (অংশীদার: $provider)। তারা যদি ইতিমধ্যে আপনার তথ্য পেয়ে থাকে, তবে সরাসরি তাদের তা মুছে ফেলতে বলুন।';
+  }
+
+  @override
+  String get insuranceWithdrawn => 'অনুরোধ প্রত্যাহার করা হয়েছে।';
+
+  @override
+  String get insuranceProfileGroup => 'বিমা ও পেমেন্ট';
+
+  @override
+  String get insuranceProfileTile => 'বিমা ও পরে পরিশোধ';
+
+  @override
+  String get insuranceProfileTileSubtitle => 'অংশীদার বিমা, পরে পরিশোধের বিকল্প ও আপনার অনুরোধ';
+
+  @override
+  String get insuranceBookCardTitle => 'বিমার বিকল্প';
+
+  @override
+  String get insuranceBookCardBody =>
+      'আপনার ভ্রমণ ও চিকিৎসার জন্য অংশীদার বিমা তুলনা করুন। আমরা বিমা বিক্রি করি না; কভার ও মূল্য বিমাকারী ঠিক করে।';
+
+  @override
+  String get insuranceBookCardAction => 'বিমার বিকল্প দেখুন';
+
+  @override
+  String get financingInstallmentsSubtitle => 'সুদমুক্ত, ভর্তির আগেই পরিশোধ';
+
+  @override
+  String get financingPickDateFirst => 'আপনার কিস্তির সময়সূচি দেখতে ভর্তির তারিখ বেছে নিন।';
+
+  @override
+  String get financingInstallmentsUnavailable =>
+      'এই ভর্তির তারিখের জন্য কিস্তি সম্ভব নয়: চিকিৎসার আগেই কিস্তি পরিশোধ করতে হয়। সম্পূর্ণ পরিশোধ করুন, জমা টাকা দিন, অথবা পরের কোনো তারিখ বেছে নিন।';
+
+  @override
+  String financingInterestFreeNote(String date) {
+    return 'সুদমুক্ত। শেষ কিস্তি আপনার ভর্তির ($date) আগেই দিতে হবে।';
+  }
+
+  @override
+  String financingScheduleItem(int seq, String date) {
+    return 'কিস্তি $seq, শেষ তারিখ $date';
+  }
+
+  @override
+  String get financingScheduleEstimate => 'ফি ছাড়া আনুমানিক পরিমাণ। চূড়ান্ত সময়সূচি বুকিংয়ের সময় ঠিক হয়।';
+
+  @override
+  String get financingSeePartners => 'পরিশোধে আরও সময় দরকার? পরে-পরিশোধ অংশীদার দেখুন';
+
+  @override
+  String get financingInstallmentsPastTreatment =>
+      'আপনার ভর্তির তারিখের আগেই কিস্তি সম্পূর্ণ পরিশোধ করতে হবে। কম মাস বেছে নিন, জমা টাকা দিন, অথবা পরের কোনো তারিখ বেছে নিন।';
 }

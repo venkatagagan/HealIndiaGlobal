@@ -11,6 +11,7 @@
  */
 import type { LucideIcon } from 'lucide-react';
 import {
+  BarChart3,
   BookOpen,
   Building2,
   Briefcase,
@@ -20,6 +21,8 @@ import {
   FolderKanban,
   Inbox,
   Handshake,
+  HandCoins,
+  HeartHandshake,
   Languages,
   LayoutDashboard,
   Library,
@@ -29,7 +32,9 @@ import {
   Scale,
   Settings,
   Settings2,
+  ClipboardList,
   ShieldCheck,
+  ShieldPlus,
   Stethoscope,
   Users,
   UsersRound,
@@ -56,6 +61,7 @@ const page = (loader: () => Promise<{ default: ComponentType }>) => async () => 
 /** Child routes (relative paths) to mount under the shell's authenticated layout. */
 export const opsRoutes: RouteObject[] = [
   { path: 'dashboard', lazy: page(() => import('./pages/DashboardPage')) },
+  { path: 'analytics', lazy: page(() => import('./pages/AnalyticsPage')) },
   { path: 'users', lazy: page(() => import('./pages/UsersPage')) },
   { path: 'staff', lazy: page(() => import('./pages/StaffPage')) },
   { path: 'hospitals', lazy: page(() => import('./pages/HospitalsPage')) },
@@ -79,6 +85,10 @@ export const opsRoutes: RouteObject[] = [
   { path: 'reviews', lazy: page(() => import('./pages/ReviewsPage')) },
   { path: 'intro-calls', lazy: page(() => import('./pages/IntroConsultationsPage')) },
   { path: 'visa-rules', lazy: page(() => import('./pages/VisaRulesPage')) },
+  { path: 'insurance/products', lazy: page(() => import('./pages/PartnerCatalogPage').then((m) => ({ default: m.InsuranceProductsPage }))) },
+  { path: 'insurance/requests', lazy: page(() => import('./pages/PartnerLeadsPage').then((m) => ({ default: m.InsuranceRequestsPage }))) },
+  { path: 'financing/partners', lazy: page(() => import('./pages/PartnerCatalogPage').then((m) => ({ default: m.FinancingPartnersPage }))) },
+  { path: 'financing/requests', lazy: page(() => import('./pages/PartnerLeadsPage').then((m) => ({ default: m.FinancingRequestsPage }))) },
 ];
 
 export interface OpsNavItem {
@@ -100,6 +110,7 @@ export interface OpsNavItem {
 export const OPS_NAV_GROUPS = [
   { id: 'operations', label: 'Patient operations', labelKey: 'nav.groups.operations', icon: Stethoscope },
   { id: 'partners', label: 'Partners', labelKey: 'nav.groups.partners', icon: Handshake },
+  { id: 'insurance', label: 'Insurance & financing', labelKey: 'nav.groups.insurance', icon: HeartHandshake },
   { id: 'catalog', label: 'Catalog & content', labelKey: 'nav.groups.catalog', icon: Library },
   { id: 'people', label: 'People & access', labelKey: 'nav.groups.people', icon: UsersRound },
   { id: 'system', label: 'System', labelKey: 'nav.groups.system', icon: Settings2 },
@@ -113,6 +124,7 @@ const ADMINS: readonly UserRole[] = ['admin', 'super_admin'];
 /** Sidebar entries (filter by the current user's role before rendering). */
 export const opsNav: OpsNavItem[] = [
   { to: opsPaths.dashboard, label: 'Dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, roles: ALL_STAFF, group: null },
+  { to: opsPaths.analytics, label: 'Analytics', labelKey: 'nav.analytics', icon: BarChart3, roles: ALL_STAFF, group: null },
   { to: opsPaths.hospitals, label: 'Hospitals', labelKey: 'nav.hospitals', icon: Building2, roles: ALL_STAFF, group: 'partners' },
   { to: opsPaths.agents, label: 'Agents', labelKey: 'nav.agents', icon: Briefcase, roles: ALL_STAFF, group: 'partners' },
   { to: opsPaths.cases, label: 'Cases', labelKey: 'nav.cases', icon: FolderKanban, roles: ALL_STAFF, group: 'operations' },
@@ -123,6 +135,10 @@ export const opsNav: OpsNavItem[] = [
   { to: opsPaths.introCalls, label: 'Free intro calls', labelKey: 'nav.introCalls', icon: Video, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.enquiries, label: 'Website enquiries', labelKey: 'nav.enquiries', icon: Inbox, roles: OPS_STAFF, group: 'operations' },
   { to: opsPaths.reviews, label: 'Reviews', labelKey: 'nav.reviews', icon: MessageSquareQuote, roles: ALL_STAFF, group: 'partners' },
+  { to: opsPaths.insuranceProducts, label: 'Insurance products', labelKey: 'nav.insuranceProducts', icon: ShieldPlus, roles: ALL_STAFF, group: 'insurance' },
+  { to: opsPaths.insuranceRequests, label: 'Insurance requests', labelKey: 'nav.insuranceRequests', icon: ClipboardList, roles: ALL_STAFF, group: 'insurance' },
+  { to: opsPaths.financingPartners, label: 'Pay-later partners', labelKey: 'nav.financingPartners', icon: HandCoins, roles: ALL_STAFF, group: 'insurance' },
+  { to: opsPaths.financingRequests, label: 'Pay-later requests', labelKey: 'nav.financingRequests', icon: Inbox, roles: ALL_STAFF, group: 'insurance' },
   { to: opsPaths.users, label: 'Users', labelKey: 'nav.users', icon: Users, roles: ALL_STAFF, group: 'people' },
   { to: opsPaths.staff, label: 'Staff', labelKey: 'nav.staff', icon: ShieldCheck, roles: ADMINS, group: 'people' },
   { to: opsPaths.privacy, label: 'Privacy requests', labelKey: 'nav.privacy', icon: Scale, roles: OPS_STAFF, group: 'people' },

@@ -34,6 +34,7 @@ void main() {
     expect(redirect(g, Routes.matches('s1')), isNull);
     expect(redirect(g, Routes.costComparisonFor(procedure: 'cabg', country: 'US')), isNull);
     expect(redirect(g, Routes.profile), isNull);
+    expect(redirect(g, Routes.insuranceFor(tab: 'pay_later')), isNull);
     expect(redirect(g, Routes.register), isNull);
     expect(redirect(g, Routes.trips), '/auth/register?from=%2Ftrips');
     expect(redirect(g, Routes.book('c1')), '/auth/register?from=%2Fbook%2Fc1');

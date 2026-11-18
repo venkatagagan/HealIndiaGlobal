@@ -119,6 +119,17 @@ per action may read better.
 | `orgSuspendedBodyAgent`, `orgSuspendedBodyHospital` | Account suspension notice to partners |
 | `consultBookIntro`, `consultFeePayNote`, `consultPayFailed`, `consultPayPending`, `consultCancelConfirmBody` | Video consultation fee: when it is paid, "no money was taken", what happens to a paid fee on cancellation |
 | `consultReminderScheduled`, `consultReminderPending`, `consultJoinHint`, `consultTimesLocal` | Appointment reminders and time-zone wording for a medical call |
+## Insurance, pay-later partners and instalments (CG-18, added 2026-11-18)
+
+Legal review of the English text is still pending; the translations follow it word for word.
+
+| Keys | Why |
+|---|---|
+| `insuranceDisclaimer`, `insuranceBookCardBody` | We do not sell insurance and are not an insurance intermediary; the insurer sets cover, price and terms (shown on every insurance surface) |
+| `financingDisclaimer`, `financingPartnerDecides`, `financingFormIntro` | We do not lend money or make credit decisions; the partner decides on its own terms (shown on every pay-later surface) |
+| `insuranceConsentText`, `insuranceConsentRequired`, `insuranceFormIntro`, `insuranceWithdrawBody`, `insuranceMessageHint` | Consent to share contact details with a named partner, "no medical information is shared", withdrawing that consent |
+| `financingInstallmentsSubtitle`, `financingInstallmentsUnavailable`, `financingInterestFreeNote`, `financingScheduleEstimate`, `financingInstallmentsPastTreatment`, `financingEmptyBody` | Interest-free pre-payment plan paid off before admission (Google Play financial features declaration) |
+| `insurancePriceIndicative`, `insurancePriceOnRequest`, `insuranceCategory*`, `insuranceErrorCountryNotEligible` | Indicative partner prices (not a quote) and insurance product names |
 
 ## Politically sensitive names
 

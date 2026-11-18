@@ -9,6 +9,7 @@ import '../../features/auth/screens/auth_screen.dart';
 import '../../features/consultations/screens/consultation_book_screen.dart';
 import '../../features/consultations/screens/consultations_screen.dart';
 import '../../features/guest/screens/free_consultation_screen.dart';
+import '../../features/insurance/screens/insurance_screen.dart';
 import '../../features/quotes/screens/quick_quote_screen.dart';
 import '../../features/quotes/screens/quote_group_screen.dart';
 import '../../features/reviews/screens/my_reviews_screen.dart';
@@ -394,6 +395,15 @@ List<RouteBase> buildAppRoutes() => [
       ),
     ],
   ),
+  GoRoute(
+    path: Routes.insurance,
+    name: RouteNames.insurance,
+    builder: (_, s) => InsuranceScreen(
+      initialTab: InsuranceTab.fromQuery(s.uri.queryParameters['tab']),
+      caseId: s.uri.queryParameters['case'],
+      bookingId: s.uri.queryParameters['booking'],
+    ),
+  ),
 ];
 
 /// Locations a guest (`is_guest=true`) may open: browse + screening (+ auth for upgrading).
@@ -415,6 +425,8 @@ bool isGuestAllowedLocation(String path) {
     '/procedures/',
     Routes.visaGuidePath,
     Routes.freeConsultation,
+    // insurance & pay-later partners: guests may browse and send a request
+    Routes.insurance,
   ];
   return prefixes.any((p) => path == p || path.startsWith(p.endsWith('/') ? p : '$p/'));
 }

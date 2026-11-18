@@ -37,7 +37,7 @@ need a PLAN change (new endpoint, enum value or event) say so and belong under `
 | CG-15 | Push notifications: **BUILT 2026-11-09**, off until the Firebase project, APNs key and FCM service account are supplied | P1 | Both | flutter-foundation, be-messaging |
 | CG-16 | Content reporting: **DONE 2026-11-09** (report chat messages and AI results, admin moderation queue; reviews via API) | P1 | Both | be-messaging, be-admin, fl-journey, fl-screening, web-patient, web-admin-ops |
 | CG-17 | Payment screen copy ("Pay with Face ID", "with Affirm"), biometric fallback, Face ID purpose string | P1 | Both | fl-journey, web-patient, flutter-foundation |
-| CG-18 | Instalments that run past treatment are credit (Financial features declaration) | P1 | Google | be-payments, be-cases, product |
+| CG-18 | Instalments that run past treatment are credit (Financial features declaration). **DONE 2026-11-18** (enforced; longer terms only via partners off-platform) | P1 | Google | be-payments, be-cases, product |
 | CG-19 | Real hospital brands and accreditation or WHO logos in designs and screenshots | P1 | Both | brand-assets, fl-onboarding, store assets |
 | CG-20 | Name can be confused with the Government of India "Heal in India" initiative | P1 | Both | Business / legal, product-docs |
 | CG-21 | Personal health information must stay out of iCloud backups | P1 | Apple | flutter-foundation, fl-journey |
@@ -660,6 +660,39 @@ digital-lending rules if an Indian lender is involved.
 - Declare "no financial features".
 
 Revisit with licensed BNPL partners (ROADMAP R4).
+
+**Status (2026-11-18): enforced.**
+- **Backend rule.** `POST /bookings` with `payment_option=installments` is refused with 400
+  `installments_past_treatment` (`details.max_months`, `details.last_due_by`) unless the last monthly instalment
+  (deposit today + N months, the schedule's own date rule) falls **before** `admission_date`
+  (`app/modules/partners/service.py::max_installment_months`, called from `cases/bookings.py`). The schedule builder
+  (`payments/service.py::create_installment_schedule`) also clamps any due date to the day before admission as a
+  safety net. No interest and no fees are ever added. `GET /financing/installment-plan` gives every client the
+  allowed months and the schedule, so the apps only offer valid plans and say "interest-free, paid before your
+  admission". Staff analytics (`GET /admin/analytics/finance`) reports `outstanding_installments.past_treatment_count`,
+  which must stay 0 (monitor it; a non-zero value is a legacy or manually changed booking to fix).
+- **Longer terms only through partners, outside the platform.** "Pay-later partners" is an admin-managed catalog
+  (`/admin/financing/partners`: provider, countries, terms summary, link). The patient's "Check eligibility" only
+  records a lead (`/financing/eligibility-checks`) with an explicit consent (`share_with_financing_partner`) to pass
+  name + contact details (never medical data) to that partner, and links to the partner's own site. The partner runs
+  its own checks, makes the credit decision, signs the agreement and pays/collects on its own terms; the platform
+  receives no repayments, holds no receivables, charges no interest or fees and makes no credit decision. The same
+  pattern covers insurance (`/admin/insurance/products`, consent `share_with_insurer`): the platform does not sell
+  insurance and is not an intermediary (TODO-BUSINESS: legal review of this position per market, e.g. IRDAI
+  corporate-agent / web-aggregator rules in India, FCA / EU IDD introducer rules; any referral fee needs that review).
+- **Why this stays out of the "lending" categories.** Google Play: the app does not offer personal loans, BNPL or
+  credit lines; it shows an interest-free pre-payment schedule that ends before the service is delivered, plus a
+  referral list. Financial features declaration: "no personal loans / no BNPL provided by the app". Apple: no
+  lending features in the app. India: no RBI digital-lending activity (no Lending Service Provider role) because no
+  loan is sourced or serviced through an in-app journey - only a consented contact hand-off.
+- **If a partner is integrated later** (embedded checkout, partner SDK/API, revenue share, or the partner pays the
+  hospital and the patient repays the partner through the app): re-file the Google Play **Financial features
+  declaration** (BNPL / personal loans sections with the partner's licence documents, APR range and repayment
+  terms), meet the Play **personal loan policy** (minimum repayment period, maximum APR disclosure, no contacts /
+  photos access), update the **Data safety** form ("Financial info" collected and shared with the partner), the App
+  Store privacy labels, the privacy policy, and in India set the partner up as the regulated entity with the
+  platform as a registered **Lending Service Provider** (Key Fact Statement, grievance officer, data stored in
+  India). Until then the app answers "no financial features" and the catalog stays a referral list.
 
 ### CG-19 · Third-party trademarks and sample data
 

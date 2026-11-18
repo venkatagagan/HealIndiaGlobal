@@ -49,6 +49,8 @@ __all__ = [
     "LedgerTxnType",
     "OrderStatus",
     "PackageTier",
+    "PartnerKind",
+    "PartnerLeadStatus",
     "PayeeType",
     "PaymentGateway",
     "PaymentMethod",
@@ -164,6 +166,10 @@ class ConsentKind(StrEnum):
     # sign-up age attestation (CG-24): granted = "I am 18 or older"; granted=False = a patient under 18
     # (a parent or guardian must consent - see ``User.is_adult``)
     AGE_18_PLUS = "age_18_plus"
+    # the patient lets the platform pass their contact details to a partner insurer / pay-later provider
+    # (lead hand-off only; the platform neither sells insurance nor lends)
+    SHARE_WITH_INSURER = "share_with_insurer"
+    SHARE_WITH_FINANCING_PARTNER = "share_with_financing_partner"
 
 
 class SavedEntityType(StrEnum):
@@ -512,6 +518,23 @@ class EnquiryStatus(StrEnum):
     NEW = "new"
     IN_PROGRESS = "in_progress"
     CLOSED = "closed"
+
+
+# ------------------------------------------------------------------------------- insurance / financing
+class PartnerKind(StrEnum):
+    """Partner catalog entries: insurance products and pay-later (financing) partners. The platform only
+    lists them and hands leads over with the patient's consent; it never sells insurance or lends."""
+
+    INSURANCE = "insurance"
+    PAY_LATER = "pay_later"
+
+
+class PartnerLeadStatus(StrEnum):
+    NEW = "new"
+    IN_PROGRESS = "in_progress"
+    SHARED_WITH_PARTNER = "shared_with_partner"
+    CLOSED = "closed"
+    CANCELLED = "cancelled"
 
 
 # -------------------------------------------------------------------------------------------- payments

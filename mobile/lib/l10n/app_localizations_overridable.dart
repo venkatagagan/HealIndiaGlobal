@@ -2386,6 +2386,80 @@ class OverridableLocalizations extends AppLocalizations {
     'consultCancelled' => consultCancelled,
     'consultNotesSection' => consultNotesSection,
     'consultBookVideoButton' => consultBookVideoButton,
+    'insuranceScreenTitle' => insuranceScreenTitle,
+    'insuranceTabInsurance' => insuranceTabInsurance,
+    'insuranceTabPayLater' => insuranceTabPayLater,
+    'insuranceTabRequests' => insuranceTabRequests,
+    'insuranceDisclaimer' => insuranceDisclaimer,
+    'financingDisclaimer' => financingDisclaimer,
+    'financingPartnerDecides' => financingPartnerDecides,
+    'insuranceCountryAll' => insuranceCountryAll,
+    'insuranceCountryPick' => insuranceCountryPick,
+    'insuranceEmptyTitle' => insuranceEmptyTitle,
+    'insuranceEmptyBody' => insuranceEmptyBody,
+    'financingEmptyTitle' => financingEmptyTitle,
+    'financingEmptyBody' => financingEmptyBody,
+    'insuranceCategoryMedicalTravel' => insuranceCategoryMedicalTravel,
+    'insuranceCategoryComplication' => insuranceCategoryComplication,
+    'insuranceCategoryHealth' => insuranceCategoryHealth,
+    'insuranceCategoryOther' => insuranceCategoryOther,
+    'insuranceEligibleAll' => insuranceEligibleAll,
+    'insuranceNotInYourCountry' => insuranceNotInYourCountry,
+    'insurancePriceOnRequest' => insurancePriceOnRequest,
+    'insuranceRequestQuote' => insuranceRequestQuote,
+    'insuranceVisitWebsite' => insuranceVisitWebsite,
+    'insuranceCouldNotOpen' => insuranceCouldNotOpen,
+    'financingCheckEligibility' => financingCheckEligibility,
+    'insuranceFormTitle' => insuranceFormTitle,
+    'financingFormTitle' => financingFormTitle,
+    'insuranceFieldName' => insuranceFieldName,
+    'insuranceFieldEmail' => insuranceFieldEmail,
+    'insuranceFieldPhone' => insuranceFieldPhone,
+    'insuranceNameRequired' => insuranceNameRequired,
+    'insuranceEmailInvalid' => insuranceEmailInvalid,
+    'insuranceContactRequired' => insuranceContactRequired,
+    'insurancePreferredContact' => insurancePreferredContact,
+    'insuranceContactEmail' => insuranceContactEmail,
+    'insuranceContactPhone' => insuranceContactPhone,
+    'insuranceContactWhatsapp' => insuranceContactWhatsapp,
+    'insuranceFieldCountry' => insuranceFieldCountry,
+    'insuranceFieldCountryNotSet' => insuranceFieldCountryNotSet,
+    'insuranceFieldMessage' => insuranceFieldMessage,
+    'insuranceMessageHint' => insuranceMessageHint,
+    'insuranceConsentRequired' => insuranceConsentRequired,
+    'insuranceLinkedToBooking' => insuranceLinkedToBooking,
+    'insuranceSend' => insuranceSend,
+    'insuranceSentTitle' => insuranceSentTitle,
+    'insuranceContinueOnPartner' => insuranceContinueOnPartner,
+    'insuranceErrorConsentRequired' => insuranceErrorConsentRequired,
+    'insuranceErrorCountryNotEligible' => insuranceErrorCountryNotEligible,
+    'insuranceErrorDuplicate' => insuranceErrorDuplicate,
+    'insuranceErrorNotFound' => insuranceErrorNotFound,
+    'insuranceErrorNotOpen' => insuranceErrorNotOpen,
+    'insuranceRequestsEmptyTitle' => insuranceRequestsEmptyTitle,
+    'insuranceRequestsEmptyBody' => insuranceRequestsEmptyBody,
+    'insuranceKindQuote' => insuranceKindQuote,
+    'financingKindEligibility' => financingKindEligibility,
+    'insuranceStatusNew' => insuranceStatusNew,
+    'insuranceStatusInProgress' => insuranceStatusInProgress,
+    'insuranceStatusShared' => insuranceStatusShared,
+    'insuranceStatusClosed' => insuranceStatusClosed,
+    'insuranceStatusCancelled' => insuranceStatusCancelled,
+    'insuranceWithdraw' => insuranceWithdraw,
+    'insuranceWithdrawTitle' => insuranceWithdrawTitle,
+    'insuranceWithdrawn' => insuranceWithdrawn,
+    'insuranceProfileGroup' => insuranceProfileGroup,
+    'insuranceProfileTile' => insuranceProfileTile,
+    'insuranceProfileTileSubtitle' => insuranceProfileTileSubtitle,
+    'insuranceBookCardTitle' => insuranceBookCardTitle,
+    'insuranceBookCardBody' => insuranceBookCardBody,
+    'insuranceBookCardAction' => insuranceBookCardAction,
+    'financingInstallmentsSubtitle' => financingInstallmentsSubtitle,
+    'financingPickDateFirst' => financingPickDateFirst,
+    'financingInstallmentsUnavailable' => financingInstallmentsUnavailable,
+    'financingScheduleEstimate' => financingScheduleEstimate,
+    'financingSeePartners' => financingSeePartners,
+    'financingInstallmentsPastTreatment' => financingInstallmentsPastTreatment,
     _ => null,
   };
 
@@ -10503,6 +10577,264 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get consultBookVideoButton => _t('consultBookVideoButton') ?? base.consultBookVideoButton;
+
+  @override
+  String get insuranceScreenTitle => _t('insuranceScreenTitle') ?? base.insuranceScreenTitle;
+
+  @override
+  String get insuranceTabInsurance => _t('insuranceTabInsurance') ?? base.insuranceTabInsurance;
+
+  @override
+  String get insuranceTabPayLater => _t('insuranceTabPayLater') ?? base.insuranceTabPayLater;
+
+  @override
+  String get insuranceTabRequests => _t('insuranceTabRequests') ?? base.insuranceTabRequests;
+
+  @override
+  String get insuranceDisclaimer => _t('insuranceDisclaimer') ?? base.insuranceDisclaimer;
+
+  @override
+  String get financingDisclaimer => _t('financingDisclaimer') ?? base.financingDisclaimer;
+
+  @override
+  String get financingPartnerDecides => _t('financingPartnerDecides') ?? base.financingPartnerDecides;
+
+  @override
+  String insuranceCountryFor(String country) => _f('insuranceCountryFor', {'country': country}) ?? base.insuranceCountryFor(country);
+
+  @override
+  String get insuranceCountryAll => _t('insuranceCountryAll') ?? base.insuranceCountryAll;
+
+  @override
+  String get insuranceCountryPick => _t('insuranceCountryPick') ?? base.insuranceCountryPick;
+
+  @override
+  String get insuranceEmptyTitle => _t('insuranceEmptyTitle') ?? base.insuranceEmptyTitle;
+
+  @override
+  String get insuranceEmptyBody => _t('insuranceEmptyBody') ?? base.insuranceEmptyBody;
+
+  @override
+  String get financingEmptyTitle => _t('financingEmptyTitle') ?? base.financingEmptyTitle;
+
+  @override
+  String get financingEmptyBody => _t('financingEmptyBody') ?? base.financingEmptyBody;
+
+  @override
+  String get insuranceCategoryMedicalTravel => _t('insuranceCategoryMedicalTravel') ?? base.insuranceCategoryMedicalTravel;
+
+  @override
+  String get insuranceCategoryComplication => _t('insuranceCategoryComplication') ?? base.insuranceCategoryComplication;
+
+  @override
+  String get insuranceCategoryHealth => _t('insuranceCategoryHealth') ?? base.insuranceCategoryHealth;
+
+  @override
+  String get insuranceCategoryOther => _t('insuranceCategoryOther') ?? base.insuranceCategoryOther;
+
+  @override
+  String get insuranceEligibleAll => _t('insuranceEligibleAll') ?? base.insuranceEligibleAll;
+
+  @override
+  String insuranceEligibleCountries(String countries) => _f('insuranceEligibleCountries', {'countries': countries}) ?? base.insuranceEligibleCountries(countries);
+
+  @override
+  String get insuranceNotInYourCountry => _t('insuranceNotInYourCountry') ?? base.insuranceNotInYourCountry;
+
+  @override
+  String insurancePriceIndicative(String price) => _f('insurancePriceIndicative', {'price': price}) ?? base.insurancePriceIndicative(price);
+
+  @override
+  String get insurancePriceOnRequest => _t('insurancePriceOnRequest') ?? base.insurancePriceOnRequest;
+
+  @override
+  String get insuranceRequestQuote => _t('insuranceRequestQuote') ?? base.insuranceRequestQuote;
+
+  @override
+  String get insuranceVisitWebsite => _t('insuranceVisitWebsite') ?? base.insuranceVisitWebsite;
+
+  @override
+  String get insuranceCouldNotOpen => _t('insuranceCouldNotOpen') ?? base.insuranceCouldNotOpen;
+
+  @override
+  String get financingCheckEligibility => _t('financingCheckEligibility') ?? base.financingCheckEligibility;
+
+  @override
+  String get insuranceFormTitle => _t('insuranceFormTitle') ?? base.insuranceFormTitle;
+
+  @override
+  String get financingFormTitle => _t('financingFormTitle') ?? base.financingFormTitle;
+
+  @override
+  String insuranceFormIntro(String provider) => _f('insuranceFormIntro', {'provider': provider}) ?? base.insuranceFormIntro(provider);
+
+  @override
+  String financingFormIntro(String provider) => _f('financingFormIntro', {'provider': provider}) ?? base.financingFormIntro(provider);
+
+  @override
+  String get insuranceFieldName => _t('insuranceFieldName') ?? base.insuranceFieldName;
+
+  @override
+  String get insuranceFieldEmail => _t('insuranceFieldEmail') ?? base.insuranceFieldEmail;
+
+  @override
+  String get insuranceFieldPhone => _t('insuranceFieldPhone') ?? base.insuranceFieldPhone;
+
+  @override
+  String get insuranceNameRequired => _t('insuranceNameRequired') ?? base.insuranceNameRequired;
+
+  @override
+  String get insuranceEmailInvalid => _t('insuranceEmailInvalid') ?? base.insuranceEmailInvalid;
+
+  @override
+  String get insuranceContactRequired => _t('insuranceContactRequired') ?? base.insuranceContactRequired;
+
+  @override
+  String get insurancePreferredContact => _t('insurancePreferredContact') ?? base.insurancePreferredContact;
+
+  @override
+  String get insuranceContactEmail => _t('insuranceContactEmail') ?? base.insuranceContactEmail;
+
+  @override
+  String get insuranceContactPhone => _t('insuranceContactPhone') ?? base.insuranceContactPhone;
+
+  @override
+  String get insuranceContactWhatsapp => _t('insuranceContactWhatsapp') ?? base.insuranceContactWhatsapp;
+
+  @override
+  String get insuranceFieldCountry => _t('insuranceFieldCountry') ?? base.insuranceFieldCountry;
+
+  @override
+  String get insuranceFieldCountryNotSet => _t('insuranceFieldCountryNotSet') ?? base.insuranceFieldCountryNotSet;
+
+  @override
+  String get insuranceFieldMessage => _t('insuranceFieldMessage') ?? base.insuranceFieldMessage;
+
+  @override
+  String get insuranceMessageHint => _t('insuranceMessageHint') ?? base.insuranceMessageHint;
+
+  @override
+  String insuranceConsentText(String provider) => _f('insuranceConsentText', {'provider': provider}) ?? base.insuranceConsentText(provider);
+
+  @override
+  String get insuranceConsentRequired => _t('insuranceConsentRequired') ?? base.insuranceConsentRequired;
+
+  @override
+  String get insuranceLinkedToBooking => _t('insuranceLinkedToBooking') ?? base.insuranceLinkedToBooking;
+
+  @override
+  String get insuranceSend => _t('insuranceSend') ?? base.insuranceSend;
+
+  @override
+  String get insuranceSentTitle => _t('insuranceSentTitle') ?? base.insuranceSentTitle;
+
+  @override
+  String insuranceSentBody(String provider) => _f('insuranceSentBody', {'provider': provider}) ?? base.insuranceSentBody(provider);
+
+  @override
+  String get insuranceContinueOnPartner => _t('insuranceContinueOnPartner') ?? base.insuranceContinueOnPartner;
+
+  @override
+  String get insuranceErrorConsentRequired => _t('insuranceErrorConsentRequired') ?? base.insuranceErrorConsentRequired;
+
+  @override
+  String get insuranceErrorCountryNotEligible => _t('insuranceErrorCountryNotEligible') ?? base.insuranceErrorCountryNotEligible;
+
+  @override
+  String get insuranceErrorDuplicate => _t('insuranceErrorDuplicate') ?? base.insuranceErrorDuplicate;
+
+  @override
+  String get insuranceErrorNotFound => _t('insuranceErrorNotFound') ?? base.insuranceErrorNotFound;
+
+  @override
+  String get insuranceErrorNotOpen => _t('insuranceErrorNotOpen') ?? base.insuranceErrorNotOpen;
+
+  @override
+  String get insuranceRequestsEmptyTitle => _t('insuranceRequestsEmptyTitle') ?? base.insuranceRequestsEmptyTitle;
+
+  @override
+  String get insuranceRequestsEmptyBody => _t('insuranceRequestsEmptyBody') ?? base.insuranceRequestsEmptyBody;
+
+  @override
+  String get insuranceKindQuote => _t('insuranceKindQuote') ?? base.insuranceKindQuote;
+
+  @override
+  String get financingKindEligibility => _t('financingKindEligibility') ?? base.financingKindEligibility;
+
+  @override
+  String get insuranceStatusNew => _t('insuranceStatusNew') ?? base.insuranceStatusNew;
+
+  @override
+  String get insuranceStatusInProgress => _t('insuranceStatusInProgress') ?? base.insuranceStatusInProgress;
+
+  @override
+  String get insuranceStatusShared => _t('insuranceStatusShared') ?? base.insuranceStatusShared;
+
+  @override
+  String get insuranceStatusClosed => _t('insuranceStatusClosed') ?? base.insuranceStatusClosed;
+
+  @override
+  String get insuranceStatusCancelled => _t('insuranceStatusCancelled') ?? base.insuranceStatusCancelled;
+
+  @override
+  String insuranceStatusSemantics(String status) => _f('insuranceStatusSemantics', {'status': status}) ?? base.insuranceStatusSemantics(status);
+
+  @override
+  String insuranceRequestSentOn(String date) => _f('insuranceRequestSentOn', {'date': date}) ?? base.insuranceRequestSentOn(date);
+
+  @override
+  String get insuranceWithdraw => _t('insuranceWithdraw') ?? base.insuranceWithdraw;
+
+  @override
+  String get insuranceWithdrawTitle => _t('insuranceWithdrawTitle') ?? base.insuranceWithdrawTitle;
+
+  @override
+  String insuranceWithdrawBody(String provider) => _f('insuranceWithdrawBody', {'provider': provider}) ?? base.insuranceWithdrawBody(provider);
+
+  @override
+  String get insuranceWithdrawn => _t('insuranceWithdrawn') ?? base.insuranceWithdrawn;
+
+  @override
+  String get insuranceProfileGroup => _t('insuranceProfileGroup') ?? base.insuranceProfileGroup;
+
+  @override
+  String get insuranceProfileTile => _t('insuranceProfileTile') ?? base.insuranceProfileTile;
+
+  @override
+  String get insuranceProfileTileSubtitle => _t('insuranceProfileTileSubtitle') ?? base.insuranceProfileTileSubtitle;
+
+  @override
+  String get insuranceBookCardTitle => _t('insuranceBookCardTitle') ?? base.insuranceBookCardTitle;
+
+  @override
+  String get insuranceBookCardBody => _t('insuranceBookCardBody') ?? base.insuranceBookCardBody;
+
+  @override
+  String get insuranceBookCardAction => _t('insuranceBookCardAction') ?? base.insuranceBookCardAction;
+
+  @override
+  String get financingInstallmentsSubtitle => _t('financingInstallmentsSubtitle') ?? base.financingInstallmentsSubtitle;
+
+  @override
+  String get financingPickDateFirst => _t('financingPickDateFirst') ?? base.financingPickDateFirst;
+
+  @override
+  String get financingInstallmentsUnavailable => _t('financingInstallmentsUnavailable') ?? base.financingInstallmentsUnavailable;
+
+  @override
+  String financingInterestFreeNote(String date) => _f('financingInterestFreeNote', {'date': date}) ?? base.financingInterestFreeNote(date);
+
+  @override
+  String financingScheduleItem(int seq, String date) => _f('financingScheduleItem', {'seq': seq, 'date': date}) ?? base.financingScheduleItem(seq, date);
+
+  @override
+  String get financingScheduleEstimate => _t('financingScheduleEstimate') ?? base.financingScheduleEstimate;
+
+  @override
+  String get financingSeePartners => _t('financingSeePartners') ?? base.financingSeePartners;
+
+  @override
+  String get financingInstallmentsPastTreatment => _t('financingInstallmentsPastTreatment') ?? base.financingInstallmentsPastTreatment;
 }
 
 /// Every ARB key, in template order.
@@ -13212,4 +13544,90 @@ const List<String> kL10nKeys = [
   'consultOpenCase',
   'consultNotesSection',
   'consultBookVideoButton',
+  'insuranceScreenTitle',
+  'insuranceTabInsurance',
+  'insuranceTabPayLater',
+  'insuranceTabRequests',
+  'insuranceDisclaimer',
+  'financingDisclaimer',
+  'financingPartnerDecides',
+  'insuranceCountryFor',
+  'insuranceCountryAll',
+  'insuranceCountryPick',
+  'insuranceEmptyTitle',
+  'insuranceEmptyBody',
+  'financingEmptyTitle',
+  'financingEmptyBody',
+  'insuranceCategoryMedicalTravel',
+  'insuranceCategoryComplication',
+  'insuranceCategoryHealth',
+  'insuranceCategoryOther',
+  'insuranceEligibleAll',
+  'insuranceEligibleCountries',
+  'insuranceNotInYourCountry',
+  'insurancePriceIndicative',
+  'insurancePriceOnRequest',
+  'insuranceRequestQuote',
+  'insuranceVisitWebsite',
+  'insuranceCouldNotOpen',
+  'financingCheckEligibility',
+  'insuranceFormTitle',
+  'financingFormTitle',
+  'insuranceFormIntro',
+  'financingFormIntro',
+  'insuranceFieldName',
+  'insuranceFieldEmail',
+  'insuranceFieldPhone',
+  'insuranceNameRequired',
+  'insuranceEmailInvalid',
+  'insuranceContactRequired',
+  'insurancePreferredContact',
+  'insuranceContactEmail',
+  'insuranceContactPhone',
+  'insuranceContactWhatsapp',
+  'insuranceFieldCountry',
+  'insuranceFieldCountryNotSet',
+  'insuranceFieldMessage',
+  'insuranceMessageHint',
+  'insuranceConsentText',
+  'insuranceConsentRequired',
+  'insuranceLinkedToBooking',
+  'insuranceSend',
+  'insuranceSentTitle',
+  'insuranceSentBody',
+  'insuranceContinueOnPartner',
+  'insuranceErrorConsentRequired',
+  'insuranceErrorCountryNotEligible',
+  'insuranceErrorDuplicate',
+  'insuranceErrorNotFound',
+  'insuranceErrorNotOpen',
+  'insuranceRequestsEmptyTitle',
+  'insuranceRequestsEmptyBody',
+  'insuranceKindQuote',
+  'financingKindEligibility',
+  'insuranceStatusNew',
+  'insuranceStatusInProgress',
+  'insuranceStatusShared',
+  'insuranceStatusClosed',
+  'insuranceStatusCancelled',
+  'insuranceStatusSemantics',
+  'insuranceRequestSentOn',
+  'insuranceWithdraw',
+  'insuranceWithdrawTitle',
+  'insuranceWithdrawBody',
+  'insuranceWithdrawn',
+  'insuranceProfileGroup',
+  'insuranceProfileTile',
+  'insuranceProfileTileSubtitle',
+  'insuranceBookCardTitle',
+  'insuranceBookCardBody',
+  'insuranceBookCardAction',
+  'financingInstallmentsSubtitle',
+  'financingPickDateFirst',
+  'financingInstallmentsUnavailable',
+  'financingInterestFreeNote',
+  'financingScheduleItem',
+  'financingScheduleEstimate',
+  'financingSeePartners',
+  'financingInstallmentsPastTreatment',
 ];

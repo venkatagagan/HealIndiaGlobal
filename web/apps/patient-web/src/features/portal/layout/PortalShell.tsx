@@ -15,6 +15,7 @@ import {
   Plane,
   Receipt,
   Search,
+  ShieldCheck,
   Star,
   Stethoscope,
   User,
@@ -73,6 +74,7 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
       children: [
         { to: paths.bookings, label: t('shell.nav.bookings'), icon: CalendarCheck },
         { to: paths.payments, label: t('shell.nav.payments'), icon: Receipt },
+        { to: paths.insurance(), label: t('insurance.navLabel'), icon: ShieldCheck },
       ],
     },
     {
@@ -292,6 +294,10 @@ export function PortalShell() {
             <Link to={paths.saved} role="menuitem" className={MENU_LINK}>
               <Bookmark className="size-4 text-muted" aria-hidden />
               {t('shell.menu.saved')}
+            </Link>
+            <Link to={paths.insurance()} role="menuitem" className={MENU_LINK}>
+              <ShieldCheck className="size-4 text-muted" aria-hidden />
+              {t('insurance.navLabel')}
             </Link>
           </>
         }

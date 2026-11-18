@@ -13145,5 +13145,425 @@
   "consultBookVideoButton": "Book video consultation",
   "@consultBookVideoButton": {
     "description": "Button on a doctor page: book a video consultation with this doctor"
+  },
+  "insuranceScreenTitle": "Insurance and pay later",
+  "@insuranceScreenTitle": {
+    "description": "Title of the insurance and pay-later partners screen."
+  },
+  "insuranceTabInsurance": "Insurance",
+  "@insuranceTabInsurance": {
+    "description": "Tab: partner insurance products."
+  },
+  "insuranceTabPayLater": "Pay later",
+  "@insuranceTabPayLater": {
+    "description": "Tab: pay-later (financing) partners."
+  },
+  "insuranceTabRequests": "My requests",
+  "@insuranceTabRequests": {
+    "description": "Tab: the patient's quote requests and eligibility checks."
+  },
+  "insuranceDisclaimer": "Heal India Global does not sell insurance and is not an insurance intermediary. We list partner products for information only. The insurer decides cover, price and terms; read their policy documents before you buy.",
+  "@insuranceDisclaimer": {
+    "description": "Insurance disclaimer, always visible. Legal wording: translate faithfully, do not add or drop conditions."
+  },
+  "financingDisclaimer": "Heal India Global does not lend money or make credit decisions. Pay-later plans and loans are offered by the partner, on the partner's terms, after their own checks. Our own instalment plans are interest-free and must be paid in full before your treatment date.",
+  "@financingDisclaimer": {
+    "description": "Pay-later disclaimer, always visible. Legal / financial wording: translate faithfully, do not add or drop conditions."
+  },
+  "financingPartnerDecides": "The partner checks your eligibility and decides on its own website, on its own terms. Heal India Global makes no credit decision.",
+  "@financingPartnerDecides": {
+    "description": "Pay-later tab: explains who decides. Legal / financial wording: translate faithfully."
+  },
+  "insuranceCountryFor": "Options for {country}",
+  "@insuranceCountryFor": {
+    "description": "Header above the partner list. {country} is a country name.",
+    "placeholders": {
+      "country": {
+        "type": "String",
+        "example": "Nigeria"
+      }
+    }
+  },
+  "insuranceCountryAll": "Options for every country",
+  "@insuranceCountryAll": {
+    "description": "Header above the partner list when no country is chosen."
+  },
+  "insuranceCountryPick": "Choose your country",
+  "@insuranceCountryPick": {
+    "description": "Title of the country picker on the insurance screen."
+  },
+  "insuranceEmptyTitle": "No insurance options yet",
+  "@insuranceEmptyTitle": {
+    "description": "Empty state: no insurance product for this country."
+  },
+  "insuranceEmptyBody": "We have no partner insurance for this country right now. Check again later or ask our team.",
+  "@insuranceEmptyBody": {
+    "description": "Empty state body: no insurance product for this country."
+  },
+  "financingEmptyTitle": "No pay-later partners yet",
+  "@financingEmptyTitle": {
+    "description": "Empty state: no pay-later partner for this country."
+  },
+  "financingEmptyBody": "There is no pay-later partner for this country right now. Our interest-free instalment plan is still available when you book.",
+  "@financingEmptyBody": {
+    "description": "Empty state body: no pay-later partner. Financial wording: translate faithfully."
+  },
+  "insuranceCategoryMedicalTravel": "Medical travel insurance",
+  "@insuranceCategoryMedicalTravel": {
+    "description": "Insurance category: medical travel insurance."
+  },
+  "insuranceCategoryComplication": "Complication cover",
+  "@insuranceCategoryComplication": {
+    "description": "Insurance category: cover for complications of a treatment."
+  },
+  "insuranceCategoryHealth": "Health insurance",
+  "@insuranceCategoryHealth": {
+    "description": "Insurance category: health insurance."
+  },
+  "insuranceCategoryOther": "Other cover",
+  "@insuranceCategoryOther": {
+    "description": "Insurance category: other."
+  },
+  "insuranceEligibleAll": "Available in every country",
+  "@insuranceEligibleAll": {
+    "description": "Partner card: the partner serves every country."
+  },
+  "insuranceEligibleCountries": "Available in: {countries}",
+  "@insuranceEligibleCountries": {
+    "description": "Partner card: list of countries the partner serves. {countries} is a comma-separated list of country names.",
+    "placeholders": {
+      "countries": {
+        "type": "String",
+        "example": "Nigeria, Ghana"
+      }
+    }
+  },
+  "insuranceNotInYourCountry": "This partner does not list your country.",
+  "@insuranceNotInYourCountry": {
+    "description": "Partner card: warning that the partner does not serve the selected country."
+  },
+  "insurancePriceIndicative": "Indicative price: {price}",
+  "@insurancePriceIndicative": {
+    "description": "Partner card: indicative price range set by the partner, not a quote. {price} is a formatted amount or range. Price wording: translate faithfully.",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$40 - $120"
+      }
+    }
+  },
+  "insurancePriceOnRequest": "Price on request from the partner",
+  "@insurancePriceOnRequest": {
+    "description": "Partner card: no indicative price listed."
+  },
+  "insuranceRequestQuote": "Request a quote from the insurer",
+  "@insuranceRequestQuote": {
+    "description": "Button: open the form to ask the insurer for a quote."
+  },
+  "insuranceVisitWebsite": "Partner website",
+  "@insuranceVisitWebsite": {
+    "description": "Button: open the partner's own website."
+  },
+  "insuranceCouldNotOpen": "Could not open the partner's website.",
+  "@insuranceCouldNotOpen": {
+    "description": "Snackbar when the partner link cannot be opened."
+  },
+  "financingCheckEligibility": "Check eligibility",
+  "@financingCheckEligibility": {
+    "description": "Button: ask a pay-later partner to check eligibility."
+  },
+  "insuranceFormTitle": "Request a quote from the insurer",
+  "@insuranceFormTitle": {
+    "description": "Title of the insurance quote request form."
+  },
+  "financingFormTitle": "Check your eligibility",
+  "@financingFormTitle": {
+    "description": "Title of the pay-later eligibility form."
+  },
+  "insuranceFormIntro": "We pass your contact details to {provider}. They contact you directly with a quote.",
+  "@insuranceFormIntro": {
+    "description": "Insurance form intro. {provider} is the insurer's name. Privacy wording: translate faithfully.",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "SafeTravel Insurance"
+      }
+    }
+  },
+  "financingFormIntro": "We pass your contact details to {provider}. They check your eligibility and contact you directly.",
+  "@financingFormIntro": {
+    "description": "Pay-later form intro. {provider} is the partner's name. Privacy / financial wording: translate faithfully.",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "EasyPay Finance"
+      }
+    }
+  },
+  "insuranceFieldName": "Your name",
+  "@insuranceFieldName": {
+    "description": "Form field: contact name."
+  },
+  "insuranceFieldEmail": "Email",
+  "@insuranceFieldEmail": {
+    "description": "Form field: contact email."
+  },
+  "insuranceFieldPhone": "Phone (with country code)",
+  "@insuranceFieldPhone": {
+    "description": "Form field: contact phone number."
+  },
+  "insuranceNameRequired": "Enter your name.",
+  "@insuranceNameRequired": {
+    "description": "Validation: contact name missing."
+  },
+  "insuranceEmailInvalid": "Enter a valid email address.",
+  "@insuranceEmailInvalid": {
+    "description": "Validation: email looks wrong."
+  },
+  "insuranceContactRequired": "Give an email address or a phone number.",
+  "@insuranceContactRequired": {
+    "description": "Validation: neither email nor phone was given."
+  },
+  "insurancePreferredContact": "How should they contact you?",
+  "@insurancePreferredContact": {
+    "description": "Form: preferred contact channel."
+  },
+  "insuranceContactEmail": "Email",
+  "@insuranceContactEmail": {
+    "description": "Preferred contact option: email."
+  },
+  "insuranceContactPhone": "Phone",
+  "@insuranceContactPhone": {
+    "description": "Preferred contact option: phone call."
+  },
+  "insuranceContactWhatsapp": "WhatsApp",
+  "@insuranceContactWhatsapp": {
+    "description": "Preferred contact option: WhatsApp."
+  },
+  "insuranceFieldCountry": "Country of residence",
+  "@insuranceFieldCountry": {
+    "description": "Form field: the patient's country."
+  },
+  "insuranceFieldCountryNotSet": "Not set",
+  "@insuranceFieldCountryNotSet": {
+    "description": "Form: no country chosen yet."
+  },
+  "insuranceFieldMessage": "Message (optional)",
+  "@insuranceFieldMessage": {
+    "description": "Form field: optional message to the partner."
+  },
+  "insuranceMessageHint": "Do not include medical details.",
+  "@insuranceMessageHint": {
+    "description": "Hint under the message field. Privacy wording: translate faithfully."
+  },
+  "insuranceConsentText": "I agree that Heal India Global may share my name and contact details with {provider} so they can contact me about this request. No medical information is shared.",
+  "@insuranceConsentText": {
+    "description": "Required consent checkbox. {provider} is the partner's name. Legal / privacy wording: translate faithfully, keep the meaning exact.",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "SafeTravel Insurance"
+      }
+    }
+  },
+  "insuranceConsentRequired": "Tick the box to agree before you send the request.",
+  "@insuranceConsentRequired": {
+    "description": "Validation: consent checkbox not ticked."
+  },
+  "insuranceLinkedToBooking": "This request is linked to your treatment case.",
+  "@insuranceLinkedToBooking": {
+    "description": "Form note: the request includes the case / booking it was opened from."
+  },
+  "insuranceSend": "Send request",
+  "@insuranceSend": {
+    "description": "Button: send the quote request / eligibility check."
+  },
+  "insuranceSentTitle": "Request sent",
+  "@insuranceSentTitle": {
+    "description": "Success title after sending a request to a partner."
+  },
+  "insuranceSentBody": "{provider} will contact you. You can follow this request under My requests.",
+  "@insuranceSentBody": {
+    "description": "Success body. {provider} is the partner's name.",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "SafeTravel Insurance"
+      }
+    }
+  },
+  "insuranceContinueOnPartner": "Continue on the partner's site",
+  "@insuranceContinueOnPartner": {
+    "description": "Button: hand-off to the partner's own website."
+  },
+  "insuranceErrorConsentRequired": "Please agree to share your contact details first.",
+  "@insuranceErrorConsentRequired": {
+    "description": "Error: the consent was not given (consent_required)."
+  },
+  "insuranceErrorCountryNotEligible": "This partner does not serve your country. Choose another option or change the country.",
+  "@insuranceErrorCountryNotEligible": {
+    "description": "Error: the partner does not serve the patient's country (partner_country_not_eligible)."
+  },
+  "insuranceErrorDuplicate": "You already have an open request with this partner.",
+  "@insuranceErrorDuplicate": {
+    "description": "Error: a request to this partner is already open (duplicate_request)."
+  },
+  "insuranceErrorNotFound": "This option is no longer available. Refresh the list.",
+  "@insuranceErrorNotFound": {
+    "description": "Error: the product / partner was removed (offering_not_found)."
+  },
+  "insuranceErrorNotOpen": "This request is already closed.",
+  "@insuranceErrorNotOpen": {
+    "description": "Error: the request can no longer be withdrawn (lead_not_open)."
+  },
+  "insuranceRequestsEmptyTitle": "No requests yet",
+  "@insuranceRequestsEmptyTitle": {
+    "description": "Empty state: no quote requests or eligibility checks."
+  },
+  "insuranceRequestsEmptyBody": "Quote requests and eligibility checks you send to partners appear here.",
+  "@insuranceRequestsEmptyBody": {
+    "description": "Empty state body for My requests."
+  },
+  "insuranceKindQuote": "Insurance quote",
+  "@insuranceKindQuote": {
+    "description": "Request type label: insurance quote request."
+  },
+  "financingKindEligibility": "Pay-later eligibility",
+  "@financingKindEligibility": {
+    "description": "Request type label: pay-later eligibility check."
+  },
+  "insuranceStatusNew": "Sent",
+  "@insuranceStatusNew": {
+    "description": "Request status: new, not yet handled."
+  },
+  "insuranceStatusInProgress": "In progress",
+  "@insuranceStatusInProgress": {
+    "description": "Request status: being handled by our team."
+  },
+  "insuranceStatusShared": "Passed to partner",
+  "@insuranceStatusShared": {
+    "description": "Request status: contact details shared with the partner."
+  },
+  "insuranceStatusClosed": "Closed",
+  "@insuranceStatusClosed": {
+    "description": "Request status: closed."
+  },
+  "insuranceStatusCancelled": "Withdrawn",
+  "@insuranceStatusCancelled": {
+    "description": "Request status: withdrawn by the patient."
+  },
+  "insuranceStatusSemantics": "Status: {status}",
+  "@insuranceStatusSemantics": {
+    "description": "Screen reader label of a status chip. {status} is a status label.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "In progress"
+      }
+    }
+  },
+  "insuranceRequestSentOn": "Sent on {date}",
+  "@insuranceRequestSentOn": {
+    "description": "When a request was sent. {date} is a formatted date.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "18 Nov 2026"
+      }
+    }
+  },
+  "insuranceWithdraw": "Withdraw",
+  "@insuranceWithdraw": {
+    "description": "Button: withdraw a request."
+  },
+  "insuranceWithdrawTitle": "Withdraw this request?",
+  "@insuranceWithdrawTitle": {
+    "description": "Confirm dialog title: withdraw a request."
+  },
+  "insuranceWithdrawBody": "This also withdraws your consent to share your contact details with {provider}. If they already received your details, ask them directly to delete them.",
+  "@insuranceWithdrawBody": {
+    "description": "Confirm dialog body: withdrawing a request and consent. {provider} is the partner's name. Privacy wording: translate faithfully.",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "SafeTravel Insurance"
+      }
+    }
+  },
+  "insuranceWithdrawn": "Request withdrawn.",
+  "@insuranceWithdrawn": {
+    "description": "Snackbar after withdrawing a request."
+  },
+  "insuranceProfileGroup": "Insurance and payments",
+  "@insuranceProfileGroup": {
+    "description": "Profile: section title for insurance and pay-later options."
+  },
+  "insuranceProfileTile": "Insurance and pay later",
+  "@insuranceProfileTile": {
+    "description": "Profile: link to the insurance and pay-later screen."
+  },
+  "insuranceProfileTileSubtitle": "Partner insurance, pay-later options and your requests",
+  "@insuranceProfileTileSubtitle": {
+    "description": "Profile: subtitle of the insurance and pay-later link."
+  },
+  "insuranceBookCardTitle": "Insurance options",
+  "@insuranceBookCardTitle": {
+    "description": "Booking: card linking to partner insurance options."
+  },
+  "insuranceBookCardBody": "Compare partner insurance for your trip and treatment. We do not sell insurance; the insurer decides cover and price.",
+  "@insuranceBookCardBody": {
+    "description": "Booking: short insurance disclaimer on the card. Legal wording: translate faithfully."
+  },
+  "insuranceBookCardAction": "See insurance options",
+  "@insuranceBookCardAction": {
+    "description": "Booking: button to open the insurance options."
+  },
+  "financingInstallmentsSubtitle": "Interest-free, paid off before your admission",
+  "@financingInstallmentsSubtitle": {
+    "description": "Booking: subtitle of the instalments option. Financial wording: translate faithfully."
+  },
+  "financingPickDateFirst": "Choose an admission date to see your instalment schedule.",
+  "@financingPickDateFirst": {
+    "description": "Booking: hint shown before an admission date is picked."
+  },
+  "financingInstallmentsUnavailable": "Instalments are not possible for this admission date: they must be paid off before your treatment. Pay in full, pay the deposit, or choose a later date.",
+  "@financingInstallmentsUnavailable": {
+    "description": "Booking: why instalments are disabled for this date. Financial wording: translate faithfully."
+  },
+  "financingInterestFreeNote": "Interest-free. The last instalment is due before your admission on {date}.",
+  "@financingInterestFreeNote": {
+    "description": "Booking: instalment rule under the schedule. {date} is the admission date. Financial wording: translate faithfully.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12 Jan 2027"
+      }
+    }
+  },
+  "financingScheduleItem": "Instalment {seq}, due {date}",
+  "@financingScheduleItem": {
+    "description": "Booking: one row of the instalment schedule. {seq} is the instalment number, {date} the due date.",
+    "placeholders": {
+      "seq": {
+        "type": "int",
+        "example": "2"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 Dec 2026"
+      }
+    }
+  },
+  "financingScheduleEstimate": "Estimated amounts before fees. The final schedule is set when you book.",
+  "@financingScheduleEstimate": {
+    "description": "Booking: note that schedule amounts are estimates. Payment wording: translate faithfully."
+  },
+  "financingSeePartners": "Need longer to pay? See pay-later partners",
+  "@financingSeePartners": {
+    "description": "Booking: link to pay-later partners when a longer term is wanted."
+  },
+  "financingInstallmentsPastTreatment": "Instalments must be paid in full before your admission date. Choose fewer months, pay the deposit, or pick a later date.",
+  "@financingInstallmentsPastTreatment": {
+    "description": "Error installments_past_treatment: the plan would run past the treatment date. Financial wording: translate faithfully."
   }
 }

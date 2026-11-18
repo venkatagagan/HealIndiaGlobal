@@ -81,6 +81,13 @@ EMAIL_KINDS: frozenset[str] = frozenset(
         # moderation / website
         "moderation.warning",
         "site_enquiry.created",
+        # insurance / pay-later partner leads
+        "insurance.request_received",
+        "insurance.request_updated",
+        "insurance.request_new",
+        "financing.request_received",
+        "financing.request_updated",
+        "financing.request_new",
     }
 )
 

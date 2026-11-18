@@ -6,6 +6,7 @@ export const OPS_BASE = '';
 
 export const opsPaths = {
   dashboard: `${OPS_BASE}/dashboard`,
+  analytics: `${OPS_BASE}/analytics`,
   users: `${OPS_BASE}/users`,
   staff: `${OPS_BASE}/staff`,
   hospitals: `${OPS_BASE}/hospitals`,
@@ -29,4 +30,8 @@ export const opsPaths = {
   reviews: `${OPS_BASE}/reviews`,
   introCalls: `${OPS_BASE}/intro-calls`,
   visaRules: `${OPS_BASE}/visa-rules`,
+  insuranceProducts: `${OPS_BASE}/insurance/products`,
+  insuranceRequests: `${OPS_BASE}/insurance/requests`,
+  financingPartners: `${OPS_BASE}/financing/partners`,
+  financingRequests: `${OPS_BASE}/financing/requests`,
 } as const;

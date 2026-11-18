@@ -490,5 +490,41 @@
   },
   "sms": {
     "verification_code": "Your {app_name} code is {code}. It expires in {minutes} minutes. Do not share it."
+  },
+  "insurance": {
+    "notifications": {
+      "request_received": {
+        "title": "We received your insurance quote request",
+        "body": "We will pass your contact details to {provider} so they can contact you about {product}. Heal India Global does not sell insurance: the insurer decides cover, price and terms."
+      },
+      "request_updated": {
+        "title": "Update on your insurance request",
+        "body_in_progress": "Our team is working on your request for {product} from {provider}.",
+        "body_shared_with_partner": "We passed your contact details to {provider}. They will contact you about {product}.",
+        "body_closed": "Your request for {product} from {provider} is closed."
+      },
+      "staff_new": {
+        "title": "New insurance quote request",
+        "body": "{name} asked for a quote for {product} from {provider}."
+      }
+    }
+  },
+  "financing": {
+    "notifications": {
+      "request_received": {
+        "title": "We received your pay-later eligibility request",
+        "body": "We will pass your contact details to {provider} so they can check your eligibility for {product}. Heal India Global does not lend money or make credit decisions."
+      },
+      "request_updated": {
+        "title": "Update on your pay-later request",
+        "body_in_progress": "Our team is working on your eligibility request for {product} from {provider}.",
+        "body_shared_with_partner": "We passed your contact details to {provider}. They will contact you about {product} and decide on eligibility.",
+        "body_closed": "Your eligibility request for {product} from {provider} is closed."
+      },
+      "staff_new": {
+        "title": "New pay-later eligibility request",
+        "body": "{name} asked {provider} to check eligibility for {product}."
+      }
+    }
   }
 }

@@ -490,5 +490,41 @@
   },
   "sms": {
     "verification_code": "رمز {app_name} الخاص بك هو {code}. تنتهي صلاحيته خلال {minutes} دقائق. لا تشاركه مع أحد."
+  },
+  "insurance": {
+    "notifications": {
+      "request_received": {
+        "title": "تلقّينا طلبكم للحصول على عرض سعر تأمين",
+        "body": "سنُرسل بيانات التواصل الخاصة بكم إلى {provider} ليتواصل معكم بشأن {product}. لا تبيع Heal India Global التأمين: شركة التأمين هي التي تحدد التغطية والسعر والشروط."
+      },
+      "request_updated": {
+        "title": "تحديث بشأن طلب التأمين",
+        "body_in_progress": "يعمل فريقنا على طلبكم بخصوص {product} من {provider}.",
+        "body_shared_with_partner": "أرسلنا بيانات التواصل الخاصة بكم إلى {provider}، وسيتواصل معكم بشأن {product}.",
+        "body_closed": "أُغلق طلبكم بخصوص {product} من {provider}."
+      },
+      "staff_new": {
+        "title": "طلب جديد لعرض سعر تأمين",
+        "body": "طلب {name} عرض سعر لـ {product} من {provider}."
+      }
+    }
+  },
+  "financing": {
+    "notifications": {
+      "request_received": {
+        "title": "تلقّينا طلبكم للتحقق من أهلية الدفع لاحقًا",
+        "body": "سنُرسل بيانات التواصل الخاصة بكم إلى {provider} ليتحقق من أهليتكم لـ {product}. لا تُقرض Heal India Global الأموال ولا تتخذ أي قرار ائتماني."
+      },
+      "request_updated": {
+        "title": "تحديث بشأن طلب الدفع لاحقًا",
+        "body_in_progress": "يعمل فريقنا على طلب الأهلية الخاص بكم لـ {product} من {provider}.",
+        "body_shared_with_partner": "أرسلنا بيانات التواصل الخاصة بكم إلى {provider}، وسيتواصل معكم بشأن {product} ويقرر الأهلية.",
+        "body_closed": "أُغلق طلب الأهلية الخاص بكم لـ {product} من {provider}."
+      },
+      "staff_new": {
+        "title": "طلب جديد للتحقق من أهلية الدفع لاحقًا",
+        "body": "طلب {name} من {provider} التحقق من الأهلية لـ {product}."
+      }
+    }
   }
 }

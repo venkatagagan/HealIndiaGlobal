@@ -5,6 +5,7 @@ import { api, catalogApi, hospitalPortalApi, notificationsApi, type MedicalCounc
 export const qk = {
   profile: ['hospital-profile'] as const,
   dashboard: ['hospital-dashboard'] as const,
+  performance: (params: object) => ['hospital-performance', params] as const,
   specialties: ['specialties'] as const,
   medicalCouncils: ['medical-councils'] as const,
   procedures: (q?: string) => ['catalog-procedures', q ?? ''] as const,

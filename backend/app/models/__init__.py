@@ -42,6 +42,7 @@ from app.models.messaging import (
     Notification,
     SiteEnquiry,
 )
+from app.models.partners import PartnerLead, PartnerOffering
 from app.models.patients import PatientCompanion, PatientProfile, SavedItem
 from app.models.payments import Installment, Invoice, Payment, PaymentOrder, Refund, WebhookEvent
 from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
@@ -126,6 +127,8 @@ __all__ = [
     "PatientCompanion",
     "PatientProfile",
     "Payment",
+    "PartnerLead",
+    "PartnerOffering",
     "PaymentOrder",
     "Payout",
     "PayoutAccount",

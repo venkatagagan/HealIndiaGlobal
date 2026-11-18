@@ -16330,6 +16330,522 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Book video consultation'**
   String get consultBookVideoButton;
+
+  /// Title of the insurance and pay-later partners screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and pay later'**
+  String get insuranceScreenTitle;
+
+  /// Tab: partner insurance products.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance'**
+  String get insuranceTabInsurance;
+
+  /// Tab: pay-later (financing) partners.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay later'**
+  String get insuranceTabPayLater;
+
+  /// Tab: the patient's quote requests and eligibility checks.
+  ///
+  /// In en, this message translates to:
+  /// **'My requests'**
+  String get insuranceTabRequests;
+
+  /// Insurance disclaimer, always visible. Legal wording: translate faithfully, do not add or drop conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Heal India Global does not sell insurance and is not an insurance intermediary. We list partner products for information only. The insurer decides cover, price and terms; read their policy documents before you buy.'**
+  String get insuranceDisclaimer;
+
+  /// Pay-later disclaimer, always visible. Legal / financial wording: translate faithfully, do not add or drop conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Heal India Global does not lend money or make credit decisions. Pay-later plans and loans are offered by the partner, on the partner\'s terms, after their own checks. Our own instalment plans are interest-free and must be paid in full before your treatment date.'**
+  String get financingDisclaimer;
+
+  /// Pay-later tab: explains who decides. Legal / financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'The partner checks your eligibility and decides on its own website, on its own terms. Heal India Global makes no credit decision.'**
+  String get financingPartnerDecides;
+
+  /// Header above the partner list. {country} is a country name.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for {country}'**
+  String insuranceCountryFor(String country);
+
+  /// Header above the partner list when no country is chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for every country'**
+  String get insuranceCountryAll;
+
+  /// Title of the country picker on the insurance screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your country'**
+  String get insuranceCountryPick;
+
+  /// Empty state: no insurance product for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'No insurance options yet'**
+  String get insuranceEmptyTitle;
+
+  /// Empty state body: no insurance product for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'We have no partner insurance for this country right now. Check again later or ask our team.'**
+  String get insuranceEmptyBody;
+
+  /// Empty state: no pay-later partner for this country.
+  ///
+  /// In en, this message translates to:
+  /// **'No pay-later partners yet'**
+  String get financingEmptyTitle;
+
+  /// Empty state body: no pay-later partner. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no pay-later partner for this country right now. Our interest-free instalment plan is still available when you book.'**
+  String get financingEmptyBody;
+
+  /// Insurance category: medical travel insurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical travel insurance'**
+  String get insuranceCategoryMedicalTravel;
+
+  /// Insurance category: cover for complications of a treatment.
+  ///
+  /// In en, this message translates to:
+  /// **'Complication cover'**
+  String get insuranceCategoryComplication;
+
+  /// Insurance category: health insurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Health insurance'**
+  String get insuranceCategoryHealth;
+
+  /// Insurance category: other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other cover'**
+  String get insuranceCategoryOther;
+
+  /// Partner card: the partner serves every country.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in every country'**
+  String get insuranceEligibleAll;
+
+  /// Partner card: list of countries the partner serves. {countries} is a comma-separated list of country names.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in: {countries}'**
+  String insuranceEligibleCountries(String countries);
+
+  /// Partner card: warning that the partner does not serve the selected country.
+  ///
+  /// In en, this message translates to:
+  /// **'This partner does not list your country.'**
+  String get insuranceNotInYourCountry;
+
+  /// Partner card: indicative price range set by the partner, not a quote. {price} is a formatted amount or range. Price wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicative price: {price}'**
+  String insurancePriceIndicative(String price);
+
+  /// Partner card: no indicative price listed.
+  ///
+  /// In en, this message translates to:
+  /// **'Price on request from the partner'**
+  String get insurancePriceOnRequest;
+
+  /// Button: open the form to ask the insurer for a quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote from the insurer'**
+  String get insuranceRequestQuote;
+
+  /// Button: open the partner's own website.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner website'**
+  String get insuranceVisitWebsite;
+
+  /// Snackbar when the partner link cannot be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the partner\'s website.'**
+  String get insuranceCouldNotOpen;
+
+  /// Button: ask a pay-later partner to check eligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Check eligibility'**
+  String get financingCheckEligibility;
+
+  /// Title of the insurance quote request form.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote from the insurer'**
+  String get insuranceFormTitle;
+
+  /// Title of the pay-later eligibility form.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your eligibility'**
+  String get financingFormTitle;
+
+  /// Insurance form intro. {provider} is the insurer's name. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'We pass your contact details to {provider}. They contact you directly with a quote.'**
+  String insuranceFormIntro(String provider);
+
+  /// Pay-later form intro. {provider} is the partner's name. Privacy / financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'We pass your contact details to {provider}. They check your eligibility and contact you directly.'**
+  String financingFormIntro(String provider);
+
+  /// Form field: contact name.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get insuranceFieldName;
+
+  /// Form field: contact email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get insuranceFieldEmail;
+
+  /// Form field: contact phone number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (with country code)'**
+  String get insuranceFieldPhone;
+
+  /// Validation: contact name missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name.'**
+  String get insuranceNameRequired;
+
+  /// Validation: email looks wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get insuranceEmailInvalid;
+
+  /// Validation: neither email nor phone was given.
+  ///
+  /// In en, this message translates to:
+  /// **'Give an email address or a phone number.'**
+  String get insuranceContactRequired;
+
+  /// Form: preferred contact channel.
+  ///
+  /// In en, this message translates to:
+  /// **'How should they contact you?'**
+  String get insurancePreferredContact;
+
+  /// Preferred contact option: email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get insuranceContactEmail;
+
+  /// Preferred contact option: phone call.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get insuranceContactPhone;
+
+  /// Preferred contact option: WhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get insuranceContactWhatsapp;
+
+  /// Form field: the patient's country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get insuranceFieldCountry;
+
+  /// Form: no country chosen yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get insuranceFieldCountryNotSet;
+
+  /// Form field: optional message to the partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Message (optional)'**
+  String get insuranceFieldMessage;
+
+  /// Hint under the message field. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not include medical details.'**
+  String get insuranceMessageHint;
+
+  /// Required consent checkbox. {provider} is the partner's name. Legal / privacy wording: translate faithfully, keep the meaning exact.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree that Heal India Global may share my name and contact details with {provider} so they can contact me about this request. No medical information is shared.'**
+  String insuranceConsentText(String provider);
+
+  /// Validation: consent checkbox not ticked.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick the box to agree before you send the request.'**
+  String get insuranceConsentRequired;
+
+  /// Form note: the request includes the case / booking it was opened from.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is linked to your treatment case.'**
+  String get insuranceLinkedToBooking;
+
+  /// Button: send the quote request / eligibility check.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get insuranceSend;
+
+  /// Success title after sending a request to a partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent'**
+  String get insuranceSentTitle;
+
+  /// Success body. {provider} is the partner's name.
+  ///
+  /// In en, this message translates to:
+  /// **'{provider} will contact you. You can follow this request under My requests.'**
+  String insuranceSentBody(String provider);
+
+  /// Button: hand-off to the partner's own website.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue on the partner\'s site'**
+  String get insuranceContinueOnPartner;
+
+  /// Error: the consent was not given (consent_required).
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to share your contact details first.'**
+  String get insuranceErrorConsentRequired;
+
+  /// Error: the partner does not serve the patient's country (partner_country_not_eligible).
+  ///
+  /// In en, this message translates to:
+  /// **'This partner does not serve your country. Choose another option or change the country.'**
+  String get insuranceErrorCountryNotEligible;
+
+  /// Error: a request to this partner is already open (duplicate_request).
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an open request with this partner.'**
+  String get insuranceErrorDuplicate;
+
+  /// Error: the product / partner was removed (offering_not_found).
+  ///
+  /// In en, this message translates to:
+  /// **'This option is no longer available. Refresh the list.'**
+  String get insuranceErrorNotFound;
+
+  /// Error: the request can no longer be withdrawn (lead_not_open).
+  ///
+  /// In en, this message translates to:
+  /// **'This request is already closed.'**
+  String get insuranceErrorNotOpen;
+
+  /// Empty state: no quote requests or eligibility checks.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests yet'**
+  String get insuranceRequestsEmptyTitle;
+
+  /// Empty state body for My requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote requests and eligibility checks you send to partners appear here.'**
+  String get insuranceRequestsEmptyBody;
+
+  /// Request type label: insurance quote request.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance quote'**
+  String get insuranceKindQuote;
+
+  /// Request type label: pay-later eligibility check.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay-later eligibility'**
+  String get financingKindEligibility;
+
+  /// Request status: new, not yet handled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get insuranceStatusNew;
+
+  /// Request status: being handled by our team.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get insuranceStatusInProgress;
+
+  /// Request status: contact details shared with the partner.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed to partner'**
+  String get insuranceStatusShared;
+
+  /// Request status: closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get insuranceStatusClosed;
+
+  /// Request status: withdrawn by the patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn'**
+  String get insuranceStatusCancelled;
+
+  /// Screen reader label of a status chip. {status} is a status label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String insuranceStatusSemantics(String status);
+
+  /// When a request was sent. {date} is a formatted date.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String insuranceRequestSentOn(String date);
+
+  /// Button: withdraw a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get insuranceWithdraw;
+
+  /// Confirm dialog title: withdraw a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw this request?'**
+  String get insuranceWithdrawTitle;
+
+  /// Confirm dialog body: withdrawing a request and consent. {provider} is the partner's name. Privacy wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'This also withdraws your consent to share your contact details with {provider}. If they already received your details, ask them directly to delete them.'**
+  String insuranceWithdrawBody(String provider);
+
+  /// Snackbar after withdrawing a request.
+  ///
+  /// In en, this message translates to:
+  /// **'Request withdrawn.'**
+  String get insuranceWithdrawn;
+
+  /// Profile: section title for insurance and pay-later options.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and payments'**
+  String get insuranceProfileGroup;
+
+  /// Profile: link to the insurance and pay-later screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance and pay later'**
+  String get insuranceProfileTile;
+
+  /// Profile: subtitle of the insurance and pay-later link.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner insurance, pay-later options and your requests'**
+  String get insuranceProfileTileSubtitle;
+
+  /// Booking: card linking to partner insurance options.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance options'**
+  String get insuranceBookCardTitle;
+
+  /// Booking: short insurance disclaimer on the card. Legal wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare partner insurance for your trip and treatment. We do not sell insurance; the insurer decides cover and price.'**
+  String get insuranceBookCardBody;
+
+  /// Booking: button to open the insurance options.
+  ///
+  /// In en, this message translates to:
+  /// **'See insurance options'**
+  String get insuranceBookCardAction;
+
+  /// Booking: subtitle of the instalments option. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest-free, paid off before your admission'**
+  String get financingInstallmentsSubtitle;
+
+  /// Booking: hint shown before an admission date is picked.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an admission date to see your instalment schedule.'**
+  String get financingPickDateFirst;
+
+  /// Booking: why instalments are disabled for this date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalments are not possible for this admission date: they must be paid off before your treatment. Pay in full, pay the deposit, or choose a later date.'**
+  String get financingInstallmentsUnavailable;
+
+  /// Booking: instalment rule under the schedule. {date} is the admission date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest-free. The last instalment is due before your admission on {date}.'**
+  String financingInterestFreeNote(String date);
+
+  /// Booking: one row of the instalment schedule. {seq} is the instalment number, {date} the due date.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalment {seq}, due {date}'**
+  String financingScheduleItem(int seq, String date);
+
+  /// Booking: note that schedule amounts are estimates. Payment wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated amounts before fees. The final schedule is set when you book.'**
+  String get financingScheduleEstimate;
+
+  /// Booking: link to pay-later partners when a longer term is wanted.
+  ///
+  /// In en, this message translates to:
+  /// **'Need longer to pay? See pay-later partners'**
+  String get financingSeePartners;
+
+  /// Error installments_past_treatment: the plan would run past the treatment date. Financial wording: translate faithfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Instalments must be paid in full before your admission date. Choose fewer months, pay the deposit, or pick a later date.'**
+  String get financingInstallmentsPastTreatment;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

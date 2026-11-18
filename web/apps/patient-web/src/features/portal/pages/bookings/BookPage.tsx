@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router';
+import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { addDays, addMonths, format, startOfMonth } from 'date-fns';
@@ -14,6 +14,8 @@ import {
 import { useAppTranslation } from '../../../../i18n';
 import { ApproxMoney } from '../../components/phase1';
 import { useCase, useCreateBooking, useHospital, useHospitalAvailability } from '../../api/queries';
+import { installmentsPastTreatment, useInstallmentPlan } from '../../api/partners';
+import { InstallmentSchedule, InsuranceOptionsCard, usePatientCountry } from '../../components/partners';
 import { AvailabilityCalendar } from '../../components/AvailabilityCalendar';
 import {
   EmergencyAckPanel,
@@ -44,7 +46,8 @@ type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 type PriceSource = { kind: 'quote'; id: string } | { kind: 'package'; id: string };
 
-const INSTALLMENT_MONTHS = [3, 6, 12] as const;
+/** offered only while the instalment-plan rule (CG-18) cannot be loaded; the server still enforces it */
+const FALLBACK_INSTALLMENT_MONTHS = [3, 6, 12] as const;
 const MIN_LEAD_DAYS = 3;
 const HORIZON_MONTHS = 6;
 
@@ -153,7 +156,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
   const noAvailabilityPublished = availability.isSuccess && (availability.data ?? []).length === 0;
 
   const [option, setOption] = useState<PaymentOption>('deposit');
-  const [months, setMonths] = useState<(typeof INSTALLMENT_MONTHS)[number]>(6);
+  const [months, setMonths] = useState<number>(6);
   const [insurance, setInsurance] = useState(false);
 
   const chosenPackage = source?.kind === 'package' ? packages.find((p) => p.id === source.id) ?? null : null;
@@ -161,6 +164,29 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
   const currency = source?.kind === 'quote' ? acceptedQuote?.currency ?? 'INR' : chosenPackage?.currency ?? 'INR';
   const stayDays = acceptedQuote?.estimated_stay_days ?? hospitalProcedure?.hospital_stay_days ?? null;
   const admission = date ?? (manualDate || null);
+
+  // CG-18: instalments are an interest-free pre-payment plan that must finish before the admission date
+  const country = usePatientCountry();
+  const plan = useInstallmentPlan(
+    admission
+      ? {
+          admission_date: admission,
+          months,
+          ...(total != null ? { total_minor: total } : {}),
+          ...(country ? { country } : {}),
+        }
+      : null,
+  );
+  // ignore a previous date's plan kept as placeholder while the new one loads
+  const planData = plan.data && plan.data.admission_date === admission ? plan.data : null;
+  const installmentsBlocked = !!planData && (planData.max_months === 0 || planData.allowed_months.length === 0);
+  const monthChoices: readonly number[] = planData ? [...planData.allowed_months].sort((a, b) => a - b) : plan.isError ? FALLBACK_INSTALLMENT_MONTHS : [];
+  // keep the chosen number of months within what fits before the admission date (largest allowed <= choice)
+  if (monthChoices.length && !monthChoices.includes(months)) {
+    setMonths(monthChoices.filter((m) => m < months).at(-1) ?? monthChoices[0] ?? months);
+  }
+  /** instalments can be submitted: the rule allows some months, or it could not be loaded (server enforces) */
+  const installmentsReady = planData ? !installmentsBlocked : plan.isError;
 
   async function submit() {
     if (!source) {
@@ -184,6 +210,16 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
       navigate(paths.pay(booking.id));
     } catch (err) {
       if (onBlocked?.(err)) return;
+      const past = installmentsPastTreatment(err);
+      if (past) {
+        toast.error(
+          past.max_months && past.last_due_by
+            ? t('financing.errors.installmentsPastTreatment', { count: past.max_months, date: formatDate(past.last_due_by) })
+            : t('financing.errors.installmentsPastTreatmentNone'),
+        );
+        void plan.refetch();
+        return;
+      }
       toast.error(errorMessage(err, t('book.errors.createFailed')));
     }
   }
@@ -327,45 +363,97 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                   { value: 'full', title: t('book.options.fullTitle'), text: t('book.options.fullText') },
                   { value: 'installments', title: t('book.options.planTitle'), text: t('book.options.planText') },
                 ] as const
-              ).map((o) => (
-                <label
-                  key={o.value}
-                  className={cn(
-                    'flex cursor-pointer gap-3 rounded-xl border p-3',
-                    option === o.value ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-slate-200 dark:border-slate-800',
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="payment-option"
-                    value={o.value}
-                    checked={option === o.value}
-                    onChange={() => setOption(o.value)}
-                    className="mt-1 accent-violet-600"
-                  />
-                  <span>
-                    <span className="block text-sm font-semibold">{o.title}</span>
-                    <span className="block text-xs text-slate-500 dark:text-slate-400">{o.text}</span>
-                  </span>
-                </label>
-              ))}
+              ).map((o) => {
+                // CG-18: no monthly plan when not even one instalment fits before the admission date
+                const unavailable = o.value === 'installments' && installmentsBlocked;
+                return (
+                  <label
+                    key={o.value}
+                    className={cn(
+                      'flex gap-3 rounded-xl border p-3',
+                      unavailable && option !== o.value ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+                      option === o.value ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-slate-200 dark:border-slate-800',
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="payment-option"
+                      value={o.value}
+                      checked={option === o.value}
+                      disabled={unavailable && option !== o.value}
+                      aria-describedby={unavailable ? 'plan-unavailable' : undefined}
+                      onChange={() => setOption(o.value)}
+                      className="mt-1 accent-violet-600"
+                    />
+                    <span>
+                      <span className="block text-sm font-semibold">{o.title}</span>
+                      <span className="block text-xs text-slate-500 dark:text-slate-400">{o.text}</span>
+                      {unavailable ? (
+                        <span id="plan-unavailable" className="mt-1 block text-xs font-medium text-warning-ink">
+                          {t('financing.plan.unavailableOption')}
+                        </span>
+                      ) : null}
+                    </span>
+                  </label>
+                );
+              })}
               {option === 'installments' ? (
-                <div className="flex gap-2 ps-1" role="radiogroup" aria-label={t('book.monthsLabel')}>
-                  {INSTALLMENT_MONTHS.map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      role="radio"
-                      aria-checked={months === m}
-                      onClick={() => setMonths(m)}
-                      className={cn(
-                        'flex-1 rounded-xl border px-3 py-2 text-sm font-semibold',
-                        months === m ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 dark:border-slate-700',
-                      )}
+                <div className="space-y-3 ps-1" aria-live="polite">
+                  {!admission ? (
+                    <p className="text-xs text-muted">{t('financing.plan.chooseDate')}</p>
+                  ) : !planData && !plan.isError ? (
+                    <Skeleton className="h-10 w-full" />
+                  ) : installmentsBlocked && planData ? (
+                    <Alert tone="amber" title={t('financing.plan.unavailableTitle')}>
+                      {t('financing.plan.unavailableText', { date: formatDate(planData.admission_date) })}
+                    </Alert>
+                  ) : (
+                    <>
+                      {plan.isError ? <p className="text-xs text-warning-ink">{t('financing.plan.loadFailed')}</p> : null}
+                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('book.monthsLabel')}>
+                        {monthChoices.map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            role="radio"
+                            aria-checked={months === m}
+                            onClick={() => setMonths(m)}
+                            className={cn(
+                              'min-w-20 flex-1 rounded-xl border px-3 py-2 text-sm font-semibold',
+                              months === m ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 dark:border-slate-700',
+                            )}
+                          >
+                            {t('bookings.detail.months', { count: m })}
+                          </button>
+                        ))}
+                      </div>
+                      {planData ? (
+                        <>
+                          <p className="text-xs text-muted">
+                            {t('financing.plan.maxMonths', { count: planData.max_months, date: formatDate(planData.last_due_by) })}
+                          </p>
+                          <p className="text-sm font-medium text-fg">
+                            {t('financing.plan.interestFree', { date: formatDate(planData.admission_date) })}
+                          </p>
+                          {planData.schedule.length && total != null ? (
+                            <div className={cn(plan.isPlaceholderData && 'opacity-60')}>
+                              <InstallmentSchedule rows={planData.schedule} currency={currency} />
+                              <p className="mt-1 text-xs text-muted">{t('financing.plan.estimate')}</p>
+                            </div>
+                          ) : null}
+                        </>
+                      ) : null}
+                    </>
+                  )}
+                  {planData?.partner_financing_available ? (
+                    <Link
+                      to={paths.insurance({ case: data.id, section: 'pay-later' })}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary-ink hover:underline"
                     >
-                      {t('bookings.detail.months', { count: m })}
-                    </button>
-                  ))}
+                      {t('financing.plan.partnerLink')}
+                      <ChevronRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
+                    </Link>
+                  ) : null}
                 </div>
               ) : null}
               <div className="border-t border-slate-200 pt-3 dark:border-slate-800">
@@ -378,6 +466,8 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
               </div>
             </CardBody>
           </Card>
+
+          <InsuranceOptionsCard caseId={data.id} />
 
           <Card>
             <CardHeader title={t('bookings.summary.title')} />
@@ -401,7 +491,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                 variant="accent"
                 className="mt-2 w-full"
                 loading={create.isPending}
-                disabled={!source || !admission}
+                disabled={!source || !admission || (option === 'installments' && !installmentsReady)}
                 onClick={() => void submit()}
                 icon={<CreditCard className="h-4 w-4" aria-hidden />}
               >

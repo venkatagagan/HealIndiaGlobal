@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import {
   Activity,
   Award,
+  BarChart3,
   Bell,
   Building,
   Building2,
@@ -79,10 +80,11 @@ function buildNav(t: TFunction, { unread, canFinance }: { unread: number; canFin
     },
     {
       id: 'performance',
-      label: canFinance ? t('nav.performanceFinance') : t('nav.reviews'),
+      label: canFinance ? t('nav.performanceFinance') : t('nav.performanceReviews'),
       icon: TrendingUp,
       accent: 'amber',
       children: [
+        { to: '/performance', label: t('nav.performance'), icon: BarChart3 },
         { to: '/reviews', label: t('nav.reviews'), icon: Star },
         ...(canFinance ? [{ to: '/finance', label: t('nav.finance'), icon: Wallet }] : []),
       ],
