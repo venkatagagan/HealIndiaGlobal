@@ -22,6 +22,11 @@ function str(data: Record<string, unknown> | null, key: string): string | null {
 /** Where a notification should take the patient, based on its payload. */
 export function notificationTarget(n: NotificationOut): string | null {
   const d = n.data;
+  // insurance / pay-later request updates link to "/insurance" (relative to the portal)
+  const link = str(d, 'link');
+  if (link && /^\/(insurance|financing)(?:[/?#]|$)/.test(link)) {
+    return paths.insurance({ section: 'my-requests' });
+  }
   const conversation = str(d, 'conversation_id');
   if (conversation) return paths.conversation(conversation);
   const screening = str(d, 'screening_id');

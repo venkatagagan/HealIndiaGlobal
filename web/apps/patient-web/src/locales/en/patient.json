@@ -2139,5 +2139,157 @@
       "age": "Please confirm your age",
       "mismatch": "Passwords do not match"
     }
+  },
+  "insurance": {
+    "navLabel": "Insurance & pay later",
+    "title": "Insurance & pay later",
+    "description": "See travel and medical insurance from our partners, and pay-later options if you need longer to pay. You deal with the partner directly.",
+    "disclaimer": "Heal India Global does not sell insurance and is not an insurance intermediary. We list partner products for information only. The insurer decides cover, price and terms; read their policy documents before you buy.",
+    "newTab": "(opens in a new tab)",
+    "linked": {
+      "case": "Requests you send from this page will be linked to your case.",
+      "booking": "Requests you send from this page will be linked to your booking."
+    },
+    "country": {
+      "label": "Your country",
+      "hint": "We show the partners that serve this country.",
+      "all": "All countries",
+      "showAll": "Show all countries"
+    },
+    "products": {
+      "title": "Insurance options",
+      "empty": "No insurance partners are listed for this country yet.",
+      "emptyHint": "Try all countries, or ask our care team for help."
+    },
+    "category": {
+      "medical_travel": "Medical travel",
+      "complication": "Complication cover",
+      "health": "Health insurance",
+      "other": "Other"
+    },
+    "card": {
+      "countries": "Available in",
+      "allCountries": "All countries",
+      "price": "Indicative price",
+      "priceIndicative": "For information only. The insurer sets the final price.",
+      "requestQuote": "Request a quote from the insurer",
+      "website": "{{provider}}'s website"
+    },
+    "status": {
+      "new": "New",
+      "in_progress": "In progress",
+      "shared_with_partner": "Shared with partner",
+      "closed": "Closed",
+      "cancelled": "Withdrawn"
+    },
+    "form": {
+      "title": "Request a quote from the insurer",
+      "subtitle": "{{provider}} – {{product}}",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "contactHint": "Give an email address or a phone number (or both).",
+      "preferred": "Preferred way to contact you",
+      "preferredAny": "No preference",
+      "preferredOptions": {
+        "email": "Email",
+        "phone": "Phone call",
+        "whatsapp": "WhatsApp"
+      },
+      "country": "Country of residence",
+      "countryNone": "Not specified",
+      "message": "Message (optional)",
+      "messageHint": "Do not include medical details.",
+      "consent": "I agree that Heal India Global may share my name and contact details with {{provider}} so they can contact me about this request. No medical information is shared.",
+      "submit": "Send request",
+      "cancel": "Cancel",
+      "errors": {
+        "name": "Enter your name.",
+        "email": "Enter a valid email address.",
+        "phone": "Enter a valid phone number, including the country code.",
+        "contact": "Give an email address or a phone number.",
+        "preferredEmail": "Add an email address, or choose another way to contact you.",
+        "preferredPhone": "Add a phone number, or choose another way to contact you.",
+        "messageLength": "Keep the message to 1,000 characters or fewer.",
+        "consent": "Tick the box to agree, so that we can pass your contact details to {{provider}}."
+      },
+      "serverErrors": {
+        "consentRequired": "We need your agreement before we can pass your contact details to {{provider}}.",
+        "countryNotEligible": "{{provider}} does not offer this in the country you chose. Choose another country or another partner.",
+        "duplicate": "You already have an open request with {{provider}}. You can follow it under My requests.",
+        "notFound": "This option is no longer available. The list has been refreshed.",
+        "generic": "Your request could not be sent. Please try again."
+      },
+      "success": {
+        "title": "Request sent",
+        "text": "We will pass your contact details to {{provider}}, who will contact you directly. You can also continue on their site now.",
+        "continue": "Continue on {{provider}}'s site",
+        "done": "Done"
+      }
+    },
+    "requests": {
+      "title": "My requests",
+      "description": "Insurance quotes and pay-later eligibility checks you have asked for.",
+      "empty": "You have not sent any requests yet.",
+      "emptyHint": "Ask an insurer for a quote or check your eligibility with a pay-later partner above.",
+      "kind": {
+        "insurance": "Insurance quote",
+        "pay_later": "Pay-later eligibility"
+      },
+      "sent": "Sent on {{date}}",
+      "continue": "Continue on the partner's site",
+      "withdraw": "Withdraw",
+      "withdrawTitle": "Withdraw this request?",
+      "withdrawText": "We will stop the request and withdraw your consent to share your contact details with {{provider}}. Details already passed to them are handled under their own privacy policy.",
+      "withdrawn": "Request withdrawn",
+      "withdrawFailed": "The request could not be withdrawn. Please try again.",
+      "notOpen": "This request is already closed."
+    },
+    "bookingCard": {
+      "title": "Insurance options",
+      "text": "Travel and medical insurance from our partners. Ask an insurer for a quote.",
+      "shortDisclaimer": "We do not sell insurance. The insurer decides cover, price and terms.",
+      "action": "See insurance options"
+    }
+  },
+  "financing": {
+    "title": "Pay later with a partner",
+    "description": "Need longer to pay than our own instalment plan allows? These partners offer pay-later plans and loans on their own terms.",
+    "disclaimer": "Heal India Global does not lend money or make credit decisions. Pay-later plans and loans are offered by the partner, on the partner's terms, after their own checks. Our own instalment plans are interest-free and must be paid in full before your treatment date.",
+    "howItWorks": "Checking eligibility only passes your contact details to the partner, with your consent. The partner decides on its own site, after its own checks. Heal India Global makes no credit decision.",
+    "empty": "No pay-later partners are listed for this country yet.",
+    "emptyHint": "Try all countries, or choose a deposit or our interest-free instalment plan when you book.",
+    "card": {
+      "checkEligibility": "Check eligibility"
+    },
+    "form": {
+      "title": "Check eligibility",
+      "submit": "Send my details",
+      "successText": "We will pass your contact details to {{provider}}. They decide on eligibility and terms on their own site, after their own checks."
+    },
+    "plan": {
+      "chooseDate": "Choose an admission date to see the instalment options.",
+      "unavailableOption": "Not available for this admission date.",
+      "unavailableTitle": "Instalments are not available for this date",
+      "unavailableText": "Every instalment must be paid before your admission on {{date}}, and there is not enough time for a monthly plan. Choose a deposit or pay in full, or pick a later date.",
+      "loadFailed": "We could not check the instalment rules. The plan will be checked when you continue.",
+      "maxMonths_one": "Up to {{count}} month, so that the plan ends by {{date}}.",
+      "maxMonths_other": "Up to {{count}} months, so that the plan ends by {{date}}.",
+      "interestFree": "Interest-free. The last instalment is due before your admission on {{date}}.",
+      "scheduleTitle": "Instalment schedule",
+      "columns": {
+        "seq": "Instalment",
+        "dueDate": "Due date",
+        "amount": "Amount"
+      },
+      "seq": "Instalment {{n}}",
+      "estimate": "Estimate. Taxes and fees are added on the next step, before you pay.",
+      "partnerLink": "Need longer to pay? See pay-later partners"
+    },
+    "errors": {
+      "installmentsPastTreatment_one": "These instalments would run past your admission date. Choose {{count}} month or fewer, so that the last one is due by {{date}}.",
+      "installmentsPastTreatment_other": "These instalments would run past your admission date. Choose {{count}} months or fewer, so that the last one is due by {{date}}.",
+      "installmentsPastTreatmentNone": "Instalments are not possible for this admission date. Choose a deposit or pay in full, or pick a later date."
+    }
   }
 }

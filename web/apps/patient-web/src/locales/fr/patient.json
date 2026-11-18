@@ -2139,5 +2139,159 @@
       "age": "Veuillez confirmer votre âge",
       "mismatch": "Les mots de passe ne correspondent pas"
     }
+  },
+  "insurance": {
+    "navLabel": "Assurance et paiement différé",
+    "title": "Assurance et paiement différé",
+    "description": "Consultez les assurances voyage et santé de nos partenaires, ainsi que les solutions de paiement différé si vous avez besoin de plus de temps pour payer. Vous traitez directement avec le partenaire.",
+    "disclaimer": "Heal India Global ne vend pas d'assurance et n'est pas un intermédiaire en assurance. Nous présentons les produits de nos partenaires à titre d'information uniquement. L'assureur décide de la couverture, du prix et des conditions ; lisez ses documents contractuels avant de souscrire.",
+    "newTab": "(s'ouvre dans un nouvel onglet)",
+    "linked": {
+      "case": "Les demandes envoyées depuis cette page seront rattachées à votre dossier.",
+      "booking": "Les demandes envoyées depuis cette page seront rattachées à votre réservation."
+    },
+    "country": {
+      "label": "Votre pays",
+      "hint": "Nous affichons les partenaires qui proposent leurs services dans ce pays.",
+      "all": "Tous les pays",
+      "showAll": "Afficher tous les pays"
+    },
+    "products": {
+      "title": "Offres d'assurance",
+      "empty": "Aucun partenaire d'assurance n'est encore référencé pour ce pays.",
+      "emptyHint": "Essayez « Tous les pays » ou demandez l'aide de notre équipe de suivi."
+    },
+    "category": {
+      "medical_travel": "Voyage médical",
+      "complication": "Couverture des complications",
+      "health": "Assurance santé",
+      "other": "Autre"
+    },
+    "card": {
+      "countries": "Disponible dans",
+      "allCountries": "Tous les pays",
+      "price": "Prix indicatif",
+      "priceIndicative": "À titre d'information uniquement. L'assureur fixe le prix définitif.",
+      "requestQuote": "Demander un devis à l'assureur",
+      "website": "Site web de {{provider}}"
+    },
+    "status": {
+      "new": "Nouvelle",
+      "in_progress": "En cours",
+      "shared_with_partner": "Transmise au partenaire",
+      "closed": "Clôturée",
+      "cancelled": "Retirée"
+    },
+    "form": {
+      "title": "Demander un devis à l'assureur",
+      "subtitle": "{{provider}} – {{product}}",
+      "name": "Nom complet",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "contactHint": "Indiquez une adresse e-mail ou un numéro de téléphone (ou les deux).",
+      "preferred": "Moyen de contact préféré",
+      "preferredAny": "Aucune préférence",
+      "preferredOptions": {
+        "email": "E-mail",
+        "phone": "Appel téléphonique",
+        "whatsapp": "WhatsApp"
+      },
+      "country": "Pays de résidence",
+      "countryNone": "Non précisé",
+      "message": "Message (facultatif)",
+      "messageHint": "N'indiquez aucune information médicale.",
+      "consent": "J'accepte que Heal India Global communique mon nom et mes coordonnées à {{provider}} afin qu'il puisse me contacter au sujet de cette demande. Aucune information médicale n'est communiquée.",
+      "submit": "Envoyer la demande",
+      "cancel": "Annuler",
+      "errors": {
+        "name": "Saisissez votre nom.",
+        "email": "Saisissez une adresse e-mail valide.",
+        "phone": "Saisissez un numéro de téléphone valide, avec l'indicatif du pays.",
+        "contact": "Indiquez une adresse e-mail ou un numéro de téléphone.",
+        "preferredEmail": "Ajoutez une adresse e-mail ou choisissez un autre moyen de contact.",
+        "preferredPhone": "Ajoutez un numéro de téléphone ou choisissez un autre moyen de contact.",
+        "messageLength": "Le message ne doit pas dépasser 1 000 caractères.",
+        "consent": "Cochez la case pour donner votre accord, afin que nous puissions transmettre vos coordonnées à {{provider}}."
+      },
+      "serverErrors": {
+        "consentRequired": "Nous avons besoin de votre accord avant de transmettre vos coordonnées à {{provider}}.",
+        "countryNotEligible": "{{provider}} ne propose pas cette offre dans le pays choisi. Choisissez un autre pays ou un autre partenaire.",
+        "duplicate": "Vous avez déjà une demande en cours auprès de {{provider}}. Vous pouvez la suivre dans Mes demandes.",
+        "notFound": "Cette offre n'est plus disponible. La liste a été actualisée.",
+        "generic": "Votre demande n'a pas pu être envoyée. Veuillez réessayer."
+      },
+      "success": {
+        "title": "Demande envoyée",
+        "text": "Nous transmettrons vos coordonnées à {{provider}}, qui vous contactera directement. Vous pouvez aussi poursuivre dès maintenant sur son site.",
+        "continue": "Poursuivre sur le site de {{provider}}",
+        "done": "Terminé"
+      }
+    },
+    "requests": {
+      "title": "Mes demandes",
+      "description": "Les demandes de devis d'assurance et de vérification d'éligibilité au paiement différé que vous avez envoyées.",
+      "empty": "Vous n'avez encore envoyé aucune demande.",
+      "emptyHint": "Demandez un devis à un assureur ou vérifiez votre éligibilité auprès d'un partenaire de paiement différé ci-dessus.",
+      "kind": {
+        "insurance": "Devis d'assurance",
+        "pay_later": "Éligibilité au paiement différé"
+      },
+      "sent": "Envoyée le {{date}}",
+      "continue": "Poursuivre sur le site du partenaire",
+      "withdraw": "Retirer",
+      "withdrawTitle": "Retirer cette demande ?",
+      "withdrawText": "Nous arrêterons la demande et retirerons votre consentement à la communication de vos coordonnées à {{provider}}. Les données qui lui ont déjà été transmises relèvent de sa propre politique de confidentialité.",
+      "withdrawn": "Demande retirée",
+      "withdrawFailed": "La demande n'a pas pu être retirée. Veuillez réessayer.",
+      "notOpen": "Cette demande est déjà clôturée."
+    },
+    "bookingCard": {
+      "title": "Offres d'assurance",
+      "text": "Assurances voyage et santé de nos partenaires. Demandez un devis à un assureur.",
+      "shortDisclaimer": "Nous ne vendons pas d'assurance. L'assureur décide de la couverture, du prix et des conditions.",
+      "action": "Voir les offres d'assurance"
+    }
+  },
+  "financing": {
+    "title": "Paiement différé avec un partenaire",
+    "description": "Besoin de plus de temps que ne le permet notre propre paiement échelonné ? Ces partenaires proposent des paiements différés et des prêts, selon leurs propres conditions.",
+    "disclaimer": "Heal India Global ne prête pas d'argent et ne prend aucune décision de crédit. Les paiements différés et les prêts sont proposés par le partenaire, selon ses conditions et après ses propres vérifications. Nos propres paiements échelonnés sont sans intérêts et doivent être réglés intégralement avant la date de votre traitement.",
+    "howItWorks": "La vérification d'éligibilité consiste uniquement à transmettre vos coordonnées au partenaire, avec votre accord. Le partenaire décide sur son propre site, après ses propres vérifications. Heal India Global ne prend aucune décision de crédit.",
+    "empty": "Aucun partenaire de paiement différé n'est encore référencé pour ce pays.",
+    "emptyHint": "Essayez « Tous les pays », ou choisissez un acompte ou notre paiement échelonné sans intérêts lors de la réservation.",
+    "card": {
+      "checkEligibility": "Vérifier l'éligibilité"
+    },
+    "form": {
+      "title": "Vérifier l'éligibilité",
+      "submit": "Envoyer mes coordonnées",
+      "successText": "Nous transmettrons vos coordonnées à {{provider}}. Le partenaire décide de l'éligibilité et des conditions sur son propre site, après ses propres vérifications."
+    },
+    "plan": {
+      "chooseDate": "Choisissez une date d'admission pour voir les options d'échelonnement.",
+      "unavailableOption": "Non disponible pour cette date d'admission.",
+      "unavailableTitle": "L'échelonnement n'est pas disponible pour cette date",
+      "unavailableText": "Chaque échéance doit être réglée avant votre admission le {{date}}, et le délai est trop court pour un plan mensuel. Choisissez un acompte ou le paiement intégral, ou une date plus tardive.",
+      "loadFailed": "Nous n'avons pas pu vérifier les règles d'échelonnement. Le plan sera vérifié à l'étape suivante.",
+      "maxMonths_one": "Jusqu'à {{count}} mois, afin que le plan se termine au plus tard le {{date}}.",
+      "maxMonths_many": "Jusqu'à {{count}} mois, afin que le plan se termine au plus tard le {{date}}.",
+      "maxMonths_other": "Jusqu'à {{count}} mois, afin que le plan se termine au plus tard le {{date}}.",
+      "interestFree": "Sans intérêts. La dernière échéance est due avant votre admission le {{date}}.",
+      "scheduleTitle": "Échéancier",
+      "columns": {
+        "seq": "Échéance",
+        "dueDate": "Date d'échéance",
+        "amount": "Montant"
+      },
+      "seq": "Échéance {{n}}",
+      "estimate": "Estimation. Les taxes et frais sont ajoutés à l'étape suivante, avant le paiement.",
+      "partnerLink": "Besoin de plus de temps pour payer ? Voir les partenaires de paiement différé"
+    },
+    "errors": {
+      "installmentsPastTreatment_one": "Ces échéances dépasseraient votre date d'admission. Choisissez {{count}} mois au maximum, afin que la dernière soit due au plus tard le {{date}}.",
+      "installmentsPastTreatment_many": "Ces échéances dépasseraient votre date d'admission. Choisissez {{count}} mois au maximum, afin que la dernière soit due au plus tard le {{date}}.",
+      "installmentsPastTreatment_other": "Ces échéances dépasseraient votre date d'admission. Choisissez {{count}} mois au maximum, afin que la dernière soit due au plus tard le {{date}}.",
+      "installmentsPastTreatmentNone": "L'échelonnement n'est pas possible pour cette date d'admission. Choisissez un acompte ou le paiement intégral, ou une date plus tardive."
+    }
   }
 }

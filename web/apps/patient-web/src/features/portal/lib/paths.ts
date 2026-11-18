@@ -75,4 +75,12 @@ export const paths = {
   freeCall: (screeningId?: Uuid) =>
     `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
   freeCallStatus: `${PORTAL_BASE}/free-call/status`,
+  /** "Insurance & pay later"; `case` / `booking` link the requests sent from there; `section` = in-page anchor */
+  insurance: (params: { case?: Uuid; booking?: Uuid; section?: 'pay-later' | 'my-requests' } = {}) => {
+    const search = new URLSearchParams();
+    if (params.case) search.set('case', params.case);
+    if (params.booking) search.set('booking', params.booking);
+    const qs = search.toString();
+    return `${PORTAL_BASE}/insurance${qs ? `?${qs}` : ''}${params.section ? `#${params.section}` : ''}`;
+  },
 };
