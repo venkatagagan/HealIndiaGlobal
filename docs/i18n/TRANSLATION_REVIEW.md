@@ -248,3 +248,55 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
 - Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
 - Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
   currency), `quoteGroup.total`.
+
+## Analytics, insurance and pay-later partners (added 2026-11-18)
+
+Machine-assisted in ar / fr / bn / ru. **Legal review first** (TODO-BUSINESS): the disclaimers below state that
+Heal India Global does not sell insurance, is not an insurance intermediary, does not lend and makes no credit
+decision; the consent text authorises passing name + contact details (no medical data) to the named partner. The
+wording must stay that conservative in every language ("partner", "indicative", "the partner decides").
+
+### Server notifications (`backend/app/i18n/<lng>.json`)
+
+- `insurance.notifications.*` and `financing.notifications.*` (`request_received`, `request_updated.body_*`,
+  `staff_new`). Check: "does not sell insurance" / "does not lend money or make credit decisions"; ru uses
+  "{name}: запрос ..." to avoid a gendered verb; ar "لـ {product}" before Latin product names.
+
+### Patient web (`patient:`)
+
+- Legal / consent: `insurance.disclaimer`, `insurance.form.consent`, `insurance.form.messageHint`,
+  `insurance.bookingCard.shortDisclaimer`, `insurance.form.success.text`, `insurance.requests.withdrawText`.
+- Money / CG-18: `insurance.card.priceIndicative`, `insurance.card.price`, `financing.disclaimer`,
+  `financing.howItWorks`, `financing.description`, `financing.form.successText`, `financing.emptyHint`,
+  `financing.plan.interestFree`, `financing.plan.unavailableText`, `financing.plan.maxMonths_*`,
+  `financing.plan.estimate`, `financing.plan.loadFailed`, `financing.errors.installmentsPastTreatment_*`,
+  `financing.errors.installmentsPastTreatmentNone`.
+- Labels: `insurance.category.*` (medical travel insurance, complication cover, health insurance).
+
+### Admin portal (`admin:`)
+
+- Legal / consent: `insurance.common.disclaimer`, `insurance.common.requests.{consentTitle,consentGiven,consentMissing,
+  cancelledTitle,cancelledNote,statusHint}`, `insurance.common.leadStatus.*`, `insurance.products.description`,
+  `insurance.requests.description`, `financing.partners.description`, `financing.requests.description`,
+  `insurance.common.fields.{summaryHint,websiteHint,priceMin,priceMax,priceNote,priceNoteHint}`,
+  `insurance.common.categories.*`.
+- Finance: `analytics.finance.*` (especially `fx`, `fxNoDate`, `gmvHelp`, `revenueHelp`), the CG-18 monitor
+  `analytics.finance.installments.{pastTreatment,pastTreatmentWarning,pastTreatmentOk,pastTreatmentHelp}`,
+  `analytics.agents.columns.commission`, `analytics.agents.commissionHidden`; ar uses one neutral form for all six
+  `analytics.finance.payments_*` plurals.
+- Medical: `analytics.aftercare.flags.*` (fever, shortness of breath, severe pain 8+/10, wound concerns),
+  `analytics.aftercare.redFlagHelp`, `analytics.aftercare.redFlagCheckins`, `analytics.funnel.steps.screenings`.
+- Privacy: `analytics.suppressedNote` (groups smaller than 5 hidden), `analytics.description`.
+
+### Hospital portal (`hospital:`) and agent portal (`agent:`)
+
+- Hospital: `analytics.sla.*` (SLA, median, "90th percentile"), `analytics.tiles.conversionHint`,
+  `analytics.countries.{privacyNote,suppressed,notAvailable}`, plurals `analytics.rating.count_*`; ru page name
+  "Показатели", ru "Шаг" for "Group by".
+- Agent (money): `analytics.commission.{title,description,earned,pending,paid,viewDetails}`,
+  `analytics.series.commission`, `analytics.tiles.conversionHint`. bn presets use Bengali digits.
+
+### Mobile (ARB)
+
+- See the CG-18 section in `mobile/lib/l10n/TRANSLATION_REVIEW.md` (`insurance*` / `financing*` keys: disclaimers,
+  consent, instalment rule, `installments_past_treatment` error).
