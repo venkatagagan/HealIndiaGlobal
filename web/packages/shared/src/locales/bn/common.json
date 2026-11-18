@@ -630,6 +630,7 @@
       "requested": "অনুরোধ করা হয়েছে",
       "approved": "অনুমোদিত",
       "processing": "প্রক্রিয়াধীন",
+      "awaiting_payout": "পরিশোধের অপেক্ষায়",
       "processed": "সম্পন্ন",
       "failed": "ব্যর্থ",
       "rejected": "প্রত্যাখ্যাত"

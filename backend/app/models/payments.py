@@ -158,6 +158,17 @@ class Refund(UUIDPkMixin, TimestampMixin, Base):
     requested_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     approved_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # SEC-010: manual (bank transfer) refunds wait in ``awaiting_payout`` until one finance user records the
+    # payout (bank reference / UTR, value date, optional proof) and a DIFFERENT finance user confirms it.
+    payout_reference: Mapped[str | None] = mapped_column(String(100), unique=True)
+    payout_date: Mapped[date | None] = mapped_column(Date)
+    payout_note: Mapped[str | None] = mapped_column(Text)
+    payout_proof_document_id: Mapped[uuid.UUID | None] = fk(
+        "documents.id", ondelete="SET NULL", nullable=True
+    )
+    payout_recorded_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+    payout_recorded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    payout_confirmed_by: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
 
 
 class WebhookEvent(UUIDPkMixin, TimestampMixin, Base):

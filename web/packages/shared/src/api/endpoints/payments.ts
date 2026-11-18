@@ -22,6 +22,8 @@ import type {
   RefundCreateIn,
   RefundListParams,
   RefundOut,
+  RefundPayoutConfirmIn,
+  RefundPayoutIn,
   RefundStatusCounts,
   Uuid,
 } from '../types';
@@ -87,6 +89,17 @@ export const paymentsApi = {
   /** 403 `second_approver_required` when the requester approves a refund above the dual-approval threshold */
   approveRefund: (id: Uuid) => api.post<RefundOut>(`/payments/refunds/${seg(id)}/approve`, {}),
   rejectRefund: (id: Uuid, body: ReasonIn) => api.post<RefundOut>(`/payments/refunds/${seg(id)}/reject`, body),
+  /** SEC-010 maker: record (or replace) the bank payout of an `awaiting_payout` refund. 409 `reference_already_used`,
+   * 400 `invalid_payout_date` / `invalid_refund_state` */
+  recordRefundPayout: (id: Uuid, body: RefundPayoutIn) =>
+    api.post<RefundOut>(`/payments/refunds/${seg(id)}/payout`, body),
+  /** SEC-010 checker (a different finance user): the refund becomes processed. 403 `second_approver_required`,
+   * 409 `payout_changed`, 400 `no_payout_recorded` */
+  confirmRefundPayout: (id: Uuid, body: RefundPayoutConfirmIn) =>
+    api.post<RefundOut>(`/payments/refunds/${seg(id)}/payout/confirm`, body),
+  /** SEC-010: clear the recorded payout (the refund stays `awaiting_payout`) */
+  rejectRefundPayout: (id: Uuid, body: ReasonIn) =>
+    api.post<RefundOut>(`/payments/refunds/${seg(id)}/payout/reject`, body),
 
   listInvoices: (params?: InvoiceListParams) => api.get<Page<InvoiceOut>>('/payments/invoices', params),
   getInvoice: (id: Uuid) => api.get<InvoiceOut>(`/payments/invoices/${seg(id)}`),

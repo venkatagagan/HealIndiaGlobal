@@ -1040,9 +1040,18 @@ async def test_commission_rule_precedence(client: Any, db: Any, make_user: Any, 
     )
     assert r.status_code == 403
 
+    checker = auth_headers(await make_user(role="finance"))
+
+    async def approve(change: dict[str, Any]) -> None:
+        r = await client.post(f"{API}/admin/commission-changes/{change['id']}/approve", headers=checker)
+        assert r.status_code == 200, r.text
+
     async def add(body: dict[str, Any]) -> str:
         r = await client.post(f"{API}/finance/commission-rules", json=body, headers=admin)
         assert r.status_code == 201, r.text
+        # SEC-044: created inactive, activated by a second approver
+        assert r.json()["is_active"] is False and r.json()["pending_change"]["changes"] == {"is_active": True}
+        await approve(r.json()["pending_change"])
         return str(r.json()["id"])
 
     await add({"scope": "global", "rate_bps": 1200})
@@ -1075,7 +1084,10 @@ async def test_commission_rule_precedence(client: Any, db: Any, make_user: Any, 
     r = await client.patch(
         f"{API}/finance/commission-rules/{hospital_rule}", json={"is_active": False}, headers=admin
     )
-    assert r.status_code == 200 and r.json()["is_active"] is False
+    assert r.status_code == 200 and r.json()["is_active"] is True  # pending until approved
+    await approve(r.json()["pending_change"])
+    r = await client.get(f"{API}/finance/commission-rules", params={"scope": "hospital"}, headers=admin)
+    assert [x["is_active"] for x in r.json()["items"] if x["id"] == hospital_rule] == [False]
 
     r = await client.post(
         f"{API}/finance/commission-rules", json={"scope": "hospital", "rate_bps": 10}, headers=admin

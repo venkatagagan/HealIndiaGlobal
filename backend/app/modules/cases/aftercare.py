@@ -471,6 +471,47 @@ async def run_consultation_reminders(db: AsyncSession, now: datetime | None = No
     return sent
 
 
+# Check-ins that became due longer ago than this are not reminded any more (e.g. after an outage).
+CHECKIN_REMINDER_MAX_AGE = timedelta(days=3)
+
+
+async def run_checkin_reminders(db: AsyncSession, now: datetime | None = None) -> int:
+    """Publish ``aftercare.checkin_due`` once per check-in when it becomes due (not yet answered).
+    ``reminder_sent_at`` dedupes; check-ins of cases no longer in aftercare are skipped."""
+    now = now or utcnow()
+    rows = list(
+        (
+            await db.execute(
+                select(AftercareCheckin, Case)
+                .join(Case, Case.id == AftercareCheckin.case_id)
+                .where(
+                    AftercareCheckin.submitted_at.is_(None),
+                    AftercareCheckin.reminder_sent_at.is_(None),
+                    AftercareCheckin.due_at <= now,
+                    AftercareCheckin.due_at > now - CHECKIN_REMINDER_MAX_AGE,
+                    Case.status.in_([CaseStatus.COMPLETED, CaseStatus.IN_TREATMENT]),
+                )
+                .order_by(AftercareCheckin.due_at)
+                .limit(500)
+                .with_for_update(of=AftercareCheckin, skip_locked=True)
+            )
+        ).all()
+    )
+    for checkin, case in rows:
+        checkin.reminder_sent_at = now
+        await publish(
+            db,
+            "aftercare.checkin_due",
+            {
+                "checkin_id": str(checkin.id),
+                "case_id": str(case.id),
+                "day": int(checkin.day),
+                "due_at": checkin.due_at,
+            },
+        )
+    return len(rows)
+
+
 def _due_window(
     scheduled_at: datetime | None, sent_24h: datetime | None, sent_1h: datetime | None, hour: datetime
 ) -> str | None:

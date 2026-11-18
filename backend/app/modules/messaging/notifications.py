@@ -63,6 +63,7 @@ EMAIL_KINDS: frozenset[str] = frozenset(
         "payment.captured",
         "payment.failed",
         "refund.processed",
+        "refund.requested",
         "payout.processed",
         "payout.failed",
         "sos.created",

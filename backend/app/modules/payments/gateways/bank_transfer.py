@@ -2,15 +2,16 @@
 
 The order stays open while the payer wires the money quoting the order number as reference, uploads a proof
 (``POST /payments/orders/{id}/bank-transfer-proof``) and finance reconciles it
-(``POST /payments/orders/{id}/mark-paid``). Refunds are paid out manually by finance, so ``refund`` reports
-them as processed immediately with a synthetic reference.
+(``POST /payments/orders/{id}/mark-paid``). Refunds are paid out manually by finance: the payments service
+never calls ``refund`` for this gateway (SEC-010: the refund waits in ``awaiting_payout`` until one finance
+user records the payout reference and a different one confirms it). ``refund`` therefore only reports
+``pending`` and never invents a reference.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from app.core.ids import uuid7
 from app.modules.payments.gateways.base import (
     CheckoutContext,
     GatewayClient,
@@ -47,8 +48,8 @@ class BankTransferGateway(GatewayClient):
         reason: str | None,
     ) -> GatewayRefundInfo:
         return GatewayRefundInfo(
-            gateway_refund_id=f"bank_rfnd_{uuid7().hex}",
-            status=GatewayRefundStatus.PROCESSED,
+            gateway_refund_id="",
+            status=GatewayRefundStatus.PENDING,
             amount_minor=amount_minor,
             raw={"manual": True, "refund_id": refund_id},
         )

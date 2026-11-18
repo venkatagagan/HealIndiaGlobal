@@ -19,6 +19,7 @@ import {
   Layers,
   LayoutDashboard,
   Percent,
+  ShieldCheck,
   ReceiptText,
   Undo2,
   Wallet,
@@ -49,6 +50,7 @@ const BatchesPage = lazy(() => import('./pages/settlements/BatchesPage'));
 const BatchDetailPage = lazy(() => import('./pages/settlements/BatchDetailPage'));
 const PayoutsPage = lazy(() => import('./pages/settlements/PayoutsPage'));
 const CommissionRulesPage = lazy(() => import('./pages/CommissionRulesPage'));
+const CommissionChangesPage = lazy(() => import('./pages/CommissionChangesPage'));
 const PayoutAccountsPage = lazy(() => import('./pages/PayoutAccountsPage'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage'));
 
@@ -111,6 +113,7 @@ export const financeRoutes: RouteObject[] = [
       { path: 'settlements/documents', element: page(DocumentsPage, F) },
       { path: 'payouts', element: <Navigate to={financePath('settlements/payouts')} replace /> },
       { path: 'commission-rules', element: page(CommissionRulesPage, F_AD) },
+      { path: 'commission-changes', element: page(CommissionChangesPage, F_AD) },
       { path: 'payout-accounts', element: page(PayoutAccountsPage, F) },
       { path: 'reports', element: page(ReportsPage, S) },
     ],
@@ -154,6 +157,7 @@ export const financeNav: FinanceNavItem[] = [
   { label: 'Invoices & credit notes', labelKey: 'finance:nav.items.documents', to: financePath('settlements/documents'), icon: FileText, roles: F, group: 'settlements' },
   { label: 'Payout accounts', labelKey: 'finance:nav.items.payoutAccounts', to: financePath('payout-accounts'), icon: Building, roles: F, group: 'settlements' },
   { label: 'Commission rules', labelKey: 'finance:nav.items.commissionRules', to: financePath('commission-rules'), icon: Percent, roles: F_AD, group: 'settlements' },
+  { label: 'Commission changes', labelKey: 'finance:nav.items.commissionChanges', to: financePath('commission-changes'), icon: ShieldCheck, roles: F_AD, group: 'settlements' },
   { label: 'Ledger', labelKey: 'finance:nav.items.ledger', to: financePath('ledger'), icon: BookOpenCheck, roles: F, group: 'accounting' },
   { label: 'Reports', labelKey: 'finance:nav.items.reports', to: financePath('reports'), icon: BarChart3, roles: S, group: 'accounting' },
 ];

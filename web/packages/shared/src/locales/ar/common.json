@@ -650,6 +650,7 @@
       "requested": "مطلوب",
       "approved": "مقبول",
       "processing": "قيد المعالجة",
+      "awaiting_payout": "بانتظار الصرف",
       "processed": "تمت المعالجة",
       "failed": "فشل",
       "rejected": "مرفوض"

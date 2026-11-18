@@ -588,6 +588,7 @@ class RefundStatus(StrEnum):
     REQUESTED = "requested"
     APPROVED = "approved"
     PROCESSING = "processing"
+    AWAITING_PAYOUT = "awaiting_payout"  # SEC-010: manual bank-transfer refund, payout not yet confirmed
     PROCESSED = "processed"
     FAILED = "failed"
     REJECTED = "rejected"

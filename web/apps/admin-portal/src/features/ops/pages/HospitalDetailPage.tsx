@@ -49,6 +49,7 @@ import { Banner, DetailHero, DetailTabs, FactList, FieldGrid, Panel, StatusTrack
 import { DocumentList } from '../components/DocumentList';
 import { AccreditationsPanel } from '../components/AccreditationsPanel';
 import { ProfileChangesPanel } from '../components/DualControl';
+import { PendingCommissionBadge, PendingCommissionChange } from '../../finance/components/CommissionChanges';
 import type { AdminHospitalWithPending } from '../lib/phase1Api';
 import { bpsToPctInput, cn, formatBps, formatDate, formatDateTime, pctInputToBps, useDocumentTitle } from '../lib/format';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
@@ -330,7 +331,12 @@ export default function HospitalDetailPage() {
                 { label: t('hospitalDetail.facts.doctors'), value: formatNumber(h.doctors_count ?? doctors.length) },
                 {
                   label: t('hospitalDetail.facts.commission'),
-                  value: h.commission_rate_bps != null ? formatBps(h.commission_rate_bps) : t('hospitalDetail.facts.platformDefault'),
+                  value: (
+                    <span className="inline-flex flex-wrap items-center gap-1.5">
+                      {h.commission_rate_bps != null ? formatBps(h.commission_rate_bps) : t('hospitalDetail.facts.platformDefault')}
+                      {h.pending_commission_change?.status === 'pending' && <PendingCommissionBadge />}
+                    </span>
+                  ),
                 },
                 {
                   label: t('hospitalDetail.facts.settlementCycle'),
@@ -816,8 +822,12 @@ function CommercialTerms({
   const update = useOpsMutation({
     mutationFn: (body: { commission_rate_bps?: number | null; settlement_cycle_days?: number | null; is_featured?: boolean }) =>
       adminApi.updateHospital(hospital.id, body),
-    success: t('hospitalDetail.terms.updated'),
-    invalidate: [opsKeys.hospitals],
+    // SEC-044: a new commission rate waits for a second approver (the other fields apply at once)
+    success: (result, body) =>
+      'commission_rate_bps' in body && result.pending_commission_change?.status === 'pending'
+        ? t('commissionApproval.sentForApproval')
+        : t('hospitalDetail.terms.updated'),
+    invalidate: [opsKeys.hospitals, ['finance']],
   });
 
   const save = () => {
@@ -828,7 +838,8 @@ function CommercialTerms({
       return setError(t('hospitalDetail.terms.cycleError'));
     }
     setError(null);
-    update.mutate({ commission_rate_bps: bps, settlement_cycle_days: cycleNum });
+    const rateChanged = pct !== bpsToPctInput(hospital.commission_rate_bps);
+    update.mutate(rateChanged ? { commission_rate_bps: bps, settlement_cycle_days: cycleNum } : { settlement_cycle_days: cycleNum });
   };
 
   const dirty =
@@ -837,6 +848,7 @@ function CommercialTerms({
   return (
     <Panel title={t('hospitalDetail.terms.title')} description={t('hospitalDetail.terms.description')}>
       <div className="space-y-3">
+        <PendingCommissionChange change={hospital.pending_commission_change} />
         <Field
           label={t('hospitalDetail.terms.commissionRate')}
           hint={t('hospitalDetail.terms.commissionHint', { value: defaultBps != null ? formatBps(defaultBps) : '—' })}
@@ -872,6 +884,7 @@ function CommercialTerms({
             {error}
           </p>
         )}
+        {canEdit && <p className="text-xs text-muted">{t('commissionApproval.note')}</p>}
         {canEdit && (
           <Button onClick={save} disabled={!dirty} loading={update.isPending && !(update.variables && 'is_featured' in update.variables)}>
             {t('hospitalDetail.terms.save')}

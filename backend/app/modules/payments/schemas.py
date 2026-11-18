@@ -86,6 +86,21 @@ class RefundRejectIn(_In):
     reason: str = Field(min_length=1, max_length=1000)
 
 
+class RefundPayoutIn(_In):
+    """SEC-010 maker step: the bank payout of a manual (bank transfer) refund."""
+
+    reference: str = Field(min_length=1, max_length=100, description="Bank reference / UTR of the payout")
+    paid_on: date = Field(description="Value date of the payout")
+    proof_document_id: uuid.UUID | None = Field(default=None, description="Optional proof (bank advice)")
+    note: str | None = Field(default=None, max_length=1000)
+
+
+class RefundPayoutConfirmIn(_In):
+    """SEC-010 checker step: the reference the second finance user reviewed (must match the record)."""
+
+    reference: str = Field(min_length=1, max_length=100)
+
+
 class MarkPaidApproveIn(_In):
     """SEC-063: the checker states which request was reviewed (as shown in ``mark_paid_request``); the
     approval is refused with 409 ``mark_paid_request_changed`` if the pending request differs."""
@@ -177,11 +192,21 @@ class RefundOut(_Out):
     processed_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    # SEC-010 manual payout (bank transfer refunds; status ``awaiting_payout`` until confirmed)
+    payout_reference: str | None = None
+    payout_date: date | None = None
+    payout_note: str | None = None
+    payout_proof_document_id: uuid.UUID | None = None
+    payout_recorded_by: uuid.UUID | None = None
+    payout_recorded_at: datetime | None = None
+    payout_confirmed_by: uuid.UUID | None = None
     # staff list display fields (filled by payments.listing; None elsewhere)
     order_number: str | None = None
     patient_name: str | None = None
     requested_by_name: str | None = None
     approved_by_name: str | None = None
+    payout_recorded_by_name: str | None = None
+    payout_confirmed_by_name: str | None = None
 
 
 class BankTransferProofOut(BaseModel):

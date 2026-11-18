@@ -74,6 +74,29 @@
       "body": "{inviter} added you to {hospital} as {role}. Sign in to the hospital portal to get started.",
       "default_inviter": "A colleague",
       "button": "Open hospital portal"
+    },
+    "account_locked": {
+      "subject": "Sign-in to your {app_name} account was paused",
+      "title": "Sign-in paused for {minutes} minutes",
+      "body": "We noticed several unsuccessful attempts to sign in to your account, so new sign-ins are paused for {minutes} minutes. You stay signed in on your devices.\n\nIf this was not you, we recommend changing your password and turning on two-factor authentication."
+    },
+    "guest_code": {
+      "subject": "Your {app_name} verification code",
+      "title": "Your verification code",
+      "body": "Your code is {code}.\n\nIt expires in {minutes} minutes. If you did not ask for it, you can ignore this email.",
+      "sms": "Your {app_name} code is {code}. It expires in {minutes} minutes. Do not share it."
+    },
+    "intro_scheduled": {
+      "subject": "Your free call with our medical coordinator",
+      "title": "Your free call is booked",
+      "body": "Your 15-minute video call is on {when}.\n\nJoin with the button below at that time. No app or account is needed.",
+      "button": "Join the video call"
+    },
+    "privacy_request": {
+      "received_subject": "We received your request {reference}",
+      "received_title": "We received your request",
+      "received_body": "Thank you. We received your request about {kind} (reference {reference}). We will reply by {date}. If you are not happy with our answer, you can complain to the Data Protection Board of India.",
+      "button": "Privacy policy"
     }
   },
   "notifications": {
@@ -448,6 +471,40 @@
       "published_body": "Thank you. Your review of {hospital} is now published.",
       "hidden_title": "Your review was not published",
       "hidden_body": "Your review of {hospital} was not published because it does not meet our review guidelines."
+    },
+    "refund_requested": {
+      "title": "Refund requested",
+      "body": "A refund of {amount} has been requested.",
+      "body_booking": "A refund of {amount} for booking {booking_number} has been requested.",
+      "next": "We will let you know as soon as it has been processed."
+    },
+    "refund_approval_needed": {
+      "title": "Refund awaiting approval",
+      "body": "A refund of {amount} for order {order_number} needs a finance approval."
+    },
+    "refund_awaiting_payout": {
+      "title": "Bank refund to pay out",
+      "body": "The approved refund of {amount} for order {order_number} must be paid by bank transfer. Record the payout reference once it has been sent."
+    },
+    "refund_payout_recorded": {
+      "title": "Refund payout to confirm",
+      "body": "A bank payout of {amount} for order {order_number} was recorded. A second finance user must check and confirm it."
+    },
+    "aftercare_checkin_due": {
+      "title": "Recovery check-in due",
+      "body": "Your day {day} recovery check-in for case {case_number} is ready. It takes about a minute and helps your care team follow your recovery."
+    },
+    "commission_change_requested": {
+      "title": "Commission change needs approval",
+      "body": "{name} asked to change the commission for {target}. A second admin or finance user must review and approve it before it takes effect."
+    },
+    "commission_default_change_requested": {
+      "title": "Default commission change needs approval",
+      "body": "{name} asked to change a default commission rate. A second finance user must review and approve it before it takes effect."
+    },
+    "commission_default_changed": {
+      "title": "Default commission rate changed",
+      "body": "{name} approved a change to a default commission rate. It applies to new bookings from now on."
     }
   },
   "errors": {
@@ -486,7 +543,10 @@
     "service_unavailable": "The service is temporarily unavailable. Please try again later.",
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
-    "default_language_required": "English is the default language and cannot be switched off."
+    "default_language_required": "English is the default language and cannot be switched off.",
+    "login_throttled": "Too many failed sign-in attempts from this network. Try again later.",
+    "organisation_suspended": "Your organisation's account is suspended. Please contact support.",
+    "too_many_unpaid_bookings": "Please pay or cancel your other unpaid bookings before making a new one."
   },
   "sms": {
     "verification_code": "Your {app_name} code is {code}. It expires in {minutes} minutes. Do not share it."
@@ -526,5 +586,16 @@
         "body": "{name} asked {provider} to check eligibility for {product}."
       }
     }
+  },
+  "push": {
+    "title": "{app_name}",
+    "message": "You have a new message.",
+    "urgent": "You have an urgent update. Please open the app.",
+    "payment": "You have an update about a payment.",
+    "trip": "You have an update about your trip.",
+    "consultation": "You have an update about a consultation.",
+    "team": "You have a message from our team.",
+    "enquiry": "A new website enquiry has arrived.",
+    "case": "You have an update on your case."
   }
 }

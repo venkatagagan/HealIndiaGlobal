@@ -67,6 +67,7 @@ from app.core.money import (
     convert,
     convert_minor,
     exponent,
+    format_minor,
     get_fx_rate,
     normalize_currency,
 )
@@ -109,6 +110,8 @@ from app.modules.payments.schemas import (
     PaymentOut,
     RefundCreate,
     RefundOut,
+    RefundPayoutConfirmIn,
+    RefundPayoutIn,
     VerifyIn,
 )
 
@@ -129,8 +132,11 @@ COMMITTED_REFUND_STATUSES = (
     RefundStatus.REQUESTED,
     RefundStatus.APPROVED,
     RefundStatus.PROCESSING,
+    RefundStatus.AWAITING_PAYOUT,
     RefundStatus.PROCESSED,
 )
+# SEC-010: gateways whose refunds are paid out by hand (a finance user records the payout, another confirms)
+MANUAL_REFUND_GATEWAYS = frozenset({PaymentGateway.BANK_TRANSFER.value})
 CANCELLATION_REFUND_PREFIX = "Booking cancelled"
 # Platform settings (``platform_settings``; unknown keys are accepted by the settings store)
 FX_MAX_AGE_SETTING = "fx_rate_max_age_hours"
@@ -1695,7 +1701,7 @@ async def process_webhook_event(db: AsyncSession, webhook_event_id: uuid.UUID) -
     gateway = PaymentGateway(event.gateway)
     adapter = get_gateway(gateway)
     raw = json.dumps(event.payload).encode()
-    parsed = adapter.parse_webhook(raw, {"x-razorpay-event-id": event.event_id})
+    parsed = adapter.parse_webhook(raw, {})
     try:
         for ev in parsed.events:
             await apply_event(db, gateway, ev, source=f"webhook:{event.event_type}")
@@ -1705,6 +1711,35 @@ async def process_webhook_event(db: AsyncSession, webhook_event_id: uuid.UUID) -
     else:
         event.processing_error = None
     event.processed_at = _now()
+
+
+WEBHOOK_FUTURE_SKEW_SECONDS = 300
+
+
+def _check_webhook_fresh(gateway_name: PaymentGateway, parsed: Any) -> None:
+    """SEC-046: refuse replays of old (validly signed) deliveries. Stripe signs a delivery timestamp
+    (``t=``, checked against a 5-minute tolerance in ``verify_webhook``), so its retries stay valid. Razorpay
+    signs only the body, whose ``created_at`` must be within ``WEBHOOK_MAX_AGE_SECONDS``."""
+    if gateway_name != PaymentGateway.RAZORPAY:
+        return
+    occurred = parsed.occurred_at
+    now = int(_now().timestamp())
+    if occurred is None:
+        raise BadRequest("Webhook has no event time", code="malformed_webhook")
+    age = now - int(occurred)
+    if age > settings.WEBHOOK_MAX_AGE_SECONDS or age < -WEBHOOK_FUTURE_SKEW_SECONDS:
+        logger.error(
+            "payments.webhook_stale",
+            gateway=gateway_name.value,
+            event_id=parsed.event_id,
+            event_type=parsed.event_type,
+            age_seconds=age,
+        )
+        raise BadRequest(
+            "Webhook event is too old",
+            code="stale_webhook",
+            details={"max_age_seconds": settings.WEBHOOK_MAX_AGE_SECONDS},
+        )
 
 
 async def handle_webhook(
@@ -1740,6 +1775,7 @@ async def handle_webhook(
         parsed = adapter.parse_webhook(raw_body, headers)
     except GatewayError as exc:
         raise BadRequest("Malformed webhook payload", code="malformed_webhook") from exc
+    _check_webhook_fresh(gateway_name, parsed)
 
     stmt = (
         pg_insert(WebhookEvent)
@@ -1970,8 +2006,27 @@ async def create_refund(
         },
         request=request,
     )
+    await _publish_refund_requested(db, refund)
     await db.commit()
     return refund
+
+
+async def _publish_refund_requested(db: AsyncSession, refund: Refund) -> None:
+    """``refund.requested``: a refund was created (by finance/admin, or by a booking cancellation)."""
+    await publish(
+        db,
+        "refund.requested",
+        {
+            "refund_id": str(refund.id),
+            "payment_id": str(refund.payment_id),
+            "order_id": str(refund.order_id),
+            "booking_id": str(refund.booking_id) if refund.booking_id else None,
+            "amount_minor": int(refund.amount_minor),
+            "currency": refund.currency,
+            "status": _value(refund.status),
+            "requested_by": str(refund.requested_by) if refund.requested_by else None,
+        },
+    )
 
 
 async def approve_refund(
@@ -2063,6 +2118,9 @@ async def process_refund(db: AsyncSession, refund_id: uuid.UUID) -> None:
     payment = await db.get(Payment, refund.payment_id)
     if payment is None:
         return
+    if _value(payment.gateway) in MANUAL_REFUND_GATEWAYS:
+        await _await_manual_payout(db, refund)
+        return
     refund.status = RefundStatus.PROCESSING
     await db.commit()  # durable "in flight" marker before the external call
 
@@ -2102,6 +2160,187 @@ async def process_refund(db: AsyncSession, refund_id: uuid.UUID) -> None:
         await audit_log(
             db, actor=None, action="refund.failed", entity_type="refund", entity_id=refund.id, after=None
         )
+
+
+# ------------------------------------------------------------------------- manual payouts (SEC-010)
+async def _notify_finance_refund(
+    db: AsyncSession, refund: Refund, kind: str, text_key: str, *, exclude: uuid.UUID | None = None
+) -> None:
+    """Tell finance users (in their own language) that a manual refund needs their action."""
+    from app.modules.admin.service import _finance_user_ids
+    from app.modules.messaging.notifications import notify_many
+
+    order = await db.get(PaymentOrder, refund.order_id)
+    await notify_many(
+        db,
+        await _finance_user_ids(db, exclude=exclude),
+        kind,
+        title_key=f"{text_key}.title",
+        body_key=f"{text_key}.body",
+        params={
+            "amount": format_minor(int(refund.amount_minor), refund.currency),
+            "order_number": order.order_number if order is not None else "",
+        },
+        data={"refund_id": str(refund.id), "link": "/finance/refunds?status=awaiting_payout"},
+        dedupe_key=f"{kind}:{refund.id}:{refund.payout_reference or ''}",
+    )
+
+
+async def _await_manual_payout(db: AsyncSession, refund: Refund) -> None:
+    """Approved refund on a manual gateway: wait for a recorded and confirmed payout (no synthetic gateway
+    id, no ledger posting, no ``refund.processed`` yet). Idempotent; does not commit."""
+    if refund.status == RefundStatus.AWAITING_PAYOUT:
+        return
+    before = _value(refund.status)
+    refund.status = RefundStatus.AWAITING_PAYOUT
+    await audit_log(
+        db,
+        actor=None,
+        action="refund.awaiting_payout",
+        entity_type="refund",
+        entity_id=refund.id,
+        before={"status": before},
+        after={"status": RefundStatus.AWAITING_PAYOUT.value},
+    )
+    await _notify_finance_refund(db, refund, "refund.awaiting_payout", "notifications.refund_awaiting_payout")
+
+
+async def _lock_manual_refund(db: AsyncSession, refund_id: uuid.UUID) -> Refund:
+    refund = await _lock(db, Refund, refund_id)
+    if refund is None:
+        raise NotFound("Refund not found")
+    if refund.status != RefundStatus.AWAITING_PAYOUT:
+        raise BadRequest("This refund is not waiting for a manual payout", code="invalid_refund_state")
+    return refund
+
+
+async def record_refund_payout(
+    db: AsyncSession, user: User, refund_id: uuid.UUID, body: RefundPayoutIn, request: Request | None = None
+) -> Refund:
+    """Maker step (SEC-010): a finance user records the bank payout of a manual refund (reference / UTR,
+    value date, optional proof document). Replaces an earlier unconfirmed record; a DIFFERENT finance user
+    confirms it (:func:`confirm_refund_payout`). Commits."""
+    refund = await _lock_manual_refund(db, refund_id)
+    reference = normalize_bank_reference(body.reference)
+    if not reference:
+        raise BadRequest("A bank reference is required", code="reference_required")
+    clash = (
+        await db.execute(
+            select(Refund.id).where(Refund.payout_reference == reference, Refund.id != refund.id)
+        )
+    ).first()
+    if clash is not None:
+        raise Conflict(
+            "This bank reference has already been used for another refund", code="reference_already_used"
+        )
+    if body.paid_on > _now().date() + timedelta(days=1):
+        raise BadRequest("The payout date cannot be in the future", code="invalid_payout_date")
+    if body.proof_document_id is not None:
+        doc = await db.get(Document, body.proof_document_id)
+        if doc is None or getattr(doc, "deleted_at", None) is not None:
+            raise NotFound("Document not found")
+    previous = refund.payout_reference
+    refund.payout_reference = reference
+    refund.payout_date = body.paid_on
+    refund.payout_note = body.note
+    refund.payout_proof_document_id = body.proof_document_id
+    refund.payout_recorded_by = user.id
+    refund.payout_recorded_at = _now()
+    refund.payout_confirmed_by = None
+    await audit_log(
+        db,
+        actor=user,
+        action="refund.payout_recorded",
+        entity_type="refund",
+        entity_id=refund.id,
+        before={"payout_reference": previous} if previous else None,
+        after={
+            "payout_reference": reference,
+            "paid_on": body.paid_on.isoformat(),
+            "proof_document_id": str(body.proof_document_id) if body.proof_document_id else None,
+        },
+        request=request,
+    )
+    await _notify_finance_refund(
+        db, refund, "refund.payout_recorded", "notifications.refund_payout_recorded", exclude=user.id
+    )
+    try:
+        await db.commit()
+    except IntegrityError as exc:  # the same reference recorded concurrently on another refund
+        await db.rollback()
+        raise Conflict(
+            "This bank reference has already been used for another refund", code="reference_already_used"
+        ) from exc
+    return refund
+
+
+async def confirm_refund_payout(
+    db: AsyncSession,
+    user: User,
+    refund_id: uuid.UUID,
+    body: RefundPayoutConfirmIn,
+    request: Request | None = None,
+) -> Refund:
+    """Checker step (SEC-010): a finance user OTHER than the one who recorded the payout confirms the
+    reviewed reference; only now is the refund ``processed`` (ledger posting via ``refund.processed``).
+    Commits."""
+    refund = await _lock_manual_refund(db, refund_id)
+    if not refund.payout_reference or refund.payout_recorded_by is None:
+        raise BadRequest("No payout has been recorded for this refund", code="no_payout_recorded")
+    if refund.payout_recorded_by == user.id:
+        raise Forbidden(
+            "The payout must be confirmed by a different finance user", code="second_approver_required"
+        )
+    if normalize_bank_reference(body.reference) != refund.payout_reference:
+        raise Conflict(
+            "The recorded payout changed since it was reviewed; review it again", code="payout_changed"
+        )
+    refund.payout_confirmed_by = user.id
+    refund.gateway_refund_id = refund.payout_reference
+    await audit_log(
+        db,
+        actor=user,
+        action="refund.payout_confirmed",
+        entity_type="refund",
+        entity_id=refund.id,
+        after={"payout_reference": refund.payout_reference, "recorded_by": str(refund.payout_recorded_by)},
+        request=request,
+    )
+    await finalize_refund(db, refund.id)
+    await db.commit()
+    return refund
+
+
+async def reject_refund_payout(
+    db: AsyncSession, user: User, refund_id: uuid.UUID, reason: str, request: Request | None = None
+) -> Refund:
+    """The checker refuses the recorded payout (wrong reference, money not sent...): the record is cleared
+    and the refund keeps waiting for a payout. Commits."""
+    refund = await _lock_manual_refund(db, refund_id)
+    if not refund.payout_reference:
+        raise BadRequest("No payout has been recorded for this refund", code="no_payout_recorded")
+    before = {
+        "payout_reference": refund.payout_reference,
+        "recorded_by": str(refund.payout_recorded_by) if refund.payout_recorded_by else None,
+    }
+    refund.payout_reference = None
+    refund.payout_date = None
+    refund.payout_note = None
+    refund.payout_proof_document_id = None
+    refund.payout_recorded_by = None
+    refund.payout_recorded_at = None
+    await audit_log(
+        db,
+        actor=user,
+        action="refund.payout_rejected",
+        entity_type="refund",
+        entity_id=refund.id,
+        before=before,
+        after={"reason": reason},
+        request=request,
+    )
+    await db.commit()
+    return refund
 
 
 async def finalize_refund(db: AsyncSession, refund_id: uuid.UUID) -> Refund | None:
@@ -2299,6 +2538,7 @@ async def create_cancellation_refunds(
                 "requested_by": str(requested_by) if requested_by else None,
             },
         )
+        await _publish_refund_requested(db, refund)
         created.append(refund)
         remaining -= used
     return created

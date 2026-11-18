@@ -20,9 +20,13 @@ from app.core.enums import UserRole
 from app.core.events import subscribe
 from app.core.jobs import periodic
 from app.i18n import Msg, MsgList
-from app.models import Case, Consultation, IntroConsultation, VisaRequest
+from app.models import AftercareCheckin, Case, Consultation, IntroConsultation, VisaRequest
 from app.models.sequences import IST
-from app.modules.cases.aftercare import create_aftercare_plan, run_consultation_reminders
+from app.modules.cases.aftercare import (
+    create_aftercare_plan,
+    run_checkin_reminders,
+    run_consultation_reminders,
+)
 from app.modules.cases.quick_quote import run_quote_sla
 from app.modules.messaging import policies as mpolicies
 from app.modules.messaging.notifications import notify_many
@@ -261,6 +265,39 @@ async def on_consultation_reminder(db: AsyncSession, payload: dict[str, Any]) ->
         title_key=f"{prefix}.coordinator_title_{starts}",
         body_key=f"{prefix}.coordinator_body",
         params={"when": when, "name": intro.full_name},
+    )
+
+
+# ------------------------------------------------------------------------------------ aftercare check-ins
+@periodic("cases.aftercare_checkin_reminders", every_seconds=900)
+async def aftercare_checkin_reminders_job(db: AsyncSession, payload: dict[str, Any]) -> None:
+    sent = await run_checkin_reminders(db)
+    if sent:
+        logger.info("cases.aftercare_checkin_reminders", sent=sent)
+
+
+@subscribe("aftercare.checkin_due")
+async def on_aftercare_checkin_due(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Patient (+ agent): a recovery check-in is ready to answer. No health details in the text."""
+    checkin_id = _uuid(payload, "checkin_id")
+    checkin = await db.get(AftercareCheckin, checkin_id) if checkin_id else None
+    case = await db.get(Case, checkin.case_id) if checkin is not None else None
+    if checkin is None or case is None or checkin.submitted_at is not None:
+        return
+    await notify_many(
+        db,
+        await _patient_side(db, case),
+        "aftercare.checkin_due",
+        data={
+            "case_id": str(case.id),
+            "checkin_id": str(checkin.id),
+            "day": checkin.day,
+            "link": "/aftercare",
+        },
+        dedupe_key=f"aftercare.checkin_due:{checkin.id}",
+        title_key="notifications.aftercare_checkin_due.title",
+        body_key="notifications.aftercare_checkin_due.body",
+        params={"day": checkin.day, "case_number": case.case_number},
     )
 
 

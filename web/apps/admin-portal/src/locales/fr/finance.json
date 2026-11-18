@@ -17,7 +17,8 @@
       "payoutAccounts": "Comptes de versement",
       "commissionRules": "Règles de commission",
       "ledger": "Grand livre",
-      "reports": "Rapports"
+      "reports": "Rapports",
+      "commissionChanges": "Modifications de commission"
     }
   },
   "guard": {
@@ -81,7 +82,8 @@
         "payout": "Un autre utilisateur financier doit approuver ce versement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
         "request": "Un autre utilisateur financier doit approuver cette demande : vous en êtes l'auteur, vous ne pouvez donc pas également l'approuver.",
         "refund": "Un autre utilisateur financier doit approuver ce remboursement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
-        "adjustment": "Un autre utilisateur financier doit approuver cet ajustement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver."
+        "adjustment": "Un autre utilisateur financier doit approuver cet ajustement : vous l'avez demandé, vous ne pouvez donc pas également l'approuver.",
+        "refundPayout": "Un autre utilisateur financier doit confirmer ce versement de remboursement : vous l'avez saisi, vous ne pouvez donc pas également le confirmer."
       },
       "requestChanged": "Cette demande a été modifiée depuis que vous l'avez ouverte. Les dernières informations ont été rechargées : veuillez la vérifier à nouveau."
     },
@@ -186,7 +188,9 @@
       "payoutConfirmations": "Versements en attente de confirmation de l'UTR",
       "payoutReconciliations": "Versements à rapprocher",
       "payoutReversals": "Échecs de versement en attente de 2e approbation",
-      "adjustments": "Ajustements du grand livre à approuver"
+      "adjustments": "Ajustements du grand livre à approuver",
+      "refundPayouts": "Remboursements bancaires en attente de versement",
+      "commissionChanges": "Modifications de commission en attente de 2e approbation"
     }
   },
   "settlementUi": {
@@ -489,6 +493,54 @@
     "orderFallback": "commande",
     "rejected": "Remboursement rejeté",
     "rejectFailed": "Impossible de rejeter le remboursement"
+  },
+  "refundPayout": {
+    "queueTab": "En attente de versement",
+    "record": "Saisir le versement",
+    "edit": "Modifier le versement",
+    "confirm": "Confirmer le versement",
+    "reject": "Rejeter le versement",
+    "recordedBy": "Réf. <0>{{reference}}</0> saisie par {{name}}",
+    "recordedByLabel": "Saisi par",
+    "someone": "un autre utilisateur",
+    "sameUser": "Vous avez saisi ce versement : un autre utilisateur financier doit le confirmer.",
+    "recordTitle": "Saisir le versement bancaire",
+    "recordHint": "Effectuez d'abord le remboursement depuis la banque, puis saisissez la référence bancaire. Un autre utilisateur financier la confirme d'après le relevé bancaire ; ce n'est qu'alors que le remboursement est marqué comme traité et comptabilisé dans le grand livre.",
+    "reference": "Référence bancaire (UTR)",
+    "referenceHint": "Telle qu'indiquée sur le relevé ou l'avis de virement.",
+    "referenceRequired": "Saisissez la référence bancaire.",
+    "paidOn": "Payé le",
+    "proof": "Justificatif de paiement",
+    "proofHint": "Facultatif : avis de virement ou capture d'écran (PDF, JPEG, PNG ou WebP).",
+    "proofKept": "Le justificatif déjà joint est conservé, sauf si vous choisissez un nouveau fichier.",
+    "note": "Note",
+    "recordSubmit": "Saisir le versement",
+    "recorded": "Versement saisi ; un deuxième utilisateur financier doit le confirmer",
+    "recordFailed": "Impossible de saisir le versement",
+    "uploadFailed": "Impossible de téléverser le justificatif de paiement",
+    "confirmTitle": "Confirmer le versement bancaire",
+    "confirmHint": "Vérifiez le versement sur le relevé bancaire avant de confirmer. La confirmation marque le remboursement comme traité, le comptabilise dans le grand livre et prévient le patient.",
+    "amount": "Montant",
+    "patient": "Patient",
+    "downloadProof": "Télécharger le justificatif",
+    "noProof": "Aucun justificatif joint",
+    "proofFailed": "Impossible de télécharger le justificatif",
+    "retypeReference": "Saisissez la référence bancaire que vous avez vérifiée",
+    "referenceMismatch": "La référence ne correspond pas au versement saisi.",
+    "confirmSubmit": "Confirmer le versement",
+    "confirmed": "Versement confirmé ; le remboursement est traité",
+    "confirmFailed": "Impossible de confirmer le versement",
+    "rejectTitle": "Rejeter le versement saisi",
+    "rejectBody": "La référence saisie est effacée et le remboursement reste en attente de versement. Rien n'est comptabilisé dans le grand livre.",
+    "rejected": "Saisie du versement rejetée ; le remboursement revient dans la file des versements",
+    "rejectFailed": "Impossible de rejeter la saisie du versement",
+    "errors": {
+      "referenceUsed": "Cette référence bancaire a déjà été utilisée pour un autre remboursement.",
+      "futureDate": "La date du versement ne peut pas être dans le futur.",
+      "changed": "Le versement saisi a changé depuis son ouverture. Rechargez la liste et vérifiez-le à nouveau.",
+      "notRecorded": "Aucun versement n'a encore été saisi pour ce remboursement.",
+      "state": "Ce remboursement n'est plus en attente de versement."
+    }
   },
   "reports": {
     "documentTitle": "Rapports financiers",
@@ -927,6 +979,78 @@
       "selectProcedure": "Sélectionnez une intervention"
     }
   },
+  "commissionChanges": {
+    "title": "Modifications de commission",
+    "description": "Les modifications des taux de commission des hôpitaux et des agents et des règles de commission attendent ici l'approbation d'un utilisateur administrateur ou financier autre que le demandeur.",
+    "rule": "Double contrôle : la personne qui a demandé une modification ne peut pas l'approuver (elle peut la retirer). Les taux par défaut de la plateforme s'approuvent dans la page Paramètres.",
+    "statusLabel": "Statut de la demande",
+    "targetLabel": "S'applique à",
+    "allTargets": "Tous les types",
+    "statuses": {
+      "pending": "En attente",
+      "approved": "Approuvée",
+      "rejected": "Rejetée",
+      "withdrawn": "Retirée",
+      "superseded": "Remplacée"
+    },
+    "targets": {
+      "hospital": "Taux d'un hôpital",
+      "agent": "Taux d'un agent",
+      "commission_rule": "Règle de commission"
+    },
+    "columns": {
+      "target": "S'applique à",
+      "change": "Modification",
+      "requested": "Demandée",
+      "status": "Statut",
+      "decided": "Décision",
+      "pendingChange": "Modification en attente"
+    },
+    "fields": {
+      "commission_rate_bps": "Taux de commission",
+      "rate_bps": "Taux",
+      "is_active": "Statut",
+      "effective_from": "En vigueur du",
+      "effective_to": "En vigueur jusqu'au"
+    },
+    "platformDefault": "Valeur par défaut de la plateforme",
+    "openEnded": "Sans date de fin",
+    "active": "Active",
+    "inactive": "Inactive",
+    "pendingBadge": "En attente de 2e approbation",
+    "pendingActivation": "Activation en attente",
+    "pendingTitle": "Modification de commission en attente d'un deuxième approbateur",
+    "requestedAtBy": "Demandée par {{name}} · {{when}}",
+    "you": "vous",
+    "someone": "un autre utilisateur",
+    "sameUser": "Vous avez demandé cette modification : un autre utilisateur administrateur ou financier doit l'approuver.",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "withdraw": "Retirer",
+    "approved": "Modification de commission approuvée et appliquée",
+    "approveFailed": "Impossible d'approuver la modification de commission",
+    "rejectTitle": "Rejeter cette modification de commission ?",
+    "withdrawTitle": "Retirer votre modification de commission ?",
+    "rejectBody": "La commission actuelle reste en vigueur. Le motif est conservé dans le journal d'audit.",
+    "reasonOptional": "Motif (facultatif)",
+    "reasonValue": "Motif : {{reason}}",
+    "rejected": "Modification de commission rejetée",
+    "withdrawn": "Modification de commission retirée",
+    "rejectFailed": "Impossible de rejeter la modification de commission",
+    "sentForApproval": "Enregistré. La modification ne s'applique qu'après l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "ruleCreatedPending": "Règle créée. Elle reste inactive jusqu'à l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "rulesNote": "Les nouvelles règles et les modifications de taux, de dates ou d'activation attendent un deuxième utilisateur administrateur ou financier.",
+    "rulesPendingTitle": "{{n}} modification(s) de règle en attente d'approbation",
+    "openQueue": "Ouvrir la file des modifications de commission",
+    "emptyPending": "Aucune modification de commission en attente d'approbation",
+    "emptyPendingHint": "Les modifications de taux faites sur les pages des hôpitaux, des agents et des règles de commission apparaissent ici.",
+    "empty": "Aucune modification de commission avec ce statut",
+    "errors": {
+      "differentUser": "Un autre utilisateur administrateur ou financier doit approuver cette modification de commission : vous l'avez demandée, vous ne pouvez donc pas également l'approuver.",
+      "requestChanged": "Cette demande n'est plus en attente (elle a été remplacée ou traitée). La liste a été rechargée.",
+      "targetChanged": "La commission a changé depuis cette demande. Rejetez-la et demandez une nouvelle modification."
+    }
+  },
   "payoutAccounts": {
     "description": "Comptes bancaires enregistrés par les hôpitaux et les agents pour les règlements (numéros de compte chiffrés et masqués). Vérifiez chacun d'eux à l'aide du justificatif bancaire avant qu'il ne reçoive des versements.",
     "routeAutomatic": "Razorpay Route (automatique)",
@@ -989,7 +1113,8 @@
       "returning": "Restitution en cours",
       "accepted": "Accepté",
       "returned": "Restitué",
-      "posted": "Comptabilisé"
+      "posted": "Comptabilisé",
+      "awaiting_payout": "En attente de versement"
     },
     "paymentGateway": {
       "razorpay": "Carte / UPI (Razorpay)",

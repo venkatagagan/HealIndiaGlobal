@@ -8,7 +8,7 @@ from sqlalchemy import Text, select, type_coerce, update
 
 from app.core.enums import BookingStatus, CaseStatus
 from app.models import AftercareCheckin, Booking, Consultation, Notification
-from app.modules.cases.aftercare import run_consultation_reminders
+from app.modules.cases.aftercare import run_checkin_reminders, run_consultation_reminders
 from app.modules.cases.common import today_ist
 from tests.factories import create_booking, create_case, create_user
 from tests.modules.cases_helpers import (  # noqa: F401  (fixture import)
@@ -274,3 +274,47 @@ async def test_checkin_red_flag_alerts_hospital_and_coordinator(
     r = await client.post(f"{API}/aftercare/checkins/{day3.id}", json=calm, headers=p_h)
     assert r.status_code == 200 and r.json()["red_flags"] == []
     assert len(event_log.of("aftercare.red_flag")) == 1
+
+
+async def test_checkin_due_reminder_once_per_checkin(db, client, auth_headers, event_log: EventLog) -> None:
+    world = await make_world(db)
+    case, _ = await _discharged(db, client, auth_headers, world)
+    case_id, patient_user_id = case.id, world.patient_user.id
+    now = datetime.now(UTC)
+    # nothing is due yet right after discharge (day 1 is tomorrow)
+    assert await run_checkin_reminders(db, now - timedelta(days=1)) == 0
+    day1 = (
+        await db.execute(
+            select(AftercareCheckin).where(AftercareCheckin.case_id == case_id, AftercareCheckin.day == 1)
+        )
+    ).scalar_one()
+    day1_id = day1.id
+    later = day1.due_at + timedelta(minutes=5)
+    assert await run_checkin_reminders(db, later) == 1
+    await db.commit()
+    # dedupe: the same check-in is not reminded again
+    assert await run_checkin_reminders(db, later + timedelta(hours=1)) == 0
+    await db.commit()
+    due = event_log.of("aftercare.checkin_due")
+    assert [e["checkin_id"] for e in due] == [str(day1_id)] and due[0]["day"] == 1
+    # the subscriber notifies the patient side (in their language; no health details)
+    from app.modules.cases.sla_handlers import on_aftercare_checkin_due
+
+    await on_aftercare_checkin_due(db, due[0])
+    await on_aftercare_checkin_due(db, due[0])
+    await db.commit()
+    rows = (
+        (await db.execute(select(Notification).where(Notification.kind == "aftercare.checkin_due")))
+        .scalars()
+        .all()
+    )
+    assert [n.user_id for n in rows] == [patient_user_id]
+    assert "1" in rows[0].body and rows[0].data["checkin_id"] == str(day1_id)
+    # a check-in answered before the job runs is not reminded; very old ones are skipped
+    await db.execute(
+        update(AftercareCheckin)
+        .where(AftercareCheckin.case_id == case_id, AftercareCheckin.day == 3)
+        .values(submitted_at=now)
+    )
+    await db.commit()
+    assert await run_checkin_reminders(db, later + timedelta(days=60)) == 0

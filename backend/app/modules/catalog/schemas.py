@@ -94,8 +94,12 @@ class HospitalCard(_Out):
     city: str | None = None
     state: str | None = None
     accreditations: list[str] = []
+    # ``rating_avg``/``rating_count`` may be CURATED (set by staff) for hospitals without reviews; show them
+    # as review ratings only through the ``published_*`` fields, which count published patient reviews only.
     rating_avg: float | None = None
     rating_count: int = 0
+    published_rating_avg: float | None = None
+    published_review_count: int = 0
     logo_url: str | None = None
     cover_image_url: str | None = None
     specialties: list[str] = []
@@ -177,8 +181,11 @@ class DoctorCard(_Out):
     experience_years: int | None = None
     languages: list[str] = []
     success_rate_pct: float | None = None
+    # see ``HospitalCard``: ``published_*`` = published patient reviews only
     rating_avg: float | None = None
     rating_count: int = 0
+    published_rating_avg: float | None = None
+    published_review_count: int = 0
     consultation_fee_minor: int | None = None
     currency: str = "INR"
     display_consultation_fee: DisplayMoney | None = None
@@ -256,11 +263,18 @@ class CostIndia(BaseModel):
 
 
 class CostSavings(BaseModel):
+    """Computed saving versus the home-country benchmark. It is ALWAYS returned (never null);
+    ``claim_allowed`` says whether it may be presented as a saving claim (legal price-claim rule,
+    ``app.modules.catalog.claims``): only for a medium/high-confidence benchmark with a named source and
+    India cheaper at both ends of the range. When false, show the two ranges and their source only - no
+    "save X" wording, percentage badge or saving-based ranking."""
+
     min_minor: int
     max_minor: int
     currency: str
     pct_min: int
     pct_max: int
+    claim_allowed: bool = False
 
 
 class CostItem(BaseModel):
@@ -285,8 +299,10 @@ class CostComparisonOut(HomeCountryFields):
     procedure: IdSlugName
     home: CostHome
     india: CostIndia
-    savings: CostSavings
+    savings: CostSavings  # see ``CostSavings``: kept, with ``claim_allowed`` deciding how it may be shown
     itemized: list[CostItem]
+    #: same as ``savings.claim_allowed`` (legal price-claim rule)
+    claim_allowed: bool = False
 
 
 class CostHighlightItem(BaseModel):
@@ -294,7 +310,10 @@ class CostHighlightItem(BaseModel):
     specialty: IdSlugName
     home: CostHome
     india: CostIndia
-    savings: CostSavings
+    savings: CostSavings  # see ``CostSavings``
+    #: same as ``savings.claim_allowed``; highlights list claim-allowed items first, then the shortest
+    #: India wait (earliest admission)
+    claim_allowed: bool = False
 
 
 class CostHighlightsOut(HomeCountryFields):

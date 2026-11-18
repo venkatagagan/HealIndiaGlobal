@@ -630,6 +630,7 @@
       "requested": "Demandé",
       "approved": "Approuvé",
       "processing": "En traitement",
+      "awaiting_payout": "En attente de versement",
       "processed": "Traité",
       "failed": "Échec",
       "rejected": "Refusé"

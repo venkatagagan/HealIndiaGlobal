@@ -1535,7 +1535,8 @@
     "financingPartners": "Partenaires de paiement différé",
     "financingRequests": "Demandes de paiement différé",
     "introCalls": "Appels découverte gratuits",
-    "visaRules": "Règles de visa"
+    "visaRules": "Règles de visa",
+    "privacyTools": "Conformité et confidentialité"
   },
   "ui": {
     "loading": "Chargement…",
@@ -2080,6 +2081,11 @@
       }
     }
   },
+  "commissionApproval": {
+    "sentForApproval": "Enregistré. Le nouveau taux de commission ne s'applique qu'après l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "note": "Une modification du taux de commission ne s'applique qu'après l'approbation d'un deuxième utilisateur administrateur ou financier.",
+    "settingCheckBody": "Vérifiez le nouveau taux de commission par défaut par rapport aux conditions commerciales signées avant d'approuver. Il s'applique à chaque hôpital ou agent sans taux propre."
+  },
   "accreditations": {
     "tab": "Accréditations",
     "title": "Accréditations",
@@ -2413,6 +2419,153 @@
       "markVerified": "Marquer comme vérifié",
       "verified": "Consentement parental vérifié"
     }
+  },
+  "privacyTools": {
+    "title": "Conformité et confidentialité",
+    "description": "Gels juridiques, registre des violations de données personnelles et accès aux dossiers de santé de chaque patient.",
+    "tabsLabel": "Sections de conformité",
+    "tabs": {
+      "holds": "Gels juridiques",
+      "breaches": "Registre des violations",
+      "access": "Journal d'accès aux données de santé"
+    },
+    "noAccessTitle": "Réservé aux administrateurs",
+    "noAccessDescription": "Les gels juridiques, le registre des violations et les journaux d'accès sont réservés aux administrateurs des opérations et aux super-administrateurs.",
+    "holds": {
+      "title": "Gels juridiques",
+      "description": "Les comptes et dossiers gelés sont conservés : les demandes d'effacement et les purges de conservation les ignorent jusqu'à la levée du gel.",
+      "place": "Placer un gel",
+      "placeTitle": "Placer un gel juridique",
+      "lift": "Lever le gel",
+      "liftTitle": "Lever le gel juridique",
+      "liftDescription": "{{label}} sera de nouveau concerné par les demandes d'effacement et les purges de conservation.",
+      "liftReason": "Motif de la levée du gel",
+      "placed": "Gel juridique placé sur {{label}}",
+      "lifted": "Gel juridique levé pour {{label}}",
+      "empty": "Aucun gel juridique en place",
+      "targetType": "Le gel concerne",
+      "entity": {
+        "user": "Compte",
+        "case": "Dossier"
+      },
+      "searchUser": "Rechercher le compte (nom ou e-mail)",
+      "searchCase": "Rechercher le dossier (numéro de dossier ou patient)",
+      "searchHint": "Saisissez au moins 2 caractères, puis choisissez un résultat.",
+      "noMatches": "Aucun résultat",
+      "change": "Modifier",
+      "reason": "Motif",
+      "reasonHint": "Par exemple l'affaire juridique, la demande d'une autorité ou un numéro de référence.",
+      "reasonTooShort": "Indiquez un motif d'au moins {{min}} caractères.",
+      "columns": {
+        "type": "Type",
+        "target": "Compte ou dossier",
+        "reason": "Motif",
+        "since": "Depuis",
+        "actions": "Actions"
+      }
+    },
+    "breaches": {
+      "title": "Registre des violations",
+      "description": "Chaque violation de données personnelles, avec le délai de 72 heures pour notifier le Data Protection Board et l'autorité de contrôle.",
+      "record": "Enregistrer une violation",
+      "recordTitle": "Enregistrer une violation de données personnelles",
+      "clockHint": "L'enregistrement d'une violation démarre le délai de notification de 72 heures à partir de sa détection.",
+      "recorded": "Violation {{reference}} enregistrée",
+      "update": "Mettre à jour",
+      "updateTitle": "Mettre à jour la violation {{reference}}",
+      "updated": "Violation {{reference}} mise à jour",
+      "save": "Enregistrer les modifications",
+      "empty": "Aucune violation enregistrée",
+      "filterStatus": "Filtrer par statut",
+      "allStatuses": "Tous les statuts",
+      "overdue": "Notification en retard",
+      "overdueBanner": "Délai de notification dépassé pour {{n}} violation(s) : notifiez dès maintenant le Data Protection Board et l'autorité de contrôle, puis enregistrez les heures.",
+      "authoritiesNotified": "Autorités notifiées",
+      "hoursLeft": "{{hours}} h restantes pour notifier",
+      "detectedOn": "Détectée le {{date}}",
+      "deadlineOn": "À notifier avant le {{date}}",
+      "tooShort": "Saisissez au moins {{min}} caractères.",
+      "severity": {
+        "low": "Faible",
+        "medium": "Moyenne",
+        "high": "Élevée",
+        "critical": "Critique"
+      },
+      "status": {
+        "open": "Ouverte",
+        "contained": "Maîtrisée",
+        "notified": "Notifiée",
+        "closed": "Clôturée"
+      },
+      "columns": {
+        "reference": "Violation",
+        "severity": "Gravité",
+        "status": "Statut",
+        "detected": "Détectée",
+        "deadline": "Délai de notification",
+        "actions": "Actions"
+      },
+      "fields": {
+        "title": "Titre",
+        "description": "Ce qui s'est passé",
+        "severity": "Gravité",
+        "status": "Statut",
+        "estimate": "Nombre estimé de personnes concernées",
+        "detectedAt": "Détectée le",
+        "detectedAtHint": "Le délai de 72 heures court à partir de ce moment (maintenant si vide).",
+        "occurredAt": "Survenue le (si connu)",
+        "categories": "Catégories de données",
+        "categoriesHint": "Séparées par des virgules, par exemple : passeport, comptes rendus médicaux, coordonnées.",
+        "consequences": "Conséquences probables",
+        "measures": "Mesures prises ou envisagées",
+        "notes": "Notes internes",
+        "contained_at": "Maîtrisée le",
+        "dpb_notified_at": "Data Protection Board notifié le",
+        "supervisory_authority_notified_at": "Autorité de contrôle notifiée le",
+        "subjects_notified_at": "Personnes concernées informées le"
+      }
+    },
+    "access": {
+      "title": "Journal d'accès aux données de santé",
+      "description": "Chaque consultation, téléchargement ou listage des dossiers de santé d'un patient par une autre personne que le patient, y compris les accès d'urgence (bris de glace).",
+      "searchLabel": "Rechercher le patient (nom ou e-mail)",
+      "searchHint": "Saisissez au moins 2 caractères, puis choisissez le patient.",
+      "noPatients": "Aucun patient trouvé",
+      "pickPatient": "Recherchez un patient pour voir qui a accédé à ses dossiers",
+      "changePatient": "Changer de patient",
+      "empty": "Personne d'autre n'a accédé aux dossiers de ce patient",
+      "unknownViewer": "Utilisateur inconnu",
+      "actions": {
+        "view": "Consulté",
+        "download": "Téléchargé",
+        "list": "Listé",
+        "break_glass": "Accès d'urgence"
+      },
+      "resources": {
+        "document": "Document",
+        "case": "Dossier",
+        "patient": "Profil patient",
+        "screening": "Évaluation",
+        "booking": "Réservation"
+      },
+      "columns": {
+        "at": "Quand",
+        "action": "Accès",
+        "viewer": "Par",
+        "resource": "Élément",
+        "reason": "Motif"
+      }
+    }
+  },
+  "breakGlass": {
+    "title": "Accès d'urgence",
+    "warning": "Ce document ne fait pas partie de vos dossiers. Vous pouvez l'ouvrir en cas d'urgence : votre motif est enregistré, visible dans le journal d'accès du patient, et les administrateurs sont prévenus.",
+    "reason": "Pourquoi avez-vous besoin de ce document maintenant ?",
+    "reasonHint": "Au moins {{min}} caractères, par exemple l'urgence du patient et qui l'a demandé.",
+    "reasonTooShort": "Indiquez un motif d'au moins {{min}} caractères.",
+    "confirm": "Ouvrir en accès d'urgence",
+    "outOfScope": "Ce document ne fait pas partie de vos dossiers.",
+    "request": "Demander un accès d'urgence"
   },
   "moderation": {
     "title": "Signalements",

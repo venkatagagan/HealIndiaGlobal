@@ -28,6 +28,8 @@ import {
   type PageParams,
   type PayoutAccountListParams,
   type PayoutListParams,
+  type RefundPayoutIn,
+  type CommissionChangeListParams,
   type RefundCreateIn,
   type RefundListParams,
   type RevenueReportParams,
@@ -63,6 +65,7 @@ export const financeKeys = {
   adjustments: (params: LedgerAdjustmentListParams) => ['finance', 'adjustments', params] as const,
   documents: (params: SettlementDocumentListParams) => ['finance', 'settlement-documents', params] as const,
   reviewCounts: () => ['finance', 'review-counts'] as const,
+  commissionChanges: (params: CommissionChangeListParams) => ['finance', 'commission-changes', params] as const,
 };
 
 /** Lookup lists (scope pickers) live outside the finance tree and change rarely. */
@@ -225,6 +228,10 @@ export interface FinanceReviewCounts {
   amountReviews: number | null;
   markPaidApprovals: number | null;
   refunds: number | null;
+  /** bank-transfer refunds waiting for the bank payout to be recorded / confirmed (SEC-010) */
+  refundPayouts: number | null;
+  /** commission rate changes waiting for a second approver (SEC-044) */
+  commissionChanges: number | null;
   batches: number | null;
   /** payouts with a recorded UTR awaiting a second finance user */
   payoutConfirmations: number | null;
@@ -263,10 +270,15 @@ export const useFinanceReviewCounts = (enabled = true) =>
     enabled,
     refetchInterval: 60_000,
     queryFn: async (): Promise<FinanceReviewCounts> => {
-      const [amountReviews, markPaidApprovals, refunds, batches, payouts, adjustments] = await Promise.all([
+      const [amountReviews, markPaidApprovals, refunds, refundPayouts, commissionChanges, batches, payouts, adjustments] = await Promise.all([
         totalOf(paymentsApi.listOrders({ review: 'amount', page_size: 1 })),
         totalOf(paymentsApi.listOrders({ review: 'mark_paid', page_size: 1 })),
         totalOf(paymentsApi.listRefunds({ status: 'requested', page_size: 1 })),
+        totalOf(paymentsApi.listRefunds({ status: 'awaiting_payout', page_size: 1 })),
+        adminApi.commissionChanges({ status: 'pending' }).then(
+          (rows) => rows.length,
+          () => null,
+        ),
         totalOf(financeApi.listBatches({ status: 'pending_approval', page_size: 1 })),
         payoutSummaryCounts(),
         totalOf(financeApi.listAdjustments({ status: 'pending_approval', page_size: 1 })),
@@ -275,6 +287,8 @@ export const useFinanceReviewCounts = (enabled = true) =>
         amountReviews,
         markPaidApprovals,
         refunds,
+        refundPayouts,
+        commissionChanges,
         batches,
         payoutConfirmations: payouts.confirm,
         payoutReconciliations: payouts.reconcile,
@@ -444,6 +458,65 @@ export function useRejectRefund() {
   const invalidate = useInvalidateFinance();
   return useMutation({
     mutationFn: ({ id, reason }: { id: Uuid; reason: string }) => paymentsApi.rejectRefund(id, { reason }),
+    onSuccess: invalidate,
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// SEC-044 commission changes (second approver). Hospital/agent pages read them from ['admin', ...] queries,
+// so decisions invalidate both trees.
+// ---------------------------------------------------------------------------------------------------------
+export const useCommissionChanges = (params: CommissionChangeListParams, enabled = true) =>
+  useQuery({
+    queryKey: financeKeys.commissionChanges(params),
+    queryFn: () => adminApi.commissionChanges(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+
+function useInvalidateCommission() {
+  const qc = useQueryClient();
+  return () =>
+    Promise.all([qc.invalidateQueries({ queryKey: financeKeys.all }), qc.invalidateQueries({ queryKey: ['admin'] })]);
+}
+
+export function useApproveCommissionChange() {
+  const invalidate = useInvalidateCommission();
+  return useMutation({ mutationFn: (id: Uuid) => adminApi.approveCommissionChange(id), onSuccess: invalidate });
+}
+
+/** Reject (another user) or withdraw (the requester). */
+export function useRejectCommissionChange() {
+  const invalidate = useInvalidateCommission();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: Uuid; reason?: string }) => adminApi.rejectCommissionChange(id, reason ? { reason } : {}),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010 bank-transfer refunds: record the bank payout (maker). */
+export function useRecordRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: Uuid } & RefundPayoutIn) => paymentsApi.recordRefundPayout(id, body),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010: a different finance user confirms the recorded payout (the refund becomes processed). */
+export function useConfirmRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, reference }: { id: Uuid; reference: string }) => paymentsApi.confirmRefundPayout(id, { reference }),
+    onSuccess: invalidate,
+  });
+}
+
+/** SEC-010: clear a recorded payout (the refund stays awaiting payout). */
+export function useRejectRefundPayout() {
+  const invalidate = useInvalidateFinance();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: Uuid; reason: string }) => paymentsApi.rejectRefundPayout(id, { reason }),
     onSuccess: invalidate,
   });
 }

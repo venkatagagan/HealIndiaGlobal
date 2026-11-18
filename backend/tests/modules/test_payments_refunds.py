@@ -271,7 +271,7 @@ async def test_cancellation_cancels_open_orders_and_spreads_over_payments(db, cl
 async def test_razorpay_refund_via_gateway_then_webhook(
     db, client, auth_headers, run_jobs, gateway_keys, recorder: EventRecorder
 ):
-    from tests.modules.payments_helpers import RAZORPAY_WEBHOOK_SECRET, json_bytes
+    from tests.modules.payments_helpers import RAZORPAY_WEBHOOK_SECRET, fresh, json_bytes
 
     w = await make_world(db)
     with respx.mock() as mock:
@@ -340,7 +340,7 @@ async def test_razorpay_refund_via_gateway_then_webhook(
             }
         },
     }
-    raw = json_bytes(event)
+    raw = json_bytes(fresh(event))
     r = await client.post(
         "/api/v1/payments/webhooks/razorpay",
         content=raw,

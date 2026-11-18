@@ -65,6 +65,28 @@ async def _incr(key: str, window_seconds: int) -> tuple[int, int]:
     return count, max(1, int(expires_at - now + 0.999))
 
 
+async def peek(scope: str, identifier: str, window_seconds: int) -> tuple[int, int]:
+    """Current count of :func:`count`'s window WITHOUT counting; ``(count, seconds_until_reset)``."""
+    window_index = int(time.time() // window_seconds)
+    key = f"{scope}:{identifier}:{window_index}"
+    client = get_redis()
+    if client is not None:
+        try:
+            full_key = KEY_PREFIX + key
+            async with client.pipeline(transaction=False) as pipe:
+                pipe.get(full_key)
+                pipe.ttl(full_key)
+                value, ttl = await pipe.execute()
+            return int(value or 0), max(1, int(ttl) if int(ttl) > 0 else window_seconds)
+        except Exception as exc:
+            logger.warning("rate_limit_redis_failed", error=str(exc))
+    now = time.monotonic()
+    value, expires_at = _memory.get(key, (0, 0.0))
+    if expires_at <= now:
+        return 0, window_seconds
+    return value, max(1, int(expires_at - now + 0.999))
+
+
 async def count(scope: str, identifier: str, window_seconds: int) -> tuple[int, int]:
     """Count one event in the current fixed window regardless of ``RATE_LIMIT_ENABLED`` (quotas such as the
     AI budget in ``app.core.ai_quota``). Returns ``(count, seconds_until_reset)``."""

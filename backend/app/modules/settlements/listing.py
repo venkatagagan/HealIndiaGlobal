@@ -331,9 +331,14 @@ async def commission_rule_outs(db: AsyncSession, rules: list[Any]) -> list[Commi
     specialties = await names(Specialty, Specialty.name, {r.specialty_id for r in rules if r.specialty_id})
     procedures = await names(Procedure, Procedure.name, {r.procedure_id for r in rules if r.procedure_id})
     agents = await names(Agent, Agent.agency_name, {r.agent_id for r in rules if r.agent_id})
+    from app.modules.admin import commission_control
+
+    pending = await commission_control.pending_for(db, "commission_rule", [r.id for r in rules])
     out = []
     for rule in rules:
         model = CommissionRuleOut.model_validate(rule)
+        change = pending.get(rule.id)
+        model.pending_change = change.model_dump(mode="json") if change else None
         model.hospital_name = hospitals.get(rule.hospital_id) if rule.hospital_id else None
         model.specialty_name = specialties.get(rule.specialty_id) if rule.specialty_id else None
         model.procedure_name = procedures.get(rule.procedure_id) if rule.procedure_id else None

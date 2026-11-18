@@ -1,24 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
-import { CheckCircle2, Download, Eye, FileText, XCircle } from 'lucide-react';
+import { CheckCircle2, Download, Eye, FileText, ShieldAlert, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   DOCUMENT_KIND_LABELS,
   DOCUMENT_STATUS_LABELS,
   documentsApi,
   errorMessage,
+  saveBlob,
   type DocumentOut,
 } from '@hig/shared/api';
 import { useAppTranslation } from '../../../i18n';
 import { Button, EmptyState, ErrorState, LoadingState, Modal, ReasonDialog, StatusBadge } from '../ui';
 import { formatBytes, formatDateTime } from '../lib/format';
 import { useOpsMutation } from '../lib/mutations';
+import { breakGlassDocumentsApi, isBreakGlassCandidate } from '../lib/privacyToolsApi';
+import { useOpsPermissions } from '../lib/session';
+import { BreakGlassDialog } from './BreakGlassDialog';
 
 const PREVIEWABLE = /^(image\/(png|jpe?g|webp|gif)|application\/pdf)$/i;
 
 /**
  * Documents with authorized preview (blob URL, never a public link), download and optional
  * verify / reject (staff may verify KYC and case documents).
+ *
+ * Break-glass: when a support user opens a document outside their cases the API answers 404; the list then
+ * asks for a reason and retries with `X-Break-Glass-Reason` (audited, admins notified). The reason is kept for
+ * that document while the list is mounted.
  */
 export function DocumentList({
   documents,
@@ -35,6 +43,10 @@ export function DocumentList({
   const [preview, setPreview] = useState<DocumentOut | null>(null);
   const [rejecting, setRejecting] = useState<DocumentOut | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const { role } = useOpsPermissions();
+  /** break-glass reasons given in this view, per document id */
+  const [grants, setGrants] = useState<Record<string, string>>({});
+  const [breakGlass, setBreakGlass] = useState<{ doc: DocumentOut; then: 'view' | 'download' } | null>(null);
 
   const verify = useOpsMutation({
     mutationFn: (v: { id: string; status: 'verified' | 'rejected'; note?: string }) =>
@@ -49,15 +61,30 @@ export function DocumentList({
     onSuccess: () => setRejecting(null),
   });
 
-  const download = async (doc: DocumentOut) => {
+  const download = async (doc: DocumentOut, reason: string | undefined = grants[doc.id]) => {
     setDownloading(doc.id);
     try {
-      await documentsApi.downloadAndSave(doc);
+      if (reason) {
+        const file = await breakGlassDocumentsApi.download(doc.id, reason);
+        saveBlob(file.blob, file.filename ?? doc.file_name);
+      } else {
+        await documentsApi.downloadAndSave(doc);
+      }
     } catch (e) {
-      toast.error(errorMessage(e));
+      if (!reason && isBreakGlassCandidate(e, role)) setBreakGlass({ doc, then: 'download' });
+      else toast.error(errorMessage(e));
     } finally {
       setDownloading(null);
     }
+  };
+
+  const confirmBreakGlass = (reason: string) => {
+    if (!breakGlass) return;
+    const { doc, then } = breakGlass;
+    setGrants((g) => ({ ...g, [doc.id]: reason }));
+    setBreakGlass(null);
+    if (then === 'download') void download(doc, reason);
+    else setPreview(doc);
   };
 
   if (documents.length === 0)
@@ -119,7 +146,19 @@ export function DocumentList({
           </li>
         ))}
       </ul>
-      <DocumentPreview doc={preview} onClose={() => setPreview(null)} />
+      <DocumentPreview
+        doc={preview}
+        reason={preview ? grants[preview.id] : undefined}
+        canBreakGlass={role === 'support'}
+        onBreakGlass={(doc) => setBreakGlass({ doc, then: 'view' })}
+        onClose={() => setPreview(null)}
+      />
+      <BreakGlassDialog
+        open={!!breakGlass}
+        fileName={breakGlass?.doc.file_name}
+        onClose={() => setBreakGlass(null)}
+        onConfirm={confirmBreakGlass}
+      />
       <ReasonDialog
         open={!!rejecting}
         title={t('components.documents.rejectTitle')}
@@ -134,13 +173,27 @@ export function DocumentList({
   );
 }
 
-function DocumentPreview({ doc, onClose }: { doc: DocumentOut | null; onClose: () => void }) {
+function DocumentPreview({
+  doc,
+  reason,
+  canBreakGlass,
+  onBreakGlass,
+  onClose,
+}: {
+  doc: DocumentOut | null;
+  /** break-glass reason already given for this document */
+  reason?: string;
+  canBreakGlass: boolean;
+  onBreakGlass: (doc: DocumentOut) => void;
+  onClose: () => void;
+}) {
   const { t } = useAppTranslation();
   const qc = useQueryClient();
   const q = useQuery({
-    queryKey: ['documents', 'blob', doc?.id],
-    queryFn: () => documentsApi.download(doc!.id),
+    queryKey: ['documents', 'blob', doc?.id, reason ? 'break-glass' : 'scoped'],
+    queryFn: () => breakGlassDocumentsApi.download(doc!.id, reason),
     enabled: !!doc,
+    retry: (count, error) => !isBreakGlassCandidate(error, canBreakGlass ? 'support' : null) && count < 2,
     staleTime: 60_000,
     gcTime: 60_000,
   });
@@ -166,6 +219,14 @@ function DocumentPreview({ doc, onClose }: { doc: DocumentOut | null; onClose: (
     <Modal open={!!doc} onClose={onClose} title={doc?.file_name ?? t('components.documents.document')} size="xl">
       {q.isLoading ? (
         <LoadingState label={t('components.documents.loading')} />
+      ) : q.error && doc && !reason && canBreakGlass && isBreakGlassCandidate(q.error, 'support') ? (
+        <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
+          <ShieldAlert className="size-8 text-warning-ink" aria-hidden />
+          <p className="text-sm text-fg">{t('breakGlass.outOfScope')}</p>
+          <Button variant="danger" size="sm" onClick={() => onBreakGlass(doc)}>
+            {t('breakGlass.request')}
+          </Button>
+        </div>
       ) : q.error ? (
         <ErrorState error={q.error} onRetry={() => void q.refetch()} />
       ) : url ? (

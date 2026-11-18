@@ -139,3 +139,61 @@ async def test_ws_delivers_message_and_notification(db) -> None:
             assert frame["data"]["body"] == "Reply"
             patient_ws.send_text("ping")
             assert _recv_until(patient_ws, "pong")["type"] == "pong"
+
+
+def _closed_code(ws: WebSocketTestSession) -> int:
+    """Read frames until the server closes the socket; return the close code."""
+    for _ in range(20):
+        try:
+            _recv(ws)
+        except WebSocketDisconnect as exc:
+            return int(exc.code)
+    raise AssertionError("the socket was not closed")
+
+
+async def test_ws_closed_when_its_session_is_revoked(db) -> None:
+    """SEC-031: logout closes that session's open sockets (other sessions stay); revoking every session
+    (e.g. suspension, password change) closes the rest."""
+    from tests.factories import DEFAULT_PASSWORD
+
+    user = await create_user(db, role="patient", password=DEFAULT_PASSWORD)
+    email, user_id = user.email, user.id
+    mobile = {"X-Client-Type": "mobile"}
+    with TestClient(fastapi_app) as tc:
+        sessions = []
+        for _ in range(2):
+            r = tc.post(
+                f"{API}/auth/login", json={"email": email, "password": DEFAULT_PASSWORD}, headers=mobile
+            )
+            assert r.status_code == 200, r.text
+            sessions.append(r.json())
+        a, b = sessions
+        with (
+            tc.websocket_connect(f"{WS}?token={a['access_token']}") as ws_a,
+            tc.websocket_connect(f"{WS}?token={b['access_token']}") as ws_b,
+        ):
+            assert _recv(ws_a)["type"] == "connected" and _recv(ws_b)["type"] == "connected"
+            assert realtime.hub.connection_count(user_id) == 2
+            r = tc.post(
+                f"{API}/auth/logout",
+                json={"refresh_token": a["refresh_token"]},
+                headers={**mobile, "Authorization": f"Bearer {a['access_token']}"},
+            )
+            assert r.status_code == 204, r.text
+            assert _closed_code(ws_a) == realtime.WS_CLOSE_SESSION_REVOKED
+            ws_b.send_text("ping")
+            assert _recv_until(ws_b, "pong")["type"] == "pong"
+            assert realtime.hub.connection_count(user_id) == 1
+
+            # every session revoked (as on suspension / password change / admin revocation)
+            async def _revoke_all() -> None:
+                from app.core.db import SessionLocal
+                from app.modules.auth.service import revoke_all_sessions
+
+                async with SessionLocal() as s:
+                    await revoke_all_sessions(s, user_id)
+                    await s.commit()
+                await realtime.drain_background()
+
+            ws_b.portal.call(_revoke_all)
+            assert _closed_code(ws_b) == realtime.WS_CLOSE_SESSION_REVOKED

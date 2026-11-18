@@ -343,7 +343,10 @@ async def test_cost_comparison_math_and_conversion(client, db):
         "currency": "USD",
         "pct_min": 88,
         "pct_max": 89,
+        # legal price-claim rule: the benchmark has no confidence, so the saving may not be claimed
+        "claim_allowed": False,
     }
+    assert c["claim_allowed"] is False
     # itemized default split of the India midpoint (5125.00 USD)
     items = {i["category"]: i["amount_minor"] for i in c["itemized"]}
     assert items == {

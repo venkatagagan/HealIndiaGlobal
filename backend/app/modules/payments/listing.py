@@ -314,7 +314,14 @@ async def enrich_refunds(db: AsyncSession, refunds: Sequence[Refund]) -> list[Re
     orders = {r[0]: (r[1], r[2]) for r in order_rows.all()}
     patients = await _names(db, PatientProfile, {p for _, p in orders.values() if p})
     users = await _names(
-        db, User, {u for r in refunds for u in (r.requested_by, r.approved_by) if u is not None}
+        db,
+        User,
+        {
+            u
+            for r in refunds
+            for u in (r.requested_by, r.approved_by, r.payout_recorded_by, r.payout_confirmed_by)
+            if u is not None
+        },
     )
     for refund, out in zip(refunds, outs, strict=True):
         number, patient_id = orders.get(refund.order_id, (None, None))
@@ -322,4 +329,10 @@ async def enrich_refunds(db: AsyncSession, refunds: Sequence[Refund]) -> list[Re
         out.patient_name = patients.get(patient_id) if patient_id else None
         out.requested_by_name = users.get(refund.requested_by) if refund.requested_by else None
         out.approved_by_name = users.get(refund.approved_by) if refund.approved_by else None
+        out.payout_recorded_by_name = (
+            users.get(refund.payout_recorded_by) if refund.payout_recorded_by else None
+        )
+        out.payout_confirmed_by_name = (
+            users.get(refund.payout_confirmed_by) if refund.payout_confirmed_by else None
+        )
     return outs

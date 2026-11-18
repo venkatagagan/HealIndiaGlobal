@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import time
 from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
@@ -104,6 +105,21 @@ def json_bytes(payload: dict[str, Any]) -> bytes:
     return json.dumps(payload, separators=(",", ":")).encode()
 
 
+def fresh(event: dict[str, Any]) -> dict[str, Any]:
+    """A Razorpay webhook body created now (SEC-046: stale ``created_at`` is refused)."""
+    return {**event, "created_at": int(time.time())} if "created_at" not in event else event
+
+
+def rzp_event_id(body: bytes) -> str:
+    """The signed dedupe id the server derives from a Razorpay webhook body (SEC-046)."""
+    event = json.loads(body)
+    inner = event.get("payload") or {}
+    ref = next(
+        (v["entity"].get("id", "") for v in inner.values() if isinstance(v, dict) and "entity" in v), ""
+    )
+    return f"rzp:{event.get('event')}:{ref}:{event.get('created_at', '')}"
+
+
 @pytest.fixture(name="gateway_keys")
 def gateway_keys_fixture(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(settings, "RAZORPAY_KEY_ID", RAZORPAY_KEY_ID)
@@ -127,7 +143,7 @@ class EventRecorder:
 def recorder_fixture() -> Iterator[EventRecorder]:
     """Test subscriber for the payments events; removed again after the test."""
     rec = EventRecorder()
-    names = ("payment.captured", "payment.failed", "refund.processed")
+    names = ("payment.captured", "payment.failed", "refund.processed", "refund.requested")
     handlers = []
     for name in names:
 

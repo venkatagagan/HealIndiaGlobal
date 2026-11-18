@@ -39,7 +39,7 @@ from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.jobs import enqueue
 from app.core.money import BASE_CURRENCY, CurrencyError, normalize_currency
 from app.core.security import new_opaque_token
-from app.i18n import recipient_locale, t
+from app.i18n import enabled_languages, normalize_locale, recipient_locale, t
 from app.i18n import runtime as i18n_runtime
 from app.models import (
     AvailabilitySlot,
@@ -428,12 +428,20 @@ async def invite_member(
         }
         created_user = False
     else:
+        # E6: the invitation goes out in the language the inviter chose for the invitee, else in the
+        # inviter's own language; the new account keeps it as its preferred language.
+        await i18n_runtime.ensure_fresh()
+        chosen = normalize_locale(body.language) if body.language else None
+        locale = (
+            chosen if chosen is not None and chosen in enabled_languages() else recipient_locale(ctx.user)
+        )
         user = User(
             email=email,
             full_name=body.full_name,
             role=UserRole.HOSPITAL,
             status=UserStatus.ACTIVE,
             password_hash=None,
+            preferred_language=locale,
         )
         db.add(user)
         # Insert the user first: these models have no ORM relationship, so flush order is not inferred.
@@ -449,11 +457,13 @@ async def invite_member(
         )
         email_payload = {
             "to": email,
-            # A brand-new account has no language yet: English (the default).
             "subject": t(
-                "email.invite.subject_hospital", "en", organization=hospital_name, app_name=settings.APP_NAME
+                "email.invite.subject_hospital",
+                locale,
+                organization=hospital_name,
+                app_name=settings.APP_NAME,
             ),
-            "locale": "en",
+            "locale": locale,
             "template": "invite.html",
             "context": {
                 "name": body.full_name,

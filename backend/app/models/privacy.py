@@ -87,6 +87,8 @@ class DataRightsRequest(UUIDPkMixin, TimestampMixin, Base):
     requester_name: Mapped[str] = mapped_column(String(200), nullable=False)
     requester_email: Mapped[str | None] = mapped_column(String(255))
     requester_phone: Mapped[str | None] = mapped_column(String(32))
+    #: E6: language of the acknowledgement and of later updates by email
+    requester_language: Mapped[str | None] = mapped_column(String(10))
     #: acting for someone else (nominee, guardian, lawyer): who and in what capacity
     on_behalf_of: Mapped[str | None] = mapped_column(String(300))
     details: Mapped[str] = mapped_column(Text, nullable=False)

@@ -167,6 +167,9 @@ class MemberInviteIn(_In):
     email: EmailStr
     full_name: Annotated[str, Field(min_length=1, max_length=200)]
     member_role: HospitalMemberRole
+    #: E6: language of the invitation for a NEW account (en, ar, fr, bn, ru); default: the inviter's language.
+    #: An existing account is always written to in its own language.
+    language: Annotated[str | None, Field(max_length=10)] = None
 
 
 class MemberUpdateIn(_In):

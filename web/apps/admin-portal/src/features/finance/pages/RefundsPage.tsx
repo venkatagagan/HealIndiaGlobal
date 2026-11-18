@@ -36,6 +36,7 @@ import { enumLabel, ft, useFinanceTranslation, type FinanceT } from '../lib/i18n
 import { financeKeys, useApproveRefund, useRejectRefund } from '../api/queries';
 import { notifyError, notifySuccess, ReasonDialog } from '../components/finance';
 import { RefundDialog } from '../components/RefundDialog';
+import { RefundPayoutActions } from '../components/RefundPayout';
 import { needsSecondRefundApprover, notifyApprovalError, RefundThresholdNote, useRefundDualApprovalThreshold } from '../components/reviews';
 import { useFinancePermissions, type FinancePermissions } from '../lib/permissions';
 import { Button as FinanceButton, Modal } from '../components/ui';
@@ -70,7 +71,7 @@ function toApiFilters(f: FilterValues<typeof FILTERS>): Omit<RefundListParams, '
 
 type QuickValue = RefundStatus | 'second';
 const SECOND_TAB = 'second';
-const QUICK_STATUSES: RefundStatus[] = ['requested', 'approved', 'processing', 'processed', 'failed', 'rejected'];
+const QUICK_STATUSES: RefundStatus[] = ['requested', 'approved', 'processing', 'awaiting_payout', 'processed', 'failed', 'rejected'];
 
 // ---------------------------------------------------------------------------------------------------------
 // Columns (actions need the signed-in user, so they are built per render)
@@ -81,7 +82,7 @@ const baseColumns = (t: FinanceT): DataTableColumn<RefundOut>[] => [
     header: t('orders.columns.order'),
     sticky: true,
     mobile: 'secondary',
-    cell: (r) => <IdCell value={r.order_number ?? r.order_id.slice(0, 8)} secondary={r.gateway_refund_id ?? undefined} />,
+    cell: (r) => <IdCell value={r.order_number ?? r.order_id.slice(0, 8)} secondary={r.gateway_refund_id ?? r.payout_reference ?? undefined} />,
     exportValue: (r) => r.order_number ?? r.order_id,
   },
   {
@@ -167,6 +168,7 @@ function actionsColumn(
     exportable: false,
     mobile: 'meta',
     cell: (r) => {
+      if (r.status === 'awaiting_payout') return <RefundPayoutActions refund={r} />;
       if (!perms.finance || r.status !== 'requested') return null;
       const blocked = needsSecondRefundApprover(r, perms, thresholdMinor);
       return (
@@ -237,7 +239,12 @@ export default function RefundsPage() {
     { value: '', label: t('common.all'), count: c?.total },
     { value: 'requested', label: t('refunds.awaitingApproval'), count: c?.counts.requested },
     { value: SECOND_TAB, label: t('refunds.awaitingSecond'), count: c?.awaiting_second_approval, tone: 'warning' },
-    ...QUICK_STATUSES.filter((s) => s !== 'requested').map((s) => ({ value: s, label: enumLabel('status', s), count: c?.counts[s] })),
+    ...QUICK_STATUSES.filter((s) => s !== 'requested').map((s) => ({
+      value: s,
+      label: s === 'awaiting_payout' ? t('refundPayout.queueTab') : enumLabel('status', s),
+      count: c?.counts[s],
+      ...(s === 'awaiting_payout' ? { tone: 'warning' as const } : {}),
+    })),
   ];
   const quickValue: QuickValue | '' | null = filters.second
     ? filters.status.length === 0

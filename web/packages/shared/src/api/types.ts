@@ -581,6 +581,9 @@ export interface HospitalCard {
   accreditations: string[];
   rating_avg: number | null;
   rating_count: number;
+  /** published patient reviews only (`rating_avg` may be a curated value for hospitals without reviews) */
+  published_rating_avg?: number | null;
+  published_review_count?: number;
   logo_url: string | null;
   cover_image_url: string | null;
   /** specialty names */
@@ -753,6 +756,9 @@ export interface DoctorCard {
   success_rate_pct: number | null;
   rating_avg: number | null;
   rating_count: number;
+  /** published patient reviews only (`rating_avg` may be a curated value for hospitals without reviews) */
+  published_rating_avg?: number | null;
+  published_review_count?: number;
   consultation_fee_minor: number | null;
   currency: CurrencyCode;
   teleconsult_available: boolean;
@@ -867,6 +873,9 @@ export interface CostSavings {
   currency: CurrencyCode;
   pct_min: number;
   pct_max: number;
+  /** Legal price-claim rule: only when true may the saving be shown as a claim ("save X", % badge). Requires a
+   * medium/high-confidence, sourced benchmark and India cheaper at both ends of the range. */
+  claim_allowed?: boolean;
 }
 
 /** How the home country was chosen; `country_used` differs from `requested_country` when no benchmark exists
@@ -885,6 +894,8 @@ export interface CostComparison extends HomeCountryInfo {
   india: CostIndia;
   savings: CostSavings;
   itemized: { category: QuoteLineCategory | (string & {}); amount_minor: number; currency: CurrencyCode }[];
+  /** same as `savings.claim_allowed` */
+  claim_allowed?: boolean;
 }
 
 export interface CostComparisonParams {
@@ -903,6 +914,8 @@ export interface CostHighlights extends HomeCountryInfo {
     home: CostHome;
     india: CostIndia;
     savings: CostSavings;
+    /** same as `savings.claim_allowed`; claim-allowed items come first, then the shortest India wait */
+    claim_allowed?: boolean;
   }[];
 }
 
@@ -1083,6 +1096,8 @@ export interface HospitalMemberInviteIn {
   email: string;
   full_name: string;
   member_role: HospitalMemberRole;
+  /** language of the invitation for a new account (en | ar | fr | bn | ru); default: the inviter's language */
+  language?: string | null;
 }
 export interface HospitalMemberUpdateIn {
   member_role: HospitalMemberRole;
@@ -1250,6 +1265,9 @@ export interface MatchSavings {
   home_currency: CurrencyCode;
   pct_min: number;
   pct_max: number;
+  /** Legal price-claim rule: only when true may the saving be shown as a claim ("save X", % badge). Requires a
+   * medium/high-confidence, sourced benchmark and India cheaper at both ends of the range. */
+  claim_allowed?: boolean;
 }
 
 export interface MatchOut {
@@ -2304,6 +2322,32 @@ export interface RefundOut {
   order_number?: string | null;
   /** staff lists */
   patient_name?: string | null;
+  /** SEC-010 bank-transfer refunds (`awaiting_payout`): the recorded bank payout (maker) and its confirmation */
+  payout_reference?: string | null;
+  /** YYYY-MM-DD value date of the payout */
+  payout_date?: IsoDate | null;
+  payout_note?: string | null;
+  payout_proof_document_id?: Uuid | null;
+  payout_recorded_by?: Uuid | null;
+  payout_recorded_by_name?: string | null;
+  payout_recorded_at?: IsoDateTime | null;
+  payout_confirmed_by?: Uuid | null;
+  payout_confirmed_by_name?: string | null;
+}
+
+/** `POST /payments/refunds/{id}/payout` (finance maker): record or replace the bank payout of a manual refund. */
+export interface RefundPayoutIn {
+  /** bank reference / UTR, 1-100 characters */
+  reference: string;
+  /** YYYY-MM-DD, not in the future */
+  paid_on: IsoDate;
+  proof_document_id?: Uuid | null;
+  note?: string | null;
+}
+
+/** `POST /payments/refunds/{id}/payout/confirm` (a different finance user): the reference reviewed. */
+export interface RefundPayoutConfirmIn {
+  reference: string;
 }
 
 export interface RefundCreateIn {
@@ -2913,6 +2957,8 @@ export interface CommissionRuleOut {
   is_active: boolean;
   created_by?: Uuid | null;
   created_at: IsoDateTime;
+  /** SEC-044: change waiting for a second approver (a new rule waits for `{ is_active: true }`) */
+  pending_change?: CommissionChangeOut | null;
 }
 
 export interface CommissionRuleIn {
@@ -3101,6 +3147,42 @@ export interface AdminHospitalDetail extends HospitalProfileOut {
   /** Active doctors without a medical registration; approval warns, never blocks. */
   doctors_missing_registration?: number;
   warnings?: string[];
+  /** SEC-044: requested commission rate waiting for a second approver */
+  pending_commission_change?: CommissionChangeOut | null;
+}
+
+// ------------------------------------------------------------------------------------- commission changes
+/** SEC-044: what a commission change request applies to. */
+export type CommissionChangeTarget = 'hospital' | 'agent' | 'commission_rule';
+export type CommissionChangeStatus = 'pending' | 'approved' | 'rejected' | 'withdrawn' | 'superseded';
+
+/**
+ * `GET /admin/commission-changes`: a commission rate change (hospital/agent rate, commission rule) waiting
+ * for (or decided by) an admin/finance user other than the requester. `changes` / `before` map field names
+ * (`commission_rate_bps`, `rate_bps`, `effective_from`, `effective_to`, `is_active`) to values.
+ */
+export interface CommissionChangeOut {
+  id: Uuid;
+  target_type: CommissionChangeTarget;
+  target_id: Uuid;
+  target_name?: string | null;
+  changes: Record<string, unknown>;
+  before: Record<string, unknown>;
+  status: CommissionChangeStatus;
+  requested_by?: Uuid | null;
+  requested_by_name?: string | null;
+  decided_by?: Uuid | null;
+  decided_by_name?: string | null;
+  decided_at?: IsoDateTime | null;
+  reason?: string | null;
+  created_at: IsoDateTime;
+}
+
+export interface CommissionChangeListParams {
+  /** default `pending` */
+  status?: CommissionChangeStatus;
+  target_type?: CommissionChangeTarget;
+  target_id?: Uuid;
 }
 
 export interface AdminDoctorOut {
@@ -3140,6 +3222,8 @@ export interface AdminAgentListParams extends PageParams {
 export interface AdminAgentOut extends AgentProfileOut {
   kyc_documents?: DocumentOut[];
   patients_count?: number;
+  /** SEC-044: requested commission rate waiting for a second approver */
+  pending_commission_change?: CommissionChangeOut | null;
 }
 
 export interface AdminAgentUpdateIn {

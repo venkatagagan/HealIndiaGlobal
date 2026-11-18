@@ -181,7 +181,7 @@ const KIND_TONES: Partial<Record<StatusKind, Readonly<Record<string, SemanticTon
   settlementItem: { pending: 'neutral', paid: 'success' },
   settlement: { pending: 'neutral', paid: 'success' },
   checklist: { pending: 'neutral' },
-  refund: { approved: 'info' },
+  refund: { approved: 'info', awaiting_payout: 'warning' },
   settlementBatch: { approved: 'info' },
   order: { pending: 'warning', created: 'neutral' },
 };

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Ban, CheckCircle2, ExternalLink, Globe2, Medal, ShieldAlert, XCircle } from 'lucide-react';
 import type { TFunction } from 'i18next';
@@ -51,6 +52,7 @@ import {
 import { DrawerSummary, StatTiles } from '../components/DrawerSummary';
 import { Banner, FieldGrid, Panel } from '../ui/detail';
 import { DocumentList } from '../components/DocumentList';
+import { PendingCommissionBadge, PendingCommissionChange } from '../../finance/components/CommissionChanges';
 import { bpsToPctInput, formatBps, formatDate, formatDateTime, pctInputToBps, useDocumentTitle } from '../lib/format';
 import { countryName, useAdminFacets } from '../lib/lookups';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
@@ -129,12 +131,16 @@ function agentColumns(t: TFunction): DataTableColumn<AdminAgentOut>[] {
       align: 'end',
       sortable: true,
       sortDescFirst: true,
-      cell: (a) =>
-        a.commission_rate_bps == null ? (
-          <span className="text-muted">{t('agents.default')}</span>
-        ) : (
-          <span className="tabular-nums">{formatBps(a.commission_rate_bps)}</span>
-        ),
+      cell: (a) => (
+        <span className="inline-flex flex-wrap items-center justify-end gap-1.5">
+          {a.commission_rate_bps == null ? (
+            <span className="text-muted">{t('agents.default')}</span>
+          ) : (
+            <span className="tabular-nums">{formatBps(a.commission_rate_bps)}</span>
+          )}
+          {a.pending_commission_change?.status === 'pending' && <PendingCommissionBadge />}
+        </span>
+      ),
       exportValue: (a) => (a.commission_rate_bps == null ? t('agents.default') : formatBps(a.commission_rate_bps)),
     },
     {
@@ -156,7 +162,9 @@ export default function AgentsPage() {
   const { filters, setFilter } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
   const listParams: AdminAgentListParams = { ...apiFilters, sort: table.sortParam, page: table.page, page_size: table.pageSize };
-  const [selected, setSelected] = useState<string | null>(null);
+  // `?agent=<id>` opens the drawer (links from the commission-changes queue)
+  const [searchParams] = useSearchParams();
+  const [selected, setSelected] = useState<string | null>(() => searchParams.get('agent'));
 
   const list = useQuery({
     queryKey: [...opsKeys.agents, 'list', listParams],
@@ -303,8 +311,12 @@ function AgentDrawer({ agentId, onClose }: { agentId: string | null; onClose: ()
   });
   const update = useOpsMutation({
     mutationFn: (body: { tier?: AgentTier; commission_rate_bps?: number | null }) => adminApi.updateAgent(agentId!, body),
-    success: () => t('agents.toast.updated'),
-    invalidate: [opsKeys.agents],
+    // SEC-044: a new commission rate waits for a second approver (the tier applies at once)
+    success: (result, body) =>
+      'commission_rate_bps' in body && result.pending_commission_change?.status === 'pending'
+        ? t('commissionApproval.sentForApproval')
+        : t('agents.toast.updated'),
+    invalidate: [opsKeys.agents, ['finance']],
   });
 
   const a = q.data;
@@ -312,7 +324,8 @@ function AgentDrawer({ agentId, onClose }: { agentId: string | null; onClose: ()
     const bps = pctInputToBps(pct);
     if (bps === undefined) return setError(t('agents.drawer.commissionError'));
     setError(null);
-    update.mutate({ tier, commission_rate_bps: bps });
+    const rateChanged = !!a && pct !== bpsToPctInput(a.commission_rate_bps);
+    update.mutate(rateChanged ? { tier, commission_rate_bps: bps } : { tier });
   };
 
   return (
@@ -463,6 +476,10 @@ function AgentDrawer({ agentId, onClose }: { agentId: string | null; onClose: ()
               ) : undefined
             }
           >
+            <div className="mb-3 space-y-2">
+              <PendingCommissionChange change={a.pending_commission_change} />
+              {perms.editCommercials && <p className="text-xs text-muted">{t('commissionApproval.note')}</p>}
+            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label={t('agents.drawer.tier')}>
                 {(id) => (

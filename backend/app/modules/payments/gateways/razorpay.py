@@ -172,12 +172,11 @@ class RazorpayGateway(GatewayClient):
         refund_entity = _entity(inner, "refund")
         order_entity = _entity(inner, "order")
 
-        event_id = _header(headers, "x-razorpay-event-id")
-        if not event_id:
-            # Deterministic fallback so retries of the same delivery dedupe.
-            ref = (payment_entity or refund_entity or order_entity or {}).get("id", "")
-            event_id = f"{event_type}:{ref}:{payload.get('created_at', '')}"
-        event_id = event_id[:255]
+        # SEC-046: dedupe on SIGNED fields of the body (the ``x-razorpay-event-id`` header is not covered by
+        # the signature, so a replay with a fresh header id would otherwise be processed again).
+        ref = (payment_entity or refund_entity or order_entity or {}).get("id", "")
+        event_id = f"rzp:{event_type}:{ref}:{payload.get('created_at', '')}"[:255]
+        occurred_at = payload.get("created_at")
 
         events: list[NormalizedEvent] = []
         if event_type in ("payment.captured", "order.paid", "payment.authorized") and payment_entity:
@@ -231,7 +230,13 @@ class RazorpayGateway(GatewayClient):
             )
         else:
             events.append(NormalizedEvent(event_id=event_id, event_type=event_type, kind=EventKind.IGNORED))
-        return ParsedWebhook(event_id=event_id, event_type=event_type, events=events, payload=payload)
+        return ParsedWebhook(
+            event_id=event_id,
+            event_type=event_type,
+            events=events,
+            payload=payload,
+            occurred_at=int(occurred_at) if isinstance(occurred_at, int | float) else None,
+        )
 
     # ------------------------------------------------------------------------------------------- payments
     async def fetch_payment(self, gateway_payment_id: str) -> GatewayPaymentInfo:

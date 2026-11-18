@@ -321,3 +321,63 @@ wording must stay that conservative in every language ("partner", "indicative", 
 
 - See the CG-18 section in `mobile/lib/l10n/TRANSLATION_REVIEW.md` (`insurance*` / `financing*` keys: disclaimers,
   consent, instalment rule, `installments_past_treatment` error).
+## Privacy compliance screens (admin portal, added 2026-11-18)
+
+New sections `admin:privacyTools.*` (118 keys with `admin:breakGlass.*` and `nav.privacyTools`) for legal holds,
+the breach register and the PHI access log. All are legal texts; review them before switching a language on:
+
+- Legal holds: `privacyTools.holds.description`, `liftDescription` (what a hold does: erasure requests and retention
+  clean-ups skip held accounts/cases), `reasonHint`. Terms: fr "gel juridique", ar "الحجز القانوني",
+  ru "юридическая блокировка", bn "আইনি হোল্ড".
+- Breach register (DPDP Act / GDPR 72-hour rule): `privacyTools.breaches.description`, `clockHint`,
+  `overdueBanner`, `fields.detectedAtHint`, `fields.dpb_notified_at` ("Data Protection Board", kept as the DPDP
+  body's name in fr; ar "مجلس حماية البيانات", ru "Совет по защите данных", bn "ডেটা প্রোটেকশন বোর্ড"),
+  `fields.supervisory_authority_notified_at`, `status.*`, `severity.*`. `hoursLeft` uses an abbreviation
+  ("{{hours}} h", ar "س", ru "ч") to avoid plural forms; bn writes "ঘণ্টা".
+- PHI access log: `privacyTools.access.description`, `actions.*` (`break_glass` = emergency access).
+- Break-glass (support staff opening a document outside their cases): `breakGlass.warning` (the reason is
+  recorded, shown in the patient's access log and admins are notified), `breakGlass.reasonHint`.
+
+## Bank-transfer refund payouts (finance console, added 2026-11-18, SEC-010)
+
+Money texts - review before switching a language on:
+
+- `finance:refundPayout.*` (new section, 45 keys): recording and confirming the bank payout of a bank-transfer
+  refund (maker-checker). Priority: `recordHint`, `confirmHint` (confirming posts the refund to the ledger and
+  notifies the patient), `rejectBody`, `sameUser`, `errors.*`. "UTR" is kept as-is. Terms: payout = fr "versement",
+  ar "الصرف", ru "выплата", bn "পরিশোধ"; ledger = fr "grand livre", ar "دفتر الأستاذ", ru "главная книга",
+  bn "লেজার" (as in the rest of the finance catalog).
+- `finance:enums.status.awaiting_payout`, `finance:reviews.queue.refundPayouts`,
+  `finance:reviews.approval.differentUser.refundPayout`; shared `common:enums.refundStatus.awaiting_payout`
+  ("Awaiting payout", shown wherever a refund status badge appears).
+
+## Commission changes (second approver, added 2026-11-18, SEC-044)
+
+Commercial / money texts - review before switching a language on:
+
+- `finance:commissionChanges.*` (new section, 60 keys): the approvals queue, the pending-change block on the
+  hospital page, agent drawer and commission rules, toasts and errors. Priority: `description`, `rule`
+  (maker-checker; fr "double contrôle", ar "الرقابة المزدوجة", ru "принцип двух ключей", bn "দ্বৈত নিয়ন্ত্রণ"),
+  `sentForApproval`, `ruleCreatedPending`, `rejectBody`, `errors.*`. `rulesPendingTitle` avoids plural forms
+  ("{{n}}" as a count after a colon in ar/ru/bn).
+- `finance:nav.items.commissionChanges`, `finance:reviews.queue.commissionChanges`.
+- `admin:commissionApproval.*` (hospital/agent pages and Settings): `sentForApproval`, `note`, `settingCheckBody`
+  (check the default rate against the signed commercial terms).
+
+## Server texts added by the backend gap fixes (2026-11-18)
+
+`backend/app/i18n/<lng>.json`, all in en/ar/fr/bn/ru. Review before switching a language on:
+
+- Legal (privacy): `email.privacy_request.received_body` (mentions the Data Protection Board of India - keep the
+  English name in brackets), `received_subject`, `received_title`, `button`. Status updates by email reuse
+  `notifications.privacy_request_updated.*`.
+- Money: `notifications.refund_requested.*` (patient), `notifications.refund_approval_needed.*`,
+  `notifications.refund_awaiting_payout.*`, `notifications.refund_payout_recorded.*` (finance, bank payout
+  maker-checker), `notifications.commission_change_requested.*`, `notifications.commission_default_change_requested.*`,
+  `notifications.commission_default_changed.*` (commercial terms), `errors.too_many_unpaid_bookings`.
+- Security: `email.account_locked.*` (sign-ins paused after failed attempts; advice to change the password and turn
+  on two-factor authentication), `errors.login_throttled`, `errors.organisation_suspended`.
+- Guests: `email.guest_code.*` (verification code by email and SMS: "do not share it"),
+  `email.intro_scheduled.*` (free 15-minute video call).
+- Aftercare: `notifications.aftercare_checkin_due.*` (no health details by design).
+- Push (lock-screen text, deliberately generic - never health, document or payment details): `push.*`.
