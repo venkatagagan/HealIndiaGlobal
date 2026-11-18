@@ -17,6 +17,7 @@ import {
   type PaymentPurpose,
 } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
+import { ApproxMoney } from '../../components/phase1';
 import { invalidateBookingRelated, useBooking, useInstallments, usePatientProfile } from '../../api/queries';
 import { BackLink, formatBytes, MAX_UPLOAD_BYTES, Money } from '../../components/common';
 import { openRazorpayCheckout } from '../../lib/razorpay';
@@ -297,11 +298,11 @@ function PayForm({ booking, options }: { booking: BookingOut; options: DueOption
                 <Money minor={booking.tax_minor} currency={booking.currency} />
               </Row>
               <Row label={t('bookings.summary.total')} strong>
-                <Money minor={booking.total_minor} currency={booking.currency} />
+                <ApproxMoney minor={booking.total_minor} currency={booking.currency} display={booking.display_total} className="items-end text-end" />
               </Row>
               {booking.amount_paid_minor ? (
                 <Row label={t('payments.page.paidSoFar')}>
-                  <Money minor={booking.amount_paid_minor} currency={booking.currency} />
+                  <ApproxMoney minor={booking.amount_paid_minor} currency={booking.currency} display={booking.display_amount_paid} className="items-end text-end" />
                 </Row>
               ) : null}
               <div className="my-3 border-t border-slate-200 dark:border-slate-800" />

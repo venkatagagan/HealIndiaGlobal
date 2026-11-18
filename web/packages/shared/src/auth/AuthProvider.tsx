@@ -30,6 +30,7 @@ import {
 import { authApi } from '../api/endpoints/auth';
 import type { RegistrableRole, UserRole } from '../api/enums';
 import type { GuestUpgradeIn, LoginIn, RegisterIn, TokenOut, UserOut } from '../api/types';
+import { applyUserLanguage } from '../lib/i18n';
 import {
   AUTH_DOOR_ENDPOINTS,
   defaultPortalUrls,
@@ -156,6 +157,8 @@ export function AuthProvider({
       setUserState(me);
       setStatus('authenticated');
       seedCache(me);
+      // the profile language applies after sign-in unless a language was picked on this device
+      applyUserLanguage(me.preferred_language);
       onSessionChangeRef.current?.(me);
     },
     [seedCache],

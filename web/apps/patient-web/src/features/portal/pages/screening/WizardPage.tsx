@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, Search } from 'lucide-react';
-import { authApi, errorMessage, PREVIOUS_TREATMENTS, type PreviousTreatment, type ScreeningSeverity } from '@hig/shared/api';
+import { authApi, errorMessage, isGuardianConsentRequiredError, isGuestAiLimitError, PREVIOUS_TREATMENTS, type PreviousTreatment, type ScreeningSeverity } from '@hig/shared/api';
 import { VoiceIntakeButton, type ConfirmedIntake } from '@hig/shared/voice';
 import { useAppTranslation } from '../../../../i18n';
 import { usePatientProfile, useScreening, useSubmitScreening, useUpdateScreening } from '../../api/queries';
@@ -174,6 +174,8 @@ export function WizardPage() {
       await submit.mutateAsync(consent);
       navigate(paths.screeningProcessing(id), { replace: true });
     } catch (err) {
+      // guest daily AI limit and guardian consent open their own dialogs (PortalShell gates)
+      if (isGuestAiLimitError(err) || isGuardianConsentRequiredError(err)) return;
       toast.error(errorMessage(err, t('screening.wizard.toast.analysisFailed')));
     }
   }

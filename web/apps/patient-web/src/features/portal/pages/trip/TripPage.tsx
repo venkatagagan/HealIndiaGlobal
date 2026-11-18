@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Navigate, useParams } from 'react-router';
+import { Link, Navigate, useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -286,9 +286,14 @@ function TripHub({ booking }: { booking: BookingOut }) {
             <div className="grid gap-6 md:grid-cols-2">
               {/* Visa */}
               <div>
-                <h3 className="mb-2 flex items-center gap-2 font-semibold">
-                  <FileCheck2 className="h-5 w-5 text-green-600" aria-hidden /> {t('trip.hub.visa')}
-                </h3>
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="flex items-center gap-2 font-semibold">
+                    <FileCheck2 className="h-5 w-5 text-green-600" aria-hidden /> {t('trip.hub.visa')}
+                  </h3>
+                  <Link to={paths.visaGuide({ booking: booking.id })} className="text-sm font-semibold text-primary-ink hover:underline">
+                    {t('visaGuide.open')}
+                  </Link>
+                </div>
                 {visa.isPending ? (
                   <Skeleton className="h-16 w-full" />
                 ) : visa.isError ? (
@@ -305,7 +310,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
                     {visa.data.items.map((v) => (
                       <li key={v.id} className="rounded-xl border border-slate-200 p-3 text-sm dark:border-slate-800">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium">{VISA_TYPE_LABELS[v.visa_type]}</span>
+                          <span className="font-medium">{VISA_TYPE_LABELS[v.visa_type] ?? t(`visaGuide.type.${v.visa_type}`, { defaultValue: v.visa_type })}</span>
                           <StatusBadge status={v.status} />
                         </div>
                         {v.application_reference ? (

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { BriefcaseMedical, Building2 } from 'lucide-react';
-import { casesApi, CASE_STATUSES, type CaseListParams, type CaseOut, type CaseStatus } from '@hig/shared/api';
+import { casesApi, CASE_STATUSES, type CaseListParams, type CaseOut, type CaseStatus, type CaseWithSla } from '@hig/shared/api';
 import { fetchAllPages, filterParam, formatDate, fromMinor, useDocumentTitle, useTableState, type FilterValues } from '@hig/shared/lib';
 import {
   DataTable,
@@ -10,7 +10,6 @@ import {
   ExportButton,
   FilterBar,
   IdCell,
-  MoneyCell,
   MultiSelectFilter,
   SelectFilter,
   TextCell,
@@ -20,6 +19,7 @@ import {
 } from '@hig/shared/ui';
 import { useAppTranslation } from '../../../../i18n';
 import { PatientStatus, TableTabs, patientStatusLabel, quickValue } from '../../components/listing';
+import { ApproxMoney, QuoteCountdown } from '../../components/phase1';
 import { paths } from '../../lib/paths';
 import { ButtonLink, PageHeader } from '../../ui/primitives';
 
@@ -92,16 +92,30 @@ function columns(t: TFn): DataTableColumn<CaseOut>[] {
       key: 'quote',
       header: t('cases.list.columns.latestQuote'),
       align: 'end',
-      cell: (c) =>
-        c.latest_quote ? (
-          <MoneyCell
-            minor={c.latest_quote.total_minor}
-            currency={c.latest_quote.currency}
-            secondary={patientStatusLabel(c.latest_quote.status, 'quote')}
-          />
-        ) : (
-          <span className="block text-end text-xs text-muted">{t('cases.list.notYet')}</span>
-        ),
+      cell: (c) => {
+        const sla = c as CaseWithSla;
+        if (c.latest_quote) {
+          return (
+            <span className="block text-end text-sm">
+              <ApproxMoney
+                minor={c.latest_quote.total_minor}
+                currency={c.latest_quote.currency}
+                display={c.latest_quote.display_total}
+                className="items-end font-medium"
+              />
+              <span className="block text-xs text-muted">{patientStatusLabel(c.latest_quote.status, 'quote')}</span>
+            </span>
+          );
+        }
+        if (sla.quote_due_at && c.status === 'enquiry') {
+          return (
+            <span className="flex justify-end">
+              <QuoteCountdown dueAt={sla.quote_due_at} overdue={sla.quote_overdue} hoursLeft={sla.hours_left} compact />
+            </span>
+          );
+        }
+        return <span className="block text-end text-xs text-muted">{t('cases.list.notYet')}</span>;
+      },
       exportValue: (c) => (c.latest_quote ? `${c.latest_quote.currency} ${fromMinor(c.latest_quote.total_minor, c.latest_quote.currency)}` : ''),
     },
     {

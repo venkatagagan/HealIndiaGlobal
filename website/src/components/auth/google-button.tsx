@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { GOOGLE_CLIENT_ID } from '@/config/site';
+import { useLocale } from '@/components/locale-provider';
 
 interface GoogleId {
   initialize(options: {
@@ -59,6 +60,8 @@ export function GoogleButton({
   onError: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Google's button text follows the page language (GIS locale codes: en, ar, fr, bn, ru).
+  const locale = useLocale();
   const callbacks = useRef({ onCredential, onError });
   useEffect(() => {
     callbacks.current = { onCredential, onError };
@@ -87,7 +90,7 @@ export function GoogleButton({
           shape: 'pill',
           width: Math.min(400, ref.current.offsetWidth || 320),
           logo_alignment: 'center',
-          locale: 'en',
+          locale,
         });
       })
       .catch(() => {
@@ -96,7 +99,7 @@ export function GoogleButton({
     return () => {
       cancelled = true;
     };
-  }, [text]);
+  }, [text, locale]);
 
   if (!GOOGLE_CLIENT_ID) return null;
   return <div ref={ref} className="flex min-h-11 justify-center" />;

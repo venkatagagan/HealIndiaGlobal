@@ -10,11 +10,13 @@ import {
   errorMessage,
   QUOTE_LINE_CATEGORY_LABELS,
   type CaseDetail,
+  type CaseWithSla,
   type QuoteOut,
 } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
 import { useCancelCase, useCase,useConversations, useCreateConversation, useQuoteDecision } from '../../api/queries';
-import { BackLink, Money, StatusBadge, UploadButton } from '../../components/common';
+import { BackLink, StatusBadge, UploadButton } from '../../components/common';
+import { ApproxMoney, QuoteCountdown } from '../../components/phase1';
 import { documentColumns, useAiReadings, useDocumentActions } from '../../components/DocumentsTable';
 import { ItineraryTable } from '../../components/ItineraryTable';
 import { PatientStatus } from '../../components/listing';
@@ -186,13 +188,13 @@ function CaseDetailView({ data }: { data: CaseDetail }) {
               <CardBody>
                 <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                   <KeyValue label={t('cases.detail.total')}>
-                    <Money minor={booking.total_minor} currency={booking.currency} />
+                    <ApproxMoney minor={booking.total_minor} currency={booking.currency} display={booking.display_total} />
                   </KeyValue>
                   <KeyValue label={t('cases.detail.paid')}>
-                    <Money minor={booking.amount_paid_minor} currency={booking.currency} />
+                    <ApproxMoney minor={booking.amount_paid_minor} currency={booking.currency} display={booking.display_amount_paid} />
                   </KeyValue>
                   <KeyValue label={t('cases.detail.balance')}>
-                    <Money minor={booking.balance_due_minor} currency={booking.currency} />
+                    <ApproxMoney minor={booking.balance_due_minor} currency={booking.currency} display={booking.display_balance_due} />
                   </KeyValue>
                   <KeyValue label={t('cases.detail.payment')}>
                     {t(`cases.detail.paymentOption.${booking.payment_option}`, {
@@ -255,8 +257,22 @@ function CaseDetailView({ data }: { data: CaseDetail }) {
           <Card>
             <CardHeader title={t('cases.detail.quotesTitle')} description={t('cases.detail.quotesDescription')} />
             <CardBody className="space-y-5">
+              {(data as CaseWithSla).quote_group_id ? (
+                <ButtonLink to={paths.quoteGroup((data as CaseWithSla).quote_group_id as string)} variant="outline" size="sm">
+                  {t('quoteGroup.compareAll')}
+                </ButtonLink>
+              ) : null}
               {!mainQuote ? (
-                <p className="text-sm text-muted">{t('cases.detail.noQuotes')}</p>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted">{t('cases.detail.noQuotes')}</p>
+                  {data.status === 'enquiry' ? (
+                    <QuoteCountdown
+                      dueAt={(data as CaseWithSla).quote_due_at}
+                      overdue={(data as CaseWithSla).quote_overdue}
+                      hoursLeft={(data as CaseWithSla).hours_left}
+                    />
+                  ) : null}
+                </div>
               ) : (
                 <QuoteCard quote={mainQuote} {...quoteActions(mainQuote)} />
               )}
@@ -545,7 +561,7 @@ function QuoteCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-2xl font-bold">
-            <Money minor={quote.total_minor} currency={quote.currency} />
+            <ApproxMoney minor={quote.total_minor} currency={quote.currency} display={quote.display_total} />
           </p>
           <p className="text-xs text-muted">{meta.join(' · ')}</p>
         </div>
@@ -584,7 +600,7 @@ function QuoteCard({
                       </span>
                     </Td>
                     <Td className="text-end tabular-nums">
-                      <Money minor={li.amount_minor} currency={quote.currency} />
+                      <ApproxMoney minor={li.amount_minor} currency={quote.currency} display={li.display_amount} className="items-end" />
                     </Td>
                   </Tr>
                 );
@@ -595,7 +611,7 @@ function QuoteCard({
                 <Td className="font-semibold">{t('cases.quote.total')}</Td>
                 <Td className="hidden sm:table-cell" />
                 <Td className="text-end font-semibold tabular-nums">
-                  <Money minor={quote.total_minor} currency={quote.currency} />
+                  <ApproxMoney minor={quote.total_minor} currency={quote.currency} display={quote.display_total} className="items-end" />
                 </Td>
               </Tr>
             </TFoot>

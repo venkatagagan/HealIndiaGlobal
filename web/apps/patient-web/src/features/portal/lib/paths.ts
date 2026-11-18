@@ -41,6 +41,38 @@ export const paths = {
   saved: `${PORTAL_BASE}/saved`,
   /** in-app route that forwards to the website door (PLAN 3.1): `${VITE_PUBLIC_LOGIN_URL}?next=<url>` */
   login: (next?: string) => `/login${next ? `?next=${encodeURIComponent(next)}` : ''}`,
-  hospital: (slug: string) => `/hospitals/${slug}`,
-  doctor: (id: Uuid) => `/doctors/${id}`,
+  hospital: (slug: string) => `${PORTAL_BASE}/hospitals/${encodeURIComponent(slug)}`,
+  doctor: (id: Uuid) => `${PORTAL_BASE}/doctors/${encodeURIComponent(id)}`,
+  procedure: (slug: string) => `${PORTAL_BASE}/procedures/${encodeURIComponent(slug)}`,
+  browse: (params: { tab?: 'hospitals' | 'doctors'; q?: string; procedure?: string; specialty?: string } = {}) => {
+    const search = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) if (v) search.set(k, v);
+    const qs = search.toString();
+    return `${PORTAL_BASE}/browse${qs ? `?${qs}` : ''}`;
+  },
+  /** quick quote: up to 3 hospitals (`hospitals` = ids) */
+  quickQuote: (params: { hospitals?: Uuid[]; procedure?: string; screening?: Uuid; specialty?: string } = {}) => {
+    const search = new URLSearchParams();
+    if (params.hospitals?.length) search.set('h', params.hospitals.join(','));
+    if (params.procedure) search.set('procedure', params.procedure);
+    if (params.screening) search.set('screening', params.screening);
+    if (params.specialty) search.set('specialty', params.specialty);
+    const qs = search.toString();
+    return `${PORTAL_BASE}/quotes/new${qs ? `?${qs}` : ''}`;
+  },
+  quoteGroup: (groupId: Uuid) => `${PORTAL_BASE}/quotes/${encodeURIComponent(groupId)}`,
+  visaGuide: (params: { nationality?: string; booking?: Uuid } = {}) => {
+    const search = new URLSearchParams();
+    if (params.nationality) search.set('nationality', params.nationality);
+    if (params.booking) search.set('booking', params.booking);
+    const qs = search.toString();
+    return `${PORTAL_BASE}/visa-guide${qs ? `?${qs}` : ''}`;
+  },
+  reviews: `${PORTAL_BASE}/reviews`,
+  writeReview: (bookingId: Uuid) => `${PORTAL_BASE}/reviews/new?booking=${encodeURIComponent(bookingId)}`,
+  editReview: (reviewId: Uuid) => `${PORTAL_BASE}/reviews/${encodeURIComponent(reviewId)}/edit`,
+  aftercare: `${PORTAL_BASE}/aftercare`,
+  freeCall: (screeningId?: Uuid) =>
+    `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
+  freeCallStatus: `${PORTAL_BASE}/free-call/status`,
 };

@@ -11,6 +11,8 @@ import {
   type RefundTier,
 } from '@hig/shared/api';
 import { DataTable, DateCell, MoneyCell, StatusBadgeCell, type DataTableColumn } from '@hig/shared/ui';
+import type { DisplayMoney } from '@hig/shared/api';
+import { ApproxMoney } from '../../components/phase1';
 import { useAppTranslation } from '../../../../i18n';
 import { useBooking, useCancelBooking, useInstallments } from '../../api/queries';
 import { PaymentsTable } from '../../components/payments';
@@ -271,14 +273,14 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
               {booking.discount_minor ? <SummaryRow label={t('bookings.summary.discount')} minor={-booking.discount_minor} currency={booking.currency} /> : null}
               {booking.service_fee_minor ? <SummaryRow label={t('bookings.summary.serviceFee')} minor={booking.service_fee_minor} currency={booking.currency} /> : null}
               <SummaryRow label={t('bookings.summary.taxes')} minor={booking.tax_minor} currency={booking.currency} />
-              <SummaryRow label={t('bookings.summary.total')} minor={booking.total_minor} currency={booking.currency} strong />
+              <SummaryRow label={t('bookings.summary.total')} minor={booking.total_minor} currency={booking.currency} display={booking.display_total} strong />
               <div className="border-t border-border pt-2" />
-              <SummaryRow label={t('bookings.summary.deposit')} minor={booking.deposit_minor} currency={booking.currency} />
-              <SummaryRow label={t('bookings.summary.paid')} minor={booking.amount_paid_minor} currency={booking.currency} />
+              <SummaryRow label={t('bookings.summary.deposit')} minor={booking.deposit_minor} currency={booking.currency} display={booking.display_deposit} />
+              <SummaryRow label={t('bookings.summary.paid')} minor={booking.amount_paid_minor} currency={booking.currency} display={booking.display_amount_paid} />
               {booking.amount_refunded_minor ? (
                 <SummaryRow label={t('bookings.summary.refunded')} minor={booking.amount_refunded_minor} currency={booking.currency} />
               ) : null}
-              <SummaryRow label={t('bookings.summary.balanceDue')} minor={booking.balance_due_minor} currency={booking.currency} strong />
+              <SummaryRow label={t('bookings.summary.balanceDue')} minor={booking.balance_due_minor} currency={booking.currency} display={booking.display_balance_due} strong />
             </CardBody>
           </Card>
 
@@ -357,11 +359,23 @@ function BookingDetailView({ booking }: { booking: BookingOut }) {
   );
 }
 
-function SummaryRow({ label, minor, currency, strong }: { label: string; minor: number; currency: string; strong?: boolean }) {
+function SummaryRow({
+  label,
+  minor,
+  currency,
+  display,
+  strong,
+}: {
+  label: string;
+  minor: number;
+  currency: string;
+  display?: DisplayMoney | null;
+  strong?: boolean;
+}) {
   return (
-    <div className={cn('flex justify-between', strong && 'font-semibold')}>
+    <div className={cn('flex justify-between gap-3', strong && 'font-semibold')}>
       <span className={strong ? '' : 'text-muted'}>{label}</span>
-      <Money minor={minor} currency={currency} />
+      {display ? <ApproxMoney minor={minor} currency={currency} display={display} className="items-end text-end" /> : <Money minor={minor} currency={currency} />}
     </div>
   );
 }

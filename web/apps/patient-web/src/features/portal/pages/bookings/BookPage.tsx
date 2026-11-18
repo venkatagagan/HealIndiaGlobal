@@ -12,6 +12,7 @@ import {
   type PaymentOption,
 } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
+import { ApproxMoney } from '../../components/phase1';
 import { useCase, useCreateBooking, useHospital, useHospitalAvailability } from '../../api/queries';
 import { AvailabilityCalendar } from '../../components/AvailabilityCalendar';
 import {
@@ -278,7 +279,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                   onSelect={() => setSource({ kind: 'quote', id: acceptedQuote.id })}
                   title={t('book.acceptedQuote')}
                   description={acceptedQuote.treatment_plan || t('book.itemizedQuote')}
-                  price={<Money minor={acceptedQuote.total_minor} currency={acceptedQuote.currency} trim />}
+                  price={<ApproxMoney minor={acceptedQuote.total_minor} currency={acceptedQuote.currency} display={acceptedQuote.display_total} className="items-end" />}
                 />
               ) : null}
               {hospital.isPending ? (
@@ -292,7 +293,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                     title={p.name || PACKAGE_TIER_LABELS[p.tier]}
                     description={p.description ?? PACKAGE_TIER_LABELS[p.tier]}
                     includes={includesText(t, p)}
-                    price={<Money minor={p.price_minor} currency={p.currency} trim />}
+                    price={<ApproxMoney minor={p.price_minor} currency={p.currency} display={p.display_price} className="items-end" />}
                     saving={
                       p.original_price_minor && p.original_price_minor > p.price_minor ? (
                         <>

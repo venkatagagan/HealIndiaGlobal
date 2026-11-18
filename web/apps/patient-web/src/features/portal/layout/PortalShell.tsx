@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarRange,
   FileText,
+  HeartHandshake,
   HeartPulse,
   Home,
   LayoutDashboard,
@@ -13,6 +14,8 @@ import {
   MessagesSquare,
   Plane,
   Receipt,
+  Search,
+  Star,
   Stethoscope,
   User,
   UserRound,
@@ -26,6 +29,8 @@ import { isApiError, type MessageOut } from '@hig/shared/api';
 import type { TFunction } from 'i18next';
 import { useAppTranslation } from '../../../i18n';
 import { qk, useUnreadCount } from '../api/queries';
+import { GuardianConsentGate } from '../components/GuardianConsent';
+import { GuestAiLimitGate } from '../components/GuestAiLimit';
 import { useRealtimeConnection, useRealtimeEvent } from '../lib/realtime';
 import { paths, PORTAL_BASE } from '../lib/paths';
 import { useLogout, useMe } from '../lib/session';
@@ -53,7 +58,9 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
       accent: 'rose',
       children: [
         { to: paths.screenings, label: t('shell.nav.screenings'), icon: Stethoscope },
+        { to: paths.browse(), label: t('shell.nav.browse'), icon: Search },
         { to: paths.cases, label: t('shell.nav.cases'), icon: BriefcaseMedical },
+        { to: paths.aftercare, label: t('shell.nav.aftercare'), icon: HeartHandshake },
       ],
     },
     {
@@ -93,6 +100,7 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
       accent: 'amber',
       children: [
         { to: paths.saved, label: t('shell.nav.saved'), icon: Bookmark },
+        { to: paths.reviews, label: t('shell.nav.reviews'), icon: Star },
         { to: paths.profile, label: t('shell.nav.profile'), icon: User },
       ],
     },
@@ -263,6 +271,8 @@ export function PortalShell() {
   return (
     <>
       <RealtimeBridge />
+      <GuardianConsentGate />
+      <GuestAiLimitGate />
       <PortalLayout
         nav={buildNav(count, t)}
         homeTo={paths.dashboard}
