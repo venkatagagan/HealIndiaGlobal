@@ -8,11 +8,11 @@ spec:
     kind: ClusterIssuer
     name: letsencrypt-prod
   dnsNames:
-    - staging.healindia.example
-    - agent.staging.healindia.example
-    - hospital.staging.healindia.example
-    - admin.staging.healindia.example
-    - api.staging.healindia.example
+    - staging.healindiaglobal.ai
+    - agent.staging.healindiaglobal.ai
+    - hospital.staging.healindiaglobal.ai
+    - ops.staging.healindiaglobal.ai
+    - api.staging.healindiaglobal.ai
   privateKey:
     algorithm: ECDSA
     size: 256

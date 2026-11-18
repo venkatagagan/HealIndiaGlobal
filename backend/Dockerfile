@@ -5,6 +5,11 @@
 #   docker run --env-file infra/.env -e RUN_MIGRATIONS=1 -p 8000:8000 healindia/api          # API
 #   docker run --env-file infra/.env healindia/api python -m app.worker                       # worker
 #
+# Build args: INSTALL_VOICE (default true) installs local Whisper speech-to-text (faster-whisper + CTranslate2,
+# ~300 MB; production requires STT_PROVIDER=local_whisper). INSTALL_VOICE=false gives a slimmer dev/test image.
+# The Whisper model itself is downloaded once into WHISPER_MODEL_DIR (a volume) - scripts/prefetch_whisper_model.py.
+#   docker buildx build --platform linux/arm64 -t healindia/api ./backend          # Graviton (AWS starter)
+#
 # Environment knobs: WEB_CONCURRENCY (gunicorn workers, default 2), GUNICORN_TIMEOUT (60),
 # RUN_MIGRATIONS=1 (run `alembic upgrade head` before starting), FORWARDED_ALLOW_IPS (trusted proxies).
 
@@ -27,21 +32,16 @@ RUN python -m venv /opt/venv && pip install --upgrade pip setuptools wheel
 
 WORKDIR /app
 
-# 1) Pinned third-party dependencies (cached layer). The lock is a `pip freeze` of the Windows dev venv, so
-#    drop Windows-only distributions, local/editable references and dev-only tools (tests, linters).
-COPY requirements.lock.txt ./
-RUN grep -v -i -E '^(-e |pywin32|pywin32-ctypes|pywinpty|win32-setctime|win32_setctime|winloop|wmi)|@ file:' \
-        requirements.lock.txt \
-  | grep -v -i -E '^(pytest|pytest-[a-z0-9-]+|ruff|mypy|mypy_extensions|respx|time-machine|coverage)==' \
-        > /tmp/requirements.linux.txt \
- && pip install -r /tmp/requirements.linux.txt
+# 1) Pinned third-party dependencies (cached layer) from the universal locks (backend/scripts/lock-requirements.sh):
+#    production deps + gunicorn/uvicorn-worker; with INSTALL_VOICE=true (default) also local Whisper
+#    (faster-whisper + CTranslate2, the `voice` extra) - production requires STT_PROVIDER=local_whisper.
+#    Dev tools (pytest, ruff, mypy) are in requirements-dev.lock.txt and never reach the image.
+ARG INSTALL_VOICE=true
+COPY requirements.lock.txt requirements-voice.lock.txt ./
+RUN if [ "$INSTALL_VOICE" = "true" ]; then lock=requirements-voice.lock.txt; else lock=requirements.lock.txt; fi \
+ && pip install --only-binary=:all: -r "$lock"
 
-# 2) Linux-only production server extras (not part of the Windows dev lock).
-#    gunicorn: process manager; uvloop: faster event loop; uvicorn-worker only if uvicorn.workers is gone.
-RUN pip install "gunicorn==23.0.0" "uvloop==0.21.0" \
- && (python -c "import uvicorn.workers" 2>/dev/null || pip install "uvicorn-worker==0.3.0")
-
-# 3) The application itself (editable install keeps BACKEND_DIR == /app, same layout as development).
+# 2) The application itself (editable install keeps BACKEND_DIR == /app, same layout as development).
 COPY . .
 RUN mkdir -p scripts storage \
  && pip install --no-deps -e . \
@@ -78,7 +78,8 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 # Source stays root-owned (read-only for the app user); only the local storage dir is writable.
 COPY --from=builder /app /app
-RUN mkdir -p /app/storage && chown app:app /app/storage
+# Whisper model cache (WHISPER_MODEL_DIR=/app/.models/whisper): a named volume mounted here inherits the owner.
+RUN mkdir -p /app/storage /app/.models && chown app:app /app/storage /app/.models
 
 # Gunicorn configuration (workers/timeouts from the environment).
 COPY <<'EOF' /etc/gunicorn/gunicorn.conf.py

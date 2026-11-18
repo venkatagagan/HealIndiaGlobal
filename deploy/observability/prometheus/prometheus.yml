@@ -96,11 +96,11 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - https://api.healindia.example/health/ready
-          - https://healindia.example/
-          - https://agent.healindia.example/
-          - https://hospital.healindia.example/
-          - https://admin.healindia.example/
+          - https://api.healindiaglobal.ai/health/ready
+          - https://healindiaglobal.ai/
+          - https://agent.healindiaglobal.ai/
+          - https://hospital.healindiaglobal.ai/
+          - https://ops.healindiaglobal.ai/
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

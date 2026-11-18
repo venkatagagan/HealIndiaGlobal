@@ -129,3 +129,16 @@ docs/demo/.cache/
 
 # --- Loose reference images from chat (not project files) ---
 /WhatsApp Image *
+
+# --- Terraform ---------------------------------------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+# Provider locks are generated per platform; regenerate with `terraform providers lock -platform=...`.
+.terraform.lock.hcl
+
+# --- Local Whisper models (WHISPER_MODEL_DIR) -------------------------------
+backend/.models/

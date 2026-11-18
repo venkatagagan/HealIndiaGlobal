@@ -42,7 +42,7 @@ locals {
     patient    = coalesce(var.hostnames.patient, local.host_base)
     agent      = coalesce(var.hostnames.agent, "agent.${local.host_base}")
     hospital   = coalesce(var.hostnames.hospital, "hospital.${local.host_base}")
-    admin      = coalesce(var.hostnames.admin, "admin.${local.host_base}")
+    admin      = coalesce(var.hostnames.admin, "ops.${local.host_base}") # staff console (SEC-022: own origin)
     api        = coalesce(var.hostnames.api, "api.${local.host_base}")
     api_origin = coalesce(var.hostnames.api_origin, "origin-api.${local.host_base}")
   }

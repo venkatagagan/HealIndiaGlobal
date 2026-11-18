@@ -25,13 +25,15 @@ from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, field_validator, 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import sms
 from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.deps import get_client_ip, is_staff
 from app.core.enums import ConsultationStatus, ContactChannel, DocumentKind, UserRole
-from app.core.errors import BadRequest, Conflict, Forbidden, NotFound, RateLimited
+from app.core.errors import AppError, BadRequest, Conflict, Forbidden, NotFound, RateLimited
 from app.core.events import publish
 from app.core.jobs import enqueue
+from app.i18n import recipient_locale, t
 from app.models import Document, GuestContactVerification, IntroConsultation, Screening, User
 from app.modules.cases import policies
 from app.modules.cases.common import utcnow
@@ -194,8 +196,11 @@ def _ensure_patient(user: User) -> None:
         raise Forbidden("The free consultation is for visitors and patients")
 
 
-async def _send_code(channel: ContactChannel, contact: str, code: str, db: AsyncSession) -> None:
-    text = f"Your {settings.APP_NAME} code is {code}. It expires in 10 minutes. Do not share it."
+async def _send_code(
+    channel: ContactChannel, contact: str, code: str, db: AsyncSession, *, locale: str | None = None
+) -> None:
+    minutes = int(CODE_TTL.total_seconds() // 60)
+    text = t("sms.verification_code", locale, app_name=settings.APP_NAME, code=code, minutes=minutes)
     if channel == ContactChannel.EMAIL:
         await enqueue(
             db,
@@ -216,6 +221,22 @@ async def _send_code(channel: ContactChannel, contact: str, code: str, db: Async
     if settings.SMS_PROVIDER == "console" and not settings.is_production:
         sms_outbox.append({"to": contact, "text": text})
         del sms_outbox[:-200]
+        return
+    if settings.SMS_PROVIDER == "sns":
+        if not sms.destination_allowed(contact):
+            raise BadRequest(
+                "We cannot send text messages to this country yet. Please use your email address.",
+                code="sms_unavailable",
+            )
+        try:
+            await sms.send_sms(contact, text)
+        except sms.SmsError as exc:
+            # The transaction is rolled back (no code row is kept), so the caller may simply retry.
+            raise AppError(
+                "We could not send the text message. Please try again or use your email address.",
+                code="service_unavailable",
+                status_code=503,
+            ) from exc
         return
     raise BadRequest(
         "Phone verification is not available yet. Please use your email address.", code="sms_unavailable"
@@ -252,7 +273,7 @@ async def start_verification(
     row.code_hash = _code_hash(row.id, code)
     db.add(row)
     await db.flush()
-    await _send_code(body.channel, normalized, code, db)
+    await _send_code(body.channel, normalized, code, db, locale=recipient_locale(user))
     await audit_log(
         db,
         actor=user,

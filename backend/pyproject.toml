@@ -9,7 +9,9 @@ description = "Heal India Global - medical travel platform API (FastAPI modular 
 readme = { text = "Heal India Global backend API.", content-type = "text/plain" }
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi[standard]",
+    # Not fastapi[standard]: it pulls fastapi-cli / fastapi-cloud-cli and friends into production (SEC-052).
+    "fastapi",
+    "uvicorn[standard]",
     "sqlalchemy[asyncio]>=2.0.40",
     "asyncpg",
     "alembic",
@@ -37,6 +39,8 @@ dependencies = [
     "boto3",
     "tenacity",
     "pillow-heif",
+    # optional error reporting (SENTRY_DSN; PII scrubbing on)
+    "sentry-sdk",
 ]
 
 [project.optional-dependencies]
@@ -52,6 +56,11 @@ dev = [
 # voice intake (PLAN §7.2): local open-source Whisper speech-to-text (STT_PROVIDER=local_whisper)
 voice = [
     "faster-whisper",
+]
+# Linux production server (backend/Dockerfile): gunicorn process manager with uvicorn workers.
+server = [
+    "gunicorn",
+    "uvicorn-worker",
 ]
 
 [tool.setuptools.packages.find]

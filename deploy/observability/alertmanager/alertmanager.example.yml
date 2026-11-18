@@ -3,8 +3,8 @@
 # keep real webhook URLs / passwords in the secret store (Alertmanager supports *_file fields).
 global:
   resolve_timeout: 5m
-  smtp_smarthost: "email-smtp.ap-south-1.amazonaws.com:587"
-  smtp_from: "alerts@healindia.example"
+  smtp_smarthost: "email-smtp.us-east-2.amazonaws.com:587"
+  smtp_from: "alerts@healindiaglobal.ai"
   smtp_auth_username: "REPLACE_ME"
   smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password
   smtp_require_tls: true
@@ -37,7 +37,7 @@ inhibit_rules:
 receivers:
   - name: platform-email
     email_configs:
-      - to: "platform@healindia.example"
+      - to: "contact@healindiaglobal.ai"
         send_resolved: true
 
   - name: oncall-pager
@@ -46,10 +46,10 @@ receivers:
       - url_file: /etc/alertmanager/secrets/pager_webhook_url
         send_resolved: true
     email_configs:
-      - to: "oncall@healindia.example"
+      - to: "contact@healindiaglobal.ai"
         send_resolved: true
 
   - name: finance-and-platform
     email_configs:
-      - to: "finance-ops@healindia.example"
+      - to: "contact@healindiaglobal.ai"
         send_resolved: true

@@ -4,7 +4,7 @@
 #   * RDS automated backups + PITR (rds_backup_retention_days, default 14) - rds.tf
 #   * AWS Backup plan: daily (35 days) and monthly (365 days) RDS snapshots in a KMS-encrypted vault
 #   * S3 documents versioning (+ noncurrent version window) - s3.tf
-# With enable_dr = true (dr_region, default ap-south-2 Hyderabad - stays in India):
+# With enable_dr = true (dr_region, default us-west-2 Oregon - stays in the United States like the primary):
 #   * every AWS Backup snapshot is copied to a vault in the DR region
 #   * documents bucket replicated (CRR) to a KMS-encrypted bucket in the DR region
 #   * Secrets Manager secrets replicated (secrets.tf), ECR images replicated (below)
@@ -54,11 +54,11 @@ resource "aws_backup_vault" "dr" {
 resource "aws_backup_plan" "rds" {
   name = "${local.name}-rds"
 
-  # 02:00 IST daily
+  # 07:00 UTC daily (03:00 US Eastern), after the RDS automated backup window
   rule {
     rule_name         = "daily"
     target_vault_name = aws_backup_vault.primary.name
-    schedule          = "cron(30 20 * * ? *)"
+    schedule          = "cron(0 7 * * ? *)"
     start_window      = 60
     completion_window = 360
 
@@ -79,11 +79,11 @@ resource "aws_backup_plan" "rds" {
     }
   }
 
-  # 03:00 IST on the 1st of each month
+  # 08:00 UTC on the 1st of each month
   rule {
     rule_name         = "monthly"
     target_vault_name = aws_backup_vault.primary.name
-    schedule          = "cron(30 21 1 * ? *)"
+    schedule          = "cron(0 8 1 * ? *)"
     start_window      = 60
     completion_window = 720
 

@@ -487,5 +487,8 @@
     "unknown_locale": "Этот язык недоступен.",
     "unknown_translation_key": "Такого ключа перевода не существует.",
     "default_language_required": "Английский — язык по умолчанию, его нельзя отключить."
+  },
+  "sms": {
+    "verification_code": "Ваш код {app_name}: {code}. Он действует {minutes} минут. Никому его не сообщайте."
   }
 }

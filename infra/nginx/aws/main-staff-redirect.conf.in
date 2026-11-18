@@ -1,0 +1,12 @@
+# Main domain, AWS starter - rendered by deploy/starter/deploy.sh into /opt/hig/nginx-extra/main-staff-redirect.conf
+# and included in the main server block before app-locations.conf (regex locations win over its prefix ones).
+# The staff console lives on its own host (__STAFF_HOST__, see server-ops-console.conf.in): send /gahi/ there and
+# keep the staff door off the public domain.
+
+location ~ ^/gahi(?:/|$) {
+    return 301 https://__STAFF_HOST__$request_uri;
+}
+location ~ ^/api/v1/auth/staff/ {
+    default_type application/json;
+    return 404 '{"error":{"code":"not_found","message":"Not found","details":null,"request_id":"$request_id"}}';
+}

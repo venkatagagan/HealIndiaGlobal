@@ -6,12 +6,12 @@
 #   deploy/scripts/set-secret.sh hig/production/RAZORPAY_KEY_SECRET
 #   pass show razorpay/live/key_secret | deploy/scripts/set-secret.sh hig/production/RAZORPAY_KEY_SECRET
 #
-# Requires the AWS CLI v2 with credentials for the target account (region: AWS_REGION, default ap-south-1).
+# Requires the AWS CLI v2 with credentials for the target account (region: AWS_REGION, default us-east-2).
 # Running tasks read secrets at start-up: after a change, force a new deployment of the api and worker services.
 set -euo pipefail
 
 name="${1:?usage: set-secret.sh <secret name>}"
-region="${AWS_REGION:-ap-south-1}"
+region="${AWS_REGION:-us-east-2}"
 
 if [[ -t 0 ]]; then
   read -r -s -p "Value for $name: " value; echo

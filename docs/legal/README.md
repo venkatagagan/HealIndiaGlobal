@@ -69,6 +69,7 @@ If any of these change (in code or in `platform_settings`), the documents must c
 | AI | Claude via the Anthropic API, only with `consent_ai`; up to 3 reports; rules fallback; red flags → emergency advice; matching weights 30/20/10/10/10/5/5/5/5 | PLAN §7 | AI consent; Terms §3; Privacy §5 |
 | Security | Argon2id; AES-256-GCM field encryption (passport, policy, bank, PAN, MFA secret); RBAC + per-record scoping; staff TOTP; audit log | PLAN §1, §9 | Privacy §10 |
 | Cookie | `hig_refresh` httpOnly refresh cookie only | PLAN §3 | Privacy §16 |
+| Hosting | Amazon Web Services, United States: `us-east-2` (Ohio), backup copies `us-west-2` (Oregon); email Amazon SES, SMS codes Amazon SNS | `deploy/terraform/aws-starter`, `deploy/starter/README.md` | Privacy §1, §7, §8, §19; ROPA; DPIA §4; Breach response |
 
 ## Open questions for counsel
 
@@ -234,6 +235,11 @@ The Terms, the hospital agreement and the product copy depend on these. Verify e
   cross-border transfer requirements.
 - Vendor terms: Anthropic (processor; 30-day default deletion; up to 2 years if flagged; no training without
   permission — re-verify), Razorpay, Stripe, hosting, email, FCM, Sentry — DPAs and transfer mechanisms.
+- **US hosting (AWS us-east-2, backups us-west-2).** Confirm: DPDP s.16 position (no restriction notified for the
+  US); GDPR transfer mechanism (AWS DPA with SCCs, UK IDTA; DPF only if AWS is certified at the time); whether
+  the CERT-In Directions' 180-day in-India log retention applies and how to meet it; whether any sector rule
+  (e.g. for hospitals' records held on their behalf) requires storage in India; HIPAA position and the value of
+  the precautionary AWS BAA.
 
 ### Q10. AI regulation and medical-device status — P1
 

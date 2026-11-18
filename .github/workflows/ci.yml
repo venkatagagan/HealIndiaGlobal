@@ -59,7 +59,7 @@ jobs:
           cache: pip
           cache-dependency-path: |
             backend/pyproject.toml
-            backend/requirements.lock.txt
+            backend/requirements-dev.lock.txt
 
       - name: Generate ephemeral secrets
         run: |
@@ -69,7 +69,9 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          # Exactly the pinned versions (universal lock), then the app itself without re-resolving (SEC-052).
+          pip install -r requirements-dev.lock.txt
+          pip install --no-deps -e .
 
       - name: Ruff
         run: python -m ruff check app tests
@@ -116,7 +118,7 @@ jobs:
       - name: Install
         run: npm ci --no-audit --no-fund
 
-      - name: Translation catalogs (every language has every key; exports for the admin editor are current)
+      - name: Translation catalogs (web and mobile ARB - every key and placeholder in every language; exports current)
         working-directory: .
         run: |
           node scripts/i18n/check-catalogs.mjs
@@ -134,6 +136,66 @@ jobs:
           name: web-dist
           path: web/apps/*/dist
           retention-days: 7
+
+  # -----------------------------------------------------------------------------------------------------
+  website:
+    name: Website (lint + typecheck + next build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: website
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # No API in CI: static generation uses the bundled fallback catalogue (as in the image build).
+      SITE_REQUIRE_LIVE_DATA: "false"
+      DATA_FALLBACK: auto
+      API_BASE_URL: http://127.0.0.1:9/api/v1
+      NEXT_PUBLIC_SITE_URL: https://healindiaglobal.ai
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+  # -----------------------------------------------------------------------------------------------------
+  terraform:
+    name: Terraform (fmt + validate, no AWS access)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.2
+
+      - name: Format
+        run: terraform fmt -check -recursive deploy/terraform
+
+      - name: Validate
+        run: |
+          for root in deploy/terraform/aws deploy/terraform/aws-starter; do
+            echo "::group::$root"
+            terraform -chdir="$root" init -backend=false -input=false
+            terraform -chdir="$root" validate
+            echo "::endgroup::"
+          done
 
   # -----------------------------------------------------------------------------------------------------
   mobile:
@@ -166,7 +228,7 @@ jobs:
     name: Docker images (build only, no push)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [backend, web]
+    needs: [backend, web, website]
     steps:
       - uses: actions/checkout@v4
 
@@ -183,6 +245,29 @@ jobs:
           docker compose -f infra/docker-compose.yml --env-file infra/.env config --quiet
           docker compose -f infra/docker-compose.yml --env-file infra/.env --profile s3 config --quiet
           rm infra/.env
+
+      - name: Validate the AWS starter compose override
+        run: |
+          cat > /tmp/aws.env <<'ENV'
+          IMAGE_TAG=ci
+          API_IMAGE=example.invalid/hig/api
+          WEB_IMAGE=example.invalid/hig/web
+          WEBSITE_IMAGE=example.invalid/hig/website
+          SITE_DOMAIN=healindiaglobal.ai
+          STAFF_HOST=ops.healindiaglobal.ai
+          STAFF_CONSOLE_ORIGIN=https://ops.healindiaglobal.ai
+          CERTBOT_EMAIL=ci@example.invalid
+          AWS_REGION=us-east-2
+          DB_HOST=db.example.invalid
+          POSTGRES_PASSWORD=unused
+          APP_DB_PASSWORD=ci
+          MIGRATOR_DB_PASSWORD=ci
+          REDIS_PASSWORD=ci
+          JWT_SECRET=ci-validate-only-0123456789abcdef0123456789
+          FIELD_ENCRYPTION_KEY=Y2ktdmFsaWRhdGUtb25seS0wMTIzNDU2Nzg5YWJjZGU=
+          ENV
+          docker compose -f infra/docker-compose.yml -f infra/docker-compose.aws.yml --env-file /tmp/aws.env \
+            --profile certbot config --quiet
 
       - name: Build API image
         uses: docker/build-push-action@v6
@@ -206,9 +291,25 @@ jobs:
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
 
-      - name: Lint edge nginx config
+      - name: Build website image
+        uses: docker/build-push-action@v6
+        with:
+          context: website
+          file: infra/website/Dockerfile
+          push: false
+          load: false
+          tags: healindia/website:ci-${{ github.sha }}
+          cache-from: type=gha,scope=website
+          cache-to: type=gha,mode=max,scope=website
+
+      - name: Lint edge nginx config (base, and with the AWS starter staff-console host)
         run: |
-          mkdir -p /tmp/edge/certs /tmp/edge/conf.d
+          mkdir -p /tmp/edge/certs /tmp/edge/conf.d /tmp/edge/extra
+          for f in infra/nginx/aws/*.conf.in; do
+            awk '/^__STAFF_ALLOW__$/ { print "    allow 203.0.113.0/24;"; print "    deny all;"; next }
+                 { gsub(/__STAFF_HOST__/, "ops.healindiaglobal.ai"); print }' "$f" \
+              > "/tmp/edge/extra/$(basename "$f" .in)"
+          done
           openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj "/CN=localhost" \
             -keyout /tmp/edge/certs/privkey.pem -out /tmp/edge/certs/fullchain.pem 2>/dev/null
           docker run --rm \
@@ -220,3 +321,54 @@ jobs:
             -v "$PWD/infra/nginx/templates:/etc/nginx/templates:ro" \
             -v /tmp/edge/certs:/etc/nginx/certs:ro \
             nginx:1.27-alpine sh -c '/docker-entrypoint.sh nginx -t'
+          docker run --rm \
+            --add-host api:127.0.0.1 --add-host web:127.0.0.1 --add-host website:127.0.0.1 \
+            -e SITE_DOMAIN=healindiaglobal.ai \
+            -e NGINX_ENVSUBST_FILTER='_DOMAIN$' \
+            -v "$PWD/infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
+            -v "$PWD/infra/nginx/snippets:/etc/nginx/snippets:ro" \
+            -v "$PWD/infra/nginx/templates:/etc/nginx/templates:ro" \
+            -v /tmp/edge/certs:/etc/nginx/certs:ro \
+            -v /tmp/edge/extra:/etc/nginx/extra.d:ro \
+            nginx:1.27-alpine sh -c '/docker-entrypoint.sh nginx -t'
+
+  # -----------------------------------------------------------------------------------------------------
+  # The AWS starter runs on Graviton: make sure every image also builds for linux/arm64 (QEMU emulation).
+  docker-arm64:
+    name: Docker images linux/arm64 (${{ matrix.image }}, build only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [docker]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: api
+            context: backend
+            file: backend/Dockerfile
+          - image: web
+            context: web
+            file: web/Dockerfile
+          - image: website
+            context: website
+            file: infra/website/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.image }} for linux/arm64
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          platforms: linux/arm64
+          push: false
+          load: false
+          tags: healindia/${{ matrix.image }}:ci-arm64-${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.image }}-arm64
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}-arm64

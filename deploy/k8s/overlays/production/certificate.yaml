@@ -10,11 +10,11 @@ spec:
     kind: ClusterIssuer
     name: letsencrypt-prod
   dnsNames:
-    - healindia.example
-    - agent.healindia.example
-    - hospital.healindia.example
-    - admin.healindia.example
-    - api.healindia.example
+    - healindiaglobal.ai
+    - agent.healindiaglobal.ai
+    - hospital.healindiaglobal.ai
+    - ops.healindiaglobal.ai
+    - api.healindiaglobal.ai
   privateKey:
     algorithm: ECDSA
     size: 256

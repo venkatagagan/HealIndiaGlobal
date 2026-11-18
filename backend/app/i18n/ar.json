@@ -487,5 +487,8 @@
     "unknown_locale": "هذه اللغة غير متاحة.",
     "unknown_translation_key": "مفتاح الترجمة هذا غير موجود.",
     "default_language_required": "الإنجليزية هي اللغة الافتراضية ولا يمكن إيقافها."
+  },
+  "sms": {
+    "verification_code": "رمز {app_name} الخاص بك هو {code}. تنتهي صلاحيته خلال {minutes} دقائق. لا تشاركه مع أحد."
   }
 }

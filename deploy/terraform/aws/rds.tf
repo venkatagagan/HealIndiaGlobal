@@ -137,10 +137,11 @@ resource "aws_db_instance" "postgres" {
   multi_az               = var.rds_multi_az
   network_type           = "IPV4"
 
-  # Backups / PITR. Windows in UTC: backups 01:00-02:00 IST, maintenance Monday 02:30-03:30 IST.
+  # Backups / PITR. Windows in UTC: backups 05:00-06:00 (01:00-02:00 US Eastern, 10:30 IST), maintenance
+  # Sunday 06:30-07:30 UTC.
   backup_retention_period  = var.rds_backup_retention_days
-  backup_window            = "19:30-20:30"
-  maintenance_window       = "sun:21:00-sun:22:00"
+  backup_window            = "05:00-06:00"
+  maintenance_window       = "sun:06:30-sun:07:30"
   copy_tags_to_snapshot    = true
   delete_automated_backups = false
 

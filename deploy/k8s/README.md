@@ -1,7 +1,7 @@
 # Heal India Global on Kubernetes (alternative to ECS)
 
-Kustomize base + overlays for running the same images on any conformant cluster (EKS in `ap-south-1`
-recommended, so data stays in India). Managed PostgreSQL 17 (RDS), Redis 7 with TLS (ElastiCache) and the S3
+Kustomize base + overlays for running the same images on any conformant cluster (EKS in `us-east-2`
+recommended: the privacy documents state US hosting, us-east-2 with backups in us-west-2). Managed PostgreSQL 17 (RDS), Redis 7 with TLS (ElastiCache) and the S3
 documents bucket are expected outside the cluster - the Terraform in `deploy/terraform/aws` can provide them,
 or use any equivalent.
 
@@ -47,7 +47,7 @@ k8s/
 
 ## Configure
 
-1. Replace `healindia.example`, `123456789012` and the VPC CIDRs in `overlays/<env>/` (config.env,
+1. Replace `healindiaglobal.ai` (the production domain; staging uses `staging.healindiaglobal.ai`), `123456789012` and the VPC CIDRs in `overlays/<env>/` (config.env,
    ingress.yaml, certificate.yaml, kustomization.yaml patches).
 2. Create the IAM roles referenced by the ServiceAccount annotations with the same policy as the ECS task
    roles (`deploy/terraform/aws/iam.tf`, `task_app`: documents bucket + documents KMS key via S3), trusted by
@@ -66,7 +66,7 @@ migration (namespace, ConfigMap, `hig-migrate` ServiceAccount, the Job) carry `h
 
 ```bash
 ENV=production NS=hig-production TAG=$(git rev-parse --short=12 HEAD)
-REG=123456789012.dkr.ecr.ap-south-1.amazonaws.com
+REG=123456789012.dkr.ecr.us-east-2.amazonaws.com
 
 # 0) pin the release (CI does this in a throw-away checkout)
 (cd deploy/k8s/overlays/$ENV && \

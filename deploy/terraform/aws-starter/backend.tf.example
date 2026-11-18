@@ -1,0 +1,22 @@
+# Remote state (recommended once the account exists): S3 bucket (versioned, KMS) + DynamoDB lock table,
+# created once by ../aws/bootstrap (set its aws_region = "us-east-2"):
+#
+#   cd ../aws/bootstrap && terraform init && terraform apply -var aws_region=us-east-2
+#   cd ../../aws-starter
+#   cp backend.tf.example backend.tf          # then fill in the values from the bootstrap outputs
+#   terraform init -migrate-state
+#
+# The state holds no application secrets (RDS manages its own password; app secrets are created on the box),
+# but it does hold resource ids and the runtime configuration: keep the bucket private.
+#
+# terraform {
+#   backend "s3" {
+#     bucket         = "hig-terraform-state-123456789012"
+#     key            = "heal-india-global/aws-starter/production.tfstate"
+#     region         = "us-east-2"
+#     encrypt        = true
+#     kms_key_id     = "arn:aws:kms:us-east-2:123456789012:key/00000000-0000-0000-0000-000000000000"
+#     dynamodb_table = "hig-terraform-locks"
+#     # Terraform >= 1.10 can lock with the bucket itself instead:  use_lockfile = true
+#   }
+# }

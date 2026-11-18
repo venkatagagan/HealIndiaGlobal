@@ -55,7 +55,8 @@ elif [[ -x "$BACKEND/.venv/bin/python" ]]; then
 else
   echo "backend/.venv not found. Create it with:" >&2
   echo "  /c/NewProjects/python313/python.exe -m venv backend/.venv" >&2
-  echo "  backend/.venv/Scripts/python -m pip install -e \"backend[dev]\"" >&2
+  echo "  backend/.venv/Scripts/python -m pip install -r backend/requirements-dev.lock.txt" >&2
+  echo "  backend/.venv/Scripts/python -m pip install --no-deps -e backend" >&2
   exit 1
 fi
 [[ -f "$BACKEND/.env" ]] || { echo "backend/.env not found (see README Quickstart)" >&2; exit 1; }

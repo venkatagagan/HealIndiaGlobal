@@ -19,8 +19,8 @@ provider "aws" {
   }
 }
 
-# Disaster-recovery region. The default (ap-south-2, Hyderabad) keeps backup copies inside India.
-# ap-south-2 is an opt-in region: enable it for the account before setting enable_dr = true.
+# Disaster-recovery region. The default (us-west-2, Oregon) keeps the backup copies in the United States, like
+# the primary data (see docs/legal: data is hosted in the US). us-west-2 needs no region opt-in.
 # Credential/account checks are skipped so that plans work even when DR is disabled and the region is not
 # enabled; the account id is always taken from the primary provider.
 provider "aws" {
