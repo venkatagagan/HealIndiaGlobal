@@ -51,6 +51,8 @@ from app.modules.payments.schemas import (
     PaymentOrderOut,
     RefundCreate,
     RefundOut,
+    RefundPayoutConfirmIn,
+    RefundPayoutIn,
     RefundRejectIn,
     RefundStatusCounts,
     VerifyIn,
@@ -374,6 +376,32 @@ async def reject_refund(
     refund_id: uuid.UUID, body: RefundRejectIn, request: Request, db: DbSession, user: FinanceUser
 ) -> RefundOut:
     return RefundOut.model_validate(await service.reject_refund(db, user, refund_id, body.reason, request))
+
+
+# SEC-010: manual (bank transfer) refunds wait in ``awaiting_payout``; one finance user records the payout,
+# a different one confirms it (only then ``processed``: ledger posting and ``refund.processed``).
+@router.post("/payments/refunds/{refund_id}/payout", response_model=RefundOut)
+async def record_refund_payout(
+    refund_id: uuid.UUID, body: RefundPayoutIn, request: Request, db: DbSession, user: FinanceUser
+) -> RefundOut:
+    refund = await service.record_refund_payout(db, user, refund_id, body, request)
+    return (await listing.enrich_refunds(db, [refund]))[0]
+
+
+@router.post("/payments/refunds/{refund_id}/payout/confirm", response_model=RefundOut)
+async def confirm_refund_payout(
+    refund_id: uuid.UUID, body: RefundPayoutConfirmIn, request: Request, db: DbSession, user: FinanceUser
+) -> RefundOut:
+    refund = await service.confirm_refund_payout(db, user, refund_id, body, request)
+    return (await listing.enrich_refunds(db, [refund]))[0]
+
+
+@router.post("/payments/refunds/{refund_id}/payout/reject", response_model=RefundOut)
+async def reject_refund_payout(
+    refund_id: uuid.UUID, body: RefundRejectIn, request: Request, db: DbSession, user: FinanceUser
+) -> RefundOut:
+    refund = await service.reject_refund_payout(db, user, refund_id, body.reason, request)
+    return (await listing.enrich_refunds(db, [refund]))[0]
 
 
 # ----------------------------------------------------------------------------------------------- invoices

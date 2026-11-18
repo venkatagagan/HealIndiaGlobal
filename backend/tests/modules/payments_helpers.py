@@ -127,7 +127,7 @@ class EventRecorder:
 def recorder_fixture() -> Iterator[EventRecorder]:
     """Test subscriber for the payments events; removed again after the test."""
     rec = EventRecorder()
-    names = ("payment.captured", "payment.failed", "refund.processed")
+    names = ("payment.captured", "payment.failed", "refund.processed", "refund.requested")
     handlers = []
     for name in names:
 

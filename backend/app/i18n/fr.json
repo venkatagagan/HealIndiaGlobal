@@ -448,6 +448,28 @@
       "published_body": "Merci. Votre avis sur {hospital} est maintenant publié.",
       "hidden_title": "Votre avis n'a pas été publié",
       "hidden_body": "Votre avis sur {hospital} n'a pas été publié car il ne respecte pas nos règles relatives aux avis."
+    },
+    "refund_requested": {
+      "title": "Remboursement demandé",
+      "body": "Un remboursement de {amount} a été demandé.",
+      "body_booking": "Un remboursement de {amount} pour la réservation {booking_number} a été demandé.",
+      "next": "Nous vous préviendrons dès qu'il aura été traité."
+    },
+    "refund_approval_needed": {
+      "title": "Remboursement en attente d'approbation",
+      "body": "Un remboursement de {amount} pour la commande {order_number} doit être approuvé par la finance."
+    },
+    "refund_awaiting_payout": {
+      "title": "Remboursement bancaire à verser",
+      "body": "Le remboursement approuvé de {amount} pour la commande {order_number} doit être versé par virement. Enregistrez la référence du virement une fois envoyé."
+    },
+    "refund_payout_recorded": {
+      "title": "Versement de remboursement à confirmer",
+      "body": "Un versement bancaire de {amount} pour la commande {order_number} a été enregistré. Un second membre de la finance doit le vérifier et le confirmer."
+    },
+    "aftercare_checkin_due": {
+      "title": "Suivi de convalescence à remplir",
+      "body": "Votre suivi de convalescence du jour {day} pour le dossier {case_number} est prêt. Il prend environ une minute et aide votre équipe soignante à suivre votre rétablissement."
     }
   },
   "errors": {

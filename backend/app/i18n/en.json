@@ -448,6 +448,28 @@
       "published_body": "Thank you. Your review of {hospital} is now published.",
       "hidden_title": "Your review was not published",
       "hidden_body": "Your review of {hospital} was not published because it does not meet our review guidelines."
+    },
+    "refund_requested": {
+      "title": "Refund requested",
+      "body": "A refund of {amount} has been requested.",
+      "body_booking": "A refund of {amount} for booking {booking_number} has been requested.",
+      "next": "We will let you know as soon as it has been processed."
+    },
+    "refund_approval_needed": {
+      "title": "Refund awaiting approval",
+      "body": "A refund of {amount} for order {order_number} needs a finance approval."
+    },
+    "refund_awaiting_payout": {
+      "title": "Bank refund to pay out",
+      "body": "The approved refund of {amount} for order {order_number} must be paid by bank transfer. Record the payout reference once it has been sent."
+    },
+    "refund_payout_recorded": {
+      "title": "Refund payout to confirm",
+      "body": "A bank payout of {amount} for order {order_number} was recorded. A second finance user must check and confirm it."
+    },
+    "aftercare_checkin_due": {
+      "title": "Recovery check-in due",
+      "body": "Your day {day} recovery check-in for case {case_number} is ready. It takes about a minute and helps your care team follow your recovery."
     }
   },
   "errors": {

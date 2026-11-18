@@ -269,6 +269,9 @@ RECORDED_EVENTS = (
     "visa.invitation_issued",
     "intro_consultation.requested",
     "intro_consultation.scheduled",
+    # gap fixes
+    "refund.requested",
+    "aftercare.checkin_due",
 )
 
 

@@ -720,6 +720,65 @@ async def on_refund_processed(db: AsyncSession, payload: dict[str, Any]) -> None
         await _push_booking_updated(db, booking, case)
 
 
+@subscribe("refund.requested")
+async def on_refund_requested(db: AsyncSession, payload: dict[str, Any]) -> None:
+    """Patient (+ payer + agent): a refund is on its way; finance: a refund waits for approval."""
+    refund_id = _uuid(payload, "refund_id")
+    refund = await db.get(Refund, refund_id) if refund_id else None
+    if refund is None:
+        return
+    order = await db.get(PaymentOrder, refund.order_id)
+    booking = await db.get(Booking, refund.booking_id) if refund.booking_id else None
+    case = await db.get(Case, booking.case_id) if booking else None
+    recipients: list[uuid.UUID] = []
+    if order is not None:
+        recipients.append(order.payer_user_id)
+        pu = await policies.patient_user_id(db, order.patient_id)
+        if pu:
+            recipients.append(pu)
+    if case is not None:
+        recipients += await _patient_side(db, case)
+    params = {
+        "amount": _money(refund.amount_minor, refund.currency),
+        "booking_number": booking.booking_number if booking is not None else "",
+        "order_number": order.order_number if order is not None else "",
+    }
+    data = {
+        "refund_id": str(refund.id),
+        "booking_id": str(refund.booking_id) if refund.booking_id else None,
+        "amount_minor": refund.amount_minor,
+        "currency": refund.currency,
+    }
+    await notify_many(
+        db,
+        recipients,
+        "refund.requested",
+        title_key="notifications.refund_requested.title",
+        body_key=[
+            "notifications.refund_requested.body_booking"
+            if booking is not None
+            else "notifications.refund_requested.body",
+            "notifications.refund_requested.next",
+        ],
+        params=params,
+        data={**data, "link": f"/bookings/{refund.booking_id}" if refund.booking_id else "/payments"},
+        dedupe_key=f"refund.requested:{refund.id}",
+    )
+    if _status(refund.status) == "requested":
+        from app.modules.admin.service import _finance_user_ids
+
+        await notify_many(
+            db,
+            await _finance_user_ids(db, exclude=refund.requested_by),
+            "refund.approval_needed",
+            title_key="notifications.refund_approval_needed.title",
+            body_key="notifications.refund_approval_needed.body",
+            params=params,
+            data={**data, "link": "/finance/refunds?status=requested"},
+            dedupe_key=f"refund.approval_needed:{refund.id}",
+        )
+
+
 async def _payee_user_ids(db: AsyncSession, payee_type: str, payee_id: uuid.UUID) -> list[uuid.UUID]:
     if payee_type == PayeeType.HOSPITAL.value:
         return await policies.hospital_member_user_ids(db, payee_id, FINANCE_MEMBER_ROLES)
