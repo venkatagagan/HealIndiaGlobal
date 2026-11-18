@@ -1,0 +1,149 @@
+# Heal India Global - AWS starter override (deploy/terraform/aws-starter + deploy/starter).
+#
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.aws.yml --env-file /opt/hig/.env up -d
+#
+# Run by deploy/starter/deploy.sh on the EC2 box, never by hand on a laptop. Differences from the base stack:
+#   * PostgreSQL is Amazon RDS (TLS required): the local `postgres` service is parked in the `local-db` profile
+#     and api/worker/migrate connect to DB_HOST. Least-privilege roles as in compose: migrate = migrator role,
+#     api/worker = DML-only app role (created on RDS by deploy/starter/db-bootstrap.sh).
+#   * Documents in S3 (SSE-KMS), e-mail through the SES API, SMS codes through SNS - all with the instance role
+#     (IMDSv2, hop limit 2), no static AWS keys.
+#   * Images come from ECR (linux/arm64) and are never built on the box.
+#   * TLS: Let's Encrypt (certbot, HTTP-01 through the edge's /.well-known/acme-challenge/) into /opt/hig/certs;
+#     the staff console on its own host (infra/nginx/aws/*.conf.in, rendered into HIG_NGINX_EXTRA_DIR).
+#   * Production settings pinned (ENV, cookies, staff MFA, storage) and memory limits for an 8 GiB t4g.large.
+#   * Client IP: the box is reached directly on its Elastic IP (no CloudFront / load balancer), so the edge is the
+#     only trusted proxy (TRUSTED_PROXIES / FORWARDED_ALLOW_IPS from the base file) and
+#     TRUST_CLOUDFRONT_VIEWER_ADDRESS stays false. If CloudFront is added later, see deploy/README.md.
+# Requires Docker Compose >= 2.24 (!reset); the box gets the pinned plugin from the bootstrap.
+
+x-aws-env: &aws-env
+  # Pinned production settings (also checked by the app at start-up).
+  ENV: production
+  COOKIE_SECURE: "true"
+  ADMIN_MFA_REQUIRED: "true"
+  REQUIRE_EMAIL_VERIFICATION: "true"
+  ENABLE_DOCS: "false"
+  TRUST_CLOUDFRONT_VIEWER_ADDRESS: "false"
+  DATABASE_SSLMODE: require
+  STORAGE_BACKEND: s3
+  S3_ENDPOINT_URL: ""
+  S3_ACCESS_KEY_ID: ""
+  S3_SECRET_ACCESS_KEY: ""
+  S3_SSE: aws:kms
+  EMAIL_BACKEND: ses
+  STT_PROVIDER: local_whisper
+  VOICE_RETAIN_AUDIO: "false"
+  WHISPER_MODEL_DIR: /app/.models/whisper
+  HF_HOME: /app/.models/huggingface   # the app user cannot write its home directory
+  AWS_REGION: ${AWS_REGION:?set AWS_REGION}
+  AWS_DEFAULT_REGION: ${AWS_REGION:?set AWS_REGION}
+  STAFF_CONSOLE_ORIGIN: ${STAFF_CONSOLE_ORIGIN:?set STAFF_CONSOLE_ORIGIN (https://ops.<domain>)}
+
+services:
+  # RDS replaces the local database: never started here (no service depends on it any more).
+  postgres:
+    profiles: [local-db]
+
+  migrate:
+    environment:
+      <<: *aws-env
+      DATABASE_URL: postgresql+asyncpg://${MIGRATOR_DB_USER:-healindia_migrator}:${MIGRATOR_DB_PASSWORD:?set MIGRATOR_DB_PASSWORD}@${DB_HOST:?set DB_HOST (RDS endpoint)}:${DB_PORT:-5432}/${POSTGRES_DB:-healindia}
+    depends_on: !reset {}
+    networks: !override [app]
+    mem_limit: 768m
+
+  api:
+    build: !reset null
+    environment:
+      <<: *aws-env
+      DATABASE_URL: postgresql+asyncpg://${APP_DB_USER:-healindia_app}:${APP_DB_PASSWORD:?set APP_DB_PASSWORD}@${DB_HOST:?set DB_HOST (RDS endpoint)}:${DB_PORT:-5432}/${POSTGRES_DB:-healindia}
+    mem_limit: 2g
+    memswap_limit: 3g
+
+  worker:
+    environment:
+      <<: *aws-env
+      DATABASE_URL: postgresql+asyncpg://${APP_DB_USER:-healindia_app}:${APP_DB_PASSWORD:?set APP_DB_PASSWORD}@${DB_HOST:?set DB_HOST (RDS endpoint)}:${DB_PORT:-5432}/${POSTGRES_DB:-healindia}
+    command: ["python", "-m", "app.worker", "--concurrency", "${WORKER_CONCURRENCY:-2}"]
+    volumes:
+      - storage:/app/storage
+      # Whisper model cache (downloaded on the first voice note; survives deploys).
+      - whisper-models:/app/.models
+    # Whisper small (int8) needs ~1 GiB while transcribing; swap absorbs bursts.
+    mem_limit: 3g
+    memswap_limit: 5g
+
+  web:
+    build: !reset null
+    mem_limit: 128m
+
+  website:
+    build: !reset null
+    mem_limit: 768m
+
+  redis:
+    mem_limit: 512m
+
+  certs-init:
+    volumes: !override
+      - ${HIG_CERTS_DIR:-/opt/hig/certs}:/certs
+
+  edge:
+    volumes: !override
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ${HIG_CERTS_DIR:-/opt/hig/certs}:/etc/nginx/certs:ro
+      - ${HIG_NGINX_EXTRA_DIR:-/opt/hig/nginx-extra}:/etc/nginx/extra.d:ro
+      - certbot-webroot:/var/www/certbot:ro
+      - edge-cache:/var/cache/nginx
+    mem_limit: 256m
+
+  # Let's Encrypt (HTTP-01 via the edge's webroot). One-off: deploy/starter/certs.sh runs
+  #   docker compose ... --profile certbot run --rm certbot
+  # It issues a certificate for SITE_DOMAIN + STAFF_HOST when none exists (or the names changed), otherwise
+  # renews when due, and copies fullchain/privkey into HIG_CERTS_DIR; certs.sh then reloads the edge.
+  certbot:
+    image: ${CERTBOT_IMAGE:-certbot/certbot:v5.9.0}
+    profiles: [certbot]
+    restart: "no"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN}
+      STAFF_HOST: ${STAFF_HOST:?set STAFF_HOST}
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL:?set CERTBOT_EMAIL}
+      CERTBOT_STAGING: ${CERTBOT_STAGING:-false}
+    volumes:
+      - certbot-webroot:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+      - ${HIG_CERTS_DIR:-/opt/hig/certs}:/certs
+    networks: [app]
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        live="/etc/letsencrypt/live/$$SITE_DOMAIN"
+        staging=""
+        [ "$$CERTBOT_STAGING" = "true" ] && staging="--staging"
+        wanted="$$SITE_DOMAIN $$STAFF_HOST"
+        have=""
+        [ -f "$$live/cert.pem" ] && have="$$(cat "$$live/.hig-names" 2>/dev/null || true)"
+        if [ ! -f "$$live/fullchain.pem" ] || [ "$$have" != "$$wanted" ]; then
+          certbot certonly --webroot -w /var/www/certbot --non-interactive --agree-tos \
+            --email "$$CERTBOT_EMAIL" --no-eff-email --key-type ecdsa $$staging \
+            --cert-name "$$SITE_DOMAIN" --expand -d "$$SITE_DOMAIN" -d "$$STAFF_HOST"
+          echo "$$wanted" > "$$live/.hig-names"
+        else
+          certbot renew --non-interactive --webroot -w /var/www/certbot
+        fi
+        cp -L "$$live/fullchain.pem" /certs/fullchain.pem.new
+        cp -L "$$live/privkey.pem" /certs/privkey.pem.new
+        chmod 600 /certs/privkey.pem.new
+        mv /certs/fullchain.pem.new /certs/fullchain.pem
+        mv /certs/privkey.pem.new /certs/privkey.pem
+        echo "certificate for $$wanted installed"
+
+volumes:
+  whisper-models:
+  letsencrypt:

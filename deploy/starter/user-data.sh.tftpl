@@ -1,0 +1,150 @@
+#!/bin/bash
+# Heal India Global - first-boot bootstrap of the starter box (Amazon Linux 2023, ARM64).
+# Rendered by deploy/terraform/aws-starter/ec2.tf (Terraform templatefile: $${...} are Terraform values) and run
+# once by cloud-init as root. It prepares the host only; the application arrives with the first deploy
+# (/usr/local/bin/hig-deploy <tag>, started by the GitHub workflow through SSM Run Command).
+#
+#   Docker + Compose plugin (checksum-verified), swap, CloudWatch agent, /opt/hig, log rotation,
+#   automatic security updates, the certificate renewal timer and the hig-deploy wrapper.
+set -euo pipefail
+exec > >(tee -a /var/log/hig-bootstrap.log) 2>&1
+echo "[bootstrap] start $(date -u +%FT%TZ)"
+
+REGION='${region}'
+NAME='${name}'
+CONFIG_PARAMETER='${config_parameter}'
+COMPOSE_VERSION='${compose_version}'
+COMPOSE_SHA256='${compose_sha256}'
+SWAP_GB='${swap_gb}'
+
+# ---- packages -------------------------------------------------------------------------------------
+dnf -y install docker amazon-cloudwatch-agent jq dnf-automatic
+# awscli v2 ships with AL2023; make sure it is there.
+command -v aws >/dev/null || dnf -y install awscli-2
+
+# ---- Docker Compose plugin (aarch64), verified against the pinned SHA-256 -----------------------
+install -d -m 0755 /usr/local/lib/docker/cli-plugins
+tmp="$(mktemp)"
+curl -fsSL --retry 5 -o "$tmp" \
+  "https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-linux-aarch64"
+echo "$COMPOSE_SHA256  $tmp" | sha256sum -c -
+install -m 0755 "$tmp" /usr/local/lib/docker/cli-plugins/docker-compose
+rm -f "$tmp"
+
+# ---- Docker daemon: rotated json logs, live restore ---------------------------------------------
+install -d -m 0755 /etc/docker
+cat > /etc/docker/daemon.json <<'JSON'
+{
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "20m", "max-file": "5" },
+  "live-restore": true
+}
+JSON
+systemctl enable --now docker
+docker compose version
+
+# ---- swap (headroom for Whisper) and kernel settings --------------------------------------------
+if [ ! -f /swapfile ]; then
+  dd if=/dev/zero of=/swapfile bs=1M count=$((SWAP_GB * 1024)) status=none
+  chmod 600 /swapfile
+  mkswap /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+swapon -a
+cat > /etc/sysctl.d/90-hig.conf <<'SYSCTL'
+vm.swappiness = 10
+# Redis background saves (fork) need overcommit.
+vm.overcommit_memory = 1
+SYSCTL
+sysctl --system >/dev/null
+
+# ---- automatic security updates (no automatic reboot; reboot in a maintenance window) -----------
+sed -i -e 's/^upgrade_type.*/upgrade_type = security/' -e 's/^apply_updates.*/apply_updates = yes/' \
+  /etc/dnf/automatic.conf
+systemctl enable --now dnf-automatic.timer
+
+# ---- directories and host configuration ---------------------------------------------------------
+install -d -m 0700 /opt/hig /opt/hig/state
+install -d -m 0755 /opt/hig/releases /opt/hig/certs
+install -d -m 0755 /etc/hig
+cat > /etc/hig/hig.env <<ENV
+HIG_REGION=$REGION
+HIG_NAME=$NAME
+HIG_CONFIG_PARAMETER=$CONFIG_PARAMETER
+ENV
+chmod 0644 /etc/hig/hig.env
+
+# ---- hig-deploy: fetch the deploy bundle of a tag from S3 and run its deploy.sh ------------------
+cat > /usr/local/bin/hig-deploy <<'WRAPPER'
+#!/bin/bash
+# Usage: hig-deploy <image tag>   (called by the SSM document <name>-deploy; also usable by hand as root)
+set -euo pipefail
+TAG="$1"
+case "$TAG" in
+  ''|*[!A-Za-z0-9_.-]*) echo "invalid image tag" >&2; exit 2 ;;
+esac
+# shellcheck disable=SC1091
+. /etc/hig/hig.env
+export AWS_REGION="$HIG_REGION" AWS_DEFAULT_REGION="$HIG_REGION"
+# SSM shows the command output; keep a copy in the deploy log (shipped to CloudWatch).
+exec > >(tee -a /var/log/hig-deploy.log) 2>&1 < /dev/null
+echo "==== hig-deploy $TAG $(date -u +%FT%TZ)"
+bucket="$(aws ssm get-parameter --name "$HIG_CONFIG_PARAMETER" --query Parameter.Value --output text \
+  | jq -r .artifacts_bucket)"
+release="/opt/hig/releases/$TAG"
+if [ ! -f "$release/.complete" ]; then
+  rm -rf "$release.tmp" && mkdir -p "$release.tmp"
+  aws s3 cp --only-show-errors "s3://$bucket/bundles/$TAG.tar.gz" "$release.tmp/bundle.tar.gz"
+  tar -xzf "$release.tmp/bundle.tar.gz" -C "$release.tmp" && rm -f "$release.tmp/bundle.tar.gz"
+  rm -rf "$release" && mv "$release.tmp" "$release" && touch "$release/.complete"
+fi
+exec bash "$release/deploy/starter/deploy.sh" "$TAG"
+WRAPPER
+chmod 0750 /usr/local/bin/hig-deploy
+
+# ---- certificate renewal twice a day (deploy/starter/certs.sh of the current release) -------------
+cat > /etc/systemd/system/hig-certs.service <<'UNIT'
+[Unit]
+Description=Heal India Global - renew the Let's Encrypt certificate and reload the edge
+After=docker.service
+ConditionPathExists=/opt/hig/current/deploy/starter/certs.sh
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /opt/hig/current/deploy/starter/certs.sh
+UNIT
+cat > /etc/systemd/system/hig-certs.timer <<'UNIT'
+[Unit]
+Description=Heal India Global - certificate renewal
+
+[Timer]
+OnCalendar=*-*-* 03,15:17:00
+RandomizedDelaySec=1800
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+UNIT
+systemctl daemon-reload
+systemctl enable --now hig-certs.timer
+
+# ---- log rotation of the bootstrap / deploy logs ------------------------------------------------
+cat > /etc/logrotate.d/hig <<'ROTATE'
+/var/log/hig-deploy.log /var/log/hig-bootstrap.log {
+    weekly
+    rotate 8
+    compress
+    missingok
+    notifempty
+    copytruncate
+}
+ROTATE
+
+# ---- CloudWatch agent (memory / disk / swap metrics, deploy + container logs) ----------------------
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'CWAGENT'
+${cloudwatch_agent_config}
+CWAGENT
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+
+echo "[bootstrap] done $(date -u +%FT%TZ) - waiting for the first deploy (hig-deploy <tag>)"

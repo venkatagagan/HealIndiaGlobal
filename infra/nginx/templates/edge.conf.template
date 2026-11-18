@@ -38,6 +38,9 @@ server {
     include /etc/nginx/snippets/ssl.conf;
     # Relative Location headers (e.g. /gahi -> /gahi/) stay correct when HTTPS_PORT is not 443.
     absolute_redirect off;
+    # Optional deployment-specific locations of the main server (e.g. infra/nginx/aws/main-*.conf: redirect the
+    # staff console to its own host). Regex locations there win over the prefix locations below.
+    include /etc/nginx/extra.d/main-*.conf;
     include /etc/nginx/snippets/app-locations.conf;
 }
 
