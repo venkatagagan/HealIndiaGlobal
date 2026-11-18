@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -6,6 +6,7 @@ import { Check, CheckCircle2, Circle, Send } from 'lucide-react';
 import { errorMessage, financeApi, hospitalPortalApi, type HospitalProfileOut } from '@hig/shared/api';
 import { Button, Card, CardBody, CardHeader, ErrorState, PageHeader, PageLoader, StatusBadge, Tabs } from '../../components/ui';
 import { useHospital } from '../../auth/HospitalProvider';
+import { useAppTranslation } from '../../i18n';
 import { cn } from '../../lib/format';
 import { qk, useHospitalProfile } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -18,19 +19,35 @@ import { SpecialtiesStep } from './SpecialtiesStep';
 
 type StepKey = 'profile' | 'services' | 'specialties' | 'kyc' | 'payout' | 'review';
 
-const STEPS: { key: StepKey; label: string; description: string }[] = [
-  { key: 'profile', label: 'Profile & contact', description: 'Basic details, address and contact for international patients' },
-  { key: 'services', label: 'Accreditations', description: 'Accreditations, languages and international desk' },
-  { key: 'specialties', label: 'Specialties', description: 'Departments that accept international patients' },
-  { key: 'kyc', label: 'KYC documents', description: 'Registration, accreditation, PAN and GST certificates' },
-  { key: 'payout', label: 'Payout account', description: 'Bank account for settlements' },
-  { key: 'review', label: 'Review & submit', description: 'Check everything and submit for approval' },
-];
+type T = ReturnType<typeof useAppTranslation>['t'];
+interface Step {
+  key: StepKey;
+  label: string;
+  description: string;
+}
+
+/** Wizard steps (labels in the UI language); build inside a component, never at import time. */
+function buildSteps(t: T): Step[] {
+  return [
+    { key: 'profile', label: t('onboarding.steps.profile.label'), description: t('onboarding.steps.profile.description') },
+    { key: 'services', label: t('onboarding.steps.services.label'), description: t('onboarding.steps.services.description') },
+    { key: 'specialties', label: t('onboarding.steps.specialties.label'), description: t('onboarding.steps.specialties.description') },
+    { key: 'kyc', label: t('onboarding.steps.kyc.label'), description: t('onboarding.steps.kyc.description') },
+    { key: 'payout', label: t('onboarding.steps.payout.label'), description: t('onboarding.steps.payout.description') },
+    { key: 'review', label: t('onboarding.steps.review.label'), description: t('onboarding.steps.review.description') },
+  ];
+}
+
+function useSteps(): Step[] {
+  const { t } = useAppTranslation();
+  return useMemo(() => buildSteps(t), [t]);
+}
 
 function Stepper({ current, onSelect, done }: { current: number; onSelect: (i: number) => void; done: boolean[] }) {
+  const steps = useSteps();
   return (
     <ol className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:gap-1 lg:overflow-visible">
-      {STEPS.map((step, i) => {
+      {steps.map((step, i) => {
         const active = i === current;
         return (
           <li key={step.key} className="shrink-0">
@@ -39,7 +56,7 @@ function Stepper({ current, onSelect, done }: { current: number; onSelect: (i: n
               onClick={() => onSelect(i)}
               aria-current={active ? 'step' : undefined}
               className={cn(
-                'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-start text-sm transition-colors',
                 active
                   ? 'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-500/15 dark:text-brand-300'
                   : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-raised-dark',
@@ -82,13 +99,15 @@ function useCompleteness(profile: HospitalProfileOut | undefined) {
 }
 
 function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: boolean[] }) {
+  const { t } = useAppTranslation();
+  const steps = useSteps();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const submit = useMutation({
     mutationFn: hospitalPortalApi.submitForReview,
     onSuccess: (updated) => {
       queryClient.setQueryData(qk.profile, updated);
-      toast.success('Submitted for review. We will notify you once your hospital is approved.');
+      toast.success(t('onboarding.review.submitted'));
       navigate('/');
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -99,7 +118,7 @@ function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: 
   return (
     <div className="space-y-6">
       <ul className="space-y-2">
-        {STEPS.slice(0, 5).map((step, i) => (
+        {steps.slice(0, 5).map((step, i) => (
           <li key={step.key} className="flex items-center gap-3 text-sm">
             {checks[i] ? (
               <CheckCircle2 className="h-5 w-5 text-brand-500" aria-hidden />
@@ -107,21 +126,17 @@ function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: 
               <Circle className="h-5 w-5 text-slate-300 dark:text-slate-600" aria-hidden />
             )}
             <span className={checks[i] ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500'}>
-              {step.label}
-              {!checks[i] && ' - incomplete'}
+              {checks[i] ? step.label : t('onboarding.review.incomplete', { step: step.label })}
             </span>
           </li>
         ))}
       </ul>
       {profile.status === 'rejected' && profile.rejection_reason && (
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-500/10 dark:text-red-300">
-          Previous review feedback: {profile.rejection_reason}
+          {t('onboarding.review.previousFeedback', { reason: profile.rejection_reason })}
         </p>
       )}
-      <p className="text-sm text-slate-500 dark:text-slate-400">
-        By submitting you confirm the information and documents are accurate. Our team usually reviews new hospitals
-        within 2–3 business days.
-      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{t('onboarding.review.confirmation')}</p>
       {canSubmit ? (
         <Button
           size="lg"
@@ -130,11 +145,11 @@ function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: 
           icon={<Send className="h-4 w-4" aria-hidden />}
           onClick={() => submit.mutate()}
         >
-          Submit for review
+          {t('onboarding.review.submit')}
         </Button>
       ) : (
         <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-          Current status: <StatusBadge status={profile.status} />
+          {t('onboarding.review.currentStatus')} <StatusBadge status={profile.status} />
         </p>
       )}
     </div>
@@ -146,7 +161,9 @@ function ReviewStep({ profile, checks }: { profile: HospitalProfileOut; checks: 
  * `mode="onboarding"` shows a stepper with "Save & continue"; `mode="profile"` shows tabs.
  */
 export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) {
-  useDocumentTitle(mode === 'onboarding' ? 'Onboarding' : 'Hospital profile');
+  const { t } = useAppTranslation();
+  const STEPS = useSteps();
+  useDocumentTitle(mode === 'onboarding' ? t('onboarding.page.onboardingTitle') : t('onboarding.page.profileTitle'));
   const profile = useHospitalProfile();
   const { canManage } = useHospital();
   const completeness = useCompleteness(profile.data);
@@ -174,7 +191,7 @@ export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) 
       return key === 'profile' ? (
         <ProfileStep profile={data} readOnly />
       ) : (
-        <p className="text-sm text-slate-500">Only hospital owners and admins can edit these settings.</p>
+        <p className="text-sm text-slate-500">{t('onboarding.page.readOnly')}</p>
       );
     }
     switch (key) {
@@ -192,7 +209,7 @@ export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) 
             <PayoutAccountSection />
             {guided && (
               <div className="flex justify-end">
-                <Button onClick={next}>Continue</Button>
+                <Button onClick={next}>{t('common.continue')}</Button>
               </div>
             )}
           </div>
@@ -208,16 +225,16 @@ export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) 
     return (
       <>
         <PageHeader
-          title="Hospital profile"
-          description="Keep your public profile, accreditations, KYC and payout details up to date."
+          title={t('onboarding.page.profileTitle')}
+          description={t('onboarding.page.profileDescription')}
           actions={<StatusBadge status={data.status} />}
         />
         <Card>
           <Tabs
             className="px-3"
-            tabs={tabs.map((t) => ({ value: t.key, label: t.label }))}
+            tabs={tabs.map((s) => ({ value: s.key, label: s.label }))}
             value={active.key}
-            onChange={(key) => setStep(tabs.findIndex((t) => t.key === key))}
+            onChange={(key) => setStep(tabs.findIndex((s) => s.key === key))}
           />
           <CardBody>{body(active.key, false)}</CardBody>
         </Card>
@@ -229,14 +246,14 @@ export function HospitalSetupPage({ mode }: { mode: 'onboarding' | 'profile' }) 
   return (
     <>
       <PageHeader
-        title="Set up your hospital"
-        description="Complete these steps to list your hospital on Heal India Global and receive international enquiries."
+        title={t('onboarding.page.setupTitle')}
+        description={t('onboarding.page.setupDescription')}
         actions={<StatusBadge status={data.status} />}
       />
       <div className="grid gap-6 lg:grid-cols-[15rem_1fr]">
         <Stepper current={step} onSelect={setStep} done={done} />
         <Card>
-          <CardHeader title={`${step + 1}. ${current.label}`} description={current.description} />
+          <CardHeader title={t('onboarding.page.stepTitle', { n: step + 1, label: current.label })} description={current.description} />
           <CardBody>{body(current.key, true)}</CardBody>
         </Card>
       </div>

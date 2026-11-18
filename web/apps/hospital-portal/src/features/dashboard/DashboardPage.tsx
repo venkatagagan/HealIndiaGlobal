@@ -13,8 +13,10 @@ import {
 } from 'recharts';
 import { Link } from 'react-router';
 import { hospitalPortalApi } from '@hig/shared/api';
+import { formatNumber } from '@hig/shared/lib';
 import { heroActionClass, PageHero } from '@hig/shared/layout';
 import { useHospital } from '../../auth/HospitalProvider';
+import { useAppTranslation } from '../../i18n';
 import {
   Card,
   CardBody,
@@ -54,7 +56,8 @@ function ChartTooltip({
 }
 
 export function DashboardPage() {
-  useDocumentTitle('Dashboard');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('dashboard.title'));
   const { current } = useHospital();
   const { isDark } = useTheme();
   const dashboard = useQuery({ queryKey: qk.dashboard, queryFn: hospitalPortalApi.dashboard });
@@ -65,7 +68,7 @@ export function DashboardPage() {
   if (dashboard.isError) {
     return (
       <>
-        <PageHeader title="Dashboard" />
+        <PageHeader title={t('dashboard.title')} />
         <Card>
           <ErrorState error={dashboard.error} onRetry={() => void dashboard.refetch()} />
         </Card>
@@ -84,18 +87,18 @@ export function DashboardPage() {
   return (
     <>
       <PageHero
-        eyebrow="Hospital portal"
-        title={`Welcome${current ? `, ${current.name}` : ''}`}
-        description="Your international patient pipeline at a glance."
+        eyebrow={t('dashboard.eyebrow')}
+        title={current ? t('dashboard.welcomeName', { name: current.name }) : t('dashboard.welcome')}
+        description={t('dashboard.description')}
         actions={
           <>
             <Link to="/cases?status=enquiry" className={heroActionClass('solid')}>
               <Inbox className="h-4 w-4" aria-hidden />
-              Open enquiries
+              {t('dashboard.openEnquiries')}
             </Link>
             <Link to="/bookings" className={heroActionClass('glass')}>
               <CalendarClock className="h-4 w-4" aria-hidden />
-              Upcoming admissions
+              {t('dashboard.upcomingAdmissions')}
             </Link>
           </>
         }
@@ -104,16 +107,16 @@ export function DashboardPage() {
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-5">
         {d ? (
           <>
-            <StatCard label="Open enquiries" value={d.enquiries_open} icon={<Inbox className="h-5 w-5" aria-hidden />} tone="blue" />
-            <StatCard label="Quotes awaiting patient" value={d.quotes_pending} icon={<FileText className="h-5 w-5" aria-hidden />} tone="violet" />
-            <StatCard label="Upcoming admissions" value={d.bookings_upcoming} icon={<CalendarClock className="h-5 w-5" aria-hidden />} tone="amber" />
-            <StatCard label="Patients in treatment" value={d.patients_in_treatment} icon={<BedDouble className="h-5 w-5" aria-hidden />} tone="red" />
+            <StatCard label={t('dashboard.openEnquiries')} value={d.enquiries_open} icon={<Inbox className="h-5 w-5" aria-hidden />} tone="blue" />
+            <StatCard label={t('dashboard.quotesPending')} value={d.quotes_pending} icon={<FileText className="h-5 w-5" aria-hidden />} tone="violet" />
+            <StatCard label={t('dashboard.upcomingAdmissions')} value={d.bookings_upcoming} icon={<CalendarClock className="h-5 w-5" aria-hidden />} tone="amber" />
+            <StatCard label={t('dashboard.inTreatment')} value={d.patients_in_treatment} icon={<BedDouble className="h-5 w-5" aria-hidden />} tone="red" />
             <StatCard
-              label="Revenue this month"
+              label={t('dashboard.revenueMonth')}
               value={formatMoney(d.revenue_month_minor, currency, { compact: d.revenue_month_minor >= 10_000_000 })}
               icon={<IndianRupee className="h-5 w-5" aria-hidden />}
               tone="green"
-              hint="Completed bookings, before commission"
+              hint={t('dashboard.revenueHint')}
             />
           </>
         ) : (
@@ -123,12 +126,12 @@ export function DashboardPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Revenue" description="Monthly booking revenue" />
+          <CardHeader title={t('dashboard.revenue.title')} description={t('dashboard.revenue.description')} />
           <CardBody className="h-72">
             {!d ? (
               <Skeleton className="h-full w-full" />
             ) : series.length === 0 ? (
-              <EmptyState icon={<Activity className="h-6 w-6" aria-hidden />} title="No revenue yet" />
+              <EmptyState icon={<Activity className="h-6 w-6" aria-hidden />} title={t('dashboard.revenue.empty')} />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -146,9 +149,7 @@ export function DashboardPage() {
                     tickLine={false}
                     axisLine={false}
                     width={64}
-                    tickFormatter={(v: number) =>
-                      new Intl.NumberFormat('en-IN', { notation: 'compact', maximumFractionDigits: 1 }).format(v)
-                    }
+                    tickFormatter={(v: number) => formatNumber(v, { notation: 'compact', maximumFractionDigits: 1 })}
                   />
                   <Tooltip
                     content={(props) => (
@@ -167,12 +168,12 @@ export function DashboardPage() {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader title="Bookings" description="Confirmed bookings per month" />
+          <CardHeader title={t('dashboard.bookings.title')} description={t('dashboard.bookings.description')} />
           <CardBody className="h-72">
             {!d ? (
               <Skeleton className="h-full w-full" />
             ) : series.length === 0 ? (
-              <EmptyState icon={<Activity className="h-6 w-6" aria-hidden />} title="No bookings yet" />
+              <EmptyState icon={<Activity className="h-6 w-6" aria-hidden />} title={t('dashboard.bookings.empty')} />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -186,7 +187,7 @@ export function DashboardPage() {
                         active={props.active}
                         payload={props.payload}
                         label={props.label}
-                        render={(v) => `${v} booking${v === 1 ? '' : 's'}`}
+                        render={(v) => t('dashboard.bookings.tooltip', { count: v, formatted: formatNumber(v) })}
                       />
                     )}
                   />
@@ -200,10 +201,10 @@ export function DashboardPage() {
 
       <Card className="mt-6">
         <CardHeader
-          title="Recent enquiries"
+          title={t('dashboard.recent.title')}
           actions={
             <LinkButton to="/cases" variant="outline" size="sm">
-              View all
+              {t('dashboard.recent.viewAll')}
             </LinkButton>
           }
         />
@@ -214,7 +215,7 @@ export function DashboardPage() {
             ))}
           </div>
         ) : d.recent_cases.length === 0 ? (
-          <EmptyState title="No enquiries yet" description="New patient enquiries will appear here as soon as they arrive." />
+          <EmptyState title={t('dashboard.recent.emptyTitle')} description={t('dashboard.recent.emptyDescription')} />
         ) : (
           <CasesTable cases={d.recent_cases} />
         )}

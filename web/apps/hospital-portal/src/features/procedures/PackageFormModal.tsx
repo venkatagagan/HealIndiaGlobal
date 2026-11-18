@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,36 +14,48 @@ import {
   type PackageOut,
 } from '@hig/shared/api';
 import { Button, Checkbox, FormField, Input, Modal, Select, Textarea } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { SUPPORTED_CURRENCIES, minorToInput, toMinor } from '../../lib/format';
 import { qk } from '../../lib/queries';
 
-const schema = z
-  .object({
-    name: z.string().trim().min(2, 'Enter a package name').max(150),
-    tier: z.enum(PACKAGE_TIERS),
-    currency: z.string().length(3),
-    price: z.string().trim().regex(/^\d{1,12}(\.\d{1,3})?$/, 'Enter a price'),
-    original_price: z.string().trim().regex(/^(\d{1,12}(\.\d{1,3})?)?$/, 'Enter an amount'),
-    description: z.string().trim().max(2000),
-    accommodation_nights: z.string().trim().regex(/^(\d{1,3})?$/, 'Whole nights'),
-    followup_teleconsults: z.string().trim().regex(/^(\d{1,2})?$/, 'Number of calls'),
-    airport_pickup: z.boolean(),
-    translator: z.boolean(),
-    meals: z.boolean(),
-    local_transport: z.boolean(),
-    is_active: z.boolean(),
-  })
-  .refine((v) => !v.original_price || Number(v.original_price) > Number(v.price), {
-    path: ['original_price'],
-    message: 'Original price must be higher than the package price',
-  });
-type FormValues = z.infer<typeof schema>;
+type T = ReturnType<typeof useAppTranslation>['t'];
 
-const TIER_HINTS: Record<string, string> = {
-  medical_only: 'Treatment only',
-  medical_stay: 'Treatment + accommodation',
-  all_inclusive: 'Treatment, stay, transfers, translator and meals',
-};
+function makeSchema(t: T) {
+  return z
+    .object({
+      name: z.string().trim().min(2, t('procedures.packageForm.errors.name')).max(150),
+      tier: z.enum(PACKAGE_TIERS),
+      currency: z.string().length(3),
+      price: z.string().trim().regex(/^\d{1,12}(\.\d{1,3})?$/, t('procedures.packageForm.errors.price')),
+      original_price: z.string().trim().regex(/^(\d{1,12}(\.\d{1,3})?)?$/, t('procedures.offeringForm.errors.amount')),
+      description: z.string().trim().max(2000),
+      accommodation_nights: z.string().trim().regex(/^(\d{1,3})?$/, t('procedures.packageForm.errors.wholeNights')),
+      followup_teleconsults: z.string().trim().regex(/^(\d{1,2})?$/, t('procedures.packageForm.errors.numberOfCalls')),
+      airport_pickup: z.boolean(),
+      translator: z.boolean(),
+      meals: z.boolean(),
+      local_transport: z.boolean(),
+      is_active: z.boolean(),
+    })
+    .refine((v) => !v.original_price || Number(v.original_price) > Number(v.price), {
+      path: ['original_price'],
+      message: t('procedures.packageForm.errors.originalPrice'),
+    });
+}
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
+
+function tierHint(tier: string, t: T): string {
+  switch (tier) {
+    case 'medical_only':
+      return t('procedures.packageForm.tierHints.medicalOnly');
+    case 'medical_stay':
+      return t('procedures.packageForm.tierHints.medicalStay');
+    case 'all_inclusive':
+      return t('procedures.packageForm.tierHints.allInclusive');
+    default:
+      return '';
+  }
+}
 
 /** Create / edit a treatment package for one offering (CRUD /hospital-portal/procedures/{id}/packages). */
 export function PackageFormModal({
@@ -55,6 +67,8 @@ export function PackageFormModal({
   pkg: PackageOut | null;
   onClose: () => void;
 }) {
+  const { t } = useAppTranslation();
+  const schema = useMemo(() => makeSchema(t), [t]);
   const ids = useId();
   const queryClient = useQueryClient();
   const ccy = pkg?.currency ?? offering.currency;
@@ -107,7 +121,7 @@ export function PackageFormModal({
         : hospitalPortalApi.createPackage(offering.id, body);
     },
     onSuccess: () => {
-      toast.success(pkg ? 'Package updated' : 'Package added');
+      toast.success(pkg ? t('procedures.packageForm.toastUpdated') : t('procedures.packageForm.toastAdded'));
       void queryClient.invalidateQueries({ queryKey: qk.offerings });
       void queryClient.invalidateQueries({ queryKey: qk.packages(offering.id) });
       onClose();
@@ -116,9 +130,9 @@ export function PackageFormModal({
   });
 
   const onSubmit = (v: FormValues) => {
-    if (toMinor(v.price, v.currency) === null) return setError('price', { message: 'Too many decimals' });
+    if (toMinor(v.price, v.currency) === null) return setError('price', { message: t('procedures.offeringForm.errors.tooManyDecimals') });
     if (v.original_price && toMinor(v.original_price, v.currency) === null) {
-      return setError('original_price', { message: 'Too many decimals' });
+      return setError('original_price', { message: t('procedures.offeringForm.errors.tooManyDecimals') });
     }
     save.mutate(v);
   };
@@ -128,62 +142,65 @@ export function PackageFormModal({
       open
       onClose={onClose}
       size="lg"
-      title={pkg ? `Edit package` : 'Add package'}
+      title={pkg ? t('procedures.packageForm.editTitle') : t('procedures.details.addPackage')}
       description={offering.procedure.name}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={save.isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" form={`${ids}-form`} loading={save.isPending}>
-            Save package
+            {t('procedures.packageForm.savePackage')}
           </Button>
         </>
       }
     >
       <form id={`${ids}-form`} noValidate className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
-        <FormField label="Package name" htmlFor={`${ids}-name`} required error={errors.name?.message}>
-          <Input id={`${ids}-name`} placeholder="e.g. Knee replacement - Comfort" {...register('name')} aria-invalid={!!errors.name} />
+        <FormField label={t('procedures.packageForm.name')} htmlFor={`${ids}-name`} required error={errors.name?.message}>
+          <Input id={`${ids}-name`} placeholder={t('procedures.packageForm.namePlaceholder')} {...register('name')} aria-invalid={!!errors.name} />
         </FormField>
-        <FormField label="Tier" htmlFor={`${ids}-tier`} required>
+        <FormField label={t('procedures.packageForm.tier')} htmlFor={`${ids}-tier`} required>
           <Select
             id={`${ids}-tier`}
-            options={PACKAGE_TIERS.map((t) => ({ value: t, label: `${PACKAGE_TIER_LABELS[t]} - ${TIER_HINTS[t] ?? ''}` }))}
+            options={PACKAGE_TIERS.map((tier) => ({
+              value: tier,
+              label: t('procedures.packageForm.tierOption', { tier: PACKAGE_TIER_LABELS[tier], hint: tierHint(tier, t) }),
+            }))}
             {...register('tier')}
           />
         </FormField>
-        <FormField label="Currency" htmlFor={`${ids}-ccy`}>
+        <FormField label={t('procedures.offeringForm.currency')} htmlFor={`${ids}-ccy`}>
           <Select id={`${ids}-ccy`} options={SUPPORTED_CURRENCIES.map((c) => ({ value: c, label: c }))} {...register('currency')} />
         </FormField>
         <div />
-        <FormField label="Price" htmlFor={`${ids}-price`} required error={errors.price?.message}>
+        <FormField label={t('procedures.page.price')} htmlFor={`${ids}-price`} required error={errors.price?.message}>
           <Input id={`${ids}-price`} inputMode="decimal" {...register('price')} aria-invalid={!!errors.price} />
         </FormField>
         <FormField
-          label="Original price (optional)"
+          label={t('procedures.packageForm.originalPrice')}
           htmlFor={`${ids}-orig`}
           error={errors.original_price?.message}
-          hint="Shown struck-through to highlight savings."
+          hint={t('procedures.packageForm.originalPriceHint')}
         >
           <Input id={`${ids}-orig`} inputMode="decimal" {...register('original_price')} aria-invalid={!!errors.original_price} />
         </FormField>
-        <FormField label="Description" htmlFor={`${ids}-desc`} className="sm:col-span-2">
+        <FormField label={t('common.description')} htmlFor={`${ids}-desc`} className="sm:col-span-2">
           <Textarea id={`${ids}-desc`} rows={3} {...register('description')} />
         </FormField>
         <fieldset className="grid gap-4 sm:col-span-2 sm:grid-cols-2">
-          <legend className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">What&apos;s included</legend>
-          <FormField label="Accommodation nights" htmlFor={`${ids}-nights`} error={errors.accommodation_nights?.message}>
+          <legend className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">{t('procedures.packageForm.whatsIncluded')}</legend>
+          <FormField label={t('procedures.packageForm.accommodationNights')} htmlFor={`${ids}-nights`} error={errors.accommodation_nights?.message}>
             <Input id={`${ids}-nights`} inputMode="numeric" {...register('accommodation_nights')} />
           </FormField>
-          <FormField label="Follow-up teleconsults" htmlFor={`${ids}-tc`} error={errors.followup_teleconsults?.message}>
+          <FormField label={t('procedures.packageForm.followupTeleconsults')} htmlFor={`${ids}-tc`} error={errors.followup_teleconsults?.message}>
             <Input id={`${ids}-tc`} inputMode="numeric" {...register('followup_teleconsults')} />
           </FormField>
-          <Checkbox label="Airport pickup & drop" {...register('airport_pickup')} />
-          <Checkbox label="Translator" {...register('translator')} />
-          <Checkbox label="Meals for patient & companion" {...register('meals')} />
-          <Checkbox label="Local transport" {...register('local_transport')} />
+          <Checkbox label={t('procedures.packageForm.airportPickupDrop')} {...register('airport_pickup')} />
+          <Checkbox label={t('procedures.includes.translator')} {...register('translator')} />
+          <Checkbox label={t('procedures.packageForm.mealsPatientCompanion')} {...register('meals')} />
+          <Checkbox label={t('procedures.includes.localTransport')} {...register('local_transport')} />
         </fieldset>
-        <Checkbox label="Active (offered to patients)" {...register('is_active')} />
+        <Checkbox label={t('procedures.offeringForm.activeLabel')} {...register('is_active')} />
       </form>
     </Modal>
   );

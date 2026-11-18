@@ -52,7 +52,10 @@ import {
 } from '../../lib/bookingList';
 import { cn, formatDate, formatMoney, fromMinor, toMinor } from '../../lib/format';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useAppTranslation } from '../../i18n';
 import { paymentState } from './paymentState';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state
@@ -71,21 +74,21 @@ const FILTERS = {
 };
 const SORT_KEYS = ['admission_date', 'created_at', 'booking_number', 'total_minor', 'status'] as const;
 const QUICK_STATUSES: BookingStatus[] = ['pending_payment', 'confirmed', 'admitted', 'completed', 'cancelled'];
-const QUICK_LABELS: Partial<Record<BookingStatus, string>> = { completed: 'Discharged' };
+const quickLabels = (t: TFn): Partial<Record<BookingStatus, string>> => ({ completed: t('bookings.list.discharged') });
 const CURRENCY = 'INR';
 
 type BookingFilters = FilterValues<typeof FILTERS>;
 
 const iso = (d: Date) => format(d, 'yyyy-MM-dd');
 /** Admissions look forward: today / this week / next 7-30 days, plus the recent past. */
-const ADMISSION_PRESETS: readonly DatePreset[] = [
-  { id: 'today', label: 'Today', range: () => ({ from: iso(new Date()), to: iso(new Date()) }) },
-  { id: 'tomorrow', label: 'Tomorrow', range: () => ({ from: iso(addDays(new Date(), 1)), to: iso(addDays(new Date(), 1)) }) },
-  { id: 'week', label: 'This week', range: () => ({ from: iso(startOfWeek(new Date())), to: iso(endOfWeek(new Date())) }) },
-  { id: 'next7', label: 'Next 7 days', range: () => ({ from: iso(new Date()), to: iso(addDays(new Date(), 6)) }) },
-  { id: 'next30', label: 'Next 30 days', range: () => ({ from: iso(new Date()), to: iso(addDays(new Date(), 29)) }) },
-  { id: 'month', label: 'This month', range: () => ({ from: iso(startOfMonth(new Date())), to: iso(endOfMonth(new Date())) }) },
-  { id: 'last30', label: 'Last 30 days', range: () => ({ from: iso(addDays(new Date(), -29)), to: iso(new Date()) }) },
+const admissionPresets = (t: TFn): readonly DatePreset[] => [
+  { id: 'today', label: t('bookings.list.presetToday'), range: () => ({ from: iso(new Date()), to: iso(new Date()) }) },
+  { id: 'tomorrow', label: t('bookings.list.presetTomorrow'), range: () => ({ from: iso(addDays(new Date(), 1)), to: iso(addDays(new Date(), 1)) }) },
+  { id: 'week', label: t('bookings.list.presetThisWeek'), range: () => ({ from: iso(startOfWeek(new Date())), to: iso(endOfWeek(new Date())) }) },
+  { id: 'next7', label: t('bookings.list.presetNext7'), range: () => ({ from: iso(new Date()), to: iso(addDays(new Date(), 6)) }) },
+  { id: 'next30', label: t('bookings.list.presetNext30'), range: () => ({ from: iso(new Date()), to: iso(addDays(new Date(), 29)) }) },
+  { id: 'month', label: t('bookings.list.presetThisMonth'), range: () => ({ from: iso(startOfMonth(new Date())), to: iso(endOfMonth(new Date())) }) },
+  { id: 'last30', label: t('bookings.list.presetLast30'), range: () => ({ from: iso(addDays(new Date(), -29)), to: iso(new Date()) }) },
 ];
 
 function toApiFilters(f: BookingFilters, hospitalId: string | undefined): BookingListFilters {
@@ -106,21 +109,21 @@ function toApiFilters(f: BookingFilters, hospitalId: string | undefined): Bookin
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-const COLUMNS: DataTableColumn<BookingOut>[] = [
+const bookingColumns = (t: TFn): DataTableColumn<BookingOut>[] => [
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('bookings.list.colBooking'),
     sortable: true,
     sortKey: 'booking_number',
     sticky: true,
     mobile: 'secondary',
-    cell: (b) => <IdCell value={b.booking_number} secondary={`Booked ${formatDate(b.created_at)}`} />,
+    cell: (b) => <IdCell value={b.booking_number} secondary={t('bookings.list.bookedOn', { date: formatDate(b.created_at) })} />,
     mobileCell: (b) => <span className="font-mono text-xs">{b.booking_number}</span>,
     exportValue: (b) => b.booking_number,
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('common.patient'),
     mobile: 'primary',
     className: 'max-w-52',
     cell: (b) => <PersonCell name={b.patient.full_name} />,
@@ -128,14 +131,14 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'treatment',
-    header: 'Treatment',
+    header: t('bookings.list.colTreatment'),
     className: 'max-w-56',
     cell: (b) => <TextCell primary={b.procedure?.name ?? b.package?.name ?? '—'} secondary={b.doctor?.full_name} />,
     exportValue: (b) => b.procedure?.name ?? b.package?.name ?? '',
   },
   {
     key: 'admission',
-    header: 'Admission',
+    header: t('bookings.list.colAdmission'),
     sortable: true,
     sortKey: 'admission_date',
     cell: (b) => (
@@ -144,9 +147,9 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
         display="date"
         secondary={
           b.discharge_date
-            ? `Discharge ${formatDate(b.discharge_date, 'd MMM')}`
+            ? t('bookings.list.dischargeOn', { date: formatDate(b.discharge_date, 'd MMM') })
             : b.duration_days
-              ? `${b.duration_days} days`
+              ? t('bookings.list.days', { count: b.duration_days })
               : undefined
         }
       />
@@ -155,15 +158,17 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('common.status'),
     sortable: true,
     mobile: 'badge',
-    cell: (b) => <StatusBadgeCell status={b.status} kind="booking" label={b.status === 'completed' ? 'Discharged' : undefined} />,
+    cell: (b) => (
+      <StatusBadgeCell status={b.status} kind="booking" label={b.status === 'completed' ? t('bookings.list.discharged') : undefined} />
+    ),
     exportValue: (b) => BOOKING_STATUS_LABELS[b.status],
   },
   {
     key: 'payment',
-    header: 'Payment',
+    header: t('bookings.list.colPayment'),
     cell: (b) => {
       const pay = paymentState(b);
       return <StatusBadge status={pay.tone} label={pay.label} />;
@@ -172,7 +177,7 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'total',
-    header: 'Total',
+    header: t('bookings.list.colTotal'),
     align: 'end',
     sortable: true,
     sortKey: 'total_minor',
@@ -181,14 +186,18 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
       <MoneyCell
         minor={b.total_minor}
         currency={b.currency}
-        secondary={b.balance_due_minor > 0 ? `Due ${formatMoney(b.balance_due_minor, b.currency, { trimZeros: true })}` : undefined}
+        secondary={
+          b.balance_due_minor > 0
+            ? t('bookings.list.due', { amount: formatMoney(b.balance_due_minor, b.currency, { trimZeros: true }) })
+            : undefined
+        }
       />
     ),
     exportValue: (b) => `${b.currency} ${fromMinor(b.total_minor, b.currency)}`,
   },
   {
     key: 'created',
-    header: 'Booked',
+    header: t('bookings.list.colBooked'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -210,6 +219,7 @@ const CHIP: Record<BookingStatus, string> = {
 };
 
 function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
+  const { t } = useAppTranslation();
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const days = useMemo(() => eachDayOfInterval({ start: startOfWeek(startOfMonth(month)), end: endOfWeek(endOfMonth(month)) }), [month]);
   const params: BookingListQuery = {
@@ -236,20 +246,22 @@ function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
     <Card className="p-4">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-base font-semibold text-fg">{format(month, 'MMMM yyyy')}</h2>
+          <h2 className="text-base font-semibold text-fg">{formatDate(month, 'LLLL yyyy')}</h2>
           <p className="text-xs text-muted">
-            {bookings.data ? `${bookings.data.total} admission${bookings.data.total === 1 ? '' : 's'} in view` : 'Loading admissions…'}
+            {bookings.data
+              ? t('bookings.calendar.inView', { count: bookings.data.total })
+              : t('bookings.calendar.loading')}
           </p>
         </div>
         <div className="flex gap-1">
-          <Button variant="outline" size="icon-sm" aria-label="Previous month" onClick={() => setMonth((m) => addMonths(m, -1))}>
-            <ChevronLeft className="size-4" aria-hidden />
+          <Button variant="outline" size="icon-sm" aria-label={t('bookings.calendar.previousMonth')} onClick={() => setMonth((m) => addMonths(m, -1))}>
+            <ChevronLeft className="size-4 rtl:-scale-x-100" aria-hidden />
           </Button>
           <Button variant="outline" size="sm" onClick={() => setMonth(startOfMonth(new Date()))}>
-            Today
+            {t('bookings.calendar.today')}
           </Button>
-          <Button variant="outline" size="icon-sm" aria-label="Next month" onClick={() => setMonth((m) => addMonths(m, 1))}>
-            <ChevronRight className="size-4" aria-hidden />
+          <Button variant="outline" size="icon-sm" aria-label={t('bookings.calendar.nextMonth')} onClick={() => setMonth((m) => addMonths(m, 1))}>
+            <ChevronRight className="size-4 rtl:-scale-x-100" aria-hidden />
           </Button>
         </div>
       </div>
@@ -258,16 +270,16 @@ function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
       ) : (
         <div className="overflow-x-auto">
           <div className="grid min-w-[42rem] grid-cols-7 overflow-hidden rounded-lg border border-border">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-              <div key={d} className="border-b border-border bg-surface-2 py-2 text-center text-xs font-semibold text-muted">
-                {d}
+            {days.slice(0, 7).map((d) => (
+              <div key={iso(d)} className="border-b border-border bg-surface-2 py-2 text-center text-xs font-semibold text-muted">
+                {formatDate(d, 'EEE')}
               </div>
             ))}
             {days.map((day) => {
               const key = iso(day);
               const items = byDate.get(key) ?? [];
               return (
-                <div key={key} className={cn('min-h-24 border-r border-b border-border p-1.5', !isSameMonth(day, month) && 'bg-surface-2/50')}>
+                <div key={key} className={cn('min-h-24 border-e border-b border-border p-1.5', !isSameMonth(day, month) && 'bg-surface-2/50')}>
                   <span
                     className={cn(
                       'inline-flex size-6 items-center justify-center rounded-full text-xs',
@@ -294,7 +306,7 @@ function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
                         </li>
                       ))
                     )}
-                    {items.length > 3 && <li className="px-1.5 text-[11px] text-muted">+{items.length - 3} more</li>}
+                    {items.length > 3 && <li className="px-1.5 text-[11px] text-muted">{t('bookings.calendar.more', { count: items.length - 3 })}</li>}
                   </ul>
                 </div>
               );
@@ -306,7 +318,7 @@ function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
         {BOOKING_STATUSES.map((s) => (
           <span key={s} className="inline-flex items-center gap-1.5">
             <span className={cn('size-3 rounded', CHIP[s])} aria-hidden />
-            {s === 'completed' ? 'Discharged' : BOOKING_STATUS_LABELS[s]}
+            {s === 'completed' ? t('bookings.list.discharged') : BOOKING_STATUS_LABELS[s]}
           </span>
         ))}
       </div>
@@ -318,7 +330,11 @@ function AdmissionsCalendar({ filters }: { filters: BookingListFilters }) {
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export function BookingsPage() {
-  useDocumentTitle('Bookings');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('bookings.list.title'));
+  const columns = useMemo(() => bookingColumns(t), [t]);
+  const presets = useMemo(() => admissionPresets(t), [t]);
+  const QUICK_LABELS = quickLabels(t);
   const { current } = useHospital();
   const table = useTableState({ filters: FILTERS, defaultSort: '-admission_date', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -356,13 +372,13 @@ export function BookingsPage() {
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<BookingStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('common.all'), count: counts.data?.total },
     ...QUICK_STATUSES.map((s) => ({ value: s, label: QUICK_LABELS[s] ?? BOOKING_STATUS_LABELS[s], count: counts.data?.counts[s] })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 ? filters.status[0]! : null;
 
   const viewSwitch = (
-    <div className="inline-flex rounded-lg border border-border bg-surface p-0.5" role="group" aria-label="View">
+    <div className="inline-flex rounded-lg border border-border bg-surface p-0.5" role="group" aria-label={t('bookings.list.view')}>
       {VIEWS.map((v) => (
         <Button
           key={v}
@@ -372,7 +388,7 @@ export function BookingsPage() {
           leftIcon={v === 'list' ? <List className="size-4" aria-hidden /> : <CalendarDays className="size-4" aria-hidden />}
           onClick={() => setView(v)}
         >
-          {v === 'list' ? 'List' : 'Calendar'}
+          {v === 'list' ? t('bookings.list.viewList') : t('bookings.list.viewCalendar')}
         </Button>
       ))}
     </div>
@@ -380,44 +396,48 @@ export function BookingsPage() {
 
   const filterPills = (
     <>
-      <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+      <MultiSelectFilter label={t('common.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
       {view === 'list' && (
         <DateRangeFilter
-          label="Admission"
+          label={t('bookings.list.colAdmission')}
           value={{ from: filters.from, to: filters.to }}
           onChange={({ from, to }) => setFilters({ from, to })}
-          presets={ADMISSION_PRESETS}
+          presets={presets}
         />
       )}
       <MultiSelectFilter
-        label="Payment"
+        label={t('bookings.list.colPayment')}
         value={filters.payment}
         onChange={(v) => setFilter('payment', v)}
-        options={BOOKING_PAYMENT_STATES.map((p) => ({ value: p, label: BOOKING_PAYMENT_LABELS[p], tone: p === 'paid' ? 'success' : p === 'partial' ? 'info' : 'warning' }))}
+        options={BOOKING_PAYMENT_STATES.map((p) => ({
+          value: p,
+          label: BOOKING_PAYMENT_LABELS[p],
+          tone: p === 'paid' ? 'success' : p === 'partial' ? 'info' : 'warning',
+        }))}
       />
     </>
   );
   const moreFilters = (
     <>
-      <DateRangeFilter label="Booked on" value={{ from: filters.booked_from, to: filters.booked_to }} onChange={({ from, to }) => setFilters({ booked_from: from, booked_to: to })} />
+      <DateRangeFilter label={t('bookings.list.filterBookedOn')} value={{ from: filters.booked_from, to: filters.booked_to }} onChange={({ from, to }) => setFilters({ booked_from: from, booked_to: to })} />
       <AmountRangeFilter
-        label="Total"
+        label={t('bookings.list.colTotal')}
         currency={CURRENCY}
         value={{ min: filters.min_total, max: filters.max_total }}
         onChange={({ min, max }) => setFilters({ min_total: min, max_total: max })}
       />
     </>
   );
-  const search = { value: filters.q, onChange: (q: string) => setFilter('q', q), placeholder: 'Booking number or patient…' };
+  const search = { value: filters.q, onChange: (q: string) => setFilter('q', q), placeholder: t('bookings.list.searchPlaceholder') };
   const quickTabs = (
-    <QuickFilters label="Booking status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+    <QuickFilters label={t('bookings.list.bookingStatus')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
   );
 
   return (
     <div>
       <PageHeader
-        title="Bookings"
-        description="Confirmed treatments, admissions and discharges - plan beds and track payments."
+        title={t('bookings.list.title')}
+        description={t('bookings.list.description')}
         actions={
           <>
             <Button
@@ -438,7 +458,7 @@ export function BookingsPage() {
                 );
               }}
             >
-              Today&apos;s admissions
+              {t('bookings.list.todaysAdmissions')}
             </Button>
             {viewSwitch}
           </>
@@ -459,9 +479,9 @@ export function BookingsPage() {
       ) : (
         <DataTable
           id="hospital.bookings"
-          caption="Bookings"
+          caption={t('bookings.list.title')}
           table={table}
-          columns={COLUMNS}
+          columns={columns}
           rows={list.data?.items}
           total={list.data?.total}
           loading={list.isLoading}
@@ -469,9 +489,9 @@ export function BookingsPage() {
           error={list.error}
           onRetry={() => void list.refetch()}
           rowHref={(b) => `/bookings/${b.id}`}
-          rowLabel={(b) => `Open booking ${b.booking_number}`}
-          emptyTitle="No bookings yet"
-          emptyDescription="Bookings appear here once a patient accepts your quote and books."
+          rowLabel={(b) => t('bookings.list.openBooking', { number: b.booking_number })}
+          emptyTitle={t('bookings.list.emptyTitle')}
+          emptyDescription={t('bookings.list.emptyDescription')}
           header={<div className="border-b border-border px-2 sm:px-3">{quickTabs}</div>}
           toolbar={
             <FilterBar
@@ -481,7 +501,7 @@ export function BookingsPage() {
               actions={
                 <ExportButton
                   filename="bookings"
-                  columns={COLUMNS}
+                  columns={columns}
                   rows={list.data?.items}
                   total={list.data?.total}
                   fetchAll={() => fetchAllPages((page, size) => bookingList.list({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}

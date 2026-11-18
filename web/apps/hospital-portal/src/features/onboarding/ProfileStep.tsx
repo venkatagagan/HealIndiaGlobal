@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,44 +12,50 @@ import {
   type HospitalProfileOut,
 } from '@hig/shared/api';
 import { Button, FormField, Input, Textarea } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { qk } from '../../lib/queries';
 
-const optionalUrl = z.union([z.literal(''), z.url({ message: 'Enter a full URL starting with https://' }).max(500)]);
+type T = ReturnType<typeof useAppTranslation>['t'];
 const thisYear = new Date().getFullYear();
 
-const schema = z.object({
-  name: z.string().trim().min(2, 'Enter the hospital name').max(200),
-  legal_name: z.string().trim().max(200),
-  description: z.string().trim().max(5000),
-  address: z.string().trim().min(5, 'Enter the street address').max(500),
-  city: z.string().trim().min(2, 'Enter the city').max(100),
-  state: z.string().trim().min(2, 'Enter the state').max(100),
-  pincode: z.string().trim().regex(/^(\d{6})?$/, 'PIN code is 6 digits'),
-  phone: z.string().trim().regex(/^\+?[0-9 ()-]{7,20}$/, 'Enter a valid phone number with country code'),
-  email: z.union([z.literal(''), z.email({ message: 'Enter a valid email' })]),
-  website: optionalUrl,
-  logo_url: optionalUrl,
-  cover_image_url: optionalUrl,
-  established_year: z
-    .string()
-    .trim()
-    .refine((v) => !v || (/^\d{4}$/.test(v) && Number(v) >= 1800 && Number(v) <= thisYear), 'Enter a valid year'),
-  bed_count: z.string().trim().regex(/^(\d{1,5})?$/, 'Enter a whole number'),
-  gstin: z
-    .string()
-    .trim()
-    .regex(/^([0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z][Zz][0-9A-Za-z])?$/, 'GSTIN is 15 characters, e.g. 29ABCDE1234F1Z5'),
-  pan: z
-    .string()
-    .trim()
-    .regex(/^([A-Za-z]{5}[0-9]{4}[A-Za-z])?$/, 'PAN is 10 characters, e.g. ABCDE1234F'),
-});
-type FormValues = z.infer<typeof schema>;
+function makeSchema(t: T) {
+  const optionalUrl = z.union([z.literal(''), z.url({ message: t('onboarding.profile.errors.url') }).max(500)]);
+  return z.object({
+    name: z.string().trim().min(2, t('onboarding.profile.errors.name')).max(200),
+    legal_name: z.string().trim().max(200),
+    description: z.string().trim().max(5000),
+    address: z.string().trim().min(5, t('onboarding.profile.errors.address')).max(500),
+    city: z.string().trim().min(2, t('onboarding.profile.errors.city')).max(100),
+    state: z.string().trim().min(2, t('onboarding.profile.errors.state')).max(100),
+    pincode: z.string().trim().regex(/^(\d{6})?$/, t('onboarding.profile.errors.pincode')),
+    phone: z.string().trim().regex(/^\+?[0-9 ()-]{7,20}$/, t('onboarding.profile.errors.phone')),
+    email: z.union([z.literal(''), z.email({ message: t('onboarding.profile.errors.email') })]),
+    website: optionalUrl,
+    logo_url: optionalUrl,
+    cover_image_url: optionalUrl,
+    established_year: z
+      .string()
+      .trim()
+      .refine((v) => !v || (/^\d{4}$/.test(v) && Number(v) >= 1800 && Number(v) <= thisYear), t('onboarding.profile.errors.year')),
+    bed_count: z.string().trim().regex(/^(\d{1,5})?$/, t('onboarding.profile.errors.wholeNumber')),
+    gstin: z
+      .string()
+      .trim()
+      .regex(/^([0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z][Zz][0-9A-Za-z])?$/, t('onboarding.profile.errors.gstin')),
+    pan: z
+      .string()
+      .trim()
+      .regex(/^([A-Za-z]{5}[0-9]{4}[A-Za-z])?$/, t('onboarding.profile.errors.pan')),
+  });
+}
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
 const blankToNull = (v: string): string | null => (v.trim() ? v.trim() : null);
 
 /** Step 1 - profile & contact details (PUT /hospital-portal/profile). PAN is write-only. */
 export function ProfileStep({ profile, onSaved, readOnly }: { profile: HospitalProfileOut; onSaved?: () => void; readOnly?: boolean }) {
+  const { t } = useAppTranslation();
+  const schema = useMemo(() => makeSchema(t), [t]);
   const ids = useId();
   const queryClient = useQueryClient();
   const {
@@ -103,7 +109,7 @@ export function ProfileStep({ profile, onSaved, readOnly }: { profile: HospitalP
     },
     onSuccess: (updated) => {
       queryClient.setQueryData(qk.profile, updated);
-      toast.success('Profile saved');
+      toast.success(t('onboarding.profile.saved'));
       onSaved?.();
     },
     onError: (error) => {
@@ -134,71 +140,77 @@ export function ProfileStep({ profile, onSaved, readOnly }: { profile: HospitalP
       })}
     >
       <fieldset className="grid gap-4 sm:grid-cols-2">
-        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Hospital</legend>
-        <FormField label="Hospital name" htmlFor={`${ids}-name`} required error={errors.name?.message}>
+        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">{t('onboarding.profile.hospitalSection')}</legend>
+        <FormField label={t('onboarding.profile.name')} htmlFor={`${ids}-name`} required error={errors.name?.message}>
           <Input {...field('name')} />
         </FormField>
-        <FormField label="Legal entity name" htmlFor={`${ids}-legal_name`} error={errors.legal_name?.message}>
+        <FormField label={t('onboarding.profile.legalName')} htmlFor={`${ids}-legal_name`} error={errors.legal_name?.message}>
           <Input {...field('legal_name')} />
         </FormField>
         <FormField
-          label="About the hospital"
+          label={t('onboarding.profile.about')}
           htmlFor={`${ids}-description`}
           error={errors.description?.message}
           className="sm:col-span-2"
-          hint="Shown to patients on your public profile."
+          hint={t('onboarding.profile.aboutHint')}
         >
           <Textarea rows={4} {...field('description')} />
         </FormField>
-        <FormField label="Established (year)" htmlFor={`${ids}-established_year`} error={errors.established_year?.message}>
+        <FormField label={t('onboarding.profile.established')} htmlFor={`${ids}-established_year`} error={errors.established_year?.message}>
           <Input inputMode="numeric" {...field('established_year')} />
         </FormField>
-        <FormField label="Number of beds" htmlFor={`${ids}-bed_count`} error={errors.bed_count?.message}>
+        <FormField label={t('onboarding.profile.beds')} htmlFor={`${ids}-bed_count`} error={errors.bed_count?.message}>
           <Input inputMode="numeric" {...field('bed_count')} />
         </FormField>
-        <FormField label="Logo URL" htmlFor={`${ids}-logo_url`} error={errors.logo_url?.message}>
+        <FormField label={t('onboarding.profile.logoUrl')} htmlFor={`${ids}-logo_url`} error={errors.logo_url?.message}>
           <Input type="url" placeholder="https://" {...field('logo_url')} />
         </FormField>
-        <FormField label="Cover image URL" htmlFor={`${ids}-cover_image_url`} error={errors.cover_image_url?.message}>
+        <FormField label={t('onboarding.profile.coverUrl')} htmlFor={`${ids}-cover_image_url`} error={errors.cover_image_url?.message}>
           <Input type="url" placeholder="https://" {...field('cover_image_url')} />
         </FormField>
       </fieldset>
 
       <fieldset className="grid gap-4 sm:grid-cols-2">
-        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Address &amp; contact</legend>
-        <FormField label="Street address" htmlFor={`${ids}-address`} required error={errors.address?.message} className="sm:col-span-2">
+        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">{t('onboarding.profile.addressSection')}</legend>
+        <FormField
+          label={t('onboarding.profile.address')}
+          htmlFor={`${ids}-address`}
+          required
+          error={errors.address?.message}
+          className="sm:col-span-2"
+        >
           <Input autoComplete="street-address" {...field('address')} />
         </FormField>
-        <FormField label="City" htmlFor={`${ids}-city`} required error={errors.city?.message}>
+        <FormField label={t('onboarding.profile.city')} htmlFor={`${ids}-city`} required error={errors.city?.message}>
           <Input autoComplete="address-level2" {...field('city')} />
         </FormField>
-        <FormField label="State" htmlFor={`${ids}-state`} required error={errors.state?.message}>
+        <FormField label={t('onboarding.profile.state')} htmlFor={`${ids}-state`} required error={errors.state?.message}>
           <Input autoComplete="address-level1" {...field('state')} />
         </FormField>
-        <FormField label="PIN code" htmlFor={`${ids}-pincode`} error={errors.pincode?.message}>
+        <FormField label={t('onboarding.profile.pincode')} htmlFor={`${ids}-pincode`} error={errors.pincode?.message}>
           <Input inputMode="numeric" autoComplete="postal-code" {...field('pincode')} />
         </FormField>
-        <FormField label="International desk phone" htmlFor={`${ids}-phone`} required error={errors.phone?.message}>
+        <FormField label={t('onboarding.profile.phone')} htmlFor={`${ids}-phone`} required error={errors.phone?.message}>
           <Input type="tel" autoComplete="tel" placeholder="+91 …" {...field('phone')} />
         </FormField>
-        <FormField label="Email" htmlFor={`${ids}-email`} error={errors.email?.message}>
+        <FormField label={t('onboarding.profile.email')} htmlFor={`${ids}-email`} error={errors.email?.message}>
           <Input type="email" autoComplete="email" {...field('email')} />
         </FormField>
-        <FormField label="Website" htmlFor={`${ids}-website`} error={errors.website?.message}>
+        <FormField label={t('onboarding.profile.website')} htmlFor={`${ids}-website`} error={errors.website?.message}>
           <Input type="url" placeholder="https://" {...field('website')} />
         </FormField>
       </fieldset>
 
       <fieldset className="grid gap-4 sm:grid-cols-2">
-        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Tax details</legend>
-        <FormField label="GSTIN" htmlFor={`${ids}-gstin`} error={errors.gstin?.message}>
+        <legend className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">{t('onboarding.profile.taxSection')}</legend>
+        <FormField label={t('onboarding.profile.gstin')} htmlFor={`${ids}-gstin`} error={errors.gstin?.message}>
           <Input className="uppercase" {...field('gstin')} />
         </FormField>
         <FormField
-          label="PAN"
+          label={t('onboarding.profile.pan')}
           htmlFor={`${ids}-pan`}
           error={errors.pan?.message}
-          hint={profile.pan_last4 ? `On file: ••••••${profile.pan_last4}. Leave blank to keep.` : 'Stored encrypted.'}
+          hint={profile.pan_last4 ? t('onboarding.profile.panOnFile', { last4: profile.pan_last4 }) : t('onboarding.profile.panEncrypted')}
         >
           <Input className="uppercase" autoComplete="off" {...field('pan')} />
         </FormField>
@@ -207,7 +219,7 @@ export function ProfileStep({ profile, onSaved, readOnly }: { profile: HospitalP
       {!readOnly && (
         <div className="flex justify-end">
           <Button type="submit" loading={save.isPending}>
-            {onSaved ? 'Save & continue' : 'Save profile'}
+            {onSaved ? t('onboarding.saveAndContinue') : t('onboarding.profile.saveProfile')}
           </Button>
         </div>
       )}

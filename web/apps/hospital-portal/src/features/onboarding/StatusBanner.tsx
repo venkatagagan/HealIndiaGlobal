@@ -1,11 +1,13 @@
 import { useLocation } from 'react-router';
 import { AlertTriangle, Ban, Clock, Rocket } from 'lucide-react';
 import { Alert, LinkButton } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { formatDate } from '../../lib/format';
 import { useHospitalProfile } from '../../lib/queries';
 
 /** Hospital approval status banner: draft (finish onboarding), pending_review, rejected (with reason), suspended. */
 export function StatusBanner() {
+  const { t } = useAppTranslation();
   const { data: profile } = useHospitalProfile();
   const { pathname } = useLocation();
   if (!profile || profile.status === 'active') return null;
@@ -18,22 +20,22 @@ export function StatusBanner() {
           <Alert
             tone="violet"
             icon={<Rocket className="h-5 w-5" aria-hidden />}
-            title="Finish onboarding to go live"
+            title={t('onboarding.banner.draftTitle')}
             actions={
               <LinkButton to="/onboarding" size="sm" variant="accent">
-                Continue setup
+                {t('onboarding.banner.continueSetup')}
               </LinkButton>
             }
           >
-            Complete your profile, accreditations, specialties, KYC documents and payout account, then submit for
-            review. Patients cannot find your hospital until it is approved.
+            {t('onboarding.banner.draftBody')}
           </Alert>
         );
       case 'pending_review':
         return (
-          <Alert tone="amber" icon={<Clock className="h-5 w-5" aria-hidden />} title="Your hospital is under review">
-            Our team is verifying your profile and KYC documents. You will be notified once it is approved
-            {profile.updated_at ? ` (submitted ${formatDate(profile.updated_at)})` : ''}.
+          <Alert tone="amber" icon={<Clock className="h-5 w-5" aria-hidden />} title={t('onboarding.banner.reviewTitle')}>
+            {profile.updated_at
+              ? t('onboarding.banner.reviewBodySubmitted', { date: formatDate(profile.updated_at) })
+              : t('onboarding.banner.reviewBody')}
           </Alert>
         );
       case 'rejected':
@@ -41,23 +43,26 @@ export function StatusBanner() {
           <Alert
             tone="red"
             icon={<AlertTriangle className="h-5 w-5" aria-hidden />}
-            title="Your application needs changes"
+            title={t('onboarding.banner.rejectedTitle')}
             actions={
               onOnboarding ? undefined : (
                 <LinkButton to="/onboarding" size="sm" variant="danger">
-                  Update &amp; resubmit
+                  {t('onboarding.banner.resubmit')}
                 </LinkButton>
               )
             }
           >
-            {profile.rejection_reason ? `Reason: ${profile.rejection_reason}` : 'Please review your details and resubmit.'}
+            {profile.rejection_reason
+              ? t('onboarding.banner.reason', { reason: profile.rejection_reason })
+              : t('onboarding.banner.rejectedBody')}
           </Alert>
         );
       case 'suspended':
         return (
-          <Alert tone="red" icon={<Ban className="h-5 w-5" aria-hidden />} title="Your hospital is suspended">
-            New enquiries are paused. Please contact Heal India Global support.
-            {profile.rejection_reason ? ` Reason: ${profile.rejection_reason}` : ''}
+          <Alert tone="red" icon={<Ban className="h-5 w-5" aria-hidden />} title={t('onboarding.banner.suspendedTitle')}>
+            {profile.rejection_reason
+              ? t('onboarding.banner.suspendedBodyReason', { reason: profile.rejection_reason })
+              : t('onboarding.banner.suspendedBody')}
           </Alert>
         );
       default:

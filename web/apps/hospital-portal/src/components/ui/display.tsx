@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { AlertTriangle, ChevronLeft, ChevronRight, Inbox, Loader2, Star } from 'lucide-react';
 import { errorMessage, humanize } from '@hig/shared/api';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../i18n';
 import { cn } from '../../lib/format';
 import { Button } from './controls';
 
@@ -131,25 +133,32 @@ const STATUS_TONES: Record<string, Tone> = {
 };
 
 export function StatusBadge({ status, label }: { status: string | null | undefined; label?: string }) {
+  const { t } = useAppTranslation();
   if (!status) return <Badge>—</Badge>;
-  return <Badge tone={STATUS_TONES[status] ?? 'neutral'}>{label ?? humanize(status)}</Badge>;
+  return (
+    <Badge tone={STATUS_TONES[status] ?? 'neutral'}>
+      {label ?? t(`ui.statuses.${status}`, { defaultValue: humanize(status) })}
+    </Badge>
+  );
 }
 
 // ------------------------------------------------------------------------------------------------ States
-export function Spinner({ className, label = 'Loading' }: { className?: string; label?: string }) {
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <span role="status" className="inline-flex items-center">
       <Loader2 className={cn('h-5 w-5 animate-spin text-primary', className)} aria-hidden />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('ui.loading')}</span>
     </span>
   );
 }
 
-export function PageLoader({ label = 'Loading…' }: { label?: string }) {
+export function PageLoader({ label }: { label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-muted">
       <Spinner className="h-7 w-7" />
-      <span>{label}</span>
+      <span>{label ?? t('ui.loadingEllipsis')}</span>
     </div>
   );
 }
@@ -186,7 +195,7 @@ export function EmptyState({
 export function ErrorState({
   error,
   onRetry,
-  title = 'Could not load this',
+  title,
   className,
 }: {
   error: unknown;
@@ -194,16 +203,17 @@ export function ErrorState({
   title?: string;
   className?: string;
 }) {
+  const { t } = useAppTranslation();
   return (
     <div role="alert" className={cn('flex flex-col items-center justify-center px-6 py-10 text-center', className)}>
       <div className="mb-3 rounded-full bg-danger-soft p-3 text-danger-ink">
         <AlertTriangle className="h-6 w-6" aria-hidden />
       </div>
-      <h3 className="text-sm font-semibold text-fg">{title}</h3>
+      <h3 className="text-sm font-semibold text-fg">{title ?? t('ui.loadError')}</h3>
       <p className="mt-1 max-w-md text-sm text-muted">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
-          Try again
+          {t('ui.tryAgain')}
         </Button>
       )}
     </div>
@@ -347,15 +357,17 @@ export function Pagination({
   total?: number;
   onChange: (page: number) => void;
 }) {
+  const { t } = useAppTranslation();
   if (pages <= 1) return null;
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={t('ui.pagination.label')}
       className="flex items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm"
     >
       <span className="text-muted">
-        Page {page} of {pages}
-        {total !== undefined && ` · ${total} total`}
+        {total !== undefined
+          ? t('ui.pagination.pageOfTotal', { page: formatNumber(page), pages: formatNumber(pages), total: formatNumber(total) })
+          : t('ui.pagination.pageOf', { page: formatNumber(page), pages: formatNumber(pages) })}
       </span>
       <div className="flex gap-2">
         <Button
@@ -363,13 +375,13 @@ export function Pagination({
           size="sm"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
-          icon={<ChevronLeft className="h-4 w-4" aria-hidden />}
+          icon={<ChevronLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />}
         >
-          Previous
+          {t('ui.pagination.previous')}
         </Button>
         <Button variant="outline" size="sm" disabled={page >= pages} onClick={() => onChange(page + 1)}>
-          Next
-          <ChevronRight className="h-4 w-4" aria-hidden />
+          {t('ui.pagination.next')}
+          <ChevronRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
         </Button>
       </div>
     </nav>
@@ -378,10 +390,11 @@ export function Pagination({
 
 // ------------------------------------------------------------------------------------------------ Rating
 export function Stars({ value, size = 'sm' }: { value: number | null | undefined; size?: 'sm' | 'md' }) {
+  const { t } = useAppTranslation();
   const v = value ?? 0;
   const cls = size === 'md' ? 'h-5 w-5' : 'h-4 w-4';
   return (
-    <span className="inline-flex items-center gap-0.5" aria-label={`${v.toFixed(1)} out of 5`}>
+    <span className="inline-flex items-center gap-0.5" aria-label={t('ui.starsLabel', { value: formatNumber(v, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })}>
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}

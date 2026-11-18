@@ -3,10 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { errorMessage, hospitalPortalApi, type HospitalProfileOut } from '@hig/shared/api';
 import { Button, Checkbox, ErrorState, Skeleton } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { qk, useSpecialties } from '../../lib/queries';
 
 /** Step 3 - specialties offered (PUT /hospital-portal/specialties). */
 export function SpecialtiesStep({ profile, onSaved }: { profile: HospitalProfileOut; onSaved?: () => void }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const specialties = useSpecialties();
 
@@ -24,7 +26,7 @@ export function SpecialtiesStep({ profile, onSaved }: { profile: HospitalProfile
     onSuccess: (updated) => {
       if (updated && typeof updated === 'object' && 'status' in updated) queryClient.setQueryData(qk.profile, updated);
       else void queryClient.invalidateQueries({ queryKey: qk.profile });
-      toast.success('Specialties saved');
+      toast.success(t('onboarding.specialties.saved'));
       onSaved?.();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -45,10 +47,7 @@ export function SpecialtiesStep({ profile, onSaved }: { profile: HospitalProfile
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-slate-500 dark:text-slate-400">
-        Choose the departments that accept international patients. You can add procedures and pricing for these
-        specialties later.
-      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{t('onboarding.specialties.intro')}</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {specialties.data.map((s) => (
           <div
@@ -57,7 +56,7 @@ export function SpecialtiesStep({ profile, onSaved }: { profile: HospitalProfile
           >
             <Checkbox
               label={s.name}
-              description={s.procedures_count ? `${s.procedures_count} procedures in catalog` : undefined}
+              description={s.procedures_count ? t('onboarding.specialties.proceduresInCatalog', { count: s.procedures_count }) : undefined}
               checked={value.includes(s.id)}
               onChange={() => toggle(s.id)}
             />
@@ -65,9 +64,9 @@ export function SpecialtiesStep({ profile, onSaved }: { profile: HospitalProfile
         ))}
       </div>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm text-slate-500 dark:text-slate-400">{value.length} selected</span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">{t('onboarding.specialties.selected', { count: value.length })}</span>
         <Button loading={save.isPending} disabled={value.length === 0} onClick={() => save.mutate()}>
-          {onSaved ? 'Save & continue' : 'Save specialties'}
+          {onSaved ? t('onboarding.saveAndContinue') : t('onboarding.specialties.save')}
         </Button>
       </div>
     </div>

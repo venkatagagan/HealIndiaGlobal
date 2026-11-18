@@ -26,8 +26,9 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { useHospital } from '../../auth/HospitalProvider';
+import { useAppTranslation } from '../../i18n';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { CASE_COLUMNS } from './CasesTable';
+import { caseColumns } from './CasesTable';
 
 // URL state: ?status=enquiry,quoted&urgency=emergency&from=2026-10-01&sort=-created_at&page=2
 const DATE_FIELDS = ['created', 'updated'] as const;
@@ -41,7 +42,6 @@ const FILTERS = {
 };
 const SORT_KEYS = ['created_at', 'updated_at', 'case_number', 'status'] as const;
 const QUICK_STATUSES: CaseStatus[] = ['enquiry', 'quoted', 'accepted', 'booked', 'in_treatment', 'completed'];
-const QUICK_LABELS: Partial<Record<CaseStatus, string>> = { enquiry: 'New' };
 const URGENT: ('urgent' | 'emergency')[] = ['urgent', 'emergency'];
 
 type CaseFilters = FilterValues<typeof FILTERS>;
@@ -61,8 +61,10 @@ function toApiFilters(f: CaseFilters, hospitalId: string | undefined): Omit<Case
 }
 
 export function CasesPage() {
-  useDocumentTitle('Enquiries & cases');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('cases.list.title'));
   const { current } = useHospital();
+  const columns = useMemo(() => caseColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters, current?.id), [filters, current?.id]);
@@ -86,8 +88,12 @@ export function CasesPage() {
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<CaseStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
-    ...QUICK_STATUSES.map((s) => ({ value: s, label: QUICK_LABELS[s] ?? CASE_STATUS_LABELS[s], count: counts.data?.counts[s] })),
+    { value: '', label: t('common.all'), count: counts.data?.total },
+    ...QUICK_STATUSES.map((s) => ({
+      value: s,
+      label: s === 'enquiry' ? t('cases.list.quickNew') : CASE_STATUS_LABELS[s],
+      count: counts.data?.counts[s],
+    })),
   ];
   const quickValue =
     filters.status.length === 0 ? '' : filters.status.length === 1 && QUICK_STATUSES.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -96,8 +102,8 @@ export function CasesPage() {
   return (
     <div>
       <PageHeader
-        title="Enquiries & cases"
-        description="Patient enquiries routed to your hospital, from first contact to discharge."
+        title={t('cases.list.title')}
+        description={t('cases.list.description')}
         actions={
           <Button
             variant={urgentOnly ? 'primary' : 'outline'}
@@ -105,15 +111,15 @@ export function CasesPage() {
             aria-pressed={urgentOnly}
             onClick={() => setFilter('urgency', urgentOnly ? [] : URGENT)}
           >
-            {urgentOnly ? 'Showing urgent only' : 'Urgent & emergency'}
+            {urgentOnly ? t('cases.list.showingUrgentOnly') : t('cases.list.urgentAndEmergency')}
           </Button>
         }
       />
       <DataTable
         id="hospital.cases"
-        caption="Enquiries and cases"
+        caption={t('cases.list.caption')}
         table={table}
-        columns={CASE_COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -121,7 +127,7 @@ export function CasesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(c) => `/cases/${c.id}`}
-        rowLabel={(c) => `Open case ${c.case_number}`}
+        rowLabel={(c) => t('cases.table.openCase', { number: c.case_number })}
         selectable
         bulkActions={(selected, clear) => (
           <Button
@@ -129,49 +135,49 @@ export function CasesPage() {
             variant="outline"
             leftIcon={<Download className="size-4" aria-hidden />}
             onClick={() => {
-              exportCsv(selected, CASE_COLUMNS, `enquiries-selected-${new Date().toISOString().slice(0, 10)}`);
+              exportCsv(selected, columns, `enquiries-selected-${new Date().toISOString().slice(0, 10)}`);
               clear();
             }}
           >
-            Export selected
+            {t('cases.list.exportSelected')}
           </Button>
         )}
-        emptyTitle="No enquiries yet"
-        emptyDescription="New patient enquiries appear here. Keep your profile, doctors and procedures complete to be matched more often."
+        emptyTitle={t('cases.list.emptyTitle')}
+        emptyDescription={t('cases.list.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Case status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('cases.list.caseStatus')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Case number or patient…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('cases.list.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="enquiries"
-                columns={CASE_COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() => fetchAllPages((page, size) => casesApi.list({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}
               />
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('common.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <MultiSelectFilter
-              label="Urgency"
+              label={t('cases.table.urgency')}
               icon={<ShieldAlert className="size-3.5 opacity-70" aria-hidden />}
               value={filters.urgency}
               onChange={(v) => setFilter('urgency', v)}
               options={URGENCIES.map((u) => ({ value: u, label: URGENCY_LABELS[u], tone: statusTone(u, 'urgency') }))}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('common.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Received' },
-                { value: 'updated', label: 'Last activity' },
+                { value: 'created', label: t('cases.table.received') },
+                { value: 'updated', label: t('cases.table.lastActivity') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}

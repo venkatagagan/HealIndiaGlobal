@@ -18,7 +18,11 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
+import type { TFunction } from 'i18next';
+import { HOSPITAL_MEMBER_ROLE_LABELS } from '@hig/shared/api';
+import { formatNumber } from '@hig/shared/lib';
 import { NotificationBell, PortalLayout as ShellLayout, type NavItem } from '@hig/shared/layout';
+import { useAppTranslation } from '../i18n';
 import { useAuth } from '../auth/AuthProvider';
 import { useHospital } from '../auth/HospitalProvider';
 import { Select } from '../components/ui';
@@ -30,63 +34,63 @@ import { StatusBanner } from '../features/onboarding/StatusBanner';
 function CountBadge({ count }: { count: number }) {
   return (
     <span className="rounded-full bg-danger-strong px-1.5 py-px text-[11px] font-semibold text-white tabular-nums">
-      {count > 99 ? '99+' : count}
+      {count > 99 ? `${formatNumber(99)}+` : formatNumber(count)}
     </span>
   );
 }
 
 /** Sidebar: Dashboard, then accordion sections (one open at a time; the section of the current page opens). */
-function buildNav({ unread, canFinance }: { unread: number; canFinance: boolean }): NavItem[] {
+function buildNav(t: TFunction, { unread, canFinance }: { unread: number; canFinance: boolean }): NavItem[] {
   return [
-    { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true, accent: 'green' },
+    { to: '/', label: t('nav.dashboard'), icon: LayoutDashboard, end: true, accent: 'green' },
     {
       id: 'patients',
-      label: 'Patients',
+      label: t('nav.patients'),
       icon: HeartPulse,
       accent: 'blue',
       children: [
-        { to: '/cases', label: 'Enquiries & cases', icon: Inbox },
-        { to: '/bookings', label: 'Bookings', icon: CalendarCheck },
+        { to: '/cases', label: t('nav.cases'), icon: Inbox },
+        { to: '/bookings', label: t('nav.bookings'), icon: CalendarCheck },
       ],
     },
     {
       id: 'services',
-      label: 'Doctors & services',
+      label: t('nav.services'),
       icon: Stethoscope,
       accent: 'rose',
       children: [
-        { to: '/doctors', label: 'Doctors', icon: Stethoscope },
-        { to: '/procedures', label: 'Procedures & pricing', icon: ClipboardList },
+        { to: '/doctors', label: t('nav.doctors'), icon: Stethoscope },
+        { to: '/procedures', label: t('nav.procedures'), icon: ClipboardList },
       ],
     },
     {
       id: 'hospital',
-      label: 'Hospital',
+      label: t('nav.hospital'),
       icon: Building,
       accent: 'cyan',
       children: [
-        { to: '/profile', label: 'Hospital profile', icon: Building2 },
-        { to: '/team', label: 'Team', icon: Users },
+        { to: '/profile', label: t('nav.profile'), icon: Building2 },
+        { to: '/team', label: t('nav.team'), icon: Users },
       ],
     },
     {
       id: 'performance',
-      label: canFinance ? 'Reviews & finance' : 'Reviews',
+      label: canFinance ? t('nav.performanceFinance') : t('nav.reviews'),
       icon: TrendingUp,
       accent: 'amber',
       children: [
-        { to: '/reviews', label: 'Reviews', icon: Star },
-        ...(canFinance ? [{ to: '/finance', label: 'Finance', icon: Wallet }] : []),
+        { to: '/reviews', label: t('nav.reviews'), icon: Star },
+        ...(canFinance ? [{ to: '/finance', label: t('nav.finance'), icon: Wallet }] : []),
       ],
     },
     {
       id: 'inbox',
-      label: 'Messages & alerts',
+      label: t('nav.inbox'),
       icon: MessagesSquare,
       accent: 'violet',
       children: [
-        { to: '/messages', label: 'Messages', icon: MessageSquare },
-        { to: '/notifications', label: 'Notifications', icon: Bell, badge: unread > 0 ? <CountBadge count={unread} /> : undefined },
+        { to: '/messages', label: t('nav.messages'), icon: MessageSquare },
+        { to: '/notifications', label: t('nav.notifications'), icon: Bell, badge: unread > 0 ? <CountBadge count={unread} /> : undefined },
       ],
     },
   ];
@@ -96,6 +100,7 @@ const MENU_LINK =
   'flex w-full items-center gap-2 px-4 py-2 text-start text-sm text-fg hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:outline-none';
 
 function HospitalSwitcher() {
+  const { t } = useAppTranslation();
   const { hospitals, current, switchHospital } = useHospital();
   if (hospitals.length <= 1) {
     return current ? (
@@ -107,7 +112,7 @@ function HospitalSwitcher() {
   return (
     <div className="w-full max-w-[16rem]">
       <label htmlFor="hospital-switcher" className="sr-only">
-        Active hospital
+        {t('layout.activeHospital')}
       </label>
       <Select
         id="hospital-switcher"
@@ -121,6 +126,7 @@ function HospitalSwitcher() {
 }
 
 export function PortalLayout() {
+  const { t } = useAppTranslation();
   const { user, logout } = useAuth();
   const { memberRole, canFinance } = useHospital();
   const queryClient = useQueryClient();
@@ -138,18 +144,18 @@ export function PortalLayout() {
     void queryClient.invalidateQueries({ queryKey: qk.dashboard });
   });
 
-  const roleLabel = memberRole ? memberRole.charAt(0).toUpperCase() + memberRole.slice(1).replace(/_/g, ' ') : 'Member';
+  const roleLabel = memberRole ? HOSPITAL_MEMBER_ROLE_LABELS[memberRole] : t('layout.member');
 
   return (
     <ShellLayout
-      nav={buildNav({ unread: count, canFinance })}
-      subtitle="Hospital portal"
+      nav={buildNav(t, { unread: count, canFinance })}
+      subtitle={t('layout.subtitle')}
       title={<HospitalSwitcher />}
       user={user ? { name: user.full_name, email: user.email, role: roleLabel, avatarUrl: user.avatar_url } : null}
       userMenuItems={
         <Link to="/profile" role="menuitem" className={MENU_LINK}>
           <Building2 className="size-4 text-muted" aria-hidden />
-          Hospital profile
+          {t('nav.profile')}
         </Link>
       }
       onLogout={() => {

@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,35 +15,41 @@ import {
 } from '@hig/shared/api';
 import { Button, FormField, Input, Modal, Select, Textarea } from '../../components/ui';
 import { SUPPORTED_CURRENCIES, currencyExponent, formatMoney, isoDateFromToday, minorToInput, toMinor } from '../../lib/format';
+import { useAppTranslation } from '../../i18n';
 import { qk } from '../../lib/queries';
 
-const lineSchema = z.object({
-  category: z.enum(QUOTE_LINE_CATEGORIES),
-  description: z.string().trim().min(2, 'Describe this item').max(300),
-  amount: z.string().trim().regex(/^\d{1,12}(\.\d{1,3})?$/, 'Enter an amount'),
-});
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
-const schema = z.object({
-  treatment_plan: z.string().trim().min(10, 'Describe the proposed treatment plan').max(5000),
-  currency: z.string().length(3),
-  estimated_stay_days: z.string().trim().regex(/^(\d{1,3})?$/, 'Whole days'),
-  valid_until: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Pick a date')
-    .refine((v) => v >= isoDateFromToday(1), 'Must be a future date'),
-  line_items: z.array(lineSchema).min(1, 'Add at least one line item').max(30),
-});
-type FormValues = z.infer<typeof schema>;
+function makeSchema(t: TFn) {
+  const lineSchema = z.object({
+    category: z.enum(QUOTE_LINE_CATEGORIES),
+    description: z.string().trim().min(2, t('cases.quoteForm.errors.describeItem')).max(300),
+    amount: z.string().trim().regex(/^\d{1,12}(\.\d{1,3})?$/, t('cases.quoteForm.errors.enterAmount')),
+  });
+  return z.object({
+    treatment_plan: z.string().trim().min(10, t('cases.quoteForm.errors.describePlan')).max(5000),
+    currency: z.string().length(3),
+    estimated_stay_days: z.string().trim().regex(/^(\d{1,3})?$/, t('cases.quoteForm.errors.wholeDays')),
+    valid_until: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, t('cases.quoteForm.errors.pickDate'))
+      .refine((v) => v >= isoDateFromToday(1), t('cases.quoteForm.errors.futureDate')),
+    line_items: z.array(lineSchema).min(1, t('cases.quoteForm.errors.atLeastOneLine')).max(30),
+  });
+}
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
-const DEFAULT_LINES: { category: QuoteLineCategory; description: string }[] = [
-  { category: 'surgery', description: 'Surgeon & OT charges' },
-  { category: 'hospital_stay', description: 'Room & nursing' },
-  { category: 'medications', description: 'Medicines & consumables' },
-  { category: 'tests_scans', description: 'Pre-operative tests & imaging' },
+const defaultLines = (t: TFn): { category: QuoteLineCategory; description: string }[] => [
+  { category: 'surgery', description: t('cases.quoteForm.defaultLines.surgery') },
+  { category: 'hospital_stay', description: t('cases.quoteForm.defaultLines.hospitalStay') },
+  { category: 'medications', description: t('cases.quoteForm.defaultLines.medications') },
+  { category: 'tests_scans', description: t('cases.quoteForm.defaultLines.testsScans') },
 ];
 
 /** Itemized quote (POST /cases/{id}/quotes): case moves to `quoted`; a new quote supersedes the previous one. */
 export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClose: () => void; detail: CaseDetail }) {
+  const { t } = useAppTranslation();
+  const schema = useMemo(() => makeSchema(t), [t]);
   const ids = useId();
   const queryClient = useQueryClient();
   const previous = detail.latest_quote;
@@ -73,7 +79,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
           currency: 'INR',
           estimated_stay_days: '',
           valid_until: isoDateFromToday(30),
-          line_items: DEFAULT_LINES.map((l) => ({ ...l, amount: '' })),
+          line_items: defaultLines(t).map((l) => ({ ...l, amount: '' })),
         },
   });
   const { fields, append, remove } = useFieldArray({ control, name: 'line_items' });
@@ -97,7 +103,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
       });
     },
     onSuccess: () => {
-      toast.success('Quote sent to the patient');
+      toast.success(t('cases.quoteForm.sent'));
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       void queryClient.invalidateQueries({ queryKey: qk.dashboard });
       onClose();
@@ -112,7 +118,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
       const minor = toMinor(l.amount, v.currency);
       if (minor === null || minor <= 0) {
         setError(`line_items.${i}.amount`, {
-          message: exp === 0 ? 'Enter a whole amount above 0' : `Up to ${exp} decimals, above 0`,
+          message: exp === 0 ? t('cases.quoteForm.errors.wholeAmount') : t('cases.quoteForm.errors.decimals', { count: exp }),
         });
         bad = true;
       }
@@ -125,44 +131,44 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
       open={open}
       onClose={onClose}
       size="xl"
-      title={previous ? 'Send revised quote' : 'Send quote'}
+      title={previous ? t('cases.quoteForm.titleRevised') : t('cases.quoteForm.title')}
       description={`${detail.case_number} · ${detail.patient.full_name}`}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={send.isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" form={`${ids}-form`} loading={send.isPending}>
-            Send quote · {formatMoney(total, currency)}
+            {t('cases.quoteForm.submit', { total: formatMoney(total, currency) })}
           </Button>
         </>
       }
     >
       <form id={`${ids}-form`} noValidate className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <FormField label="Treatment plan" htmlFor={`${ids}-plan`} required error={errors.treatment_plan?.message}>
+        <FormField label={t('cases.quoteForm.treatmentPlan')} htmlFor={`${ids}-plan`} required error={errors.treatment_plan?.message}>
           <Textarea
             id={`${ids}-plan`}
             rows={4}
-            placeholder="Proposed procedure, approach, lead surgeon, expected recovery…"
+            placeholder={t('cases.quoteForm.treatmentPlanPlaceholder')}
             {...register('treatment_plan')}
             aria-invalid={!!errors.treatment_plan}
           />
         </FormField>
         <div className="grid gap-4 sm:grid-cols-3">
-          <FormField label="Currency" htmlFor={`${ids}-ccy`} required>
+          <FormField label={t('cases.quoteForm.currency')} htmlFor={`${ids}-ccy`} required>
             <Select id={`${ids}-ccy`} options={SUPPORTED_CURRENCIES.map((c) => ({ value: c, label: c }))} {...register('currency')} />
           </FormField>
-          <FormField label="Estimated stay (days)" htmlFor={`${ids}-stay`} error={errors.estimated_stay_days?.message}>
+          <FormField label={t('cases.quoteForm.estimatedStay')} htmlFor={`${ids}-stay`} error={errors.estimated_stay_days?.message}>
             <Input id={`${ids}-stay`} inputMode="numeric" {...register('estimated_stay_days')} />
           </FormField>
-          <FormField label="Valid until" htmlFor={`${ids}-valid`} required error={errors.valid_until?.message}>
+          <FormField label={t('cases.quoteForm.validUntil')} htmlFor={`${ids}-valid`} required error={errors.valid_until?.message}>
             <Input id={`${ids}-valid`} type="date" min={isoDateFromToday(1)} {...register('valid_until')} />
           </FormField>
         </div>
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Line items</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('cases.quoteForm.lineItems')}</h3>
             <Button
               size="sm"
               variant="outline"
@@ -170,7 +176,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
               onClick={() => append({ category: 'other', description: '', amount: '' })}
               disabled={fields.length >= 30}
             >
-              Add item
+              {t('cases.quoteForm.addItem')}
             </Button>
           </div>
           {errors.line_items?.root?.message && <p className="mb-2 text-xs text-danger-500">{errors.line_items.root.message}</p>}
@@ -184,7 +190,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
                 >
                   <div>
                     <label className="sr-only" htmlFor={`${ids}-cat-${index}`}>
-                      Category
+                      {t('cases.quoteForm.category')}
                     </label>
                     <Select
                       id={`${ids}-cat-${index}`}
@@ -194,11 +200,11 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
                   </div>
                   <div>
                     <label className="sr-only" htmlFor={`${ids}-desc-${index}`}>
-                      Description
+                      {t('common.description')}
                     </label>
                     <Input
                       id={`${ids}-desc-${index}`}
-                      placeholder="Description"
+                      placeholder={t('common.description')}
                       {...register(`line_items.${index}.description`)}
                       aria-invalid={!!err?.description}
                     />
@@ -206,12 +212,12 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
                   </div>
                   <div>
                     <label className="sr-only" htmlFor={`${ids}-amt-${index}`}>
-                      Amount ({currency})
+                      {t('cases.quoteForm.amountIn', { currency })}
                     </label>
                     <Input
                       id={`${ids}-amt-${index}`}
                       inputMode="decimal"
-                      placeholder={`Amount (${currency})`}
+                      placeholder={t('cases.quoteForm.amountIn', { currency })}
                       {...register(`line_items.${index}.amount`)}
                       aria-invalid={!!err?.amount}
                     />
@@ -220,7 +226,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="Remove line item"
+                    aria-label={t('cases.quoteForm.removeLine')}
                     disabled={fields.length <= 1}
                     onClick={() => remove(index)}
                   >
@@ -231,7 +237,7 @@ export function QuoteFormModal({ open, onClose, detail }: { open: boolean; onClo
             })}
           </div>
           <div className="mt-3 flex justify-end text-sm">
-            <span className="text-slate-500 dark:text-slate-400">Total&nbsp;</span>
+            <span className="text-slate-500 dark:text-slate-400">{t('cases.quoteForm.total')}&nbsp;</span>
             <span className="font-semibold text-slate-900 dark:text-white">{formatMoney(total, currency)}</span>
           </div>
         </div>

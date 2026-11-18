@@ -6,10 +6,12 @@ import { DOCUMENT_KIND_LABELS, documentsApi, errorMessage, type DocumentOut } fr
 import { Button, DataTable, DateCell, StatusBadgeCell, TextCell, type DataTableColumn } from '@hig/shared/ui';
 // local ConfirmDialog: the shared one has no built-in "reason" note field
 import { ConfirmDialog } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { formatBytes } from '../../lib/format';
 
 /** Case documents shared with the hospital: authorized download + verify / reject (POST /documents/{id}/verify). */
 export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[]; caseId: string }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const [rejecting, setRejecting] = useState<DocumentOut | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
     mutationFn: ({ doc, status, note }: { doc: DocumentOut; status: 'verified' | 'rejected'; note?: string }) =>
       documentsApi.verify(doc.id, { status, ...(note ? { note } : {}) }),
     onSuccess: (_, vars) => {
-      toast.success(vars.status === 'verified' ? 'Document verified' : 'Document rejected');
+      toast.success(vars.status === 'verified' ? t('cases.documents.verified') : t('cases.documents.rejected'));
       setRejecting(null);
       void queryClient.invalidateQueries({ queryKey: ['cases', 'detail', caseId] });
     },
@@ -39,7 +41,7 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
   const columns: DataTableColumn<DocumentOut>[] = [
     {
       key: 'file',
-      header: 'Document',
+      header: t('cases.documents.document'),
       sortable: true,
       mobile: 'primary',
       className: 'max-w-72',
@@ -53,21 +55,21 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
     },
     {
       key: 'kind',
-      header: 'Type',
+      header: t('common.type'),
       sortable: true,
       sortValue: (d) => DOCUMENT_KIND_LABELS[d.kind] ?? d.kind,
       cell: (d) => DOCUMENT_KIND_LABELS[d.kind] ?? d.kind,
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('common.status'),
       sortable: true,
       mobile: 'badge',
       cell: (d) => <StatusBadgeCell status={d.status} kind="document" />,
     },
     {
       key: 'uploaded',
-      header: 'Uploaded',
+      header: t('cases.documents.uploaded'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (d) => d.created_at,
@@ -75,15 +77,15 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
     },
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('common.actions')}</span>,
+      title: t('common.actions'),
       align: 'end',
       cell: (doc) => (
         <span className="flex justify-end gap-1">
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={`Download ${doc.file_name}`}
+            aria-label={t('cases.documents.downloadAria', { name: doc.file_name })}
             loading={downloading === doc.id}
             onClick={() => void download(doc)}
           >
@@ -93,8 +95,8 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Verify ${doc.file_name}`}
-              title="Mark verified"
+              aria-label={t('cases.documents.verifyAria', { name: doc.file_name })}
+              title={t('cases.documents.markVerified')}
               disabled={verify.isPending}
               onClick={() => verify.mutate({ doc, status: 'verified' })}
             >
@@ -102,7 +104,7 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
             </Button>
           )}
           {doc.status !== 'rejected' && (
-            <Button variant="ghost" size="icon-sm" aria-label={`Reject ${doc.file_name}`} title="Reject" disabled={verify.isPending} onClick={() => setRejecting(doc)}>
+            <Button variant="ghost" size="icon-sm" aria-label={t('cases.documents.rejectAria', { name: doc.file_name })} title={t('cases.documents.reject')} disabled={verify.isPending} onClick={() => setRejecting(doc)}>
               <XCircle className="size-4 text-danger-ink" aria-hidden />
             </Button>
           )}
@@ -116,18 +118,18 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
       <DataTable
         header={
           <div className="border-b border-border px-4 py-3 sm:px-5">
-            <h2 className="text-base font-semibold text-fg">Medical documents</h2>
-            <p className="text-sm text-muted">Reports, imaging and travel documents shared for this case.</p>
+            <h2 className="text-base font-semibold text-fg">{t('cases.documents.title')}</h2>
+            <p className="text-sm text-muted">{t('cases.documents.description')}</p>
           </div>
         }
-        caption="Medical documents"
+        caption={t('cases.documents.title')}
         columns={columns}
         rows={documents}
         defaultSort={{ key: 'uploaded', direction: 'desc' }}
         responsive="cards"
         emptyIcon={<FileText className="size-6" aria-hidden />}
-        emptyTitle="No documents yet"
-        emptyDescription="Ask the patient to upload reports via the conversation."
+        emptyTitle={t('cases.documents.emptyTitle')}
+        emptyDescription={t('cases.documents.emptyDescription')}
       />
       <ConfirmDialog
         open={rejecting !== null}
@@ -135,12 +137,12 @@ export function CaseDocuments({ documents, caseId }: { documents: DocumentOut[];
         onConfirm={(note) => rejecting && verify.mutate({ doc: rejecting, status: 'rejected', note })}
         loading={verify.isPending}
         tone="danger"
-        title="Reject document?"
-        description="The patient will be asked to upload a clearer or correct document."
-        noteLabel="Reason"
+        title={t('cases.documents.rejectDialog.title')}
+        description={t('cases.documents.rejectDialog.description')}
+        noteLabel={t('cases.documents.rejectDialog.reason')}
         noteRequired
-        notePlaceholder="e.g. MRI report is incomplete - please upload all pages"
-        confirmLabel="Reject document"
+        notePlaceholder={t('cases.documents.rejectDialog.placeholder')}
+        confirmLabel={t('cases.documents.rejectDialog.confirm')}
       />
     </>
   );

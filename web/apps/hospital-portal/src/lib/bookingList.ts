@@ -1,4 +1,5 @@
 import { api, type BookingOut, type BookingStatus, type Page, type PageParams } from '@hig/shared/api';
+import { i18n } from '@hig/shared/lib';
 
 /**
  * GET /bookings with the list filters the cases module added (search, several statuses, payment state, admission
@@ -7,10 +8,17 @@ import { api, type BookingOut, type BookingStatus, type Page, type PageParams } 
  */
 export const BOOKING_PAYMENT_STATES = ['paid', 'partial', 'unpaid'] as const;
 export type BookingPaymentState = (typeof BOOKING_PAYMENT_STATES)[number];
-export const BOOKING_PAYMENT_LABELS: Record<BookingPaymentState, string> = {
-  paid: 'Paid in full',
-  partial: 'Partially paid',
-  unpaid: 'Unpaid',
+/** Labels in the current UI language (getters: translated when read, never at import time). */
+export const BOOKING_PAYMENT_LABELS: Readonly<Record<BookingPaymentState, string>> = {
+  get paid() {
+    return i18n.t('hospital:bookings.payment.paidInFull');
+  },
+  get partial() {
+    return i18n.t('hospital:bookings.payment.partiallyPaid');
+  },
+  get unpaid() {
+    return i18n.t('hospital:bookings.payment.unpaid');
+  },
 };
 
 export interface BookingListFilters {

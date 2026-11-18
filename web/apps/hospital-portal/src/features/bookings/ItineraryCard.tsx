@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -30,19 +30,23 @@ import {
 import { ConfirmDialog } from '../../components/ui';
 import { formatDateTime, fromDateTimeLocal, toDateTimeLocal } from '../../lib/format';
 import { qk } from '../../lib/queries';
+import { useAppTranslation } from '../../i18n';
 
-const schema = z
-  .object({
-    kind: z.enum(ITINERARY_KINDS),
-    title: z.string().trim().min(2, 'Enter a title').max(200),
-    description: z.string().trim().max(2000),
-    starts_at: z.string().min(1, 'Pick a start time'),
-    ends_at: z.string(),
-    location: z.string().trim().max(300),
-    status: z.enum(ITINERARY_STATUSES),
-  })
-  .refine((v) => !v.ends_at || v.ends_at >= v.starts_at, { path: ['ends_at'], message: 'Must be after the start' });
-type FormValues = z.infer<typeof schema>;
+type TFn = ReturnType<typeof useAppTranslation>['t'];
+
+const makeSchema = (t: TFn) =>
+  z
+    .object({
+      kind: z.enum(ITINERARY_KINDS),
+      title: z.string().trim().min(2, t('bookings.itinerary.errTitle')).max(200),
+      description: z.string().trim().max(2000),
+      starts_at: z.string().min(1, t('bookings.itinerary.errStart')),
+      ends_at: z.string(),
+      location: z.string().trim().max(300),
+      status: z.enum(ITINERARY_STATUSES),
+    })
+    .refine((v) => !v.ends_at || v.ends_at >= v.starts_at, { path: ['ends_at'], message: t('bookings.itinerary.errEnd') });
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
 function ItineraryForm({
   bookingId,
@@ -54,6 +58,8 @@ function ItineraryForm({
   onClose: () => void;
 }) {
   const ids = useId();
+  const { t } = useAppTranslation();
+  const schema = useMemo(() => makeSchema(t), [t]);
   const queryClient = useQueryClient();
   const {
     register,
@@ -86,7 +92,7 @@ function ItineraryForm({
       return item ? bookingsApi.updateItineraryItem(bookingId, item.id, body) : bookingsApi.addItineraryItem(bookingId, body);
     },
     onSuccess: () => {
-      toast.success(item ? 'Itinerary updated' : 'Added to itinerary');
+      toast.success(item ? t('bookings.itinerary.updated') : t('bookings.itinerary.added'));
       void queryClient.invalidateQueries({ queryKey: qk.itinerary(bookingId) });
       onClose();
     },
@@ -97,48 +103,48 @@ function ItineraryForm({
     <Modal
       open
       onClose={onClose}
-      title={item ? 'Edit itinerary item' : 'Add itinerary item'}
-      description="Visible to the patient, their agent and the care coordinator."
+      title={item ? t('bookings.itinerary.editTitle') : t('bookings.itinerary.addTitle')}
+      description={t('bookings.itinerary.formDescription')}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={save.isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" form={`${ids}-form`} loading={save.isPending}>
-            Save
+            {t('common.save')}
           </Button>
         </>
       }
     >
       <form id={`${ids}-form`} noValidate className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit((v) => save.mutate(v))}>
-        <FormField label="Type" htmlFor={`${ids}-kind`} required>
+        <FormField label={t('common.type')} htmlFor={`${ids}-kind`} required>
           <Select
             id={`${ids}-kind`}
             options={ITINERARY_KINDS.map((k) => ({ value: k, label: ITINERARY_KIND_LABELS[k] }))}
             {...register('kind')}
           />
         </FormField>
-        <FormField label="Status" htmlFor={`${ids}-status`}>
+        <FormField label={t('common.status')} htmlFor={`${ids}-status`}>
           <Select
             id={`${ids}-status`}
             options={ITINERARY_STATUSES.map((s) => ({ value: s, label: ITINERARY_STATUS_LABELS[s] }))}
             {...register('status')}
           />
         </FormField>
-        <FormField label="Title" htmlFor={`${ids}-title`} required error={errors.title?.message} className="sm:col-span-2">
-          <Input id={`${ids}-title`} placeholder="e.g. Pre-operative assessment" {...register('title')} aria-invalid={!!errors.title} />
+        <FormField label={t('bookings.itinerary.fieldTitle')} htmlFor={`${ids}-title`} required error={errors.title?.message} className="sm:col-span-2">
+          <Input id={`${ids}-title`} placeholder={t('bookings.itinerary.titlePlaceholder')} {...register('title')} aria-invalid={!!errors.title} />
         </FormField>
-        <FormField label="Starts" htmlFor={`${ids}-start`} required error={errors.starts_at?.message}>
+        <FormField label={t('bookings.itinerary.starts')} htmlFor={`${ids}-start`} required error={errors.starts_at?.message}>
           <Input id={`${ids}-start`} type="datetime-local" {...register('starts_at')} aria-invalid={!!errors.starts_at} />
         </FormField>
-        <FormField label="Ends" htmlFor={`${ids}-end`} error={errors.ends_at?.message}>
+        <FormField label={t('bookings.itinerary.ends')} htmlFor={`${ids}-end`} error={errors.ends_at?.message}>
           <Input id={`${ids}-end`} type="datetime-local" {...register('ends_at')} aria-invalid={!!errors.ends_at} />
         </FormField>
-        <FormField label="Location" htmlFor={`${ids}-loc`} className="sm:col-span-2">
-          <Input id={`${ids}-loc`} placeholder="e.g. Block B, 3rd floor, Cardiology OPD" {...register('location')} />
+        <FormField label={t('bookings.itinerary.location')} htmlFor={`${ids}-loc`} className="sm:col-span-2">
+          <Input id={`${ids}-loc`} placeholder={t('bookings.itinerary.locationPlaceholder')} {...register('location')} />
         </FormField>
-        <FormField label="Details for the patient" htmlFor={`${ids}-desc`} className="sm:col-span-2">
-          <Textarea id={`${ids}-desc`} placeholder="Fasting from midnight, bring passport…" {...register('description')} />
+        <FormField label={t('bookings.itinerary.details')} htmlFor={`${ids}-desc`} className="sm:col-span-2">
+          <Textarea id={`${ids}-desc`} placeholder={t('bookings.itinerary.detailsPlaceholder')} {...register('description')} />
         </FormField>
       </form>
     </Modal>
@@ -147,6 +153,7 @@ function ItineraryForm({
 
 /** Booking itinerary (GET/POST /bookings/{id}/itinerary, PATCH/DELETE /bookings/{id}/itinerary/{item_id}). */
 export function ItineraryCard({ bookingId, editable }: { bookingId: string; editable: boolean }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const items = useQuery({ queryKey: qk.itinerary(bookingId), queryFn: () => bookingsApi.itinerary(bookingId) });
   const [editing, setEditing] = useState<ItineraryItemOut | 'new' | null>(null);
@@ -155,7 +162,7 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
   const remove = useMutation({
     mutationFn: (item: ItineraryItemOut) => bookingsApi.deleteItineraryItem(bookingId, item.id),
     onSuccess: () => {
-      toast.success('Removed from itinerary');
+      toast.success(t('bookings.itinerary.removed'));
       setDeleting(null);
       void queryClient.invalidateQueries({ queryKey: qk.itinerary(bookingId) });
     },
@@ -165,17 +172,17 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
   const columns: DataTableColumn<ItineraryItemOut>[] = [
     {
       key: 'when',
-      header: 'When',
+      header: t('bookings.itinerary.colWhen'),
       sortable: true,
       mobile: 'secondary',
       sortValue: (item) => item.starts_at,
       cell: (item) => (
-        <DateCell value={item.starts_at} display="datetime" secondary={item.ends_at ? `until ${formatDateTime(item.ends_at)}` : undefined} />
+        <DateCell value={item.starts_at} display="datetime" secondary={item.ends_at ? t('bookings.itinerary.until', { date: formatDateTime(item.ends_at) }) : undefined} />
       ),
     },
     {
       key: 'item',
-      header: 'Item',
+      header: t('bookings.itinerary.colItem'),
       mobile: 'primary',
       className: 'max-w-80',
       sortable: true,
@@ -195,14 +202,14 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
     },
     {
       key: 'kind',
-      header: 'Type',
+      header: t('common.type'),
       sortable: true,
       sortValue: (item) => ITINERARY_KIND_LABELS[item.kind] ?? item.kind,
       cell: (item) => ITINERARY_KIND_LABELS[item.kind] ?? item.kind,
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('common.status'),
       sortable: true,
       mobile: 'badge',
       cell: (item) => <StatusBadgeCell status={item.status} kind="itinerary" />,
@@ -211,15 +218,15 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
       ? [
           {
             key: 'actions',
-            header: <span className="sr-only">Actions</span>,
-            title: 'Actions',
+            header: <span className="sr-only">{t('common.actions')}</span>,
+            title: t('common.actions'),
             align: 'end' as const,
             cell: (item: ItineraryItemOut) => (
               <span className="flex justify-end gap-1">
-                <Button variant="ghost" size="icon-sm" aria-label={`Edit ${item.title}`} onClick={() => setEditing(item)}>
+                <Button variant="ghost" size="icon-sm" aria-label={t('bookings.itinerary.editItem', { title: item.title })} onClick={() => setEditing(item)}>
                   <Pencil className="size-4" aria-hidden />
                 </Button>
-                <Button variant="ghost" size="icon-sm" aria-label={`Delete ${item.title}`} onClick={() => setDeleting(item)}>
+                <Button variant="ghost" size="icon-sm" aria-label={t('bookings.itinerary.deleteItem', { title: item.title })} onClick={() => setDeleting(item)}>
                   <Trash2 className="size-4 text-danger-ink" aria-hidden />
                 </Button>
               </span>
@@ -232,7 +239,7 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
   return (
     <>
       <DataTable
-        caption="Itinerary"
+        caption={t('bookings.itinerary.title')}
         columns={columns}
         rows={items.data}
         loading={items.isPending}
@@ -240,17 +247,17 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
         onRetry={() => void items.refetch()}
         defaultSort={{ key: 'when', direction: 'asc' }}
         responsive="cards"
-        emptyTitle="No itinerary yet"
-        emptyDescription="Add the admission, surgery and follow-up schedule."
+        emptyTitle={t('bookings.itinerary.emptyTitle')}
+        emptyDescription={t('bookings.itinerary.emptyDescription')}
         header={
           <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
             <div className="min-w-0">
-              <h2 className="text-base font-semibold text-fg">Itinerary</h2>
-              <p className="text-sm text-muted">Appointments, admission, surgery and follow-ups for the patient&apos;s stay.</p>
+              <h2 className="text-base font-semibold text-fg">{t('bookings.itinerary.title')}</h2>
+              <p className="text-sm text-muted">{t('bookings.itinerary.subtitle')}</p>
             </div>
             {editable && (
               <Button size="sm" leftIcon={<Plus className="size-4" aria-hidden />} onClick={() => setEditing('new')}>
-                Add item
+                {t('bookings.itinerary.addItem')}
               </Button>
             )}
           </div>
@@ -263,9 +270,9 @@ export function ItineraryCard({ bookingId, editable }: { bookingId: string; edit
         onConfirm={() => deleting && remove.mutate(deleting)}
         loading={remove.isPending}
         tone="danger"
-        title="Delete itinerary item?"
-        description={deleting ? `"${deleting.title}" will be removed from the patient's schedule.` : undefined}
-        confirmLabel="Delete"
+        title={t('bookings.itinerary.deleteTitle')}
+        description={deleting ? t('bookings.itinerary.deleteDescription', { title: deleting.title }) : undefined}
+        confirmLabel={t('common.delete')}
       />
     </>
   );

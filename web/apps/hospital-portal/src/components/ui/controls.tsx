@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { Link } from 'react-router';
 import { Loader2, Upload } from 'lucide-react';
+import { useAppTranslation } from '../../i18n';
 import { cn } from '../../lib/format';
 
 // ------------------------------------------------------------------------------------------------ Button
@@ -126,7 +127,7 @@ export const Select = forwardRef<
   SelectHTMLAttributes<HTMLSelectElement> & { options: readonly SelectOption[]; placeholder?: string }
 >(function Select({ className, options, placeholder, ...rest }, ref) {
   return (
-    <select ref={ref} className={cn(fieldBase, 'h-10 pr-8', className)} {...rest}>
+    <select ref={ref} className={cn(fieldBase, 'h-10 pe-8', className)} {...rest}>
       {placeholder !== undefined && <option value="">{placeholder}</option>}
       {options.map((o) => (
         <option key={o.value} value={o.value} disabled={o.disabled}>
@@ -197,7 +198,7 @@ export function Switch({
         <span
           className={cn(
             'inline-block h-5 w-5 rounded-full bg-white shadow transition-transform',
-            checked ? 'translate-x-5' : 'translate-x-0.5',
+            checked ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0.5 rtl:-translate-x-0.5',
           )}
         />
       </button>
@@ -228,7 +229,7 @@ export function FormField({
       <label htmlFor={htmlFor} className="block text-sm font-medium text-fg">
         {label}
         {required && (
-          <span className="ml-0.5 text-danger-500" aria-hidden>
+          <span className="ms-0.5 text-danger-500" aria-hidden>
             *
           </span>
         )}
@@ -283,7 +284,7 @@ export function FileButton({
   accept = UPLOAD_ACCEPT,
   loading,
   disabled,
-  children = 'Upload file',
+  children,
   variant = 'outline',
   size = 'sm',
   maxMb = 20,
@@ -299,6 +300,7 @@ export function FileButton({
   maxMb?: number;
   onInvalid?: (message: string) => void;
 }) {
+  const { t } = useAppTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <>
@@ -314,7 +316,7 @@ export function FileButton({
           e.target.value = '';
           if (!file) return;
           if (file.size > maxMb * 1024 * 1024) {
-            onInvalid?.(`File is larger than ${maxMb} MB.`);
+            onInvalid?.(t('ui.fileTooLarge', { size: maxMb }));
             return;
           }
           onFile(file);
@@ -328,7 +330,7 @@ export function FileButton({
         icon={<Upload className="h-4 w-4" aria-hidden />}
         onClick={() => inputRef.current?.click()}
       >
-        {children}
+        {children ?? t('ui.uploadFile')}
       </Button>
     </>
   );
