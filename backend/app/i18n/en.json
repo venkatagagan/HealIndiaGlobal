@@ -487,5 +487,68 @@
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
     "default_language_required": "English is the default language and cannot be switched off."
+  },
+  "content": {
+    "wait": {
+      "range": "{min}–{max} {unit}",
+      "single": "{n} {unit}",
+      "qualified": "{text} ({qualifier})",
+      "limited": "Limited local availability",
+      "qualifier": {
+        "nhs": "NHS",
+        "private": "private",
+        "public": "public"
+      },
+      "unit": {
+        "day": {
+          "zero": "days",
+          "one": "day",
+          "two": "days",
+          "few": "days",
+          "many": "days",
+          "other": "days"
+        },
+        "week": {
+          "zero": "weeks",
+          "one": "week",
+          "two": "weeks",
+          "few": "weeks",
+          "many": "weeks",
+          "other": "weeks"
+        },
+        "month": {
+          "zero": "months",
+          "one": "month",
+          "two": "months",
+          "few": "months",
+          "many": "months",
+          "other": "months"
+        },
+        "year": {
+          "zero": "years",
+          "one": "year",
+          "two": "years",
+          "few": "years",
+          "many": "years",
+          "other": "years"
+        }
+      }
+    }
+  },
+  "screening": {
+    "disclaimer": "This screening is an automated triage aid, not a medical diagnosis. A qualified doctor will review your case before any treatment is recommended. If your symptoms are severe or worsening, seek local medical care immediately.",
+    "rules": {
+      "emergency_advice": "Your answers include warning signs that may need urgent medical attention. Do not travel for treatment now - please contact your local emergency services or go to the nearest emergency department immediately.",
+      "summary_specialties": "Based on your answers, the most relevant specialties are: {names}.",
+      "summary_none": "We could not map your answers to a specific specialty; a coordinator will review them.",
+      "travel_urgent": "Your symptoms sound significant. Have a local doctor assess you before travelling, and share their findings with the hospital.",
+      "travel_routine": "Bring recent reports, imaging and a list of current medicines. Plan time for recovery in India before the return flight, as advised by your treating doctor.",
+      "condition_name": "Condition related to {procedure}",
+      "condition_notes": "Keyword-based estimate; not a diagnosis.",
+      "question_options": "What are my treatment options and their success rates?",
+      "question_stay": "How long will I need to stay in India after the procedure?",
+      "question_follow_up": "What follow-up care will I need at home?",
+      "red_flag_family": "{family}: {findings}"
+    }
   }
 }

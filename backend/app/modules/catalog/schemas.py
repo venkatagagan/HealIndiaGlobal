@@ -40,6 +40,7 @@ class SpecialtyOut(_Out):
 
 
 class CostBenchmarkOut(_Out):
+    id: uuid.UUID | None = None
     country_code: str
     currency: str
     cost_min_minor: int
@@ -231,6 +232,8 @@ class AvailabilityDay(_Out):
 
 
 class CostHome(BaseModel):
+    # The benchmark row (its wait/source texts can be translated: content_translations "cost_benchmark").
+    benchmark_id: uuid.UUID | None = None
     country_code: str
     min_minor: int
     max_minor: int

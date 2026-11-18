@@ -6,6 +6,12 @@
 * ``translation_overrides``: an admin's replacement text for one key of one app's shipped catalog in one
   language. A row whose ``text`` is NULL is a tombstone (the override was removed); it is kept so the public
   ``version`` of the overrides of that app/locale still moves forward after a deletion.
+* ``content_translations``: an admin's translation of one patient-facing field of one piece of server-supplied
+  content (a specialty's name, a doctor's bio, a visa checklist item's title ...) into one language.
+  Catalog rows are keyed by their UUID (as text); visa content by a natural key (``visa_rule``: the
+  nationality code; ``visa_checklist``: ``<route>:<nationality or *>:<item_key>``) so translations
+  also apply to the built-in defaults. They win over the shipped translations
+  (``app/i18n/content/<lng>.json``); English is the source and the fallback (see ``app.i18n.content``).
 """
 
 from __future__ import annotations
@@ -19,7 +25,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, TimestampMixin, UUIDPkMixin, fk
 
-__all__ = ["OVERRIDE_APPS", "Language", "TranslationOverride"]
+__all__ = ["CONTENT_ENTITY_FIELDS", "OVERRIDE_APPS", "ContentTranslation", "Language", "TranslationOverride"]
 
 #: Allowed ``translation_overrides.app`` values (keep in sync with ``app.i18n.APPS``).
 OVERRIDE_APPS: tuple[str, ...] = ("website", "patient_web", "admin", "agent", "hospital", "mobile", "server")
@@ -53,4 +59,40 @@ class TranslationOverride(UUIDPkMixin, TimestampMixin, Base):
     key: Mapped[str] = mapped_column(String(300), nullable=False)
     #: NULL = removed (tombstone)
     text: Mapped[str | None] = mapped_column(Text)
+    updated_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)
+
+
+#: Translatable fields per ``content_translations.entity_type`` (keep in sync with migration 0010e).
+CONTENT_ENTITY_FIELDS: dict[str, tuple[str, ...]] = {
+    "specialty": ("name", "description"),
+    "procedure": ("name", "description"),
+    "hospital": ("name", "description"),
+    "doctor": ("full_name", "bio"),
+    "cultural_tip": ("title", "body"),
+    "cost_benchmark": ("wait_time_text", "source", "wait_source"),
+    "visa_rule": ("notes",),
+    "visa_checklist": ("title", "description"),
+}
+
+
+class ContentTranslation(UUIDPkMixin, TimestampMixin, Base):
+    __tablename__ = "content_translations"
+    __table_args__ = (
+        sa.UniqueConstraint(
+            "entity_type", "entity_id", "field", "locale", name="uq_content_translations_entity_field_locale"
+        ),
+        sa.CheckConstraint(
+            "entity_type IN (" + ", ".join(f"'{e}'" for e in CONTENT_ENTITY_FIELDS) + ")",
+            name="entity_type_valid",
+        ),
+        sa.CheckConstraint("char_length(text) <= 10000", name="text_length"),
+        sa.CheckConstraint("locale <> 'en'", name="not_english"),
+        sa.Index("ix_content_translations_locale_entity", "locale", "entity_id"),
+    )
+
+    entity_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    entity_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    field: Mapped[str] = mapped_column(String(60), nullable=False)
+    locale: Mapped[str] = mapped_column(String(10), nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
     updated_by_user_id: Mapped[uuid.UUID | None] = fk("users.id", ondelete="SET NULL", nullable=True)

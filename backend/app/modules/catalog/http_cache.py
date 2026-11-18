@@ -4,7 +4,8 @@
 
 * every successful ``GET`` gets an ``ETag`` (hash of the exact JSON body) and a shared-cache friendly
   ``Cache-Control`` (``public, max-age=300, stale-while-revalidate=3600`` by default, shorter for availability
-  and search); a matching ``If-None-Match`` returns ``304 Not Modified`` without a body;
+  and search) and ``Vary: Accept-Language`` (content is translated); a matching ``If-None-Match`` returns
+  ``304 Not Modified`` without a body;
 * a request that carries an ``Authorization`` header gets ``private, no-cache`` instead, so no shared cache
   (CDN) ever stores a response to an authenticated request, even though the catalogue holds no personal data;
 * every request first passes ``public_catalog_rate_limit``: the website's server(s) (``WEBSITE_SERVER_IPS``)
@@ -79,6 +80,14 @@ def etag_matches(if_none_match: str | None, etag: str) -> bool:
     return any(candidate.strip().removeprefix("W/") == bare for candidate in value.split(","))
 
 
+def _vary_on_language(response: Response) -> None:
+    """Payloads are translated for the request language (``Accept-Language`` / ``?lang=``)."""
+    names = [v.strip() for v in response.headers.get("Vary", "").split(",") if v.strip()]
+    if not any(v.lower() == "accept-language" for v in names):
+        names.append("Accept-Language")
+    response.headers["Vary"] = ", ".join(names)
+
+
 class PublicCacheRoute(APIRoute):
     """APIRoute that rate-limits and adds ``ETag`` / ``Cache-Control`` (and answers 304) for public GETs."""
 
@@ -102,9 +111,14 @@ class PublicCacheRoute(APIRoute):
             cache_control = AUTHENTICATED_CACHE_CONTROL if request.headers.get("authorization") else policy
             etag = make_etag(bytes(body))
             if etag_matches(request.headers.get("if-none-match"), etag):
-                return Response(status_code=304, headers={"ETag": etag, "Cache-Control": cache_control})
+                not_modified = Response(
+                    status_code=304, headers={"ETag": etag, "Cache-Control": cache_control}
+                )
+                _vary_on_language(not_modified)
+                return not_modified
             response.headers["ETag"] = etag
             response.headers["Cache-Control"] = cache_control
+            _vary_on_language(response)
             return response
 
         return handler
