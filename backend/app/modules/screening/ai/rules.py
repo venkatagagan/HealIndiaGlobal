@@ -37,6 +37,8 @@ from app.modules.screening.ai.rules_negation import (
 from app.modules.screening.ai.schema import (
     DISCLAIMER,
     CatalogSnapshot,
+    LocalizedCondition,
+    PatientLocalized,
     PossibleCondition,
     RecommendedProcedure,
     SuggestedSpecialty,
@@ -286,10 +288,12 @@ def _max_urgency(a: Urgency, b: Urgency) -> Urgency:
 
 
 # ------------------------------------------------------------------------------------------------- engine
-def rules_triage(intake: dict[str, Any], catalog: CatalogSnapshot) -> TriageResult:
+def rules_triage(intake: dict[str, Any], catalog: CatalogSnapshot, language: str = "en") -> TriageResult:
     """Score catalog specialties/procedures from the intake and detect emergencies. ``intake`` is the dict
     built by ``prompts.build_intake`` (keys: specialty_slug, body_areas, pain_intensity, symptoms, duration,
-    severity, notes, patient)."""
+    severity, notes, patient). For a non-English (enabled) ``language`` the patient-facing texts are also
+    rendered from the translated server templates (``screening.*``) into ``summary_localized`` /
+    ``patient_localized``; the English result is unchanged."""
     spec_by_slug = catalog.specialty_by_slug()
     proc_by_slug = catalog.procedure_by_slug()
     library = _library_index()
@@ -477,6 +481,13 @@ def rules_triage(intake: dict[str, Any], catalog: CatalogSnapshot) -> TriageResu
         )
         for p in procedures[:2]
     ]
+    summary_localized, patient_localized = _localized_texts(
+        language,
+        specialty_names=[s.name for s in suggested[:3]],
+        procedure_names=[p.name for p in procedures[:2]],
+        urgency=urgency,
+        red_flags=detection.red_flags(locale=language) if language != "en" else [],
+    )
     return TriageResult(
         summary=summary,
         suggested_specialties=suggested,
@@ -493,4 +504,61 @@ def rules_triage(intake: dict[str, Any], catalog: CatalogSnapshot) -> TriageResu
         travel_advice=travel_advice,
         disclaimer=DISCLAIMER,
         engine=AIEngine.RULES,
+        summary_localized=summary_localized,
+        summary_language=patient_localized.language if patient_localized is not None else "en",
+        patient_localized=patient_localized,
     )
+
+
+def _localized_texts(
+    language: str,
+    *,
+    specialty_names: list[str],
+    procedure_names: list[str],
+    urgency: Urgency,
+    red_flags: list[str],
+) -> tuple[str, PatientLocalized | None]:
+    """The rules engine's patient texts in ``language``, from the translated ``screening.*`` templates."""
+    from app.i18n import enabled_languages, normalize_locale, t
+    from app.i18n.content import localize_text
+
+    code = normalize_locale(language) or "en"
+    if code == "en" or code not in enabled_languages():
+        return "", None
+
+    def name(text: str) -> str:
+        return localize_text(text, code) or text
+
+    if specialty_names:
+        names = t("common.list_separator", code).join(name(n) for n in specialty_names)
+        summary = t("screening.rules.summary_specialties", code, names=names)
+    else:
+        summary = t("screening.rules.summary_none", code)
+    if urgency == Urgency.EMERGENCY:
+        advice = t("screening.rules.emergency_advice", code)
+        summary = f"{advice} {summary}"
+        travel = advice
+    elif urgency == Urgency.URGENT:
+        travel = t("screening.rules.travel_urgent", code)
+    else:
+        travel = t("screening.rules.travel_routine", code)
+    block = PatientLocalized(
+        language=code,
+        possible_conditions=[
+            LocalizedCondition(
+                name=t("screening.rules.condition_name", code, procedure=name(p)),
+                notes=t("screening.rules.condition_notes", code),
+            )
+            for p in procedure_names
+        ],
+        red_flags=red_flags,
+        recommended_tests=[],
+        questions_for_doctor=[
+            t("screening.rules.question_options", code),
+            t("screening.rules.question_stay", code),
+            t("screening.rules.question_follow_up", code),
+        ],
+        travel_advice=travel,
+        disclaimer=t("screening.disclaimer", code),
+    )
+    return summary, block

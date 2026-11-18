@@ -11,6 +11,10 @@
  *   en/stories/<slug>.md                      category "story"           (consented patient stories)
  * See content/README.md, section 10 ("Website-only pages").
  *
+ * Translations (content/README.md, section 11): <lng>/<same path as in en/>.md for ar, fr, bn, ru, with
+ * locale "<lng>", dir "rtl" (ar) or "ltr", translation_of "en/<path>" (must exist) and source_updated. A relative
+ * link may point to a page that is not translated yet: it then resolves to the English page.
+ *
  * Node 22, no dependencies.
  */
 import fs from 'node:fs';
@@ -21,14 +25,17 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const INDEX = path.join(ROOT, 'index.json');
 const CHECK = process.argv.includes('--check');
 
-/** The product is English only: every page lives under en/ with locale "en" and dir "ltr". */
+/** English is the source; translated copies live under <lng>/ (same relative path). */
 const LOCALE = 'en';
+const TRANSLATION_LOCALES = ['ar', 'fr', 'bn', 'ru'];
+const LOCALES = [LOCALE, ...TRANSLATION_LOCALES];
+const RTL_LOCALES = new Set(['ar']);
 const CATEGORIES = ['faq', 'guide', 'policy', 'city', 'procedure'];
 const REQUIRED = ['slug', 'title', 'category', 'locale', 'dir', 'summary', 'updated', 'review_status', 'review_required'];
 const STATUSES = ['draft', 'in_review', 'approved'];
-const REVIEWS = ['medical', 'legal', 'fact_check', 'editorial'];
+const REVIEWS = ['medical', 'legal', 'fact_check', 'editorial', 'translation'];
 /** Website-only categories and the folder each must live in. */
-const WEBSITE_ONLY = { procedure_city: 'en/procedure-city/', cost_guide: 'en/cost-guides/', story: 'en/stories/' };
+const WEBSITE_ONLY = { procedure_city: 'procedure-city/', cost_guide: 'cost-guides/', story: 'stories/' };
 /** Story keys that hold JSON objects/booleans instead of strings. */
 const STORY_JSON_KEYS = new Set(['consent', 'draft']);
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -55,7 +62,7 @@ function countrySlug(code) {
 
 function validateWebsiteOnly(meta, rel, err) {
   const folder = WEBSITE_ONLY[meta.category];
-  if (!rel.startsWith(folder)) err(`category "${meta.category}" pages must live in ${folder}`);
+  if (!rel.slice(rel.indexOf('/') + 1).startsWith(folder)) err(`category "${meta.category}" pages must live in <locale>/${folder}`);
   if (meta.category === 'procedure_city' || meta.category === 'cost_guide') {
     const place = meta.category === 'procedure_city' ? 'city' : 'country';
     for (const k of ['procedure', place]) if (typeof meta[k] !== 'string' || !meta[k].trim()) err(`missing "${k}"`);
@@ -175,9 +182,19 @@ for (const file of files) {
   const required = meta.category === 'story' ? REQUIRED.filter((k) => k !== 'review_status' && k !== 'review_required') : REQUIRED;
   for (const k of required) if (typeof meta[k] !== 'string' || !meta[k].trim()) err(`missing "${k}"`);
   const folderLocale = rel.split('/')[0];
-  if (folderLocale !== LOCALE) err('page must live under en/ (content is English only)');
-  if (meta.locale !== LOCALE) err(`locale must be "${LOCALE}"`);
-  if (meta.dir !== 'ltr') err('dir must be ltr');
+  if (!LOCALES.includes(folderLocale)) err(`page must live under one of ${LOCALES.map((l) => `${l}/`).join(', ')}`);
+  if (meta.locale !== folderLocale) err(`locale must be "${folderLocale}" (the top-level folder)`);
+  const expectedDir = RTL_LOCALES.has(folderLocale) ? 'rtl' : 'ltr';
+  if (meta.dir !== expectedDir) err(`dir must be ${expectedDir}`);
+  if (folderLocale !== LOCALE) {
+    const source = `${LOCALE}/${rel.slice(folderLocale.length + 1)}`;
+    if (meta.translation_of !== source) err(`translation_of must be "${source}"`);
+    else if (!known.has(source)) err(`translation_of "${source}" does not exist`);
+    if (meta.source_updated !== undefined && !DATE_RE.test(meta.source_updated)) err('source_updated must be YYYY-MM-DD');
+    if (!String(meta.review_required ?? '').split(',').map((x) => x.trim()).includes('translation')) {
+      err('translated pages need "translation" in review_required (native-speaker review)');
+    }
+  }
   if (meta.slug !== path.basename(file, '.md')) err(`slug "${meta.slug}" must equal the file name`);
   if (!CATEGORIES.includes(meta.category) && !websiteOnly) err(`unknown category "${meta.category}"`);
   if (websiteOnly) validateWebsiteOnly(meta, rel, err);
@@ -206,7 +223,9 @@ for (const file of files) {
     const [p] = target.split('#');
     if (!p) continue;
     const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(rel), p));
-    if (!known.has(resolved)) err(`broken link ${target}`);
+    // In a translation, a link to a page that is not translated yet falls back to the English page.
+    const english = folderLocale !== LOCALE ? `${LOCALE}/${resolved.slice(folderLocale.length + 1)}` : resolved;
+    if (!known.has(resolved) && !known.has(english)) err(`broken link ${target}`);
   }
 
   if (meta.category !== 'story') validateMedicalReview(meta, rel, err, (w) => warnings.push(w));
@@ -224,7 +243,8 @@ for (const file of files) {
 
 const order = (a, b) =>
   CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category) ||
-  a.slug.localeCompare(b.slug);
+  a.slug.localeCompare(b.slug) ||
+  LOCALES.indexOf(a.locale) - LOCALES.indexOf(b.locale);
 pages.sort(order);
 const json = `${JSON.stringify(pages, null, 2)}\n`;
 

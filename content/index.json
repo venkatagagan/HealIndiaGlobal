@@ -16,12 +16,76 @@
     "summary": "Emergency numbers, hospital etiquette, translators, food and water safety, getting around, personal safety and cultural norms for your time in India."
   },
   {
+    "slug": "in-country-guide",
+    "title": "دليل الإقامة في الهند",
+    "category": "guide",
+    "locale": "ar",
+    "path": "ar/in-country-guide.md",
+    "summary": "أرقام الطوارئ، وآداب المستشفى، والمترجمون، وسلامة الطعام والماء، والتنقّل، والسلامة الشخصية، والأعراف الثقافية خلال وجودك في الهند."
+  },
+  {
+    "slug": "in-country-guide",
+    "title": "Guide sur place en Inde",
+    "category": "guide",
+    "locale": "fr",
+    "path": "fr/in-country-guide.md",
+    "summary": "Numéros d'urgence, savoir-vivre à l'hôpital, interprètes, sécurité de l'eau et des aliments, déplacements, sécurité personnelle et usages culturels pendant votre séjour en Inde."
+  },
+  {
+    "slug": "in-country-guide",
+    "title": "ভারতে থাকাকালীন গাইড",
+    "category": "guide",
+    "locale": "bn",
+    "path": "bn/in-country-guide.md",
+    "summary": "ভারতে থাকার সময়ের জন্য জরুরি নম্বর, হাসপাতালের আদবকায়দা, অনুবাদক, খাবার ও পানির নিরাপত্তা, চলাফেরা, ব্যক্তিগত নিরাপত্তা ও সাংস্কৃতিক রীতিনীতি।"
+  },
+  {
+    "slug": "in-country-guide",
+    "title": "Руководство на время пребывания в Индии",
+    "category": "guide",
+    "locale": "ru",
+    "path": "ru/in-country-guide.md",
+    "summary": "Номера экстренных служб, правила поведения в больнице, переводчики, безопасность еды и воды, передвижение, личная безопасность и культурные нормы на время пребывания в Индии."
+  },
+  {
     "slug": "post-treatment-care",
     "title": "Post-treatment care",
     "category": "guide",
     "locale": "en",
     "path": "en/post-treatment-care.md",
     "summary": "How to leave hospital with the right documents, recover safely in India, fly home when you are fit to, and set up follow-up care with your local doctor."
+  },
+  {
+    "slug": "post-treatment-care",
+    "title": "الرعاية بعد العلاج",
+    "category": "guide",
+    "locale": "ar",
+    "path": "ar/post-treatment-care.md",
+    "summary": "كيف تغادر المستشفى ومعك المستندات الصحيحة، وتتعافى بأمان في الهند، وتعود إلى بلدك بالطائرة عندما تكون لائقًا لذلك، وترتّب رعاية المتابعة مع طبيبك المحلي."
+  },
+  {
+    "slug": "post-treatment-care",
+    "title": "Soins après le traitement",
+    "category": "guide",
+    "locale": "fr",
+    "path": "fr/post-treatment-care.md",
+    "summary": "Comment quitter l'hôpital avec les bons documents, vous rétablir en sécurité en Inde, rentrer en avion quand votre état le permet et organiser le suivi avec votre médecin chez vous."
+  },
+  {
+    "slug": "post-treatment-care",
+    "title": "চিকিৎসার পরের যত্ন",
+    "category": "guide",
+    "locale": "bn",
+    "path": "bn/post-treatment-care.md",
+    "summary": "সঠিক কাগজপত্র নিয়ে কীভাবে হাসপাতাল ছাড়বেন, ভারতে নিরাপদে সেরে উঠবেন, সুস্থ হলে দেশে ফিরবেন এবং আপনার স্থানীয় ডাক্তারের কাছে ফলো-আপ চিকিৎসার ব্যবস্থা করবেন।"
+  },
+  {
+    "slug": "post-treatment-care",
+    "title": "Уход после лечения",
+    "category": "guide",
+    "locale": "ru",
+    "path": "ru/post-treatment-care.md",
+    "summary": "Как выписаться из больницы с нужными документами, безопасно восстановиться в Индии, лететь домой, когда это разрешено, и организовать наблюдение у местного врача."
   },
   {
     "slug": "pre-arrival-guide",
@@ -32,6 +96,38 @@
     "summary": "A checklist and timeline from 8 weeks before travel to arrival day: medical records, e-Medical visas, insurance, packing, money, SIM cards, airport pickup and accommodation."
   },
   {
+    "slug": "pre-arrival-guide",
+    "title": "دليل ما قبل الوصول",
+    "category": "guide",
+    "locale": "ar",
+    "path": "ar/pre-arrival-guide.md",
+    "summary": "قائمة مهام وجدول زمني من 8 أسابيع قبل السفر حتى يوم الوصول: السجلات الطبية، والتأشيرات الطبية الإلكترونية، والتأمين، والأمتعة، والمال، وشرائح الاتصال، والاستقبال في المطار، والسكن."
+  },
+  {
+    "slug": "pre-arrival-guide",
+    "title": "Guide avant l'arrivée",
+    "category": "guide",
+    "locale": "fr",
+    "path": "fr/pre-arrival-guide.md",
+    "summary": "Une liste de contrôle et un calendrier, de 8 semaines avant le départ au jour d'arrivée : dossier médical, visas e-Medical, assurance, bagages, argent, carte SIM, accueil à l'aéroport et hébergement."
+  },
+  {
+    "slug": "pre-arrival-guide",
+    "title": "ভারতে আসার আগের গাইড",
+    "category": "guide",
+    "locale": "bn",
+    "path": "bn/pre-arrival-guide.md",
+    "summary": "ভ্রমণের 8 সপ্তাহ আগে থেকে পৌঁছানোর দিন পর্যন্ত চেকলিস্ট ও সময়সূচি: মেডিকেল রেকর্ড, ই-মেডিকেল ভিসা, বিমা, ব্যাগ গোছানো, টাকা, সিম কার্ড, বিমানবন্দর থেকে পিকআপ ও থাকার ব্যবস্থা।"
+  },
+  {
+    "slug": "pre-arrival-guide",
+    "title": "Руководство перед приездом",
+    "category": "guide",
+    "locale": "ru",
+    "path": "ru/pre-arrival-guide.md",
+    "summary": "Чек-лист и план от 8 недель до поездки до дня прилёта: медицинские документы, визы e-Medical, страховка, сбор вещей, деньги, SIM-карты, встреча в аэропорту и жильё."
+  },
+  {
     "slug": "visa-overview",
     "title": "e-Medical visa overview",
     "category": "guide",
@@ -40,12 +136,76 @@
     "summary": "A high-level overview of India's e-Medical and e-Medical Attendant visas, the documents usually needed and how we help. Always verify current rules on the official e-Visa website."
   },
   {
+    "slug": "visa-overview",
+    "title": "نظرة عامة على التأشيرة الطبية الإلكترونية e-Medical",
+    "category": "guide",
+    "locale": "ar",
+    "path": "ar/visa-overview.md",
+    "summary": "نظرة عامة على تأشيرتي e-Medical وe-Medical Attendant الإلكترونيتين في الهند، والمستندات المطلوبة عادة، وكيف نساعدك. تحقّق دائمًا من القواعد الحالية على موقع التأشيرة الإلكترونية الرسمي."
+  },
+  {
+    "slug": "visa-overview",
+    "title": "Le visa e-Medical en bref",
+    "category": "guide",
+    "locale": "fr",
+    "path": "fr/visa-overview.md",
+    "summary": "Vue d'ensemble des visas e-Medical et e-Medical Attendant pour l'Inde, des documents habituellement demandés et de notre aide. Vérifiez toujours les règles en vigueur sur le site officiel de l'e-Visa."
+  },
+  {
+    "slug": "visa-overview",
+    "title": "ই-মেডিকেল ভিসা: সংক্ষিপ্ত পরিচিতি",
+    "category": "guide",
+    "locale": "bn",
+    "path": "bn/visa-overview.md",
+    "summary": "ভারতের ই-মেডিকেল ও ই-মেডিকেল অ্যাটেনডেন্ট ভিসা, সাধারণত যেসব কাগজপত্র লাগে এবং আমরা কীভাবে সাহায্য করি তার সংক্ষিপ্ত পরিচিতি। বর্তমান নিয়ম সবসময় সরকারি ই-ভিসা ওয়েবসাইটে যাচাই করুন।"
+  },
+  {
+    "slug": "visa-overview",
+    "title": "Обзор электронной медицинской визы (e-Medical)",
+    "category": "guide",
+    "locale": "ru",
+    "path": "ru/visa-overview.md",
+    "summary": "Общий обзор индийских электронных виз e-Medical и e-Medical Attendant, обычно нужных документов и нашей помощи. Всегда проверяйте действующие правила на официальном сайте e-Visa."
+  },
+  {
     "slug": "payments-and-refunds",
     "title": "Payments and refunds",
     "category": "policy",
     "locale": "en",
     "path": "en/payments-and-refunds.md",
     "summary": "How quotes, deposits, payment methods, instalment plans, receipts and the default cancellation and refund tiers work. The terms in your hospital booking prevail."
+  },
+  {
+    "slug": "payments-and-refunds",
+    "title": "المدفوعات والمبالغ المستردة",
+    "category": "policy",
+    "locale": "ar",
+    "path": "ar/payments-and-refunds.md",
+    "summary": "كيف تعمل عروض الأسعار، والعربون، وطرق الدفع، وخطط التقسيط، والإيصالات، والشرائح الافتراضية للإلغاء والاسترداد. الشروط الواردة في حجزك لدى المستشفى هي التي تسري."
+  },
+  {
+    "slug": "payments-and-refunds",
+    "title": "Paiements et remboursements",
+    "category": "policy",
+    "locale": "fr",
+    "path": "fr/payments-and-refunds.md",
+    "summary": "Fonctionnement des devis, acomptes, moyens de paiement, versements échelonnés, reçus et paliers d'annulation et de remboursement par défaut. Les conditions de votre réservation à l'hôpital prévalent."
+  },
+  {
+    "slug": "payments-and-refunds",
+    "title": "পেমেন্ট ও টাকা ফেরত",
+    "category": "policy",
+    "locale": "bn",
+    "path": "bn/payments-and-refunds.md",
+    "summary": "কোটেশন, অগ্রিম জমা (ডিপোজিট), পেমেন্টের মাধ্যম, কিস্তির পরিকল্পনা, রসিদ এবং বাতিল ও টাকা ফেরতের সাধারণ ধাপগুলো কীভাবে কাজ করে। আপনার হাসপাতাল বুকিংয়ের শর্তই প্রাধান্য পায়।"
+  },
+  {
+    "slug": "payments-and-refunds",
+    "title": "Оплата и возврат средств",
+    "category": "policy",
+    "locale": "ru",
+    "path": "ru/payments-and-refunds.md",
+    "summary": "Как устроены сметы, депозиты, способы оплаты, платежи в рассрочку, квитанции и стандартные уровни возврата при отмене. Приоритет имеют условия вашего бронирования в больнице."
   },
   {
     "slug": "privacy-in-plain-language",

@@ -16,7 +16,8 @@ content/
 ├── index.json                         machine-readable index of every page (generated, see section 4)
 ├── tools/build-index.mjs              regenerates and validates index.json (Node 22, no dependencies)
 ├── site/marketing.json                marketing claims shown on the public website (not a page; see section 8)
-├── en/                                all pages (the product is English only)
+├── en/                                all pages in English (the source)
+├── ar/ fr/ bn/ ru/                    translated copies, same relative paths (section 11)
 │   ├── faq.md
 │   ├── pre-arrival-guide.md
 │   ├── in-country-guide.md
@@ -33,8 +34,9 @@ content/
 ```
 
 * One page = one Markdown file. The file name (without `.md`) is the page `slug`.
-* **English only.** The product UI and all content are English; there are no translations. Every page lives under
-  `en/` and has `locale: "en"` and `dir: "ltr"` (both kept so existing parsers and paths keep working).
+* **English is the source.** Every page exists under `en/` with `locale: "en"` and `dir: "ltr"`. Translated copies
+  live under `ar/`, `fr/`, `bn/` and `ru/` with the same relative path (section 11); readers fall back to English for
+  pages that are not translated.
 
 ## 2. Front matter
 
@@ -68,12 +70,14 @@ catalog_slug: "cabg"
 | `slug` | yes | Equals the file name. Unique within a category. |
 | `title` | yes | Page title. The body's first line repeats it as an H1. |
 | `category` | yes | One of `faq`, `guide`, `policy`, `city`, `procedure`. |
-| `locale` | yes | Always `en` (must match the top-level folder `en/`). |
-| `dir` | yes | Always `ltr`. |
+| `locale` | yes | The top-level folder: `en`, or `ar` / `fr` / `bn` / `ru` for a translation (section 11). |
+| `dir` | yes | `rtl` for `ar`, otherwise `ltr`. |
 | `summary` | yes | 1–2 plain-text sentences (no Markdown), about 200 characters at most. Used on cards and in search results. |
 | `updated` | yes | `YYYY-MM-DD` of the last content change. |
 | `review_status` | yes | `draft` → `in_review` → `approved`. Only `approved` pages may be shown in production. |
-| `review_required` | yes | Comma-separated reviews needed before approval: `medical`, `legal`, `fact_check`, `editorial`. |
+| `review_required` | yes | Comma-separated reviews needed before approval: `medical`, `legal`, `fact_check`, `editorial`, `translation` (translations only: native-speaker review). |
+| `translation_of` | translations | `en/<path>` of the English source page. |
+| `source_updated` | translations | The source page's `updated` when it was translated (a newer English `updated` means the translation is stale). |
 | `reviewed_on` | after review | `YYYY-MM-DD` of the approval. Reviewer names go in the pull request, not in the file. |
 | `reviewedBy` | after medical review | Id of the medical reviewer in `site/reviewers.json` (section 9). The website credits them on the page. |
 | `reviewedAt` | with `reviewedBy` | `YYYY-MM-DD` of the medical review ("Last reviewed" on the page; `reviewed_on` is used if missing). |
@@ -292,7 +296,11 @@ build time (`website/scripts/prebuild.mjs`). Rules:
 * Testimonials are illustrative until real, consented patient stories exist; the website always labels them
   "Illustrative". Real testimonials need written patient consent and must not include health details beyond what the
   patient agreed to publish.
-* Format: `india_wait` is a plain string and `testimonials` is a list of `{ quote, name, detail }` (English only).
+* Format: `india_wait` is a plain string and `testimonials` is a list of `{ quote, name, detail }`.
+* Translations: `site/marketing.<lng>.json` (`ar`, `fr`, `bn`, `ru`) holds only `{ "india_wait", "testimonials" }` in
+  that language; numbers and `show` flags stay in `marketing.json`. The website shows the translated wait text only
+  while the live English value still equals `marketing.json`'s `india_wait` (an edited English claim is never paired
+  with an outdated translation).
 
 ## 9. Medical reviewers (site/reviewers.json)
 
@@ -416,3 +424,23 @@ reviewedBy: "Name of the staff member who checked the consent form and the text"
 
 After any change run `node content/tools/build-index.mjs --check`, then `npm run sync` (or restart `npm run dev`) in
 `website/` so the website picks up the new files.
+
+## 11. Translations (ar, fr, bn, ru)
+
+Translated pages are copies of an English page under `<lng>/` with the **same relative path and slug**
+(`ar/visa-overview.md`, `ru/procedures/cabg.md`). The website (and any app) shows the page in the visitor's language
+when a copy exists and is visible, otherwise the English page.
+
+* Front matter: as the English page, plus `locale: "<lng>"`, `dir` (`rtl` for Arabic), `translation_of: "en/<path>"`
+  and `source_updated` (the English `updated` it was translated from). Translate `title` and `summary`; keep every other
+  key.
+* `review_status` starts at `draft` and `review_required` gets `translation` added: a native speaker checks the
+  language and, for health pages, a clinician who reads the language checks the medical content before the page is
+  approved. Medical pages keep their `> **Medical disclaimer:**` call-out (label translated).
+* Same structure as the English page: headings, lists, tables and call-outs in the same order; numbers, dates, phone
+  numbers and URLs unchanged; relative links keep the English targets (`faq.md`). A link to a page that is not
+  translated yet opens the English page.
+* When the English page changes, update `source_updated` after re-translating; until then the copy is stale.
+  `node content/tools/build-index.mjs` validates translations like any other page and lists them in `index.json`
+  with their `locale`.
+* Current state and the review list: `docs/i18n/TRANSLATION_REVIEW.md` ("Content pages").

@@ -8,6 +8,11 @@ friendly ``Cache-Control`` (304 on ``If-None-Match``) and is rate-limited per cl
 generous budget for the website's servers (``WEBSITE_SERVER_IPS``). Responses hold catalogue data only, never
 personal data. The staff-only ``/admin/catalog/*`` reports (``admin.py``) are included at the bottom with
 plain routes.
+
+Languages: payloads are built (and cached) in English, then translated for the request locale
+(``?lang=`` -> user -> ``Accept-Language``) by ``app.modules.i18n.content.localize_payload``
+(admin translations -> shipped translations -> English); the translated copy is cached per locale.
+Responses vary on ``Accept-Language``.
 """
 
 from __future__ import annotations
@@ -23,6 +28,7 @@ from app.core.currency import add_display_amounts
 from app.core.deps import DbSession, PageParams
 from app.core.enums import Gender, ServiceKind
 from app.core.errors import NotFound
+from app.core.locale import request_locale
 from app.core.pagination import Page
 from app.modules.catalog import service
 from app.modules.catalog.admin import admin_router
@@ -50,6 +56,7 @@ from app.modules.catalog.schemas import (
 from app.modules.catalog.symptoms import filter_symptoms
 from app.modules.catalog.utils import cache_key
 from app.modules.catalog.viewer import PERSONALISED_VARY, load_viewer, resolve_home_country
+from app.modules.i18n.content import localize_payload
 
 router = APIRouter(tags=["catalog"], route_class=PublicCacheRoute)
 
@@ -64,6 +71,22 @@ DisplayCurrency = Annotated[
         "preferred currency; none for anonymous callers). Original INR amounts are unchanged.",
     ),
 ]
+
+
+async def _localized(db: DbSession, request: Request, key: str, data: Any) -> Any:
+    """``data`` (English, cached under ``key``) translated for the request locale (cached per locale)."""
+    locale = request_locale(request)
+    if locale == "en":
+        return data
+
+    async def produce() -> Any:
+        return await localize_payload(db, data, locale)
+
+    return await service.cached(f"{key}:lang={locale}", produce)
+
+
+async def _cached_localized(db: DbSession, request: Request, key: str, producer: Any) -> Any:
+    return await _localized(db, request, key, await service.cached(key, producer))
 
 
 async def _with_display(db: DbSession, request: Request, data: Any, currency: str | None) -> Any:
@@ -83,19 +106,19 @@ async def _with_display(db: DbSession, request: Request, data: Any, currency: st
 
 # ----------------------------------------------------------------------------- specialties
 @router.get("/specialties", response_model=list[SpecialtyOut])
-async def list_specialties(db: DbSession) -> Any:
+async def list_specialties(db: DbSession, request: Request) -> Any:
     async def produce() -> Any:
         return [s.model_dump(mode="json") for s in await service.list_specialties(db)]
 
-    return await service.cached("catalog:specialties:all", produce)
+    return await _cached_localized(db, request, "catalog:specialties:all", produce)
 
 
 @router.get("/specialties/{slug}", response_model=SpecialtyOut)
-async def get_specialty(slug: str, db: DbSession) -> Any:
+async def get_specialty(slug: str, db: DbSession, request: Request) -> Any:
     async def produce() -> Any:
         return (await service.get_specialty(db, slug)).model_dump(mode="json")
 
-    return await service.cached(cache_key("specialty", slug=slug), produce)
+    return await _cached_localized(db, request, cache_key("specialty", slug=slug), produce)
 
 
 # ----------------------------------------------------------------------------- procedures
@@ -112,7 +135,7 @@ async def list_procedures(
             p.model_dump(mode="json") for p in await service.list_procedures(db, specialty=specialty, q=q)
         ]
 
-    data = await service.cached(cache_key("procedures", specialty=specialty, q=q), produce)
+    data = await _cached_localized(db, request, cache_key("procedures", specialty=specialty, q=q), produce)
     return await _with_display(db, request, data, currency)
 
 
@@ -121,7 +144,7 @@ async def get_procedure(slug: str, db: DbSession, request: Request, currency: Di
     async def produce() -> Any:
         return (await service.get_procedure(db, slug)).model_dump(mode="json")
 
-    data = await service.cached(cache_key("procedure", slug=slug), produce)
+    data = await _cached_localized(db, request, cache_key("procedure", slug=slug), produce)
     return await _with_display(db, request, data, currency)
 
 
@@ -138,7 +161,9 @@ async def procedure_earliest(
     async def produce() -> Any:
         return (await service.procedure_earliest(db, slug, limit=limit)).model_dump(mode="json")
 
-    data = await service.cached(cache_key("procedure-earliest", slug=slug, limit=limit), produce)
+    data = await _cached_localized(
+        db, request, cache_key("procedure-earliest", slug=slug, limit=limit), produce
+    )
     return await _with_display(db, request, data, currency)
 
 
@@ -171,7 +196,7 @@ async def list_hospitals(
         return (await service.list_hospitals(db, params, **filters)).model_dump(mode="json")
 
     key = cache_key("hospitals", page=params.page, page_size=params.page_size, **filters)
-    data = await service.cached(key, produce)
+    data = await _cached_localized(db, request, key, produce)
     return await _with_display(db, request, data, currency)
 
 
@@ -182,12 +207,12 @@ async def get_hospital(
     async def produce() -> Any:
         return (await service.get_hospital_detail(db, slug_or_id)).model_dump(mode="json")
 
-    data = await service.cached(cache_key("hospital", key=slug_or_id), produce)
+    data = await _cached_localized(db, request, cache_key("hospital", key=slug_or_id), produce)
     return await _with_display(db, request, data, currency)
 
 
 @router.get("/hospitals/{slug_or_id}/reviews", response_model=Page[ReviewOut])
-async def hospital_reviews(slug_or_id: str, db: DbSession, params: PageParams) -> Any:
+async def hospital_reviews(slug_or_id: str, db: DbSession, request: Request, params: PageParams) -> Any:
     """Published reviews, newest first (``verified_patient`` = written for a completed booking)."""
     hospital = await service.get_active_hospital(db, slug_or_id)
 
@@ -196,7 +221,7 @@ async def hospital_reviews(slug_or_id: str, db: DbSession, params: PageParams) -
         return page.model_dump(mode="json")
 
     key = cache_key("hospital-reviews", key=hospital.id, page=params.page, page_size=params.page_size)
-    return await service.cached(key, produce)
+    return await _cached_localized(db, request, key, produce)
 
 
 @router.get("/hospitals/{hospital_id}/availability", response_model=list[AvailabilityDay])
@@ -246,7 +271,7 @@ async def list_doctors(
         return (await service.list_doctors(db, params, **filters)).model_dump(mode="json")
 
     key = cache_key("doctors", page=params.page, page_size=params.page_size, **filters)
-    data = await service.cached(key, produce)
+    data = await _cached_localized(db, request, key, produce)
     return await _with_display(db, request, data, currency)
 
 
@@ -257,12 +282,12 @@ async def get_doctor(
     async def produce() -> Any:
         return (await service.get_doctor_detail(db, doctor_id)).model_dump(mode="json")
 
-    data = await service.cached(cache_key("doctor", key=doctor_id), produce)
+    data = await _cached_localized(db, request, cache_key("doctor", key=doctor_id), produce)
     return await _with_display(db, request, data, currency)
 
 
 @router.get("/doctors/{doctor_id}/reviews", response_model=Page[ReviewOut])
-async def doctor_reviews(doctor_id: str, db: DbSession, params: PageParams) -> Any:
+async def doctor_reviews(doctor_id: str, db: DbSession, request: Request, params: PageParams) -> Any:
     """Published reviews naming this doctor, newest first."""
     doctor = await service.get_active_doctor(db, doctor_id)
 
@@ -271,7 +296,7 @@ async def doctor_reviews(doctor_id: str, db: DbSession, params: PageParams) -> A
         return page.model_dump(mode="json")
 
     key = cache_key("doctor-reviews", key=doctor.id, page=params.page, page_size=params.page_size)
-    return await service.cached(key, produce)
+    return await _cached_localized(db, request, key, produce)
 
 
 @router.get("/doctors/{doctor_id}/availability", response_model=list[AvailabilityDay])
@@ -330,9 +355,8 @@ async def cost_comparison(
         )
         return result.model_dump(mode="json")
 
-    return await service.cached(
-        cache_key("cost", procedure=procedure, country=home, source=source, currency=target), produce
-    )
+    key = cache_key("cost", procedure=procedure, country=home, source=source, currency=target)
+    return await _cached_localized(db, request, key, produce)
 
 
 @router.get("/cost-comparison/highlights", response_model=CostHighlightsOut)
@@ -354,9 +378,8 @@ async def cost_highlights(
         )
         return result.model_dump(mode="json")
 
-    return await service.cached(
-        cache_key("cost-highlights", country=home, source=source, currency=target, limit=limit), produce
-    )
+    key = cache_key("cost-highlights", country=home, source=source, currency=target, limit=limit)
+    return await _cached_localized(db, request, key, produce)
 
 
 @router.get("/search", response_model=SearchResults)
@@ -372,17 +395,19 @@ async def search(
     async def produce() -> Any:
         return (await service.search(db, q)).model_dump(mode="json")
 
-    data = await service.cached(cache_key("search", q=" ".join(q.split())), produce)
+    data = await _cached_localized(db, request, cache_key("search", q=" ".join(q.split())), produce)
     return await _with_display(db, request, data, currency)
 
 
 # ----------------------------------------------------------------------------- content
 @router.get("/content/cultural-tips", response_model=list[CulturalTipOut])
-async def cultural_tips(db: DbSession, category: Annotated[str | None, Query(max_length=60)] = None) -> Any:
+async def cultural_tips(
+    db: DbSession, request: Request, category: Annotated[str | None, Query(max_length=60)] = None
+) -> Any:
     async def produce() -> Any:
         return [t.model_dump(mode="json") for t in await service.cultural_tips(db, category)]
 
-    return await service.cached(cache_key("tips", category=category), produce)
+    return await _cached_localized(db, request, cache_key("tips", category=category), produce)
 
 
 @router.get("/content/helplines", response_model=dict[str, str])

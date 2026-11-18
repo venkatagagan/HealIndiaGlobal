@@ -342,9 +342,30 @@ async def checklist_for(
     return sorted(items, key=lambda i: (i.sort_order, i.item_key))
 
 
-async def visa_guide(db: AsyncSession, nationality: str) -> VisaGuideOut:
+async def visa_guide(db: AsyncSession, nationality: str, *, locale: str | None = None) -> VisaGuideOut:
+    """The guide for ``nationality``; ``locale`` translates the rule notes and checklist texts (admin
+    ``content_translations`` -> shipped ``app/i18n/content/<lng>.json`` -> English)."""
     code = _iso2(nationality)
     rule = await resolve_rule(db, code)
+    checklist = await checklist_for(db, rule.visa_route, code)
+    notes = rule.notes
+    if locale and locale != "en":
+        from app.modules.i18n.content import checklist_entity_id, translate_many, translate_values
+
+        notes = (await translate_values(db, locale, "visa_rule", code, {"notes": notes}))["notes"]
+        keyed = {checklist_entity_id(i.visa_route.value, i.nationality, i.item_key): i for i in checklist}
+        texts = await translate_many(
+            db,
+            locale,
+            "visa_checklist",
+            {k: {"title": i.title, "description": i.description} for k, i in keyed.items()},
+        )
+        checklist = [
+            i.model_copy(
+                update={"title": texts[k]["title"] or i.title, "description": texts[k]["description"]}
+            )
+            for k, i in keyed.items()
+        ]
     return VisaGuideOut(
         nationality=code,
         country_name=rule.country_name,
@@ -353,9 +374,9 @@ async def visa_guide(db: AsyncSession, nationality: str) -> VisaGuideOut:
         attendant_visa_type=ROUTE_ATTENDANT_TYPE[rule.visa_route],
         max_attendants=rule.max_attendants,
         typical_processing_days=rule.typical_processing_days,
-        notes=rule.notes,
+        notes=notes,
         official_url=rule.official_url,
-        checklist=await checklist_for(db, rule.visa_route, code),
+        checklist=checklist,
         is_default=rule.is_default,
         updated_at=rule.updated_at,
     )

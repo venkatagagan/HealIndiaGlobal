@@ -84,21 +84,27 @@ export function MarkdownContent({
   resolveHref,
   shiftHeadings = 0,
   className = '',
+  lang = 'en',
+  dir = 'ltr',
 }: {
   children: string;
   resolveHref: (href: string) => string | null;
   shiftHeadings?: number;
   className?: string;
+  /** Language of the Markdown itself (a translated content page, or the English fallback / legal drafts). */
+  lang?: string;
+  dir?: 'ltr' | 'rtl';
 }) {
-  // Long-form content (content/en, docs/legal) is English only: the block is marked lang="en" (and left-to-right)
-  // so translated pages announce and lay it out correctly. Site links inside it keep the page language.
+  // Long-form content is marked with its own language (lib/content.ts contentLang: the translated copy, or English
+  // when the page has no translation yet; legal drafts are English) so it is announced and laid out correctly. Site
+  // links inside it keep the page language.
   const locale = requestLocale();
   const localizedHref = (h: string) => {
     const resolved = resolveHref(h);
     return resolved && resolved.startsWith('/') && !resolved.startsWith('/#') ? localizePath(resolved, locale) : resolved;
   };
   return (
-    <div lang="en" dir="ltr" className={`prose-hig ${className}`}>
+    <div lang={lang} dir={dir} className={`prose-hig ${className}`}>
       <Markdown
         skipHtml
         remarkPlugins={[remarkGfm]}

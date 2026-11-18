@@ -34,6 +34,7 @@ from app.core.settings_store import get_setting
 from app.core.storage import ObjectNotFound, get_storage
 from app.i18n import recipient_locale
 from app.i18n import runtime as i18n_runtime
+from app.i18n.content import localize_text
 from app.models import (
     AIRequestLog,
     Doctor,
@@ -94,11 +95,45 @@ async def _specialties_by_id(db: AsyncSession, ids: set[uuid.UUID]) -> dict[uuid
 
 
 def _localize_result(result: TriageResult, viewer: User | None) -> TriageResult:
-    """Patients read ``summary`` in their language (when the AI wrote one); everyone else the English one."""
+    """Patients read the result in their language: ``summary`` (when one was written) plus the condition names
+    and notes, red flags, tests, questions, travel advice and disclaimer from ``patient_localized`` (each list
+    only when it lines up with the English one) and the catalog names of the suggested specialties/procedures.
+    Everyone else reads the English result. The stored ``patient_localized`` block is never returned."""
     patient_view = viewer is not None and str(getattr(viewer.role, "value", viewer.role)) == "patient"
-    if patient_view and result.summary_localized and result.summary_language != "en":
-        return result.model_copy(update={"summary_en": result.summary, "summary": result.summary_localized})
-    return result.model_copy(update={"summary_en": result.summary, "summary_language": "en"})
+    if not (patient_view and result.summary_language != "en" and result.summary_localized):
+        return result.model_copy(
+            update={"summary_en": result.summary, "summary_language": "en", "patient_localized": None}
+        )
+    language = result.summary_language
+    update: dict[str, Any] = {
+        "summary_en": result.summary,
+        "summary": result.summary_localized,
+        "patient_localized": None,
+        "suggested_specialties": [
+            s.model_copy(update={"name": localize_text(s.name, language) or s.name})
+            for s in result.suggested_specialties
+        ],
+        "recommended_procedures": [
+            p.model_copy(update={"name": localize_text(p.name, language) or p.name})
+            for p in result.recommended_procedures
+        ],
+    }
+    block = result.patient_localized
+    if block is not None and block.language == language:
+        if len(block.possible_conditions) == len(result.possible_conditions):
+            update["possible_conditions"] = [
+                c.model_copy(update={"name": loc.name or c.name, "notes": loc.notes or c.notes})
+                for c, loc in zip(result.possible_conditions, block.possible_conditions, strict=True)
+            ]
+        for name in ("red_flags", "recommended_tests", "questions_for_doctor"):
+            localized = getattr(block, name)
+            if len(localized) == len(getattr(result, name)):
+                update[name] = list(localized)
+        if block.travel_advice:
+            update["travel_advice"] = block.travel_advice
+        if block.disclaimer:
+            update["disclaimer"] = block.disclaimer
+    return result.model_copy(update=update)
 
 
 def _to_out(screening: Screening, specialty: Specialty | None, viewer: User | None = None) -> ScreeningOut:
@@ -740,7 +775,11 @@ async def process_screening(db: AsyncSession, screening_id: uuid.UUID) -> bool:
         await db.commit()
 
     if result is None:
-        result = rules_triage(intake, catalog)
+        # The patient-facing texts also come from the translated templates in the patient's language.
+        await i18n_runtime.ensure_fresh()
+        patient_user = await db.get(User, profile.user_id) if profile is not None else None
+        await db.commit()
+        result = rules_triage(intake, catalog, language=recipient_locale(patient_user))
 
     # Re-lock and make sure nobody re-submitted or finished the screening meanwhile.
     screening = (

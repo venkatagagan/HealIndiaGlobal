@@ -692,5 +692,68 @@
         "body_one": "Relancez {name} aujourd'hui."
       }
     }
+  },
+  "content": {
+    "wait": {
+      "range": "{min}–{max} {unit}",
+      "single": "{n} {unit}",
+      "qualified": "{text} ({qualifier})",
+      "limited": "Disponibilité locale limitée",
+      "qualifier": {
+        "nhs": "NHS",
+        "private": "privé",
+        "public": "public"
+      },
+      "unit": {
+        "day": {
+          "zero": "jour",
+          "one": "jour",
+          "two": "jours",
+          "few": "jours",
+          "many": "jours",
+          "other": "jours"
+        },
+        "week": {
+          "zero": "semaine",
+          "one": "semaine",
+          "two": "semaines",
+          "few": "semaines",
+          "many": "semaines",
+          "other": "semaines"
+        },
+        "month": {
+          "zero": "mois",
+          "one": "mois",
+          "two": "mois",
+          "few": "mois",
+          "many": "mois",
+          "other": "mois"
+        },
+        "year": {
+          "zero": "an",
+          "one": "an",
+          "two": "ans",
+          "few": "ans",
+          "many": "ans",
+          "other": "ans"
+        }
+      }
+    }
+  },
+  "screening": {
+    "disclaimer": "Ce dépistage est une aide automatisée à l'orientation, pas un diagnostic médical. Un médecin qualifié examinera votre dossier avant toute recommandation de traitement. Si vos symptômes sont graves ou s'aggravent, consultez immédiatement un service médical près de chez vous.",
+    "rules": {
+      "emergency_advice": "Vos réponses comportent des signes d'alerte qui peuvent nécessiter des soins médicaux urgents. Ne partez pas vous faire soigner maintenant : contactez immédiatement les services d'urgence locaux ou rendez-vous au service des urgences le plus proche.",
+      "summary_specialties": "D'après vos réponses, les spécialités les plus adaptées sont : {names}.",
+      "summary_none": "Nous n'avons pas pu associer vos réponses à une spécialité précise ; un coordinateur va les examiner.",
+      "travel_urgent": "Vos symptômes semblent importants. Faites-vous examiner par un médecin près de chez vous avant de voyager et transmettez ses conclusions à l'hôpital.",
+      "travel_routine": "Apportez vos comptes rendus et examens d'imagerie récents ainsi que la liste de vos médicaments actuels. Prévoyez du temps de récupération en Inde avant le vol retour, selon les conseils de votre médecin traitant.",
+      "condition_name": "Affection liée à : {procedure}",
+      "condition_notes": "Estimation fondée sur des mots-clés ; ce n'est pas un diagnostic.",
+      "question_options": "Quelles sont mes options de traitement et leurs taux de réussite ?",
+      "question_stay": "Combien de temps devrai-je rester en Inde après l'intervention ?",
+      "question_follow_up": "De quel suivi aurai-je besoin une fois rentré chez moi ?",
+      "red_flag_family": "{family} : {findings}"
+    }
   }
 }

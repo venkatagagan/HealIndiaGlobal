@@ -209,6 +209,7 @@ function SpecialtiesSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(s) => s.id}
       rowLabel={(s) => s.name}
       canEdit={canEdit}
+      translations={{ entityType: 'specialty' }}
       searchText={(s) => `${s.name} ${s.slug}`}
       filterRow={(s) => matchesActive(filters.active, s.is_active)}
       filters={
@@ -315,6 +316,7 @@ function ProceduresSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(p) => p.id}
       rowLabel={(p) => p.name}
       canEdit={canEdit}
+      translations={{ entityType: 'procedure' }}
       searchText={(p) => `${p.name} ${p.slug} ${(p.keywords ?? []).join(' ')}`}
       filterRow={(p) => (!filters.specialty || p.specialty?.id === filters.specialty) && matchesActive(filters.active, p.is_active)}
       alsoInvalidate={[specialtiesKey]}
@@ -510,6 +512,7 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(b) => b.id ?? `${b.procedure_id}-${b.country_code}`}
       rowLabel={(b) => `${nameOf(b)} ${b.country_code}`.trim()}
       canEdit={canEdit}
+      translations={{ entityType: 'cost_benchmark', entityId: (b) => b.id ?? '' }}
       searchText={(b) => `${nameOf(b)} ${b.country_code} ${countryName(b.country_code)}`}
       filterRow={(b) => (!filters.procedure || b.procedure_id === filters.procedure) && (!filters.country || b.country_code === filters.country)}
       alsoInvalidate={[proceduresKey]}

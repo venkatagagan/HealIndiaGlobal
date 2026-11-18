@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response, status
 
 from app.core.deps import ADMIN_ROLES, STAFF_ROLES, DbSession, require_roles
 from app.core.enums import VisaRoute
+from app.core.locale import RequestLocale
 from app.models import User
 from app.modules.hospitals.policies import Portal
 from app.modules.travel import visa
@@ -22,10 +23,14 @@ Nationality = Annotated[str, Query(min_length=2, max_length=2, pattern=r"^[A-Za-
 
 
 @router.get("/travel/visa-guide", response_model=visa.VisaGuideOut)
-async def visa_guide(nationality: Nationality, db: DbSession) -> visa.VisaGuideOut:
+async def visa_guide(
+    nationality: Nationality, db: DbSession, response: Response, locale: RequestLocale
+) -> visa.VisaGuideOut:
     """Public: how a national of ``nationality`` (ISO2) gets a visa for treatment in India - route,
-    checklist, processing time, attendants and the official link."""
-    return await visa.visa_guide(db, nationality)
+    checklist, processing time, attendants and the official link. Notes and checklist texts are in the request
+    language (admin translation -> shipped translation -> English)."""
+    response.headers["Vary"] = "Accept-Language"
+    return await visa.visa_guide(db, nationality, locale=locale)
 
 
 # ---------------------------------------------------------------------------------------------------- admin

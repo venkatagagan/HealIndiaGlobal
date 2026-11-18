@@ -322,6 +322,7 @@ async def test_cost_comparison_math_and_conversion(client, db):
         "wait_time_text": "1–2 weeks",
         "earliest_admission_date": None,
     }
+    assert c["home"].pop("benchmark_id")  # the benchmark row (its texts can be translated)
     assert c["home"] == {
         "country_code": "US",
         "min_minor": 35_000_00,

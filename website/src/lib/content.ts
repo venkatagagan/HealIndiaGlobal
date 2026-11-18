@@ -6,6 +6,10 @@ import 'server-only';
  * front matter = one `key: "json string"` per line; first body line is an H1 equal to `title`;
  * internal links are relative `.md` paths; call-outs are block quotes starting with a bold label.
  *
+ * Languages: pages exist in English (content/en) and may have translated copies (content/<lng>, same relative path;
+ * content/README.md section 11). Page lookups return the copy in the page language when it exists and is visible,
+ * otherwise the English page; `meta.locale` / `meta.dir` say which one it is.
+ *
  * Review status: content pages are drafts until approved. Drafts are shown with a banner in development and hidden
  * in production unless CONTENT_INCLUDE_DRAFTS overrides it (see includeDrafts). Legal drafts are shown with a "draft" banner unless LEGAL_SHOW_DRAFTS=false.
  */
@@ -13,6 +17,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import GithubSlugger from 'github-slugger';
 import { routes } from '@/lib/routes';
+import { requestLocale } from '@/i18n/request';
 
 const SNAPSHOT = path.join(process.cwd(), 'content-snapshot');
 const CONTENT_DIR = path.join(SNAPSHOT, 'content');
@@ -36,7 +41,7 @@ export interface ContentMeta {
   slug: string;
   title: string;
   category: 'faq' | 'guide' | 'policy' | 'city' | 'procedure' | string;
-  /** Always "en" (the content pack is English only). */
+  /** "en" or the language of a translated copy ("ar", "fr", "bn", "ru"). */
   locale: string;
   dir?: string;
   summary?: string;
@@ -135,11 +140,20 @@ function toPage(entry: ContentEntry): ContentPage {
   };
 }
 
-/** Find an English page by predicate. Respects review status. */
-export function findContent(predicate: (e: ContentEntry) => boolean): ContentPage | null {
+/**
+ * Find a page by predicate in `locale` (default: the language of the page being rendered), falling back to the
+ * English page when there is no visible translation. Respects review status.
+ */
+export function findContent(predicate: (e: ContentEntry) => boolean, locale: string = requestLocale()): ContentPage | null {
   const pages = allContent().filter(predicate);
-  const en = pages.find((p) => p.meta.locale === 'en' && visible(p));
+  const localized = locale !== 'en' ? pages.find((p) => p.meta.locale === locale && visible(p)) : undefined;
+  const en = localized ?? pages.find((p) => p.meta.locale === 'en' && visible(p));
   return en ? toPage(en) : null;
+}
+
+/** `lang` / `dir` attributes for rendering a page's Markdown (the page may be the English fallback). */
+export function contentLang(page: Pick<ContentEntry, 'meta'>): { lang: string; dir: 'ltr' | 'rtl' } {
+  return { lang: page.meta.locale || 'en', dir: page.meta.dir === 'rtl' ? 'rtl' : 'ltr' };
 }
 
 export function contentBySlug(slug: string, category?: string): ContentPage | null {

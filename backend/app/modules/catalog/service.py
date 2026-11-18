@@ -94,6 +94,7 @@ from app.modules.catalog.schemas import (
     SpecialtyOut,
 )
 from app.modules.catalog.utils import language_variants, like_pattern, parse_uuid
+from app.modules.i18n.content import search_condition
 
 CACHE_PREFIX = "catalog:"
 CACHE_TTL_SECONDS = 60.0
@@ -150,6 +151,14 @@ def _text_match(column: Any, term: str) -> Any:
     return cond
 
 
+def _name_match(entity_type: str, id_column: Any, name_column: Any, term: str, field: str = "name") -> Any:
+    """English name match OR a match on its translation (admin or shipped, any language), so "قلب" or "колено"
+    finds the cardiology / knee rows."""
+    return or_(
+        _text_match(name_column, term), search_condition(entity_type, id_column, name_column, term, field)
+    )
+
+
 def _clean_term(q: str | None) -> str | None:
     term = " ".join((q or "").split())[:100]
     return term or None
@@ -190,7 +199,10 @@ async def list_specialties(
     term = _clean_term(q)
     if term:
         stmt = stmt.where(
-            or_(_text_match(Specialty.name, term), Specialty.slug.ilike(like_pattern(term), escape="\\"))
+            or_(
+                _name_match("specialty", Specialty.id, Specialty.name, term),
+                Specialty.slug.ilike(like_pattern(term), escape="\\"),
+            )
         )
     if limit:
         stmt = stmt.limit(limit)
@@ -270,7 +282,7 @@ async def list_procedures(
     if term:
         stmt = stmt.where(
             or_(
-                _text_match(Procedure.name, term),
+                _name_match("procedure", Procedure.id, Procedure.name, term),
                 func.array_to_string(Procedure.keywords, " ").ilike(like_pattern(term), escape="\\"),
             )
         ).order_by(func.similarity(Procedure.name, term).desc(), Procedure.name, Procedure.id)
@@ -538,7 +550,10 @@ def _public_hospitals_stmt(
     term = _clean_term(q)
     if term:
         stmt = stmt.where(
-            or_(_text_match(Hospital.name, term), Hospital.city.ilike(like_pattern(term), escape="\\"))
+            or_(
+                _name_match("hospital", Hospital.id, Hospital.name, term),
+                Hospital.city.ilike(like_pattern(term), escape="\\"),
+            )
         )
     if city and city.strip():
         stmt = stmt.where(func.lower(Hospital.city) == city.strip().lower())
@@ -913,7 +928,7 @@ async def list_doctors(
     stmt = _public_doctors_stmt()
     term = _clean_term(q)
     if term:
-        stmt = stmt.where(_text_match(Doctor.full_name, term))
+        stmt = stmt.where(_name_match("doctor", Doctor.id, Doctor.full_name, term, "full_name"))
     if specialty and specialty.strip():
         stmt = stmt.where(Doctor.specialty_id.in_(_specialty_ids_subq(specialty)))
     if hospital_id is not None:
@@ -1306,6 +1321,7 @@ async def _cost_parts(
     save_high = max(home_max - india_max, 0)
     pct_low, pct_high = _pct(save_low, home_min), _pct(save_high, home_max)
     home = CostHome(
+        benchmark_id=bench.id,
         country_code=bench.country_code.upper(),
         min_minor=home_min,
         max_minor=home_max,
@@ -1553,7 +1569,7 @@ async def search(db: AsyncSession, q: str) -> SearchResults:
         (
             await db.execute(
                 _public_doctors_stmt()
-                .where(_text_match(Doctor.full_name, term))
+                .where(_name_match("doctor", Doctor.id, Doctor.full_name, term, "full_name"))
                 .order_by(func.similarity(Doctor.full_name, term).desc(), Doctor.full_name, Doctor.id)
                 .limit(SEARCH_LIMIT)
             )

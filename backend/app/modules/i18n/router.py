@@ -9,19 +9,22 @@ Public (no auth, short shared cache):
 Admin (admin / super_admin, every change audited):
 * ``GET /admin/i18n/languages``, ``PATCH /admin/i18n/languages/{code}`` (English cannot be disabled)
 * ``GET /admin/i18n/strings``, ``PUT /admin/i18n/overrides``, ``DELETE /admin/i18n/overrides``
+* ``GET/PUT /admin/content-translations/{entity_type}/{entity_id}`` - translations of server-supplied content
+  (catalog names/descriptions, bios, visa notes and checklist items, tips, benchmark wait texts); see
+  ``app.modules.i18n.content``
 """
 
 from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request, Response
+from fastapi import APIRouter, Depends, Path, Query, Request, Response
 from fastapi.responses import JSONResponse
 
 from app.core.deps import DbSession, require_roles
 from app.core.enums import UserRole
 from app.models import User
-from app.modules.i18n import service
+from app.modules.i18n import content, service
 from app.modules.i18n.schemas import (
     AdminLanguageOut,
     AppName,
@@ -117,3 +120,33 @@ async def admin_delete_override(
 ) -> Response:
     await service.delete_override(db, user, app=app, locale=locale, key=key, request=request)
     return Response(status_code=204)
+
+
+# ------------------------------------------------------------------------------- content translations
+ContentType = Annotated[str, Path(min_length=2, max_length=40, pattern=r"^[a-z_]+$")]
+ContentId = Annotated[str, Path(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9_:*-]+$")]
+
+
+@router.get(
+    "/admin/content-translations/{entity_type}/{entity_id}", response_model=content.ContentTranslationsOut
+)
+async def admin_get_content_translations(
+    entity_type: ContentType, entity_id: ContentId, db: DbSession, user: AdminUser
+) -> content.ContentTranslationsOut:
+    """English source + admin / shipped / effective text per language for every translatable field."""
+    return await content.entity_translations(db, entity_type, entity_id)
+
+
+@router.put(
+    "/admin/content-translations/{entity_type}/{entity_id}", response_model=content.ContentTranslationsOut
+)
+async def admin_put_content_translations(
+    entity_type: ContentType,
+    entity_id: ContentId,
+    body: content.ContentTranslationsPut,
+    db: DbSession,
+    user: AdminUser,
+    request: Request,
+) -> content.ContentTranslationsOut:
+    """Save (or, with an empty text, remove) translations of one entity; audited; clears the catalog cache."""
+    return await content.put_entity_translations(db, user, entity_type, entity_id, body, request)

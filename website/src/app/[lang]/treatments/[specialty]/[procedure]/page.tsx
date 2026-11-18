@@ -4,7 +4,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { BedDouble, CalendarDays, HeartPulse, Wallet } from 'lucide-react';
 import { getDictionary, type Dictionary } from '@/i18n';
 import { countryName, fmt, formatList, plural, intlLocale } from '@/i18n/format';
-import { marketing } from '@/config/marketing';
+import { localizedIndiaWait, marketing } from '@/config/marketing';
 import { getSiteConfig } from '@/lib/site-config';
 import {
   getCostComparison,
@@ -226,7 +226,7 @@ export default async function ProcedurePage({ params }: Props) {
             <SectionHeader id="compare-title" title={t.procedure.compareTitle} subtitle={t.procedure.compareIntro} />
             <CostCalculator
               intl={intl}
-              labels={{ ...t.procedure.calc, indiaWait: site.marketing.indiaWait || t.procedure.calc.indiaWait }}
+              labels={{ ...t.procedure.calc, indiaWait: localizedIndiaWait(site.marketing.indiaWait, t.procedure.calc.indiaWait) }}
               priceLabels={t.prices}
               india={{ min: p.india_price_min_minor!, max: p.india_price_max_minor!, currency: p.currency }}
               benchmarks={p.benchmarks}

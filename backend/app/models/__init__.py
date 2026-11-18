@@ -32,7 +32,7 @@ from app.models.hospitals import (
     Review,
     TreatmentPackage,
 )
-from app.models.i18n import Language, TranslationOverride
+from app.models.i18n import ContentTranslation, Language, TranslationOverride
 from app.models.identity import AuditLog, Consent, DeviceToken, RefreshToken, User, VerificationToken
 from app.models.jobs import BackgroundJob
 from app.models.ledger import LEDGER_DDL, LEDGER_DROP_DDL, LedgerAccount, LedgerEntry, LedgerTransaction
@@ -119,6 +119,7 @@ __all__ = [
     "Consent",
     "Consultation",
     "ContentReport",
+    "ContentTranslation",
     "Conversation",
     "SiteEnquiry",
     "ConversationParticipant",

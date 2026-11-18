@@ -15,6 +15,7 @@ import { Badge, Button as UiButton, PageHeader, SelectFilter, TextCell, type Dat
 import { useAppTranslation } from '../../../i18n';
 import { ConfirmDialog, Tabs } from '../ui';
 import { CrudSection, type FieldDef } from '../components/CrudSection';
+import { checklistEntityId } from '../components/ContentTranslations';
 import { countryName } from '../lib/lookups';
 import { useDocumentTitle } from '../lib/format';
 import { useOpsMutation } from '../lib/mutations';
@@ -247,6 +248,7 @@ function RulesSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(r) => r.nationality}
       rowLabel={(r) => `${r.nationality} ${nameOf(r)}`}
       canEdit={canEdit}
+      translations={{ entityType: 'visa_rule' }}
       searchText={(r) => `${r.nationality} ${nameOf(r)} ${r.country_name ?? ''}`}
       filterRow={(r) => !filters.route || r.visa_route === filters.route}
       description={t('visaRules.rulesDescription')}
@@ -376,6 +378,7 @@ function ChecklistSection({ canEdit }: { canEdit: boolean }) {
       rowKey={(r) => r.id}
       rowLabel={(r) => r.title}
       canEdit={canEdit}
+      translations={{ entityType: 'visa_checklist', entityId: (r) => checklistEntityId(r.visa_route, r.nationality, r.item_key) }}
       searchText={(r) => `${r.title} ${r.item_key} ${r.nationality ?? ''} ${r.description ?? ''}`}
       filterRow={(r) =>
         (!filters.route || r.visa_route === filters.route) &&

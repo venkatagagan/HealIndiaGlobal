@@ -498,3 +498,75 @@ bn and ru. Review these money, credit, terms and consent strings first:
 - `referral.notifications.signed_up.*` (must not imply anything about the friend's treatment beyond "first
   booking completed").
 - `crm.notifications.follow_up_due.*` (agent-facing; check Russian/Arabic number agreement with `{count}`).
+## Server-supplied content (added 2026-11-18, audit E7/E8)
+
+Everything below is a machine-assisted **draft**. A fluent reviewer must check it, and for medical text a
+clinician who reads the language, before the language is switched on in production. Admins correct content per
+entity in the admin portal ("Translations" button on specialties, procedures, cost benchmarks, cultural tips, visa
+rules and checklist items, the hospital header and each doctor row); an admin translation always wins over the
+shipped one, and an empty box goes back to the shipped text (or English).
+
+### Catalog, visa, tips and red flags (`backend/app/i18n/content/<lng>.json`)
+
+A flat glossary *English source -> translation* (336 entries per language). Keyed by the English text, so a
+translation silently stops applying when someone edits the English (then English shows until it is re-translated).
+
+| Group | Entries | Review focus |
+|---|---|---|
+| 16 specialty names + short descriptions | 32 | specialty naming patients recognise |
+| 62 procedure names + short descriptions | 124 | **medical review**: procedure names and abbreviations (CABG/АКШ, IVF/FIV/ЭКО ...), descriptions |
+| visa rule notes (e-Visa, no visa, regular visa, PK/AF/CA/MV, fallback) + 15 checklist items | 37 | **legal review**: e-Medical / e-Medical Attendant terms, 4/120/60-day rules, FRRO |
+| default cultural tips (titles + bodies) | 34 | tone, religious-site etiquette |
+| demo benchmark labels + "Limited local availability" | 3 | must stay marked illustrative/demo |
+| 106 emergency red-flag labels (rules engine) | 106 | **medical review, highest priority**: must stay unambiguous; Bengali transliterations (aortic dissection, cauda equina) |
+
+Known points from translation: Arabic "authorisation committee" (لجنة التفويض) may have an official term;
+Russian "arthritis" rendered "артрит" (patients may know "артроз"); French uses FIV/LCA/ORL/IRM; Russian writes
+"3000 графтов"; AF/CA/MV visa notes were translated without their internal TODO remarks (they apply once those
+remarks are removed from `visa_data.py`).
+
+### Server templates (`backend/app/i18n/<lng>.json`)
+
+- `screening.disclaimer`, `screening.rules.*` - the rules engine's patient texts (summary, emergency advice,
+  travel advice, condition label/notes, questions for the doctor). **Medical review**: the emergency advice must
+  keep "do not travel; contact local emergency services now".
+- `content.wait.*` - waiting times rendered from numbers + unit + qualifier with plural forms (Arabic
+  zero/one/two/few/many/other, Russian one/few/many). Arabic range forms ("2–8 أسابيع", "6–18 شهرًا") follow the
+  last number; check they read naturally.
+
+### AI screening output (Claude)
+
+For a non-English patient Claude also returns `patient_localized` (condition names and notes, red flags, tests,
+questions, travel advice, disclaimer) next to the English canonical result; hospitals, agents and staff keep
+English. Spot-check real outputs per language once the language is enabled.
+
+### Admin portal (`admin:contentTranslations.*`)
+
+Dialog labels, status badges and field names (37 keys incl. plural forms).
+
+### Content pages (`content/<lng>/`) - need native medical/legal review before publishing
+
+All are `review_status: "draft"` with `translation` added to `review_required`; the website shows them (with the
+draft banner) only where drafts are shown and falls back to English otherwise.
+
+| Page | ar | fr | bn | ru | Reviews |
+|---|---|---|---|---|---|
+| `visa-overview.md` | draft | draft | draft | draft | legal, fact_check, translation |
+| `pre-arrival-guide.md` | draft | draft | draft | draft | legal, fact_check, **medical**, translation |
+| `in-country-guide.md` (emergency numbers, safety) | draft | draft | draft | draft | **medical**, legal, fact_check, translation |
+| `post-treatment-care.md` | draft | draft | draft | draft | **medical**, legal, translation |
+| `payments-and-refunds.md` | draft | draft | draft | draft | legal, translation |
+| `site/marketing.<lng>.json` (wait claim, illustrative testimonials) | draft | draft | draft | draft | legal |
+
+Reviewer notes from translation: app screen names were taken from the existing app translations ("Trips",
+"Support -> Get Translator", package names); "less spicy" / "no chilli" and "Sister" (senior nurse) are kept in
+English with a gloss because patients say them in India; Russian testimonials were made gender-neutral.
+
+**Not translated yet (English shown in every language):** `faq.md`, `privacy-in-plain-language.md`, the 13 city
+guides (`cities/*.md`), the 20 procedure guides (`procedures/*.md`), and the website-only
+`procedure-city/total-knee-replacement-delhi-ncr.md`, `cost-guides/total-knee-replacement-united-states.md` and the
+placeholder story. Suggested order: FAQ, procedure guides for the top procedures (CABG, knee/hip replacement, IVF,
+kidney/liver transplant), privacy summary, then city guides.
+
+Hospital descriptions and doctor bios have no shipped translations (they are partner data); admins add them per
+entity.

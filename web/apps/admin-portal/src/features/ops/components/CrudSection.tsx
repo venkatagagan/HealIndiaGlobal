@@ -11,6 +11,7 @@ import { Button, Checkbox, ConfirmDialog, Field, Input, Modal, Select, Textarea,
 import { MoneyInput } from './MoneyInput';
 import { fromMinor, splitList, toMinor } from '../lib/format';
 import { useOpsMutation } from '../lib/mutations';
+import { TranslationsButton, type ContentEntityType } from './ContentTranslations';
 
 export type FieldKind = 'text' | 'textarea' | 'int' | 'decimal' | 'bool' | 'select' | 'list' | 'money' | 'url' | 'email';
 
@@ -176,6 +177,8 @@ export interface CrudSectionProps<Row, In> {
   /** invalidate these too after writes */
   alsoInvalidate?: readonly QueryKey[];
   description?: ReactNode;
+  /** adds a "Translations" row action (patient-facing texts per language, /admin/content-translations) */
+  translations?: { entityType: ContentEntityType; entityId?: (row: Row) => string };
 }
 
 /** Client-side list (search + pill filters + sortable table) with create/edit modal and delete confirmation
@@ -199,6 +202,7 @@ export function CrudSection<Row, In>({
   filters,
   alsoInvalidate = [],
   description,
+  translations,
 }: CrudSectionProps<Row, In>) {
   const { t } = useAppTranslation();
   const list = useQuery({ queryKey: [...queryKey, listParams ?? {}], queryFn: () => endpoints.list(listParams) });
@@ -238,6 +242,13 @@ export function CrudSection<Row, In>({
           mobile: 'meta',
           cell: (row) => (
             <span className="flex justify-end gap-1">
+              {translations && (
+                <TranslationsButton
+                  entityType={translations.entityType}
+                  entityId={(translations.entityId ?? idOf)(row)}
+                  label={rowLabel(row)}
+                />
+              )}
               <Button
                 size="sm"
                 variant="ghost"

@@ -803,7 +803,9 @@ def validate_contract(result: Any, expected_engine: str | None = None) -> list[s
 
 
 #: TriageResult fields filled by the service (not part of the model output contract / TRIAGE_JSON_SCHEMA)
-SERVER_SIDE_FIELDS = frozenset({"engine", "summary_language", "summary_localized", "summary_en"})
+SERVER_SIDE_FIELDS = frozenset(
+    {"engine", "summary_language", "summary_localized", "summary_en", "patient_localized"}
+)
 
 
 def validate_json_schema(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
