@@ -41,6 +41,7 @@ import { patientName } from '../../lib/format';
 import { useHospitalOptions } from '../../lib/lookups';
 import { qk } from '../../lib/queries';
 import { fetchAllPages, filterParam, fromMinor, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state
@@ -78,45 +79,45 @@ function toApiFilters(f: CaseFilters): Omit<CaseListParams, 'page' | 'page_size'
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-const COLUMNS: DataTableColumn<CaseOut>[] = [
+const columns = (t: AppT): DataTableColumn<CaseOut>[] => [
   {
     key: 'case',
-    header: 'Case',
+    header: t('cases.columns.case'),
     sortable: true,
     sortKey: 'case_number',
     sticky: true,
     mobile: 'secondary',
-    cell: (c) => <IdCell value={c.case_number} secondary={c.procedure?.name ?? c.specialty?.name ?? 'General enquiry'} />,
+    cell: (c) => <IdCell value={c.case_number} secondary={c.procedure?.name ?? c.specialty?.name ?? t('cases.generalEnquiry')} />,
     mobileCell: (c) => (
       <span className="font-mono text-xs">
-        {c.case_number} · {c.procedure?.name ?? c.specialty?.name ?? 'General enquiry'}
+        {c.case_number} · {c.procedure?.name ?? c.specialty?.name ?? t('cases.generalEnquiry')}
       </span>
     ),
     exportValue: (c) => c.case_number,
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('cases.columns.patient'),
     mobile: 'primary',
     className: 'max-w-52',
     cell: (c) => (
       <PersonCell
         name={c.patient.full_name}
-        secondary={[c.patient.nationality, c.patient.age != null ? `${c.patient.age}y` : null].filter(Boolean).join(' · ') || undefined}
+        secondary={[c.patient.nationality, c.patient.age != null ? t('cases.ageShort', { count: c.patient.age }) : null].filter(Boolean).join(' · ') || undefined}
       />
     ),
     exportValue: (c) => c.patient.full_name,
   },
   {
     key: 'hospital',
-    header: 'Hospital',
+    header: t('cases.columns.hospital'),
     className: 'max-w-56',
     cell: (c) => <TextCell primary={c.hospital.name} secondary={c.hospital.city} />,
     exportValue: (c) => c.hospital.name,
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('cases.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (c) => (
@@ -130,7 +131,7 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'quote',
-    header: 'Latest quote',
+    header: t('cases.columns.latestQuote'),
     align: 'end',
     cell: (c) =>
       c.latest_quote ? (
@@ -140,20 +141,20 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
           secondary={<StatusBadge status={c.latest_quote.status} kind="quote" dot={false} className="bg-transparent px-0" />}
         />
       ) : (
-        <span className="text-xs text-muted">Awaiting quote</span>
+        <span className="text-xs text-muted">{t('cases.awaitingQuote')}</span>
       ),
     exportValue: (c) => (c.latest_quote ? `${c.latest_quote.currency} ${fromMinor(c.latest_quote.total_minor, c.latest_quote.currency)}` : ''),
   },
   {
     key: 'urgency',
-    header: 'Urgency',
+    header: t('cases.columns.urgency'),
     defaultHidden: true,
     cell: (c) => (c.urgency ? <StatusBadge status={c.urgency} kind="urgency" dot /> : <span className="text-muted">—</span>),
     exportValue: (c) => (c.urgency ? URGENCY_LABELS[c.urgency] : ''),
   },
   {
     key: 'updated',
-    header: 'Updated',
+    header: t('cases.columns.updated'),
     sortable: true,
     sortKey: 'updated_at',
     sortDescFirst: true,
@@ -162,7 +163,7 @@ const COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'created',
-    header: 'Opened',
+    header: t('cases.columns.opened'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -179,7 +180,8 @@ function PatientChip({ patientId, onClear }: { patientId: string; onClear: () =>
     queryFn: () => agentPortalApi.getPatient(patientId),
     enabled: Boolean(patientId),
   });
-  useActiveFilterChip('Patient', patientId ? (patient.data ? patientName(patient.data) : 'Selected patient') : null, onClear);
+  const { t } = useAppTranslation();
+  useActiveFilterChip(t('cases.patientChip'), patientId ? (patient.data ? patientName(patient.data) : t('cases.selectedPatient')) : null, onClear);
   return null;
 }
 
@@ -187,7 +189,9 @@ function PatientChip({ patientId, onClear }: { patientId: string; onClear: () =>
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export function CasesPage() {
-  useDocumentTitle('Cases');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('cases.documentTitle'));
+  const COLUMNS = useMemo(() => columns(t), [t]);
   const navigate = useNavigate();
   const table = useTableState({ filters: FILTERS, defaultSort: '-updated_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -214,7 +218,7 @@ export function CasesPage() {
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<CaseStatus>[] = [
-    { value: '', label: 'All cases', count: counts.data?.total },
+    { value: '', label: t('cases.quick.all'), count: counts.data?.total },
     ...QUICK_STATUSES.map((s) => ({ value: s, label: CASE_STATUS_LABELS[s], count: counts.data?.counts[s] })),
   ];
   const quickValue =
@@ -223,17 +227,17 @@ export function CasesPage() {
   return (
     <div>
       <PageHeader
-        title="Cases & quotes"
-        description="Every enquiry is a case with one hospital. Tick two or three cases to compare their quotes side by side."
+        title={t('cases.title')}
+        description={t('cases.description')}
         actions={
           <ButtonLink to={filters.patient ? `/cases/new?patient=${filters.patient}` : '/cases/new'} icon={<Plus className="h-4 w-4" aria-hidden />}>
-            New enquiry
+            {t('cases.newEnquiry')}
           </ButtonLink>
         }
       />
       <DataTable
         id="agent.cases"
-        caption="Cases"
+        caption={t('cases.documentTitle')}
         table={table}
         columns={COLUMNS}
         rows={list.data?.items}
@@ -243,7 +247,7 @@ export function CasesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(c) => `/cases/${c.id}`}
-        rowLabel={(c) => `Open case ${c.case_number}`}
+        rowLabel={(c) => t('cases.openRow', { number: c.case_number })}
         selectable
         bulkActions={(selected, clear) => {
           const tooMany = selected.length > MAX_COMPARE;
@@ -253,10 +257,10 @@ export function CasesPage() {
                 size="sm"
                 icon={<GitCompare className="h-4 w-4" aria-hidden />}
                 disabled={selected.length < 2 || tooMany}
-                title={tooMany ? `Compare up to ${MAX_COMPARE} cases at a time` : selected.length < 2 ? 'Select at least two cases' : undefined}
+                title={tooMany ? t('cases.compareMax', { max: MAX_COMPARE }) : selected.length < 2 ? t('cases.compareMin') : undefined}
                 onClick={() => navigate(`/cases/compare?ids=${selected.map((c) => c.id).join(',')}`)}
               >
-                Compare quotes{tooMany ? ` (max ${MAX_COMPARE})` : ''}
+                {tooMany ? t('cases.compareQuotesMax', { max: MAX_COMPARE }) : t('cases.compareQuotes')}
               </Button>
               <Button
                 size="sm"
@@ -267,22 +271,22 @@ export function CasesPage() {
                   clear();
                 }}
               >
-                Export selected
+                {t('cases.exportSelected')}
               </Button>
             </>
           );
         }}
-        emptyTitle="No cases yet"
-        emptyDescription="Send an enquiry to hospitals on behalf of a patient. You can contact up to three hospitals at once."
-        emptyAction={<ButtonLink to="/cases/new">New enquiry</ButtonLink>}
+        emptyTitle={t('cases.emptyTitle')}
+        emptyDescription={t('cases.emptyDescription')}
+        emptyAction={<ButtonLink to="/cases/new">{t('cases.newEnquiry')}</ButtonLink>}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Case status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('cases.filters.caseStatus')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Case number or patient…', label: 'Search cases' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('cases.filters.searchPlaceholder'), label: t('cases.filters.searchLabel') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
@@ -295,7 +299,7 @@ export function CasesPage() {
             }
             more={
               <MultiSelectFilter
-                label="Urgency"
+                label={t('cases.filters.urgency')}
                 icon={<ShieldAlert className="size-3.5 opacity-70" aria-hidden />}
                 value={filters.urgency}
                 onChange={(v) => setFilter('urgency', v)}
@@ -304,9 +308,9 @@ export function CasesPage() {
             }
           >
             {filters.patient && <PatientChip patientId={filters.patient} onClear={() => setFilter('patient', '')} />}
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('cases.filters.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <SelectFilter
-              label="Hospital"
+              label={t('cases.filters.hospital')}
               icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.hospital_id}
               onChange={(v) => setFilter('hospital_id', v)}
@@ -315,12 +319,12 @@ export function CasesPage() {
               searchable
             />
             <DateRangeFilter
-              label="Date"
+              label={t('cases.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Opened' },
-                { value: 'updated', label: 'Updated' },
+                { value: 'created', label: t('cases.filters.opened') },
+                { value: 'updated', label: t('cases.filters.updated') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}

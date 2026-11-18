@@ -15,12 +15,13 @@ import { Button, ConfirmDialog, EmptyState, FormField, Select, StatusBadge } fro
 import { UPLOAD_ACCEPT } from '../../lib/constants';
 import { formatBytes } from '../../lib/format';
 import { formatDate } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 
 const MAX_UPLOAD_MB = 20;
 
 export function DocumentList({
   documents,
-  emptyText = 'No documents uploaded yet.',
+  emptyText,
   canDelete,
   aiStatus = false,
 }: {
@@ -31,6 +32,7 @@ export function DocumentList({
   /** return true for documents the current user may delete (their own uploads) */
   canDelete?: (doc: DocumentOut) => boolean;
 }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const [pendingDelete, setPendingDelete] = useState<DocumentOut | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export function DocumentList({
   const remove = useMutation({
     mutationFn: (doc: DocumentOut) => documentsApi.delete(doc.id),
     onSuccess: () => {
-      toast.success('Document deleted');
+      toast.success(t('documents.deleted'));
       void queryClient.invalidateQueries({ queryKey: ['documents'] });
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       setPendingDelete(null);
@@ -57,7 +59,7 @@ export function DocumentList({
     }
   };
 
-  if (documents.length === 0) return <EmptyState icon={<FileText className="h-6 w-6" />} title={emptyText} className="py-8" />;
+  if (documents.length === 0) return <EmptyState icon={<FileText className="h-6 w-6" />} title={emptyText ?? t('documents.empty')} className="py-8" />;
 
   return (
     <>
@@ -79,7 +81,7 @@ export function DocumentList({
             <Button
               variant="ghost"
               size="icon"
-              aria-label={`Download ${doc.file_name}`}
+              aria-label={t('documents.download', { name: doc.file_name })}
               loading={downloading === doc.id}
               onClick={() => void download(doc)}
               icon={downloading === doc.id ? undefined : <Download className="h-4 w-4" aria-hidden />}
@@ -88,7 +90,7 @@ export function DocumentList({
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label={`Delete ${doc.file_name}`}
+                aria-label={t('documents.delete', { name: doc.file_name })}
                 onClick={() => setPendingDelete(doc)}
                 icon={<Trash2 className="h-4 w-4 text-danger" aria-hidden />}
               />
@@ -100,8 +102,8 @@ export function DocumentList({
         open={pendingDelete !== null}
         onClose={() => setPendingDelete(null)}
         onConfirm={() => pendingDelete && remove.mutate(pendingDelete)}
-        title={`Delete ${pendingDelete?.file_name ?? 'document'}?`}
-        confirmLabel="Delete"
+        title={pendingDelete ? t('documents.deleteTitle', { name: pendingDelete.file_name }) : t('documents.deleteTitleGeneric')}
+        confirmLabel={t('documents.deleteConfirm')}
         tone="danger"
         loading={remove.isPending}
       />
@@ -114,7 +116,7 @@ export function DocumentUploader({
   kinds,
   target,
   onUploaded,
-  label = 'Upload document',
+  label,
   compact = false,
 }: {
   kinds: readonly DocumentKind[];
@@ -123,6 +125,7 @@ export function DocumentUploader({
   label?: string;
   compact?: boolean;
 }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const kindId = useId();
@@ -131,7 +134,7 @@ export function DocumentUploader({
   const upload = useMutation({
     mutationFn: (file: File) => documentsApi.upload({ ...target, kind, file }),
     onSuccess: (doc) => {
-      toast.success(`${doc.file_name} uploaded`);
+      toast.success(t('documents.uploaded', { name: doc.file_name }));
       void queryClient.invalidateQueries({ queryKey: ['documents'] });
       if (target.case_id) void queryClient.invalidateQueries({ queryKey: ['cases', target.case_id] });
       onUploaded?.(doc);
@@ -142,7 +145,7 @@ export function DocumentUploader({
   const onFile = (file: File | undefined) => {
     if (!file) return;
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
-      toast.error(`Files must be ${MAX_UPLOAD_MB} MB or smaller.`);
+      toast.error(t('documents.tooLarge', { max: MAX_UPLOAD_MB }));
       return;
     }
     upload.mutate(file);
@@ -151,7 +154,7 @@ export function DocumentUploader({
   return (
     <div className={compact ? 'flex flex-wrap items-end gap-2' : 'flex flex-wrap items-end gap-3'}>
       {kinds.length > 1 && (
-        <FormField label="Document type" htmlFor={kindId} className="min-w-48 flex-1">
+        <FormField label={t('documents.type')} htmlFor={kindId} className="min-w-48 flex-1">
           <Select id={kindId} value={kind} onChange={(e) => setKind(e.target.value as DocumentKind)}>
             {kinds.map((k) => (
               <option key={k} value={k}>
@@ -179,9 +182,9 @@ export function DocumentUploader({
         loading={upload.isPending}
         onClick={() => inputRef.current?.click()}
       >
-        {label}
+        {label ?? t('documents.upload')}
       </Button>
-      {!compact && <p className="w-full text-xs text-muted">PDF, JPG, PNG, WEBP, HEIC or DICOM · up to {MAX_UPLOAD_MB} MB</p>}
+      {!compact && <p className="w-full text-xs text-muted">{t('documents.hint', { max: MAX_UPLOAD_MB })}</p>}
     </div>
   );
 }

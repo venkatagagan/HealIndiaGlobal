@@ -19,3 +19,6 @@ export const i18nReady = setupI18n({
 export function useAppTranslation() {
   return useTranslation(APP_NS);
 }
+
+/** The `t` of this app's namespace, for helpers that build labels outside components (`columns(t)`). */
+export type AppT = ReturnType<typeof useAppTranslation>['t'];

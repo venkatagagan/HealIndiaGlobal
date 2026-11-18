@@ -2,7 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './auth/AuthProvider';
-import { createQueryClient, useTheme } from './lib/shared';
+import { createQueryClient, useLanguage, useTheme } from './lib/shared';
 import { RealtimeProvider } from './lib/realtime';
 import { router } from './routes';
 
@@ -19,7 +19,8 @@ function RealtimeBridge() {
 
 function ThemedToaster() {
   const { isDark } = useTheme();
-  return <Toaster richColors closeButton position="top-right" theme={isDark ? 'dark' : 'light'} />;
+  const { isRtl } = useLanguage();
+  return <Toaster richColors closeButton position={isRtl ? 'top-left' : 'top-right'} dir={isRtl ? 'rtl' : 'ltr'} theme={isDark ? 'dark' : 'light'} />;
 }
 
 export function App() {

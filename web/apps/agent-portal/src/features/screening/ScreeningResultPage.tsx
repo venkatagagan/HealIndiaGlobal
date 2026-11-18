@@ -44,13 +44,20 @@ import {
 import { MAX_COMPARE } from '../../lib/constants';
 import { patientName } from '../../lib/format';
 import { qk } from '../../lib/queries';
-import { cn, formatDateTime, formatMoneyRange, useDocumentTitle } from '../../lib/shared';
+import { cn, formatDateTime, formatMoneyRange, formatNumber, useDocumentTitle } from '../../lib/shared';
+import { languageLabel } from '../../lib/constants';
+import { Trans } from 'react-i18next';
+import { useAppTranslation, type AppT } from '../../i18n';
+
+/** 45 -> "45%" in the UI language */
+const pctText = (value: number) => formatNumber(value / 100, { style: 'percent', maximumFractionDigits: 0 });
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 
 export function ScreeningResultPage() {
+  const { t } = useAppTranslation();
   const { screeningId = '' } = useParams();
   const queryClient = useQueryClient();
-  useDocumentTitle('Screening results');
+  useDocumentTitle(t('screeningResult.documentTitle'));
 
   const screening = useQuery({
     queryKey: qk.screening(screeningId),
@@ -82,21 +89,21 @@ export function ScreeningResultPage() {
   if (screening.isError) return <ErrorState error={screening.error} onRetry={() => void screening.refetch()} />;
   if (!s) return null;
 
-  const pName = patient.data ? patientName(patient.data) : 'Patient';
+  const pName = patient.data ? patientName(patient.data) : t('screeningResult.fallbackPatient');
   const back = (
     <Link to={`/patients/${s.patient_id}?tab=screenings`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> {pName}
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {pName}
     </Link>
   );
 
   if (s.status === 'draft') {
     return (
       <div>
-        <PageHeader back={back} title="Draft screening" />
+        <PageHeader back={back} title={t('screeningResult.draftTitle')} />
         <Card>
           <EmptyState
-            title="This screening has not been submitted yet"
-            action={<ButtonLink to={`/screenings/${s.id}/edit`}>Continue screening</ButtonLink>}
+            title={t('screeningResult.notSubmitted')}
+            action={<ButtonLink to={`/screenings/${s.id}/edit`}>{t('screeningResult.continue')}</ButtonLink>}
           />
         </Card>
       </div>
@@ -108,11 +115,11 @@ export function ScreeningResultPage() {
   if (s.status === 'failed') {
     return (
       <div>
-        <PageHeader back={back} title="Screening could not be completed" />
+        <PageHeader back={back} title={t('screeningResult.failedTitle')} />
         <Card>
           <ErrorState
-            title="Analysis failed"
-            error={new Error(s.error ?? 'The analysis did not complete. You can run it again.')}
+            title={t('screeningResult.analysisFailed')}
+            error={new Error(s.error ?? t('screeningResult.analysisFailedHint'))}
             onRetry={() => rerun.mutate()}
           />
         </Card>
@@ -124,11 +131,11 @@ export function ScreeningResultPage() {
     <div>
       <PageHeader
         back={back}
-        title={`Screening results for ${pName}`}
-        description={`Completed ${formatDateTime(s.completed_at)}${s.ai_result ? ` · ${s.ai_result.engine === 'claude' ? 'AI analysis' : 'Rules-based analysis'}` : ''}`}
+        title={t('screeningResult.title', { name: pName })}
+        description={`${t('screeningResult.completed', { date: formatDateTime(s.completed_at) })}${s.ai_result ? ` · ${s.ai_result.engine === 'claude' ? t('screeningResult.aiAnalysis') : t('screeningResult.rulesAnalysis')}` : ''}`}
         actions={
           <Button variant="outline" icon={<RefreshCw className="h-4 w-4" aria-hidden />} loading={rerun.isPending} onClick={() => rerun.mutate()}>
-            Re-run
+            {t('screeningResult.rerun')}
           </Button>
         }
       />
@@ -146,25 +153,27 @@ export function ScreeningResultPage() {
   );
 }
 
-const STEPS = ['Analyzing the condition', 'Matching with specialists', 'Calculating savings'];
+const STEP_KEYS = ['screeningResult.steps.analyzing', 'screeningResult.steps.matching', 'screeningResult.steps.savings'] as const;
 
 function Processing({ back }: { back: ReactNode }) {
+  const { t } = useAppTranslation();
+  const STEPS = STEP_KEYS.map((key) => t(key));
   const [step, setStep] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setStep((s) => Math.min(s + 1, STEPS.length - 1)), 4000);
+    const id = setInterval(() => setStep((s) => Math.min(s + 1, STEP_KEYS.length - 1)), 4000);
     return () => clearInterval(id);
   }, []);
   return (
     <div>
-      <PageHeader back={back} title="Finding the best matches…" />
+      <PageHeader back={back} title={t('screeningResult.findingTitle')} />
       <Card className="hero-gradient overflow-hidden border-0 text-white">
         <div className="flex flex-col items-center px-6 py-14 text-center">
           <div className="relative mb-8 flex h-20 w-20 items-center justify-center">
             <span className="pulse-ring absolute inset-0 rounded-full bg-white/30" />
             <Stethoscope className="relative h-10 w-10" aria-hidden />
           </div>
-          <h2 className="text-2xl font-bold">Finding the perfect match</h2>
-          <ul className="mt-6 space-y-3 text-left" aria-live="polite">
+          <h2 className="text-2xl font-bold">{t('screeningResult.findingHeading')}</h2>
+          <ul className="mt-6 space-y-3 text-start" aria-live="polite">
             {STEPS.map((label, i) => (
               <li key={label} className={cn('flex items-center gap-3', i > step && 'opacity-60')}>
                 {i < step ? (
@@ -178,7 +187,7 @@ function Processing({ back }: { back: ReactNode }) {
               </li>
             ))}
           </ul>
-          <p className="mt-8 text-sm text-white/80">This usually takes less than a minute. The page updates automatically.</p>
+          <p className="mt-8 text-sm text-white/80">{t('screeningResult.findingHint')}</p>
         </div>
       </Card>
     </div>
@@ -186,6 +195,7 @@ function Processing({ back }: { back: ReactNode }) {
 }
 
 function TriageSummary({ screening }: { screening: ScreeningOut }) {
+  const { t } = useAppTranslation();
   const ai = screening.ai_result;
   const urgency = screening.urgency ?? ai?.urgency ?? null;
   return (
@@ -194,18 +204,15 @@ function TriageSummary({ screening }: { screening: ScreeningOut }) {
         <div role="alert" className="flex gap-3 rounded-xl border border-danger/40 bg-danger-soft p-4 text-red-800 dark:text-red-200">
           <AlertOctagon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
           <div className="text-sm">
-            <p className="font-semibold">Emergency — seek local care now</p>
-            <p>
-              The answers include red-flag symptoms. The patient should seek emergency care locally now rather than plan
-              medical travel.
-            </p>
+            <p className="font-semibold">{t('screeningResult.emergencyTitle')}</p>
+            <p>{t('screeningResult.emergencyBody')}</p>
           </div>
         </div>
       )}
       {ai ? (
         <Card>
           <CardHeader
-            title="Triage summary"
+            title={t('screeningResult.triageSummary')}
             actions={urgency && <StatusBadge kind="urgency" status={urgency} />}
           />
           <div className="grid gap-6 p-5 lg:grid-cols-2">
@@ -213,11 +220,11 @@ function TriageSummary({ screening }: { screening: ScreeningOut }) {
               <p className="text-sm leading-relaxed">{ai.summary}</p>
               {ai.suggested_specialties.length > 0 && (
                 <div>
-                  <p className="mb-2 text-xs font-semibold text-muted uppercase">Suggested specialties</p>
+                  <p className="mb-2 text-xs font-semibold text-muted uppercase">{t('screeningResult.suggestedSpecialties')}</p>
                   <div className="flex flex-wrap gap-2">
                     {ai.suggested_specialties.map((sp) => (
                       <Badge key={sp.slug} tone="accent">
-                        {sp.name} · {Math.round(sp.confidence * 100)}%
+                        {sp.name} · {pctText(sp.confidence * 100)}
                       </Badge>
                     ))}
                   </div>
@@ -225,12 +232,12 @@ function TriageSummary({ screening }: { screening: ScreeningOut }) {
               )}
               {ai.possible_conditions.length > 0 && (
                 <div>
-                  <p className="mb-2 text-xs font-semibold text-muted uppercase">Possible conditions</p>
+                  <p className="mb-2 text-xs font-semibold text-muted uppercase">{t('screeningResult.possibleConditions')}</p>
                   <ul className="space-y-1.5 text-sm">
                     {ai.possible_conditions.map((c) => (
                       <li key={c.name}>
                         <span className="font-medium">{c.name}</span>{' '}
-                        <span className="text-muted">({LIKELIHOOD_LABELS[c.likelihood]} likelihood)</span>
+                        <span className="text-muted">({t('screeningResult.likelihood', { level: LIKELIHOOD_LABELS[c.likelihood] })})</span>
                         {c.notes && <span className="block text-muted">{c.notes}</span>}
                       </li>
                     ))}
@@ -239,8 +246,8 @@ function TriageSummary({ screening }: { screening: ScreeningOut }) {
               )}
               {(screening.red_flags.length > 0 || ai.red_flags.length > 0) && (
                 <div>
-                  <p className="mb-2 text-xs font-semibold text-danger uppercase">Red flags</p>
-                  <ul className="list-disc space-y-1 pl-5 text-sm">
+                  <p className="mb-2 text-xs font-semibold text-danger uppercase">{t('screeningResult.redFlags')}</p>
+                  <ul className="list-disc space-y-1 ps-5 text-sm">
                     {[...new Set([...screening.red_flags, ...ai.red_flags])].map((f) => (
                       <li key={f}>{f}</li>
                     ))}
@@ -250,20 +257,20 @@ function TriageSummary({ screening }: { screening: ScreeningOut }) {
             </div>
             <div className="space-y-4 text-sm">
               {ai.recommended_procedures.length > 0 && (
-                <SummaryList title="Recommended procedures" items={ai.recommended_procedures.map((p) => `${p.name} — ${p.rationale}`)} />
+                <SummaryList title={t('screeningResult.recommendedProcedures')} items={ai.recommended_procedures.map((p) => `${p.name} — ${p.rationale}`)} />
               )}
-              {ai.recommended_tests.length > 0 && <SummaryList title="Recommended tests" items={ai.recommended_tests} />}
-              {ai.questions_for_doctor.length > 0 && <SummaryList title="Questions for the doctor" items={ai.questions_for_doctor} />}
+              {ai.recommended_tests.length > 0 && <SummaryList title={t('screeningResult.recommendedTests')} items={ai.recommended_tests} />}
+              {ai.questions_for_doctor.length > 0 && <SummaryList title={t('screeningResult.questionsForDoctor')} items={ai.questions_for_doctor} />}
               {ai.travel_advice && (
                 <div>
-                  <p className="mb-1 text-xs font-semibold text-muted uppercase">Travel advice</p>
+                  <p className="mb-1 text-xs font-semibold text-muted uppercase">{t('screeningResult.travelAdvice')}</p>
                   <p>{ai.travel_advice}</p>
                 </div>
               )}
             </div>
           </div>
           <p className="border-t border-border px-5 py-3 text-xs text-muted">
-            {ai.disclaimer || 'This screening is decision support and not a medical diagnosis.'}
+            {ai.disclaimer || t('screeningResult.disclaimer')}
           </p>
         </Card>
       ) : null}
@@ -275,7 +282,7 @@ function SummaryList({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
       <p className="mb-1 text-xs font-semibold text-muted uppercase">{title}</p>
-      <ul className="list-disc space-y-1 pl-5">
+      <ul className="list-disc space-y-1 ps-5">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -313,6 +320,7 @@ function MatchesSection({
   error: unknown;
   onRetry: () => void;
 }) {
+  const { t } = useAppTranslation();
   const [selected, setSelected] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
@@ -321,13 +329,13 @@ function MatchesSection({
   // one case per hospital: de-duplicate by hospital
   const targets = selectedMatches
     .map(matchTarget)
-    .filter((t, i, arr) => arr.findIndex((x) => x.hospital_id === t.hospital_id) === i);
+    .filter((target, i, arr) => arr.findIndex((x) => x.hospital_id === target.hospital_id) === i);
 
   const toggle = (id: string) => {
     setSelected((cur) => {
       if (cur.includes(id)) return cur.filter((x) => x !== id);
       if (cur.length >= MAX_COMPARE) {
-        toast.info(`You can select up to ${MAX_COMPARE} matches`);
+        toast.info(t('screeningResult.selectMax', { max: MAX_COMPARE }));
         return cur;
       }
       return [...cur, id];
@@ -337,11 +345,11 @@ function MatchesSection({
   return (
     <section aria-labelledby="matches-heading" className="pb-24">
       <h2 id="matches-heading" className="mb-1 text-lg font-semibold">
-        Top matches
+        {t('screeningResult.topMatches')}
       </h2>
-      <p className="mb-4 text-sm text-muted">Select up to {MAX_COMPARE} to compare and send one enquiry to each hospital.</p>
+      <p className="mb-4 text-sm text-muted">{t('screeningResult.topMatchesHint', { max: MAX_COMPARE })}</p>
       {loading ? (
-        <LoadingBlock label="Loading matches…" />
+        <LoadingBlock label={t('screeningResult.loadingMatches')} />
       ) : error ? (
         <Card>
           <ErrorState error={error} onRetry={onRetry} />
@@ -349,9 +357,9 @@ function MatchesSection({
       ) : !matches || matches.length === 0 ? (
         <Card>
           <EmptyState
-            title="No matches found"
-            description="Try broadening the preferences (languages, budget or travel window) and run a new screening, or browse the hospital directory."
-            action={<ButtonLink to="/hospitals">Browse hospitals</ButtonLink>}
+            title={t('screeningResult.noMatches')}
+            description={t('screeningResult.noMatchesHint')}
+            action={<ButtonLink to="/hospitals">{t('screeningResult.browseHospitals')}</ButtonLink>}
           />
         </Card>
       ) : (
@@ -363,14 +371,19 @@ function MatchesSection({
       )}
 
       {selected.length > 0 && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface/95 px-4 py-3 shadow-lg backdrop-blur lg:left-64">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface/95 px-4 py-3 shadow-lg backdrop-blur lg:start-64">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
             <p className="text-sm">
-              <strong>{selected.length}</strong>/{MAX_COMPARE} selected for {patientLabel}
+              <Trans
+                t={t}
+                i18nKey="screeningResult.selectedFor"
+                values={{ count: selected.length, max: MAX_COMPARE, name: patientLabel }}
+                components={{ 0: <strong /> }}
+              />
             </p>
             <div className="flex gap-2">
               <Button variant="ghost" onClick={() => setSelected([])}>
-                Clear
+                {t('screeningResult.clear')}
               </Button>
               <Button
                 variant="outline"
@@ -378,19 +391,19 @@ function MatchesSection({
                 disabled={selected.length < 2}
                 onClick={() => setCompareOpen(true)}
               >
-                Compare
+                {t('screeningResult.compare')}
               </Button>
               <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => setEnquiryOpen(true)}>
-                Request quotes
+                {t('screeningResult.requestQuotes')}
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      <Modal open={compareOpen} onClose={() => setCompareOpen(false)} title="Compare matches" size="xl" footer={
+      <Modal open={compareOpen} onClose={() => setCompareOpen(false)} title={t('screeningResult.compareMatches')} size="xl" footer={
         <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => { setCompareOpen(false); setEnquiryOpen(true); }}>
-          Request quotes from these hospitals
+          {t('screeningResult.requestFromThese')}
         </Button>
       }>
         <MatchCompareTable matches={selectedMatches} />
@@ -408,6 +421,7 @@ function MatchesSection({
 }
 
 function MatchCard({ match, selected, onToggle }: { match: MatchOut; selected: boolean; onToggle: () => void }) {
+  const { t } = useAppTranslation();
   const d = match.doctor;
   const h = match.hospital;
   return (
@@ -423,12 +437,12 @@ function MatchCard({ match, selected, onToggle }: { match: MatchOut; selected: b
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <p className="font-semibold">{d ? d.full_name : h.name}</p>
-            <Badge tone="success">{Math.round(match.match_score)}% match</Badge>
+            <Badge tone="success">{t('screeningResult.matchScore', { pct: pctText(match.match_score) })}</Badge>
           </div>
           {d && (
             <p className="text-sm text-muted">
               {d.specialty.name}
-              {d.experience_years ? ` · ${d.experience_years} yrs` : ''}
+              {d.experience_years ? ` · ${t('screeningResult.yearsShort', { count: d.experience_years })}` : ''}
             </p>
           )}
           <p className="flex items-center gap-1 text-sm text-muted">
@@ -443,10 +457,10 @@ function MatchCard({ match, selected, onToggle }: { match: MatchOut; selected: b
             <BadgeCheck className="h-3 w-3" aria-hidden /> {a.toUpperCase()}
           </Badge>
         ))}
-        {d?.success_rate_pct != null && <Badge tone="success">{Number(d.success_rate_pct).toFixed(0)}% success</Badge>}
+        {d?.success_rate_pct != null && <Badge tone="success">{t('screeningResult.success', { pct: pctText(Number(d.success_rate_pct)) })}</Badge>}
         {(d?.rating_avg ?? h.rating_avg) != null && (
           <Badge>
-            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(d?.rating_avg ?? h.rating_avg).toFixed(1)}
+            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(d?.rating_avg ?? h.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
           </Badge>
         )}
         {d?.qualifications.slice(0, 3).map((q) => <Badge key={q}>{q}</Badge>)}
@@ -462,14 +476,18 @@ function MatchCard({ match, selected, onToggle }: { match: MatchOut; selected: b
       )}
       <div className="mt-auto space-y-3 p-5">
         <div className="border-t border-border pt-3">
-          <p className="text-xs text-muted">Estimated total{match.procedure ? ` · ${match.procedure.name}` : ''}</p>
+          <p className="text-xs text-muted">{t('screeningResult.estimatedTotal')}{match.procedure ? ` · ${match.procedure.name}` : ''}</p>
           <p className="text-xl font-bold text-danger">
-            {match.estimated_cost_minor != null ? <Money minor={match.estimated_cost_minor} currency={match.currency} /> : 'On request'}
+            {match.estimated_cost_minor != null ? <Money minor={match.estimated_cost_minor} currency={match.currency} /> : t('screeningResult.onRequest')}
           </p>
           {match.savings && (
             <p className="text-xs text-primary-ink">
-              Save {match.savings.pct_min}–{match.savings.pct_max}% vs {match.savings.home_country} (
-              {formatMoneyRange(match.savings.home_min_minor, match.savings.home_max_minor, match.savings.home_currency)})
+              {t('screeningResult.savings', {
+                min: formatNumber(match.savings.pct_min),
+                max: formatNumber(match.savings.pct_max),
+                country: match.savings.home_country,
+                range: formatMoneyRange(match.savings.home_min_minor, match.savings.home_max_minor, match.savings.home_currency),
+              })}
             </p>
           )}
         </div>
@@ -477,16 +495,16 @@ function MatchCard({ match, selected, onToggle }: { match: MatchOut; selected: b
           <Button variant={selected ? 'secondary' : 'outline'} className="flex-1" onClick={onToggle} aria-pressed={selected}>
             {selected ? (
               <>
-                <X className="h-4 w-4" aria-hidden /> Remove
+                <X className="h-4 w-4" aria-hidden /> {t('screeningResult.remove')}
               </>
             ) : (
               <>
-                <GitCompare className="h-4 w-4" aria-hidden /> Select
+                <GitCompare className="h-4 w-4" aria-hidden /> {t('screeningResult.select')}
               </>
             )}
           </Button>
           <ButtonLink variant="ghost" to={d ? `/doctors/${d.id}` : `/hospitals/${h.slug}`} className="flex-1">
-            View details
+            {t('screeningResult.viewDetails')}
           </ButtonLink>
         </div>
       </div>
@@ -506,32 +524,40 @@ function winners(values: (number | null)[], best: 'max' | 'min'): Set<number> {
 const num = (v: unknown): number | null => (v === null || v === undefined || v === '' ? null : Number.isFinite(Number(v)) ? Number(v) : null);
 
 function MatchCompareTable({ matches }: { matches: MatchOut[] }) {
+  const { t } = useAppTranslation();
+  const rows = compareRows(t, matches);
+  return <MatchCompareGrid matches={matches} rows={rows} />;
+}
+
+type CompareRow = { label: string; render: (m: MatchOut) => ReactNode; value?: (m: MatchOut) => number | null; best?: 'max' | 'min'; badge?: string };
+
+function compareRows(t: AppT, matches: MatchOut[]): CompareRow[] {
   const sameCurrency = new Set(matches.map((m) => m.currency)).size === 1;
-  const rows: { label: string; render: (m: MatchOut) => ReactNode; value?: (m: MatchOut) => number | null; best?: 'max' | 'min'; badge?: string }[] = [
-    { label: 'Match score', render: (m) => `${Math.round(m.match_score)}%`, value: (m) => m.match_score, best: 'max', badge: 'Best match' },
-    { label: 'Doctor', render: (m) => m.doctor?.full_name ?? '—' },
-    { label: 'Specialty', render: (m) => m.doctor?.specialty.name ?? '—' },
+  return [
+    { label: t('screeningResult.rows.matchScore'), render: (m) => pctText(m.match_score), value: (m) => m.match_score, best: 'max', badge: t('screeningResult.badges.bestMatch') },
+    { label: t('screeningResult.rows.doctor'), render: (m) => m.doctor?.full_name ?? '—' },
+    { label: t('screeningResult.rows.specialty'), render: (m) => m.doctor?.specialty.name ?? '—' },
     {
-      label: 'Experience',
-      render: (m) => (m.doctor?.experience_years ? `${m.doctor.experience_years} years` : '—'),
+      label: t('screeningResult.rows.experience'),
+      render: (m) => (m.doctor?.experience_years ? t('screeningResult.years', { count: m.doctor.experience_years }) : '—'),
       value: (m) => num(m.doctor?.experience_years),
       best: 'max',
-      badge: 'Most experienced',
+      badge: t('screeningResult.badges.mostExperienced'),
     },
     {
-      label: 'Success rate',
-      render: (m) => (m.doctor?.success_rate_pct != null ? `${Number(m.doctor.success_rate_pct).toFixed(0)}%` : '—'),
+      label: t('screeningResult.rows.successRate'),
+      render: (m) => (m.doctor?.success_rate_pct != null ? pctText(Number(m.doctor.success_rate_pct)) : '—'),
       value: (m) => num(m.doctor?.success_rate_pct),
       best: 'max',
-      badge: 'Highest',
+      badge: t('screeningResult.badges.highest'),
     },
     {
-      label: 'Rating',
+      label: t('screeningResult.rows.rating'),
       render: (m) => {
         const r = m.doctor?.rating_avg ?? m.hospital.rating_avg;
         return r != null ? (
           <span className="inline-flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 fill-current text-warning" aria-hidden /> {Number(r).toFixed(1)} / 5
+            <Star className="h-3.5 w-3.5 fill-current text-warning" aria-hidden /> {t('screeningResult.ratingOutOf5', { rating: formatNumber(Number(r), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })}
           </span>
         ) : (
           '—'
@@ -539,47 +565,51 @@ function MatchCompareTable({ matches }: { matches: MatchOut[] }) {
       },
       value: (m) => num(m.doctor?.rating_avg ?? m.hospital.rating_avg),
       best: 'max',
-      badge: 'Top rated',
+      badge: t('screeningResult.badges.topRated'),
     },
-    { label: 'Accreditations', render: (m) => m.hospital.accreditations.map((a) => a.toUpperCase()).join(', ') || '—' },
+    { label: t('screeningResult.rows.accreditations'), render: (m) => m.hospital.accreditations.map((a) => a.toUpperCase()).join(', ') || '—' },
     {
-      label: 'Languages',
+      label: t('screeningResult.rows.languages'),
       render: (m) => (
         <span className="inline-flex items-center gap-1">
           <Languages className="h-3.5 w-3.5 text-muted" aria-hidden />
-          {(m.doctor?.languages ?? m.hospital.languages).join(', ') || '—'}
+          {(m.doctor?.languages ?? m.hospital.languages).map(languageLabel).join(', ') || '—'}
         </span>
       ),
     },
-    { label: 'Procedure', render: (m) => m.procedure?.name ?? '—' },
-    { label: 'Package', render: (m) => m.package?.name ?? '—' },
+    { label: t('screeningResult.rows.procedure'), render: (m) => m.procedure?.name ?? '—' },
+    { label: t('screeningResult.rows.package'), render: (m) => m.package?.name ?? '—' },
     {
-      label: 'Estimated cost',
+      label: t('screeningResult.rows.estimatedCost'),
       render: (m) => (m.estimated_cost_minor != null ? <Money minor={m.estimated_cost_minor} currency={m.currency} className="font-semibold" /> : '—'),
       value: (m) => (sameCurrency ? num(m.estimated_cost_minor) : null),
       best: 'min',
-      badge: 'Lowest',
+      badge: t('screeningResult.badges.lowest'),
     },
     {
-      label: 'Savings vs home',
-      render: (m) => (m.savings ? `${m.savings.pct_min}–${m.savings.pct_max}%` : '—'),
+      label: t('screeningResult.rows.savingsVsHome'),
+      render: (m) => (m.savings ? t('screeningResult.pctRange', { min: formatNumber(m.savings.pct_min), max: formatNumber(m.savings.pct_max) }) : '—'),
       value: (m) => num(m.savings?.pct_max),
       best: 'max',
-      badge: 'Biggest',
+      badge: t('screeningResult.badges.biggest'),
     },
-    { label: 'Why it matches', render: (m) => <span className="text-muted">{m.reasons.join(' · ') || '—'}</span> },
+    { label: t('screeningResult.rows.whyItMatches'), render: (m) => <span className="text-muted">{m.reasons.join(' · ') || '—'}</span> },
   ];
+}
+
+function MatchCompareGrid({ matches, rows }: { matches: MatchOut[]; rows: CompareRow[] }) {
+  const { t } = useAppTranslation();
   return (
     <div className="max-h-[65vh] overflow-auto rounded-lg border border-border">
       <table className="w-full min-w-[560px] border-separate border-spacing-0 text-sm [&>tbody>tr:not(:last-child)>*]:border-b [&>tbody>tr>*]:border-border">
-        <caption className="sr-only">Compare matched hospitals and doctors</caption>
+        <caption className="sr-only">{t('screeningResult.compareCaption')}</caption>
         <thead>
           <tr>
-            <th scope="col" className="sticky top-0 left-0 z-30 w-36 border-r border-b border-border bg-surface-2 px-3 py-3 text-left text-xs font-semibold text-muted uppercase">
-              Match
+            <th scope="col" className="sticky top-0 start-0 z-30 w-36 border-e border-b border-border bg-surface-2 px-3 py-3 text-start text-xs font-semibold text-muted uppercase">
+              {t('screeningResult.matchColumn')}
             </th>
             {matches.map((m) => (
-              <th key={m.id} scope="col" className="sticky top-0 z-20 min-w-48 border-b border-border bg-surface-2 px-3 py-3 text-left align-top font-normal">
+              <th key={m.id} scope="col" className="sticky top-0 z-20 min-w-48 border-b border-border bg-surface-2 px-3 py-3 text-start align-top font-normal">
                 <span className="block font-semibold text-fg">{m.hospital.name}</span>
                 <span className="text-xs text-muted">{m.hospital.city}</span>
               </th>
@@ -591,7 +621,7 @@ function MatchCompareTable({ matches }: { matches: MatchOut[] }) {
             const win = row.value && row.best ? winners(matches.map(row.value), row.best) : new Set<number>();
             return (
               <tr key={row.label}>
-                <th scope="row" className="sticky left-0 z-10 w-36 border-r border-border bg-surface px-3 py-2.5 text-left align-top text-xs font-semibold text-muted uppercase">
+                <th scope="row" className="sticky start-0 z-10 w-36 border-e border-border bg-surface px-3 py-2.5 text-start align-top text-xs font-semibold text-muted uppercase">
                   {row.label}
                 </th>
                 {matches.map((m, i) => (

@@ -5,14 +5,17 @@ import { ArrowLeft, BadgeCheck, CalendarDays, Send, Star, Stethoscope, Video } f
 import { catalogApi, type HospitalProcedureOut } from '@hig/shared/api';
 import { Badge, Button, Card, CardHeader, EmptyState, ErrorState, LoadingBlock, PageHeader } from '../../components/ui';
 import { qk } from '../../lib/queries';
-import { cn, formatDate, formatMoney, formatMoneyRange, isoDateFromToday, useDocumentTitle } from '../../lib/shared';
+import { cn, formatDate, formatMoney, formatMoneyRange, formatNumber, isoDateFromToday, useDocumentTitle } from '../../lib/shared';
+import { languageLabel } from '../../lib/constants';
+import { useAppTranslation } from '../../i18n';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 
 export function DoctorDetailPage() {
+  const { t } = useAppTranslation();
   const { doctorId = '' } = useParams();
   const query = useQuery({ queryKey: qk.doctor(doctorId), queryFn: () => catalogApi.getDoctor(doctorId) });
   const d = query.data;
-  useDocumentTitle(d?.full_name ?? 'Doctor');
+  useDocumentTitle(d?.full_name ?? t('doctorDetail.fallbackTitle'));
   const from = isoDateFromToday(1);
   const to = isoDateFromToday(60);
   const availability = useQuery({
@@ -41,14 +44,14 @@ export function DoctorDetailPage() {
       <PageHeader
         back={
           <Link to="/doctors" className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-            <ArrowLeft className="h-4 w-4" aria-hidden /> Doctors
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('doctorDetail.back')}
           </Link>
         }
         title={d.full_name}
-        description={`${d.specialty.name}${d.experience_years ? ` · ${d.experience_years} years of experience` : ''}`}
+        description={d.experience_years ? `${d.specialty.name} · ${t('doctorDetail.experience', { count: d.experience_years })}` : d.specialty.name}
         actions={
           <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => enquire()}>
-            Send enquiry for a patient
+            {t('doctorDetail.sendEnquiry')}
           </Button>
         }
       />
@@ -73,21 +76,21 @@ export function DoctorDetailPage() {
                       <BadgeCheck className="h-3 w-3" aria-hidden /> {a.toUpperCase()}
                     </Badge>
                   ))}
-                  {d.success_rate_pct != null && <Badge tone="success">{Number(d.success_rate_pct).toFixed(0)}% success</Badge>}
+                  {d.success_rate_pct != null && <Badge tone="success">{t('doctorDetail.successRate', { pct: formatNumber(Number(d.success_rate_pct), { maximumFractionDigits: 0 }) })}</Badge>}
                   {d.rating_avg != null && (
                     <Badge>
-                      <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(d.rating_avg).toFixed(1)} ({d.rating_count} reviews)
+                      <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(d.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({t('doctorDetail.reviewCount', { count: d.rating_count })})
                     </Badge>
                   )}
                   {d.teleconsult_available && (
                     <Badge tone="accent">
-                      <Video className="h-3 w-3" aria-hidden /> Teleconsult
+                      <Video className="h-3 w-3" aria-hidden /> {t('doctorDetail.teleconsult')}
                       {d.consultation_fee_minor != null ? ` · ${formatMoney(d.consultation_fee_minor, d.currency)}` : ''}
                     </Badge>
                   )}
                 </div>
                 {d.qualifications.length > 0 && <p className="text-sm">{d.qualifications.join(', ')}</p>}
-                {d.languages.length > 0 && <p className="text-sm text-muted">Speaks {d.languages.join(', ')}</p>}
+                {d.languages.length > 0 && <p className="text-sm text-muted">{t('doctorDetail.speaks', { languages: d.languages.map(languageLabel).join(', ') })}</p>}
               </div>
             </div>
             {d.bio && <p className="mt-4 text-sm leading-relaxed whitespace-pre-line">{d.bio}</p>}
@@ -100,9 +103,9 @@ export function DoctorDetailPage() {
             )}
           </Card>
           <Card>
-            <CardHeader title="Procedures" />
+            <CardHeader title={t('doctorDetail.procedures')} />
             {d.procedures.length === 0 ? (
-              <EmptyState title="No procedures listed" className="py-8" />
+              <EmptyState title={t('doctorDetail.noProcedures')} className="py-8" />
             ) : (
               <ul className="divide-y divide-border">
                 {d.procedures.map((p) => (
@@ -111,11 +114,11 @@ export function DoctorDetailPage() {
                       <p className="text-sm font-medium">{p.procedure.name}</p>
                       <p className="text-xs text-muted">
                         {formatMoneyRange(p.price_min_minor, p.price_max_minor, p.currency)}
-                        {p.hospital_stay_days ? ` · ${p.hospital_stay_days} days in hospital` : ''}
+                        {p.hospital_stay_days ? ` · ${t('doctorDetail.stayDays', { count: p.hospital_stay_days })}` : ''}
                       </p>
                     </div>
                     <Button size="sm" variant="outline" onClick={() => enquire(p)}>
-                      Request quote
+                      {t('doctorDetail.requestQuote')}
                     </Button>
                   </li>
                 ))}
@@ -124,13 +127,13 @@ export function DoctorDetailPage() {
           </Card>
         </div>
         <Card className="h-fit">
-          <CardHeader title="Availability" description="Next 60 days" />
+          <CardHeader title={t('doctorDetail.availability')} description={t('doctorDetail.next60Days')} />
           <div className="p-5">
             {availability.isPending ? (
               <LoadingBlock className="py-4" />
             ) : days.length === 0 ? (
               <p className="text-sm text-muted">
-                {d.next_available_date ? `Next available ${formatDate(d.next_available_date)}` : 'No published slots — the hospital confirms dates with the quote.'}
+                {d.next_available_date ? t('doctorDetail.nextAvailable', { date: formatDate(d.next_available_date) }) : t('doctorDetail.noSlots')}
               </p>
             ) : (
               <ul className="grid grid-cols-2 gap-2">
@@ -142,7 +145,7 @@ export function DoctorDetailPage() {
                     <span className="flex items-center gap-1 font-medium">
                       <CalendarDays className="h-3 w-3" aria-hidden /> {formatDate(a.date, 'EEE d MMM')}
                     </span>
-                    {a.slot_kind === 'consultation' ? 'Consultation' : 'Admission'} · {a.available} left
+                    {a.slot_kind === 'consultation' ? t('doctorDetail.consultation') : t('doctorDetail.admission')} · {t('doctorDetail.slotsLeft', { count: a.available })}
                   </li>
                 ))}
               </ul>

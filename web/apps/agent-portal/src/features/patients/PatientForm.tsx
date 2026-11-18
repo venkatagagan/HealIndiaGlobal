@@ -17,26 +17,30 @@ import {
   type Gender,
 } from '@hig/shared/api';
 import { Button, Checkbox, FormField, Input, Modal, Select, Textarea } from '../../components/ui';
-import { COUNTRY_OPTIONS } from '../../lib/constants';
-import { SUPPORTED_CURRENCIES } from '../../lib/shared';
+import { countryOptions } from '../../lib/constants';
+import { SUPPORTED_CURRENCIES, i18n } from '../../lib/shared';
+
+import { useAppTranslation } from '../../i18n';
 
 const optionalText = (max: number) => z.string().trim().max(max);
+/** Validation message resolved when shown (follows the UI language). */
+const msg = (key: string) => ({ error: () => i18n.t(`agent:patientForm.errors.${key}`) });
 
 const schema = z.object({
-  first_name: z.string().trim().min(1, 'Required').max(80),
-  last_name: z.string().trim().min(1, 'Required').max(80),
+  first_name: z.string().trim().min(1, msg('required')).max(80),
+  last_name: z.string().trim().min(1, msg('required')).max(80),
   email: z
     .string()
     .trim()
     .max(254)
-    .refine((v) => v === '' || z.string().email().safeParse(v).success, 'Enter a valid email'),
-  phone: optionalText(32).refine((v) => v === '' || /^\+?[0-9 ()-]{6,}$/.test(v), 'Enter a valid phone number'),
-  whatsapp: optionalText(32).refine((v) => v === '' || /^\+?[0-9 ()-]{6,}$/.test(v), 'Enter a valid phone number'),
-  nationality: z.string().length(2, 'Select nationality'),
+    .refine((v) => v === '' || z.string().email().safeParse(v).success, msg('email')),
+  phone: optionalText(32).refine((v) => v === '' || /^\+?[0-9 ()-]{6,}$/.test(v), msg('phone')),
+  whatsapp: optionalText(32).refine((v) => v === '' || /^\+?[0-9 ()-]{6,}$/.test(v), msg('phone')),
+  nationality: z.string().length(2, msg('nationality')),
   country_of_residence: z.string(),
   date_of_birth: z
     .string()
-    .refine((v) => v === '' || (/^\d{4}-\d{2}-\d{2}$/.test(v) && new Date(v) <= new Date()), 'Enter a valid past date'),
+    .refine((v) => v === '' || (/^\d{4}-\d{2}-\d{2}$/.test(v) && new Date(v) <= new Date()), msg('pastDate')),
   gender: z.string(),
   preferred_currency: z.string(),
   blood_group: optionalText(5),
@@ -45,7 +49,7 @@ const schema = z.object({
   passport_number: z
     .string()
     .trim()
-    .refine((v) => v === '' || /^[A-Za-z0-9]{4,20}$/.test(v.replace(/\s+/g, '')), 'Passport number must be 4–20 letters or digits'),
+    .refine((v) => v === '' || /^[A-Za-z0-9]{4,20}$/.test(v.replace(/\s+/g, '')), msg('passport')),
   passport_expiry: z.string(),
   ec_name: optionalText(200),
   ec_relationship: optionalText(60),
@@ -97,6 +101,7 @@ export function PatientFormDialog({
   patient?: AgentPatientOut | null;
   onSaved?: (patient: AgentPatientOut) => void;
 }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const editing = Boolean(patient);
   const {
@@ -161,7 +166,7 @@ export function PatientFormDialog({
         try {
           return await agentPortalApi.updatePatient(created.id, extra);
         } catch {
-          toast.warning('Patient created, but some optional details could not be saved. Edit the profile to retry.');
+          toast.warning(t('patientForm.partialSave'));
         }
       }
       return created;
@@ -169,7 +174,7 @@ export function PatientFormDialog({
     onSuccess: (saved) => {
       void queryClient.invalidateQueries({ queryKey: ['agent-patients'] });
       void queryClient.invalidateQueries({ queryKey: ['agent-dashboard'] });
-      toast.success(editing ? 'Patient updated' : 'Patient added');
+      toast.success(editing ? t('patientForm.updated') : t('patientForm.added'));
       reset(toDefaults(saved));
       onClose();
       onSaved?.(saved);
@@ -189,7 +194,7 @@ export function PatientFormDialog({
 
   const onSubmit = handleSubmit((values) => {
     if (!editing && !values.consent_attested) {
-      setError('consent_attested', { message: 'Confirm that the patient has given consent before adding them.' });
+      setError('consent_attested', { message: t('patientForm.consentRequired') });
       return;
     }
     mutation.mutate(values);
@@ -200,56 +205,56 @@ export function PatientFormDialog({
       open={open}
       onClose={onClose}
       size="lg"
-      title={editing ? 'Edit patient' : 'Add a patient'}
+      title={editing ? t('patientForm.editTitle') : t('patientForm.addTitle')}
       description={
         editing
-          ? 'Changes are visible to hospitals on this patient’s cases.'
-          : 'Creates a patient account managed by your agency. If you add an email, the patient receives an invite to access their own portal.'
+          ? t('patientForm.editDescription')
+          : t('patientForm.addDescription')
       }
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            {t('patientForm.cancel')}
           </Button>
           <Button type="submit" form="patient-form" loading={mutation.isPending}>
-            {editing ? 'Save changes' : 'Add patient'}
+            {editing ? t('patientForm.saveChanges') : t('patientForm.submitAdd')}
           </Button>
         </>
       }
     >
       <form id="patient-form" onSubmit={onSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
-        <FormField label="First name" htmlFor="pf-first" error={errors.first_name?.message} required>
+        <FormField label={t('patientForm.firstName')} htmlFor="pf-first" error={errors.first_name?.message} required>
           <Input id="pf-first" aria-invalid={!!errors.first_name} {...register('first_name')} />
         </FormField>
-        <FormField label="Last name" htmlFor="pf-last" error={errors.last_name?.message} required>
+        <FormField label={t('patientForm.lastName')} htmlFor="pf-last" error={errors.last_name?.message} required>
           <Input id="pf-last" aria-invalid={!!errors.last_name} {...register('last_name')} />
         </FormField>
-        <FormField label="Nationality" htmlFor="pf-nat" error={errors.nationality?.message} required>
+        <FormField label={t('patientForm.nationality')} htmlFor="pf-nat" error={errors.nationality?.message} required>
           <Select id="pf-nat" aria-invalid={!!errors.nationality} {...register('nationality')}>
-            <option value="">Select…</option>
-            {COUNTRY_OPTIONS.map((c) => (
+            <option value="">{t('patientForm.select')}</option>
+            {countryOptions().map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
               </option>
             ))}
           </Select>
         </FormField>
-        <FormField label="Country of residence" htmlFor="pf-res">
+        <FormField label={t('patientForm.residence')} htmlFor="pf-res">
           <Select id="pf-res" {...register('country_of_residence')}>
-            <option value="">Same as nationality</option>
-            {COUNTRY_OPTIONS.map((c) => (
+            <option value="">{t('patientForm.sameAsNationality')}</option>
+            {countryOptions().map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
               </option>
             ))}
           </Select>
         </FormField>
-        <FormField label="Date of birth" htmlFor="pf-dob" error={errors.date_of_birth?.message}>
+        <FormField label={t('patientForm.dob')} htmlFor="pf-dob" error={errors.date_of_birth?.message}>
           <Input id="pf-dob" type="date" max={new Date().toISOString().slice(0, 10)} {...register('date_of_birth')} />
         </FormField>
-        <FormField label="Gender" htmlFor="pf-gender">
+        <FormField label={t('patientForm.gender')} htmlFor="pf-gender">
           <Select id="pf-gender" {...register('gender')}>
-            <option value="">Not specified</option>
+            <option value="">{t('patientForm.notSpecified')}</option>
             {GENDERS.map((g) => (
               <option key={g} value={g}>
                 {GENDER_LABELS[g]}
@@ -257,16 +262,16 @@ export function PatientFormDialog({
             ))}
           </Select>
         </FormField>
-        <FormField label="Email" htmlFor="pf-email" error={errors.email?.message} hint="Optional – sends the patient an invite">
+        <FormField label={t('patientForm.email')} htmlFor="pf-email" error={errors.email?.message} hint={t('patientForm.emailHint')}>
           <Input id="pf-email" type="email" aria-invalid={!!errors.email} {...register('email')} />
         </FormField>
-        <FormField label="Phone" htmlFor="pf-phone" error={errors.phone?.message}>
+        <FormField label={t('patientForm.phone')} htmlFor="pf-phone" error={errors.phone?.message}>
           <Input id="pf-phone" type="tel" placeholder="+971 …" {...register('phone')} />
         </FormField>
-        <FormField label="WhatsApp" htmlFor="pf-wa" error={errors.whatsapp?.message}>
+        <FormField label={t('patientForm.whatsapp')} htmlFor="pf-wa" error={errors.whatsapp?.message}>
           <Input id="pf-wa" type="tel" {...register('whatsapp')} />
         </FormField>
-        <FormField label="Preferred currency" htmlFor="pf-ccy" hint="Used for quotes and payments">
+        <FormField label={t('patientForm.currency')} htmlFor="pf-ccy" hint={t('patientForm.currencyHint')}>
           <Select id="pf-ccy" {...register('preferred_currency')}>
             {SUPPORTED_CURRENCIES.map((c) => (
               <option key={c} value={c}>
@@ -275,9 +280,9 @@ export function PatientFormDialog({
             ))}
           </Select>
         </FormField>
-        <FormField label="Blood group" htmlFor="pf-blood" error={errors.blood_group?.message}>
+        <FormField label={t('patientForm.bloodGroup')} htmlFor="pf-blood" error={errors.blood_group?.message}>
           <Select id="pf-blood" {...register('blood_group')}>
-            <option value="">Unknown</option>
+            <option value="">{t('patientForm.unknown')}</option>
             {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((b) => (
               <option key={b} value={b}>
                 {b}
@@ -285,53 +290,53 @@ export function PatientFormDialog({
             ))}
           </Select>
         </FormField>
-        <FormField label="Allergies" htmlFor="pf-allergies" error={errors.allergies?.message}>
-          <Input id="pf-allergies" placeholder="e.g. Penicillin" {...register('allergies')} />
+        <FormField label={t('patientForm.allergies')} htmlFor="pf-allergies" error={errors.allergies?.message}>
+          <Input id="pf-allergies" placeholder={t('patientForm.allergiesPlaceholder')} {...register('allergies')} />
         </FormField>
         {editing && (
           <>
             <FormField
-              label="Passport number"
+              label={t('patientForm.passportNumber')}
               htmlFor="pf-passport"
               error={errors.passport_number?.message}
-              hint={patient?.passport_last4 ? `On file: •••• ${patient.passport_last4}. Leave blank to keep.` : 'Stored encrypted'}
+              hint={patient?.passport_last4 ? t('patientForm.passportOnFile', { last4: patient.passport_last4 }) : t('patientForm.storedEncrypted')}
             >
               <Input id="pf-passport" autoComplete="off" {...register('passport_number')} />
             </FormField>
-            <FormField label="Passport expiry" htmlFor="pf-pexp">
+            <FormField label={t('patientForm.passportExpiry')} htmlFor="pf-pexp">
               <Input id="pf-pexp" type="date" {...register('passport_expiry')} />
             </FormField>
-            <FormField label="Emergency contact name" htmlFor="pf-ecn">
+            <FormField label={t('patientForm.ecName')} htmlFor="pf-ecn">
               <Input id="pf-ecn" {...register('ec_name')} />
             </FormField>
-            <FormField label="Relationship" htmlFor="pf-ecr">
+            <FormField label={t('patientForm.ecRelationship')} htmlFor="pf-ecr">
               <Input id="pf-ecr" {...register('ec_relationship')} />
             </FormField>
-            <FormField label="Emergency contact phone" htmlFor="pf-ecp">
+            <FormField label={t('patientForm.ecPhone')} htmlFor="pf-ecp">
               <Input id="pf-ecp" type="tel" {...register('ec_phone')} />
             </FormField>
           </>
         )}
-        <FormField label="Medical history" htmlFor="pf-history" className="sm:col-span-2" error={errors.medical_history?.message}>
-          <Textarea id="pf-history" rows={4} placeholder="Known conditions, past surgeries, current medication…" {...register('medical_history')} />
+        <FormField label={t('patientForm.medicalHistory')} htmlFor="pf-history" className="sm:col-span-2" error={errors.medical_history?.message}>
+          <Textarea id="pf-history" rows={4} placeholder={t('patientForm.medicalHistoryPlaceholder')} {...register('medical_history')} />
         </FormField>
         {!editing && (
           <fieldset className="space-y-3 rounded-lg border border-border p-4 sm:col-span-2">
-            <legend className="px-1 text-sm font-semibold">Patient consent</legend>
+            <legend className="px-1 text-sm font-semibold">{t('patientForm.consentLegend')}</legend>
             <Checkbox
               {...register('consent_attested')}
               aria-invalid={!!errors.consent_attested}
-              label="I confirm the patient has agreed to the Terms of Service and Privacy Policy"
-              description="Your attestation is recorded with your name and time. The patient confirms it on first sign-in."
+              label={t('patientForm.consentAttest')}
+              description={t('patientForm.consentAttestHint')}
             />
-            <Checkbox {...register('consent_share')} label="The patient also agreed to share their records with the hospitals I contact for them" />
+            <Checkbox {...register('consent_share')} label={t('patientForm.consentShare')} />
             {errors.consent_attested?.message && (
               <p role="alert" className="text-sm text-danger-ink">
                 {errors.consent_attested.message}
               </p>
             )}
             <div className="grid gap-4 sm:grid-cols-2">
-              <FormField label="How was consent obtained?" htmlFor="pf-cmethod" required>
+              <FormField label={t('patientForm.consentMethod')} htmlFor="pf-cmethod" required>
                 <Select id="pf-cmethod" {...register('consent_method')}>
                   {AGENT_CONSENT_METHODS.map((m) => (
                     <option key={m} value={m}>
@@ -340,8 +345,8 @@ export function PatientFormDialog({
                   ))}
                 </Select>
               </FormField>
-              <FormField label="Note (optional)" htmlFor="pf-cnote" error={errors.consent_note?.message}>
-                <Input id="pf-cnote" maxLength={500} placeholder="e.g. Signed form on file" {...register('consent_note')} />
+              <FormField label={t('patientForm.consentNote')} htmlFor="pf-cnote" error={errors.consent_note?.message}>
+                <Input id="pf-cnote" maxLength={500} placeholder={t('patientForm.consentNotePlaceholder')} {...register('consent_note')} />
               </FormField>
             </div>
           </fieldset>

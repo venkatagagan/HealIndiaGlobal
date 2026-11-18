@@ -31,32 +31,37 @@ import {
   Select,
   StatusBadge,
 } from '../../components/ui';
-import { COUNTRY_OPTIONS } from '../../lib/constants';
+import { countryOptions } from '../../lib/constants';
 import { qk, useAgentProfile } from '../../lib/queries';
-import { formatBps, formatDate, useDocumentTitle } from '../../lib/shared';
+import { formatBps, formatDate, i18n, useDocumentTitle } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 import { DocumentList, DocumentUploader } from '../documents/Documents';
 
 const REQUIRED_KYC = ['kyc_registration', 'kyc_id_proof'] as const;
 
+/** Validation message resolved when shown (follows the UI language). */
+const msg = (key: string) => ({ error: () => i18n.t(`agent:profile.errors.${key}`) });
+
 const profileSchema = z.object({
-  agency_name: z.string().trim().min(2, 'Enter your agency name').max(160),
-  country: z.string().length(2, 'Select a country'),
-  city: z.string().trim().min(2, 'Enter your city').max(120),
+  agency_name: z.string().trim().min(2, msg('agencyName')).max(160),
+  country: z.string().length(2, msg('country')),
+  city: z.string().trim().min(2, msg('city')).max(120),
   phone: z
     .string()
     .trim()
     .max(32)
-    .refine((v) => /^\+?[0-9 ()-]{6,}$/.test(v), 'Enter a valid phone number with country code'),
+    .refine((v) => /^\+?[0-9 ()-]{6,}$/.test(v), msg('phone')),
   website: z
     .string()
     .trim()
     .max(255)
-    .refine((v) => v === '' || /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(v), 'Enter a full URL, e.g. https://example.com'),
+    .refine((v) => v === '' || /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(v), msg('website')),
 });
 type ProfileValues = z.infer<typeof profileSchema>;
 
 export function ProfilePage() {
-  useDocumentTitle('Profile & KYC');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('profile.title'));
   const [params] = useSearchParams();
   const profile = useAgentProfile();
 
@@ -73,15 +78,14 @@ export function ProfilePage() {
 
   return (
     <div>
-      <PageHeader title="Profile & KYC" description="Your agency details and verification documents." />
+      <PageHeader title={t('profile.title')} description={t('profile.description')} />
       {params.get('welcome') === '1' && p.kyc_status === 'not_submitted' && (
         <div className="mb-6 flex gap-3 rounded-xl border border-primary/40 bg-primary-soft p-4 text-sm">
           <PartyPopper className="h-5 w-5 shrink-0 text-primary-ink" aria-hidden />
           <div>
-            <p className="font-semibold">Welcome to Heal India Global!</p>
+            <p className="font-semibold">{t('profile.welcomeTitle')}</p>
             <p className="text-muted">
-              Complete your agency details and upload your registration certificate and ID proof, then submit for review.
-              You can add patients and send enquiries while we verify your agency.
+              {t('profile.welcomeBody')}
             </p>
           </div>
         </div>
@@ -107,53 +111,55 @@ function AccountDeletionCard() {
 }
 
 function StatusCard({ profile: p }: { profile: AgentProfileOut }) {
+  const { t } = useAppTranslation();
   return (
     <Card>
-      <CardHeader title="Account status" />
+      <CardHeader title={t('profile.status.title')} />
       <dl className="space-y-3 p-5 text-sm">
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">Agent code</dt>
+          <dt className="text-muted">{t('profile.status.agentCode')}</dt>
           <dd className="font-mono font-semibold">{p.agent_code}</dd>
         </div>
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">Account</dt>
+          <dt className="text-muted">{t('profile.status.account')}</dt>
           <dd>
             <StatusBadge kind="agent" status={p.status} />
           </dd>
         </div>
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">KYC</dt>
+          <dt className="text-muted">{t('profile.status.kyc')}</dt>
           <dd>
             <StatusBadge kind="kyc" status={p.kyc_status} />
           </dd>
         </div>
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">Tier</dt>
+          <dt className="text-muted">{t('profile.status.tier')}</dt>
           <dd>{AGENT_TIER_LABELS[p.tier]}</dd>
         </div>
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">Commission rate</dt>
-          <dd>{p.commission_rate_bps != null ? formatBps(p.commission_rate_bps) : 'Platform standard'}</dd>
+          <dt className="text-muted">{t('profile.status.commissionRate')}</dt>
+          <dd>{p.commission_rate_bps != null ? formatBps(p.commission_rate_bps) : t('profile.status.platformStandard')}</dd>
         </div>
         {p.approved_at && (
           <div className="flex justify-between gap-3">
-            <dt className="text-muted">Approved</dt>
+            <dt className="text-muted">{t('profile.status.approved')}</dt>
             <dd>{formatDate(p.approved_at)}</dd>
           </div>
         )}
         <div className="flex justify-between gap-3">
-          <dt className="text-muted">Member since</dt>
+          <dt className="text-muted">{t('profile.status.memberSince')}</dt>
           <dd>{formatDate(p.created_at)}</dd>
         </div>
       </dl>
       {p.rejection_reason && (p.kyc_status === 'rejected' || p.status === 'rejected') && (
-        <p className="border-t border-border px-5 py-3 text-sm text-danger">Reason: {p.rejection_reason}</p>
+        <p className="border-t border-border px-5 py-3 text-sm text-danger">{t('profile.status.reason', { reason: p.rejection_reason })}</p>
       )}
     </Card>
   );
 }
 
 function AgencyForm({ profile: p }: { profile: AgentProfileOut }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const {
     register,
@@ -175,7 +181,7 @@ function AgencyForm({ profile: p }: { profile: AgentProfileOut }) {
       agentPortalApi.updateProfile({ agency_name: v.agency_name, country: v.country, city: v.city, phone: v.phone, website: v.website || null }),
     onSuccess: (updated) => {
       queryClient.setQueryData(qk.profile, updated);
-      toast.success('Agency details saved');
+      toast.success(t('profile.agency.saved'));
     },
     onError: (error) => {
       const fields = fieldErrors(error);
@@ -191,33 +197,33 @@ function AgencyForm({ profile: p }: { profile: AgentProfileOut }) {
   });
   return (
     <Card>
-      <CardHeader title="Agency details" description="Shown to hospitals and our verification team" />
+      <CardHeader title={t('profile.agency.title')} description={t('profile.agency.description')} />
       <form noValidate className="grid gap-4 p-5 sm:grid-cols-2" onSubmit={handleSubmit((v) => save.mutate(v))}>
-        <FormField label="Agency name" htmlFor="ag-name" error={errors.agency_name?.message} required className="sm:col-span-2">
+        <FormField label={t('profile.agency.name')} htmlFor="ag-name" error={errors.agency_name?.message} required className="sm:col-span-2">
           <Input id="ag-name" autoComplete="organization" {...register('agency_name')} />
         </FormField>
-        <FormField label="Country" htmlFor="ag-country" error={errors.country?.message} required>
+        <FormField label={t('profile.agency.country')} htmlFor="ag-country" error={errors.country?.message} required>
           <Select id="ag-country" {...register('country')}>
-            <option value="">Select…</option>
-            {COUNTRY_OPTIONS.map((c) => (
+            <option value="">{t('profile.agency.select')}</option>
+            {countryOptions().map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
               </option>
             ))}
           </Select>
         </FormField>
-        <FormField label="City" htmlFor="ag-city" error={errors.city?.message} required>
+        <FormField label={t('profile.agency.city')} htmlFor="ag-city" error={errors.city?.message} required>
           <Input id="ag-city" autoComplete="address-level2" {...register('city')} />
         </FormField>
-        <FormField label="Phone / WhatsApp" htmlFor="ag-phone" error={errors.phone?.message} required>
+        <FormField label={t('profile.agency.phone')} htmlFor="ag-phone" error={errors.phone?.message} required>
           <Input id="ag-phone" type="tel" autoComplete="tel" {...register('phone')} />
         </FormField>
-        <FormField label="Website" htmlFor="ag-web" error={errors.website?.message}>
+        <FormField label={t('profile.agency.website')} htmlFor="ag-web" error={errors.website?.message}>
           <Input id="ag-web" type="url" placeholder="https://" {...register('website')} />
         </FormField>
         <div className="flex justify-end sm:col-span-2">
           <Button type="submit" loading={save.isPending} disabled={!isDirty}>
-            Save details
+            {t('profile.agency.save')}
           </Button>
         </div>
       </form>
@@ -226,6 +232,7 @@ function AgencyForm({ profile: p }: { profile: AgentProfileOut }) {
 }
 
 function KycSection({ profile: p }: { profile: AgentProfileOut }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   // one request per KYC kind so the agent's own KYC files are never crowded out by patient documents
   const docs = useQueries({
@@ -253,7 +260,7 @@ function KycSection({ profile: p }: { profile: AgentProfileOut }) {
     mutationFn: agentPortalApi.submitKyc,
     onSuccess: (updated) => {
       queryClient.setQueryData(qk.profile, updated);
-      toast.success('KYC submitted for review. We will notify you once it is reviewed.');
+      toast.success(t('profile.kyc.submitted'));
     },
     onError: (error) => toast.error(errorMessage(error)),
   });
@@ -263,10 +270,10 @@ function KycSection({ profile: p }: { profile: AgentProfileOut }) {
       <CardHeader
         title={
           <span className="inline-flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-primary" aria-hidden /> KYC documents
+            <ShieldCheck className="h-5 w-5 text-primary" aria-hidden /> {t('profile.kyc.title')}
           </span>
         }
-        description="Registration certificate and ID proof are required. Add PAN/GST and a bank proof if available."
+        description={t('profile.kyc.description')}
         actions={<StatusBadge kind="kyc" status={p.kyc_status} />}
       />
       <div className="space-y-4 border-b border-border p-5">
@@ -277,19 +284,19 @@ function KycSection({ profile: p }: { profile: AgentProfileOut }) {
               <li key={k} className="flex items-center gap-2">
                 <CheckCircle2 className={done ? 'h-4 w-4 text-primary' : 'h-4 w-4 text-border'} aria-hidden />
                 <span className={done ? '' : 'text-muted'}>{DOCUMENT_KIND_LABELS[k]}</span>
-                <span className="sr-only">{done ? 'uploaded' : 'missing'}</span>
+                <span className="sr-only">{done ? t('profile.kyc.uploaded') : t('profile.kyc.missing')}</span>
               </li>
             );
           })}
           <li className="flex items-center gap-2">
             <CheckCircle2 className={profileComplete ? 'h-4 w-4 text-primary' : 'h-4 w-4 text-border'} aria-hidden />
-            <span className={profileComplete ? '' : 'text-muted'}>Agency details complete</span>
+            <span className={profileComplete ? '' : 'text-muted'}>{t('profile.kyc.agencyComplete')}</span>
           </li>
         </ul>
         {!locked && <DocumentUploader kinds={KYC_DOCUMENT_KINDS} target={{}} />}
         {locked && (
           <p className="text-sm text-muted">
-            {p.kyc_status === 'pending' ? 'Your documents are under review and cannot be changed right now.' : 'Your agency is verified.'}
+            {p.kyc_status === 'pending' ? t('profile.kyc.underReview') : t('profile.kyc.verified')}
           </p>
         )}
       </div>
@@ -298,21 +305,21 @@ function KycSection({ profile: p }: { profile: AgentProfileOut }) {
       ) : docs.isError ? (
         <ErrorState error={docs.error} onRetry={docs.refetch} />
       ) : (
-        <DocumentList documents={kycDocs} emptyText="No KYC documents uploaded yet." canDelete={(d) => !locked && d.status !== 'verified'} />
+        <DocumentList documents={kycDocs} emptyText={t('profile.kyc.empty')} canDelete={(d) => !locked && d.status !== 'verified'} />
       )}
       {!locked && (
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border p-5">
           {!canSubmit && (
             <p className="text-xs text-muted">
               {missing.length > 0
-                ? `Upload: ${missing.map((k) => DOCUMENT_KIND_LABELS[k].replace('KYC - ', '')).join(', ')}`
+                ? t('profile.kyc.uploadMissing', { kinds: missing.map((k) => DOCUMENT_KIND_LABELS[k].replace('KYC - ', '')).join(', ') })
                 : !profileComplete
-                  ? 'Complete your agency details first'
+                  ? t('profile.kyc.completeAgencyFirst')
                   : ''}
             </p>
           )}
           <Button icon={<Send className="h-4 w-4" aria-hidden />} disabled={!canSubmit} loading={submit.isPending} onClick={() => submit.mutate()}>
-            {p.kyc_status === 'rejected' ? 'Resubmit for review' : 'Submit for review'}
+            {p.kyc_status === 'rejected' ? t('profile.kyc.resubmit') : t('profile.kyc.submit')}
           </Button>
         </div>
       )}
@@ -322,18 +329,19 @@ function KycSection({ profile: p }: { profile: AgentProfileOut }) {
 
 const passwordSchema = z
   .object({
-    current_password: z.string().min(1, 'Enter your current password'),
+    current_password: z.string().min(1, msg('currentPassword')),
     new_password: z
       .string()
-      .min(10, 'Use at least 10 characters')
+      .min(10, msg('passwordLength'))
       .max(128)
-      .refine((v) => /[A-Za-z]/.test(v) && /\d/.test(v), 'Include at least one letter and one digit'),
+      .refine((v) => /[A-Za-z]/.test(v) && /\d/.test(v), msg('passwordMix')),
     confirm: z.string(),
   })
-  .refine((v) => v.new_password === v.confirm, { path: ['confirm'], message: 'Passwords do not match' });
+  .refine((v) => v.new_password === v.confirm, { path: ['confirm'], ...msg('passwordMismatch') });
 type PasswordValues = z.infer<typeof passwordSchema>;
 
 function PasswordCard() {
+  const { t } = useAppTranslation();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const {
@@ -345,7 +353,7 @@ function PasswordCard() {
   const change = useMutation({
     mutationFn: (v: PasswordValues) => authApi.changePassword({ current_password: v.current_password, new_password: v.new_password }),
     onSuccess: () => {
-      toast.success('Password changed');
+      toast.success(t('profile.security.changed'));
       reset();
       setOpen(false);
     },
@@ -353,35 +361,35 @@ function PasswordCard() {
   });
   return (
     <Card>
-      <CardHeader title="Sign-in & security" />
+      <CardHeader title={t('profile.security.title')} />
       <div className="space-y-3 p-5 text-sm">
         <p>
-          <span className="text-muted">Signed in as</span> <span className="font-medium">{user?.email}</span>
+          <span className="text-muted">{t('profile.security.signedInAs')}</span> <span className="font-medium">{user?.email}</span>
         </p>
         <p>
-          <span className="text-muted">Two-factor authentication:</span> {user?.mfa_enabled ? 'On' : 'Off'}
+          <span className="text-muted">{t('profile.security.twoFactor')}</span> {user?.mfa_enabled ? t('profile.security.on') : t('profile.security.off')}
         </p>
         {!open ? (
           <Button variant="outline" onClick={() => setOpen(true)}>
-            Change password
+            {t('profile.security.change')}
           </Button>
         ) : (
           <form noValidate className="space-y-3" onSubmit={handleSubmit((v) => change.mutate(v))}>
-            <FormField label="Current password" htmlFor="pw-cur" error={errors.current_password?.message}>
+            <FormField label={t('profile.security.current')} htmlFor="pw-cur" error={errors.current_password?.message}>
               <Input id="pw-cur" type="password" autoComplete="current-password" {...register('current_password')} />
             </FormField>
-            <FormField label="New password" htmlFor="pw-new" error={errors.new_password?.message}>
+            <FormField label={t('profile.security.new')} htmlFor="pw-new" error={errors.new_password?.message}>
               <Input id="pw-new" type="password" autoComplete="new-password" {...register('new_password')} />
             </FormField>
-            <FormField label="Confirm new password" htmlFor="pw-confirm" error={errors.confirm?.message}>
+            <FormField label={t('profile.security.confirm')} htmlFor="pw-confirm" error={errors.confirm?.message}>
               <Input id="pw-confirm" type="password" autoComplete="new-password" {...register('confirm')} />
             </FormField>
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setOpen(false)}>
-                Cancel
+                {t('profile.security.cancel')}
               </Button>
               <Button type="submit" loading={change.isPending}>
-                Update password
+                {t('profile.security.update')}
               </Button>
             </div>
           </form>

@@ -16,6 +16,7 @@ import {
 import { Badge, Button, Card, CardHeader, Checkbox, FormField, Input, Modal, Select, type BadgeTone } from '../../components/ui';
 import { qk } from '../../lib/queries';
 import { formatDateTime } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 
 const STATUS_TONE: Record<AgentConsentStatus, BadgeTone> = {
   not_recorded: 'danger',
@@ -31,6 +32,7 @@ const kindsLabel = (kinds: readonly ConsentKind[]) =>
 
 /** Consent attestation state (backlog #30) with a "record consent" action (POST /agent-portal/patients/{id}/consent). */
 export function PatientConsentCard({ patient }: { patient: AgentPatientOut }) {
+  const { t } = useAppTranslation();
   const consent = patient.consent ?? null;
   const status: AgentConsentStatus = consent?.status ?? 'not_recorded';
   const [open, setOpen] = useState(false);
@@ -39,37 +41,37 @@ export function PatientConsentCard({ patient }: { patient: AgentPatientOut }) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader
-        title="Patient consent"
-        description="Your attestation that the patient agreed to the terms, privacy policy and record sharing. The patient confirms it on first sign-in."
+        title={t('consent.title')}
+        description={t('consent.description')}
         actions={
           <>
             <Badge tone={STATUS_TONE[status]}>{AGENT_CONSENT_STATUS_LABELS[status]}</Badge>
             <Button size="sm" variant={needsAction ? 'primary' : 'outline'} onClick={() => setOpen(true)}>
-              {needsAction ? 'Record consent' : 'Re-attest consent'}
+              {needsAction ? t('consent.record') : t('consent.reattest')}
             </Button>
           </>
         }
       />
       <dl className="grid grid-cols-1 gap-x-6 gap-y-4 p-5 text-sm sm:grid-cols-3">
         <div>
-          <dt className="text-muted">Consented to</dt>
+          <dt className="text-muted">{t('consent.consentedTo')}</dt>
           <dd className="mt-0.5 font-medium">{kindsLabel(consent?.kinds ?? [])}</dd>
         </div>
         <div>
-          <dt className="text-muted">Obtained</dt>
+          <dt className="text-muted">{t('consent.obtained')}</dt>
           <dd className="mt-0.5 font-medium">
             {methodLabel(consent?.method)}
             {consent?.attested_at ? ` · ${formatDateTime(consent.attested_at)}` : ''}
           </dd>
         </div>
         <div>
-          <dt className="text-muted">Patient confirmation</dt>
+          <dt className="text-muted">{t('consent.patientConfirmation')}</dt>
           <dd className="mt-0.5 font-medium">
             {consent?.patient_confirmed_at
               ? formatDateTime(consent.patient_confirmed_at)
               : consent?.pending_kinds.length
-                ? `Pending: ${kindsLabel(consent.pending_kinds)}`
-                : 'Not yet'}
+                ? t('consent.pendingKinds', { kinds: kindsLabel(consent.pending_kinds) })
+                : t('consent.notYet')}
           </dd>
         </div>
       </dl>
@@ -79,6 +81,7 @@ export function PatientConsentCard({ patient }: { patient: AgentPatientOut }) {
 }
 
 function AttestConsentDialog({ patient, onClose }: { patient: AgentPatientOut; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const [attested, setAttested] = useState(false);
   const [share, setShare] = useState(true);
@@ -97,7 +100,7 @@ function AttestConsentDialog({ patient, onClose }: { patient: AgentPatientOut; o
     onSuccess: (saved) => {
       queryClient.setQueryData(qk.patient(patient.id), saved);
       void queryClient.invalidateQueries({ queryKey: ['agent-patients'] });
-      toast.success('Consent recorded');
+      toast.success(t('consent.recorded'));
       onClose();
     },
     onError: (err) => toast.error(errorMessage(err)),
@@ -107,25 +110,25 @@ function AttestConsentDialog({ patient, onClose }: { patient: AgentPatientOut; o
     <Modal
       open
       onClose={onClose}
-      title="Record patient consent"
-      description="Only confirm if the patient has actually agreed. Your attestation is audit-logged."
+      title={t('consent.dialogTitle')}
+      description={t('consent.dialogDescription')}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            {t('consent.cancel')}
           </Button>
           <Button
             loading={mutation.isPending}
             onClick={() => {
               if (!attested) {
-                setError('Confirm that the patient has given consent.');
+                setError(t('consent.confirmRequired'));
                 return;
               }
               setError(null);
               mutation.mutate();
             }}
           >
-            Confirm consent
+            {t('consent.confirm')}
           </Button>
         </>
       }
@@ -135,19 +138,19 @@ function AttestConsentDialog({ patient, onClose }: { patient: AgentPatientOut; o
           checked={attested}
           onChange={(e) => setAttested(e.target.checked)}
           aria-invalid={!!error}
-          label="I confirm the patient has agreed to the Terms of Service and Privacy Policy"
+          label={t('consent.attest')}
         />
         <Checkbox
           checked={share}
           onChange={(e) => setShare(e.target.checked)}
-          label="The patient also agreed to share their records with the hospitals I contact for them"
+          label={t('consent.share')}
         />
         {error && (
           <p role="alert" className="text-sm text-danger-ink">
             {error}
           </p>
         )}
-        <FormField label="How was consent obtained?" htmlFor="ac-method" required>
+        <FormField label={t('consent.method')} htmlFor="ac-method" required>
           <Select id="ac-method" value={method} onChange={(e) => setMethod(e.target.value as AgentConsentMethod)}>
             {AGENT_CONSENT_METHODS.map((m) => (
               <option key={m} value={m}>
@@ -156,7 +159,7 @@ function AttestConsentDialog({ patient, onClose }: { patient: AgentPatientOut; o
             ))}
           </Select>
         </FormField>
-        <FormField label="Note (optional)" htmlFor="ac-note">
+        <FormField label={t('consent.note')} htmlFor="ac-note">
           <Input id="ac-note" maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} />
         </FormField>
       </div>

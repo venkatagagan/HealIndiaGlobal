@@ -5,23 +5,26 @@ import { ArrowLeft, BadgeCheck, BedDouble, Calendar, Globe, Globe2, MapPin, Phon
 import { PACKAGE_TIER_LABELS, catalogApi, type HospitalProcedureOut } from '@hig/shared/api';
 import { Badge, Button, Card, CardHeader, EmptyState, ErrorState, LoadingBlock, Money, PageHeader, Tabs } from '../../components/ui';
 import { qk } from '../../lib/queries';
-import { formatDate, formatMoneyRange, useDocumentTitle } from '../../lib/shared';
+import { formatDate, formatMoneyRange, formatNumber, useDocumentTitle } from '../../lib/shared';
+import { languageLabel } from '../../lib/constants';
+import { useAppTranslation } from '../../i18n';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 import { DoctorCardView } from './DoctorsPage';
 
 type Tab = 'overview' | 'doctors' | 'procedures' | 'reviews';
 
 export function HospitalDetailPage() {
+  const { t } = useAppTranslation();
   const { slug = '' } = useParams();
   const query = useQuery({ queryKey: qk.hospital(slug), queryFn: () => catalogApi.getHospital(slug) });
   const h = query.data;
-  useDocumentTitle(h?.name ?? 'Hospital');
+  useDocumentTitle(h?.name ?? t('hospitalDetail.fallbackTitle'));
   const [tab, setTab] = useState<Tab>('overview');
   const [enquiry, setEnquiry] = useState<EnquiryTarget | null>(null);
 
   const back = (
     <Link to="/hospitals" className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> Hospitals
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('hospitalDetail.back')}
     </Link>
   );
   if (query.isPending) return <LoadingBlock />;
@@ -43,7 +46,7 @@ export function HospitalDetailPage() {
         }
         actions={
           <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => enquireFor()}>
-            Send enquiry for a patient
+            {t('hospitalDetail.sendEnquiry')}
           </Button>
         }
       />
@@ -56,12 +59,12 @@ export function HospitalDetailPage() {
         ))}
         {h.rating_avg != null && (
           <Badge>
-            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(h.rating_avg).toFixed(1)} · {h.rating_count} reviews
+            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(h.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {t('hospitalDetail.reviewCount', { count: h.rating_count })}
           </Badge>
         )}
         {h.international_desk && (
           <Badge tone="accent">
-            <Globe2 className="h-3 w-3" aria-hidden /> International patient desk
+            <Globe2 className="h-3 w-3" aria-hidden /> {t('hospitalDetail.internationalDesk')}
           </Badge>
         )}
       </div>
@@ -71,18 +74,18 @@ export function HospitalDetailPage() {
         value={tab}
         onChange={setTab}
         tabs={[
-          { value: 'overview', label: 'Overview' },
-          { value: 'doctors', label: 'Doctors', count: h.doctors.length },
-          { value: 'procedures', label: 'Procedures & packages', count: h.procedures.length },
-          { value: 'reviews', label: 'Reviews', count: h.reviews.length },
+          { value: 'overview', label: t('hospitalDetail.tabs.overview') },
+          { value: 'doctors', label: t('hospitalDetail.tabs.doctors'), count: h.doctors.length },
+          { value: 'procedures', label: t('hospitalDetail.tabs.procedures'), count: h.procedures.length },
+          { value: 'reviews', label: t('hospitalDetail.tabs.reviews'), count: h.reviews.length },
         ]}
       />
 
       {tab === 'overview' && (
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader title="About" />
-            <p className="p-5 text-sm leading-relaxed whitespace-pre-line">{h.description ?? 'No description provided.'}</p>
+            <CardHeader title={t('hospitalDetail.about')} />
+            <p className="p-5 text-sm leading-relaxed whitespace-pre-line">{h.description ?? t('hospitalDetail.noDescription')}</p>
             {h.specialties.length > 0 && (
               <div className="flex flex-wrap gap-2 border-t border-border p-5">
                 {h.specialties.map((s) => (
@@ -92,26 +95,26 @@ export function HospitalDetailPage() {
             )}
           </Card>
           <Card>
-            <CardHeader title="Facts" />
+            <CardHeader title={t('hospitalDetail.facts')} />
             <ul className="space-y-3 p-5 text-sm">
               {h.established_year && (
                 <li className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted" aria-hidden /> Established {h.established_year}
+                  <Calendar className="h-4 w-4 text-muted" aria-hidden /> {t('hospitalDetail.established', { year: h.established_year })}
                 </li>
               )}
               {h.bed_count && (
                 <li className="flex items-center gap-2">
-                  <BedDouble className="h-4 w-4 text-muted" aria-hidden /> {h.bed_count} beds
+                  <BedDouble className="h-4 w-4 text-muted" aria-hidden /> {t('hospitalDetail.beds', { count: h.bed_count, n: formatNumber(h.bed_count) })}
                 </li>
               )}
               {h.airport_distance_km != null && (
                 <li className="flex items-center gap-2">
-                  <Plane className="h-4 w-4 text-muted" aria-hidden /> {Number(h.airport_distance_km).toFixed(0)} km from the airport
+                  <Plane className="h-4 w-4 text-muted" aria-hidden /> {t('hospitalDetail.airportDistance', { km: formatNumber(Number(h.airport_distance_km), { maximumFractionDigits: 0 }) })}
                 </li>
               )}
               {h.languages.length > 0 && (
                 <li className="flex items-center gap-2">
-                  <Globe2 className="h-4 w-4 text-muted" aria-hidden /> {h.languages.join(', ')}
+                  <Globe2 className="h-4 w-4 text-muted" aria-hidden /> {h.languages.map(languageLabel).join(', ')}
                 </li>
               )}
               {h.phone && (
@@ -123,7 +126,7 @@ export function HospitalDetailPage() {
                 <li className="flex items-center gap-2">
                   <Globe className="h-4 w-4 text-muted" aria-hidden />
                   <a href={h.website} target="_blank" rel="noopener noreferrer" className="text-primary-ink hover:underline">
-                    Website
+                    {t('hospitalDetail.website')}
                   </a>
                 </li>
               )}
@@ -135,7 +138,7 @@ export function HospitalDetailPage() {
       {tab === 'doctors' &&
         (h.doctors.length === 0 ? (
           <Card>
-            <EmptyState title="No doctors listed yet" />
+            <EmptyState title={t('hospitalDetail.noDoctors')} />
           </Card>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -148,7 +151,7 @@ export function HospitalDetailPage() {
       {tab === 'procedures' &&
         (h.procedures.length === 0 ? (
           <Card>
-            <EmptyState title="No procedures listed yet" description="Send an enquiry to request a custom quote." />
+            <EmptyState title={t('hospitalDetail.noProcedures')} description={t('hospitalDetail.noProceduresHint')} />
           </Card>
         ) : (
           <div className="space-y-4">
@@ -159,13 +162,13 @@ export function HospitalDetailPage() {
                   description={
                     <>
                       {formatMoneyRange(p.price_min_minor, p.price_max_minor, p.currency)}
-                      {p.hospital_stay_days ? ` · ${p.hospital_stay_days} days in hospital` : ''}
-                      {p.success_rate_pct != null ? ` · ${Number(p.success_rate_pct).toFixed(0)}% success` : ''}
+                      {p.hospital_stay_days ? ` · ${t('hospitalDetail.stayDays', { count: p.hospital_stay_days })}` : ''}
+                      {p.success_rate_pct != null ? ` · ${t('hospitalDetail.successRate', { pct: formatNumber(Number(p.success_rate_pct), { maximumFractionDigits: 0 }) })}` : ''}
                     </>
                   }
                   actions={
                     <Button size="sm" variant="outline" onClick={() => enquireFor(p)}>
-                      Request quote
+                      {t('hospitalDetail.requestQuote')}
                     </Button>
                   }
                 />
@@ -173,12 +176,12 @@ export function HospitalDetailPage() {
                   <div className="space-y-4 p-5">
                     {p.inclusions.length > 0 && (
                       <p className="text-sm">
-                        <span className="font-medium">Includes:</span> <span className="text-muted">{p.inclusions.join(', ')}</span>
+                        <span className="font-medium">{t('hospitalDetail.includes')}</span> <span className="text-muted">{p.inclusions.join(', ')}</span>
                       </p>
                     )}
                     {p.exclusions.length > 0 && (
                       <p className="text-sm">
-                        <span className="font-medium">Excludes:</span> <span className="text-muted">{p.exclusions.join(', ')}</span>
+                        <span className="font-medium">{t('hospitalDetail.excludes')}</span> <span className="text-muted">{p.exclusions.join(', ')}</span>
                       </p>
                     )}
                     {p.packages.length > 0 && (
@@ -205,13 +208,13 @@ export function HospitalDetailPage() {
       {tab === 'reviews' && (
         <Card>
           {h.reviews.length === 0 ? (
-            <EmptyState title="No reviews yet" />
+            <EmptyState title={t('hospitalDetail.noReviews')} />
           ) : (
             <ul className="divide-y divide-border">
               {h.reviews.map((r) => (
                 <li key={r.id} className="space-y-1 p-5">
                   <div className="flex items-center gap-2">
-                    <span className="flex" aria-label={`${r.rating} out of 5`}>
+                    <span className="flex" aria-label={t('hospitalDetail.ratingOutOf5', { rating: r.rating })}>
                       {Array.from({ length: 5 }, (_, i) => (
                         <Star key={i} className={`h-4 w-4 ${i < r.rating ? 'fill-amber-500 text-amber-500' : 'text-border'}`} aria-hidden />
                       ))}
@@ -220,7 +223,7 @@ export function HospitalDetailPage() {
                   </div>
                   {r.body && <p className="text-sm">{r.body}</p>}
                   <p className="text-xs text-muted">
-                    {r.patient_name ?? 'Verified patient'} · {formatDate(r.created_at)}
+                    {r.patient_name ?? t('hospitalDetail.verifiedPatient')} · {formatDate(r.created_at)}
                   </p>
                 </li>
               ))}

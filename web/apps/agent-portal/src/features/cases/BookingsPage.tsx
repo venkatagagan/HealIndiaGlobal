@@ -32,19 +32,21 @@ import {
 import { ButtonLink, PageHeader } from '../../components/ui';
 import { UPCOMING_DATE_PRESETS, inDateRange, optionsFromRows } from '../../lib/lookups';
 import { qk } from '../../lib/queries';
-import { fetchAllPages, filterParam, fromMinor, matchesSearch, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
+import { fetchAllPages, filterParam, formatNumber, fromMinor, matchesSearch, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 // ---------------------------------------------------------------------------------------------------------
 // Payment state (derived from the booking amounts)
 // ---------------------------------------------------------------------------------------------------------
 const PAYMENT_STATES = ['unpaid', 'partial', 'paid', 'refunded'] as const;
 type PaymentState = (typeof PAYMENT_STATES)[number];
-const PAYMENT_STATE_LABELS: Record<PaymentState, string> = {
-  unpaid: 'Unpaid',
-  partial: 'Partly paid',
-  paid: 'Paid in full',
-  refunded: 'Refunded',
-};
+const paymentStateLabel = (t: AppT, s: PaymentState): string =>
+  ({
+    unpaid: t('bookings.paymentState.unpaid'),
+    partial: t('bookings.paymentState.partial'),
+    paid: t('bookings.paymentState.paid'),
+    refunded: t('bookings.paymentState.refunded'),
+  })[s];
 const PAYMENT_STATE_TONES: Record<PaymentState, BadgeTone> = { unpaid: 'danger', partial: 'warning', paid: 'success', refunded: 'neutral' };
 
 function paymentState(b: BookingOut): PaymentState {
@@ -83,10 +85,10 @@ function applyFilters(rows: readonly BookingOut[], f: BookingFilters, { ignoreSt
 // ---------------------------------------------------------------------------------------------------------
 const money = (minor: number, currency: string) => `${currency} ${fromMinor(minor, currency)}`;
 
-const COLUMNS: DataTableColumn<BookingOut>[] = [
+const columns = (t: AppT): DataTableColumn<BookingOut>[] => [
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('bookings.columns.booking'),
     sortable: true,
     sortValue: (b) => b.booking_number,
     sticky: true,
@@ -96,7 +98,7 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('bookings.columns.patient'),
     sortable: true,
     sortValue: (b) => b.patient.full_name,
     mobile: 'primary',
@@ -106,25 +108,25 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'hospital',
-    header: 'Hospital',
+    header: t('bookings.columns.hospital'),
     className: 'max-w-56',
     cell: (b) => <TextCell primary={b.hospital.name} secondary={b.hospital.city} />,
     exportValue: (b) => b.hospital.name,
   },
   {
     key: 'admission',
-    header: 'Admission',
+    header: t('bookings.columns.admission'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (b) => b.admission_date,
     cell: (b) => (
-      <DateCell value={b.admission_date} display="date" secondary={b.duration_days ? `${b.duration_days} days` : undefined} />
+      <DateCell value={b.admission_date} display="date" secondary={b.duration_days ? t('bookings.days', { count: b.duration_days }) : undefined} />
     ),
     exportValue: (b) => b.admission_date ?? '',
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('bookings.columns.status'),
     sortable: true,
     sortValue: (b) => BOOKING_STATUSES.indexOf(b.status),
     mobile: 'badge',
@@ -133,7 +135,7 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'payment',
-    header: 'Payment',
+    header: t('bookings.columns.payment'),
     sortable: true,
     sortValue: (b) => (b.total_minor > 0 ? b.amount_paid_minor / b.total_minor : 1),
     cell: (b) => {
@@ -141,22 +143,22 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
       const pct = b.total_minor > 0 ? Math.min(100, Math.round((b.amount_paid_minor / b.total_minor) * 100)) : 100;
       return (
         <span className="flex min-w-32 flex-col gap-1">
-          <StatusBadgeCell status={state} label={PAYMENT_STATE_LABELS[state]} tone={PAYMENT_STATE_TONES[state]} />
+          <StatusBadgeCell status={state} label={paymentStateLabel(t, state)} tone={PAYMENT_STATE_TONES[state]} />
           <span className="flex items-center gap-2 text-xs text-muted">
             <span className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-2" aria-hidden>
               <span className="block h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
             </span>
-            {pct}% · {PAYMENT_OPTION_LABELS[b.payment_option] ?? b.payment_option}
+            {formatNumber(pct / 100, { style: 'percent' })} · {PAYMENT_OPTION_LABELS[b.payment_option] ?? b.payment_option}
           </span>
         </span>
       );
     },
-    mobileCell: (b) => PAYMENT_STATE_LABELS[paymentState(b)],
-    exportValue: (b) => PAYMENT_STATE_LABELS[paymentState(b)],
+    mobileCell: (b) => paymentStateLabel(t, paymentState(b)),
+    exportValue: (b) => paymentStateLabel(t, paymentState(b)),
   },
   {
     key: 'total',
-    header: 'Total',
+    header: t('bookings.columns.total'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -166,7 +168,7 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'balance',
-    header: 'Balance due',
+    header: t('bookings.columns.balanceDue'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -175,13 +177,13 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
       b.balance_due_minor > 0 ? (
         <MoneyCell minor={b.balance_due_minor} currency={b.currency} className="text-danger" />
       ) : (
-        <span className="text-xs text-muted">Nothing due</span>
+        <span className="text-xs text-muted">{t('bookings.nothingDue')}</span>
       ),
     exportValue: (b) => money(b.balance_due_minor, b.currency),
   },
   {
     key: 'created',
-    header: 'Booked',
+    header: t('bookings.columns.booked'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (b) => b.created_at,
@@ -191,8 +193,8 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'actions',
-    header: <span className="sr-only">Actions</span>,
-    title: 'Actions',
+    header: <span className="sr-only">{t('bookings.columns.actions')}</span>,
+    title: t('bookings.columns.actions'),
     align: 'end',
     hideable: false,
     exportable: false,
@@ -200,18 +202,20 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
     cell: (b) =>
       canPay(b) ? (
         <ButtonLink size="sm" to={`/bookings/${b.id}/pay`} icon={<CreditCard className="h-3.5 w-3.5" aria-hidden />}>
-          Pay
+          {t('bookings.pay')}
         </ButtonLink>
       ) : null,
   },
 ];
-const SORT_KEYS = COLUMNS.filter((c) => c.sortable).map((c) => c.key);
+const SORT_KEYS = ['booking', 'patient', 'admission', 'status', 'payment', 'total', 'balance', 'created'];
 
 // ---------------------------------------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export function BookingsPage() {
-  useDocumentTitle('Bookings');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('bookings.title'));
+  const COLUMNS = useMemo(() => columns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-admission', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
 
@@ -231,24 +235,24 @@ export function BookingsPage() {
     count: query.data ? statusCount(s) : undefined,
   }));
   const quickItems: QuickFilterItem<BookingStatus>[] = [
-    { value: '', label: 'All bookings', count: query.data ? statusBase.length : undefined },
+    { value: '', label: t('bookings.quick.all'), count: query.data ? statusBase.length : undefined },
     ...BOOKING_STATUSES.map((s) => ({ value: s, label: BOOKING_STATUS_LABELS[s], count: query.data ? statusCount(s) : undefined })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 ? filters.status[0]! : null;
   const hospitalOptions = useMemo(() => optionsFromRows(all, (b) => ({ value: b.hospital.id, label: b.hospital.name })), [all]);
   const paymentOptions: FilterOption<PaymentState>[] = PAYMENT_STATES.map((s) => ({
     value: s,
-    label: PAYMENT_STATE_LABELS[s],
+    label: paymentStateLabel(t, s),
     tone: PAYMENT_STATE_TONES[s],
     count: query.data ? all.filter((b) => paymentState(b) === s).length : undefined,
   }));
 
   return (
     <div>
-      <PageHeader title="Bookings" description="Treatments booked for your patients — admission dates, payment progress and balances due." />
+      <PageHeader title={t('bookings.title')} description={t('bookings.description')} />
       <DataTable
         id="agent.bookings"
-        caption="Bookings"
+        caption={t('bookings.title')}
         table={table}
         columns={COLUMNS}
         rows={rows}
@@ -256,31 +260,31 @@ export function BookingsPage() {
         error={query.error}
         onRetry={() => void query.refetch()}
         rowHref={(b) => `/cases/${b.case_id}`}
-        rowLabel={(b) => `Open booking ${b.booking_number}`}
-        emptyTitle="No bookings yet"
-        emptyDescription="Bookings are created after a hospital’s quote is accepted."
-        emptyAction={<ButtonLink to="/cases">Go to cases</ButtonLink>}
+        rowLabel={(b) => t('bookings.openRow', { number: b.booking_number })}
+        emptyTitle={t('bookings.emptyTitle')}
+        emptyDescription={t('bookings.emptyDescription')}
+        emptyAction={<ButtonLink to="/cases">{t('bookings.goToCases')}</ButtonLink>}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Booking status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('bookings.filters.bookingStatus')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Booking, patient or hospital…', label: 'Search bookings' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('bookings.filters.searchPlaceholder'), label: t('bookings.filters.searchLabel') }}
             onReset={table.resetFilters}
             actions={<ExportButton filename="bookings" columns={COLUMNS} rows={rows} />}
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('bookings.filters.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <MultiSelectFilter
-              label="Payment"
+              label={t('bookings.filters.payment')}
               icon={<CreditCard className="size-3.5 opacity-70" aria-hidden />}
               value={filters.payment}
               onChange={(v) => setFilter('payment', v)}
               options={paymentOptions}
             />
             <SelectFilter
-              label="Hospital"
+              label={t('bookings.filters.hospital')}
               icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.hospital}
               onChange={(v) => setFilter('hospital', v)}
@@ -288,7 +292,7 @@ export function BookingsPage() {
               searchable
             />
             <DateRangeFilter
-              label="Admission"
+              label={t('bookings.filters.admission')}
               presets={UPCOMING_DATE_PRESETS}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}

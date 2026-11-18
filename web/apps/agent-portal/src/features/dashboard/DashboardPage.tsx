@@ -32,7 +32,8 @@ import {
   StatusBadge,
 } from '../../components/ui';
 import { qk, useAgentProfile } from '../../lib/queries';
-import { formatDate, formatMoney, formatMonth, formatPercent, fromMinor, useDocumentTitle } from '../../lib/shared';
+import { formatDate, formatMoney, formatMonth, formatNumber, formatPercent, fromMinor, useDocumentTitle } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 import { useAuth } from '../../auth/AuthProvider';
 
 const tooltipStyle = {
@@ -44,7 +45,8 @@ const tooltipStyle = {
 };
 
 export function DashboardPage() {
-  useDocumentTitle('Dashboard');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('dashboard.title'));
   const { user } = useAuth();
   const dashboard = useQuery({ queryKey: qk.dashboard, queryFn: agentPortalApi.dashboard });
   const data = dashboard.data;
@@ -59,18 +61,18 @@ export function DashboardPage() {
   return (
     <div>
       <PageHero
-        eyebrow="Agent portal"
-        title={`Welcome back${user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}`}
-        description="Your patients, enquiries and earnings at a glance."
+        eyebrow={t('dashboard.eyebrow')}
+        title={user?.full_name ? t('dashboard.welcomeName', { name: user.full_name.split(' ')[0] }) : t('dashboard.welcome')}
+        description={t('dashboard.description')}
         actions={
           <>
             <Link to="/cases/new" className={heroActionClass('solid')}>
               <Briefcase className="h-4 w-4" aria-hidden />
-              New enquiry
+              {t('dashboard.newEnquiry')}
             </Link>
             <Link to="/patients?new=1" className={heroActionClass('glass')}>
               <UserPlus className="h-4 w-4" aria-hidden />
-              Add patient
+              {t('dashboard.addPatient')}
             </Link>
           </>
         }
@@ -87,23 +89,23 @@ export function DashboardPage() {
               Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-28" />)
             ) : (
               <>
-                <StatCard label="Patients" value={data.patients_total} icon={<Users className="h-4 w-4" />} />
-                <StatCard label="Active cases" value={data.active_cases} icon={<Briefcase className="h-4 w-4" />} tone="info" />
+                <StatCard label={t('dashboard.stats.patients')} value={formatNumber(data.patients_total)} icon={<Users className="h-4 w-4" />} />
+                <StatCard label={t('dashboard.stats.activeCases')} value={formatNumber(data.active_cases)} icon={<Briefcase className="h-4 w-4" />} tone="info" />
                 <StatCard
-                  label="Confirmed bookings"
-                  value={data.bookings_confirmed}
+                  label={t('dashboard.stats.confirmedBookings')}
+                  value={formatNumber(data.bookings_confirmed)}
                   icon={<CalendarCheck className="h-4 w-4" />}
-                  hint={`Conversion ${formatPercent(data.conversion_rate)}`}
+                  hint={t('dashboard.stats.conversion', { rate: formatPercent(data.conversion_rate) })}
                   tone="accent"
                 />
                 <StatCard
-                  label="Commission pending"
+                  label={t('dashboard.stats.commissionPending')}
                   value={formatMoney(data.commission_pending_minor, data.currency)}
                   icon={<HandCoins className="h-4 w-4" />}
                   tone="warning"
                 />
                 <StatCard
-                  label="Commission paid"
+                  label={t('dashboard.stats.commissionPaid')}
                   value={formatMoney(data.commission_paid_minor, data.currency)}
                   icon={<Percent className="h-4 w-4" />}
                 />
@@ -113,12 +115,12 @@ export function DashboardPage() {
 
           <div className="mt-6 grid gap-6 xl:grid-cols-3">
             <Card className="xl:col-span-2">
-              <CardHeader title="Cases and bookings per month" description="Enquiries you created and the bookings they turned into" />
+              <CardHeader title={t('dashboard.charts.activityTitle')} description={t('dashboard.charts.activityDescription')} />
               <div className="h-72 px-2 py-4">
                 {dashboard.isPending ? (
                   <Skeleton className="mx-4 h-full" />
                 ) : chartData.length === 0 ? (
-                  <EmptyState title="No activity yet" description="Create your first enquiry to see monthly activity." />
+                  <EmptyState title={t('dashboard.charts.noActivity')} description={t('dashboard.charts.noActivityHint')} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} barGap={2} margin={{ top: 8, right: 16, left: -8, bottom: 0 }}>
@@ -127,20 +129,20 @@ export function DashboardPage() {
                       <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)', fontSize: 12 }} />
                       <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'var(--color-surface-2)' }} />
                       <Legend wrapperStyle={{ fontSize: 12, color: 'var(--color-muted)' }} />
-                      <Bar dataKey="cases" name="Cases" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} maxBarSize={28} />
-                      <Bar dataKey="bookings" name="Bookings" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                      <Bar dataKey="cases" name={t('dashboard.charts.cases')} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                      <Bar dataKey="bookings" name={t('dashboard.charts.bookings')} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} maxBarSize={28} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
               </div>
             </Card>
             <Card>
-              <CardHeader title="Commission earned" description={data ? `Per month, ${data.currency}` : undefined} />
+              <CardHeader title={t('dashboard.charts.commissionTitle')} description={data ? t('dashboard.charts.perMonth', { currency: data.currency }) : undefined} />
               <div className="h-72 px-2 py-4">
                 {dashboard.isPending ? (
                   <Skeleton className="mx-4 h-full" />
                 ) : chartData.length === 0 ? (
-                  <EmptyState title="No commission yet" description="Commission is earned when a booked treatment completes." />
+                  <EmptyState title={t('dashboard.charts.noCommission')} description={t('dashboard.charts.noCommissionHint')} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -151,20 +153,17 @@ export function DashboardPage() {
                         axisLine={false}
                         width={56}
                         tick={{ fill: 'var(--color-muted)', fontSize: 12 }}
-                        tickFormatter={(v: number) => new Intl.NumberFormat(undefined, { notation: 'compact' }).format(v)}
+                        tickFormatter={(v: number) => formatNumber(v, { notation: 'compact' })}
                       />
                       <Tooltip
                         contentStyle={tooltipStyle}
                         cursor={{ fill: 'var(--color-surface-2)' }}
                         formatter={(value) => [
-                          new Intl.NumberFormat(undefined, {
-                            style: 'currency',
-                            currency: data?.currency ?? 'INR',
-                          }).format(Number(value)),
-                          'Commission',
+                          formatNumber(Number(value), { style: 'currency', currency: data?.currency ?? 'INR' }),
+                          t('dashboard.charts.commission'),
                         ]}
                       />
-                      <Bar dataKey="commission" name="Commission" fill="var(--color-chart-3)" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                      <Bar dataKey="commission" name={t('dashboard.charts.commission')} fill="var(--color-chart-3)" radius={[4, 4, 0, 0]} maxBarSize={28} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -175,10 +174,10 @@ export function DashboardPage() {
           <div className="mt-6 grid gap-6 xl:grid-cols-3">
             <Card className="xl:col-span-2">
               <CardHeader
-                title="Recent cases"
+                title={t('dashboard.recent.title')}
                 actions={
                   <Link to="/cases" className="text-sm font-medium text-primary-ink hover:underline">
-                    View all
+                    {t('dashboard.recent.viewAll')}
                   </Link>
                 }
               />
@@ -186,9 +185,9 @@ export function DashboardPage() {
                 <LoadingBlock />
               ) : !data?.recent_cases.length ? (
                 <EmptyState
-                  title="No cases yet"
-                  description="Send an enquiry to hospitals on behalf of a patient to get quotes."
-                  action={<ButtonLink to="/cases/new">New enquiry</ButtonLink>}
+                  title={t('dashboard.recent.emptyTitle')}
+                  description={t('dashboard.recent.emptyDescription')}
+                  action={<ButtonLink to="/cases/new">{t('dashboard.newEnquiry')}</ButtonLink>}
                 />
               ) : (
                 <RecentCases cases={data.recent_cases} />
@@ -203,6 +202,7 @@ export function DashboardPage() {
 }
 
 function RecentCases({ cases }: { cases: CaseOut[] }) {
+  const { t } = useAppTranslation();
   return (
     <ul className="divide-y divide-border">
       {cases.slice(0, 8).map((c) => (
@@ -213,14 +213,14 @@ function RecentCases({ cases }: { cases: CaseOut[] }) {
                 {c.patient.full_name} <span className="text-muted">· {c.hospital.name}</span>
               </p>
               <p className="text-xs text-muted">
-                {c.case_number} · {c.procedure?.name ?? c.specialty?.name ?? 'General enquiry'} · {formatDate(c.updated_at)}
+                {c.case_number} · {c.procedure?.name ?? c.specialty?.name ?? t('dashboard.recent.generalEnquiry')} · {formatDate(c.updated_at)}
               </p>
             </div>
             {c.latest_quote && (
               <Money minor={c.latest_quote.total_minor} currency={c.latest_quote.currency} className="hidden text-sm font-medium sm:inline" />
             )}
             <StatusBadge kind="case" status={c.status} />
-            <ChevronRight className="h-4 w-4 text-muted" aria-hidden />
+            <ChevronRight className="h-4 w-4 text-muted rtl:-scale-x-100" aria-hidden />
           </Link>
         </li>
       ))}
@@ -229,6 +229,7 @@ function RecentCases({ cases }: { cases: CaseOut[] }) {
 }
 
 function PendingActions() {
+  const { t } = useAppTranslation();
   const profile = useAgentProfile();
   const quoted = useQuery({ queryKey: qk.cases({ status: 'quoted', page_size: 5 }), queryFn: () => casesApi.list({ status: 'quoted', page_size: 5 }) });
   const accepted = useQuery({
@@ -247,8 +248,8 @@ function PendingActions() {
     items.push({
       key: 'kyc',
       icon: <ShieldCheck className="h-4 w-4" />,
-      title: 'Complete your KYC',
-      detail: 'Upload agency documents and submit for review',
+      title: t('dashboard.pending.kycTitle'),
+      detail: t('dashboard.pending.kycDetail'),
       to: '/profile',
     });
   }
@@ -256,8 +257,8 @@ function PendingActions() {
     items.push({
       key: 'payout',
       icon: <Landmark className="h-4 w-4" />,
-      title: 'Add a payout account',
-      detail: 'Needed to receive commission payouts',
+      title: t('dashboard.pending.payoutTitle'),
+      detail: t('dashboard.pending.payoutDetail'),
       to: '/payout-account',
     });
   }
@@ -265,7 +266,7 @@ function PendingActions() {
     items.push({
       key: `q-${c.id}`,
       icon: <FileSignature className="h-4 w-4" />,
-      title: `Review quote for ${c.patient.full_name}`,
+      title: t('dashboard.pending.reviewQuote', { name: c.patient.full_name }),
       detail: `${c.hospital.name} · ${c.case_number}`,
       to: `/cases/${c.id}`,
     });
@@ -275,8 +276,8 @@ function PendingActions() {
     items.push({
       key: `a-${c.id}`,
       icon: <CalendarCheck className="h-4 w-4" />,
-      title: `Book treatment for ${c.patient.full_name}`,
-      detail: `Quote accepted · ${c.hospital.name}`,
+      title: t('dashboard.pending.bookTreatment', { name: c.patient.full_name }),
+      detail: t('dashboard.pending.quoteAccepted', { hospital: c.hospital.name }),
       to: `/cases/${c.id}/book`,
     });
   }
@@ -284,8 +285,8 @@ function PendingActions() {
     items.push({
       key: `b-${b.id}`,
       icon: <CreditCard className="h-4 w-4" />,
-      title: `Payment due for ${b.patient.full_name}`,
-      detail: `${b.booking_number} · ${formatMoney(b.balance_due_minor, b.currency)} outstanding`,
+      title: t('dashboard.pending.paymentDue', { name: b.patient.full_name }),
+      detail: `${b.booking_number} · ${t('dashboard.pending.outstanding', { amount: formatMoney(b.balance_due_minor, b.currency) })}`,
       to: `/bookings/${b.id}/pay`,
     });
   }
@@ -293,11 +294,11 @@ function PendingActions() {
   const loading = quoted.isPending || unpaid.isPending || accepted.isPending;
   return (
     <Card>
-      <CardHeader title="Pending actions" description="Things that need your attention" />
+      <CardHeader title={t('dashboard.pending.title')} description={t('dashboard.pending.description')} />
       {loading ? (
         <LoadingBlock />
       ) : items.length === 0 ? (
-        <EmptyState icon={<AlertCircle className="h-6 w-6" />} title="You're all caught up" description="New quotes and payment reminders will appear here." />
+        <EmptyState icon={<AlertCircle className="h-6 w-6" />} title={t('dashboard.pending.caughtUp')} description={t('dashboard.pending.caughtUpHint')} />
       ) : (
         <ul className="divide-y divide-border">
           {items.slice(0, 10).map((item) => (
@@ -308,7 +309,7 @@ function PendingActions() {
                   <span className="block text-sm font-medium">{item.title}</span>
                   <span className="block truncate text-xs text-muted">{item.detail}</span>
                 </span>
-                <ChevronRight className="mt-1 h-4 w-4 text-muted" aria-hidden />
+                <ChevronRight className="mt-1 h-4 w-4 text-muted rtl:-scale-x-100" aria-hidden />
               </Link>
             </li>
           ))}

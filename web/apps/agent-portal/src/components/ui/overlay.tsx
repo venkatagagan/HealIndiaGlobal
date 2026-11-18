@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 import { Button, FormField, Textarea } from './core';
 
 /** Accessible modal built on the native <dialog> element (focus trap, Esc to close, backdrop). */
@@ -21,6 +22,7 @@ export function Modal({
   footer?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
+  const { t } = useAppTranslation();
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Modal({
               type="button"
               onClick={onClose}
               className="rounded-md p-1 text-muted hover:bg-surface-2 hover:text-fg"
-              aria-label="Close dialog"
+              aria-label={t('ui.closeDialog')}
             >
               <X className="h-5 w-5" aria-hidden />
             </button>
@@ -80,7 +82,7 @@ export function ConfirmDialog({
   onConfirm,
   title,
   description,
-  confirmLabel = 'Confirm',
+  confirmLabel,
   tone = 'primary',
   loading = false,
   reason,
@@ -95,6 +97,7 @@ export function ConfirmDialog({
   loading?: boolean;
   reason?: { label: string; required?: boolean; placeholder?: string };
 }) {
+  const { t } = useAppTranslation();
   const [text, setText] = useState('');
   const id = useId();
   useEffect(() => {
@@ -111,7 +114,7 @@ export function ConfirmDialog({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('ui.cancel')}
           </Button>
           <Button
             variant={tone === 'danger' ? 'danger' : 'primary'}
@@ -119,13 +122,13 @@ export function ConfirmDialog({
             disabled={missing}
             onClick={() => onConfirm(text.trim())}
           >
-            {confirmLabel}
+            {confirmLabel ?? t('ui.confirm')}
           </Button>
         </>
       }
     >
       {reason ? (
-        <FormField label={reason.label} htmlFor={id} required={reason.required} hint={reason.required ? 'At least 3 characters' : undefined}>
+        <FormField label={reason.label} htmlFor={id} required={reason.required} hint={reason.required ? t('ui.atLeast3Chars') : undefined}>
           <Textarea
             id={id}
             rows={3}
@@ -136,7 +139,7 @@ export function ConfirmDialog({
           />
         </FormField>
       ) : (
-        <p className="text-sm text-muted">This action cannot be undone.</p>
+        <p className="text-sm text-muted">{t('ui.cannotBeUndone')}</p>
       )}
     </Modal>
   );

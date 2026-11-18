@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { AlertTriangle, ChevronLeft, ChevronRight, Inbox } from 'lucide-react';
 import { errorMessage } from '@hig/shared/api';
-import { cn } from '../../lib/shared';
+import { cn, formatNumber, useLanguage } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 import { Button, Spinner } from './core';
 
 export function PageHeader({
@@ -55,7 +56,7 @@ export function EmptyState({
 export function ErrorState({
   error,
   onRetry,
-  title = 'Could not load this',
+  title,
   className,
 }: {
   error: unknown;
@@ -63,27 +64,30 @@ export function ErrorState({
   title?: string;
   className?: string;
 }) {
+  const { t } = useAppTranslation();
   return (
     <div role="alert" className={cn('flex flex-col items-center justify-center px-6 py-10 text-center', className)}>
       <div className="mb-3 rounded-full bg-danger-soft p-3 text-danger">
         <AlertTriangle className="h-6 w-6" aria-hidden />
       </div>
-      <p className="font-semibold text-fg">{title}</p>
+      <p className="font-semibold text-fg">{title ?? t('ui.couldNotLoad')}</p>
       <p className="mt-1 max-w-md text-sm text-muted">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
-          Try again
+          {t('ui.tryAgain')}
         </Button>
       )}
     </div>
   );
 }
 
-export function LoadingBlock({ label = 'Loading…', className }: { label?: string; className?: string }) {
+export function LoadingBlock({ label, className }: { label?: string; className?: string }) {
+  const { t } = useAppTranslation();
+  const text = label ?? t('ui.loadingEllipsis');
   return (
     <div className={cn('flex items-center justify-center gap-3 py-12 text-sm text-muted', className)}>
-      <Spinner label={label} />
-      <span>{label}</span>
+      <Spinner label={text} />
+      <span>{text}</span>
     </div>
   );
 }
@@ -99,18 +103,22 @@ export function Pagination({
   total?: number;
   onChange: (page: number) => void;
 }) {
+  const { t } = useAppTranslation();
   if (pages <= 1 && !total) return null;
+  const pageArgs = { page: formatNumber(page), pages: formatNumber(Math.max(pages, 1)) };
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-between gap-3 border-t border-border px-5 py-3 text-sm">
+    <nav aria-label={t('ui.pagination.label')} className="flex items-center justify-between gap-3 border-t border-border px-5 py-3 text-sm">
       <span className="text-muted">
-        {total !== undefined ? `${total} result${total === 1 ? '' : 's'} · ` : ''}Page {page} of {Math.max(pages, 1)}
+        {total !== undefined
+          ? t('ui.pagination.resultsAndPage', { count: total, total: formatNumber(total), ...pageArgs })
+          : t('ui.pagination.page', pageArgs)}
       </span>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label="Previous page">
-          <ChevronLeft className="h-4 w-4" aria-hidden />
+        <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label={t('ui.pagination.previous')}>
+          <ChevronLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
         </Button>
-        <Button variant="outline" size="sm" disabled={page >= pages} onClick={() => onChange(page + 1)} aria-label="Next page">
-          <ChevronRight className="h-4 w-4" aria-hidden />
+        <Button variant="outline" size="sm" disabled={page >= pages} onClick={() => onChange(page + 1)} aria-label={t('ui.pagination.next')}>
+          <ChevronRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
         </Button>
       </div>
     </nav>
@@ -129,10 +137,13 @@ export function Tabs<T extends string>({
   className?: string;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { isRtl } = useLanguage();
   const onKeyDown = (event: KeyboardEvent, index: number) => {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
     event.preventDefault();
-    const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    // In right-to-left layouts the next tab is on the left.
+    const forward = (event.key === 'ArrowRight') !== isRtl;
+    const next = (index + (forward ? 1 : -1) + tabs.length) % tabs.length;
     const tab = tabs[next];
     if (tab) {
       onChange(tab.value);
@@ -162,7 +173,7 @@ export function Tabs<T extends string>({
           >
             {tab.label}
             {tab.count !== undefined && (
-              <span className="rounded-full bg-surface-2 px-1.5 text-xs text-muted">{tab.count}</span>
+              <span className="rounded-full bg-surface-2 px-1.5 text-xs text-muted">{formatNumber(tab.count)}</span>
             )}
           </button>
         );

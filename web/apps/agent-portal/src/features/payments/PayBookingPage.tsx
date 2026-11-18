@@ -38,10 +38,10 @@ import { PatientUpgradeRequiredNotice, isGuestUpgradeError } from '@hig/shared/u
 import { UPLOAD_ACCEPT } from '../../lib/constants';
 import { openRazorpayCheckout } from '../../lib/razorpay';
 import { qk } from '../../lib/queries';
-import { SUPPORTED_CURRENCIES, cn, formatDate, formatDateTime, formatMoney, useDocumentTitle } from '../../lib/shared';
+import { SUPPORTED_CURRENCIES, cn, formatDate, formatDateTime, formatMoney, intlLocale, useDocumentTitle } from '../../lib/shared';
+import { Trans } from 'react-i18next';
+import { useAppTranslation, type AppT } from '../../i18n';
 
-const FX_UNAVAILABLE_MESSAGE =
-  'Payments in your currency are temporarily unavailable — please try again shortly or pay in INR/USD.';
 const MOCK_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_MOCK_PAYMENTS === 'true';
 
 interface PurposeChoice {
@@ -51,7 +51,7 @@ interface PurposeChoice {
   installment?: InstallmentOut;
 }
 
-function purposeChoices(booking: BookingOut, installments: InstallmentOut[]): PurposeChoice[] {
+function purposeChoices(t: AppT, booking: BookingOut, installments: InstallmentOut[]): PurposeChoice[] {
   const paid = booking.amount_paid_minor - booking.amount_refunded_minor;
   if (booking.balance_due_minor <= 0) return [];
   if (booking.payment_option === 'installments' && paid > 0) {
@@ -62,24 +62,25 @@ function purposeChoices(booking: BookingOut, installments: InstallmentOut[]): Pu
       ? [
           {
             purpose: 'installment',
-            label: `Instalment ${next.seq}`,
-            hint: `${formatMoney(next.amount_minor, next.currency)} · ${next.status === 'overdue' ? 'overdue since' : 'due'} ${formatDate(next.due_date)}`,
+            label: t('payBooking.choices.installment', { seq: next.seq }),
+            hint: t(next.status === 'overdue' ? 'payBooking.choices.overdueSince' : 'payBooking.choices.due', { amount: formatMoney(next.amount_minor, next.currency), date: formatDate(next.due_date) }),
             installment: next,
           },
         ]
-      : [{ purpose: 'booking_balance', label: 'Remaining balance', hint: 'Settle the outstanding amount' }];
+      : [{ purpose: 'booking_balance', label: t('payBooking.choices.balance'), hint: t('payBooking.choices.balanceHint') }];
   }
-  if (paid > 0) return [{ purpose: 'booking_balance', label: 'Remaining balance', hint: 'Settle the outstanding amount' }];
-  if (booking.payment_option === 'full') return [{ purpose: 'booking_full', label: 'Full amount', hint: 'Confirms the booking' }];
+  if (paid > 0) return [{ purpose: 'booking_balance', label: t('payBooking.choices.balance'), hint: t('payBooking.choices.balanceHint') }];
+  if (booking.payment_option === 'full') return [{ purpose: 'booking_full', label: t('payBooking.choices.full'), hint: t('payBooking.choices.fullHint') }];
   return [
-    { purpose: 'booking_deposit', label: 'Deposit', hint: 'Confirms the booking; balance due before admission' },
-    { purpose: 'booking_full', label: 'Full amount', hint: 'Pay everything now' },
+    { purpose: 'booking_deposit', label: t('payBooking.choices.deposit'), hint: t('payBooking.choices.depositHint') },
+    { purpose: 'booking_full', label: t('payBooking.choices.full'), hint: t('payBooking.choices.fullNowHint') },
   ];
 }
 
 export function PayBookingPage() {
+  const { t } = useAppTranslation();
   const { bookingId = '' } = useParams();
-  useDocumentTitle('Payment');
+  useDocumentTitle(t('payBooking.documentTitle'));
   const queryClient = useQueryClient();
 
   const booking = useQuery({ queryKey: qk.booking(bookingId), queryFn: () => bookingsApi.get(bookingId) });
@@ -94,7 +95,7 @@ export function PayBookingPage() {
   });
 
   const b = booking.data;
-  const choices = useMemo(() => (b ? purposeChoices(b, installments.data ?? []) : []), [b, installments.data]);
+  const choices = useMemo(() => (b ? purposeChoices(t, b, installments.data ?? []) : []), [t, b, installments.data]);
   const [purposeIdx, setPurposeIdx] = useState(0);
   const choice = choices[Math.min(purposeIdx, Math.max(choices.length - 1, 0))];
   const [gateway, setGateway] = useState<PaymentGateway>('razorpay');
@@ -120,7 +121,7 @@ export function PayBookingPage() {
 
   const pay = useMutation({
     mutationFn: async () => {
-      if (!choice) throw new Error('Nothing to pay');
+      if (!choice) throw new Error(t('payBooking.nothingToPay'));
       const created = await paymentsApi.createOrder(
         {
           booking_id: bookingId,
@@ -143,14 +144,14 @@ export function PayBookingPage() {
         setPaidOrder(paid);
         resetAttempt();
         refreshAll();
-        toast.success('Payment received');
+        toast.success(t('payBooking.received'));
       } else {
         setCheckout(created);
       }
     },
     onError: (error) => {
       if (isGuestUpgradeError(error)) setGuestBlocked(true);
-      toast.error(isFxRateUnavailable(error) ? FX_UNAVAILABLE_MESSAGE : errorMessage(error));
+      toast.error(isFxRateUnavailable(error) ? t('payBooking.fxUnavailable') : errorMessage(error));
       resetAttempt();
       refreshAll();
     },
@@ -161,13 +162,13 @@ export function PayBookingPage() {
 
   const back = (
     <Link to={`/cases/${b.case_id}`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> Back to case
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('payBooking.backToCase')}
     </Link>
   );
   const gateways: { value: PaymentGateway; icon: ReactNode; hint: string }[] = [
-    { value: 'razorpay', icon: <CreditCard className="h-5 w-5" />, hint: 'Cards, UPI, net banking via Razorpay secure checkout' },
-    { value: 'bank_transfer', icon: <Banknote className="h-5 w-5" />, hint: 'International SWIFT / local bank transfer, then upload proof' },
-    ...(MOCK_ENABLED ? [{ value: 'mock' as const, icon: <FlaskConical className="h-5 w-5" />, hint: 'Simulated payment for testing (non-production only)' }] : []),
+    { value: 'razorpay', icon: <CreditCard className="h-5 w-5" />, hint: t('payBooking.gateways.razorpay') },
+    { value: 'bank_transfer', icon: <Banknote className="h-5 w-5" />, hint: t('payBooking.gateways.bankTransfer') },
+    ...(MOCK_ENABLED ? [{ value: 'mock' as const, icon: <FlaskConical className="h-5 w-5" />, hint: t('payBooking.gateways.mock') }] : []),
   ];
 
   const cancelled = b.status === 'cancelled';
@@ -176,7 +177,7 @@ export function PayBookingPage() {
     <div>
       <PageHeader
         back={back}
-        title="Pay on behalf of patient"
+        title={t('payBooking.title')}
         description={`${b.booking_number} · ${b.patient.full_name} · ${b.hospital.name}`}
         actions={<StatusBadge kind="booking" status={b.status} />}
       />
@@ -187,22 +188,22 @@ export function PayBookingPage() {
             <div role="status" className="flex gap-3 rounded-xl border border-primary/40 bg-primary-soft p-4 text-sm">
               <CheckCircle2 className="h-5 w-5 shrink-0 text-primary-ink" aria-hidden />
               <div>
-                <p className="font-semibold">Payment successful — order {paidOrder}</p>
-                <p className="text-muted">The booking updates automatically once the payment is captured. A receipt is emailed to the patient.</p>
+                <p className="font-semibold">{t('payBooking.success', { order: paidOrder })}</p>
+                <p className="text-muted">{t('payBooking.successHint')}</p>
               </div>
             </div>
           )}
 
           {cancelled ? (
             <Card>
-              <EmptyState title="This booking was cancelled" description="Payments are no longer accepted for it." />
+              <EmptyState title={t('payBooking.cancelled')} description={t('payBooking.cancelledHint')} />
             </Card>
           ) : choices.length === 0 ? (
             <Card>
               <EmptyState
                 icon={<CheckCircle2 className="h-6 w-6 text-primary" />}
-                title="Fully paid"
-                description="There is no outstanding balance on this booking."
+                title={t('payBooking.fullyPaid')}
+                description={t('payBooking.fullyPaidHint')}
               />
             </Card>
           ) : checkout ? (
@@ -223,7 +224,7 @@ export function PayBookingPage() {
           ) : (
             <>
               <Card>
-                <CardHeader title="What to pay" />
+                <CardHeader title={t('payBooking.whatToPay')} />
                 <div className="grid gap-3 p-5 sm:grid-cols-2">
                   {choices.map((ch, i) => (
                     <button
@@ -232,7 +233,7 @@ export function PayBookingPage() {
                       aria-pressed={choice === ch}
                       onClick={() => setPurposeIdx(i)}
                       className={cn(
-                        'rounded-xl border p-4 text-left',
+                        'rounded-xl border p-4 text-start',
                         choice === ch ? 'border-primary bg-primary-soft' : 'border-border hover:bg-surface-2',
                       )}
                     >
@@ -242,12 +243,12 @@ export function PayBookingPage() {
                   ))}
                 </div>
                 <p className="px-5 pb-5 text-xs text-muted">
-                  The exact amount is calculated securely by the platform and shown in the checkout before you confirm.
+                  {t('payBooking.exactAmount')}
                 </p>
               </Card>
               <Card>
-                <CardHeader title="Payment method" />
-                <div className="space-y-3 p-5" role="radiogroup" aria-label="Payment method">
+                <CardHeader title={t('payBooking.method')} />
+                <div className="space-y-3 p-5" role="radiogroup" aria-label={t('payBooking.method')}>
                   {gateways.map((g) => (
                     <button
                       key={g.value}
@@ -256,7 +257,7 @@ export function PayBookingPage() {
                       aria-checked={gateway === g.value}
                       onClick={() => setGateway(g.value)}
                       className={cn(
-                        'flex w-full items-center gap-4 rounded-xl border p-4 text-left',
+                        'flex w-full items-center gap-4 rounded-xl border p-4 text-start',
                         gateway === g.value ? 'border-primary bg-primary-soft' : 'border-border hover:bg-surface-2',
                       )}
                     >
@@ -268,9 +269,9 @@ export function PayBookingPage() {
                       <span className={cn('h-4 w-4 rounded-full border-2', gateway === g.value ? 'border-primary bg-primary' : 'border-border')} aria-hidden />
                     </button>
                   ))}
-                  <FormField label="Charge currency" htmlFor="pay-ccy" hint="Defaults to the patient’s preferred currency; converted at today’s rate">
+                  <FormField label={t('payBooking.chargeCurrency')} htmlFor="pay-ccy" hint={t('payBooking.chargeCurrencyHint')}>
                     <Select id="pay-ccy" className="max-w-xs" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                      <option value="">Patient’s preferred currency</option>
+                      <option value="">{t('payBooking.preferredCurrency')}</option>
                       {SUPPORTED_CURRENCIES.map((c) => (
                         <option key={c} value={c}>
                           {c}
@@ -281,19 +282,19 @@ export function PayBookingPage() {
                 </div>
               </Card>
               <Button size="lg" className="w-full" icon={<Lock className="h-4 w-4" aria-hidden />} loading={pay.isPending} onClick={() => pay.mutate()}>
-                {gateway === 'bank_transfer' ? 'Get bank transfer details' : `Pay ${choice?.label.toLowerCase() ?? ''}`}
+                {gateway === 'bank_transfer' ? t('payBooking.getBankDetails') : t('payBooking.payWhat', { what: choice?.label.toLocaleLowerCase(intlLocale()) ?? '' })}
               </Button>
             </>
           )}
 
           <Card>
-            <CardHeader title="Payment history" />
+            <CardHeader title={t('payBooking.history')} />
             {orders.isPending ? (
               <LoadingBlock />
             ) : orders.isError ? (
               <ErrorState error={orders.error} onRetry={() => void orders.refetch()} />
             ) : orders.data.items.length === 0 ? (
-              <p className="p-5 text-sm text-muted">No payments yet.</p>
+              <p className="p-5 text-sm text-muted">{t('payBooking.noPayments')}</p>
             ) : (
               <ul className="divide-y divide-border">
                 {orders.data.items.map((o) => (
@@ -316,49 +317,49 @@ export function PayBookingPage() {
         </div>
 
         <Card className="h-fit lg:sticky lg:top-20">
-          <CardHeader title="Booking summary" />
+          <CardHeader title={t('payBooking.summary.title')} />
           <dl className="space-y-2.5 p-5 text-sm">
-            <SummaryRow label="Admission">{formatDate(b.admission_date)}</SummaryRow>
-            <SummaryRow label="Payment option">
+            <SummaryRow label={t('payBooking.summary.admission')}>{formatDate(b.admission_date)}</SummaryRow>
+            <SummaryRow label={t('payBooking.summary.paymentOption')}>
               {PAYMENT_OPTION_LABELS[b.payment_option]}
-              {b.installment_months ? ` · ${b.installment_months} mo` : ''}
+              {b.installment_months ? ` · ${t('payBooking.summary.months', { count: b.installment_months })}` : ''}
             </SummaryRow>
-            <SummaryRow label="Subtotal">
+            <SummaryRow label={t('payBooking.summary.subtotal')}>
               <Money minor={b.subtotal_minor} currency={b.currency} />
             </SummaryRow>
             {b.discount_minor > 0 && (
-              <SummaryRow label="Discount">
+              <SummaryRow label={t('payBooking.summary.discount')}>
                 −<Money minor={b.discount_minor} currency={b.currency} />
               </SummaryRow>
             )}
             {b.service_fee_minor > 0 && (
-              <SummaryRow label="Service fee">
+              <SummaryRow label={t('payBooking.summary.serviceFee')}>
                 <Money minor={b.service_fee_minor} currency={b.currency} />
               </SummaryRow>
             )}
             {b.tax_minor > 0 && (
-              <SummaryRow label="Taxes">
+              <SummaryRow label={t('payBooking.summary.taxes')}>
                 <Money minor={b.tax_minor} currency={b.currency} />
               </SummaryRow>
             )}
-            <SummaryRow label={<strong>Total</strong>}>
+            <SummaryRow label={<strong>{t('payBooking.summary.total')}</strong>}>
               <Money minor={b.total_minor} currency={b.currency} className="font-bold" />
             </SummaryRow>
-            <SummaryRow label="Deposit">
+            <SummaryRow label={t('payBooking.summary.deposit')}>
               <Money minor={b.deposit_minor} currency={b.currency} />
             </SummaryRow>
-            <SummaryRow label="Paid">
+            <SummaryRow label={t('payBooking.summary.paid')}>
               <Money minor={b.amount_paid_minor - b.amount_refunded_minor} currency={b.currency} />
             </SummaryRow>
             <div className="flex justify-between border-t border-border pt-2.5 text-base">
-              <dt className="font-semibold">Balance due</dt>
+              <dt className="font-semibold">{t('payBooking.summary.balanceDue')}</dt>
               <dd>
                 <Money minor={b.balance_due_minor} currency={b.currency} className="font-bold text-danger" />
               </dd>
             </div>
           </dl>
           <p className="flex items-center gap-2 border-t border-border px-5 py-3 text-xs text-muted">
-            <Lock className="h-3.5 w-3.5" aria-hidden /> Card details are entered on the gateway’s secure page and never reach our servers.
+            <Lock className="h-3.5 w-3.5" aria-hidden /> {t('payBooking.cardSafety')}
           </p>
         </Card>
       </div>
@@ -370,7 +371,7 @@ function SummaryRow({ label, children }: { label: ReactNode; children: ReactNode
   return (
     <div className="flex justify-between gap-3">
       <dt className="text-muted">{label}</dt>
-      <dd className="text-right">{children}</dd>
+      <dd className="text-end">{children}</dd>
     </div>
   );
 }
@@ -388,6 +389,7 @@ function CheckoutPanel({
   onSubmittedProof: () => void;
   onCancel: () => void;
 }) {
+  const { t } = useAppTranslation();
   const order = checkout.order;
   if (checkout.gateway === 'bank_transfer' && checkout.bank_transfer) {
     return <BankTransferPanel checkout={checkout} booking={booking} onSubmitted={onSubmittedProof} onCancel={onCancel} />;
@@ -398,15 +400,16 @@ function CheckoutPanel({
   return (
     <Card>
       <EmptyState
-        title="Checkout not available"
-        description="This payment method could not be started. Choose another method."
-        action={<Button onClick={onCancel}>Back</Button>}
+        title={t('payBooking.checkoutUnavailable')}
+        description={t('payBooking.checkoutUnavailableHint')}
+        action={<Button onClick={onCancel}>{t('payBooking.back')}</Button>}
       />
     </Card>
   );
 }
 
 function CopyRow({ label, value }: { label: string; value: string | null | undefined }) {
+  const { t } = useAppTranslation();
   const [copied, copy] = useCopy();
   if (!value) return null;
   return (
@@ -414,7 +417,7 @@ function CopyRow({ label, value }: { label: string; value: string | null | undef
       <dt className="text-sm text-muted">{label}</dt>
       <dd className="flex items-center gap-2 font-mono text-sm">
         {value}
-        <button type="button" onClick={() => void copy(value)} className="rounded p-1 text-muted hover:text-fg" aria-label={`Copy ${label}`}>
+        <button type="button" onClick={() => void copy(value)} className="rounded p-1 text-muted hover:text-fg" aria-label={t('payBooking.copy', { label })}>
           {copied ? <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
         </button>
       </dd>
@@ -433,6 +436,7 @@ function BankTransferPanel({
   onSubmitted: () => void;
   onCancel: () => void;
 }) {
+  const { t } = useAppTranslation();
   const details = checkout.bank_transfer;
   const order = checkout.order;
   const fileRef = useRef<HTMLInputElement>(null);
@@ -442,7 +446,7 @@ function BankTransferPanel({
 
   const submit = useMutation({
     mutationFn: async () => {
-      if (!file) throw new Error('Attach the transfer receipt');
+      if (!file) throw new Error(t('payBooking.bank.attachRequired'));
       const doc = await documentsApi.upload({
         file,
         kind: 'payment_proof',
@@ -453,7 +457,7 @@ function BankTransferPanel({
     },
     onSuccess: () => {
       setSubmitted(true);
-      toast.success('Transfer proof submitted. Our finance team will confirm receipt.');
+      toast.success(t('payBooking.bank.submittedToast'));
       onSubmitted();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -465,8 +469,8 @@ function BankTransferPanel({
       <Card>
         <EmptyState
           icon={<CheckCircle2 className="h-6 w-6 text-primary" />}
-          title="Proof submitted"
-          description="The booking is confirmed once finance reconciles the transfer (usually 1–2 business days)."
+          title={t('payBooking.bank.submittedTitle')}
+          description={t('payBooking.bank.submittedHint')}
         />
       </Card>
     );
@@ -474,25 +478,26 @@ function BankTransferPanel({
   return (
     <Card>
       <CardHeader
-        title="Bank transfer details"
+        title={t('payBooking.bank.title')}
         description={
-          <>
-            Transfer exactly <Money minor={order.amount_minor} currency={order.currency} className="font-semibold text-fg" /> and quote the
-            reference so we can match the payment.
-          </>
+          <Trans
+            t={t}
+            i18nKey="payBooking.bank.instructions"
+            components={{ 0: <Money minor={order.amount_minor} currency={order.currency} className="font-semibold text-fg" /> }}
+          />
         }
       />
       <dl className="divide-y divide-border px-5">
-        <CopyRow label="Beneficiary" value={details.beneficiary_name} />
-        <CopyRow label="Bank" value={details.bank_name} />
-        <CopyRow label="Account number" value={details.account_number} />
+        <CopyRow label={t('payBooking.bank.beneficiary')} value={details.beneficiary_name} />
+        <CopyRow label={t('payBooking.bank.bank')} value={details.bank_name} />
+        <CopyRow label={t('payBooking.bank.accountNumber')} value={details.account_number} />
         <CopyRow label="IFSC" value={details.ifsc} />
         <CopyRow label="SWIFT" value={details.swift} />
         <CopyRow label="IBAN" value={details.iban} />
-        <CopyRow label="Payment reference" value={details.reference} />
+        <CopyRow label={t('payBooking.bank.reference')} value={details.reference} />
       </dl>
       <div className="space-y-4 border-t border-border p-5">
-        <FormField label="Your transfer reference / UTR" htmlFor="bt-ref" required>
+        <FormField label={t('payBooking.bank.yourReference')} htmlFor="bt-ref" required>
           <Input id="bt-ref" value={reference} maxLength={64} onChange={(e) => setReference(e.target.value)} />
         </FormField>
         <div>
@@ -506,15 +511,15 @@ function BankTransferPanel({
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
           <Button variant="outline" icon={<Upload className="h-4 w-4" aria-hidden />} onClick={() => fileRef.current?.click()}>
-            {file ? file.name : 'Attach transfer receipt'}
+            {file ? file.name : t('payBooking.bank.attach')}
           </Button>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
           <Button variant="ghost" onClick={onCancel}>
-            Choose another method
+            {t('payBooking.bank.anotherMethod')}
           </Button>
           <Button loading={submit.isPending} disabled={!file || reference.trim().length < 4} onClick={() => submit.mutate()}>
-            Submit proof of payment
+            {t('payBooking.bank.submit')}
           </Button>
         </div>
       </div>
@@ -535,12 +540,13 @@ function MockPanel({
   onDone: (orderNumber: string) => void;
   onCancel: () => void;
 }) {
+  const { t } = useAppTranslation();
   const complete = useMutation({
     mutationFn: (outcome: 'success' | 'failure') => paymentsApi.completeMock(orderId, { outcome }),
     onSuccess: (order) => {
       if (order.status === 'paid') onDone(order.order_number);
       else {
-        toast.error('Simulated payment failed');
+        toast.error(t('payBooking.mock.failed'));
         onCancel();
       }
     },
@@ -548,16 +554,16 @@ function MockPanel({
   });
   return (
     <Card>
-      <CardHeader title="Test payment" description={<>Order {orderNumber} · {amount}</>} />
+      <CardHeader title={t('payBooking.mock.title')} description={<>{t('payBooking.mock.order', { number: orderNumber })} · {amount}</>} />
       <div className="flex flex-wrap justify-end gap-2 p-5">
         <Button variant="ghost" onClick={onCancel}>
-          Back
+          {t('payBooking.back')}
         </Button>
         <Button variant="outline" loading={complete.isPending && complete.variables === 'failure'} onClick={() => complete.mutate('failure')}>
-          Simulate failure
+          {t('payBooking.mock.simulateFailure')}
         </Button>
         <Button loading={complete.isPending && complete.variables === 'success'} onClick={() => complete.mutate('success')}>
-          Simulate success
+          {t('payBooking.mock.simulateSuccess')}
         </Button>
       </div>
     </Card>
