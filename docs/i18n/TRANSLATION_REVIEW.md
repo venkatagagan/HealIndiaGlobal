@@ -295,3 +295,14 @@ bn and ru. Review these money, credit, terms and consent strings first:
 ### Website (`website`)
 
 - `referral.invitedByFriend` ("you get {amount} credit after your first completed booking"), `referral.invalid`.
+
+## Referral programme and agent CRM (server notifications)
+
+`backend/app/i18n/<lng>.json`, new top-level sections only:
+
+- Credit / reward (financial wording - "credit" must never read as a loan or as cash; ru uses "бонусы", as on
+  web and mobile): `referral.notifications.rewarded.*`,
+  `referral.notifications.qualified.*` (mentions the yearly reward limit), `referral.notifications.welcome_credit.*`.
+- `referral.notifications.signed_up.*` (must not imply anything about the friend's treatment beyond "first
+  booking completed").
+- `crm.notifications.follow_up_due.*` (agent-facing; check Russian/Arabic number agreement with `{count}`).

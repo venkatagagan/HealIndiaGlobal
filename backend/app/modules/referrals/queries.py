@@ -83,8 +83,8 @@ async def overview(db: AsyncSession, profile: PatientProfile, device_id: str | N
     code: ReferralCode | None = None
     if prog.enabled:
         code = await service.get_or_create_code(db, profile)
-        if service.remember_device(code, device_id) or db.dirty or db.new:
-            await db.commit()
+        service.remember_device(code, device_id)
+        await db.commit()  # a new code, or a newly seen device
     else:
         code = (
             await db.execute(select(ReferralCode).where(ReferralCode.patient_id == profile.id))
