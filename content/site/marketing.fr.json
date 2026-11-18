@@ -1,0 +1,20 @@
+{
+  "india_wait": "Habituellement 1 à 2 semaines après l'acceptation de votre devis",
+  "testimonials": [
+    {
+      "quote": "J'ai économisé $45,000 sur ma chirurgie cardiaque, avec des soins meilleurs que chez moi.",
+      "name": "Patient fictif (exemple)",
+      "detail": "Chirurgie cardiaque · des États-Unis"
+    },
+    {
+      "quote": "Mon coordinateur s'est occupé de la lettre pour le visa, de l'accueil à l'aéroport et d'un interprète en arabe. Je n'avais qu'à me concentrer sur ma convalescence.",
+      "name": "Patient fictif (exemple)",
+      "detail": "Prothèse du genou · d'Oman"
+    },
+    {
+      "quote": "J'ai comparé trois hôpitaux côte à côte et j'ai reçu des devis détaillés en quelques jours.",
+      "name": "Patient fictif (exemple)",
+      "detail": "FIV · du Nigeria"
+    }
+  ]
+}
