@@ -12,17 +12,24 @@ from __future__ import annotations
 
 import ipaddress
 import json
+import logging
 import os
 import secrets
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any, Literal
+from urllib.parse import parse_qs, urlsplit
 
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 ENV_FILE = BACKEND_DIR / ".env"
+
+logger = logging.getLogger(__name__)
+
+# libpq sslmode strength; production needs at least "require" (unless the database is on the same host).
+_SSLMODE_STRENGTH = {"disable": 0, "allow": 1, "prefer": 2, "require": 3, "verify-ca": 4, "verify-full": 5}
 
 _WEAK_SECRETS = {"", "changeme", "change-me", "secret", "dev", "development", "test", "jwt-secret"}
 
@@ -175,6 +182,9 @@ class Settings(BaseSettings):
     # --- storage -------------------------------------------------------------------------------------------
     STORAGE_BACKEND: Literal["local", "s3"] = "local"
     STORAGE_LOCAL_DIR: str = "./storage"
+    # Production refuses STORAGE_BACKEND=local unless this acknowledges a single-host deployment whose storage
+    # volume is backed up (infra/docker-compose.yml). Every multi-instance deployment must use S3.
+    STORAGE_LOCAL_IN_PRODUCTION: bool = False
     S3_BUCKET: str = ""
     S3_ENDPOINT_URL: str = ""
     S3_REGION: str = ""
@@ -361,6 +371,28 @@ class Settings(BaseSettings):
                 problems.append("ADMIN_MFA_REQUIRED must be true")
             if not self.STAFF_ALLOWED_IPS and not self.STAFF_CONSOLE_ORIGIN:
                 problems.append("set STAFF_ALLOWED_IPS and/or STAFF_CONSOLE_ORIGIN to protect the staff door")
+            if self.EMAIL_BACKEND == "console":
+                problems.append("EMAIL_BACKEND must be smtp or ses (console only logs e-mails)")
+            if self.STORAGE_BACKEND == "local" and not self.STORAGE_LOCAL_IN_PRODUCTION:
+                problems.append(
+                    "STORAGE_BACKEND must be s3 (or set STORAGE_LOCAL_IN_PRODUCTION=true for a single-host "
+                    "deployment with a backed-up storage volume)"
+                )
+            bad_origins = [
+                o for o in self.CORS_ORIGINS if o.strip() in ("*", "null") or not o.startswith("https://")
+            ]
+            if bad_origins:
+                problems.append(f"CORS_ORIGINS must list https:// origins only (no '*'): {bad_origins}")
+            if not self.REDIS_URL and (not self.RUN_WORKER_IN_API or _multi_worker()):
+                problems.append(
+                    "REDIS_URL is required when the API runs several processes or a separate worker "
+                    "(realtime fan-out, shared rate limits)"
+                )
+            sslmode = self.effective_database_sslmode
+            if _SSLMODE_STRENGTH.get(sslmode, 0) < _SSLMODE_STRENGTH["require"] and not _same_host_database(
+                self.DATABASE_URL
+            ):
+                problems.append(f"DATABASE_SSLMODE must be require, verify-ca or verify-full (is {sslmode})")
             # Store listings promise on-device speech-to-text and no retained voice recordings.
             if self.STT_PROVIDER != "local_whisper":
                 problems.append("STT_PROVIDER must be local_whisper")
@@ -368,6 +400,11 @@ class Settings(BaseSettings):
                 problems.append("VOICE_RETAIN_AUDIO must be false")
             if problems:
                 raise ValueError("Invalid production settings: " + "; ".join(problems))
+            if self.AI_ENABLED and not self.ANTHROPIC_API_KEY:
+                logger.warning(
+                    "AI_ENABLED is true but ANTHROPIC_API_KEY is empty: screenings fall back to the rules "
+                    "engine and document AI is unavailable"
+                )
         elif self.ENV == "staging" or _multi_worker():
             # Each worker would otherwise generate its own ephemeral secret and reject the others' tokens.
             if not self.JWT_SECRET or self.JWT_SECRET.lower() in _WEAK_SECRETS:
@@ -415,6 +452,35 @@ class Settings(BaseSettings):
     @property
     def ai_available(self) -> bool:
         return self.AI_ENABLED and bool(self.ANTHROPIC_API_KEY)
+
+    @property
+    def effective_database_sslmode(self) -> str:
+        """The sslmode asyncpg will use: ``ssl``/``sslmode`` in DATABASE_URL win over DATABASE_SSLMODE
+        (``app.core.db.ssl_connect_args``)."""
+        query = parse_qs(urlsplit(self.DATABASE_URL).query)
+        for key in ("sslmode", "ssl"):
+            if query.get(key):
+                value = query[key][-1].strip().lower()
+                aliases = {"true": "require", "1": "require", "false": "disable", "0": "disable"}
+                return aliases.get(value, value)
+        return self.DATABASE_SSLMODE
+
+
+def _same_host_database(url: str) -> bool:
+    """True for a database on the same host or private container network: loopback, or a single-label host
+    name such as the compose service ``postgres`` (traffic never leaves the machine). TLS is not required
+    there; any routable host (RDS, Cloud SQL, an IP address) needs sslmode=require or stronger."""
+    try:
+        host = (urlsplit(url).hostname or "").lower()
+    except ValueError:
+        return False
+    if host in ("localhost", "127.0.0.1", "::1"):
+        return True
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        return bool(host) and "." not in host
+    return False
 
 
 def _multi_worker() -> bool:

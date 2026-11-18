@@ -258,6 +258,11 @@ def test_settings_validation_production_and_jwt(monkeypatch) -> None:
         "COOKIE_SECURE": True,
         "PAYMENT_GATEWAYS_ENABLED": "razorpay",
         "STAFF_ALLOWED_IPS": "203.0.113.0/24",
+        "EMAIL_BACKEND": "smtp",
+        "STORAGE_BACKEND": "s3",
+        "S3_BUCKET": "documents",
+        "REDIS_URL": "redis://redis:6379/0",
+        "CORS_ORIGINS": "",
     }
     # SEC-022: production must restrict the staff door (network allow-list and/or a separate console origin)
     with pytest.raises(ValueError, match="STAFF_ALLOWED_IPS"):
@@ -284,6 +289,79 @@ def test_settings_validation_production_and_jwt(monkeypatch) -> None:
     assert Settings(_env_file=None, ENV="development", JWT_SECRET="").JWT_SECRET
     with pytest.raises(ValueError, match="CIDR"):
         Settings(_env_file=None, ENV="development", STAFF_ALLOWED_IPS="not-an-ip")
+
+
+def test_settings_production_startup_checks(monkeypatch, caplog) -> None:
+    monkeypatch.delenv("WEB_CONCURRENCY", raising=False)
+    ok = {
+        "ENV": "production",
+        "JWT_SECRET": "x" * 48,
+        "FIELD_ENCRYPTION_KEY": "k" * 44,
+        "COOKIE_SECURE": True,
+        "ADMIN_MFA_REQUIRED": True,
+        "PAYMENT_GATEWAYS_ENABLED": "razorpay",
+        "STAFF_CONSOLE_ORIGIN": "https://ops.example.com",
+        "EMAIL_BACKEND": "ses",
+        "STORAGE_BACKEND": "s3",
+        "S3_BUCKET": "documents",
+        "REDIS_URL": "redis://redis:6379/0",
+        "RUN_WORKER_IN_API": False,
+        "DATABASE_URL": "postgresql+asyncpg://app:pw@db.abc.us-east-2.rds.amazonaws.com:5432/healindia",
+        "DATABASE_SSLMODE": "require",
+        "ANTHROPIC_API_KEY": "sk-test",
+        "CORS_ORIGINS": "",
+    }
+    assert Settings(_env_file=None, **ok).is_production
+    # the development defaults (http://localhost:517x) are never accepted in production
+    refused_defaults = {k: v for k, v in ok.items() if k != "CORS_ORIGINS"}
+    with pytest.raises(ValueError, match="CORS_ORIGINS"):
+        Settings(_env_file=None, **refused_defaults)
+
+    def refused(match: str, **changes: object) -> None:
+        with pytest.raises(ValueError, match=match):
+            Settings(_env_file=None, **{**ok, **changes})
+
+    refused("EMAIL_BACKEND", EMAIL_BACKEND="console")
+    refused("STORAGE_BACKEND must be s3", STORAGE_BACKEND="local")
+    # ... unless a single-host deployment acknowledges its backed-up volume
+    assert Settings(_env_file=None, **{**ok, "STORAGE_BACKEND": "local", "STORAGE_LOCAL_IN_PRODUCTION": True})
+    refused("CORS_ORIGINS", CORS_ORIGINS="*")
+    refused("CORS_ORIGINS", CORS_ORIGINS="https://app.example.com,http://insecure.example.com")
+    assert Settings(_env_file=None, **{**ok, "CORS_ORIGINS": "https://app.example.com"}).CORS_ORIGINS
+    assert (
+        Settings(_env_file=None, **{**ok, "CORS_ORIGINS": ""}).CORS_ORIGINS == []
+    )  # same-origin deployments
+    # Redis: required with a separate worker process or several API processes
+    refused("REDIS_URL", REDIS_URL="")
+    assert Settings(_env_file=None, **{**ok, "REDIS_URL": "", "RUN_WORKER_IN_API": True}).is_production
+    monkeypatch.setenv("WEB_CONCURRENCY", "3")
+    refused("REDIS_URL", REDIS_URL="", RUN_WORKER_IN_API=True)
+    monkeypatch.delenv("WEB_CONCURRENCY")
+    # TLS to a routable database host
+    refused("DATABASE_SSLMODE", DATABASE_SSLMODE="prefer")
+    refused("DATABASE_SSLMODE", DATABASE_SSLMODE="disable")
+    assert Settings(_env_file=None, **{**ok, "DATABASE_SSLMODE": "verify-full"}).is_production
+    url_ssl = ok["DATABASE_URL"] + "?ssl=require"
+    assert Settings(_env_file=None, **{**ok, "DATABASE_URL": url_ssl, "DATABASE_SSLMODE": "prefer"})
+    refused("DATABASE_SSLMODE", DATABASE_URL=ok["DATABASE_URL"] + "?sslmode=disable")
+    # same host / private container network (compose `postgres`, loopback): plaintext is acceptable
+    for local in ("postgres", "127.0.0.1", "localhost"):
+        url = f"postgresql+asyncpg://app:pw@{local}:5432/healindia"
+        assert Settings(_env_file=None, **{**ok, "DATABASE_URL": url, "DATABASE_SSLMODE": "prefer"})
+    refused(
+        "DATABASE_SSLMODE",
+        DATABASE_URL="postgresql+asyncpg://app:pw@10.0.0.5:5432/db",
+        DATABASE_SSLMODE="prefer",
+    )
+    # AI key: a warning, not a refusal
+    caplog.clear()
+    with caplog.at_level("WARNING", logger="app.core.config"):
+        assert Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": ""}).is_production
+    assert "ANTHROPIC_API_KEY is empty" in caplog.text
+    caplog.clear()
+    with caplog.at_level("WARNING", logger="app.core.config"):
+        Settings(_env_file=None, **{**ok, "ANTHROPIC_API_KEY": "", "AI_ENABLED": False})
+    assert "ANTHROPIC_API_KEY" not in caplog.text
 
 
 # --------------------------------------------------------------------------------------- client IP (#20)
