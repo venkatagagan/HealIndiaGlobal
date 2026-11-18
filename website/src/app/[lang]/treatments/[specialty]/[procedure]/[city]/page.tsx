@@ -4,7 +4,7 @@ import Link from '@/components/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { BadgeCheck, BedDouble, Building2, CalendarDays, Plane, Wallet } from 'lucide-react';
 import { getDictionary } from '@/i18n';
-import { fmt, formatList, formatNumber, plural } from '@/i18n/format';
+import { fmt, formatList, formatNumber, intlLocale, plural } from '@/i18n/format';
 import { getFxRates } from '@/lib/data/catalog';
 import { convertMinor, formatMoney, formatMoneyRange, toNumber } from '@/lib/money';
 import { medicalProcedureLd } from '@/lib/jsonld';
@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `${shortName(combo.procedure.name)} in ${combo.destination.name}`,
     ],
     description: truncate(
-      status.intro?.summary ?? summaryText(combo, range ? formatMoneyRange(range.min, range.max, 'INR', 'en') : null),
+      status.intro?.summary ?? summaryText(combo, range ? formatMoneyRange(range.min, range.max, 'INR', intlLocale()) : null),
     ),
     // Thin-page protection: indexable only with live data AND a reviewed hand-written intro.
     noindex: !status.indexable,
@@ -113,7 +113,7 @@ export default async function ProcedureCityPage({ params }: Props) {
   const status = procedureCityStatus(combo, source, await getReviewers());
   const [fx, all, costLinks] = await Promise.all([getFxRates(), getProcedureCities(), costGuideLinksForProcedure(p.slug).catch(() => [])]);
   const range = overallRange(combo, fx.data);
-  const rangeText = range ? formatMoneyRange(range.min, range.max, 'INR', 'en') : null;
+  const rangeText = range ? formatMoneyRange(range.min, range.max, 'INR', intlLocale()) : null;
   const stay = await stayText(combo);
   const hospitals = combo.offerings.map((o) => o.hospital);
   const accredited = hospitals.filter((h) => h.accreditations.some((a) => ['jci', 'nabh'].includes(a.toLowerCase())));
@@ -247,7 +247,7 @@ export default async function ProcedureCityPage({ params }: Props) {
                       {hp.packages.slice(0, 3).map((pk) => (
                         <li key={pk.id} className="flex justify-between gap-3">
                           <span className="text-slate-700">{pk.name}</span>
-                          <span className="font-semibold whitespace-nowrap">{formatMoney(pk.price_minor, pk.currency, 'en')}</span>
+                          <span className="font-semibold whitespace-nowrap">{formatMoney(pk.price_minor, pk.currency, intlLocale())}</span>
                         </li>
                       ))}
                     </ul>
