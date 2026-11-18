@@ -89,6 +89,24 @@ which win over the shipped text without an app release).
 | `onboardingImpactHeadline`, `onboardingImpactStat*`, `onboardingTrustWaitTitle`, `onboardingTrustCertified*`, `onboardingBadge*Description`, `onboardingAccreditationsCaption` | Savings and accreditation claims |
 | `onboardingTestimonialQuote`, `onboardingTestimonialDisclaimer` | Example testimonial must stay marked as an illustration |
 
+## Phase 1: cost, aftercare, guardian consent, guest call, visa guide (added 2026-11)
+
+| Keys | Why |
+|---|---|
+| `aftercareUrgentTitle`, `aftercareUrgentBody`, `aftercareUrgentSos`, `aftercareEmergencyNote`, `guestNotEmergency` | Red-flag check-in answers and emergency advice; must not imply an ambulance is coming (highest priority) |
+| `aftercareFlag*`, `aftercareQFever`, `aftercareQBreathless`, `aftercareQWound`, `aftercareQWoundHint`, `aftercareQMeds`, `aftercareMeds*`, `aftercarePainValue`, `aftercareCheckinIntro`, `aftercareHospitalCheckinsHint` | Recovery check-in questions (clinical wording) |
+| `guardianTitle`, `guardianIntro`, `guardianDeclaration`, `guardianDeclarationRequired`, `guardianRelationship*`, `guardianVerify*`, `guardianAfterSubmit`, `guardianConsentRequiredMessage`, `guardianStatus*`, `authAgeMinor` | Consent of a parent / legal guardian for a minor (legal declaration) |
+| `costHomeSave`, `costHomeOftenUnavailable`, `costHomeWaitAtHome`, `costSourceIntro`, `costSourceDisclaimer`, `costSourceConfidence`, `costConfidence*`, `priceApproxSemantics`, `priceOriginalAmount`, `quoteGroupCurrencyNote` | Price and saving claims (legal display rule: estimates, never a quote) |
+| `trustRegistrationVerified*`, `trustAccreditation*`, `reviewVerifiedPatient*` | Verification claims about doctors, hospitals and reviewers |
+| `reviewFormModerationNote`, `myReviewsHidden*`, `reportSheetIntro*`, `privacyAccess*`, `privacyRole*`, `privacyAction*`, `privacyRecord*`, `pushPromptBody` | Privacy promises and moderation |
+| `guestFreeIntro`, `guestAlreadyUsed`, `guestAiLimitReached`, `aiSummaryDisclaimer`, `reportViewDiscardBody`, `reportViewCheckIntro`, `matchesListEmergency` | "Not a diagnosis", AI and free-call limits |
+| `visaGuideRoute*`, `visaGuideProcessing`, `visaGuideAttendants`, `visaGuideDefaultNote`, `visaGuideDisclaimer`, `invite*` | e-Visa / embassy visa rules and the hospital invitation letter |
+| `quickQuoteSlaNote`, `quoteOverduePatient`, `quickQuoteConsentMany` | Reply-time promise (48 h) and consent to share reports with several hospitals |
+
+Notes: plural forms were written for every category (ar zero/one/two/few/many/other where natural, ru one/few/many/other);
+`privacyAccessLine` assembles who / role / action / record and reads mechanically in fr and ru — a full-sentence rewrite
+per action may read better.
+
 ## Politically sensitive names
 
 `countryTW`, `countryPS`, `countryIL`, `countryHK`, `countryCD` — check the naming conventions expected in each market.

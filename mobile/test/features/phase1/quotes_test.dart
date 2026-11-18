@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:heal_india_global/core/auth/auth_controller.dart';
 import 'package:heal_india_global/core/models/models.dart';
 import 'package:heal_india_global/core/utils/money.dart';
 import 'package:heal_india_global/core/widgets/widgets.dart';
@@ -131,7 +130,7 @@ void main() {
       tester,
       path: '/quote/new',
       initialLocation: '/quote/new?hospitals=h1,h2&procedure=knee-replacement',
-      screen: (s) => QuickQuoteScreen(hospitalIds: const ['h1', 'h2'], procedureSlug: 'knee-replacement'),
+      screen: (s) => const QuickQuoteScreen(hospitalIds: ['h1', 'h2'], procedureSlug: 'knee-replacement'),
       adapter: adapter,
       logicalSize: const Size(420, 1300),
     );
