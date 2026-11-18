@@ -38,6 +38,10 @@ export interface FieldDef<Row> {
   uppercase?: boolean;
   /** only shown/sent when creating */
   createOnly?: boolean;
+  /** extra check of a non-empty value (runs before the kind's own parsing): error text or null */
+  validate?: (text: string) => string | null;
+  /** value sent when the field is left empty (default null; lists send []) */
+  emptyValue?: unknown;
 }
 
 type FormState = Record<string, string | boolean>;
@@ -87,9 +91,14 @@ function buildPayload<Row>(
       continue;
     }
     const text = String(v ?? '').trim();
+    const custom = text !== '' && f.validate ? f.validate(text) : null;
+    if (custom) {
+      errors[f.name] = custom;
+      continue;
+    }
     if (text === '') {
       if (f.required) errors[f.name] = t('components.crud.errors.required');
-      else payload[f.name] = f.kind === 'list' ? [] : null;
+      else payload[f.name] = f.kind === 'list' ? [] : f.emptyValue !== undefined ? f.emptyValue : null;
       continue;
     }
     switch (f.kind) {
@@ -117,7 +126,7 @@ function buildPayload<Row>(
         break;
       }
       case 'list':
-        payload[f.name] = splitList(text);
+        payload[f.name] = splitList(f.uppercase ? text.toUpperCase() : text);
         break;
       case 'url':
         if (!/^https?:\/\/\S+$/i.test(text)) errors[f.name] = t('components.crud.errors.url');

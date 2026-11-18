@@ -1504,11 +1504,13 @@
     "groups": {
       "operations": "Patient operations",
       "partners": "Partners",
+      "insurance": "Insurance & financing",
       "catalog": "Catalog & content",
       "people": "People & access",
       "system": "System"
     },
     "dashboard": "Dashboard",
+    "analytics": "Analytics",
     "hospitals": "Hospitals",
     "agents": "Agents",
     "cases": "Cases",
@@ -1528,6 +1530,10 @@
     "enquiries": "Website enquiries",
     "privacy": "Privacy requests",
     "reviews": "Reviews",
+    "insuranceProducts": "Insurance products",
+    "insuranceRequests": "Insurance requests",
+    "financingPartners": "Pay-later partners",
+    "financingRequests": "Pay-later requests",
     "introCalls": "Free intro calls",
     "visaRules": "Visa rules"
   },
@@ -2531,6 +2537,435 @@
       "new": "Marked as new.",
       "in_progress": "Marked as in progress.",
       "closed": "Marked as closed."
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "How patients move from first visit to treatment, how fast hospitals quote and how the platform is doing. Totals only, never individual patients.",
+    "timezoneIst": "All dates in India Standard Time (IST)",
+    "timezoneOther": "All dates in {{timezone}}",
+    "generatedAt": "Updated {{date}}",
+    "refresh": "Refresh",
+    "loading": "Loading…",
+    "na": "n/a",
+    "naHint": "Not available with the current filters",
+    "suppressedNote": "Groups smaller than {{min}} are hidden to protect patient privacy",
+    "filtersIgnored": "Only the dates apply to this section; the other filters do not.",
+    "hours": "{{value}} h",
+    "ms": "{{value}} ms",
+    "about": "About {{label}}",
+    "downloadCsv": "Download CSV",
+    "showTable": "Show as table",
+    "showChart": "Show as chart",
+    "noData": "No data for these dates and filters",
+    "noDataHint": "Try a longer date range or remove some filters.",
+    "noRows": "Nothing to show for these dates and filters.",
+    "chartSummary": "{{title}}: {{total}} in total from {{from}} to {{to}}.",
+    "weekOf": "Week of {{date}}",
+    "bucket": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "filters": {
+      "dates": "Dates",
+      "last12Months": "Last 12 months",
+      "granularity": "Group by",
+      "granularities": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "country": "Country",
+      "specialty": "Specialty",
+      "hospital": "Hospital",
+      "agent": "Agent",
+      "channel": "Channel",
+      "channels": {
+        "direct": "Direct",
+        "agent": "Through an agent"
+      }
+    },
+    "overview": {
+      "title": "Overview",
+      "description": "Events in the selected dates.",
+      "kpis": {
+        "cases": "New cases",
+        "quotesSent": "Quotes sent",
+        "bookings": "Bookings",
+        "conversion": "Conversion",
+        "conversionHelp": "Bookings confirmed divided by cases created in the same dates (both are event counts).",
+        "completed": "Treatments completed",
+        "reviews": "Reviews",
+        "registrations": "Registrations",
+        "medianQuote": "Median time to first quote",
+        "medianQuoteHelp": "Half of the cases got their first quote faster than this."
+      },
+      "trend": {
+        "title": "Over time",
+        "description": "{{metric}}: {{total}} in total",
+        "metricLabel": "Metric",
+        "metrics": {
+          "cases": "Cases",
+          "quotes_sent": "Quotes sent",
+          "bookings": "Bookings"
+        }
+      }
+    },
+    "funnel": {
+      "title": "Funnel",
+      "description": "Each step counts events in the selected dates, not one group of people followed over time, so a step can be higher than the one before it.",
+      "eventsHint": "Event counts in the selected dates; a step can be higher than the one before it.",
+      "summary": "From {{first}} ({{firstCount}}) to {{last}} ({{lastCount}}).",
+      "stepRate": "{{value}} of the previous step",
+      "steps": {
+        "visitors": "Visitors (guest sessions)",
+        "guest_scans": "Guest AI scans",
+        "registrations": "Registrations",
+        "screenings": "Screenings",
+        "cases": "Cases",
+        "quotes_sent": "Quotes sent",
+        "quotes_accepted": "Quotes accepted",
+        "bookings": "Bookings",
+        "completed": "Treatments completed",
+        "reviews": "Reviews"
+      },
+      "columns": {
+        "step": "Step",
+        "count": "Count",
+        "fromPrevious": "From previous step",
+        "fromFirst": "From first step"
+      }
+    },
+    "sla": {
+      "title": "Quote speed",
+      "description": "Time from a hospital receiving an enquiry to sending its first quote. Target: {{hours}} hours.",
+      "median": "Median time to first quote",
+      "quotedOf": "{{quoted}} of {{cases}} enquiries quoted",
+      "p90": "90th percentile",
+      "p90Help": "9 in 10 quoted enquiries got their first quote faster than this.",
+      "within24": "Quoted within 24 h",
+      "within48": "Quoted within 48 h",
+      "withinSla": "Within target ({{hours}} h)",
+      "overdueNow": "Overdue right now",
+      "overdueHelp": "Open enquiries of any age that are past their quote due time and have no quote yet.",
+      "byHospital": "By hospital",
+      "columns": {
+        "hospital": "Hospital",
+        "enquiries": "Enquiries",
+        "quoted": "Quoted",
+        "median": "Median",
+        "p90": "90th percentile",
+        "within24": "Within 24 h",
+        "within48": "Within 48 h",
+        "withinSla": "Within {{hours}} h",
+        "overdue": "Overdue now"
+      }
+    },
+    "finance": {
+      "title": "Finance",
+      "description": "Payments captured in the selected dates, shown in the reporting currency.",
+      "currency": "Reporting currency",
+      "fx": "Converted at 1 {{currency}} = ₹{{rate}} (rate of {{date}})",
+      "fxNoDate": "Converted at 1 {{currency}} = ₹{{rate}}",
+      "baseCurrency": "Amounts in Indian rupees (INR), the base currency.",
+      "inCurrency": "{{label}} ({{currency}})",
+      "payments_one": "{{value}} payment",
+      "payments_other": "{{value}} payments",
+      "gmvHelp": "Gross merchandise value: everything patients paid for treatment in these dates, before refunds.",
+      "revenueHelp": "What the platform keeps: commission plus patient service fees.",
+      "totals": {
+        "gmv": "GMV",
+        "refunds": "Refunds",
+        "netGmv": "Net GMV",
+        "commission": "Commission",
+        "serviceFee": "Service fees",
+        "revenue": "Revenue"
+      },
+      "byMonth": "By month",
+      "byMonthDescription": "GMV and commission per month, in {{currency}}",
+      "byMonthSummary": "GMV {{gmv}} and commission {{commission}} over {{months}} months.",
+      "byCurrency": "By payment currency",
+      "byCurrencyDescription": "What patients paid in each currency, in INR at the rate on the day of payment, and in the reporting currency.",
+      "columns": {
+        "month": "Month",
+        "currency": "Currency",
+        "payments": "Payments",
+        "amount": "Amount",
+        "base": "In INR (rate on the day)",
+        "reporting": "In {{currency}}"
+      },
+      "installments": {
+        "title": "Outstanding instalments",
+        "count": "Open instalments",
+        "overdue": "Overdue",
+        "amount": "Amount outstanding",
+        "pastTreatment": "Due on or after treatment",
+        "pastTreatmentWarning": "Must be 0 - CG-18. Fix these plans now.",
+        "pastTreatmentOk": "None: every instalment falls due before treatment.",
+        "pastTreatmentHelp": "Rule CG-18: our instalment plans are interest-free pre-payments, and the last instalment must fall due before the admission date.",
+        "byCurrency": "Outstanding by currency"
+      }
+    },
+    "patients": {
+      "title": "Patients",
+      "description": "Where patients come from and what they need.",
+      "byCountry": "By country",
+      "bySpecialty": "By specialty",
+      "byProcedure": "By procedure",
+      "columns": {
+        "country": "Country",
+        "specialty": "Specialty",
+        "procedure": "Procedure",
+        "patients": "Patients",
+        "cases": "Cases",
+        "bookings": "Bookings"
+      }
+    },
+    "hospitals": {
+      "title": "Top hospitals",
+      "description": "Hospitals ranked by activity in the selected dates.",
+      "tableTitle": "Hospital performance",
+      "columns": {
+        "hospital": "Hospital",
+        "enquiries": "Enquiries",
+        "quoted": "Quoted",
+        "bookings": "Bookings",
+        "completed": "Completed",
+        "conversion": "Conversion",
+        "medianQuote": "Median first quote",
+        "withinSla": "Within {{hours}} h",
+        "rating": "Average rating",
+        "ratingCount": "Ratings",
+        "newReviews": "New reviews",
+        "newReviewsRating": "New reviews' average"
+      }
+    },
+    "agents": {
+      "title": "Agent performance",
+      "description": "Leads and patients brought by each agent in the selected dates.",
+      "tableTitle": "Agents",
+      "commissionHidden": "Commission is shown to finance and admin staff only.",
+      "columns": {
+        "agent": "Agent",
+        "country": "Country",
+        "leads": "Leads",
+        "patients": "Patients",
+        "cases": "Cases",
+        "bookings": "Bookings",
+        "completed": "Completed",
+        "conversion": "Conversion",
+        "commission": "Net commission"
+      }
+    },
+    "aftercare": {
+      "title": "Aftercare check-ins",
+      "description": "Check-ins patients answer after treatment, and the warning signs they report.",
+      "due": "Due",
+      "submitted": "Answered",
+      "completion": "Answer rate",
+      "overdue": "Overdue",
+      "redFlagCheckins": "With a warning sign",
+      "redFlagHelp": "Check-ins where the patient reported a warning sign. The hospital and the coordinator are alerted at once.",
+      "redFlags": "Warning signs by kind",
+      "noRedFlags": "No warning signs reported in these dates.",
+      "seriesTitle": "Due and answered",
+      "seriesSummary": "{{due}} check-ins due and {{submitted}} answered.",
+      "flags": {
+        "fever": "Fever",
+        "breathlessness": "Shortness of breath",
+        "severe_pain": "Severe pain (8 or more out of 10)",
+        "wound_concerns": "Wound concerns"
+      },
+      "columns": {
+        "flag": "Warning sign",
+        "checkins": "Check-ins"
+      }
+    },
+    "intro": {
+      "title": "Free intro calls",
+      "description": "Requested, scheduled, done, and how many led to a case.",
+      "requested": "Requested",
+      "scheduled": "Scheduled",
+      "completed": "Done",
+      "cancelled": "Cancelled",
+      "converted": "Opened a case",
+      "convertedHelp": "Done calls where the person later opened a case.",
+      "conversion": "Done to case",
+      "stepsTitle": "From request to case",
+      "stepsSummary": "{{requested}} requested, {{scheduled}} scheduled, {{completed}} done, {{converted}} opened a case.",
+      "seriesTitle": "Requested and done",
+      "seriesSummary": "{{requested}} calls requested and {{completed}} done."
+    },
+    "ai": {
+      "title": "AI usage and limits",
+      "description": "AI requests compared with the daily limits.",
+      "requests": "AI requests",
+      "errors": "Errors",
+      "errorRate": "{{value}} of requests",
+      "guestScans": "Guest scans",
+      "peak": "Busiest day",
+      "peakSub": "{{date}}: {{value}} of the daily limit ({{limit}})",
+      "peakHelp": "The day with the most AI requests, compared with the platform-wide daily limit.",
+      "globalLimit": "Platform daily limit",
+      "userLimits": "Per person: {{list}}",
+      "seriesTitle": "AI requests",
+      "byPurpose": "By purpose",
+      "columns": {
+        "purpose": "Purpose",
+        "requests": "Requests",
+        "errors": "Errors",
+        "refusals": "Refusals",
+        "fallbacks": "Fallbacks",
+        "latency": "Average response time",
+        "inputTokens": "Input tokens",
+        "outputTokens": "Output tokens"
+      }
+    },
+    "notifications": {
+      "title": "Notification delivery",
+      "description": "In-app notifications sent, read, emailed and pushed.",
+      "sent": "Sent",
+      "read": "Read",
+      "emailed": "Emailed",
+      "pushed": "Push sent",
+      "readRate": "Read rate",
+      "byKind": "By kind",
+      "columns": {
+        "kind": "Kind"
+      }
+    }
+  },
+  "insurance": {
+    "common": {
+      "disclaimer": "Heal India Global does not sell insurance or lend money: we list partners and pass on leads with the patient's consent.",
+      "active": "Active",
+      "inactive": "Hidden",
+      "allCountries": "All countries",
+      "moreCountries": "+{{count}} more",
+      "categories": {
+        "medical_travel": "Medical travel insurance",
+        "complication": "Complication cover",
+        "health": "Health insurance",
+        "other": "Other"
+      },
+      "fields": {
+        "provider": "Provider",
+        "product": "Product name",
+        "category": "Category",
+        "summary": "Summary",
+        "summaryHint": "Shown to patients. Plain words: what is covered and who it is for.",
+        "countries": "Countries",
+        "countriesHint": "Two-letter country codes, comma-separated (for example NG, KE). Leave empty for all countries.",
+        "priceMin": "Price from",
+        "priceMax": "Price up to",
+        "currency": "Currency",
+        "priceNote": "Price note",
+        "priceNoteHint": "For example \"per trip\" or \"depends on age\".",
+        "website": "Website",
+        "websiteHint": "The partner's page where patients continue. Must start with https://",
+        "email": "Contact email",
+        "phone": "Contact phone",
+        "sort": "Sort order",
+        "sortHint": "Lower numbers are listed first.",
+        "active": "Active (shown to patients)"
+      },
+      "errors": {
+        "httpsOnly": "Use a secure link that starts with https://",
+        "countries": "Use two-letter country codes separated by commas, for example NG, KE."
+      },
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "countries": "Countries",
+        "price": "Price",
+        "website": "Website",
+        "status": "Status",
+        "sort": "Order"
+      },
+      "filters": {
+        "status": "Status",
+        "category": "Category"
+      },
+      "leadStatus": {
+        "new": "New",
+        "in_progress": "In progress",
+        "shared_with_partner": "Shared with partner",
+        "closed": "Closed",
+        "cancelled": "Withdrawn by patient"
+      },
+      "requests": {
+        "all": "All",
+        "statusFilter": "Request status",
+        "openRow": "Open request from {{name}}",
+        "loading": "Loading the request…",
+        "notFound": "This request was not found. It may have been removed, or it is older than the latest 100 requests.",
+        "drawerTitle": "Request from {{name}}",
+        "drawerTitleEmpty": "Request",
+        "columns": {
+          "created": "Received",
+          "product": "Provider and product",
+          "contact": "Contact name",
+          "country": "Country",
+          "case": "Case",
+          "status": "Status"
+        },
+        "fields": {
+          "email": "Email",
+          "phone": "Phone",
+          "preferred": "Preferred contact",
+          "country": "Country",
+          "case": "Case",
+          "status": "Status",
+          "handledBy": "Handled by",
+          "sharedAt": "Shared with partner",
+          "message": "Message from the patient"
+        },
+        "preferredContact": {
+          "email": "Email",
+          "phone": "Phone call",
+          "whatsapp": "WhatsApp"
+        },
+        "consentTitle": "Consent to share contact details",
+        "consentGiven": "Given on {{date}} to share their name and contact details with {{provider}}. No medical information is shared.",
+        "consentMissing": "No consent record was found. Do not share the contact details.",
+        "noMessage": "No message.",
+        "partnerSite": "Partner website",
+        "cancelledTitle": "Withdrawn by the patient",
+        "cancelledNote": "The patient withdrew this request and their consent. Do not contact them about it or share their details.",
+        "changeStatus": "Status",
+        "statusHint": "Choose \"Shared with partner\" only after you have passed the contact details on.",
+        "staffNote": "Staff note",
+        "staffNoteHint": "Only staff can see this note.",
+        "saveNote": "Save note",
+        "saved": "Request updated"
+      }
+    },
+    "products": {
+      "title": "Insurance products",
+      "description": "Insurance products patients can ask about. The insurer decides cover, price and terms.",
+      "entity": "insurance product",
+      "entities": "insurance products"
+    },
+    "requests": {
+      "title": "Insurance requests",
+      "description": "Patients who asked an insurer to contact them. Pass the details on only with their consent.",
+      "empty": "No insurance requests",
+      "emptyDescription": "Requests from patients appear here."
+    }
+  },
+  "financing": {
+    "partners": {
+      "title": "Pay-later partners",
+      "description": "Partners that offer pay-later plans or loans on their own terms, after their own checks.",
+      "entity": "pay-later partner",
+      "entities": "pay-later partners"
+    },
+    "requests": {
+      "title": "Pay-later requests",
+      "description": "Patients who asked a pay-later partner to check their eligibility. Pass the details on only with their consent.",
+      "empty": "No pay-later requests",
+      "emptyDescription": "Requests from patients appear here."
     }
   },
   "messages": {

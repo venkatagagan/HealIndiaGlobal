@@ -1504,11 +1504,13 @@
     "groups": {
       "operations": "Suivi des patients",
       "partners": "Partenaires",
+      "insurance": "Assurance et financement",
       "catalog": "Catalogue et contenu",
       "people": "Personnes et accès",
       "system": "Système"
     },
     "dashboard": "Tableau de bord",
+    "analytics": "Statistiques",
     "hospitals": "Hôpitaux",
     "agents": "Agents",
     "cases": "Dossiers",
@@ -1528,6 +1530,10 @@
     "enquiries": "Demandes du site",
     "privacy": "Demandes de confidentialité",
     "reviews": "Avis",
+    "insuranceProducts": "Produits d'assurance",
+    "insuranceRequests": "Demandes d'assurance",
+    "financingPartners": "Partenaires de paiement différé",
+    "financingRequests": "Demandes de paiement différé",
     "introCalls": "Appels découverte gratuits",
     "visaRules": "Règles de visa"
   },
@@ -2531,6 +2537,435 @@
       "new": "Marquée comme nouvelle.",
       "in_progress": "Marquée comme en cours.",
       "closed": "Marquée comme clôturée."
+    }
+  },
+  "analytics": {
+    "title": "Statistiques",
+    "description": "Le parcours des patients, de la première visite au traitement, la rapidité des devis des hôpitaux et l'activité de la plateforme. Uniquement des totaux, jamais de patient individuel.",
+    "timezoneIst": "Toutes les dates sont en heure normale de l'Inde (IST)",
+    "timezoneOther": "Toutes les dates sont en {{timezone}}",
+    "generatedAt": "Mis à jour le {{date}}",
+    "refresh": "Actualiser",
+    "loading": "Chargement…",
+    "na": "n.d.",
+    "naHint": "Non disponible avec les filtres actuels",
+    "suppressedNote": "Les groupes de moins de {{min}} personnes sont masqués pour protéger la vie privée des patients",
+    "filtersIgnored": "Seules les dates s'appliquent à cette section ; les autres filtres ne s'appliquent pas.",
+    "hours": "{{value}} h",
+    "ms": "{{value}} ms",
+    "about": "À propos de : {{label}}",
+    "downloadCsv": "Télécharger le CSV",
+    "showTable": "Afficher en tableau",
+    "showChart": "Afficher en graphique",
+    "noData": "Aucune donnée pour ces dates et ces filtres",
+    "noDataHint": "Essayez une période plus longue ou retirez des filtres.",
+    "noRows": "Rien à afficher pour ces dates et ces filtres.",
+    "chartSummary": "{{title}} : {{total}} au total du {{from}} au {{to}}.",
+    "weekOf": "Semaine du {{date}}",
+    "bucket": {
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
+    },
+    "filters": {
+      "dates": "Dates",
+      "last12Months": "12 derniers mois",
+      "granularity": "Regrouper par",
+      "granularities": {
+        "day": "Jour",
+        "week": "Semaine",
+        "month": "Mois"
+      },
+      "country": "Pays",
+      "specialty": "Spécialité",
+      "hospital": "Hôpital",
+      "agent": "Agent",
+      "channel": "Canal",
+      "channels": {
+        "direct": "Direct",
+        "agent": "Par un agent"
+      }
+    },
+    "overview": {
+      "title": "Vue d'ensemble",
+      "description": "Événements sur les dates sélectionnées.",
+      "kpis": {
+        "cases": "Nouveaux dossiers",
+        "quotesSent": "Devis envoyés",
+        "bookings": "Réservations",
+        "conversion": "Conversion",
+        "conversionHelp": "Réservations confirmées divisées par les dossiers créés sur les mêmes dates (ce sont deux comptages d'événements).",
+        "completed": "Traitements terminés",
+        "reviews": "Avis",
+        "registrations": "Inscriptions",
+        "medianQuote": "Délai médian du premier devis",
+        "medianQuoteHelp": "La moitié des dossiers ont reçu leur premier devis plus vite que cela."
+      },
+      "trend": {
+        "title": "Évolution",
+        "description": "{{metric}} : {{total}} au total",
+        "metricLabel": "Indicateur",
+        "metrics": {
+          "cases": "Dossiers",
+          "quotes_sent": "Devis envoyés",
+          "bookings": "Réservations"
+        }
+      }
+    },
+    "funnel": {
+      "title": "Entonnoir",
+      "description": "Chaque étape compte les événements sur les dates sélectionnées, et non un même groupe de personnes suivi dans le temps : une étape peut donc dépasser la précédente.",
+      "eventsHint": "Comptages d'événements sur les dates sélectionnées ; une étape peut dépasser la précédente.",
+      "summary": "De {{first}} ({{firstCount}}) à {{last}} ({{lastCount}}).",
+      "stepRate": "{{value}} de l'étape précédente",
+      "steps": {
+        "visitors": "Visiteurs (sessions invités)",
+        "guest_scans": "Analyses IA des invités",
+        "registrations": "Inscriptions",
+        "screenings": "Questionnaires de santé",
+        "cases": "Dossiers",
+        "quotes_sent": "Devis envoyés",
+        "quotes_accepted": "Devis acceptés",
+        "bookings": "Réservations",
+        "completed": "Traitements terminés",
+        "reviews": "Avis"
+      },
+      "columns": {
+        "step": "Étape",
+        "count": "Nombre",
+        "fromPrevious": "Depuis l'étape précédente",
+        "fromFirst": "Depuis la première étape"
+      }
+    },
+    "sla": {
+      "title": "Rapidité des devis",
+      "description": "Délai entre la réception d'une demande par l'hôpital et l'envoi de son premier devis. Objectif : {{hours}} heures.",
+      "median": "Délai médian du premier devis",
+      "quotedOf": "{{quoted}} demandes sur {{cases}} ont reçu un devis",
+      "p90": "90e centile",
+      "p90Help": "9 demandes sur 10 ayant reçu un devis l'ont reçu plus vite que cela.",
+      "within24": "Devis sous 24 h",
+      "within48": "Devis sous 48 h",
+      "withinSla": "Dans l'objectif ({{hours}} h)",
+      "overdueNow": "En retard actuellement",
+      "overdueHelp": "Demandes ouvertes, quelle que soit leur ancienneté, dont l'échéance de devis est dépassée et sans devis.",
+      "byHospital": "Par hôpital",
+      "columns": {
+        "hospital": "Hôpital",
+        "enquiries": "Demandes",
+        "quoted": "Avec devis",
+        "median": "Médiane",
+        "p90": "90e centile",
+        "within24": "Sous 24 h",
+        "within48": "Sous 48 h",
+        "withinSla": "Sous {{hours}} h",
+        "overdue": "En retard"
+      }
+    },
+    "finance": {
+      "title": "Finances",
+      "description": "Paiements encaissés sur les dates sélectionnées, affichés dans la devise de reporting.",
+      "currency": "Devise de reporting",
+      "fx": "Converti au taux de 1 {{currency}} = ₹{{rate}} (taux du {{date}})",
+      "fxNoDate": "Converti au taux de 1 {{currency}} = ₹{{rate}}",
+      "baseCurrency": "Montants en roupies indiennes (INR), la devise de base.",
+      "inCurrency": "{{label}} ({{currency}})",
+      "payments_one": "{{value}} paiement",
+      "payments_other": "{{value}} paiements",
+      "gmvHelp": "Volume d'affaires brut : tout ce que les patients ont payé pour leur traitement sur ces dates, avant remboursements.",
+      "revenueHelp": "Ce que conserve la plateforme : la commission plus les frais de service des patients.",
+      "totals": {
+        "gmv": "Volume d'affaires brut",
+        "refunds": "Remboursements",
+        "netGmv": "Volume d'affaires net",
+        "commission": "Commission",
+        "serviceFee": "Frais de service",
+        "revenue": "Revenus"
+      },
+      "byMonth": "Par mois",
+      "byMonthDescription": "Volume d'affaires et commission par mois, en {{currency}}",
+      "byMonthSummary": "Volume d'affaires {{gmv}} et commission {{commission}} sur {{months}} mois.",
+      "byCurrency": "Par devise de paiement",
+      "byCurrencyDescription": "Ce que les patients ont payé dans chaque devise, en INR au taux du jour du paiement, et dans la devise de reporting.",
+      "columns": {
+        "month": "Mois",
+        "currency": "Devise",
+        "payments": "Paiements",
+        "amount": "Montant",
+        "base": "En INR (taux du jour)",
+        "reporting": "En {{currency}}"
+      },
+      "installments": {
+        "title": "Échéances en cours",
+        "count": "Échéances ouvertes",
+        "overdue": "En retard",
+        "amount": "Montant restant dû",
+        "pastTreatment": "Dues le jour du traitement ou après",
+        "pastTreatmentWarning": "Doit être 0 - CG-18. Corrigez ces plans dès maintenant.",
+        "pastTreatmentOk": "Aucune : toutes les échéances tombent avant le traitement.",
+        "pastTreatmentHelp": "Règle CG-18 : nos plans d'échéances sont des prépaiements sans intérêts, et la dernière échéance doit tomber avant la date d'admission.",
+        "byCurrency": "Restant dû par devise"
+      }
+    },
+    "patients": {
+      "title": "Patients",
+      "description": "D'où viennent les patients et de quoi ils ont besoin.",
+      "byCountry": "Par pays",
+      "bySpecialty": "Par spécialité",
+      "byProcedure": "Par intervention",
+      "columns": {
+        "country": "Pays",
+        "specialty": "Spécialité",
+        "procedure": "Intervention",
+        "patients": "Patients",
+        "cases": "Dossiers",
+        "bookings": "Réservations"
+      }
+    },
+    "hospitals": {
+      "title": "Hôpitaux les plus actifs",
+      "description": "Hôpitaux classés selon leur activité sur les dates sélectionnées.",
+      "tableTitle": "Performance des hôpitaux",
+      "columns": {
+        "hospital": "Hôpital",
+        "enquiries": "Demandes",
+        "quoted": "Avec devis",
+        "bookings": "Réservations",
+        "completed": "Terminés",
+        "conversion": "Conversion",
+        "medianQuote": "Premier devis (médiane)",
+        "withinSla": "Sous {{hours}} h",
+        "rating": "Note moyenne",
+        "ratingCount": "Notes",
+        "newReviews": "Nouveaux avis",
+        "newReviewsRating": "Moyenne des nouveaux avis"
+      }
+    },
+    "agents": {
+      "title": "Performance des agents",
+      "description": "Contacts et patients apportés par chaque agent sur les dates sélectionnées.",
+      "tableTitle": "Agents",
+      "commissionHidden": "La commission n'est visible que par l'équipe finance et les administrateurs.",
+      "columns": {
+        "agent": "Agent",
+        "country": "Pays",
+        "leads": "Contacts",
+        "patients": "Patients",
+        "cases": "Dossiers",
+        "bookings": "Réservations",
+        "completed": "Terminés",
+        "conversion": "Conversion",
+        "commission": "Commission nette"
+      }
+    },
+    "aftercare": {
+      "title": "Suivis après traitement",
+      "description": "Les suivis auxquels les patients répondent après leur traitement, et les signes d'alerte qu'ils signalent.",
+      "due": "À faire",
+      "submitted": "Répondus",
+      "completion": "Taux de réponse",
+      "overdue": "En retard",
+      "redFlagCheckins": "Avec un signe d'alerte",
+      "redFlagHelp": "Suivis dans lesquels le patient a signalé un signe d'alerte. L'hôpital et le coordinateur sont prévenus immédiatement.",
+      "redFlags": "Signes d'alerte par type",
+      "noRedFlags": "Aucun signe d'alerte signalé sur ces dates.",
+      "seriesTitle": "À faire et répondus",
+      "seriesSummary": "{{due}} suivis à faire et {{submitted}} répondus.",
+      "flags": {
+        "fever": "Fièvre",
+        "breathlessness": "Essoufflement",
+        "severe_pain": "Douleur intense (8 sur 10 ou plus)",
+        "wound_concerns": "Problème de plaie"
+      },
+      "columns": {
+        "flag": "Signe d'alerte",
+        "checkins": "Suivis"
+      }
+    },
+    "intro": {
+      "title": "Appels de découverte gratuits",
+      "description": "Demandés, planifiés, effectués, et combien ont abouti à un dossier.",
+      "requested": "Demandés",
+      "scheduled": "Planifiés",
+      "completed": "Effectués",
+      "cancelled": "Annulés",
+      "converted": "Dossier ouvert",
+      "convertedHelp": "Appels effectués après lesquels la personne a ouvert un dossier.",
+      "conversion": "Appel vers dossier",
+      "stepsTitle": "De la demande au dossier",
+      "stepsSummary": "{{requested}} demandés, {{scheduled}} planifiés, {{completed}} effectués, {{converted}} ont ouvert un dossier.",
+      "seriesTitle": "Demandés et effectués",
+      "seriesSummary": "{{requested}} appels demandés et {{completed}} effectués."
+    },
+    "ai": {
+      "title": "Utilisation de l'IA et limites",
+      "description": "Requêtes IA comparées aux limites quotidiennes.",
+      "requests": "Requêtes IA",
+      "errors": "Erreurs",
+      "errorRate": "{{value}} des requêtes",
+      "guestScans": "Analyses des invités",
+      "peak": "Jour le plus chargé",
+      "peakSub": "{{date}} : {{value}} de la limite quotidienne ({{limit}})",
+      "peakHelp": "Le jour avec le plus de requêtes IA, comparé à la limite quotidienne de toute la plateforme.",
+      "globalLimit": "Limite quotidienne de la plateforme",
+      "userLimits": "Par personne : {{list}}",
+      "seriesTitle": "Requêtes IA",
+      "byPurpose": "Par usage",
+      "columns": {
+        "purpose": "Usage",
+        "requests": "Requêtes",
+        "errors": "Erreurs",
+        "refusals": "Refus",
+        "fallbacks": "Solutions de repli",
+        "latency": "Temps de réponse moyen",
+        "inputTokens": "Jetons en entrée",
+        "outputTokens": "Jetons en sortie"
+      }
+    },
+    "notifications": {
+      "title": "Envoi des notifications",
+      "description": "Notifications dans l'application envoyées, lues, envoyées par e-mail et en push.",
+      "sent": "Envoyées",
+      "read": "Lues",
+      "emailed": "Par e-mail",
+      "pushed": "En push",
+      "readRate": "Taux de lecture",
+      "byKind": "Par type",
+      "columns": {
+        "kind": "Type"
+      }
+    }
+  },
+  "insurance": {
+    "common": {
+      "disclaimer": "Heal India Global ne vend pas d'assurance et ne prête pas d'argent : nous présentons des partenaires et leur transmettons les demandes avec le consentement du patient.",
+      "active": "Actif",
+      "inactive": "Masqué",
+      "allCountries": "Tous les pays",
+      "moreCountries": "+{{count}} autres",
+      "categories": {
+        "medical_travel": "Assurance voyage médical",
+        "complication": "Couverture des complications",
+        "health": "Assurance santé",
+        "other": "Autre"
+      },
+      "fields": {
+        "provider": "Partenaire",
+        "product": "Nom du produit",
+        "category": "Catégorie",
+        "summary": "Résumé",
+        "summaryHint": "Visible par les patients. Des mots simples : ce qui est couvert et pour qui.",
+        "countries": "Pays",
+        "countriesHint": "Codes pays à deux lettres, séparés par des virgules (par exemple NG, KE). Laissez vide pour tous les pays.",
+        "priceMin": "Prix à partir de",
+        "priceMax": "Prix jusqu'à",
+        "currency": "Devise",
+        "priceNote": "Précision sur le prix",
+        "priceNoteHint": "Par exemple « par voyage » ou « selon l'âge ».",
+        "website": "Site web",
+        "websiteHint": "La page du partenaire où le patient poursuit sa démarche. Doit commencer par https://",
+        "email": "E-mail de contact",
+        "phone": "Téléphone de contact",
+        "sort": "Ordre d'affichage",
+        "sortHint": "Les plus petits nombres apparaissent en premier.",
+        "active": "Actif (visible par les patients)"
+      },
+      "errors": {
+        "httpsOnly": "Utilisez un lien sécurisé qui commence par https://",
+        "countries": "Utilisez des codes pays à deux lettres séparés par des virgules, par exemple NG, KE."
+      },
+      "columns": {
+        "product": "Produit",
+        "category": "Catégorie",
+        "countries": "Pays",
+        "price": "Prix",
+        "website": "Site web",
+        "status": "Statut",
+        "sort": "Ordre"
+      },
+      "filters": {
+        "status": "Statut",
+        "category": "Catégorie"
+      },
+      "leadStatus": {
+        "new": "Nouvelle",
+        "in_progress": "En cours",
+        "shared_with_partner": "Transmise au partenaire",
+        "closed": "Clôturée",
+        "cancelled": "Retirée par le patient"
+      },
+      "requests": {
+        "all": "Toutes",
+        "statusFilter": "Statut de la demande",
+        "openRow": "Ouvrir la demande de {{name}}",
+        "loading": "Chargement de la demande…",
+        "notFound": "Cette demande est introuvable. Elle a peut-être été supprimée, ou elle est plus ancienne que les 100 dernières demandes.",
+        "drawerTitle": "Demande de {{name}}",
+        "drawerTitleEmpty": "Demande",
+        "columns": {
+          "created": "Reçue",
+          "product": "Partenaire et produit",
+          "contact": "Nom du contact",
+          "country": "Pays",
+          "case": "Dossier",
+          "status": "Statut"
+        },
+        "fields": {
+          "email": "E-mail",
+          "phone": "Téléphone",
+          "preferred": "Contact préféré",
+          "country": "Pays",
+          "case": "Dossier",
+          "status": "Statut",
+          "handledBy": "Traitée par",
+          "sharedAt": "Transmise au partenaire",
+          "message": "Message du patient"
+        },
+        "preferredContact": {
+          "email": "E-mail",
+          "phone": "Appel téléphonique",
+          "whatsapp": "WhatsApp"
+        },
+        "consentTitle": "Consentement au partage des coordonnées",
+        "consentGiven": "Donné le {{date}} pour partager son nom et ses coordonnées avec {{provider}}. Aucune information médicale n'est partagée.",
+        "consentMissing": "Aucun consentement enregistré. Ne partagez pas les coordonnées.",
+        "noMessage": "Aucun message.",
+        "partnerSite": "Site du partenaire",
+        "cancelledTitle": "Retirée par le patient",
+        "cancelledNote": "Le patient a retiré cette demande et son consentement. Ne le contactez pas à ce sujet et ne partagez pas ses coordonnées.",
+        "changeStatus": "Statut",
+        "statusHint": "Choisissez « Transmise au partenaire » uniquement après avoir transmis les coordonnées.",
+        "staffNote": "Note interne",
+        "staffNoteHint": "Seule l'équipe peut voir cette note.",
+        "saveNote": "Enregistrer la note",
+        "saved": "Demande mise à jour"
+      }
+    },
+    "products": {
+      "title": "Produits d'assurance",
+      "description": "Les produits d'assurance sur lesquels les patients peuvent se renseigner. L'assureur décide de la couverture, du prix et des conditions.",
+      "entity": "produit d'assurance",
+      "entities": "produits d'assurance"
+    },
+    "requests": {
+      "title": "Demandes d'assurance",
+      "description": "Les patients qui ont demandé à être contactés par un assureur. Transmettez leurs coordonnées uniquement avec leur consentement.",
+      "empty": "Aucune demande d'assurance",
+      "emptyDescription": "Les demandes des patients apparaissent ici."
+    }
+  },
+  "financing": {
+    "partners": {
+      "title": "Partenaires de paiement différé",
+      "description": "Les partenaires qui proposent des paiements différés ou des prêts, selon leurs propres conditions et après leurs propres vérifications.",
+      "entity": "partenaire de paiement différé",
+      "entities": "partenaires de paiement différé"
+    },
+    "requests": {
+      "title": "Demandes de paiement différé",
+      "description": "Les patients qui ont demandé à un partenaire de vérifier leur éligibilité. Transmettez leurs coordonnées uniquement avec leur consentement.",
+      "empty": "Aucune demande de paiement différé",
+      "emptyDescription": "Les demandes des patients apparaissent ici."
     }
   },
   "messages": {

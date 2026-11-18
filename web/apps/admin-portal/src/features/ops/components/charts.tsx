@@ -248,3 +248,129 @@ export function FunnelBars({
     </ol>
   );
 }
+
+/** Series slots of the validated palette (max two series per chart; a third gets its own chart or a toggle). */
+const SERIES_SLOTS = ['var(--series-1)', 'var(--series-2)'] as const;
+
+function MultiTooltip({
+  active,
+  payload,
+  label,
+  series,
+  formatValue,
+  formatLabel,
+}: {
+  active?: boolean;
+  payload?: readonly TooltipEntry[];
+  label?: unknown;
+  series: readonly { key: string; name: string }[];
+  formatValue: (value: number) => string;
+  formatLabel?: (label: string) => string;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  const title = String(label ?? '');
+  const row = payload[0]?.payload ?? {};
+  return (
+    <div className="rounded-lg border border-border bg-surface px-3 py-2 text-xs shadow-lg">
+      <p className="mb-1 font-medium text-fg">{formatLabel ? formatLabel(title) : title}</p>
+      {series.map((s, i) => (
+        <p key={s.key} className="flex items-center gap-2 text-muted">
+          <span className="inline-block size-2 rounded-full" style={{ background: SERIES_SLOTS[i] }} aria-hidden />
+          <span>{s.name}</span>
+          <span className="ms-auto ps-3 font-semibold tabular-nums text-fg">{formatValue(Number(row[s.key] ?? 0))}</span>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Two-series grouped column chart over time (e.g. GMV vs commission, requested vs completed). Same rules as
+ * ColumnChart: y from zero with nice ticks, recessive grid, capped bar width, series-1 green / series-2 violet,
+ * with an HTML legend above the plot (the colors never carry meaning alone: the tooltip names each value).
+ */
+export function GroupedColumnChart({
+  data,
+  xKey,
+  series,
+  formatValue,
+  formatTick,
+  formatX,
+  formatLabel,
+  integer = false,
+  height = 260,
+}: {
+  data: readonly object[];
+  xKey: string;
+  /** one or two series */
+  series: readonly { key: string; name: string }[];
+  formatValue: (value: number) => string;
+  formatTick: (value: number) => string;
+  formatX?: (value: string) => string;
+  formatLabel?: (value: string) => string;
+  integer?: boolean;
+  height?: number;
+}) {
+  const shown = series.slice(0, SERIES_SLOTS.length);
+  const max = Math.max(0, ...data.flatMap((d) => shown.map((s) => Number((d as Record<string, unknown>)[s.key] ?? 0))));
+  let ticks = niceTicks(max || (integer ? 4 : 1));
+  if (integer) {
+    const step = Math.max(1, Math.ceil(ticks[1] ?? 1));
+    ticks = Array.from({ length: Math.max(2, Math.ceil(Math.max(max, 1) / step) + 1) }, (_, i) => i * step);
+  }
+  const top = ticks[ticks.length - 1] ?? 1;
+  const width = Math.max(36, ...ticks.map((t) => formatTick(t).length * 6.5 + 10));
+  return (
+    <div className={chartVars}>
+      <ul className="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
+        {shown.map((s, i) => (
+          <li key={s.key} className="inline-flex items-center gap-1.5">
+            <span className="inline-block size-2.5 rounded-sm" style={{ background: SERIES_SLOTS[i] }} aria-hidden />
+            {s.name}
+          </li>
+        ))}
+      </ul>
+      <div style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data as Record<string, unknown>[]} margin={{ top: 8, right: 4, left: 0, bottom: 0 }} barCategoryGap="22%" barGap={2}>
+            <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+            <XAxis
+              dataKey={xKey}
+              stroke="var(--chart-grid)"
+              tick={axisTick}
+              tickLine={false}
+              minTickGap={12}
+              tickFormatter={formatX ? (v) => formatX(String(v)) : undefined}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={axisTick}
+              width={width}
+              domain={[0, top]}
+              ticks={ticks}
+              allowDecimals={!integer}
+              tickFormatter={(v) => formatTick(Number(v))}
+            />
+            <Tooltip
+              cursor={{ fill: 'var(--chart-cursor)' }}
+              content={(props) => (
+                <MultiTooltip
+                  active={props.active}
+                  payload={props.payload as readonly TooltipEntry[] | undefined}
+                  label={props.label}
+                  series={shown}
+                  formatValue={formatValue}
+                  formatLabel={formatLabel ?? formatX}
+                />
+              )}
+            />
+            {shown.map((s, i) => (
+              <Bar key={s.key} dataKey={s.key} name={s.name} fill={SERIES_SLOTS[i]} radius={[4, 4, 0, 0]} maxBarSize={18} isAnimationActive={false} />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}

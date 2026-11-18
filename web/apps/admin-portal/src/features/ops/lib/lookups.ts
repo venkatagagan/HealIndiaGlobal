@@ -73,3 +73,13 @@ export function countryName(code: string | null | undefined): string {
     return code;
   }
 }
+
+/** Agent options for filters (first 100, any status): "Agency · CODE". */
+export function useAgentOptions() {
+  return useQuery({
+    queryKey: [...opsKeys.agents, 'options'],
+    queryFn: () => adminApi.listAgents({ page: 1, page_size: 100 }),
+    select: (p) => p.items.map((a) => ({ value: a.id, label: a.agency_name, description: a.agent_code })),
+    staleTime: 5 * 60_000,
+  });
+}
