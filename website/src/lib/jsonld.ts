@@ -107,8 +107,28 @@ export function medicalProcedureLd(p: Procedure & { body_areas?: string[] }, pat
   };
 }
 
-export function hospitalLd(h: HospitalDetail, path: string, includeRating: boolean): Json {
-  const rating = toNumber(h.rating_avg);
+/**
+ * AggregateRating values computed from PUBLISHED reviews only (null = do not emit one). The hospital's stored
+ * rating_avg/rating_count may be curated when it has no reviews, so it is used only when its count matches the
+ * published total; otherwise the average is computed from the reviews themselves when all of them were fetched.
+ */
+export function publishedRating(
+  page: { items: { rating: number }[]; total: number },
+  ratingAvg: number | string | null,
+  ratingCount: number,
+): { value: number; count: number } | null {
+  if (page.total <= 0) return null;
+  if (page.items.length >= page.total) {
+    const sum = page.items.reduce((acc, r) => acc + r.rating, 0);
+    return { value: Math.round((sum / page.items.length) * 10) / 10, count: page.items.length };
+  }
+  const avg = toNumber(ratingAvg);
+  return avg && ratingCount === page.total ? { value: avg, count: ratingCount } : null;
+}
+
+export function hospitalLd(h: HospitalDetail, path: string, rating: { value: number; count: number } | null): Json {
+  // Credentials: only accreditations a platform admin has verified (self-declared ones are not asserted).
+  const credentials = (h.accreditations_verified ?? []).map((a) => a.body.toUpperCase());
   return {
     '@context': 'https://schema.org',
     '@type': 'Hospital',
@@ -129,10 +149,10 @@ export function hospitalLd(h: HospitalDetail, path: string, includeRating: boole
     ...(h.lat !== null && h.lng !== null ? { geo: { '@type': 'GeoCoordinates', latitude: h.lat, longitude: h.lng } } : {}),
     medicalSpecialty: h.specialties,
     availableService: h.procedures.slice(0, 30).map((p) => ({ '@type': 'MedicalProcedure', name: p.procedure.name })),
-    ...(h.accreditations.length ? { hasCredential: h.accreditations.map((a) => ({ '@type': 'EducationalOccupationalCredential', credentialCategory: 'accreditation', name: a.toUpperCase() })) } : {}),
+    ...(credentials.length ? { hasCredential: credentials.map((name) => ({ '@type': 'EducationalOccupationalCredential', credentialCategory: 'accreditation', name })) } : {}),
     ...(h.languages.length ? { knowsLanguage: h.languages } : {}),
-    ...(includeRating && rating && h.rating_count > 0
-      ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating, reviewCount: h.rating_count, bestRating: 5 } }
+    ...(rating && rating.count > 0
+      ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating.value, reviewCount: rating.count, bestRating: 5, worstRating: 1 } }
       : {}),
   };
 }

@@ -15,7 +15,6 @@ import {
   getProcedures,
 } from '@/lib/data/catalog';
 import { procedureGuide, markdownToPlain } from '@/lib/content';
-import { DISPLAY_CURRENCIES } from '@/lib/cost';
 import { convertMinor, formatMoneyRange } from '@/lib/money';
 import { faqLd, medicalProcedureLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
@@ -113,7 +112,6 @@ export default async function ProcedurePage({ params }: Props) {
   const countries = [...new Set(p.benchmarks.map((b) => b.country_code))]
     .map((code) => ({ code, name: countryName(code) }))
     .sort((a, b) => a.name.localeCompare(b.name, intl));
-  const currencies = DISPLAY_CURRENCIES.filter((c) => c === 'INR' || fx.data[c]);
 
   // FAQ (visible + FAQPage JSON-LD).
   const range = hasPrice ? formatMoneyRange(p.india_price_min_minor!, p.india_price_max_minor!, p.currency, intl) : null;
@@ -229,12 +227,12 @@ export default async function ProcedurePage({ params }: Props) {
             <CostCalculator
               intl={intl}
               labels={{ ...t.procedure.calc, indiaWait: site.marketing.indiaWait || t.procedure.calc.indiaWait }}
+              priceLabels={t.prices}
               india={{ min: p.india_price_min_minor!, max: p.india_price_max_minor!, currency: p.currency }}
               benchmarks={p.benchmarks}
-              fx={fx.data}
               countries={countries}
-              currencies={currencies}
               defaultCountry={marketing.savingsExampleCountry}
+              earliestAdmission={comparison?.india.earliest_admission_date ?? null}
             />
           </section>
         ) : null}

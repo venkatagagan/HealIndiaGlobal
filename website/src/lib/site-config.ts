@@ -285,3 +285,63 @@ export const getServerSiteConfig = cache(async (): Promise<{ indexnowKey: string
     return null;
   }
 });
+
+// ---------------------------------------------------------------------------------------- privacy contact
+export interface PrivacyPerson {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface PrivacyContact {
+  grievanceOfficer: PrivacyPerson | null;
+  dataProtectionOfficer: PrivacyPerson | null;
+  postalAddress: string;
+  responseDays: number | null;
+  boardUrl: string;
+}
+
+/** Empty, placeholder ("TODO", "TBD", "-", "n/a", "<...>", "[...]") and example.com values are not published. */
+function published(value: unknown): string {
+  const v = str(value);
+  if (!v) return '';
+  if (/^(?:todo|tbd|tba|n\/?a|none|null|-+|\?+)$/i.test(v) || /\btodo\b|\btbd\b|<[^>]*>|\[[^\]]*\]/i.test(v)) return '';
+  if (/@(?:[\w-]+\.)*example\.(?:com|org|net)$/i.test(v)) return '';
+  return v;
+}
+
+function person(raw: unknown): PrivacyPerson | null {
+  const p = obj(raw);
+  const out = { name: published(p.name), email: published(p.email), phone: published(p.phone) };
+  if (out.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) out.email = '';
+  // A contact is shown only when there is a way to reach it.
+  return out.email || out.phone ? out : null;
+}
+
+/**
+ * Grievance Officer and Data Protection Officer (DPDP Act s.8(10), Rule 14; GDPR Art. 13) from
+ * GET /site-config/privacy-contact. Null when the API is unreachable or nothing is published yet.
+ */
+export const getPrivacyContact = cache(async (): Promise<PrivacyContact | null> => {
+  if (Date.now() < unreachableUntil) return null;
+  try {
+    const res = await fetch(`${API_BASE}/site-config/privacy-contact`, {
+      headers: { Accept: 'application/json' },
+      next: { revalidate: REVALIDATE_SECONDS, tags: [SITE_TAG] },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return null;
+    const body = obj(await res.json());
+    const days = Number(body.response_days);
+    const contact: PrivacyContact = {
+      grievanceOfficer: person(body.grievance_officer),
+      dataProtectionOfficer: person(body.data_protection_officer),
+      postalAddress: published(body.postal_address),
+      responseDays: Number.isInteger(days) && days > 0 ? days : null,
+      boardUrl: isHttps(str(body.data_protection_board_url)) ? str(body.data_protection_board_url) : '',
+    };
+    return contact.grievanceOfficer || contact.dataProtectionOfficer || contact.postalAddress ? contact : null;
+  } catch {
+    return null;
+  }
+});

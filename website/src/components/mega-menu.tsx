@@ -575,7 +575,7 @@ export function MegaMenu({ data }: { data: NavData }) {
               id={panelId(id)}
               role="region"
               aria-label={groupTitle(data, id)}
-              className={`absolute top-[calc(100%+0.5rem)] left-1/2 w-[min(calc(100vw-2rem),max(70vw,64rem))] max-w-[75rem] -translate-x-1/2 transition duration-150 ease-out motion-reduce:transition-none ${
+              className={`absolute top-[calc(100%+0.5rem)] start-1/2 w-[min(calc(100vw-2rem),max(70vw,64rem))] max-w-[75rem] -translate-x-1/2 rtl:translate-x-1/2 transition duration-150 ease-out motion-reduce:transition-none ${
                 shown ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0'
               }`}
             >

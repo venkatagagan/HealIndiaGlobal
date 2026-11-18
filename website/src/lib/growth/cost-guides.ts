@@ -7,8 +7,10 @@ import 'server-only';
  * conversions use the live FX table.
  *
  * A guide EXISTS when the procedure has a benchmark for the country and an India price. It is INDEXABLE only when
- * the data came from the live API, the benchmark names its source, and a reviewed intro exists
+ * the data came from the live API, the legal display rule allows the home-vs-India comparison (lib/cost.ts: sourced
+ * benchmark, medium/high confidence, India lower at both ends), and a reviewed intro exists
  * (content/en/cost-guides/<procedure>-<country>.md, see content/README.md section 10, "Website-only pages").
+ * Without the comparison the page shows the India price, the home wait time and India availability only.
  */
 import { cache } from 'react';
 import { countryName } from '@/i18n/format';
@@ -45,6 +47,8 @@ export interface CostGuide {
   itemized: ItemizedShare[];
   fx: FxTable;
   fxMeta: { source: string | null; asOf: string | null } | null;
+  /** Earliest free admission slot (ISO date) at a hospital offering the procedure. */
+  earliestAdmission: string | null;
   intro: Intro | null;
   source: DataSource;
   indexable: boolean;
@@ -66,10 +70,11 @@ export const getCostGuide = cache(async (procedureSlug: string, slug: string): P
   ]);
   const india = { min: procedure.india_price_min_minor, max: procedure.india_price_max_minor, currency: procedure.currency };
   const comparison = compare(india, benchmark, currency, fx.data);
-  if (!comparison?.home) return null; // no FX rate for the home currency: nothing honest to show
+  if (!comparison) return null; // no FX rate for the home currency: nothing honest to show
 
   // The API itemizes its own India mid-price; keep only the shares and apply them to this page's mid-range figure.
   const rows = apiComparison?.home.country_code === benchmark.country_code ? apiComparison.itemized : [];
+  const earliestAdmission = apiComparison?.india.earliest_admission_date ?? null;
   const total = rows.reduce((sum, r) => sum + r.amount_minor, 0);
   const mid = Math.round((comparison.india.min + comparison.india.max) / 2);
   const itemized: ItemizedShare[] =
@@ -82,11 +87,13 @@ export const getCostGuide = cache(async (procedureSlug: string, slug: string): P
       ? 'built from fallback (sample) data'
       : !benchmark.source?.trim()
         ? 'benchmark has no source'
-        : !intro
-          ? 'no reviewed intro'
-          : !intro.reviewed
-            ? 'intro not yet approved by a named reviewer (or too short)'
-            : null;
+        : !comparison.allowed
+          ? `no price comparison allowed (${comparison.reason})`
+          : !intro
+            ? 'no reviewed intro'
+            : !intro.reviewed
+              ? 'intro not yet approved by a named reviewer (or too short)'
+              : null;
 
   return {
     procedure,
@@ -100,6 +107,7 @@ export const getCostGuide = cache(async (procedureSlug: string, slug: string): P
     itemized,
     fx: fx.data,
     fxMeta,
+    earliestAdmission,
     intro,
     source,
     indexable: reason === null,

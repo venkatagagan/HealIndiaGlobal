@@ -3,7 +3,8 @@ import { LifeBuoy, Mail, MessagesSquare, PhoneCall } from 'lucide-react';
 import { getDictionary } from '@/i18n';
 import { fmt } from '@/i18n/format';
 import { CONTACT_ENDPOINT, PORTALS } from '@/config/site';
-import { getSiteConfig } from '@/lib/site-config';
+import { getPrivacyContact, getSiteConfig } from '@/lib/site-config';
+import { PrivacyContactCard } from '@/components/privacy-contact';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/page-hero';
@@ -19,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage() {
   const t = await getDictionary();
   // Email and helplines: System -> Website & contact in the staff console (env fallback).
-  const { contact } = await getSiteConfig();
+  const [{ contact }, privacyContact] = await Promise.all([getSiteConfig(), getPrivacyContact()]);
   const CONTACT_EMAIL = contact.email;
   const helplines = [
     { label: t.contact.phoneLabel, value: contact.phoneDisplay, href: contact.phone ? `tel:${contact.phone}` : '' },
@@ -118,6 +119,11 @@ export default async function ContactPage() {
           </div>
         </aside>
       </div>
+      {privacyContact ? (
+        <div className="container-page pb-10">
+          <PrivacyContactCard t={t} contact={privacyContact} id="privacy-contact" />
+        </div>
+      ) : null}
     </>
   );
 }

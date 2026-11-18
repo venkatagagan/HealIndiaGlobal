@@ -15,7 +15,7 @@ import { enabledLocalesCached } from '@/i18n/languages';
 const KEEP_CASE = /^\/(?:_next\/|api\/|gahi|icons\/|brand\/|content-assets\/)|\.[A-Za-z0-9]+$/;
 
 /** Not pages: Next internals, the API and staff door, generated files, public assets, route handlers at the root. */
-const NOT_A_PAGE = /^\/(?:_next|api|gahi|icons|brand|content-assets|sitemap|web-vitals)(?:\/|$)|\.[A-Za-z0-9]+$/;
+const NOT_A_PAGE = /^\/(?:_next|api|gahi|icons|brand|content-assets|sitemap|web-vitals|visitor-country)(?:\/|$)|\.[A-Za-z0-9]+$/;
 
 /** Generated share images live below the language segment (/en/hospitals/x/opengraph-image-…); served as they are. */
 const SHARE_IMAGE = /\/(?:opengraph|twitter)-image(?:-[\w-]+)?$/;

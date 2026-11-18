@@ -1,20 +1,20 @@
 import type { Metadata } from 'next';
 import Link from '@/components/link';
 import { notFound } from 'next/navigation';
-import { Briefcase, Building2, Languages, Video } from 'lucide-react';
+import { Briefcase, Building2, GraduationCap, Languages, ShieldCheck, Video } from 'lucide-react';
 import { getDictionary } from '@/i18n';
 import { fmt, formatList, plural, intlLocale } from '@/i18n/format';
-import { getDoctor, getDoctors, getFxRates, getProcedures } from '@/lib/data/catalog';
+import { getDoctor, getDoctorReviews, getDoctors, getFxRates, getProcedures } from '@/lib/data/catalog';
 import { formatMoney, toNumber } from '@/lib/money';
 import { physicianLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
 import { pageMetadata, truncate } from '@/lib/seo';
 import { PageHero } from '@/components/page-hero';
-import { AccreditationBadges, Rating } from '@/components/cards';
+import { AccreditationBadges, EarliestAvailability, Rating, RegistrationVerified, ReviewItem } from '@/components/cards';
 import { AssessmentCta } from '@/components/cta';
 import { JsonLd } from '@/components/json-ld';
 import { PriceRange } from '@/components/price';
-import { Badge, Fact, SectionHeader } from '@/components/ui';
+import { Badge, ButtonLink, Fact, SectionHeader } from '@/components/ui';
 
 export const revalidate = 3600;
 
@@ -59,7 +59,13 @@ export default async function DoctorPage({ params }: Props) {
   const d = loaded.data;
   if (!d) notFound();
   const intl = intlLocale();
-  const [fx, procedures] = await Promise.all([getFxRates(), getProcedures()]);
+  const [fx, procedures, reviewPage] = await Promise.all([
+    getFxRates(),
+    getProcedures(),
+    loaded.source === 'api' ? getDoctorReviews(d.id, d.slug, 1, 6) : null,
+  ]);
+  const reviews = reviewPage?.items.length ? reviewPage.items : (d.reviews ?? []);
+  const reviewTotal = reviewPage?.total ?? reviews.length;
   const specialtyOf = new Map(procedures.data.map((p) => [p.slug, p.specialty.slug]));
   const path = routes.doctor(d.slug);
   const hospitalPath = d.hospital ? href(routes.hospital(d.hospital.slug)) : null;
@@ -87,6 +93,7 @@ export default async function DoctorPage({ params }: Props) {
             {d.qualifications.length ? <p className="text-base text-slate-700">{d.qualifications.join(', ')}</p> : null}
             <div className="flex flex-wrap items-center gap-3">
               <Rating t={t} value={d.rating_avg} count={d.rating_count} />
+              <RegistrationVerified t={t} verified={d.registration_verified} />
               {d.teleconsult_available ? (
                 <Badge tone="blue">
                   <Video className="h-3.5 w-3.5" aria-hidden="true" />
@@ -116,6 +123,28 @@ export default async function DoctorPage({ params }: Props) {
               {d.experience_years ? (
                 <Fact icon={<Briefcase className="h-5 w-5" />} label={t.doctors.experience} value={plural(t.common.yearsExperience, d.experience_years)} />
               ) : null}
+              {d.qualifications.length ? (
+                <Fact icon={<GraduationCap className="h-5 w-5" />} label={t.doctors.qualifications} value={formatList(d.qualifications)} />
+              ) : null}
+              {d.registration_verified ? (
+                <Fact
+                  icon={<ShieldCheck className="h-5 w-5" />}
+                  label={t.trust.registration}
+                  value={
+                    <span className="flex flex-col">
+                      <span>
+                        {d.registration_number
+                          ? fmt(t.trust.registrationValue, {
+                              number: d.registration_number,
+                              council: d.registration_council_name || d.registration_council || '',
+                            }).replace(/,\s*$/, '')
+                          : t.trust.registrationVerified}
+                      </span>
+                      <span className="text-xs font-normal text-slate-600">{t.trust.registrationVerifiedNote}</span>
+                    </span>
+                  }
+                />
+              ) : null}
               {d.languages.length ? (
                 <Fact icon={<Languages className="h-5 w-5" />} label={t.doctors.languages} value={formatList(d.languages)} />
               ) : null}
@@ -123,9 +152,15 @@ export default async function DoctorPage({ params }: Props) {
                 <Fact label={t.doctors.consultationFee} value={formatMoney(d.consultation_fee_minor, d.currency, intl)} />
               ) : null}
             </dl>
+            <EarliestAvailability
+              t={t}
+              consultation={d.next_available_consultation ?? d.next_available_date}
+              admission={d.next_available_admission}
+              className="mt-4"
+            />
             {d.hospital?.accreditations.length ? (
               <div className="mt-4">
-                <AccreditationBadges t={t} items={d.hospital.accreditations} />
+                <AccreditationBadges t={t} items={d.hospital.accreditations} verified={d.hospital.accreditations_verified} />
               </div>
             ) : null}
           </section>
@@ -185,6 +220,30 @@ export default async function DoctorPage({ params }: Props) {
                 );
               })}
             </ul>
+          </section>
+        ) : null}
+
+        {reviews.length ? (
+          <section aria-labelledby="reviews-title">
+            <SectionHeader
+              id="reviews-title"
+              title={fmt(t.trust.reviewsTitle, { name: d.full_name })}
+              action={
+                reviewTotal > reviews.length ? (
+                  <ButtonLink href={href(routes.doctorReviews(d.slug))} variant="secondary" size="sm">
+                    {plural(t.trust.allReviews, reviewTotal)}
+                  </ButtonLink>
+                ) : undefined
+              }
+            />
+            <ul className="grid gap-4 md:grid-cols-2">
+              {reviews.slice(0, 6).map((r) => (
+                <li key={r.id}>
+                  <ReviewItem t={t} review={r} />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm text-slate-600">{t.trust.reviewsNote}</p>
           </section>
         ) : null}
 

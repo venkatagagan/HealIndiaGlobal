@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { englishOnlyParams } from '@/components/english-only';
 import Link from '@/components/link';
 import { notFound } from 'next/navigation';
-import { Clock, Globe2, Wallet } from 'lucide-react';
+import { CalendarCheck, Clock, Globe2, Wallet } from 'lucide-react';
 import { getDictionary, type Dictionary } from '@/i18n';
-import { fmt } from '@/i18n/format';
+import { fmt, formatDate, formatNumber, intlLocale } from '@/i18n/format';
 import { formatMoney, formatMoneyRange } from '@/lib/money';
 import { medicalProcedureLd } from '@/lib/jsonld';
 import { href, routes } from '@/lib/routes';
@@ -18,6 +18,7 @@ import { InlineNote } from '@/components/data-notice';
 import { JsonLd } from '@/components/json-ld';
 import { Fact, SectionHeader } from '@/components/ui';
 import { IntroArticle } from '@/components/growth/intro-article';
+import { EstimateSource } from '@/components/estimate-source';
 import { RelatedLinks } from '@/components/growth/related-links';
 
 export const revalidate = 3600;
@@ -30,17 +31,24 @@ export async function generateStaticParams({ params }: { params: { lang?: string
   return guides.map((g) => ({ procedure: g.procedure.slug, country: g.slug }));
 }
 
-const range = (min: number, max: number, ccy: string) => formatMoneyRange(min, max, ccy, 'en', { approx: true });
+/** Money in the page locale (this section is English-only today; formatting still follows the page language). */
+const range = (min: number, max: number, ccy: string) => formatMoneyRange(min, max, ccy, intlLocale(), { approx: true });
+const money = (minor: number, ccy: string, approx = false) => formatMoney(minor, ccy, intlLocale(), { approx });
 
 function describe(g: CostGuide): string {
   const c = g.comparison;
-  return `Indicative cost of ${g.procedure.name} at partner hospitals in India (${range(c.india.min, c.india.max, g.currency)}) next to a ${g.country} self-pay benchmark (${range(c.home!.min, c.home!.max, g.currency)}), with an itemised breakdown and sources.`;
+  // Legal display rule (lib/cost.ts): the home price is named only when the comparison is allowed.
+  if (!c.home) {
+    const wait = c.homeWait ? `, next to the typical wait in ${g.country} (${c.homeWait})` : '';
+    return `Indicative cost of ${g.procedure.name} at partner hospitals in India (${range(c.india.min, c.india.max, g.currency)})${wait}, with an itemised breakdown and sources.`;
+  }
+  return `Indicative cost of ${g.procedure.name} at partner hospitals in India (${range(c.india.min, c.india.max, g.currency)}) next to a ${g.country} self-pay benchmark (${range(c.home.min, c.home.max, g.currency)}), with an itemised breakdown and sources.`;
 }
 
 function asOfDate(iso: string | null | undefined): string | null {
   if (!iso) return null;
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+  return Number.isNaN(d.getTime()) ? null : formatDate(d.toISOString().slice(0, 10));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -73,7 +81,7 @@ export default async function CostGuidePage({ params }: Props) {
   if (!g) notFound();
   const p = g.procedure;
   const c = g.comparison;
-  const home = c.home!;
+  const home = c.home;
   const path = routes.costGuide(p.slug, g.slug);
   const title = `${p.name} cost: India and ${g.country}`;
   const [cityLinks, allGuides] = await Promise.all([
@@ -121,9 +129,28 @@ export default async function CostGuidePage({ params }: Props) {
             </h2>
             <dl className="mt-4 space-y-4">
               <Fact icon={<Wallet className="h-5 w-5" />} label="India, partner hospitals" value={range(c.india.min, c.india.max, g.currency)} />
-              <Fact icon={<Globe2 className="h-5 w-5" />} label={`${g.country}, self-pay benchmark`} value={range(home.min, home.max, g.currency)} />
-              {home.wait ? <Fact icon={<Clock className="h-5 w-5" />} label={`Typical wait in ${g.country} (benchmark)`} value={home.wait} /> : null}
+              {home ? (
+                <Fact
+                  icon={<Globe2 className="h-5 w-5" />}
+                  label={`${g.country}, self-pay benchmark`}
+                  value={
+                    <span className="flex flex-col">
+                      {range(home.min, home.max, g.currency)}
+                      <EstimateSource benchmark={c.benchmark} labels={t.prices} />
+                    </span>
+                  }
+                />
+              ) : null}
+              {c.homeWait ? <Fact icon={<Clock className="h-5 w-5" />} label={`Typical wait in ${g.country} (benchmark)`} value={c.homeWait} /> : null}
+              {g.earliestAdmission ? (
+                <Fact
+                  icon={<CalendarCheck className="h-5 w-5" />}
+                  label={t.prices.availabilityTitle}
+                  value={fmt(t.prices.earliestAdmission, { date: formatDate(g.earliestAdmission) })}
+                />
+              ) : null}
             </dl>
+            {!home ? <p className="mt-4 text-sm text-slate-700">{fmt(t.prices.noComparison, { country: g.country })}</p> : null}
             <p className="mt-4 text-xs leading-relaxed text-slate-600">
               Excludes flights, visas, accommodation, local transport, insurance and follow-up care at home.
             </p>
@@ -140,7 +167,7 @@ export default async function CostGuidePage({ params }: Props) {
         ) : null}
 
         <section aria-labelledby="table-title">
-          <SectionHeader id="table-title" title="Side by side" subtitle="Low and high ends of each indicative range." />
+          <SectionHeader id="table-title" title={home ? 'Side by side' : 'Price in India'} subtitle="Low and high ends of each indicative range." />
           <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
             <table className="w-full min-w-[32rem] text-start text-sm">
               <caption className="sr-only">{title}</caption>
@@ -155,25 +182,32 @@ export default async function CostGuidePage({ params }: Props) {
                 {converted ? (
                   <tr>
                     <th scope="row" className="px-5 py-3 font-medium">India ({g.india.currency}, catalogue range)</th>
-                    <td className="px-5 py-3">{formatMoney(g.india.min, g.india.currency, 'en')}</td>
-                    <td className="px-5 py-3">{formatMoney(g.india.max, g.india.currency, 'en')}</td>
+                    <td className="px-5 py-3">{money(g.india.min, g.india.currency)}</td>
+                    <td className="px-5 py-3">{money(g.india.max, g.india.currency)}</td>
                   </tr>
                 ) : null}
                 <tr>
                   <th scope="row" className="px-5 py-3 font-medium">India ({g.currency}{converted ? ', converted' : ''})</th>
-                  <td className="px-5 py-3">{formatMoney(c.india.min, g.currency, 'en', { approx: converted })}</td>
-                  <td className="px-5 py-3">{formatMoney(c.india.max, g.currency, 'en', { approx: converted })}</td>
+                  <td className="px-5 py-3">{money(c.india.min, g.currency, converted)}</td>
+                  <td className="px-5 py-3">{money(c.india.max, g.currency, converted)}</td>
                 </tr>
-                <tr>
-                  <th scope="row" className="px-5 py-3 font-medium">{g.country} (benchmark, {g.currency})</th>
-                  <td className="px-5 py-3">{formatMoney(home.min, g.currency, 'en')}</td>
-                  <td className="px-5 py-3">{formatMoney(home.max, g.currency, 'en')}</td>
-                </tr>
+                {home ? (
+                  <tr>
+                    <th scope="row" className="px-5 py-3 font-medium">
+                      {g.country} (benchmark, {g.currency})
+                      <span className="block font-normal">
+                        <EstimateSource benchmark={c.benchmark} labels={t.prices} />
+                      </span>
+                    </th>
+                    <td className="px-5 py-3">{money(home.min, g.currency)}</td>
+                    <td className="px-5 py-3">{money(home.max, g.currency)}</td>
+                  </tr>
+                ) : null}
                 {c.savings ? (
                   <tr>
                     <th scope="row" className="px-5 py-3 font-medium">Indicative difference</th>
-                    <td className="px-5 py-3">{formatMoney(c.savings.min, g.currency, 'en', { approx: true })}</td>
-                    <td className="px-5 py-3">{formatMoney(c.savings.max, g.currency, 'en', { approx: true })}</td>
+                    <td className="px-5 py-3">{money(c.savings.min, g.currency, true)}</td>
+                    <td className="px-5 py-3">{money(c.savings.max, g.currency, true)}</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -192,7 +226,7 @@ export default async function CostGuidePage({ params }: Props) {
             <SectionHeader
               id="itemized-title"
               title={t.procedure.itemizedTitle}
-              subtitle={`An estimated split of a mid-range India price (${formatMoney(Math.round((c.india.min + c.india.max) / 2), g.currency, 'en', { approx: true })}). Your quote lists the real items.`}
+              subtitle={`An estimated split of a mid-range India price (${money(Math.round((c.india.min + c.india.max) / 2), g.currency, true)}). Your quote lists the real items.`}
             />
             <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
               <table className="w-full min-w-[24rem] text-start text-sm">
@@ -207,8 +241,8 @@ export default async function CostGuidePage({ params }: Props) {
                   {g.itemized.map((row) => (
                     <tr key={row.category}>
                       <th scope="row" className="px-5 py-3 font-medium">{itemLabel(t, row.category)}</th>
-                      <td className="px-5 py-3">{row.pct === 0 && row.amount > 0 ? '<1' : row.pct}%</td>
-                      <td className="px-5 py-3">{formatMoney(row.amount, g.currency, 'en', { approx: true })}</td>
+                      <td className="px-5 py-3">{row.pct === 0 && row.amount > 0 ? `<${formatNumber(1)}` : formatNumber(row.pct)}%</td>
+                      <td className="px-5 py-3">{money(row.amount, g.currency, true)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -228,7 +262,23 @@ export default async function CostGuidePage({ params }: Props) {
               .
             </li>
             <li>
-              <strong>{g.country} benchmark:</strong> {g.benchmark.source?.trim() || 'source not yet recorded (this page is not indexed until it is)'}.
+              <strong>{g.country} benchmark:</strong>{' '}
+              {g.benchmark.source?.trim() ? (
+                <>
+                  {c.benchmark?.sourceUrl ? (
+                    <a href={c.benchmark.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="text-primary-700 underline underline-offset-4">
+                      {g.benchmark.source.trim()}
+                    </a>
+                  ) : (
+                    g.benchmark.source.trim()
+                  )}
+                  {g.benchmark.price_year ? ` (${g.benchmark.price_year})` : ''}
+                  {home ? '' : '. Only its wait time is shown: the price comparison does not meet our display rule'}
+                </>
+              ) : (
+                'source not yet recorded (this page is not indexed until it is)'
+              )}
+              .
             </li>
             <li>
               <strong>Currency conversion:</strong> {g.fxMeta?.source ? `rates from ${g.fxMeta.source}` : 'the exchange rates stored on the platform'}
