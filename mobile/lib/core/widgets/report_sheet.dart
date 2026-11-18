@@ -7,7 +7,7 @@ import '../repositories/report_repository.dart';
 import '../theme/app_theme.dart';
 import 'buttons.dart';
 
-/// Opens the "Report" bottom sheet (CG-16) for a chat message or an AI result and, when the report was
+/// Opens the "Report" bottom sheet (CG-16) for a chat message, an AI result or a review and, when the report was
 /// sent, shows the thank-you snackbar. Returns true when a report was sent.
 Future<bool> showReportSheet(BuildContext context, {required ReportTargetType type, required String targetId}) async {
   final messenger = ScaffoldMessenger.maybeOf(context);
@@ -45,11 +45,13 @@ class _ReportSheetState extends ConsumerState<ReportSheet> {
 
   String _title(AppLocalizations l) => switch (widget.type) {
     ReportTargetType.message => l.reportSheetTitleMessage,
+    ReportTargetType.review => l.reportSheetTitleReview,
     ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => l.reportSheetTitleResult,
   };
 
   String _intro(AppLocalizations l) => switch (widget.type) {
     ReportTargetType.message => l.reportSheetIntroMessage,
+    ReportTargetType.review => l.reportSheetIntroReview,
     ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => l.reportSheetIntroResult,
   };
 

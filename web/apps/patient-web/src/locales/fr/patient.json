@@ -919,6 +919,75 @@
       "passwordSame": "Choisissez un autre mot de passe",
       "phone": "Saisissez un numéro de téléphone valide avec l'indicatif du pays",
       "required": "Obligatoire"
+    },
+    "privacyData": {
+      "cancel": "Annuler",
+      "download": {
+        "title": "Télécharger mes données",
+        "description": "Obtenez une copie de tout ce que nous détenons sur vous : un fichier ZIP avec vos données dans un format lisible par machine (JSON) et vos documents.",
+        "button": "Télécharger mes données",
+        "started": "Vos données sont en cours de téléchargement"
+      },
+      "nominee": {
+        "title": "Personne désignée",
+        "description": "Choisissez une personne qui pourra exercer vos droits sur vos données à votre place en cas de décès ou d'incapacité.",
+        "fullName": "Nom complet",
+        "relationship": "Lien avec vous",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "contactHint": "Un e-mail ou un téléphone est nécessaire",
+        "save": "Enregistrer la personne désignée",
+        "saved": "Personne désignée enregistrée",
+        "removed": "Personne désignée supprimée",
+        "change": "Modifier",
+        "remove": "Supprimer",
+        "add": "Ajouter une personne désignée"
+      },
+      "log": {
+        "title": "Qui a consulté mon dossier",
+        "description": "Chaque fois qu'une autre personne que vous ouvre vos documents, pré-évaluations, résultats d'IA ou antécédents médicaux, nous l'enregistrons ici.",
+        "empty": "Personne d'autre n'a encore consulté votre dossier",
+        "someone": "Quelqu'un",
+        "reason": "Motif : {{reason}}",
+        "roles": {
+          "hospital": "Hôpital",
+          "agent": "Votre agent",
+          "staff": "Équipe Heal India Global",
+          "support": "Coordinateur de soins",
+          "finance": "Équipe finance"
+        },
+        "actions": {
+          "view": "{{who}} ({{role}}) a consulté {{what}}",
+          "download": "{{who}} ({{role}}) a téléchargé {{what}}",
+          "list": "{{who}} ({{role}}) a vu {{what}} dans une liste",
+          "breakGlass": "{{who}} ({{role}}) a utilisé l'accès d'urgence pour {{what}}"
+        },
+        "resources": {
+          "document": "un document",
+          "screening": "une pré-évaluation",
+          "documentAnalysis": "une lecture de compte rendu par l'IA",
+          "voiceTranscription": "une transcription vocale",
+          "patientProfile": "vos antécédents médicaux",
+          "record": "un dossier"
+        }
+      },
+      "requests": {
+        "title": "Demandes et réclamations sur vos données",
+        "kind": "De quoi avez-vous besoin ?",
+        "details": "Détails",
+        "detailsHint": "Au moins 10 caractères",
+        "send": "Envoyer la demande",
+        "sent": "Demande envoyée. Votre référence est {{reference}}.",
+        "replyBy": "Réponse avant le {{date}}",
+        "answer": "Notre réponse : {{answer}}",
+        "description_one": "Demandez-nous de corriger ou d'effacer des données, de retirer un consentement, ou déposez une réclamation. Nous répondons sous {{count}} jour.",
+        "description_other": "Demandez-nous de corriger ou d'effacer des données, de retirer un consentement, ou déposez une réclamation. Nous répondons sous {{count}} jours."
+      },
+      "officer": {
+        "title": "Délégué aux réclamations",
+        "inPolicy": "Les coordonnées figurent dans notre politique de confidentialité.",
+        "board": "Si notre réponse ne vous satisfait pas, vous pouvez saisir le Data Protection Board of India."
+      }
     }
   },
   "razorpay": {
@@ -1313,7 +1382,74 @@
       "voicePrompt": "<0>Vous préférez parler ?</0> Décrivez votre problème à voix haute dans votre langue - nous remplissons les réponses et vous les vérifiez avant tout enregistrement."
     },
     "results": {
-      "requestQuotes": "Demander des devis"
+      "requestQuotes": "Demander des devis",
+      "title": "Vos meilleures correspondances",
+      "basedOn": "D'après vos réponses en {{specialty}}.",
+      "basedOnGeneral": "D'après vos réponses à la pré-évaluation.",
+      "newScreening": "Nouvelle pré-évaluation",
+      "emergencyBody": "Vos réponses comportent des signes d'alerte qui nécessitent des soins immédiats. N'attendez pas de voyager : appelez le numéro d'urgence local ou rendez-vous immédiatement aux urgences les plus proches.",
+      "summary": "Résumé de la pré-évaluation",
+      "aiAssisted": "Assisté par IA",
+      "ruleBased": "Basé sur des règles",
+      "possibleConditions": "Affections possibles à aborder avec un médecin",
+      "likelihood": "Probabilité : {{level}}",
+      "suggestedSpecialties": "Spécialités suggérées",
+      "procedures": "Interventions envisageables",
+      "disclaimer": "Ceci n'est pas un diagnostic médical. C'est un résumé d'orientation pour vous aider à trouver les bons spécialistes. Un médecin qualifié examinera votre dossier.",
+      "report": "Signaler ce résultat",
+      "noSummary": "Aucun résumé n'est disponible pour cette pré-évaluation.",
+      "prepare": "Préparer votre consultation",
+      "urgencyLabel": "Urgence :",
+      "tests": "Examens recommandés",
+      "questions": "Questions pour votre médecin",
+      "travelAdvice": "Conseils de voyage",
+      "laterReference": "Spécialistes pour plus tard",
+      "matched": "Médecins et hôpitaux correspondants",
+      "laterReferenceHint": "Une fois que vous aurez été pris en charge localement et que votre état sera stable, vous pourrez revenir demander des devis.",
+      "matchedHint": "Affinez la liste avec les filtres, sélectionnez jusqu'à {{max}} résultats à comparer côte à côte ou demandez directement un devis.",
+      "ratingAtLeast": "{{rating}} et plus",
+      "noFiltered": "Aucune correspondance avec ces filtres",
+      "noMatchesTitle": "Aucune correspondance pour l'instant",
+      "noMatchesText": "Nous n'avons pas trouvé automatiquement de spécialiste adapté. Nos coordinateurs peuvent vous aider : envoyez-nous un message.",
+      "messageCoordinator": "Écrire à un coordinateur",
+      "compare": "Comparer",
+      "urgency": {
+        "routine": {
+          "title": "Non urgent - à planifier selon vos disponibilités",
+          "body": "Vos réponses ne suggèrent pas de problème urgent. Vous pouvez planifier le traitement dans la période de voyage qui vous convient."
+        },
+        "soon": {
+          "title": "Recommandé prochainement",
+          "body": "Nous vous conseillons d'organiser une consultation dans les prochaines semaines."
+        },
+        "urgent": {
+          "title": "Urgent - consultez un médecin rapidement",
+          "body": "Certaines réponses nécessitent une prise en charge rapide. Consultez un médecin près de chez vous dans les prochains jours, même pendant que vous planifiez un traitement en Inde."
+        },
+        "emergency": {
+          "title": "Urgence - faites-vous soigner sur place maintenant",
+          "body": "Vos réponses comportent des signes d'alerte qui nécessitent des soins immédiats."
+        }
+      },
+      "sort": {
+        "bestMatch": "Meilleure correspondance",
+        "lowestCost": "Coût le plus bas",
+        "highestRated": "Mieux notés",
+        "successRate": "Taux de réussite"
+      },
+      "filters": {
+        "specialty": "Spécialité",
+        "language": "Langue",
+        "budget": "Dans mon budget",
+        "city": "Ville",
+        "accreditation": "Accréditation",
+        "price": "Prix",
+        "rating": "Note"
+      },
+      "resultCount_one": "{{shown}} sur {{total}} correspondance",
+      "resultCount_other": "{{shown}} sur {{total}} correspondances",
+      "selectedForCompare_one": "{{n}}/{{max}} sélectionné pour la comparaison",
+      "selectedForCompare_other": "{{n}}/{{max}} sélectionnés pour la comparaison"
     }
   },
   "shell": {
@@ -1351,7 +1487,8 @@
       "tripDocuments": "Voyage et documents",
       "aftercare": "Suivi post-traitement",
       "reviews": "Mes avis",
-      "browse": "Hôpitaux et médecins"
+      "browse": "Hôpitaux et médecins",
+      "consultations": "Téléconsultations"
     },
     "pageError": {
       "description": "Veuillez recharger la page. Si le problème persiste, contactez l'assistance.",
@@ -1938,7 +2075,8 @@
     },
     "stars_one": "1 étoile",
     "stars_other": "{{count}} étoiles",
-    "doctor": "Médecin : {{name}}"
+    "doctor": "Médecin : {{name}}",
+    "reportLabel": "Signaler cet avis"
   },
   "aftercare": {
     "title": "Suivi post-traitement",
@@ -2138,6 +2276,146 @@
       "passwordNumber": "Incluez au moins un chiffre",
       "age": "Veuillez confirmer votre âge",
       "mismatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "consult": {
+    "title": "Consultation vidéo",
+    "bookVideo": "Réserver une consultation vidéo",
+    "kind": {
+      "followup": "Suivi post-traitement"
+    },
+    "mode": {
+      "video": "Appel vidéo",
+      "phone": "Appel téléphonique"
+    },
+    "fee": {
+      "free": "Gratuit",
+      "paid": "Payé",
+      "pending": "Paiement en vérification",
+      "unpaid": "Pas encore payé"
+    },
+    "book": {
+      "title": "Réserver une consultation vidéo",
+      "description": "Parlez au médecin en vidéo avant votre voyage. Posez vos questions et partagez vos comptes rendus.",
+      "chooseDoctorTitle": "Choisissez d'abord un médecin",
+      "chooseDoctorText": "Ouvrez la page d'un médecin et choisissez Réserver une consultation vidéo.",
+      "browseDoctors": "Parcourir les médecins",
+      "doctorStep": "Médecin",
+      "doctorLabel": "Médecin proposant des consultations vidéo",
+      "doctorPlaceholder": "Choisissez un médecin",
+      "noTeleDoctors": "Aucun médecin de cet hôpital ne propose de consultation vidéo pour le moment. Vous pouvez demander un devis à la place.",
+      "guestAction": "réserver une consultation vidéo",
+      "slotStep": "Horaire souhaité",
+      "slotHint": "Les dates en vert ont des créneaux de consultation. L'hôpital confirme l'heure exacte.",
+      "calendarLabel": "Dates de consultation",
+      "noSlots": "Aucun créneau libre ce mois-ci. Essayez le mois suivant ou envoyez votre demande sans préférence de date.",
+      "dateLabel": "Date",
+      "noDate": "Choisissez une date en vert dans le calendrier",
+      "timeLabel": "Heure (heure de l'Inde)",
+      "istTime": "{{time}} heure de l'Inde",
+      "localTime": "Soit {{time}} chez vous.",
+      "timeHint": "Choisissez une date pour voir l'heure chez vous.",
+      "confirmNote": "Il s'agit d'une préférence. L'hôpital confirme l'heure et vous envoie le lien vidéo.",
+      "questionStep": "Votre question et vos comptes rendus",
+      "questionLabel": "Que souhaitez-vous demander au médecin ?",
+      "questionHint": "Par exemple vos symptômes, vos traitements passés et ce que vous voulez savoir avant de voyager.",
+      "reportsLabel": "Comptes rendus à partager",
+      "reportsHint": "Choisissez les comptes rendus que le médecin doit voir. Ils ne sont partagés qu'avec cet hôpital.",
+      "noReports": "Vous n'avez encore téléversé aucun compte rendu médical.",
+      "uploadReport": "Téléverser un compte rendu",
+      "consentLabel": "J'accepte de partager mes informations et les comptes rendus choisis avec cet hôpital",
+      "consentText": "{{hospital}} voit votre question, votre pré-évaluation (si choisie) et les comptes rendus sélectionnés pour que le médecin se prépare. Vous pouvez retirer ce consentement plus tard dans Profil > Confidentialité.",
+      "payNext": "Vous réglez les honoraires de consultation à l'étape suivante. L'hôpital confirme l'heure dès réception de votre demande.",
+      "submit": "Demander la consultation",
+      "submitPaid": "Continuer vers le paiement",
+      "requested": "Consultation demandée"
+    },
+    "errors": {
+      "exists": "Vous avez déjà une consultation en cours avec ce médecin. Ouvrez-la depuis Téléconsultations.",
+      "teleconsultUnavailable": "Ce médecin ne propose pas de consultation vidéo.",
+      "invalidDoctor": "Ce médecin ne peut pas assurer la consultation. Veuillez choisir un autre médecin.",
+      "caseClosed": "Votre dossier avec cet hôpital est clos. Veuillez d'abord demander un nouveau devis.",
+      "failed": "Nous n'avons pas pu envoyer votre demande de consultation. Veuillez réessayer."
+    },
+    "list": {
+      "title": "Téléconsultations",
+      "description": "Vos consultations avec les médecins avant et après le traitement.",
+      "book": "Réserver une consultation",
+      "all": "Toutes",
+      "emptyTitle": "Aucune consultation pour l'instant",
+      "emptyText": "Trouvez un médecin qui propose des consultations vidéo et parlez-lui avant votre voyage.",
+      "open": "Ouvrir"
+    },
+    "detail": {
+      "when": "Quand",
+      "preferred": "Votre horaire souhaité : {{time}}",
+      "awaitingTime": "En attente de l'horaire fixé par l'hôpital",
+      "requestedText": "L'hôpital confirmera un horaire et vous enverra le lien vidéo. Nous vous préviendrons.",
+      "localTimeNote": "Affiché à votre heure locale · environ {{minutes}} minutes",
+      "join": "Rejoindre l'appel vidéo",
+      "joinHint": "Le lien s'ouvre dans un nouvel onglet. Connectez-vous quelques minutes en avance et vérifiez caméra et micro.",
+      "linkSoon": "Le lien vidéo apparaîtra ici avant l'appel.",
+      "phoneCall": "Le médecin vous appellera au numéro de téléphone de votre profil.",
+      "completedText": "Cette consultation a eu lieu.",
+      "cancelledText": "Cette consultation a été annulée.",
+      "reminders": "Nous vous envoyons un rappel 24 heures et 1 heure avant l'appel, par notification et par e-mail.",
+      "feeTitle": "Honoraires et paiement",
+      "paymentStatus": "Paiement",
+      "confirmingPayment": "Nous confirmons votre paiement. Cela peut prendre une minute.",
+      "pay": "Payer la consultation",
+      "payAgain": "Payer autrement",
+      "detailsTitle": "Détails",
+      "mode": "Type",
+      "case": "Dossier",
+      "requestedOn": "Demandée le",
+      "notes": "Votre question",
+      "cancel": "Annuler la consultation",
+      "cancelTitle": "Annuler cette consultation ?",
+      "cancelText": "L'hôpital est informé que vous n'avez plus besoin de cette consultation.",
+      "cancelPaidText": "L'hôpital est informé que vous n'avez plus besoin de cette consultation. Vous avez payé les honoraires : contactez l'assistance pour un remboursement.",
+      "cancelled": "Consultation annulée"
+    },
+    "pay": {
+      "title": "Payer la consultation",
+      "description": "Consultation vidéo avec {{doctor}}, {{hospital}}",
+      "back": "Retour à la consultation",
+      "summary": "Récapitulatif",
+      "doctor": "Médecin",
+      "time": "Horaire"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Assistance",
+    "conversation": "Conversation",
+    "supportFailed": "Impossible de joindre l'assistance.",
+    "live": "En direct",
+    "connecting": "Connexion...",
+    "contactSupport": "Contacter l'assistance",
+    "emptyTitle": "Aucune conversation pour l'instant",
+    "noMessages": "Aucun message pour l'instant",
+    "notFound": "Conversation introuvable",
+    "backToMessages": "Retour aux messages",
+    "selectTitle": "Sélectionnez une conversation",
+    "selectText": "Échangez avec votre coordinateur et l'équipe de l'hôpital.",
+    "sharedDocument": "A partagé un document",
+    "notSent": "Message non envoyé.",
+    "backToConversations": "Retour aux conversations",
+    "viewCase": "Voir le dossier",
+    "sayHello": "Aucun message pour l'instant. Dites bonjour !",
+    "removeAttachment": "Retirer {{name}}",
+    "placeholder": "Écrivez un message...",
+    "messageLabel": "Message",
+    "send": "Envoyer le message",
+    "attachmentUnavailable": "Pièce jointe indisponible.",
+    "attachment": "Pièce jointe {{n}}",
+    "hidden": "Masqué par les modérateurs",
+    "reportFrom": "Signaler le message de {{name}}",
+    "emptyText": "Une conversation avec l'hôpital s'ouvre automatiquement lorsque vous demandez un devis.",
+    "roles": {
+      "hospital": "Hôpital",
+      "patient": "Patient",
+      "team": "Heal India Global"
     }
   }
 }

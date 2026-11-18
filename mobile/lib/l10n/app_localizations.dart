@@ -11795,10 +11795,10 @@ abstract class AppLocalizations {
   /// **'Acting for'**
   String get hpActingFor;
 
-  /// Note on the More screen.
+  /// Footer note on the hospital More tab: what can only be edited on the web portal
   ///
   /// In en, this message translates to:
-  /// **'Profile, members, availability and price edits are available on the hospital web portal.'**
+  /// **'Profile, members and price edits are available on the hospital web portal.'**
   String get hpWebPortalNote;
 
   /// Visa screen empty state.
@@ -15376,6 +15376,960 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Treatment'**
   String get inviteMissingTreatment;
+
+  /// Title of the report sheet opened from a published hospital or doctor review
+  ///
+  /// In en, this message translates to:
+  /// **'Report this review'**
+  String get reportSheetTitleReview;
+
+  /// Intro of the report sheet for a review: what to report and that moderators check it; the author is not told who reported it
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what is wrong with this review, for example spam, abuse, false claims or someone\'s personal details. Our moderation team will check it. The author is not told who reported it.'**
+  String get reportSheetIntroReview;
+
+  /// Tooltip / semantics label of the flag button on a published review
+  ///
+  /// In en, this message translates to:
+  /// **'Report review'**
+  String get reviewReportAction;
+
+  /// Full-screen message in the agent / hospital app when the API answers 403 organisation_suspended
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is suspended'**
+  String get orgSuspendedTitle;
+
+  /// Explanation for an agent whose agency account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your agency account has been suspended, so patients, cases and bookings cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyAgent;
+
+  /// Explanation for a hospital team member whose hospital account was suspended by the platform
+  ///
+  /// In en, this message translates to:
+  /// **'Your hospital\'s account has been suspended, so enquiries, patients and settlements cannot be opened in the app for now. Please contact our support team to find out why and what to do next.'**
+  String get orgSuspendedBodyHospital;
+
+  /// Button: call the support helpline from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Call support'**
+  String get orgSuspendedCallSupport;
+
+  /// Button: open a WhatsApp chat with support from the suspended-account screen
+  ///
+  /// In en, this message translates to:
+  /// **'Message support on WhatsApp'**
+  String get orgSuspendedWhatsAppSupport;
+
+  /// Shown on the suspended-account screen when the support phone numbers could not be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the support contact details. Check your connection and try again.'**
+  String get orgSuspendedNoContact;
+
+  /// Button on the suspended-account screen: try loading the app again (e.g. after support re-activated the account)
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get orgSuspendedCheckAgain;
+
+  /// Title of the hospital-level (not tied to a doctor) availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital availability'**
+  String get hpAvailabilityTitle;
+
+  /// Title of a doctor's availability calendar in the hospital app
+  ///
+  /// In en, this message translates to:
+  /// **'Availability: {name}'**
+  String hpAvailabilityDoctorTitle(String name);
+
+  /// Subtitle of the More-tab link to the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Admission and consultation capacity per day'**
+  String get hpMoreAvailabilitySubtitle;
+
+  /// Intro of a doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Set how many video consultations and admissions this doctor can take each day. Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroDoctor;
+
+  /// Intro of the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity for the hospital as a whole, not tied to one doctor (for example beds for admissions). Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroHospital;
+
+  /// Short label of the consultations-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations'**
+  String get hpAvailabilityConsultShort;
+
+  /// Short label of the admissions-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Admissions'**
+  String get hpAvailabilityAdmitShort;
+
+  /// Helper under a capacity field: how many places are already booked that day
+  ///
+  /// In en, this message translates to:
+  /// **'{count} booked'**
+  String hpAvailabilityBooked(int count);
+
+  /// Validation error: capacity lower than already booked places
+  ///
+  /// In en, this message translates to:
+  /// **'At least {count}'**
+  String hpAvailabilityBelowBooked(int count);
+
+  /// Validation error: capacity must be a whole number 0 to 1000
+  ///
+  /// In en, this message translates to:
+  /// **'0 to 1000'**
+  String get hpAvailabilityInvalidNumber;
+
+  /// Card title: fill the whole month with the same capacity
+  ///
+  /// In en, this message translates to:
+  /// **'Quick fill'**
+  String get hpAvailabilityQuickFill;
+
+  /// Explanation of the quick-fill card
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the same capacity for every remaining day of {month}. Review the days, then save.'**
+  String hpAvailabilityQuickFillHint(String month);
+
+  /// Quick-fill switch: skip Saturdays and Sundays
+  ///
+  /// In en, this message translates to:
+  /// **'Weekdays only (skip Saturday and Sunday)'**
+  String get hpAvailabilityWeekdaysOnly;
+
+  /// Quick-fill button
+  ///
+  /// In en, this message translates to:
+  /// **'Fill the month'**
+  String get hpAvailabilityApply;
+
+  /// Snackbar after the availability was saved
+  ///
+  /// In en, this message translates to:
+  /// **'Availability saved'**
+  String get hpAvailabilitySaved;
+
+  /// Error when saving with invalid capacity fields
+  ///
+  /// In en, this message translates to:
+  /// **'Fix the highlighted days before saving.'**
+  String get hpAvailabilityFixErrors;
+
+  /// Server error capacity_below_booked when saving availability
+  ///
+  /// In en, this message translates to:
+  /// **'A capacity is lower than the places already booked that day. Raise it and save again.'**
+  String get hpAvailabilityBelowBookedError;
+
+  /// Dialog title when leaving or changing month with unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard unsaved changes?'**
+  String get hpAvailabilityDiscardTitle;
+
+  /// Dialog button: discard unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get hpAvailabilityDiscard;
+
+  /// Dialog button: keep editing availability
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get hpAvailabilityKeepEditing;
+
+  /// Button on a doctor card in the hospital app: open the doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get hpAvailabilityEditButton;
+
+  /// Shown instead of editable fields for a day in the past
+  ///
+  /// In en, this message translates to:
+  /// **'Past day'**
+  String get hpAvailabilityPastDay;
+
+  /// Profile > Privacy tile and screen title: the user's data-rights requests (DPDP / GDPR)
+  ///
+  /// In en, this message translates to:
+  /// **'Data-rights requests'**
+  String get privacyRequestsTitle;
+
+  /// Subtitle of the data-rights requests tile
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a copy, correction or deletion of your data, or raise a complaint'**
+  String get privacyRequestsSubtitle;
+
+  /// Empty state of the data-rights requests list
+  ///
+  /// In en, this message translates to:
+  /// **'You have not made any data-rights requests yet.'**
+  String get privacyRequestsEmpty;
+
+  /// Button / screen title: file a new data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get privacyRequestNew;
+
+  /// Intro of the data-rights request form (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'We record your request and reply by the due date shown once it is sent. We may ask you to confirm your identity before we act on it.'**
+  String get privacyRequestFormIntro;
+
+  /// Label of the request type picker
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do?'**
+  String get privacyRequestKindLabel;
+
+  /// Data-rights request type access
+  ///
+  /// In en, this message translates to:
+  /// **'Get a copy of my data'**
+  String get privacyRequestKindAccess;
+
+  /// Data-rights request type correction
+  ///
+  /// In en, this message translates to:
+  /// **'Correct my data'**
+  String get privacyRequestKindCorrection;
+
+  /// Data-rights request type erasure
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my data'**
+  String get privacyRequestKindErasure;
+
+  /// Data-rights request type nomination
+  ///
+  /// In en, this message translates to:
+  /// **'Nominate someone for my data rights'**
+  String get privacyRequestKindNomination;
+
+  /// Data-rights request type withdraw_consent
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw a consent'**
+  String get privacyRequestKindWithdrawConsent;
+
+  /// Data-rights request type complaint (grievance)
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint (grievance)'**
+  String get privacyRequestKindComplaint;
+
+  /// Data-rights request type other
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get privacyRequestKindOther;
+
+  /// Label of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get privacyRequestDetailsLabel;
+
+  /// Hint of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what you need, for example which data is wrong and what it should say.'**
+  String get privacyRequestDetailsHint;
+
+  /// Validation: request details need at least 10 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Please write at least 10 characters.'**
+  String get privacyRequestDetailsTooShort;
+
+  /// Optional field: the person the requester acts for
+  ///
+  /// In en, this message translates to:
+  /// **'On behalf of (optional)'**
+  String get privacyRequestOnBehalfLabel;
+
+  /// Hint of the on-behalf-of field
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the person you act for, if not yourself'**
+  String get privacyRequestOnBehalfHint;
+
+  /// Button: send the data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get privacyRequestSubmit;
+
+  /// Snackbar after a data-rights request was filed
+  ///
+  /// In en, this message translates to:
+  /// **'Request {reference} sent. Reply due by {date}.'**
+  String privacyRequestSent(String reference, String date);
+
+  /// Data-rights request status received
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get privacyRequestStatusReceived;
+
+  /// Data-rights request status in_progress
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get privacyRequestStatusInProgress;
+
+  /// Data-rights request status awaiting_requester (we need something from the user)
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get privacyRequestStatusAwaitingRequester;
+
+  /// Data-rights request status completed
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get privacyRequestStatusCompleted;
+
+  /// Data-rights request status rejected
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get privacyRequestStatusRejected;
+
+  /// Line on a request: the date by which we must reply
+  ///
+  /// In en, this message translates to:
+  /// **'Reply due by {date}'**
+  String privacyRequestDueBy(String date);
+
+  /// Badge: our reply is past the due date
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get privacyRequestOverdue;
+
+  /// Line on a request: when it was sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String privacyRequestSentOn(String date);
+
+  /// Line on a request: when it was closed
+  ///
+  /// In en, this message translates to:
+  /// **'Closed on {date}'**
+  String privacyRequestClosedOn(String date);
+
+  /// Section title on the request detail: what the user wrote
+  ///
+  /// In en, this message translates to:
+  /// **'Your request'**
+  String get privacyRequestYourRequest;
+
+  /// Section title on the request detail: our answer
+  ///
+  /// In en, this message translates to:
+  /// **'Our answer'**
+  String get privacyRequestResolution;
+
+  /// Request detail: no answer has been written yet
+  ///
+  /// In en, this message translates to:
+  /// **'We have not answered yet. You will get a notification when we do.'**
+  String get privacyRequestNoAnswerYet;
+
+  /// Profile > Privacy tile and screen title: nominee who may exercise the user's data rights (DPDP s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee'**
+  String get privacyNomineeTitle;
+
+  /// Nominee tile subtitle when no nominee is set
+  ///
+  /// In en, this message translates to:
+  /// **'Choose someone to use your data rights if you cannot'**
+  String get privacyNomineeSubtitleNone;
+
+  /// Nominee tile subtitle: name and relationship of the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({relationship})'**
+  String privacyNomineeSubtitleSet(String name, String relationship);
+
+  /// Nominee screen intro (legal: DPDP Act s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Under India\'s Digital Personal Data Protection Act you can nominate a person who may exercise your data rights if you die or become unable to act yourself. Give their email address or phone number.'**
+  String get privacyNomineeIntro;
+
+  /// Nominee form: full name
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get privacyNomineeName;
+
+  /// Nominee form: relationship to the user
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship (for example spouse, son)'**
+  String get privacyNomineeRelationship;
+
+  /// Nominee form: email
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get privacyNomineeEmail;
+
+  /// Nominee form: phone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get privacyNomineePhone;
+
+  /// Validation: nominee needs an email or phone
+  ///
+  /// In en, this message translates to:
+  /// **'Give an email address or a phone number.'**
+  String get privacyNomineeContactRequired;
+
+  /// Validation: name / relationship need at least 2 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 2 characters.'**
+  String get privacyNomineeTooShort;
+
+  /// Button: save the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Save nominee'**
+  String get privacyNomineeSave;
+
+  /// Snackbar: nominee saved
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee saved'**
+  String get privacyNomineeSaved;
+
+  /// Button: remove the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove nominee'**
+  String get privacyNomineeRemove;
+
+  /// Confirm dialog body before removing the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove your nominee? They will no longer be able to act for you.'**
+  String get privacyNomineeRemoveConfirm;
+
+  /// Snackbar: nominee removed
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee removed'**
+  String get privacyNomineeRemoved;
+
+  /// Switch: share my records with hospitals (share_with_hospitals consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with hospitals'**
+  String get privacyShareHospitalsTitle;
+
+  /// Subtitle when hospital sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals you contact can open the reports you share with them'**
+  String get privacyShareHospitalsOn;
+
+  /// Subtitle when hospital sharing was withdrawn
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn: hospitals cannot open your shared reports'**
+  String get privacyShareHospitalsOff;
+
+  /// Confirm dialog title: withdraw hospital sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with hospitals?'**
+  String get privacyShareHospitalsWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing hospital sharing (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals will no longer be able to open the reports and documents you shared with them, so quotes and consultations may be delayed until you share again. Records a hospital must keep by law are not affected.'**
+  String get privacyShareHospitalsWithdrawBody;
+
+  /// Switch: share my records with my agent (share_with_agent consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with my agent'**
+  String get privacyShareAgentTitle;
+
+  /// Subtitle when agent sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator can open your documents'**
+  String get privacyShareAgentOn;
+
+  /// Subtitle when agent sharing is off
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator cannot open your documents'**
+  String get privacyShareAgentOff;
+
+  /// Confirm dialog title: withdraw agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with your agent?'**
+  String get privacyShareAgentWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator will no longer be able to open your documents. You can share them again at any time.'**
+  String get privacyShareAgentWithdrawBody;
+
+  /// Dialog button: confirm withdrawing a sharing consent
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get privacyShareWithdraw;
+
+  /// Snackbar: a sharing consent was recorded
+  ///
+  /// In en, this message translates to:
+  /// **'Your sharing choice was saved'**
+  String get privacyShareUpdated;
+
+  /// Profile > Privacy tile and screen title: Grievance Officer and Data Protection Officer contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer and DPO'**
+  String get privacyContactTitle;
+
+  /// Subtitle of the privacy contact tile
+  ///
+  /// In en, this message translates to:
+  /// **'Who to contact about your personal data'**
+  String get privacyContactSubtitle;
+
+  /// Card title: Grievance Officer (DPDP)
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer'**
+  String get privacyContactGrievance;
+
+  /// Card title: Data Protection Officer
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Officer'**
+  String get privacyContactDpo;
+
+  /// Card title: postal address for privacy requests
+  ///
+  /// In en, this message translates to:
+  /// **'Postal address'**
+  String get privacyContactAddress;
+
+  /// Line: how long we take to answer data-rights requests (legal promise)
+  ///
+  /// In en, this message translates to:
+  /// **'We answer data-rights requests and grievances within {days} days.'**
+  String privacyContactResponse(int days);
+
+  /// Line: escalation to the Data Protection Board of India (legal)
+  ///
+  /// In en, this message translates to:
+  /// **'If you are not satisfied with our answer, you can complain to the Data Protection Board of India.'**
+  String get privacyContactBoard;
+
+  /// Link: Data Protection Board website
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Board website'**
+  String get privacyContactBoardLink;
+
+  /// Shown when a contact person has no details published yet
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details not published yet'**
+  String get privacyContactNotPublished;
+
+  /// Title of the pre-travel video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation'**
+  String get consultBookTitle;
+
+  /// Intro of the video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to a specialist by video before you travel. The hospital confirms the exact time and sends you the video link.'**
+  String get consultBookIntro;
+
+  /// Section title: choose the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get consultDoctorSection;
+
+  /// No doctor of the hospital offers video consultations
+  ///
+  /// In en, this message translates to:
+  /// **'No doctor at {hospital} offers video consultations yet. You can request a quote instead.'**
+  String consultNoTeleconsultDoctors(String hospital);
+
+  /// Button: request a quote (case) instead of a video consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote instead'**
+  String get consultRequestQuoteInstead;
+
+  /// Section title: preferred day of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred day'**
+  String get consultDateSection;
+
+  /// Hint under the consultation calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Green days have free consultation places.'**
+  String get consultDateHint;
+
+  /// Section title: preferred time of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred time'**
+  String get consultTimeSection;
+
+  /// Note: consultation times are shown in the device time zone
+  ///
+  /// In en, this message translates to:
+  /// **'Times are shown in your time zone ({zone}).'**
+  String consultTimesLocal(String zone);
+
+  /// Label of the question / notes field for the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to ask the doctor?'**
+  String get consultQuestionLabel;
+
+  /// Hint of the question field
+  ///
+  /// In en, this message translates to:
+  /// **'Your symptoms, the treatment you are considering, questions about travel and recovery...'**
+  String get consultQuestionHint;
+
+  /// Section title: medical reports to share before the call
+  ///
+  /// In en, this message translates to:
+  /// **'Reports to share'**
+  String get consultReportsSection;
+
+  /// Hint of the reports section
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor can read these before the call.'**
+  String get consultReportsHint;
+
+  /// Reports section when the patient already has an open case at the hospital
+  ///
+  /// In en, this message translates to:
+  /// **'Reports you upload here are added to your case {caseNumber} with {hospital}.'**
+  String consultReportsExistingCase(String caseNumber, String hospital);
+
+  /// Button: upload a medical report
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a report'**
+  String get consultUpload;
+
+  /// Label of the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation fee'**
+  String get consultFeeLabel;
+
+  /// Consultation fee: free
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get consultFeeFree;
+
+  /// Note: when and how the consultation fee is paid
+  ///
+  /// In en, this message translates to:
+  /// **'You pay the fee by card right after sending the request. The hospital then confirms the time.'**
+  String get consultFeePayNote;
+
+  /// Button: send the consultation request
+  ///
+  /// In en, this message translates to:
+  /// **'Request consultation'**
+  String get consultSubmit;
+
+  /// Validation: choose a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a doctor.'**
+  String get consultPickDoctor;
+
+  /// Validation: choose a day and a time
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a day and a time.'**
+  String get consultPickSlot;
+
+  /// Snackbar after the consultation was requested
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation requested. The hospital will confirm the time.'**
+  String get consultRequestedSnack;
+
+  /// API error consultation_exists
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an open consultation with this doctor. You can find it under My consultations.'**
+  String get consultErrorExists;
+
+  /// API error teleconsult_unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not offer video consultations. Please choose another doctor.'**
+  String get consultErrorUnavailable;
+
+  /// API error doctor_required
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a doctor for the consultation.'**
+  String get consultErrorDoctorRequired;
+
+  /// API error invalid_doctor
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not practise at this hospital. Please choose another doctor.'**
+  String get consultErrorInvalidDoctor;
+
+  /// Title of the patient's consultations list and its links
+  ///
+  /// In en, this message translates to:
+  /// **'My consultations'**
+  String get consultMineTitle;
+
+  /// Subtitle of links to the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Video calls with doctors before and after treatment'**
+  String get consultMineSubtitle;
+
+  /// Empty state title of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'No consultations yet'**
+  String get consultListEmpty;
+
+  /// Empty state body of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation from a doctor\'s page or from your hospital matches.'**
+  String get consultListEmptyBody;
+
+  /// Button: search for a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Find a doctor'**
+  String get consultFindDoctor;
+
+  /// Title of a consultation detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get consultDetailTitle;
+
+  /// Heading: video consultation with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Video consultation with {doctor}'**
+  String consultWithDoctor(String doctor);
+
+  /// Heading: aftercare follow-up call with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Aftercare follow-up with {doctor}'**
+  String consultFollowupWith(String doctor);
+
+  /// Placeholder when the doctor of a consultation is not known
+  ///
+  /// In en, this message translates to:
+  /// **'the hospital\'s doctor'**
+  String get consultDoctorTbc;
+
+  /// Confirmed consultation time (local) and duration
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for {when} ({minutes} min)'**
+  String consultScheduledAt(String when, int minutes);
+
+  /// The hospital has not confirmed a time yet
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the hospital to confirm a time.'**
+  String get consultAwaitingTime;
+
+  /// The time the patient asked for (local)
+  ///
+  /// In en, this message translates to:
+  /// **'You asked for {when}.'**
+  String consultPreferredTime(String when);
+
+  /// Button: open the video call link
+  ///
+  /// In en, this message translates to:
+  /// **'Join video call'**
+  String get consultJoinVideo;
+
+  /// Hint under the join button
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the private video room in your browser or the Jitsi Meet app.'**
+  String get consultJoinHint;
+
+  /// The video link is not available yet
+  ///
+  /// In en, this message translates to:
+  /// **'The video link appears here once the hospital confirms the time.'**
+  String get consultLinkSoon;
+
+  /// Reminder note for a scheduled consultation
+  ///
+  /// In en, this message translates to:
+  /// **'We will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderScheduled;
+
+  /// Reminder note before the time is confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Once the time is confirmed, we will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderPending;
+
+  /// Fee status: paid
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get consultPaid;
+
+  /// Fee status: not paid yet
+  ///
+  /// In en, this message translates to:
+  /// **'Payment due'**
+  String get consultPaymentDue;
+
+  /// Fee status: payment being confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Payment being confirmed'**
+  String get consultPaymentPending;
+
+  /// Button: pay the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount}'**
+  String consultPayButton(String amount);
+
+  /// Title of the consultation fee payment sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Pay consultation fee'**
+  String get consultPayTitle;
+
+  /// Consultation fee paid
+  ///
+  /// In en, this message translates to:
+  /// **'Payment received. Thank you.'**
+  String get consultPaySuccess;
+
+  /// Consultation fee payment failed
+  ///
+  /// In en, this message translates to:
+  /// **'The payment did not go through and no money was taken. You can try again.'**
+  String get consultPayFailed;
+
+  /// Consultation fee payment pending
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is being confirmed. This page updates when it is done.'**
+  String get consultPayPending;
+
+  /// Button: cancel the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel consultation'**
+  String get consultCancel;
+
+  /// Confirm dialog title: cancel consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this consultation?'**
+  String get consultCancelConfirmTitle;
+
+  /// Confirm dialog body: cancel consultation (fee handling)
+  ///
+  /// In en, this message translates to:
+  /// **'The hospital will be told. If you already paid the fee, our team will contact you about it.'**
+  String get consultCancelConfirmBody;
+
+  /// Dialog button: keep the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get consultKeep;
+
+  /// Snackbar: consultation cancelled
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation cancelled'**
+  String get consultCancelled;
+
+  /// Link from a consultation to its case
+  ///
+  /// In en, this message translates to:
+  /// **'Open case {caseNumber}'**
+  String consultOpenCase(String caseNumber);
+
+  /// Section title: the patient's notes on a consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes'**
+  String get consultNotesSection;
+
+  /// Button on a doctor page: book a video consultation with this doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Book video consultation'**
+  String get consultBookVideoButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -62,6 +62,7 @@ class ApiClient {
 
   final StreamController<void> _expiredCtrl = StreamController<void>.broadcast();
   final StreamController<AuthSession> _refreshedCtrl = StreamController<AuthSession>.broadcast();
+  final StreamController<void> _suspendedCtrl = StreamController<void>.broadcast();
   Future<String?>? _refreshing;
 
   /// Fires when the session can no longer be refreshed (tokens already cleared).
@@ -69,6 +70,18 @@ class ApiClient {
 
   /// Fires after every successful token rotation with the new `TokenOut`.
   Stream<AuthSession> get sessionRefreshed => _refreshedCtrl.stream;
+
+  /// Fires whenever the API answers 403 `organisation_suspended` (the agent's agency or every hospital of a
+  /// hospital member is suspended). Watched by `organisationSuspendedProvider`, which shows one full-screen
+  /// message for the whole agent / hospital section instead of per-screen errors.
+  Stream<void> get organisationSuspended => _suspendedCtrl.stream;
+
+  /// Whether [response] is the 403 `organisation_suspended` error envelope.
+  static bool isOrganisationSuspendedResponse(Response<dynamic>? response) {
+    if (response?.statusCode != 403) return false;
+    final data = response!.data;
+    return data is Map && data['error'] is Map && (data['error'] as Map)['code'] == 'organisation_suspended';
+  }
 
   TokenStorage get tokens => _tokens;
 
@@ -241,6 +254,7 @@ class ApiClient {
     _refreshDio.close(force: true);
     unawaited(_expiredCtrl.close());
     unawaited(_refreshedCtrl.close());
+    unawaited(_suspendedCtrl.close());
   }
 
   // ---------------------------------------------------------------- helpers
@@ -297,6 +311,9 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (ApiClient.isOrganisationSuspendedResponse(err.response) && !_client._suspendedCtrl.isClosed) {
+      _client._suspendedCtrl.add(null);
+    }
     final opts = err.requestOptions;
     if (err.response?.statusCode != 401 || _skips(opts) || opts.extra[ApiClient._kRetried] == true) {
       handler.next(err);

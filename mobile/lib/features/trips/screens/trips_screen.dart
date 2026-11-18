@@ -171,6 +171,13 @@ class _Dashboard extends ConsumerWidget {
           ).push(MaterialPageRoute<void>(builder: (_) => VisaGuideScreen(caseId: booking?.caseId))),
         ),
         _LinkCard(
+          key: const ValueKey('trips-consultations'),
+          icon: Icons.videocam_outlined,
+          title: l10n.consultMineTitle,
+          subtitle: l10n.consultMineSubtitle,
+          onTap: () => context.push(Routes.consultations),
+        ),
+        _LinkCard(
           key: const ValueKey('trips-aftercare'),
           icon: Icons.healing_outlined,
           title: l10n.aftercareTitle,

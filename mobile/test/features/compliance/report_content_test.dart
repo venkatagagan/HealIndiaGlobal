@@ -11,6 +11,7 @@ import 'package:heal_india_global/core/repositories/report_repository.dart';
 import 'package:heal_india_global/core/theme/app_theme.dart';
 import 'package:heal_india_global/core/widgets/report_sheet.dart';
 import 'package:heal_india_global/features/messages/screens/chat_screen.dart';
+import 'package:heal_india_global/features/search/widgets/detail_sections.dart';
 
 import '../trips/journey_test_helpers.dart';
 import 'compliance_fakes.dart';
@@ -165,6 +166,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(adapter.requests.single.data, {'target_type': 'message', 'target_id': 'm-other', 'reason': 'abusive'});
+    expect(find.text('Thanks. Our team will review this report.'), findsOneWidget);
+  });
+
+  testWidgets('a published review can be reported from hospital / doctor pages, not from My reviews', (tester) async {
+    AppTextStyles.useGoogleFonts = false;
+    final adapter = RecordingAdapter((_) => (201, {'id': 'r1', 'status': 'open'}));
+    final api = await fakeApi(adapter);
+    final overrides = await journeyBaseOverrides();
+    final review = Review.fromJson({'id': 'rev1', 'rating': 2, 'body': 'Buy cheap pills at example.com'});
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [...overrides, reportRepositoryProvider.overrideWithValue(ReportRepository(api))],
+        child: MaterialApp(
+          theme: AppTheme.dark(),
+          home: Scaffold(
+            body: ListView(
+              children: [
+                ReviewTile(review: review, reportable: true),
+                ReviewTile(review: Review.fromJson({'id': 'mine', 'rating': 5})),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('review-report-mine')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('review-report-rev1')));
+    await tester.pumpAndSettle();
+    expect(find.text('Report this review'), findsOneWidget);
+    expect(find.text('Spam'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('report-reason-spam')));
+    await tester.pump();
+    await tester.ensureVisible(find.byKey(const Key('report-send')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('report-send')));
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+    await tester.pumpAndSettle();
+
+    expect(adapter.requests.single.data, {'target_type': 'review', 'target_id': 'rev1', 'reason': 'spam'});
     expect(find.text('Thanks. Our team will review this report.'), findsOneWidget);
   });
 }

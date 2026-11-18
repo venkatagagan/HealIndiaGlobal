@@ -259,7 +259,7 @@ class _HospitalDetailView extends ConsumerWidget {
                           for (final r in h.reviews.take(3))
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: ReviewTile(review: r),
+                              child: ReviewTile(review: r, reportable: true),
                             ),
                           SecondaryButton(
                             key: const ValueKey('hospital-all-reviews'),

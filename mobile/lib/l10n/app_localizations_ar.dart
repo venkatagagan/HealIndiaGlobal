@@ -6807,7 +6807,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hpActingFor => 'العمل لصالح';
 
   @override
-  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والتوفر والأسعار متاح على بوابة المستشفى على الويب.';
+  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والأسعار متاح على بوابة المستشفى على الويب.';
 
   @override
   String get hpNoVisaRequests => 'لا توجد طلبات تأشيرة';
@@ -8961,4 +8961,530 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'العلاج';
+
+  @override
+  String get reportSheetTitleReview => 'الإبلاغ عن هذا التقييم';
+
+  @override
+  String get reportSheetIntroReview =>
+      'أخبرنا بالمشكلة في هذا التقييم، مثل الرسائل المزعجة أو الإساءة أو الادعاءات الكاذبة أو البيانات الشخصية لأحد الأشخاص. سيراجعه فريق الإشراف لدينا. لن يُبلَّغ كاتب التقييم بهوية من أبلغ.';
+
+  @override
+  String get reviewReportAction => 'الإبلاغ عن التقييم';
+
+  @override
+  String get orgSuspendedTitle => 'حسابك موقوف';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'تم إيقاف حساب وكالتك، لذلك لا يمكن فتح المرضى والحالات والحجوزات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'تم إيقاف حساب مستشفاك، لذلك لا يمكن فتح الاستفسارات والمرضى والتسويات في التطبيق حاليًا. يُرجى التواصل مع فريق الدعم لمعرفة السبب والخطوات التالية.';
+
+  @override
+  String get orgSuspendedCallSupport => 'الاتصال بالدعم';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'مراسلة الدعم عبر واتساب';
+
+  @override
+  String get orgSuspendedNoContact => 'تعذّر تحميل بيانات الاتصال بالدعم. تحقّق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'التحقق مرة أخرى';
+
+  @override
+  String get hpAvailabilityTitle => 'توفّر المستشفى';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'التوفّر: $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'سعة الدخول والاستشارات لكل يوم';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'حدّد عدد الاستشارات بالفيديو وحالات الدخول التي يمكن لهذا الطبيب استقبالها كل يوم. يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'سعة المستشفى ككل، غير مرتبطة بطبيب محدد (مثل الأسرّة لحالات الدخول). يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'الاستشارات';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'حالات الدخول';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return 'المحجوز: $count';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return '$count على الأقل';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => 'من 0 إلى 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'تعبئة سريعة';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'يضبط السعة نفسها لكل الأيام المتبقية من $month. راجع الأيام ثم احفظ.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'أيام العمل فقط (باستثناء السبت والأحد)';
+
+  @override
+  String get hpAvailabilityApply => 'تعبئة الشهر';
+
+  @override
+  String get hpAvailabilitySaved => 'تم حفظ التوفّر';
+
+  @override
+  String get hpAvailabilityFixErrors => 'صحّح الأيام المميّزة قبل الحفظ.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'إحدى السعات أقل من عدد الأماكن المحجوزة في ذلك اليوم. ارفعها واحفظ مرة أخرى.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'تجاهل التغييرات غير المحفوظة؟';
+
+  @override
+  String get hpAvailabilityDiscard => 'تجاهل';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'متابعة التعديل';
+
+  @override
+  String get hpAvailabilityEditButton => 'التوفّر';
+
+  @override
+  String get hpAvailabilityPastDay => 'يوم مضى';
+
+  @override
+  String get privacyRequestsTitle => 'طلبات حقوق البيانات';
+
+  @override
+  String get privacyRequestsSubtitle => 'اطلب نسخة من بياناتك أو تصحيحها أو حذفها، أو قدّم شكوى';
+
+  @override
+  String get privacyRequestsEmpty => 'لم تقدّم أي طلبات تتعلق بحقوق البيانات بعد.';
+
+  @override
+  String get privacyRequestNew => 'طلب جديد';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'نسجّل طلبك ونردّ عليه قبل الموعد المحدد الذي يظهر بعد إرساله. قد نطلب منك تأكيد هويتك قبل تنفيذه.';
+
+  @override
+  String get privacyRequestKindLabel => 'ماذا تريد أن تفعل؟';
+
+  @override
+  String get privacyRequestKindAccess => 'الحصول على نسخة من بياناتي';
+
+  @override
+  String get privacyRequestKindCorrection => 'تصحيح بياناتي';
+
+  @override
+  String get privacyRequestKindErasure => 'حذف بياناتي';
+
+  @override
+  String get privacyRequestKindNomination => 'تعيين شخص لممارسة حقوقي في البيانات';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'سحب موافقة';
+
+  @override
+  String get privacyRequestKindComplaint => 'شكوى (تظلّم)';
+
+  @override
+  String get privacyRequestKindOther => 'أمر آخر';
+
+  @override
+  String get privacyRequestDetailsLabel => 'التفاصيل';
+
+  @override
+  String get privacyRequestDetailsHint => 'أخبرنا بما تحتاجه، مثلًا أي البيانات غير صحيحة وما الذي يجب أن تكون عليه.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'يُرجى كتابة 10 أحرف على الأقل.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'نيابةً عن (اختياري)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'اسم الشخص الذي تنوب عنه، إن لم يكن أنت';
+
+  @override
+  String get privacyRequestSubmit => 'إرسال الطلب';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'تم إرسال الطلب $reference. موعد الرد: $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'تم الاستلام';
+
+  @override
+  String get privacyRequestStatusInProgress => 'قيد المعالجة';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'بانتظار ردّك';
+
+  @override
+  String get privacyRequestStatusCompleted => 'مكتمل';
+
+  @override
+  String get privacyRequestStatusRejected => 'مرفوض';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'موعد الرد: $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'متأخر';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'أُرسل في $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'أُغلق في $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'طلبك';
+
+  @override
+  String get privacyRequestResolution => 'ردّنا';
+
+  @override
+  String get privacyRequestNoAnswerYet => 'لم نردّ بعد. ستتلقى إشعارًا عند الرد.';
+
+  @override
+  String get privacyNomineeTitle => 'الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'اختر شخصًا يمارس حقوقك في البيانات إذا لم تتمكن من ذلك';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'بموجب قانون حماية البيانات الشخصية الرقمية في الهند، يمكنك تعيين شخص يمارس حقوقك في البيانات في حال وفاتك أو عجزك عن التصرف بنفسك. أدخل بريده الإلكتروني أو رقم هاتفه.';
+
+  @override
+  String get privacyNomineeName => 'الاسم الكامل';
+
+  @override
+  String get privacyNomineeRelationship => 'صلة القرابة (مثل الزوج/الزوجة أو الابن)';
+
+  @override
+  String get privacyNomineeEmail => 'البريد الإلكتروني';
+
+  @override
+  String get privacyNomineePhone => 'الهاتف';
+
+  @override
+  String get privacyNomineeContactRequired => 'أدخل بريدًا إلكترونيًا أو رقم هاتف.';
+
+  @override
+  String get privacyNomineeTooShort => 'أدخل حرفين على الأقل.';
+
+  @override
+  String get privacyNomineeSave => 'حفظ الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeSaved => 'تم حفظ الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeRemove => 'إزالة الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'هل تريد إزالة الشخص المعيَّن؟ لن يتمكن بعد ذلك من التصرف نيابةً عنك.';
+
+  @override
+  String get privacyNomineeRemoved => 'تمت إزالة الشخص المعيَّن';
+
+  @override
+  String get privacyShareHospitalsTitle => 'مشاركة سجلاتي مع المستشفيات';
+
+  @override
+  String get privacyShareHospitalsOn => 'يمكن للمستشفيات التي تتواصل معها فتح التقارير التي تشاركها معها';
+
+  @override
+  String get privacyShareHospitalsOff => 'تم السحب: لا يمكن للمستشفيات فتح تقاريرك المشتركة';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'إيقاف المشاركة مع المستشفيات؟';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'لن تتمكن المستشفيات بعد الآن من فتح التقارير والمستندات التي شاركتها معها، لذا قد تتأخر عروض الأسعار والاستشارات حتى تشاركها مرة أخرى. لا يتأثر ما يلزم المستشفى قانونًا بالاحتفاظ به من سجلات.';
+
+  @override
+  String get privacyShareAgentTitle => 'مشاركة سجلاتي مع وكيلي';
+
+  @override
+  String get privacyShareAgentOn => 'يمكن لوكيلك أو الميسّر فتح مستنداتك';
+
+  @override
+  String get privacyShareAgentOff => 'لا يمكن لوكيلك أو الميسّر فتح مستنداتك';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'إيقاف المشاركة مع وكيلك؟';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'لن يتمكن وكيلك أو الميسّر بعد الآن من فتح مستنداتك. يمكنك مشاركتها مرة أخرى في أي وقت.';
+
+  @override
+  String get privacyShareWithdraw => 'إيقاف المشاركة';
+
+  @override
+  String get privacyShareUpdated => 'تم حفظ اختيارك بشأن المشاركة';
+
+  @override
+  String get privacyContactTitle => 'مسؤول التظلّمات ومسؤول حماية البيانات';
+
+  @override
+  String get privacyContactSubtitle => 'بمن تتواصل بشأن بياناتك الشخصية';
+
+  @override
+  String get privacyContactGrievance => 'مسؤول التظلّمات';
+
+  @override
+  String get privacyContactDpo => 'مسؤول حماية البيانات';
+
+  @override
+  String get privacyContactAddress => 'العنوان البريدي';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'نردّ على طلبات حقوق البيانات والتظلّمات خلال $days يومًا.';
+  }
+
+  @override
+  String get privacyContactBoard => 'إذا لم تكن راضيًا عن ردّنا، يمكنك تقديم شكوى إلى مجلس حماية البيانات في الهند.';
+
+  @override
+  String get privacyContactBoardLink => 'موقع مجلس حماية البيانات';
+
+  @override
+  String get privacyContactNotPublished => 'لم تُنشر بيانات الاتصال بعد';
+
+  @override
+  String get consultBookTitle => 'حجز استشارة بالفيديو';
+
+  @override
+  String get consultBookIntro =>
+      'تحدّث مع طبيب مختص عبر الفيديو قبل سفرك. يؤكّد المستشفى الموعد الدقيق ويرسل إليك رابط الفيديو.';
+
+  @override
+  String get consultDoctorSection => 'الطبيب';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return 'لا يقدّم أي طبيب في $hospital استشارات بالفيديو بعد. يمكنك طلب عرض سعر بدلًا من ذلك.';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'طلب عرض سعر بدلًا من ذلك';
+
+  @override
+  String get consultDateSection => 'اليوم المفضّل';
+
+  @override
+  String get consultDateHint => 'الأيام الخضراء فيها أماكن متاحة للاستشارة.';
+
+  @override
+  String get consultTimeSection => 'الوقت المفضّل';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'تُعرض الأوقات حسب منطقتك الزمنية ($zone).';
+  }
+
+  @override
+  String get consultQuestionLabel => 'ماذا تودّ أن تسأل الطبيب؟';
+
+  @override
+  String get consultQuestionHint => 'أعراضك، والعلاج الذي تفكر فيه، وأسئلتك عن السفر والتعافي...';
+
+  @override
+  String get consultReportsSection => 'التقارير المراد مشاركتها';
+
+  @override
+  String get consultReportsHint => 'يمكن للطبيب قراءتها قبل المكالمة.';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'تُضاف التقارير التي ترفعها هنا إلى حالتك $caseNumber لدى $hospital.';
+  }
+
+  @override
+  String get consultUpload => 'رفع تقرير';
+
+  @override
+  String get consultFeeLabel => 'رسوم الاستشارة';
+
+  @override
+  String get consultFeeFree => 'مجانًا';
+
+  @override
+  String get consultFeePayNote => 'تدفع الرسوم بالبطاقة مباشرةً بعد إرسال الطلب، ثم يؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultSubmit => 'طلب الاستشارة';
+
+  @override
+  String get consultPickDoctor => 'اختر طبيبًا.';
+
+  @override
+  String get consultPickSlot => 'اختر يومًا ووقتًا.';
+
+  @override
+  String get consultRequestedSnack => 'تم طلب الاستشارة. سيؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultErrorExists => 'لديك بالفعل استشارة مفتوحة مع هذا الطبيب. تجدها ضمن استشاراتي.';
+
+  @override
+  String get consultErrorUnavailable => 'لا يقدّم هذا الطبيب استشارات بالفيديو. يُرجى اختيار طبيب آخر.';
+
+  @override
+  String get consultErrorDoctorRequired => 'يُرجى اختيار طبيب للاستشارة.';
+
+  @override
+  String get consultErrorInvalidDoctor => 'لا يعمل هذا الطبيب في هذا المستشفى. يُرجى اختيار طبيب آخر.';
+
+  @override
+  String get consultMineTitle => 'استشاراتي';
+
+  @override
+  String get consultMineSubtitle => 'مكالمات فيديو مع الأطباء قبل العلاج وبعده';
+
+  @override
+  String get consultListEmpty => 'لا توجد استشارات بعد';
+
+  @override
+  String get consultListEmptyBody => 'احجز استشارة بالفيديو من صفحة الطبيب أو من المستشفيات المقترحة لك.';
+
+  @override
+  String get consultFindDoctor => 'ابحث عن طبيب';
+
+  @override
+  String get consultDetailTitle => 'الاستشارة';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return 'استشارة بالفيديو مع $doctor';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return 'متابعة ما بعد العلاج مع $doctor';
+  }
+
+  @override
+  String get consultDoctorTbc => 'طبيب المستشفى';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'الموعد: $when (المدة $minutes دقيقة)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'بانتظار تأكيد المستشفى للموعد.';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'الموعد الذي طلبته: $when.';
+  }
+
+  @override
+  String get consultJoinVideo => 'الانضمام إلى مكالمة الفيديو';
+
+  @override
+  String get consultJoinHint => 'يفتح غرفة الفيديو الخاصة في متصفحك أو في تطبيق Jitsi Meet.';
+
+  @override
+  String get consultLinkSoon => 'سيظهر رابط الفيديو هنا بعد أن يؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultReminderScheduled => 'سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+
+  @override
+  String get consultReminderPending => 'بعد تأكيد الموعد، سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+
+  @override
+  String get consultPaid => 'مدفوع';
+
+  @override
+  String get consultPaymentDue => 'بانتظار الدفع';
+
+  @override
+  String get consultPaymentPending => 'جارٍ تأكيد الدفع';
+
+  @override
+  String consultPayButton(String amount) {
+    return 'ادفع $amount';
+  }
+
+  @override
+  String get consultPayTitle => 'دفع رسوم الاستشارة';
+
+  @override
+  String get consultPaySuccess => 'تم استلام الدفعة. شكرًا لك.';
+
+  @override
+  String get consultPayFailed => 'لم تتم عملية الدفع ولم يُخصم أي مبلغ. يمكنك المحاولة مرة أخرى.';
+
+  @override
+  String get consultPayPending => 'جارٍ تأكيد دفعتك. ستُحدَّث هذه الصفحة عند الانتهاء.';
+
+  @override
+  String get consultCancel => 'إلغاء الاستشارة';
+
+  @override
+  String get consultCancelConfirmTitle => 'إلغاء هذه الاستشارة؟';
+
+  @override
+  String get consultCancelConfirmBody => 'سيتم إبلاغ المستشفى. إذا كنت قد دفعت الرسوم، فسيتواصل معك فريقنا بشأنها.';
+
+  @override
+  String get consultKeep => 'الإبقاء عليها';
+
+  @override
+  String get consultCancelled => 'تم إلغاء الاستشارة';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'فتح الحالة $caseNumber';
+  }
+
+  @override
+  String get consultNotesSection => 'ملاحظاتك';
+
+  @override
+  String get consultBookVideoButton => 'حجز استشارة بالفيديو';
 }

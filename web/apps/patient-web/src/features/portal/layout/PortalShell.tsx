@@ -19,6 +19,7 @@ import {
   Stethoscope,
   User,
   UserRound,
+  Video,
 } from 'lucide-react';
 import { Link, Navigate, NavLink, Outlet, useLocation } from 'react-router';
 import { websiteUrl } from '@hig/shared/auth';
@@ -60,6 +61,7 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
         { to: paths.screenings, label: t('shell.nav.screenings'), icon: Stethoscope },
         { to: paths.browse(), label: t('shell.nav.browse'), icon: Search },
         { to: paths.cases, label: t('shell.nav.cases'), icon: BriefcaseMedical },
+        { to: paths.consultations, label: t('shell.nav.consultations'), icon: Video },
         { to: paths.aftercare, label: t('shell.nav.aftercare'), icon: HeartHandshake },
       ],
     },
@@ -182,6 +184,8 @@ function RealtimeBridge() {
       }
       case 'notification.created': {
         void qc.invalidateQueries({ queryKey: ['notifications'] });
+        // consultation scheduled / reminder notifications: refresh the consultation pages too
+        void qc.invalidateQueries({ queryKey: ['consultations'] });
         if (!location.pathname.startsWith(paths.notifications)) {
           toast(event.data.title, { description: event.data.body ?? undefined });
         }

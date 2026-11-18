@@ -13,10 +13,14 @@ import {
 } from '@hig/shared/api';
 import { useAuth } from '../../auth/AuthProvider';
 import { Avatar, Badge, Button, Card, EmptyState, ErrorState, Skeleton, Spinner, Textarea } from '../../components/ui';
-import { cn, formatDate, formatRelative, toDate } from '../../lib/format';
+import { formatTime } from '@hig/shared/lib';
+import { cn, formatDate, formatRelative } from '../../lib/format';
 import { qk } from '../../lib/queries';
 import { useRealtimeConnected, useRealtimeEvent } from '../../lib/realtime';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useAppTranslation } from '../../i18n';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 const PAGE = 50;
 
@@ -25,10 +29,10 @@ function sortAsc(list: MessageOut[]): MessageOut[] {
   return [...unique.values()].sort((a, b) => a.created_at.localeCompare(b.created_at));
 }
 
-function conversationTitle(c: ConversationOut, myId: string | undefined): string {
+function conversationTitle(t: TFn, c: ConversationOut, myId: string | undefined): string {
   if (c.subject) return c.subject;
   const others = c.participants.filter((p) => p.user_id !== myId).map((p) => p.full_name);
-  return others.join(', ') || 'Conversation';
+  return others.join(', ') || t('messages.conversation');
 }
 
 function ConversationList({
@@ -42,6 +46,7 @@ function ConversationList({
   myId: string | undefined;
   onSelect: (id: string) => void;
 }) {
+  const { t } = useAppTranslation();
   const sorted = [...conversations].sort((a, b) => (b.last_message_at ?? '').localeCompare(a.last_message_at ?? ''));
   return (
     <ul className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -54,19 +59,19 @@ function ConversationList({
               onClick={() => onSelect(c.id)}
               aria-current={active ? 'true' : undefined}
               className={cn(
-                'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors',
+                'flex w-full items-start gap-3 px-4 py-3 text-start transition-colors',
                 active ? 'bg-brand-50 dark:bg-brand-500/10' : 'hover:bg-slate-50 dark:hover:bg-raised-dark/50',
               )}
             >
-              <Avatar name={conversationTitle(c, myId)} />
+              <Avatar name={conversationTitle(t, c, myId)} />
               <span className="min-w-0 flex-1">
                 <span className="flex items-center justify-between gap-2">
-                  <span className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{conversationTitle(c, myId)}</span>
+                  <span className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{conversationTitle(t, c, myId)}</span>
                   {c.last_message_at && <span className="shrink-0 text-[11px] text-slate-500">{formatRelative(c.last_message_at)}</span>}
                 </span>
                 <span className="flex items-center justify-between gap-2">
                   <span className="truncate text-xs text-slate-500">
-                    {c.last_message ? `${c.last_message.sender.full_name}: ${c.last_message.body}` : 'No messages yet'}
+                    {c.last_message ? `${c.last_message.sender.full_name}: ${c.last_message.body}` : t('messages.noMessages')}
                   </span>
                   {c.unread_count > 0 && <Badge tone="green">{c.unread_count}</Badge>}
                 </span>
@@ -80,6 +85,7 @@ function ConversationList({
 }
 
 function Thread({ conversation, myId }: { conversation: ConversationOut; myId: string | undefined }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const key = qk.messages(conversation.id);
   const [draft, setDraft] = useState('');
@@ -149,14 +155,14 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-        <p className="font-semibold text-slate-900 dark:text-white">{conversationTitle(conversation, myId)}</p>
+        <p className="font-semibold text-slate-900 dark:text-white">{conversationTitle(t, conversation, myId)}</p>
         <p className="truncate text-xs text-slate-500">
           {conversation.participants.map((p) => `${p.full_name} (${USER_ROLE_LABELS[p.role] ?? p.role})`).join(' · ')}
           {conversation.case_id && (
             <>
               {' · '}
               <Link to={`/cases/${conversation.case_id}`} className="text-brand-600 hover:underline dark:text-brand-400">
-                Open case
+                {t('messages.openCase')}
               </Link>
             </>
           )}
@@ -166,18 +172,18 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
         {messages.isPending ? (
           <div className="space-y-3">
             <Skeleton className="h-12 w-2/3" />
-            <Skeleton className="ml-auto h-12 w-1/2" />
+            <Skeleton className="ms-auto h-12 w-1/2" />
           </div>
         ) : messages.isError ? (
           <ErrorState error={messages.error} onRetry={() => void messages.refetch()} />
         ) : messages.data.length === 0 ? (
-          <EmptyState title="No messages yet" description="Start the conversation with the patient and their coordinator." />
+          <EmptyState title={t('messages.noMessages')} description={t('messages.startText')} />
         ) : (
           <>
             {hasMore && (
               <div className="text-center">
                 <Button variant="ghost" size="sm" loading={loadingOlder} onClick={() => void loadOlder()}>
-                  Load earlier messages
+                  {t('messages.loadEarlier')}
                 </Button>
               </div>
             )}
@@ -194,8 +200,8 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                       className={cn(
                         'max-w-[80%] rounded-2xl px-3.5 py-2 text-sm',
                         mine
-                          ? 'rounded-br-sm bg-brand-700 text-white'
-                          : 'rounded-bl-sm bg-slate-100 text-slate-900 dark:bg-raised-dark dark:text-slate-100',
+                          ? 'rounded-ee-sm bg-brand-700 text-white'
+                          : 'rounded-es-sm bg-slate-100 text-slate-900 dark:bg-raised-dark dark:text-slate-100',
                       )}
                     >
                       {!mine && (
@@ -205,24 +211,24 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                       )}
                       <p className="break-words whitespace-pre-wrap">{m.body}</p>
                       {m.attachment_document_ids.length > 0 && (
-                        <p className="mt-1 text-[11px] opacity-80">{m.attachment_document_ids.length} attachment(s) - see case documents</p>
+                        <p className="mt-1 text-[11px] opacity-80">{t('messages.attachments', { count: m.attachment_document_ids.length })}</p>
                       )}
-                      <p className={cn('mt-0.5 text-right text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>
-                        {toDate(m.created_at)?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <p className={cn('mt-0.5 text-end text-[10px]', mine ? 'text-white/80' : 'text-slate-500')}>
+                        {formatTime(m.created_at)}
                       </p>
                     </div>
                   </div>
                   <div className={cn('flex flex-col', mine ? 'items-end' : 'items-start')}>
                     {m.hidden && (
                       <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-500">
-                        <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                        <EyeOff className="size-3" aria-hidden /> {t('messages.hidden')}
                       </p>
                     )}
                     {!mine && (
                       <ReportButton
                         targetType="message"
                         targetId={m.id}
-                        aria-label={`Report message from ${m.sender.full_name}`}
+                        aria-label={t('messages.reportFrom', { name: m.sender.full_name })}
                         className="mt-0.5 h-6 px-1.5 text-[11px]"
                       />
                     )}
@@ -242,14 +248,14 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
         }}
       >
         <label htmlFor="message-draft" className="sr-only">
-          Message
+          {t('messages.messageLabel')}
         </label>
         <Textarea
           id="message-draft"
           rows={2}
           maxLength={5000}
           value={draft}
-          placeholder="Write a message… (Enter to send, Shift+Enter for a new line)"
+          placeholder={t('messages.placeholderKeys')}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -259,7 +265,7 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
           }}
           className="resize-none"
         />
-        <Button type="submit" size="icon" className="h-10 w-10" aria-label="Send message" loading={send.isPending} disabled={!draft.trim()}>
+        <Button type="submit" size="icon" className="h-10 w-10" aria-label={t('messages.send')} loading={send.isPending} disabled={!draft.trim()}>
           {!send.isPending && <Send className="h-4 w-4" aria-hidden />}
         </Button>
       </form>
@@ -268,7 +274,8 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
 }
 
 export function MessagesPage() {
-  useDocumentTitle('Messages');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('messages.title'));
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const connected = useRealtimeConnected();
@@ -319,21 +326,21 @@ export function MessagesPage() {
     <>
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Messages</h1>
-          <p className="text-sm text-slate-500">Case conversations with patients, agents and care coordinators.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('messages.title')}</h1>
+          <p className="text-sm text-slate-500">{t('messages.description')}</p>
         </div>
         <span
           className={cn('inline-flex items-center gap-1.5 text-xs', connected ? 'text-brand-600' : 'text-slate-400')}
-          title={connected ? 'Live updates connected' : 'Reconnecting…'}
+          title={connected ? t('messages.liveConnected') : t('messages.reconnecting')}
         >
           {connected ? <Wifi className="h-4 w-4" aria-hidden /> : <WifiOff className="h-4 w-4" aria-hidden />}
-          {connected ? 'Live' : 'Offline'}
+          {connected ? t('messages.live') : t('messages.offline')}
         </span>
       </div>
       <Card className="flex h-[calc(100vh-12rem)] min-h-[28rem] overflow-hidden">
         <div
           className={cn(
-            'w-full shrink-0 overflow-y-auto border-r border-slate-200 md:w-80 dark:border-slate-800',
+            'w-full shrink-0 overflow-y-auto border-e border-slate-200 md:w-80 dark:border-slate-800',
             selectedId ? 'hidden md:block' : 'block',
           )}
         >
@@ -348,8 +355,8 @@ export function MessagesPage() {
           ) : conversations.data.length === 0 ? (
             <EmptyState
               icon={<MessageSquare className="h-6 w-6" aria-hidden />}
-              title="No conversations"
-              description="A conversation is created automatically for every new case."
+              title={t('messages.emptyTitle')}
+              description={t('messages.emptyText')}
             />
           ) : (
             <ConversationList conversations={conversations.data} selectedId={selectedId} myId={user?.id} onSelect={select} />
@@ -357,8 +364,8 @@ export function MessagesPage() {
         </div>
         <div className={cn('min-w-0 flex-1', selectedId ? 'block' : 'hidden md:block')}>
           {selectedId && (
-            <Button variant="ghost" size="sm" className="m-2 md:hidden" icon={<ArrowLeft className="h-4 w-4" aria-hidden />} onClick={() => select(null)}>
-              Conversations
+            <Button variant="ghost" size="sm" className="m-2 md:hidden" icon={<ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />} onClick={() => select(null)}>
+              {t('messages.conversations')}
             </Button>
           )}
           {selected ? (
@@ -371,7 +378,7 @@ export function MessagesPage() {
             <EmptyState
               className="h-full"
               icon={<MessageSquare className="h-6 w-6" aria-hidden />}
-              title={selectedId ? 'Conversation not found' : 'Select a conversation'}
+              title={selectedId ? t('messages.notFound') : t('messages.selectTitle')}
             />
           )}
         </div>

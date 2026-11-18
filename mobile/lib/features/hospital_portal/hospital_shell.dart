@@ -18,38 +18,44 @@ class HospitalShell extends StatelessWidget {
   final int initialTab;
 
   /// Bottom-navigation tabs, labelled in the current language.
-  static List<PortalTab> tabs(AppLocalizations l) => [
+  static const tabs = [
     PortalTab(
-      label: l.hpTabDashboard,
+      labelBuilder: _dashboardLabel,
       icon: Icons.space_dashboard_outlined,
       selectedIcon: Icons.space_dashboard_rounded,
       builder: _dashboard,
     ),
     PortalTab(
-      label: l.hpTabEnquiries,
+      labelBuilder: _enquiriesLabel,
       icon: Icons.inbox_outlined,
       selectedIcon: Icons.inbox_rounded,
       builder: _enquiries,
     ),
     PortalTab(
-      label: l.hpTabPatients,
+      labelBuilder: _patientsLabel,
       icon: Icons.local_hospital_outlined,
       selectedIcon: Icons.local_hospital_rounded,
       builder: _patients,
     ),
     PortalTab(
-      label: l.hpTabSettlements,
+      labelBuilder: _settlementsLabel,
       icon: Icons.account_balance_outlined,
       selectedIcon: Icons.account_balance_rounded,
       builder: _settlements,
     ),
     PortalTab(
-      label: l.hpTabMore,
+      labelBuilder: _moreLabel,
       icon: Icons.grid_view_outlined,
       selectedIcon: Icons.grid_view_rounded,
       builder: _more,
     ),
   ];
+
+  static String _dashboardLabel(AppLocalizations l) => l.hpTabDashboard;
+  static String _enquiriesLabel(AppLocalizations l) => l.hpTabEnquiries;
+  static String _patientsLabel(AppLocalizations l) => l.hpTabPatients;
+  static String _settlementsLabel(AppLocalizations l) => l.hpTabSettlements;
+  static String _moreLabel(AppLocalizations l) => l.hpTabMore;
 
   static Widget _dashboard(BuildContext _) => const HospitalDashboardScreen();
   static Widget _enquiries(BuildContext _) => const EnquiriesScreen();
@@ -58,9 +64,6 @@ class HospitalShell extends StatelessWidget {
   static Widget _more(BuildContext _) => const HospitalMoreScreen();
 
   @override
-  Widget build(BuildContext context) => PortalShellScaffold(
-    key: ValueKey('hospital-shell-$initialTab'),
-    tabs: tabs(context.l10n),
-    initialIndex: initialTab,
-  );
+  Widget build(BuildContext context) =>
+      PortalShellScaffold(key: ValueKey('hospital-shell-$initialTab'), tabs: tabs, initialIndex: initialTab);
 }

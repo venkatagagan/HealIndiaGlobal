@@ -189,7 +189,7 @@ function OptionSearch({ value, onChange, label }: { value: string; onChange: (v:
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={listboxKeyDown}
-        placeholder={t('filters.filterPlaceholder', { label: label.toLowerCase() })}
+        placeholder={t('filters.filterPlaceholder', { label: label.toLocaleLowerCase() })}
         aria-label={t('filters.filterOptions', { label })}
         className={cn(SMALL_INPUT, 'ps-8')}
       />

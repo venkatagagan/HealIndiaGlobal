@@ -7,6 +7,7 @@ import 'core/network/realtime_service.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/brand_header.dart';
+import 'features/agent_portal/shared/organisation_suspended.dart';
 import 'features/messages/logic/push_coordinator.dart';
 import 'l10n/l10n.dart';
 
@@ -44,7 +45,9 @@ class HealIndiaApp extends ConsumerWidget {
         final mq = MediaQuery.of(context);
         return MediaQuery(
           data: mq.copyWith(textScaler: mq.textScaler.clamp(minScaleFactor: 0.85, maxScaleFactor: 1.3)),
-          child: child ?? const SizedBox.shrink(),
+          // Agent / hospital users of a suspended organisation get one full-screen message (403
+          // `organisation_suspended`) instead of an error on every screen of their section.
+          child: OrganisationSuspendedGate(child: child ?? const SizedBox.shrink()),
         );
       },
     );

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/agent_portal/agent_routes.dart';
 import '../../features/aftercare/screens/aftercare_screen.dart';
 import '../../features/auth/screens/auth_screen.dart';
+import '../../features/consultations/screens/consultation_book_screen.dart';
+import '../../features/consultations/screens/consultations_screen.dart';
 import '../../features/guest/screens/free_consultation_screen.dart';
 import '../../features/quotes/screens/quick_quote_screen.dart';
 import '../../features/quotes/screens/quote_group_screen.dart';
@@ -346,6 +348,35 @@ List<RouteBase> buildAppRoutes() => [
     ],
   ),
   GoRoute(path: Routes.aftercare, name: RouteNames.aftercare, builder: (_, _) => const AftercareScreen()),
+  GoRoute(
+    path: Routes.consultations,
+    name: RouteNames.consultations,
+    builder: (_, _) => const ConsultationsScreen(),
+    routes: [
+      GoRoute(
+        path: 'book',
+        name: RouteNames.consultationBook,
+        builder: (_, s) {
+          final q = s.uri.queryParameters;
+          return ConsultationBookScreen(
+            hospitalId: q['hospital'] ?? '',
+            doctorId: q['doctor'],
+            screeningId: q['screening'],
+            specialtyId: q['specialty'],
+            procedureId: q['procedure'],
+          );
+        },
+      ),
+      GoRoute(
+        path: ':id',
+        name: RouteNames.consultationDetail,
+        builder: (_, s) => ConsultationDetailScreen(
+          consultationId: s.pathParameters['id']!,
+          openPayment: s.uri.queryParameters['pay'] == '1',
+        ),
+      ),
+    ],
+  ),
   GoRoute(
     path: Routes.visaGuidePath,
     name: RouteNames.visaGuide,

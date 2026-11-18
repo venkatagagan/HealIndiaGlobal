@@ -3,7 +3,13 @@ export { patientApi } from './patient';
 export { documentsApi } from './documents';
 export { catalogApi } from './catalog';
 export { screeningsApi } from './screenings';
-export { casesApi, consultationsApi } from './cases';
+export {
+  casesApi,
+  consultationsApi,
+  CONSULTATION_OPEN_CASE_STATUSES,
+  requestVideoConsultation,
+  type VideoConsultationRequest,
+} from './cases';
 export { bookingsApi } from './bookings';
 export { travelApi } from './travel';
 export { messagingApi, notificationsApi } from './messaging';

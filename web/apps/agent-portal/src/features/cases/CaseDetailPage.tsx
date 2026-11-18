@@ -36,6 +36,7 @@ import { DocumentList, DocumentUploader } from '../documents/Documents';
 import { EmergencyAckPanel, PatientUpgradeRequiredNotice, needsEmergencyAck } from '@hig/shared/ui';
 import { AcceptQuoteDialog, QuoteDetails, RejectQuoteDialog, isQuoteActionable, type CareGate } from './quotes';
 import { QuoteDeadline } from './QuoteDeadline';
+import { CaseConsultations } from './CaseConsultations';
 
 const CANCELLABLE: CaseDetail['status'][] = ['enquiry', 'quoted', 'accepted', 'booked'];
 
@@ -188,6 +189,8 @@ export function CaseDetailPage() {
               </div>
             )}
           </Card>
+
+          <CaseConsultations caseId={c.id} />
 
           <Card>
             <CardHeader title={t('caseDetail.documents')} description={t('caseDetail.documentsHint')} />

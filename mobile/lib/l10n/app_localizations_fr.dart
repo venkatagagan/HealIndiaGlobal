@@ -6638,7 +6638,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hpWebPortalNote =>
-      'Les modifications du profil, des membres, des disponibilités et des prix se font sur le portail web de l’hôpital.';
+      'Les modifications du profil, des membres et des prix se font sur le portail web de l’hôpital.';
 
   @override
   String get hpNoVisaRequests => 'Aucune demande de visa';
@@ -8785,4 +8785,543 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => 'Traitement';
+
+  @override
+  String get reportSheetTitleReview => 'Signaler cet avis';
+
+  @override
+  String get reportSheetIntroReview =>
+      'Dites-nous ce qui ne va pas avec cet avis, par exemple du spam, des propos abusifs, de fausses affirmations ou les données personnelles de quelqu\'un. Notre équipe de modération l\'examinera. L\'auteur ne saura pas qui l\'a signalé.';
+
+  @override
+  String get reviewReportAction => 'Signaler l\'avis';
+
+  @override
+  String get orgSuspendedTitle => 'Votre compte est suspendu';
+
+  @override
+  String get orgSuspendedBodyAgent =>
+      'Le compte de votre agence a été suspendu : les patients, dossiers et réservations ne peuvent pas être ouverts dans l\'application pour le moment. Contactez notre équipe d\'assistance pour en connaître la raison et la marche à suivre.';
+
+  @override
+  String get orgSuspendedBodyHospital =>
+      'Le compte de votre hôpital a été suspendu : les demandes, patients et règlements ne peuvent pas être ouverts dans l\'application pour le moment. Contactez notre équipe d\'assistance pour en connaître la raison et la marche à suivre.';
+
+  @override
+  String get orgSuspendedCallSupport => 'Appeler l\'assistance';
+
+  @override
+  String get orgSuspendedWhatsAppSupport => 'Écrire à l\'assistance sur WhatsApp';
+
+  @override
+  String get orgSuspendedNoContact =>
+      'Impossible de charger les coordonnées de l\'assistance. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get orgSuspendedCheckAgain => 'Vérifier à nouveau';
+
+  @override
+  String get hpAvailabilityTitle => 'Disponibilités de l’hôpital';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'Disponibilités : $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'Capacité d’admissions et de consultations par jour';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'Indiquez combien de téléconsultations et d’admissions ce médecin peut assurer chaque jour. Les patients ne voient que les jours avec des places libres ; une capacité ne peut pas être inférieure à ce qui est déjà réservé.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'Capacité de l’hôpital dans son ensemble, sans lien avec un médecin (par exemple les lits pour les admissions). Les patients ne voient que les jours avec des places libres ; une capacité ne peut pas être inférieure à ce qui est déjà réservé.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'Consultations';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'Admissions';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return 'Réservé(s) : $count';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return 'Au moins $count';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => 'De 0 à 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'Remplissage rapide';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'Applique la même capacité à tous les jours restants du mois ($month). Vérifiez les jours, puis enregistrez.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'Jours de semaine uniquement (sans samedi ni dimanche)';
+
+  @override
+  String get hpAvailabilityApply => 'Remplir le mois';
+
+  @override
+  String get hpAvailabilitySaved => 'Disponibilités enregistrées';
+
+  @override
+  String get hpAvailabilityFixErrors => 'Corrigez les jours signalés avant d’enregistrer.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'Une capacité est inférieure aux places déjà réservées ce jour-là. Augmentez-la et enregistrez à nouveau.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'Abandonner les modifications non enregistrées ?';
+
+  @override
+  String get hpAvailabilityDiscard => 'Abandonner';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'Continuer la modification';
+
+  @override
+  String get hpAvailabilityEditButton => 'Disponibilités';
+
+  @override
+  String get hpAvailabilityPastDay => 'Jour passé';
+
+  @override
+  String get privacyRequestsTitle => 'Demandes relatives à vos données';
+
+  @override
+  String get privacyRequestsSubtitle =>
+      'Demandez une copie, une rectification ou la suppression de vos données, ou déposez une réclamation';
+
+  @override
+  String get privacyRequestsEmpty => 'Vous n’avez encore fait aucune demande relative à vos données.';
+
+  @override
+  String get privacyRequestNew => 'Nouvelle demande';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'Nous enregistrons votre demande et y répondons avant la date limite indiquée après l’envoi. Nous pouvons vous demander de confirmer votre identité avant d’y donner suite.';
+
+  @override
+  String get privacyRequestKindLabel => 'Que souhaitez-vous faire ?';
+
+  @override
+  String get privacyRequestKindAccess => 'Obtenir une copie de mes données';
+
+  @override
+  String get privacyRequestKindCorrection => 'Rectifier mes données';
+
+  @override
+  String get privacyRequestKindErasure => 'Supprimer mes données';
+
+  @override
+  String get privacyRequestKindNomination => 'Désigner une personne pour exercer mes droits';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'Retirer un consentement';
+
+  @override
+  String get privacyRequestKindComplaint => 'Réclamation';
+
+  @override
+  String get privacyRequestKindOther => 'Autre chose';
+
+  @override
+  String get privacyRequestDetailsLabel => 'Détails';
+
+  @override
+  String get privacyRequestDetailsHint =>
+      'Expliquez votre besoin, par exemple quelles données sont fausses et ce qu’elles devraient indiquer.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'Écrivez au moins 10 caractères.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'Au nom de (facultatif)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'Nom de la personne que vous représentez, si ce n’est pas vous';
+
+  @override
+  String get privacyRequestSubmit => 'Envoyer la demande';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'Demande $reference envoyée. Réponse attendue au plus tard le $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'Reçue';
+
+  @override
+  String get privacyRequestStatusInProgress => 'En cours';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'En attente de votre réponse';
+
+  @override
+  String get privacyRequestStatusCompleted => 'Traitée';
+
+  @override
+  String get privacyRequestStatusRejected => 'Refusée';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'Réponse attendue au plus tard le $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'En retard';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'Envoyée le $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'Clôturée le $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'Votre demande';
+
+  @override
+  String get privacyRequestResolution => 'Notre réponse';
+
+  @override
+  String get privacyRequestNoAnswerYet =>
+      'Nous n’avons pas encore répondu. Vous recevrez une notification dès que ce sera fait.';
+
+  @override
+  String get privacyNomineeTitle => 'Personne désignée';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'Choisissez une personne qui exercera vos droits si vous ne le pouvez plus';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'En vertu de la loi indienne sur la protection des données personnelles numériques (DPDP), vous pouvez désigner une personne qui exercera vos droits sur vos données en cas de décès ou d’incapacité. Indiquez son adresse e-mail ou son numéro de téléphone.';
+
+  @override
+  String get privacyNomineeName => 'Nom complet';
+
+  @override
+  String get privacyNomineeRelationship => 'Lien (par exemple conjoint, fils)';
+
+  @override
+  String get privacyNomineeEmail => 'E-mail';
+
+  @override
+  String get privacyNomineePhone => 'Téléphone';
+
+  @override
+  String get privacyNomineeContactRequired => 'Indiquez une adresse e-mail ou un numéro de téléphone.';
+
+  @override
+  String get privacyNomineeTooShort => 'Saisissez au moins 2 caractères.';
+
+  @override
+  String get privacyNomineeSave => 'Enregistrer la personne désignée';
+
+  @override
+  String get privacyNomineeSaved => 'Personne désignée enregistrée';
+
+  @override
+  String get privacyNomineeRemove => 'Retirer la personne désignée';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'Retirer la personne désignée ? Elle ne pourra plus agir en votre nom.';
+
+  @override
+  String get privacyNomineeRemoved => 'Personne désignée retirée';
+
+  @override
+  String get privacyShareHospitalsTitle => 'Partager mes dossiers avec les hôpitaux';
+
+  @override
+  String get privacyShareHospitalsOn =>
+      'Les hôpitaux que vous contactez peuvent ouvrir les comptes rendus que vous leur transmettez';
+
+  @override
+  String get privacyShareHospitalsOff => 'Retiré : les hôpitaux ne peuvent pas ouvrir vos comptes rendus partagés';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'Arrêter le partage avec les hôpitaux ?';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'Les hôpitaux ne pourront plus ouvrir les comptes rendus et documents que vous leur avez transmis ; les devis et consultations pourront donc être retardés jusqu’à un nouveau partage. Les dossiers qu’un hôpital doit conserver en vertu de la loi ne sont pas concernés.';
+
+  @override
+  String get privacyShareAgentTitle => 'Partager mes dossiers avec mon agent';
+
+  @override
+  String get privacyShareAgentOn => 'Votre agent ou facilitateur peut ouvrir vos documents';
+
+  @override
+  String get privacyShareAgentOff => 'Votre agent ou facilitateur ne peut pas ouvrir vos documents';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'Arrêter le partage avec votre agent ?';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'Votre agent ou facilitateur ne pourra plus ouvrir vos documents. Vous pouvez les partager à nouveau à tout moment.';
+
+  @override
+  String get privacyShareWithdraw => 'Arrêter le partage';
+
+  @override
+  String get privacyShareUpdated => 'Votre choix de partage a été enregistré';
+
+  @override
+  String get privacyContactTitle => 'Responsable des réclamations et DPO';
+
+  @override
+  String get privacyContactSubtitle => 'Qui contacter au sujet de vos données personnelles';
+
+  @override
+  String get privacyContactGrievance => 'Responsable des réclamations';
+
+  @override
+  String get privacyContactDpo => 'Délégué à la protection des données';
+
+  @override
+  String get privacyContactAddress => 'Adresse postale';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'Nous répondons aux demandes et réclamations sous $days jours.';
+  }
+
+  @override
+  String get privacyContactBoard =>
+      'Si notre réponse ne vous satisfait pas, vous pouvez saisir le Data Protection Board of India.';
+
+  @override
+  String get privacyContactBoardLink => 'Site du Data Protection Board';
+
+  @override
+  String get privacyContactNotPublished => 'Coordonnées pas encore publiées';
+
+  @override
+  String get consultBookTitle => 'Réserver une téléconsultation';
+
+  @override
+  String get consultBookIntro =>
+      'Parlez à un spécialiste en vidéo avant votre voyage. L’hôpital confirme l’heure exacte et vous envoie le lien vidéo.';
+
+  @override
+  String get consultDoctorSection => 'Médecin';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return 'Aucun médecin de cet établissement ($hospital) ne propose encore de téléconsultation. Vous pouvez demander un devis à la place.';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'Demander un devis à la place';
+
+  @override
+  String get consultDateSection => 'Jour souhaité';
+
+  @override
+  String get consultDateHint => 'Les jours en vert ont des créneaux de consultation libres.';
+
+  @override
+  String get consultTimeSection => 'Heure souhaitée';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'Les heures sont indiquées dans votre fuseau horaire ($zone).';
+  }
+
+  @override
+  String get consultQuestionLabel => 'Que souhaitez-vous demander au médecin ?';
+
+  @override
+  String get consultQuestionHint =>
+      'Vos symptômes, le traitement envisagé, vos questions sur le voyage et la convalescence...';
+
+  @override
+  String get consultReportsSection => 'Comptes rendus à partager';
+
+  @override
+  String get consultReportsHint => 'Le médecin peut les lire avant l’appel.';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'Les comptes rendus que vous ajoutez ici rejoignent votre dossier $caseNumber auprès de : $hospital.';
+  }
+
+  @override
+  String get consultUpload => 'Ajouter un compte rendu';
+
+  @override
+  String get consultFeeLabel => 'Tarif de la consultation';
+
+  @override
+  String get consultFeeFree => 'Gratuit';
+
+  @override
+  String get consultFeePayNote =>
+      'Vous réglez le tarif par carte juste après l’envoi de la demande. L’hôpital confirme ensuite l’heure.';
+
+  @override
+  String get consultSubmit => 'Demander la consultation';
+
+  @override
+  String get consultPickDoctor => 'Choisissez un médecin.';
+
+  @override
+  String get consultPickSlot => 'Choisissez un jour et une heure.';
+
+  @override
+  String get consultRequestedSnack => 'Consultation demandée. L’hôpital confirmera l’heure.';
+
+  @override
+  String get consultErrorExists =>
+      'Vous avez déjà une consultation en cours avec ce médecin. Retrouvez-la dans Mes consultations.';
+
+  @override
+  String get consultErrorUnavailable => 'Ce médecin ne propose pas de téléconsultation. Choisissez un autre médecin.';
+
+  @override
+  String get consultErrorDoctorRequired => 'Choisissez un médecin pour la consultation.';
+
+  @override
+  String get consultErrorInvalidDoctor => 'Ce médecin n’exerce pas dans cet hôpital. Choisissez un autre médecin.';
+
+  @override
+  String get consultMineTitle => 'Mes consultations';
+
+  @override
+  String get consultMineSubtitle => 'Appels vidéo avec les médecins avant et après le traitement';
+
+  @override
+  String get consultListEmpty => 'Aucune consultation pour l’instant';
+
+  @override
+  String get consultListEmptyBody =>
+      'Réservez une téléconsultation depuis la page d’un médecin ou vos hôpitaux recommandés.';
+
+  @override
+  String get consultFindDoctor => 'Trouver un médecin';
+
+  @override
+  String get consultDetailTitle => 'Consultation';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return 'Téléconsultation avec $doctor';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return 'Suivi post-traitement avec $doctor';
+  }
+
+  @override
+  String get consultDoctorTbc => 'le médecin de l’hôpital';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'Prévue le $when ($minutes min)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'En attente de la confirmation de l’heure par l’hôpital.';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'Vous avez demandé : $when.';
+  }
+
+  @override
+  String get consultJoinVideo => 'Rejoindre l’appel vidéo';
+
+  @override
+  String get consultJoinHint => 'Ouvre la salle vidéo privée dans votre navigateur ou l’application Jitsi Meet.';
+
+  @override
+  String get consultLinkSoon => 'Le lien vidéo apparaîtra ici dès que l’hôpital aura confirmé l’heure.';
+
+  @override
+  String get consultReminderScheduled => 'Nous vous enverrons un rappel 24 heures et 1 heure avant l’appel.';
+
+  @override
+  String get consultReminderPending =>
+      'Une fois l’heure confirmée, nous vous enverrons un rappel 24 heures et 1 heure avant l’appel.';
+
+  @override
+  String get consultPaid => 'Payé';
+
+  @override
+  String get consultPaymentDue => 'Paiement à effectuer';
+
+  @override
+  String get consultPaymentPending => 'Paiement en cours de confirmation';
+
+  @override
+  String consultPayButton(String amount) {
+    return 'Payer $amount';
+  }
+
+  @override
+  String get consultPayTitle => 'Payer la consultation';
+
+  @override
+  String get consultPaySuccess => 'Paiement reçu. Merci.';
+
+  @override
+  String get consultPayFailed => 'Le paiement n’a pas abouti et aucun montant n’a été prélevé. Vous pouvez réessayer.';
+
+  @override
+  String get consultPayPending =>
+      'Votre paiement est en cours de confirmation. Cette page se met à jour une fois terminé.';
+
+  @override
+  String get consultCancel => 'Annuler la consultation';
+
+  @override
+  String get consultCancelConfirmTitle => 'Annuler cette consultation ?';
+
+  @override
+  String get consultCancelConfirmBody =>
+      'L’hôpital sera prévenu. Si vous avez déjà payé, notre équipe vous contactera à ce sujet.';
+
+  @override
+  String get consultKeep => 'La conserver';
+
+  @override
+  String get consultCancelled => 'Consultation annulée';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'Ouvrir le dossier $caseNumber';
+  }
+
+  @override
+  String get consultNotesSection => 'Vos notes';
+
+  @override
+  String get consultBookVideoButton => 'Réserver une téléconsultation';
 }

@@ -11,6 +11,7 @@ import { useAppTranslation } from '../../i18n';
 import { ApproxMoney, useDisplayCurrency } from '../../lib/displayCurrency';
 import { qk, useSpecialties } from '../../lib/queries';
 import { filterParam, formatMoney, formatNumber, useDocumentTitle, useTableState } from '../../lib/shared';
+import { EarliestChips } from './Earliest';
 
 const ACCREDITATIONS = [
   { value: 'jci', label: 'JCI' },
@@ -184,6 +185,7 @@ export function HospitalCardView({ hospital: h }: { hospital: HospitalCard }) {
             </Badge>
           )}
         </div>
+        <EarliestChips consultation={h.next_available_consultation} admission={h.next_available_admission} />
         {h.specialties.length > 0 && <p className="line-clamp-1 text-xs text-muted">{h.specialties.join(' · ')}</p>}
         {h.starting_price_minor != null && (
           <p className="text-sm">

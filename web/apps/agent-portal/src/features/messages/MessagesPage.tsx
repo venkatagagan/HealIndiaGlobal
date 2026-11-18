@@ -17,13 +17,16 @@ import { initials } from '../../lib/format';
 import { qk } from '../../lib/queries';
 import { useRealtimeConnected, useRealtimeEvent } from '../../lib/realtime';
 import { cn, formatDate, formatRelative, formatTime, useDocumentTitle } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 const PAGE = 30;
 
-function title(c: ConversationOut, myId: string | undefined): string {
+function title(t: TFn, c: ConversationOut, myId: string | undefined): string {
   if (c.subject) return c.subject;
   const others = c.participants.filter((p) => p.user_id !== myId).map((p) => p.full_name);
-  return others.length ? others.slice(0, 3).join(', ') : c.kind === 'support' ? 'Support' : 'Conversation';
+  return others.length ? others.slice(0, 3).join(', ') : c.kind === 'support' ? t('messages.support') : t('messages.conversation');
 }
 
 function sortAsc(messages: MessageOut[]): MessageOut[] {
@@ -31,7 +34,8 @@ function sortAsc(messages: MessageOut[]): MessageOut[] {
 }
 
 export function MessagesPage() {
-  useDocumentTitle('Messages');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('messages.title'));
   const { conversationId } = useParams();
   const [params] = useSearchParams();
   const caseId = params.get('case');
@@ -78,15 +82,15 @@ export function MessagesPage() {
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Messages</h1>
-          <p className="text-sm text-muted">Talk to hospitals, coordinators and support about your cases.</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t('messages.title')}</h1>
+          <p className="text-sm text-muted">{t('messages.description')}</p>
         </div>
         <Button variant="outline" icon={<Plus className="h-4 w-4" aria-hidden />} onClick={() => setNewOpen(true)}>
-          Contact support
+          {t('messages.contactSupport')}
         </Button>
       </div>
       <Card className="flex h-[calc(100vh-13rem)] min-h-[480px] overflow-hidden">
-        <aside className={cn('w-full shrink-0 border-r border-border md:w-80', conversationId && 'hidden md:block')} aria-label="Conversations">
+        <aside className={cn('w-full shrink-0 border-e border-border md:w-80', conversationId && 'hidden md:block')} aria-label={t('messages.conversations')}>
           {conversations.isPending ? (
             <LoadingBlock />
           ) : conversations.isError ? (
@@ -94,8 +98,8 @@ export function MessagesPage() {
           ) : conversations.data.length === 0 ? (
             <EmptyState
               icon={<MessageSquare className="h-6 w-6" />}
-              title="No conversations yet"
-              description="A conversation is created automatically for every case."
+              title={t('messages.emptyTitle')}
+              description={t('messages.emptyText')}
             />
           ) : (
             <ul className="h-full divide-y divide-border overflow-y-auto">
@@ -109,12 +113,12 @@ export function MessagesPage() {
                       className={cn('block px-4 py-3 hover:bg-surface-2', c.id === conversationId && 'bg-primary-soft')}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <p className="truncate text-sm font-medium">{title(c, user?.id)}</p>
+                        <p className="truncate text-sm font-medium">{title(t, c, user?.id)}</p>
                         {c.last_message_at && <span className="shrink-0 text-xs text-muted">{formatRelative(c.last_message_at)}</span>}
                       </div>
                       <div className="flex items-center justify-between gap-2">
                         <p className="truncate text-xs text-muted">
-                          {c.last_message ? `${c.last_message.sender.full_name}: ${c.last_message.body}` : 'No messages yet'}
+                          {c.last_message ? `${c.last_message.sender.full_name}: ${c.last_message.body}` : t('messages.noMessages')}
                         </p>
                         {c.unread_count > 0 && (
                           <span className="rounded-full bg-primary-700 px-1.5 text-xs font-semibold text-white">{c.unread_count}</span>
@@ -128,13 +132,13 @@ export function MessagesPage() {
         </aside>
         <section className={cn('min-w-0 flex-1 flex-col', conversationId ? 'flex' : 'hidden md:flex')}>
           {caseId ? (
-            <LoadingBlock label="Opening case conversation…" />
+            <LoadingBlock label={t('messages.openingCase')} />
           ) : selected ? (
             <Thread key={selected.id} conversation={selected} myId={user?.id} />
           ) : conversationId && conversations.isSuccess ? (
-            <EmptyState title="Conversation not found" description="It may have been removed or you no longer have access." />
+            <EmptyState title={t('messages.notFound')} description={t('messages.notFoundText')} />
           ) : (
-            <EmptyState icon={<MessageSquare className="h-6 w-6" />} title="Select a conversation" className="h-full" />
+            <EmptyState icon={<MessageSquare className="h-6 w-6" />} title={t('messages.selectTitle')} className="h-full" />
           )}
         </section>
       </Card>
@@ -144,6 +148,7 @@ export function MessagesPage() {
 }
 
 function Thread({ conversation, myId }: { conversation: ConversationOut; myId: string | undefined }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const key = qk.messages(conversation.id);
   const [body, setBody] = useState('');
@@ -225,18 +230,18 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
   return (
     <>
       <header className="flex items-center gap-3 border-b border-border px-4 py-3">
-        <Link to="/messages" className="rounded p-1 text-muted hover:text-fg md:hidden" aria-label="Back to conversations">
-          <ArrowLeft className="h-5 w-5" aria-hidden />
+        <Link to="/messages" className="rounded p-1 text-muted hover:text-fg md:hidden" aria-label={t('messages.backToConversations')}>
+          <ArrowLeft className="h-5 w-5 rtl:-scale-x-100" aria-hidden />
         </Link>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold">{title(conversation, myId)}</p>
+          <p className="truncate font-semibold">{title(t, conversation, myId)}</p>
           <p className="truncate text-xs text-muted">
             {conversation.participants.map((p) => `${p.full_name} (${USER_ROLE_LABELS[p.role] ?? p.role})`).join(' · ')}
           </p>
         </div>
         {conversation.case_id && (
           <Link to={`/cases/${conversation.case_id}`} className="shrink-0 text-sm font-medium text-primary-ink hover:underline">
-            Open case
+            {t('messages.openCase')}
           </Link>
         )}
       </header>
@@ -252,7 +257,7 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
         {messages.hasNextPage && (
           <div className="flex justify-center">
             <Button size="sm" variant="ghost" loading={messages.isFetchingNextPage} onClick={() => void messages.fetchNextPage()}>
-              Load earlier messages
+              {t('messages.loadEarlier')}
             </Button>
           </div>
         )}
@@ -263,7 +268,7 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
         ) : messages.isError ? (
           <ErrorState error={messages.error} onRetry={() => void messages.refetch()} />
         ) : all.length === 0 ? (
-          <p className="py-10 text-center text-sm text-muted">No messages yet. Say hello 👋</p>
+          <p className="py-10 text-center text-sm text-muted">{t('messages.sayHello')}</p>
         ) : (
           all.map((m, i) => {
             const mine = m.sender.id === myId;
@@ -281,7 +286,7 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                       {initials(m.sender.full_name)}
                     </span>
                   )}
-                  <div className={cn('max-w-[75%] rounded-2xl px-3.5 py-2 text-sm', mine ? 'rounded-br-sm bg-primary-700 text-white' : 'rounded-bl-sm bg-surface-2')}>
+                  <div className={cn('max-w-[75%] rounded-2xl px-3.5 py-2 text-sm', mine ? 'rounded-ee-sm bg-primary-700 text-white' : 'rounded-es-sm bg-surface-2')}>
                     {!mine && (
                       <p className="mb-0.5 text-xs font-semibold">
                         {m.sender.full_name} <span className="font-normal text-muted">· {USER_ROLE_LABELS[m.sender.role] ?? m.sender.role}</span>
@@ -290,23 +295,23 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
                     <p className="break-words whitespace-pre-wrap">{m.body}</p>
                     {m.attachment_document_ids.length > 0 && (
                       <p className={cn('mt-1 text-xs', mine ? 'text-white/80' : 'text-muted')}>
-                        {m.attachment_document_ids.length} attachment{m.attachment_document_ids.length === 1 ? '' : 's'} — see case documents
+                        {t('messages.attachments', { count: m.attachment_document_ids.length })}
                       </p>
                     )}
-                    <p className={cn('mt-1 text-right text-[10px]', mine ? 'text-white/70' : 'text-muted')}>{formatTime(m.created_at)}</p>
+                    <p className={cn('mt-1 text-end text-[10px]', mine ? 'text-white/70' : 'text-muted')}>{formatTime(m.created_at)}</p>
                   </div>
                 </div>
                 <div className={cn('flex flex-col', mine ? 'items-end' : 'items-start ps-10')}>
                   {m.hidden && (
                     <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted">
-                      <EyeOff className="size-3" aria-hidden /> Hidden by moderators
+                      <EyeOff className="size-3" aria-hidden /> {t('messages.hidden')}
                     </p>
                   )}
                   {!mine && (
                     <ReportButton
                       targetType="message"
                       targetId={m.id}
-                      aria-label={`Report message from ${m.sender.full_name}`}
+                      aria-label={t('messages.reportFrom', { name: m.sender.full_name })}
                       className="mt-0.5 h-6 px-1.5 text-[11px]"
                     />
                   )}
@@ -324,14 +329,14 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
         }}
       >
         <label htmlFor="composer" className="sr-only">
-          Message
+          {t('messages.messageLabel')}
         </label>
         <Textarea
           id="composer"
           rows={1}
           maxLength={5000}
           className="max-h-40 min-h-10 resize-none"
-          placeholder="Write a message…  (Enter to send, Shift+Enter for a new line)"
+          placeholder={t('messages.placeholderKeys')}
           value={body}
           onChange={(e) => setBody(e.target.value)}
           onKeyDown={(e) => {
@@ -341,13 +346,14 @@ function Thread({ conversation, myId }: { conversation: ConversationOut; myId: s
             }
           }}
         />
-        <Button type="submit" size="icon" aria-label="Send message" loading={send.isPending} disabled={!body.trim()} icon={send.isPending ? undefined : <Send className="h-4 w-4" aria-hidden />} />
+        <Button type="submit" size="icon" aria-label={t('messages.send')} loading={send.isPending} disabled={!body.trim()} icon={send.isPending ? undefined : <Send className="h-4 w-4" aria-hidden />} />
       </form>
     </>
   );
 }
 
 function NewSupportConversation({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [subject, setSubject] = useState('');
@@ -373,26 +379,26 @@ function NewSupportConversation({ open, onClose }: { open: boolean; onClose: () 
       onClose={onClose}
       title={
         <span className="inline-flex items-center gap-2">
-          <Headset className="h-5 w-5 text-primary" aria-hidden /> Contact support
+          <Headset className="h-5 w-5 text-primary" aria-hidden /> {t('messages.contactSupport')}
         </span>
       }
-      description="Our patient-care team usually replies within a few hours."
+      description={t('messages.supportReply')}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('messages.cancel')}
           </Button>
           <Button loading={create.isPending} disabled={subject.trim().length < 3} onClick={() => create.mutate()}>
-            Start conversation
+            {t('messages.start')}
           </Button>
         </>
       }
     >
       <div className="space-y-4">
-        <FormField label="Subject" htmlFor="sup-subject" required>
+        <FormField label={t('messages.subject')} htmlFor="sup-subject" required>
           <Input id="sup-subject" maxLength={200} value={subject} onChange={(e) => setSubject(e.target.value)} />
         </FormField>
-        <FormField label="Message" htmlFor="sup-message">
+        <FormField label={t('messages.messageLabel')} htmlFor="sup-message">
           <Textarea id="sup-message" rows={4} maxLength={5000} value={message} onChange={(e) => setMessage(e.target.value)} />
         </FormField>
       </div>

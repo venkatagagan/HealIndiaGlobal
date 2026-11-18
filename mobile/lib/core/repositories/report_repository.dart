@@ -8,7 +8,8 @@ import '../network/api_client.dart';
 enum ReportTargetType {
   message('message'),
   screeningResult('screening_result'),
-  documentAnalysis('document_analysis');
+  documentAnalysis('document_analysis'),
+  review('review');
 
   const ReportTargetType(this.json);
 
@@ -47,11 +48,17 @@ enum ReportReason {
   /// Reasons offered for an AI result (screening summary, document reading).
   static const forAiResult = [inaccurate, inappropriate, other];
 
-  static List<ReportReason> forTarget(ReportTargetType type) =>
-      type == ReportTargetType.message ? forMessage : forAiResult;
+  /// Reasons offered for a published hospital / doctor review.
+  static const forReview = [spam, abusive, inappropriate, inaccurate, privacy, other];
+
+  static List<ReportReason> forTarget(ReportTargetType type) => switch (type) {
+    ReportTargetType.message => forMessage,
+    ReportTargetType.review => forReview,
+    ReportTargetType.screeningResult || ReportTargetType.documentAnalysis => forAiResult,
+  };
 }
 
-/// Content reports (CG-16): users flag a chat message or an AI result for the moderation team.
+/// Content reports (CG-16): users flag a chat message, an AI result or a published review for the moderation team.
 class ReportRepository {
   ReportRepository(this._api);
 

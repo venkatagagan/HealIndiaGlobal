@@ -12,14 +12,15 @@ import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../screening/providers/emergency_ack.dart';
 
-/// "Book Consultation": asks for consent to share the screening with the hospital, creates a case
+/// "Request a quote": asks for consent to share the screening with the hospital, creates a case
 /// (`POST /cases`, status `enquiry`) and opens the booking route (`/book/:caseId`, owned by fl-journey).
+/// (A pre-travel video consultation is booked with `bookVideoConsultation` instead.)
 ///
 /// When the screening's urgency is `emergency`, the patient must first acknowledge the emergency
 /// guidance (INTEGRATION_BACKLOG #13); otherwise nothing is created.
 ///
 /// Returns the created case, or null when cancelled.
-Future<MedicalCase?> requestConsultation(
+Future<MedicalCase?> requestQuoteCase(
   BuildContext context, {
   required ScreeningMatch match,
   String? screeningId,
@@ -146,7 +147,7 @@ class _ConsultationRequestSheetState extends ConsumerState<ConsultationRequestSh
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.consultationBookTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+              Text(l10n.quoteSheetTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 6),
               Text(
                 '$who · ${m.hospital.name}${m.hospital.city == null ? '' : ', ${m.hospital.city}'}',

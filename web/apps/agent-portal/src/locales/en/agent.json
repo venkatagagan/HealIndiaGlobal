@@ -638,7 +638,8 @@
     "filters": {
       "specialty": "Specialty",
       "language": "Language",
-      "gender": "Gender"
+      "gender": "Gender",
+      "sort": "Sort"
     },
     "emptyTitle": "No doctors match these filters",
     "resetFilters": "Reset filters",
@@ -646,7 +647,11 @@
     "experienceYears_other": "{{count}} yrs",
     "successRate": "{{pct}}% success",
     "teleconsult": "Teleconsult",
-    "speaks": "Speaks {{languages}}"
+    "speaks": "Speaks {{languages}}",
+    "sort": {
+      "soonest": "Soonest consultation",
+      "experience": "Most experienced"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "Doctor",
@@ -1433,6 +1438,106 @@
       "submit": "Send answers",
       "sent": "Check-in sent.",
       "sentFlagged": "Check-in sent. The hospital and the coordinator have been alerted."
+    },
+    "requestFollowup": {
+      "open": "Request follow-up",
+      "title": "Request a follow-up video consultation",
+      "description": "For {{patient}} with {{doctor}}, {{hospital}}. The hospital confirms the time and sends the video link.",
+      "treatingDoctor": "the treating doctor",
+      "date": "Preferred date",
+      "dateHint": "Within the aftercare period.",
+      "time": "Time (India time)",
+      "istTime": "{{time}} India time",
+      "localTime": "That is {{time}} in your time zone.",
+      "notes": "What should the doctor look at?",
+      "notesHint": "Symptoms since discharge, wound, medicines, test results.",
+      "free": "Aftercare follow-ups are part of the treatment package: no consultation fee.",
+      "submit": "Request follow-up",
+      "cancel": "Cancel",
+      "sent": "Follow-up requested. The hospital will confirm a time.",
+      "errors": {
+        "exists": "A follow-up with this doctor is already open for this patient.",
+        "windowClosed": "The aftercare period for this case has ended.",
+        "notAvailable": "Follow-ups are available during and after treatment only."
+      }
     }
+  },
+  "teleconsult": {
+    "open": "Book video consultation",
+    "title": "Book a video consultation",
+    "description": "Pre-travel video consultation with {{doctor}}, {{hospital}}. The hospital confirms the time and sends the video link.",
+    "patientLine": "Patient: {{name}}",
+    "fee": "Consultation fee: {{fee}}",
+    "free": "No consultation fee",
+    "date": "Preferred date",
+    "dateHint": "Dates with free consultation slots.",
+    "noSlots": "No free consultation slots in the next 60 days. Send the request without a date.",
+    "noPreference": "No date preference",
+    "time": "Time (India time)",
+    "istTime": "{{time}} India time",
+    "localTime": "That is {{time}} in your time zone.",
+    "confirmNote": "The hospital confirms the exact time.",
+    "question": "Question for the doctor",
+    "questionHint": "Symptoms, past treatment and what the patient wants to know before travelling.",
+    "reports": "Reports to share",
+    "reportsHint": "Shared only with this hospital, at most 20.",
+    "consent": "The patient agreed to share these details with the hospital",
+    "consentHint": "{{hospital}} sees the question, the screening and the chosen reports so the doctor can prepare.",
+    "payNote": "The patient pays the consultation fee from their own account (Video consultations).",
+    "submit": "Request consultation",
+    "cancel": "Cancel",
+    "requested": "Consultation requested",
+    "caseTitle": "Video consultations",
+    "followup": "Aftercare follow-up",
+    "preferredAt": "Preferred: {{time}}",
+    "awaitingTime": "Waiting for the hospital to set a time",
+    "join": "Join video call",
+    "slotsLeft_one": "{{count}} slot left",
+    "slotsLeft_other": "{{count}} slots left",
+    "errors": {
+      "exists": "This patient already has an open consultation with this doctor.",
+      "unavailable": "This doctor does not offer video consultations.",
+      "caseClosed": "The patient's case with this hospital is closed. Send a new enquiry first.",
+      "failed": "The consultation request could not be sent. Please try again."
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Support",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "contactSupport": "Contact support",
+    "emptyTitle": "No conversations yet",
+    "noMessages": "No messages yet",
+    "openingCase": "Opening case conversation...",
+    "notFound": "Conversation not found",
+    "notFoundText": "It may have been removed or you no longer have access.",
+    "selectTitle": "Select a conversation",
+    "backToConversations": "Back to conversations",
+    "openCase": "Open case",
+    "loadEarlier": "Load earlier messages",
+    "sayHello": "No messages yet. Say hello!",
+    "hidden": "Hidden by moderators",
+    "reportFrom": "Report message from {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Write a message... (Enter to send, Shift+Enter for a new line)",
+    "send": "Send message",
+    "supportReply": "Our patient-care team usually replies within a few hours.",
+    "cancel": "Cancel",
+    "start": "Start conversation",
+    "subject": "Subject",
+    "description": "Talk to hospitals, coordinators and support about your cases.",
+    "emptyText": "A conversation is created automatically for every case.",
+    "attachments_one": "{{count}} attachment - see case documents",
+    "attachments_other": "{{count}} attachments - see case documents"
+  },
+  "earliest": {
+    "title": "Earliest free dates",
+    "hint": "From the hospital's published slots (India dates). The hospital confirms when it replies.",
+    "consultation": "Consultation {{date}}",
+    "admission": "Admission {{date}}",
+    "today": "today",
+    "tomorrow": "tomorrow",
+    "none": "No free dates published yet"
   }
 }

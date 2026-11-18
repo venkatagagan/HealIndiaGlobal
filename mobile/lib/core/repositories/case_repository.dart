@@ -12,7 +12,8 @@ class CaseRepository {
   /// Most hospitals one quick-quote request may go to (`QUOTE_MAX_HOSPITALS`).
   static const maxQuoteHospitals = 3;
 
-  /// `POST /cases` — request a quote from a hospital (status `enquiry`).
+  /// `POST /cases` — request a quote from a hospital (status `enquiry`). [consentShare] records that the
+  /// patient agreed to share their data with the hospital (always sent with [documentIds]).
   Future<MedicalCase> create({
     required String hospitalId,
     String? doctorId,
@@ -21,6 +22,7 @@ class CaseRepository {
     String? screeningId,
     String? patientNotes,
     List<String> documentIds = const [],
+    bool consentShare = false,
   }) async => MedicalCase.fromJson(
     asJsonMap(
       await _api.post(
@@ -33,7 +35,7 @@ class CaseRepository {
           'screening_id': screeningId,
           'patient_notes': patientNotes,
           if (documentIds.isNotEmpty) 'document_ids': documentIds,
-          if (documentIds.isNotEmpty) 'consent_share': true,
+          if (documentIds.isNotEmpty || consentShare) 'consent_share': true,
         }, dropEmptyStrings: true),
       ),
     ),
@@ -118,7 +120,7 @@ class CaseRepository {
         '/consultations',
         data: compactJson({
           'case_id': caseId,
-          'kind': kind == 'standard' ? null : kind,
+          'kind': kind,
           'doctor_id': doctorId,
           'mode': mode.json,
           'preferred_at': preferredAt?.toUtc().toIso8601String(),
@@ -128,9 +130,20 @@ class CaseRepository {
     ),
   );
 
-  /// `GET /consultations`
-  Future<List<Consultation>> consultations({String? caseId}) async =>
-      parseList(await _api.get('/consultations', query: {'case_id': caseId}), Consultation.fromJson);
+  /// `GET /consultations` (newest first; requested ones without a time first).
+  Future<List<Consultation>> consultations({String? caseId, int pageSize = 50}) async => parseList(
+    await _api.get('/consultations', query: {'case_id': caseId, 'page_size': pageSize}),
+    Consultation.fromJson,
+  );
+
+  /// `GET /consultations/{id}`
+  Future<Consultation> consultation(String id) async =>
+      Consultation.fromJson(asJsonMap(await _api.get('/consultations/$id')));
+
+  /// `PATCH /consultations/{id} {status: cancelled}` — patients may only cancel.
+  Future<Consultation> cancelConsultation(String id) async => Consultation.fromJson(
+    asJsonMap(await _api.patch('/consultations/$id', data: {'status': ConsultationStatus.cancelled.json})),
+  );
 }
 
 final caseRepositoryProvider = Provider<CaseRepository>((ref) => CaseRepository(ref.watch(apiClientProvider)));

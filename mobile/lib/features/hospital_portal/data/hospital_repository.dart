@@ -154,6 +154,23 @@ class HospitalPortalRepository {
   Future<List<DoctorDetail>> doctors() async =>
       parseList(await _get('/hospital-portal/doctors'), DoctorDetail.fromJson);
 
+  /// `GET /hospital-portal/doctors/{id}/availability?from=&to=` (a doctor's own slots) or, without
+  /// [doctorId], `GET /hospital-portal/availability` (hospital-level slots, e.g. admission beds).
+  Future<List<AvailabilitySlot>> availability({String? doctorId, required DateTime from, required DateTime to}) async =>
+      parseList(await _get(_availabilityPath(doctorId), {'from': from, 'to': to}), AvailabilitySlot.fromJson);
+
+  /// `PUT .../availability [{date, slot_kind, capacity}]` — upserts capacity per (date, kind); returns the
+  /// saved days. The API rejects a capacity below what is already booked (`capacity_below_booked`).
+  Future<List<AvailabilitySlot>> setAvailability({String? doctorId, required List<SlotCapacity> slots}) async =>
+      parseList(
+        await _send('PUT', _availabilityPath(doctorId), [for (final s in slots) s.toJson()]),
+        AvailabilitySlot.fromJson,
+      );
+
+  static String _availabilityPath(String? doctorId) => doctorId == null
+      ? '/hospital-portal/availability'
+      : '/hospital-portal/doctors/${Uri.encodeComponent(doctorId)}/availability';
+
   /// `GET /hospital-portal/procedures` (price list with packages).
   Future<List<HospitalProcedure>> procedures() async =>
       parseList(await _get('/hospital-portal/procedures'), HospitalProcedure.fromJson);
@@ -209,6 +226,17 @@ final hospitalVisasProvider = FutureProvider.autoDispose.family<List<HospitalVis
 final hospitalDoctorsProvider = FutureProvider.autoDispose<List<DoctorDetail>>(
   (ref) => ref.watch(hospitalRepositoryProvider).doctors(),
 );
+
+/// Key of [hospitalAvailabilityProvider]: a doctor (null = hospital-level slots) and the first day of a month.
+typedef HospitalAvailabilityQuery = ({String? doctorId, DateTime month});
+
+/// Published capacity for one month (doctor or hospital level).
+final hospitalAvailabilityProvider = FutureProvider.autoDispose
+    .family<List<AvailabilitySlot>, HospitalAvailabilityQuery>((ref, q) {
+      final from = DateTime(q.month.year, q.month.month);
+      final to = DateTime(q.month.year, q.month.month + 1, 0);
+      return ref.watch(hospitalRepositoryProvider).availability(doctorId: q.doctorId, from: from, to: to);
+    });
 
 final hospitalProceduresProvider = FutureProvider.autoDispose<List<HospitalProcedure>>(
   (ref) => ref.watch(hospitalRepositoryProvider).procedures(),

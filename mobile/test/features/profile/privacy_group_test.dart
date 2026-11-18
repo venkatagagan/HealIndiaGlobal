@@ -61,6 +61,9 @@ void main() {
 
     final download = find.byKey(const Key('profile-download-data'));
     await tester.scrollUntilVisible(download, 300);
+    // Bring it clear of the bottom edge (more tiles follow in the Privacy group).
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
+    await tester.pumpAndSettle();
     expect(find.text('Download my data'), findsOneWidget);
     await tester.tap(download);
     await tester.pumpAndSettle();

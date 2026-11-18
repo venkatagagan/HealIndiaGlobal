@@ -638,7 +638,8 @@
     "filters": {
       "specialty": "Spécialité",
       "language": "Langue",
-      "gender": "Sexe"
+      "gender": "Sexe",
+      "sort": "Trier"
     },
     "emptyTitle": "Aucun médecin ne correspond à ces filtres",
     "resetFilters": "Réinitialiser les filtres",
@@ -646,7 +647,11 @@
     "experienceYears_other": "{{count}} ans",
     "successRate": "{{pct}} % de réussite",
     "teleconsult": "Téléconsultation",
-    "speaks": "Parle : {{languages}}"
+    "speaks": "Parle : {{languages}}",
+    "sort": {
+      "soonest": "Consultation la plus proche",
+      "experience": "Plus expérimentés"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "Médecin",
@@ -1433,6 +1438,106 @@
       "submit": "Envoyer les réponses",
       "sent": "Bilan envoyé.",
       "sentFlagged": "Bilan envoyé. L'hôpital et le coordinateur ont été alertés."
+    },
+    "requestFollowup": {
+      "open": "Demander un suivi",
+      "title": "Demander une consultation vidéo de suivi",
+      "description": "Pour {{patient}} avec {{doctor}}, {{hospital}}. L'hôpital confirme l'heure et envoie le lien vidéo.",
+      "treatingDoctor": "le médecin traitant",
+      "date": "Date souhaitée",
+      "dateHint": "Pendant la période de suivi.",
+      "time": "Heure (heure de l'Inde)",
+      "istTime": "{{time}} heure de l'Inde",
+      "localTime": "Soit {{time}} dans votre fuseau horaire.",
+      "notes": "Qu'est-ce que le médecin doit examiner ?",
+      "notesHint": "Symptômes depuis la sortie, cicatrice, médicaments, résultats d'examens.",
+      "free": "Les suivis post-traitement font partie du forfait : pas d'honoraires de consultation.",
+      "submit": "Demander le suivi",
+      "cancel": "Annuler",
+      "sent": "Suivi demandé. L'hôpital confirmera un horaire.",
+      "errors": {
+        "exists": "Un suivi avec ce médecin est déjà en cours pour ce patient.",
+        "windowClosed": "La période de suivi de ce dossier est terminée.",
+        "notAvailable": "Les suivis ne sont possibles que pendant et après le traitement."
+      }
     }
+  },
+  "teleconsult": {
+    "open": "Réserver une consultation vidéo",
+    "title": "Réserver une consultation vidéo",
+    "description": "Consultation vidéo avant le voyage avec {{doctor}}, {{hospital}}. L'hôpital confirme l'heure et envoie le lien vidéo.",
+    "patientLine": "Patient : {{name}}",
+    "fee": "Honoraires de consultation : {{fee}}",
+    "free": "Pas d'honoraires de consultation",
+    "date": "Date souhaitée",
+    "dateHint": "Dates avec des créneaux de consultation libres.",
+    "noSlots": "Aucun créneau libre dans les 60 prochains jours. Envoyez la demande sans date.",
+    "noPreference": "Pas de préférence de date",
+    "time": "Heure (heure de l'Inde)",
+    "istTime": "{{time}} heure de l'Inde",
+    "localTime": "Soit {{time}} dans votre fuseau horaire.",
+    "confirmNote": "L'hôpital confirme l'heure exacte.",
+    "question": "Question pour le médecin",
+    "questionHint": "Symptômes, traitements passés et ce que le patient veut savoir avant de voyager.",
+    "reports": "Comptes rendus à partager",
+    "reportsHint": "Partagés uniquement avec cet hôpital, 20 au maximum.",
+    "consent": "Le patient a accepté de partager ces informations avec l'hôpital",
+    "consentHint": "{{hospital}} voit la question, la pré-évaluation et les comptes rendus choisis pour que le médecin se prépare.",
+    "payNote": "Le patient règle les honoraires depuis son propre compte (Téléconsultations).",
+    "submit": "Demander la consultation",
+    "cancel": "Annuler",
+    "requested": "Consultation demandée",
+    "caseTitle": "Consultations vidéo",
+    "followup": "Suivi post-traitement",
+    "preferredAt": "Souhaité : {{time}}",
+    "awaitingTime": "En attente de l'horaire fixé par l'hôpital",
+    "join": "Rejoindre l'appel vidéo",
+    "slotsLeft_one": "{{count}} créneau libre",
+    "slotsLeft_other": "{{count}} créneaux libres",
+    "errors": {
+      "exists": "Ce patient a déjà une consultation en cours avec ce médecin.",
+      "unavailable": "Ce médecin ne propose pas de consultation vidéo.",
+      "caseClosed": "Le dossier du patient avec cet hôpital est clos. Envoyez d'abord une nouvelle demande.",
+      "failed": "La demande de consultation n'a pas pu être envoyée. Veuillez réessayer."
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "support": "Assistance",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "contactSupport": "Contacter l'assistance",
+    "emptyTitle": "Aucune conversation pour l'instant",
+    "noMessages": "Aucun message pour l'instant",
+    "openingCase": "Ouverture de la conversation du dossier...",
+    "notFound": "Conversation introuvable",
+    "notFoundText": "Elle a peut-être été supprimée ou vous n'y avez plus accès.",
+    "selectTitle": "Sélectionnez une conversation",
+    "backToConversations": "Retour aux conversations",
+    "openCase": "Ouvrir le dossier",
+    "loadEarlier": "Charger les messages précédents",
+    "sayHello": "Aucun message pour l'instant. Dites bonjour !",
+    "hidden": "Masqué par les modérateurs",
+    "reportFrom": "Signaler le message de {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Écrivez un message... (Entrée pour envoyer, Maj+Entrée pour aller à la ligne)",
+    "send": "Envoyer le message",
+    "supportReply": "Notre équipe de prise en charge répond généralement en quelques heures.",
+    "cancel": "Annuler",
+    "start": "Démarrer la conversation",
+    "subject": "Objet",
+    "description": "Échangez avec les hôpitaux, les coordinateurs et l'assistance au sujet de vos dossiers.",
+    "emptyText": "Une conversation est créée automatiquement pour chaque dossier.",
+    "attachments_one": "{{count}} pièce jointe - voir les documents du dossier",
+    "attachments_other": "{{count}} pièces jointes - voir les documents du dossier"
+  },
+  "earliest": {
+    "title": "Premières dates libres",
+    "hint": "D'après les créneaux publiés par l'hôpital (dates en Inde). L'hôpital confirme dans sa réponse.",
+    "consultation": "Consultation {{date}}",
+    "admission": "Admission {{date}}",
+    "today": "aujourd'hui",
+    "tomorrow": "demain",
+    "none": "Aucune date libre publiée pour l'instant"
   }
 }

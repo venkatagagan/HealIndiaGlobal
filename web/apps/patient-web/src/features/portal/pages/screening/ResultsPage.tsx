@@ -11,7 +11,7 @@ import { BackLink, StatusBadge } from '../../components/common';
 import { HelplineList } from '../../components/SupportDialogs';
 import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
-import { filterParam, parseSort, toMinor, useDocumentTitle, useTableState } from '../../lib/shared';
+import { filterParam, formatNumber, parseSort, toMinor, useDocumentTitle, useTableState } from '../../lib/shared';
 import { AmountRangeFilter, FilterBar, MultiSelectFilter, ReportButton, SelectFilter, ToggleFilter } from '@hig/shared/ui';
 import { ListEmpty, ListSurface, SortMenu, countBy } from '../../components/listing';
 import {
@@ -43,48 +43,34 @@ const MATCH_FILTERS = {
   price_max: filterParam.number(),
   budget: filterParam.boolean(),
 };
-const MATCH_SORTS = [
-  { value: '-match', label: 'Best match' },
-  { value: 'cost', label: 'Lowest cost' },
-  { value: '-rating', label: 'Highest rated' },
-  { value: '-success', label: 'Success rate' },
-] as const;
-type MatchSort = (typeof MATCH_SORTS)[number]['value'];
-const RATING_OPTIONS = [
-  { value: '4.5' as const, label: '4.5 and above' },
-  { value: '4' as const, label: '4.0 and above' },
-  { value: '3.5' as const, label: '3.5 and above' },
-];
+const MATCH_SORTS = ['-match', 'cost', '-rating', '-success'] as const;
+type MatchSort = (typeof MATCH_SORTS)[number];
+const SORT_KEYS: Record<MatchSort, string> = { '-match': 'bestMatch', cost: 'lowestCost', '-rating': 'highestRated', '-success': 'successRate' };
+const RATING_VALUES = ['4.5', '4', '3.5'] as const;
 const ratingOf = (m: MatchOut) => Number(m.doctor?.rating_avg ?? m.hospital.rating_avg ?? 0);
 const languagesOf = (m: MatchOut) => (m.doctor?.languages.length ? m.doctor.languages : m.hospital.languages);
 
-const URGENCY_COPY: Record<Urgency, { tone: 'green' | 'blue' | 'amber' | 'red'; title: string; body: string }> = {
-  routine: {
-    tone: 'green',
-    title: 'Routine - plan at your convenience',
-    body: 'Your answers do not suggest an urgent problem. You can plan treatment in your preferred travel window.',
-  },
-  soon: {
-    tone: 'blue',
-    title: 'Recommended soon',
-    body: 'We suggest arranging a consultation within the next few weeks.',
-  },
-  urgent: {
-    tone: 'amber',
-    title: 'Urgent - please see a doctor soon',
-    body: 'Some answers need prompt medical attention. Please see a doctor locally in the next few days, even while you plan treatment in India.',
-  },
-  emergency: {
-    tone: 'red',
-    title: 'Emergency — seek local care now',
-    body: 'Your answers include warning signs that need immediate medical attention.',
-  },
+/** Tone per urgency; the copy is `screening.results.urgency.<level>.title|body`. */
+const URGENCY_TONE: Record<Urgency, 'green' | 'blue' | 'amber' | 'red'> = {
+  routine: 'green',
+  soon: 'blue',
+  urgent: 'amber',
+  emergency: 'red',
 };
 
 export function ResultsPage() {
   const { t } = useAppTranslation();
   const { id = '' } = useParams();
-  useDocumentTitle('Your top matches');
+  useDocumentTitle(t('screening.results.title'));
+  const sortOptions = useMemo(() => MATCH_SORTS.map((value) => ({ value, label: t(`screening.results.sort.${SORT_KEYS[value]}`) })), [t]);
+  const ratingOptions = useMemo(
+    () =>
+      RATING_VALUES.map((value) => ({
+        value,
+        label: t('screening.results.ratingAtLeast', { rating: formatNumber(Number(value), { minimumFractionDigits: 1 }) }),
+      })),
+    [t],
+  );
   const navigate = useNavigate();
   const me = useMe();
   const screening = useScreening(id);
@@ -95,7 +81,7 @@ export function ResultsPage() {
 
   const table = useTableState({ filters: MATCH_FILTERS, defaultSort: '-match', paginate: false });
   const { filters, setFilter, setFilters } = table;
-  const sort = (MATCH_SORTS.find((o) => o.value === table.sortParam)?.value ?? '-match') as MatchSort;
+  const sort = (MATCH_SORTS.find((o) => o === table.sortParam) ?? '-match') as MatchSort;
   const [selected, setSelected] = useState<string[]>([]);
   const [quoteFor, setQuoteFor] = useState<MatchOut | null>(null);
   const [procedure, setProcedure] = useState<string | null>(null);
@@ -194,12 +180,14 @@ export function ResultsPage() {
   return (
     <div className="pb-24">
       <PageHeader
-        back={<BackLink to={paths.dashboard}>Dashboard</BackLink>}
-        title="Your top matches"
-        description={`Based on your ${s.specialty?.name ?? 'screening'} answers.`}
+        back={<BackLink to={paths.dashboard}>{t('shell.nav.dashboard')}</BackLink>}
+        title={t('screening.results.title')}
+        description={
+          s.specialty?.name ? t('screening.results.basedOn', { specialty: s.specialty.name }) : t('screening.results.basedOnGeneral')
+        }
         actions={
           <ButtonLink to={paths.newScreening(s.specialty?.slug)} variant="outline">
-            New screening
+            {t('screening.results.newScreening')}
           </ButtonLink>
         }
       />
@@ -212,13 +200,10 @@ export function ResultsPage() {
             <div className="flex items-start gap-3">
               <Siren className="h-8 w-8 shrink-0 text-danger" aria-hidden />
               <div className="min-w-0 flex-1">
-                <h2 className="text-xl font-bold text-danger-ink">Emergency — seek local care now</h2>
-                <p className="mt-1 text-sm text-danger-ink">
-                  Your answers include warning signs that need immediate medical attention. Please do not wait to travel -
-                  call your local emergency number or go to the nearest emergency department now.
-                </p>
+                <h2 className="text-xl font-bold text-danger-ink">{t('screening.results.urgency.emergency.title')}</h2>
+                <p className="mt-1 text-sm text-danger-ink">{t('screening.results.emergencyBody')}</p>
                 {s.red_flags.length ? (
-                  <ul className="mt-2 list-disc pl-5 text-sm text-danger-ink">
+                  <ul className="mt-2 list-disc ps-5 text-sm text-danger-ink">
                     {s.red_flags.map((f) => (
                       <li key={f}>{f}</li>
                     ))}
@@ -232,12 +217,12 @@ export function ResultsPage() {
           </div>
         ) : (
           <Alert
-            tone={URGENCY_COPY[urgency].tone}
-            title={URGENCY_COPY[urgency].title}
+            tone={URGENCY_TONE[urgency]}
+            title={t(`screening.results.urgency.${urgency}.title`)}
             icon={urgency === 'urgent' ? <AlertOctagon className="h-5 w-5" aria-hidden /> : <Info className="h-5 w-5" aria-hidden />}
             className="mb-6"
           >
-            {URGENCY_COPY[urgency].body}
+            {t(`screening.results.urgency.${urgency}.body`)}
           </Alert>
         )
       ) : null}
@@ -247,12 +232,12 @@ export function ResultsPage() {
           <CardHeader
             title={
               <span className="inline-flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-accent" aria-hidden /> Screening summary
+                <Sparkles className="h-5 w-5 text-accent" aria-hidden /> {t('screening.results.summary')}
               </span>
             }
             action={
               <Badge tone={ai?.engine === 'claude' ? 'violet' : 'neutral'}>
-                <Bot className="h-3.5 w-3.5" aria-hidden /> {ai?.engine === 'claude' ? 'AI assisted' : 'Rule-based'}
+                <Bot className="h-3.5 w-3.5" aria-hidden /> {ai?.engine === 'claude' ? t('screening.results.aiAssisted') : t('screening.results.ruleBased')}
               </Badge>
             }
           />
@@ -262,13 +247,13 @@ export function ResultsPage() {
                 <p className="leading-relaxed text-fg/80">{ai.summary}</p>
                 {ai.possible_conditions.length ? (
                   <div>
-                    <h3 className="text-sm font-semibold">Possible conditions to discuss with a doctor</h3>
+                    <h3 className="text-sm font-semibold">{t('screening.results.possibleConditions')}</h3>
                     <ul className="mt-2 space-y-2">
                       {ai.possible_conditions.map((c) => (
                         <li key={c.name} className="rounded-xl bg-surface-2 p-3 text-sm">
                           <span className="font-medium">{c.name}</span>{' '}
                           <Badge tone={c.likelihood === 'high' ? 'amber' : c.likelihood === 'medium' ? 'blue' : 'neutral'}>
-                            {LIKELIHOOD_LABELS[c.likelihood]} likelihood
+                            {t('screening.results.likelihood', { level: LIKELIHOOD_LABELS[c.likelihood] })}
                           </Badge>
                           {c.notes ? <p className="mt-1 text-muted">{c.notes}</p> : null}
                         </li>
@@ -278,11 +263,11 @@ export function ResultsPage() {
                 ) : null}
                 {ai.suggested_specialties.length ? (
                   <div>
-                    <h3 className="text-sm font-semibold">Suggested specialties</h3>
+                    <h3 className="text-sm font-semibold">{t('screening.results.suggestedSpecialties')}</h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {ai.suggested_specialties.map((sp) => (
                         <Badge key={sp.slug} tone="violet" className="text-sm">
-                          {sp.name} · {Math.round(sp.confidence * 100)}%
+                          {sp.name} · {formatNumber(sp.confidence, { style: 'percent', maximumFractionDigits: 0 })}
                         </Badge>
                       ))}
                     </div>
@@ -290,7 +275,7 @@ export function ResultsPage() {
                 ) : null}
                 {ai.recommended_procedures.length ? (
                   <div>
-                    <h3 className="text-sm font-semibold">Procedures that may be considered</h3>
+                    <h3 className="text-sm font-semibold">{t('screening.results.procedures')}</h3>
                     <ul className="mt-2 space-y-1 text-sm">
                       {ai.recommended_procedures.map((p) => (
                         <li key={p.slug}>
@@ -304,15 +289,14 @@ export function ResultsPage() {
                   </div>
                 ) : null}
                 <p className="rounded-xl bg-surface-2 p-3 text-xs text-muted">
-                  {ai.disclaimer ||
-                    'This is not a medical diagnosis. It is a triage summary to help you find the right specialists. A qualified doctor will review your case.'}
+                  {ai.disclaimer || t('screening.results.disclaimer')}
                 </p>
                 <div className="flex justify-end">
-                  <ReportButton targetType="screening_result" targetId={s.id} label="Report this result" />
+                  <ReportButton targetType="screening_result" targetId={s.id} label={t('screening.results.report')} />
                 </div>
               </>
             ) : (
-              <p className="text-sm text-muted">No summary is available for this screening.</p>
+              <p className="text-sm text-muted">{t('screening.results.noSummary')}</p>
             )}
           </CardBody>
         </Card>
@@ -321,39 +305,39 @@ export function ResultsPage() {
           <CardHeader
             title={
               <span className="inline-flex items-center gap-2">
-                <ClipboardList className="h-5 w-5 text-success-ink" aria-hidden /> Prepare for your consultation
+                <ClipboardList className="h-5 w-5 text-success-ink" aria-hidden /> {t('screening.results.prepare')}
               </span>
             }
           />
           <CardBody className="space-y-4 text-sm">
             {urgency ? (
               <p>
-                Urgency: <StatusBadge status={urgency} />
+                {t('screening.results.urgencyLabel')} <StatusBadge status={urgency} />
               </p>
             ) : null}
             {ai?.recommended_tests.length ? (
               <div>
-                <p className="font-semibold">Recommended tests</p>
-                <ul className="mt-1 list-disc pl-5 text-muted">
-                  {ai.recommended_tests.map((t) => (
-                    <li key={t}>{t}</li>
+                <p className="font-semibold">{t('screening.results.tests')}</p>
+                <ul className="mt-1 list-disc ps-5 text-muted">
+                  {ai.recommended_tests.map((test) => (
+                    <li key={test}>{test}</li>
                   ))}
                 </ul>
               </div>
             ) : null}
             {ai?.questions_for_doctor.length ? (
               <div>
-                <p className="font-semibold">Questions for your doctor</p>
-                <ul className="mt-1 list-disc pl-5 text-muted">
-                  {ai.questions_for_doctor.map((t) => (
-                    <li key={t}>{t}</li>
+                <p className="font-semibold">{t('screening.results.questions')}</p>
+                <ul className="mt-1 list-disc ps-5 text-muted">
+                  {ai.questions_for_doctor.map((q) => (
+                    <li key={q}>{q}</li>
                   ))}
                 </ul>
               </div>
             ) : null}
             {ai?.travel_advice ? (
               <div>
-                <p className="font-semibold">Travel advice</p>
+                <p className="font-semibold">{t('screening.results.travelAdvice')}</p>
                 <p className="mt-1 text-muted">{ai.travel_advice}</p>
               </div>
             ) : null}
@@ -363,11 +347,9 @@ export function ResultsPage() {
 
       <section className="mt-8">
         <div className="mb-4">
-          <h2 className="text-xl font-semibold">{emergency ? 'Specialists for later reference' : 'Matched doctors & hospitals'}</h2>
+          <h2 className="text-xl font-semibold">{emergency ? t('screening.results.laterReference') : t('screening.results.matched')}</h2>
           <p className="text-sm text-muted">
-            {emergency
-              ? 'Once you have been seen locally and are stable, you can come back to request quotes.'
-              : 'Narrow the list with the filters, select up to 3 to compare side by side, or request a quote directly.'}
+            {emergency ? t('screening.results.laterReferenceHint') : t('screening.results.matchedHint', { max: MAX_COMPARE })}
           </p>
         </div>
 
@@ -376,44 +358,44 @@ export function ResultsPage() {
             <FilterBar
               onReset={table.resetFilters}
               resultCount={matches.data ? visible.length : undefined}
-              resultLabel={(n) => `${n} of ${all.length} ${all.length === 1 ? 'match' : 'matches'}`}
-              actions={<SortMenu value={sort} options={MATCH_SORTS} onChange={(v) => table.setSort(parseSort(v))} />}
+              resultLabel={(n) => t('screening.results.resultCount', { count: all.length, shown: formatNumber(n), total: formatNumber(all.length) })}
+              actions={<SortMenu value={sort} options={sortOptions} onChange={(v) => table.setSort(parseSort(v))} />}
               more={
                 <>
-                  <MultiSelectFilter label="Specialty" value={filters.specialty} onChange={(v) => setFilter('specialty', v)} options={facets.specialties} />
-                  <MultiSelectFilter label="Language" value={filters.language} onChange={(v) => setFilter('language', v)} options={facets.languages} />
+                  <MultiSelectFilter label={t('screening.results.filters.specialty')} value={filters.specialty} onChange={(v) => setFilter('specialty', v)} options={facets.specialties} />
+                  <MultiSelectFilter label={t('screening.results.filters.language')} value={filters.language} onChange={(v) => setFilter('language', v)} options={facets.languages} />
                   {budgetMax != null ? (
-                    <ToggleFilter label="Within my budget" pressed={!!filters.budget} onChange={(on) => setFilter('budget', on || undefined)} />
+                    <ToggleFilter label={t('screening.results.filters.budget')} pressed={!!filters.budget} onChange={(on) => setFilter('budget', on || undefined)} />
                   ) : null}
                 </>
               }
             >
               <MultiSelectFilter
-                label="City"
+                label={t('screening.results.filters.city')}
                 icon={<MapPin className="size-3.5 opacity-70" aria-hidden />}
                 value={filters.city}
                 onChange={(v) => setFilter('city', v)}
                 options={facets.cities}
               />
               <MultiSelectFilter
-                label="Accreditation"
+                label={t('screening.results.filters.accreditation')}
                 icon={<Award className="size-3.5 opacity-70" aria-hidden />}
                 value={filters.accreditation}
                 onChange={(v) => setFilter('accreditation', v)}
                 options={facets.accreditations}
               />
               <AmountRangeFilter
-                label="Price"
+                label={t('screening.results.filters.price')}
                 currency={facets.currency}
                 value={{ min: filters.price_min, max: filters.price_max }}
                 onChange={({ min, max }) => setFilters({ price_min: min, price_max: max })}
               />
               <SelectFilter
-                label="Rating"
+                label={t('screening.results.filters.rating')}
                 icon={<Star className="size-3.5 opacity-70" aria-hidden />}
                 value={filters.rating}
                 onChange={(v) => setFilter('rating', v)}
-                options={RATING_OPTIONS}
+                options={ratingOptions}
               />
             </FilterBar>
           }
@@ -424,12 +406,12 @@ export function ResultsPage() {
             <ErrorState error={matches.error} onRetry={() => void matches.refetch()} />
           ) : visible.length === 0 ? (
             all.length ? (
-              <ListEmpty filtered onReset={table.resetFilters} title="No matches with these filters" />
+              <ListEmpty filtered onReset={table.resetFilters} title={t('screening.results.noFiltered')} />
             ) : (
               <EmptyState
-                title="No matches found yet"
-                description="We could not find a suitable specialist automatically. Our coordinators can help - send us a message."
-                action={<ButtonLink to={paths.messages}>Message a coordinator</ButtonLink>}
+                title={t('screening.results.noMatchesTitle')}
+                description={t('screening.results.noMatchesText')}
+                action={<ButtonLink to={paths.messages}>{t('screening.results.messageCoordinator')}</ButtonLink>}
               />
             )
           ) : (
@@ -438,6 +420,7 @@ export function ResultsPage() {
                 <MatchCard
                   key={m.id}
                   match={m}
+                  screeningId={id}
                   selected={selected.includes(m.id)}
                   canSelect={selected.length < MAX_COMPARE}
                   onToggleSelect={() => toggleSelect(m.id)}
@@ -473,10 +456,10 @@ export function ResultsPage() {
       ) : null}
 
       {!emergency && (matches.data?.length ?? 0) > 0 ? (
-        <div className="fixed inset-x-0 bottom-16 z-20 px-4 lg:bottom-4 lg:left-64">
+        <div className="fixed inset-x-0 bottom-16 z-20 px-4 lg:bottom-4 lg:start-64">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 rounded-2xl border border-border bg-surface/95 px-4 py-3 shadow-lg backdrop-blur">
             <span className="text-sm font-medium">
-              {selected.length}/{MAX_COMPARE} selected for comparison
+              {t('screening.results.selectedForCompare', { count: selected.length, n: formatNumber(selected.length), max: formatNumber(MAX_COMPARE) })}
             </span>
             <span className="flex flex-wrap gap-2">
               <Button
@@ -501,7 +484,7 @@ export function ResultsPage() {
                 disabled={selected.length < 2}
                 onClick={() => navigate(paths.screeningCompare(id, selected))}
               >
-                Compare
+                {t('screening.results.compare')}
               </Button>
             </span>
           </div>

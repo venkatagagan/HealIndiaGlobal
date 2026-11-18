@@ -792,5 +792,43 @@
     "server": "The server had a problem. Please try again shortly.",
     "requestFailed": "Request failed.",
     "network": "Cannot reach the server. Check your connection and try again."
+  },
+  "report": {
+    "button": "Report",
+    "send": "Send report",
+    "reason": "Reason",
+    "note": "Note",
+    "noteHint": "Up to {{max}} characters.",
+    "description": "Tell us what is wrong. Your report is private and goes to our team.",
+    "chooseReason": "Choose a reason.",
+    "sent": "Thanks. Our team will review this report.",
+    "tooMany": "You have sent a lot of reports. Please try again later.",
+    "gone": "This item is no longer available.",
+    "reasons": {
+      "spam": "Spam",
+      "abusive": "Abusive or harassing",
+      "inappropriate": "Inappropriate",
+      "inaccurate": "Inaccurate or misleading",
+      "privacy": "Privacy concern",
+      "other": "Other"
+    },
+    "titles": {
+      "message": "Report this message",
+      "result": "Report this result",
+      "review": "Report this review"
+    }
+  },
+  "orgSuspended": {
+    "agency": {
+      "title": "Your agency account is suspended",
+      "body": "You cannot work with patients, cases or payments while the agency is suspended. Please contact support to find out why and how to restore access."
+    },
+    "hospital": {
+      "title": "Your hospital's account is suspended",
+      "body": "The hospital cannot receive cases, send quotes or manage bookings while it is suspended. Please contact support to find out why and how to restore access."
+    },
+    "dataSafe": "Your data is kept safe while the account is suspended.",
+    "contactSupport": "Contact support",
+    "signOut": "Sign out"
   }
 }

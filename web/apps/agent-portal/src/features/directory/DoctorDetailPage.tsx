@@ -11,6 +11,7 @@ import { useAppTranslation } from '../../i18n';
 import { approxRangeText, approxText, useDisplayCurrency } from '../../lib/displayCurrency';
 import { phase1Api } from '../../lib/phase1Api';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
+import { TeleconsultDialog } from '../cases/TeleconsultDialog';
 
 export function DoctorDetailPage() {
   const { t } = useAppTranslation();
@@ -27,6 +28,7 @@ export function DoctorDetailPage() {
     enabled: Boolean(d),
   });
   const [enquiry, setEnquiry] = useState<EnquiryTarget | null>(null);
+  const [teleconsult, setTeleconsult] = useState(false);
 
   if (query.isPending) return <LoadingBlock />;
   if (query.isError || !d) return <ErrorState error={query.error} onRetry={() => void query.refetch()} />;
@@ -53,9 +55,16 @@ export function DoctorDetailPage() {
         title={d.full_name}
         description={d.experience_years ? `${d.specialty.name} · ${t('doctorDetail.experience', { count: d.experience_years })}` : d.specialty.name}
         actions={
-          <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => enquire()}>
-            {t('doctorDetail.sendEnquiry')}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {d.teleconsult_available && (
+              <Button variant="outline" icon={<Video className="h-4 w-4" aria-hidden />} onClick={() => setTeleconsult(true)}>
+                {t('teleconsult.open')}
+              </Button>
+            )}
+            <Button icon={<Send className="h-4 w-4" aria-hidden />} onClick={() => enquire()}>
+              {t('doctorDetail.sendEnquiry')}
+            </Button>
+          </div>
         }
       />
       <div className="grid gap-6 lg:grid-cols-3">
@@ -159,6 +168,7 @@ export function DoctorDetailPage() {
         </Card>
       </div>
       <EnquiryDialog open={enquiry !== null} onClose={() => setEnquiry(null)} targets={enquiry ? [enquiry] : []} />
+      {d.teleconsult_available && <TeleconsultDialog open={teleconsult} onClose={() => setTeleconsult(false)} doctor={d} />}
     </div>
   );
 }

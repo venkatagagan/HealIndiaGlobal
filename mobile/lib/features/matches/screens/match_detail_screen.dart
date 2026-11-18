@@ -12,6 +12,7 @@ import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
+import '../../consultations/screens/consultation_book_screen.dart';
 import '../widgets/consultation_request.dart';
 
 /// Match detail (pushed from the matches list): doctor & hospital, why it matched, estimated cost and
@@ -232,28 +233,46 @@ class MatchDetailScreen extends ConsumerWidget {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: Row(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: SecondaryButton(
-                  label: l10n.matchDetailCompareCosts,
-                  filled: true,
-                  onPressed: () => _openCostComparison(context),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: PrimaryButton(
-                  label: l10n.consultationBookTitle,
-                  tone: ButtonTone.red,
-                  onPressed: () => requestConsultation(
-                    context,
-                    match: m,
-                    screeningId: screeningId,
-                    specialtyId: screening?.specialty?.id,
+              Row(
+                children: [
+                  Expanded(
+                    child: SecondaryButton(
+                      label: l10n.matchDetailCompareCosts,
+                      filled: true,
+                      onPressed: () => _openCostComparison(context),
+                    ),
                   ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PrimaryButton(
+                      key: const ValueKey('match-book-consultation'),
+                      label: l10n.consultationBookTitle,
+                      tone: ButtonTone.red,
+                      onPressed: () => bookVideoConsultation(
+                        context,
+                        hospitalId: m.hospital.id,
+                        doctorId: m.doctor?.id,
+                        screeningId: screeningId,
+                        specialtyId: screening?.specialty?.id ?? m.doctor?.specialty?.id,
+                        procedureId: m.procedure?.id,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                key: const ValueKey('match-request-quote'),
+                onPressed: () => requestQuoteCase(
+                  context,
+                  match: m,
+                  screeningId: screeningId,
+                  specialtyId: screening?.specialty?.id,
                 ),
+                child: Text(l10n.quoteSheetTitle),
               ),
             ],
           ),

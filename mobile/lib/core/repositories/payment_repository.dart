@@ -46,9 +46,24 @@ class PaymentRepository {
     ),
   );
 
-  /// `GET /payments/orders?status=&booking_id=&page=`
-  Future<Paged<PaymentOrder>> orders({OrderStatus? status, String? bookingId, int page = 1}) async => Paged.fromJson(
-    await _api.get('/payments/orders', query: {'status': status?.json, 'booking_id': bookingId, 'page': page}),
+  /// `GET /payments/orders?status=&booking_id=&purpose=&page=&page_size=`
+  Future<Paged<PaymentOrder>> orders({
+    OrderStatus? status,
+    String? bookingId,
+    PaymentPurpose? purpose,
+    int page = 1,
+    int? pageSize,
+  }) async => Paged.fromJson(
+    await _api.get(
+      '/payments/orders',
+      query: {
+        'status': status?.json,
+        'booking_id': bookingId,
+        'purpose': purpose?.json,
+        'page': page,
+        'page_size': pageSize,
+      },
+    ),
     PaymentOrder.fromJson,
   );
 

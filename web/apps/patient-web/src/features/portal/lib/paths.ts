@@ -72,6 +72,15 @@ export const paths = {
   writeReview: (bookingId: Uuid) => `${PORTAL_BASE}/reviews/new?booking=${encodeURIComponent(bookingId)}`,
   editReview: (reviewId: Uuid) => `${PORTAL_BASE}/reviews/${encodeURIComponent(reviewId)}/edit`,
   aftercare: `${PORTAL_BASE}/aftercare`,
+  consultations: `${PORTAL_BASE}/consultations`,
+  consultation: (id: Uuid) => `${PORTAL_BASE}/consultations/${encodeURIComponent(id)}`,
+  payConsultation: (id: Uuid) => `${PORTAL_BASE}/consultations/${encodeURIComponent(id)}/pay`,
+  /** pre-travel video consultation: a doctor, or a hospital whose tele-consulting doctors are offered */
+  bookConsultation: (params: { doctor?: Uuid; hospital?: Uuid; screening?: Uuid }) => {
+    const search = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) if (v) search.set(k, v);
+    return `${PORTAL_BASE}/consultations/book?${search.toString()}`;
+  },
   freeCall: (screeningId?: Uuid) =>
     `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
   freeCallStatus: `${PORTAL_BASE}/free-call/status`,

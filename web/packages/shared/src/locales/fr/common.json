@@ -792,5 +792,43 @@
     "server": "Le serveur a rencontré un problème. Veuillez réessayer sous peu.",
     "requestFailed": "La requête a échoué.",
     "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+  },
+  "report": {
+    "button": "Signaler",
+    "send": "Envoyer le signalement",
+    "reason": "Motif",
+    "note": "Note",
+    "noteHint": "{{max}} caractères maximum.",
+    "description": "Dites-nous ce qui ne va pas. Votre signalement est confidentiel et transmis à notre équipe.",
+    "chooseReason": "Choisissez un motif.",
+    "sent": "Merci. Notre équipe va examiner ce signalement.",
+    "tooMany": "Vous avez envoyé beaucoup de signalements. Veuillez réessayer plus tard.",
+    "gone": "Cet élément n'est plus disponible.",
+    "reasons": {
+      "spam": "Spam",
+      "abusive": "Insultant ou harcelant",
+      "inappropriate": "Inapproprié",
+      "inaccurate": "Inexact ou trompeur",
+      "privacy": "Atteinte à la vie privée",
+      "other": "Autre"
+    },
+    "titles": {
+      "message": "Signaler ce message",
+      "result": "Signaler ce résultat",
+      "review": "Signaler cet avis"
+    }
+  },
+  "orgSuspended": {
+    "agency": {
+      "title": "Le compte de votre agence est suspendu",
+      "body": "Vous ne pouvez pas gérer de patients, de dossiers ni de paiements tant que l'agence est suspendue. Contactez l'assistance pour en connaître la raison et rétablir l'accès."
+    },
+    "hospital": {
+      "title": "Le compte de votre hôpital est suspendu",
+      "body": "L'hôpital ne peut ni recevoir de dossiers, ni envoyer de devis, ni gérer de réservations tant qu'il est suspendu. Contactez l'assistance pour en connaître la raison et rétablir l'accès."
+    },
+    "dataSafe": "Vos données restent protégées pendant la suspension du compte.",
+    "contactSupport": "Contacter l'assistance",
+    "signOut": "Se déconnecter"
   }
 }

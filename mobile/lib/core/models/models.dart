@@ -22,6 +22,7 @@ export 'package.dart';
 export 'page.dart';
 export 'patient.dart';
 export 'payment.dart';
+export 'privacy.dart';
 export 'procedure.dart';
 export 'quote.dart';
 export 'quote_group.dart';

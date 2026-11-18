@@ -1421,6 +1421,8 @@ export interface CaseCreateIn {
   patient_id?: Uuid;
   /** records `share_with_hospitals` consent for this case's hospital (required unless already on file) */
   consent_share?: boolean;
+  /** the patient's own medical documents to share with the hospital (max 20) */
+  document_ids?: Uuid[];
 }
 
 export interface CaseListParams extends PageParams {
@@ -1581,6 +1583,10 @@ export interface ConsultationOut {
   mode: ConsultationMode;
   meeting_url: string | null;
   status: ConsultationStatus;
+  /** `standard` (pre-travel / any time) or `followup` (aftercare) */
+  kind?: 'standard' | 'followup';
+  /** the patient's preferred time (standard) or roughly when a follow-up is due */
+  due_at?: IsoDateTime | null;
   fee_minor: number;
   currency: CurrencyCode;
   notes: string | null;
@@ -1590,6 +1596,7 @@ export interface ConsultationOut {
 
 export interface ConsultationCreateIn {
   case_id: Uuid;
+  kind?: 'standard' | 'followup';
   doctor_id?: Uuid | null;
   mode?: ConsultationMode;
   /** the patient's preferred slot; the hospital sets `scheduled_at` via PATCH */
@@ -1608,6 +1615,7 @@ export interface ConsultationUpdateIn {
 
 export interface ConsultationListParams extends PageParams {
   case_id?: Uuid;
+  doctor_id?: Uuid;
   status?: ConsultationStatus;
 }
 

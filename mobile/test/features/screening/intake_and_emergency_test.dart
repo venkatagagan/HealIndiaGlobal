@@ -90,7 +90,7 @@ void main() {
             builder: (context, _) => Scaffold(
               body: Center(
                 child: TextButton(
-                  onPressed: () => requestConsultation(context, match: _match(), screeningId: 's1'),
+                  onPressed: () => requestQuoteCase(context, match: _match(), screeningId: 's1'),
                   child: const Text('book'),
                 ),
               ),

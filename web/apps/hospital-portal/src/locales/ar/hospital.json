@@ -1410,5 +1410,34 @@
       "reverifyTitle": "هذا الاعتماد موثَّق",
       "reverifyBody": "حفظ التعديلات يلغي التوثيق حتى يراجعه فريقنا مرة أخرى."
     }
+  },
+  "messages": {
+    "title": "الرسائل",
+    "conversation": "محادثة",
+    "conversations": "المحادثات",
+    "noMessages": "لا توجد رسائل بعد",
+    "openCase": "فتح الملف",
+    "startText": "ابدأ المحادثة مع المريض ومنسّقه.",
+    "loadEarlier": "تحميل الرسائل الأقدم",
+    "hidden": "أخفاه المشرفون",
+    "reportFrom": "الإبلاغ عن رسالة من {{name}}",
+    "messageLabel": "الرسالة",
+    "placeholderKeys": "اكتب رسالة... (Enter للإرسال، وShift+Enter لسطر جديد)",
+    "send": "إرسال الرسالة",
+    "liveConnected": "التحديثات المباشرة متصلة",
+    "reconnecting": "جارٍ إعادة الاتصال...",
+    "live": "مباشر",
+    "offline": "غير متصل",
+    "emptyTitle": "لا توجد محادثات بعد",
+    "notFound": "المحادثة غير موجودة",
+    "selectTitle": "اختر محادثة",
+    "description": "محادثات الملفات مع المرضى والوكلاء ومنسّقي الرعاية.",
+    "emptyText": "تُنشأ محادثة تلقائيًا لكل ملف جديد.",
+    "attachments_zero": "المرفقات: {{count}} - راجع مستندات الملف",
+    "attachments_one": "المرفقات: {{count}} - راجع مستندات الملف",
+    "attachments_two": "المرفقات: {{count}} - راجع مستندات الملف",
+    "attachments_few": "المرفقات: {{count}} - راجع مستندات الملف",
+    "attachments_many": "المرفقات: {{count}} - راجع مستندات الملف",
+    "attachments_other": "المرفقات: {{count}} - راجع مستندات الملف"
   }
 }

@@ -4,6 +4,7 @@
  */
 import { BadgeCheck, CalendarCheck2, Clock3, Hourglass, ShieldCheck, Star, Video } from 'lucide-react';
 import type { AccreditationBadge, DisplayMoney, IsoDate, ReviewOut } from '@hig/shared/api';
+import { ReportButton } from '@hig/shared/ui';
 import { useAppTranslation } from '../../../i18n';
 import { cn, formatDate, formatMoney, formatMoneyRange, formatNumber, toDate } from '../lib/shared';
 import { Badge } from '../ui/primitives';
@@ -242,7 +243,8 @@ export function Stars({ value, size = 'sm' }: { value: number; size?: 'sm' | 'md
   );
 }
 
-export function ReviewCard({ review }: { review: ReviewOut }) {
+/** Published review; `reportable` adds the "Report" action (POST /reports, target type `review`). */
+export function ReviewCard({ review, reportable = false }: { review: ReviewOut; reportable?: boolean }) {
   const { t } = useAppTranslation();
   const verified = review.verified_patient ?? true;
   return (
@@ -264,6 +266,9 @@ export function ReviewCard({ review }: { review: ReviewOut }) {
           </span>
         ) : null}
         {review.doctor_name ? <span>{t('reviews.doctor', { name: review.doctor_name })}</span> : null}
+        {reportable ? (
+          <ReportButton targetType="review" targetId={review.id} className="ms-auto" aria-label={t('reviews.reportLabel')} />
+        ) : null}
       </p>
     </article>
   );

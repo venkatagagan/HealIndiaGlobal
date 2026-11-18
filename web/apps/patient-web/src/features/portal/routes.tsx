@@ -37,6 +37,10 @@ const VisaGuidePage = lazy(() => import('./pages/trip/VisaGuidePage').then((m) =
 const MyReviewsPage = lazy(() => import('./pages/reviews/MyReviewsPage').then((m) => ({ default: m.MyReviewsPage })));
 const ReviewFormPage = lazy(() => import('./pages/reviews/ReviewFormPage').then((m) => ({ default: m.ReviewFormPage })));
 const AftercarePage = lazy(() => import('./pages/aftercare/AftercarePage').then((m) => ({ default: m.AftercarePage })));
+const ConsultationsPage = lazy(() => import('./pages/consultations/ConsultationsPage').then((m) => ({ default: m.ConsultationsPage })));
+const ConsultationDetailPage = lazy(() => import('./pages/consultations/ConsultationsPage').then((m) => ({ default: m.ConsultationDetailPage })));
+const BookConsultationPage = lazy(() => import('./pages/consultations/BookConsultationPage').then((m) => ({ default: m.BookConsultationPage })));
+const ConsultationPayPage = lazy(() => import('./pages/consultations/ConsultationPayPage').then((m) => ({ default: m.ConsultationPayPage })));
 const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
 const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
 
@@ -78,6 +82,10 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'reviews/new', element: <ReviewFormPage /> },
   { path: 'reviews/:reviewId/edit', element: <ReviewFormPage /> },
   { path: 'aftercare', element: <AftercarePage /> },
+  { path: 'consultations', element: <ConsultationsPage /> },
+  { path: 'consultations/book', element: <BookConsultationPage /> },
+  { path: 'consultations/:id', element: <ConsultationDetailPage /> },
+  { path: 'consultations/:id/pay', element: <ConsultationPayPage /> },
   { path: 'free-call', element: <FreeCallPage /> },
   { path: 'free-call/status', element: <FreeCallStatusPage /> },
   { path: '*', element: <Navigate to={PORTAL_BASE} replace /> },

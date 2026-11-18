@@ -13,25 +13,17 @@ import '../../../l10n/l10n.dart';
 
 /// One bottom-nav destination of a partner shell.
 class PortalTab {
-  const PortalTab({
-    required this.label,
-    required this.icon,
-    required this.selectedIcon,
-    required this.builder,
-    this.labelBuilder,
-  });
+  const PortalTab({required this.labelBuilder, required this.icon, required this.selectedIcon, required this.builder});
 
-  /// English label (shown when [labelBuilder] is null).
-  final String label;
+  /// Localized label (a static / top-level function so tab lists can stay `const`). There is no
+  /// English fallback: every tab label comes from the ARB catalogs.
+  final String Function(AppLocalizations l10n) labelBuilder;
   final IconData icon;
   final IconData selectedIcon;
   final WidgetBuilder builder;
 
-  /// Localized label (a static / top-level function so tab lists can stay `const`).
-  final String Function(AppLocalizations l10n)? labelBuilder;
-
-  /// The label in the app's current language.
-  String labelOf(AppLocalizations l10n) => labelBuilder?.call(l10n) ?? label;
+  /// The label in the language of [l10n].
+  String labelOf(AppLocalizations l10n) => labelBuilder(l10n);
 }
 
 /// Bottom-navigation shell: keeps every visited tab alive (IndexedStack), builds tabs lazily.

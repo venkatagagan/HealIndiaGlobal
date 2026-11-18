@@ -116,6 +116,10 @@ class ApiException implements Exception {
     return code == 'rate_limited' && d is Map && d['scope'] == 'guest_ai_daily';
   }
 
+  /// The agent's agency / the member's hospital is suspended (403); the partner shells show a full-screen
+  /// message (see `organisationSuspendedProvider`).
+  bool get isOrganisationSuspended => code == 'organisation_suspended';
+
   /// A patient under 18 needs a verified guardian consent first (403).
   bool get isGuardianConsentRequired => code == 'guardian_consent_required';
 

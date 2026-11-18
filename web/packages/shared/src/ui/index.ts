@@ -185,3 +185,13 @@ export {
   type CareGateAudience,
   type EmergencyAckPanelProps,
 } from './CareGates';
+export {
+  ORGANISATION_SUSPENDED_CODE,
+  OrganisationSuspendedGate,
+  OrganisationSuspendedScreen,
+  isOrganisationSuspendedError,
+  resetOrganisationSuspended,
+  supportContactUrl,
+  useOrganisationSuspended,
+  type OrganisationSuspendedScreenProps,
+} from './OrganisationSuspended';

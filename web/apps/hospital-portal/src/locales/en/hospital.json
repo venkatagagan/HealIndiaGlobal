@@ -1310,5 +1310,30 @@
       "reverifyTitle": "This accreditation is verified",
       "reverifyBody": "Saving changes removes the verification until our team checks it again."
     }
+  },
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "noMessages": "No messages yet",
+    "openCase": "Open case",
+    "startText": "Start the conversation with the patient and their coordinator.",
+    "loadEarlier": "Load earlier messages",
+    "hidden": "Hidden by moderators",
+    "reportFrom": "Report message from {{name}}",
+    "messageLabel": "Message",
+    "placeholderKeys": "Write a message... (Enter to send, Shift+Enter for a new line)",
+    "send": "Send message",
+    "liveConnected": "Live updates connected",
+    "reconnecting": "Reconnecting...",
+    "live": "Live",
+    "offline": "Offline",
+    "emptyTitle": "No conversations yet",
+    "notFound": "Conversation not found",
+    "selectTitle": "Select a conversation",
+    "description": "Case conversations with patients, agents and care coordinators.",
+    "emptyText": "A conversation is created automatically for every new case.",
+    "attachments_one": "{{count}} attachment - see case documents",
+    "attachments_other": "{{count}} attachments - see case documents"
   }
 }

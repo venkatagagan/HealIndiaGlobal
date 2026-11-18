@@ -150,19 +150,35 @@ class AuthSession {
 
 /// Consent record (`POST/GET /auth/consents`).
 class Consent {
-  const Consent({required this.kind, required this.version, required this.granted, this.createdAt});
+  const Consent({
+    required this.kind,
+    required this.version,
+    required this.granted,
+    this.createdAt,
+    this.caseId,
+    this.hospitalId,
+  });
 
   factory Consent.fromJson(JsonMap j) => Consent(
     kind: ConsentKind.fromJson(j['kind']),
     version: jStr(j, 'version'),
     granted: jBool(j, 'granted'),
     createdAt: jDate(j, 'created_at'),
+    caseId: jStrOrNull(j, 'case_id'),
+    hospitalId: jStrOrNull(j, 'hospital_id'),
   );
 
   final ConsentKind kind;
   final String version;
   final bool granted;
   final DateTime? createdAt;
+
+  /// Scope of a `share_with_hospitals` decision (null = account-wide).
+  final String? caseId;
+  final String? hospitalId;
+
+  /// Applies to the whole account (not one case or hospital).
+  bool get isAccountWide => caseId == null && hospitalId == null;
 
   Map<String, dynamic> toJson() => {'kind': kind.json, 'version': version, 'granted': granted};
 }

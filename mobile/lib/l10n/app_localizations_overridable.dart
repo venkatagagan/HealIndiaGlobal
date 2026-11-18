@@ -2246,6 +2246,146 @@ class OverridableLocalizations extends AppLocalizations {
     'inviteMissingArrival' => inviteMissingArrival,
     'inviteMissingDuration' => inviteMissingDuration,
     'inviteMissingTreatment' => inviteMissingTreatment,
+    'reportSheetTitleReview' => reportSheetTitleReview,
+    'reportSheetIntroReview' => reportSheetIntroReview,
+    'reviewReportAction' => reviewReportAction,
+    'orgSuspendedTitle' => orgSuspendedTitle,
+    'orgSuspendedBodyAgent' => orgSuspendedBodyAgent,
+    'orgSuspendedBodyHospital' => orgSuspendedBodyHospital,
+    'orgSuspendedCallSupport' => orgSuspendedCallSupport,
+    'orgSuspendedWhatsAppSupport' => orgSuspendedWhatsAppSupport,
+    'orgSuspendedNoContact' => orgSuspendedNoContact,
+    'orgSuspendedCheckAgain' => orgSuspendedCheckAgain,
+    'hpAvailabilityTitle' => hpAvailabilityTitle,
+    'hpMoreAvailabilitySubtitle' => hpMoreAvailabilitySubtitle,
+    'hpAvailabilityIntroDoctor' => hpAvailabilityIntroDoctor,
+    'hpAvailabilityIntroHospital' => hpAvailabilityIntroHospital,
+    'hpAvailabilityConsultShort' => hpAvailabilityConsultShort,
+    'hpAvailabilityAdmitShort' => hpAvailabilityAdmitShort,
+    'hpAvailabilityInvalidNumber' => hpAvailabilityInvalidNumber,
+    'hpAvailabilityQuickFill' => hpAvailabilityQuickFill,
+    'hpAvailabilityWeekdaysOnly' => hpAvailabilityWeekdaysOnly,
+    'hpAvailabilityApply' => hpAvailabilityApply,
+    'hpAvailabilitySaved' => hpAvailabilitySaved,
+    'hpAvailabilityFixErrors' => hpAvailabilityFixErrors,
+    'hpAvailabilityBelowBookedError' => hpAvailabilityBelowBookedError,
+    'hpAvailabilityDiscardTitle' => hpAvailabilityDiscardTitle,
+    'hpAvailabilityDiscard' => hpAvailabilityDiscard,
+    'hpAvailabilityKeepEditing' => hpAvailabilityKeepEditing,
+    'hpAvailabilityEditButton' => hpAvailabilityEditButton,
+    'hpAvailabilityPastDay' => hpAvailabilityPastDay,
+    'privacyRequestsTitle' => privacyRequestsTitle,
+    'privacyRequestsSubtitle' => privacyRequestsSubtitle,
+    'privacyRequestsEmpty' => privacyRequestsEmpty,
+    'privacyRequestNew' => privacyRequestNew,
+    'privacyRequestFormIntro' => privacyRequestFormIntro,
+    'privacyRequestKindLabel' => privacyRequestKindLabel,
+    'privacyRequestKindAccess' => privacyRequestKindAccess,
+    'privacyRequestKindCorrection' => privacyRequestKindCorrection,
+    'privacyRequestKindErasure' => privacyRequestKindErasure,
+    'privacyRequestKindNomination' => privacyRequestKindNomination,
+    'privacyRequestKindWithdrawConsent' => privacyRequestKindWithdrawConsent,
+    'privacyRequestKindComplaint' => privacyRequestKindComplaint,
+    'privacyRequestKindOther' => privacyRequestKindOther,
+    'privacyRequestDetailsLabel' => privacyRequestDetailsLabel,
+    'privacyRequestDetailsHint' => privacyRequestDetailsHint,
+    'privacyRequestDetailsTooShort' => privacyRequestDetailsTooShort,
+    'privacyRequestOnBehalfLabel' => privacyRequestOnBehalfLabel,
+    'privacyRequestOnBehalfHint' => privacyRequestOnBehalfHint,
+    'privacyRequestSubmit' => privacyRequestSubmit,
+    'privacyRequestStatusReceived' => privacyRequestStatusReceived,
+    'privacyRequestStatusInProgress' => privacyRequestStatusInProgress,
+    'privacyRequestStatusAwaitingRequester' => privacyRequestStatusAwaitingRequester,
+    'privacyRequestStatusCompleted' => privacyRequestStatusCompleted,
+    'privacyRequestStatusRejected' => privacyRequestStatusRejected,
+    'privacyRequestOverdue' => privacyRequestOverdue,
+    'privacyRequestYourRequest' => privacyRequestYourRequest,
+    'privacyRequestResolution' => privacyRequestResolution,
+    'privacyRequestNoAnswerYet' => privacyRequestNoAnswerYet,
+    'privacyNomineeTitle' => privacyNomineeTitle,
+    'privacyNomineeSubtitleNone' => privacyNomineeSubtitleNone,
+    'privacyNomineeIntro' => privacyNomineeIntro,
+    'privacyNomineeName' => privacyNomineeName,
+    'privacyNomineeRelationship' => privacyNomineeRelationship,
+    'privacyNomineeEmail' => privacyNomineeEmail,
+    'privacyNomineePhone' => privacyNomineePhone,
+    'privacyNomineeContactRequired' => privacyNomineeContactRequired,
+    'privacyNomineeTooShort' => privacyNomineeTooShort,
+    'privacyNomineeSave' => privacyNomineeSave,
+    'privacyNomineeSaved' => privacyNomineeSaved,
+    'privacyNomineeRemove' => privacyNomineeRemove,
+    'privacyNomineeRemoveConfirm' => privacyNomineeRemoveConfirm,
+    'privacyNomineeRemoved' => privacyNomineeRemoved,
+    'privacyShareHospitalsTitle' => privacyShareHospitalsTitle,
+    'privacyShareHospitalsOn' => privacyShareHospitalsOn,
+    'privacyShareHospitalsOff' => privacyShareHospitalsOff,
+    'privacyShareHospitalsWithdrawTitle' => privacyShareHospitalsWithdrawTitle,
+    'privacyShareHospitalsWithdrawBody' => privacyShareHospitalsWithdrawBody,
+    'privacyShareAgentTitle' => privacyShareAgentTitle,
+    'privacyShareAgentOn' => privacyShareAgentOn,
+    'privacyShareAgentOff' => privacyShareAgentOff,
+    'privacyShareAgentWithdrawTitle' => privacyShareAgentWithdrawTitle,
+    'privacyShareAgentWithdrawBody' => privacyShareAgentWithdrawBody,
+    'privacyShareWithdraw' => privacyShareWithdraw,
+    'privacyShareUpdated' => privacyShareUpdated,
+    'privacyContactTitle' => privacyContactTitle,
+    'privacyContactSubtitle' => privacyContactSubtitle,
+    'privacyContactGrievance' => privacyContactGrievance,
+    'privacyContactDpo' => privacyContactDpo,
+    'privacyContactAddress' => privacyContactAddress,
+    'privacyContactBoard' => privacyContactBoard,
+    'privacyContactBoardLink' => privacyContactBoardLink,
+    'privacyContactNotPublished' => privacyContactNotPublished,
+    'consultBookTitle' => consultBookTitle,
+    'consultBookIntro' => consultBookIntro,
+    'consultDoctorSection' => consultDoctorSection,
+    'consultRequestQuoteInstead' => consultRequestQuoteInstead,
+    'consultDateSection' => consultDateSection,
+    'consultDateHint' => consultDateHint,
+    'consultTimeSection' => consultTimeSection,
+    'consultQuestionLabel' => consultQuestionLabel,
+    'consultQuestionHint' => consultQuestionHint,
+    'consultReportsSection' => consultReportsSection,
+    'consultReportsHint' => consultReportsHint,
+    'consultUpload' => consultUpload,
+    'consultFeeLabel' => consultFeeLabel,
+    'consultFeeFree' => consultFeeFree,
+    'consultFeePayNote' => consultFeePayNote,
+    'consultSubmit' => consultSubmit,
+    'consultPickDoctor' => consultPickDoctor,
+    'consultPickSlot' => consultPickSlot,
+    'consultRequestedSnack' => consultRequestedSnack,
+    'consultErrorExists' => consultErrorExists,
+    'consultErrorUnavailable' => consultErrorUnavailable,
+    'consultErrorDoctorRequired' => consultErrorDoctorRequired,
+    'consultErrorInvalidDoctor' => consultErrorInvalidDoctor,
+    'consultMineTitle' => consultMineTitle,
+    'consultMineSubtitle' => consultMineSubtitle,
+    'consultListEmpty' => consultListEmpty,
+    'consultListEmptyBody' => consultListEmptyBody,
+    'consultFindDoctor' => consultFindDoctor,
+    'consultDetailTitle' => consultDetailTitle,
+    'consultDoctorTbc' => consultDoctorTbc,
+    'consultAwaitingTime' => consultAwaitingTime,
+    'consultJoinVideo' => consultJoinVideo,
+    'consultJoinHint' => consultJoinHint,
+    'consultLinkSoon' => consultLinkSoon,
+    'consultReminderScheduled' => consultReminderScheduled,
+    'consultReminderPending' => consultReminderPending,
+    'consultPaid' => consultPaid,
+    'consultPaymentDue' => consultPaymentDue,
+    'consultPaymentPending' => consultPaymentPending,
+    'consultPayTitle' => consultPayTitle,
+    'consultPaySuccess' => consultPaySuccess,
+    'consultPayFailed' => consultPayFailed,
+    'consultPayPending' => consultPayPending,
+    'consultCancel' => consultCancel,
+    'consultCancelConfirmTitle' => consultCancelConfirmTitle,
+    'consultCancelConfirmBody' => consultCancelConfirmBody,
+    'consultKeep' => consultKeep,
+    'consultCancelled' => consultCancelled,
+    'consultNotesSection' => consultNotesSection,
+    'consultBookVideoButton' => consultBookVideoButton,
     _ => null,
   };
 
@@ -9886,6 +10026,483 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get inviteMissingTreatment => _t('inviteMissingTreatment') ?? base.inviteMissingTreatment;
+
+  @override
+  String get reportSheetTitleReview => _t('reportSheetTitleReview') ?? base.reportSheetTitleReview;
+
+  @override
+  String get reportSheetIntroReview => _t('reportSheetIntroReview') ?? base.reportSheetIntroReview;
+
+  @override
+  String get reviewReportAction => _t('reviewReportAction') ?? base.reviewReportAction;
+
+  @override
+  String get orgSuspendedTitle => _t('orgSuspendedTitle') ?? base.orgSuspendedTitle;
+
+  @override
+  String get orgSuspendedBodyAgent => _t('orgSuspendedBodyAgent') ?? base.orgSuspendedBodyAgent;
+
+  @override
+  String get orgSuspendedBodyHospital => _t('orgSuspendedBodyHospital') ?? base.orgSuspendedBodyHospital;
+
+  @override
+  String get orgSuspendedCallSupport => _t('orgSuspendedCallSupport') ?? base.orgSuspendedCallSupport;
+
+  @override
+  String get orgSuspendedWhatsAppSupport => _t('orgSuspendedWhatsAppSupport') ?? base.orgSuspendedWhatsAppSupport;
+
+  @override
+  String get orgSuspendedNoContact => _t('orgSuspendedNoContact') ?? base.orgSuspendedNoContact;
+
+  @override
+  String get orgSuspendedCheckAgain => _t('orgSuspendedCheckAgain') ?? base.orgSuspendedCheckAgain;
+
+  @override
+  String get hpAvailabilityTitle => _t('hpAvailabilityTitle') ?? base.hpAvailabilityTitle;
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) => _f('hpAvailabilityDoctorTitle', {'name': name}) ?? base.hpAvailabilityDoctorTitle(name);
+
+  @override
+  String get hpMoreAvailabilitySubtitle => _t('hpMoreAvailabilitySubtitle') ?? base.hpMoreAvailabilitySubtitle;
+
+  @override
+  String get hpAvailabilityIntroDoctor => _t('hpAvailabilityIntroDoctor') ?? base.hpAvailabilityIntroDoctor;
+
+  @override
+  String get hpAvailabilityIntroHospital => _t('hpAvailabilityIntroHospital') ?? base.hpAvailabilityIntroHospital;
+
+  @override
+  String get hpAvailabilityConsultShort => _t('hpAvailabilityConsultShort') ?? base.hpAvailabilityConsultShort;
+
+  @override
+  String get hpAvailabilityAdmitShort => _t('hpAvailabilityAdmitShort') ?? base.hpAvailabilityAdmitShort;
+
+  @override
+  String hpAvailabilityBooked(int count) => _f('hpAvailabilityBooked', {'count': count}) ?? base.hpAvailabilityBooked(count);
+
+  @override
+  String hpAvailabilityBelowBooked(int count) => _f('hpAvailabilityBelowBooked', {'count': count}) ?? base.hpAvailabilityBelowBooked(count);
+
+  @override
+  String get hpAvailabilityInvalidNumber => _t('hpAvailabilityInvalidNumber') ?? base.hpAvailabilityInvalidNumber;
+
+  @override
+  String get hpAvailabilityQuickFill => _t('hpAvailabilityQuickFill') ?? base.hpAvailabilityQuickFill;
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) => _f('hpAvailabilityQuickFillHint', {'month': month}) ?? base.hpAvailabilityQuickFillHint(month);
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => _t('hpAvailabilityWeekdaysOnly') ?? base.hpAvailabilityWeekdaysOnly;
+
+  @override
+  String get hpAvailabilityApply => _t('hpAvailabilityApply') ?? base.hpAvailabilityApply;
+
+  @override
+  String get hpAvailabilitySaved => _t('hpAvailabilitySaved') ?? base.hpAvailabilitySaved;
+
+  @override
+  String get hpAvailabilityFixErrors => _t('hpAvailabilityFixErrors') ?? base.hpAvailabilityFixErrors;
+
+  @override
+  String get hpAvailabilityBelowBookedError => _t('hpAvailabilityBelowBookedError') ?? base.hpAvailabilityBelowBookedError;
+
+  @override
+  String get hpAvailabilityDiscardTitle => _t('hpAvailabilityDiscardTitle') ?? base.hpAvailabilityDiscardTitle;
+
+  @override
+  String get hpAvailabilityDiscard => _t('hpAvailabilityDiscard') ?? base.hpAvailabilityDiscard;
+
+  @override
+  String get hpAvailabilityKeepEditing => _t('hpAvailabilityKeepEditing') ?? base.hpAvailabilityKeepEditing;
+
+  @override
+  String get hpAvailabilityEditButton => _t('hpAvailabilityEditButton') ?? base.hpAvailabilityEditButton;
+
+  @override
+  String get hpAvailabilityPastDay => _t('hpAvailabilityPastDay') ?? base.hpAvailabilityPastDay;
+
+  @override
+  String get privacyRequestsTitle => _t('privacyRequestsTitle') ?? base.privacyRequestsTitle;
+
+  @override
+  String get privacyRequestsSubtitle => _t('privacyRequestsSubtitle') ?? base.privacyRequestsSubtitle;
+
+  @override
+  String get privacyRequestsEmpty => _t('privacyRequestsEmpty') ?? base.privacyRequestsEmpty;
+
+  @override
+  String get privacyRequestNew => _t('privacyRequestNew') ?? base.privacyRequestNew;
+
+  @override
+  String get privacyRequestFormIntro => _t('privacyRequestFormIntro') ?? base.privacyRequestFormIntro;
+
+  @override
+  String get privacyRequestKindLabel => _t('privacyRequestKindLabel') ?? base.privacyRequestKindLabel;
+
+  @override
+  String get privacyRequestKindAccess => _t('privacyRequestKindAccess') ?? base.privacyRequestKindAccess;
+
+  @override
+  String get privacyRequestKindCorrection => _t('privacyRequestKindCorrection') ?? base.privacyRequestKindCorrection;
+
+  @override
+  String get privacyRequestKindErasure => _t('privacyRequestKindErasure') ?? base.privacyRequestKindErasure;
+
+  @override
+  String get privacyRequestKindNomination => _t('privacyRequestKindNomination') ?? base.privacyRequestKindNomination;
+
+  @override
+  String get privacyRequestKindWithdrawConsent => _t('privacyRequestKindWithdrawConsent') ?? base.privacyRequestKindWithdrawConsent;
+
+  @override
+  String get privacyRequestKindComplaint => _t('privacyRequestKindComplaint') ?? base.privacyRequestKindComplaint;
+
+  @override
+  String get privacyRequestKindOther => _t('privacyRequestKindOther') ?? base.privacyRequestKindOther;
+
+  @override
+  String get privacyRequestDetailsLabel => _t('privacyRequestDetailsLabel') ?? base.privacyRequestDetailsLabel;
+
+  @override
+  String get privacyRequestDetailsHint => _t('privacyRequestDetailsHint') ?? base.privacyRequestDetailsHint;
+
+  @override
+  String get privacyRequestDetailsTooShort => _t('privacyRequestDetailsTooShort') ?? base.privacyRequestDetailsTooShort;
+
+  @override
+  String get privacyRequestOnBehalfLabel => _t('privacyRequestOnBehalfLabel') ?? base.privacyRequestOnBehalfLabel;
+
+  @override
+  String get privacyRequestOnBehalfHint => _t('privacyRequestOnBehalfHint') ?? base.privacyRequestOnBehalfHint;
+
+  @override
+  String get privacyRequestSubmit => _t('privacyRequestSubmit') ?? base.privacyRequestSubmit;
+
+  @override
+  String privacyRequestSent(String reference, String date) => _f('privacyRequestSent', {'reference': reference, 'date': date}) ?? base.privacyRequestSent(reference, date);
+
+  @override
+  String get privacyRequestStatusReceived => _t('privacyRequestStatusReceived') ?? base.privacyRequestStatusReceived;
+
+  @override
+  String get privacyRequestStatusInProgress => _t('privacyRequestStatusInProgress') ?? base.privacyRequestStatusInProgress;
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => _t('privacyRequestStatusAwaitingRequester') ?? base.privacyRequestStatusAwaitingRequester;
+
+  @override
+  String get privacyRequestStatusCompleted => _t('privacyRequestStatusCompleted') ?? base.privacyRequestStatusCompleted;
+
+  @override
+  String get privacyRequestStatusRejected => _t('privacyRequestStatusRejected') ?? base.privacyRequestStatusRejected;
+
+  @override
+  String privacyRequestDueBy(String date) => _f('privacyRequestDueBy', {'date': date}) ?? base.privacyRequestDueBy(date);
+
+  @override
+  String get privacyRequestOverdue => _t('privacyRequestOverdue') ?? base.privacyRequestOverdue;
+
+  @override
+  String privacyRequestSentOn(String date) => _f('privacyRequestSentOn', {'date': date}) ?? base.privacyRequestSentOn(date);
+
+  @override
+  String privacyRequestClosedOn(String date) => _f('privacyRequestClosedOn', {'date': date}) ?? base.privacyRequestClosedOn(date);
+
+  @override
+  String get privacyRequestYourRequest => _t('privacyRequestYourRequest') ?? base.privacyRequestYourRequest;
+
+  @override
+  String get privacyRequestResolution => _t('privacyRequestResolution') ?? base.privacyRequestResolution;
+
+  @override
+  String get privacyRequestNoAnswerYet => _t('privacyRequestNoAnswerYet') ?? base.privacyRequestNoAnswerYet;
+
+  @override
+  String get privacyNomineeTitle => _t('privacyNomineeTitle') ?? base.privacyNomineeTitle;
+
+  @override
+  String get privacyNomineeSubtitleNone => _t('privacyNomineeSubtitleNone') ?? base.privacyNomineeSubtitleNone;
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) => _f('privacyNomineeSubtitleSet', {'name': name, 'relationship': relationship}) ?? base.privacyNomineeSubtitleSet(name, relationship);
+
+  @override
+  String get privacyNomineeIntro => _t('privacyNomineeIntro') ?? base.privacyNomineeIntro;
+
+  @override
+  String get privacyNomineeName => _t('privacyNomineeName') ?? base.privacyNomineeName;
+
+  @override
+  String get privacyNomineeRelationship => _t('privacyNomineeRelationship') ?? base.privacyNomineeRelationship;
+
+  @override
+  String get privacyNomineeEmail => _t('privacyNomineeEmail') ?? base.privacyNomineeEmail;
+
+  @override
+  String get privacyNomineePhone => _t('privacyNomineePhone') ?? base.privacyNomineePhone;
+
+  @override
+  String get privacyNomineeContactRequired => _t('privacyNomineeContactRequired') ?? base.privacyNomineeContactRequired;
+
+  @override
+  String get privacyNomineeTooShort => _t('privacyNomineeTooShort') ?? base.privacyNomineeTooShort;
+
+  @override
+  String get privacyNomineeSave => _t('privacyNomineeSave') ?? base.privacyNomineeSave;
+
+  @override
+  String get privacyNomineeSaved => _t('privacyNomineeSaved') ?? base.privacyNomineeSaved;
+
+  @override
+  String get privacyNomineeRemove => _t('privacyNomineeRemove') ?? base.privacyNomineeRemove;
+
+  @override
+  String get privacyNomineeRemoveConfirm => _t('privacyNomineeRemoveConfirm') ?? base.privacyNomineeRemoveConfirm;
+
+  @override
+  String get privacyNomineeRemoved => _t('privacyNomineeRemoved') ?? base.privacyNomineeRemoved;
+
+  @override
+  String get privacyShareHospitalsTitle => _t('privacyShareHospitalsTitle') ?? base.privacyShareHospitalsTitle;
+
+  @override
+  String get privacyShareHospitalsOn => _t('privacyShareHospitalsOn') ?? base.privacyShareHospitalsOn;
+
+  @override
+  String get privacyShareHospitalsOff => _t('privacyShareHospitalsOff') ?? base.privacyShareHospitalsOff;
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => _t('privacyShareHospitalsWithdrawTitle') ?? base.privacyShareHospitalsWithdrawTitle;
+
+  @override
+  String get privacyShareHospitalsWithdrawBody => _t('privacyShareHospitalsWithdrawBody') ?? base.privacyShareHospitalsWithdrawBody;
+
+  @override
+  String get privacyShareAgentTitle => _t('privacyShareAgentTitle') ?? base.privacyShareAgentTitle;
+
+  @override
+  String get privacyShareAgentOn => _t('privacyShareAgentOn') ?? base.privacyShareAgentOn;
+
+  @override
+  String get privacyShareAgentOff => _t('privacyShareAgentOff') ?? base.privacyShareAgentOff;
+
+  @override
+  String get privacyShareAgentWithdrawTitle => _t('privacyShareAgentWithdrawTitle') ?? base.privacyShareAgentWithdrawTitle;
+
+  @override
+  String get privacyShareAgentWithdrawBody => _t('privacyShareAgentWithdrawBody') ?? base.privacyShareAgentWithdrawBody;
+
+  @override
+  String get privacyShareWithdraw => _t('privacyShareWithdraw') ?? base.privacyShareWithdraw;
+
+  @override
+  String get privacyShareUpdated => _t('privacyShareUpdated') ?? base.privacyShareUpdated;
+
+  @override
+  String get privacyContactTitle => _t('privacyContactTitle') ?? base.privacyContactTitle;
+
+  @override
+  String get privacyContactSubtitle => _t('privacyContactSubtitle') ?? base.privacyContactSubtitle;
+
+  @override
+  String get privacyContactGrievance => _t('privacyContactGrievance') ?? base.privacyContactGrievance;
+
+  @override
+  String get privacyContactDpo => _t('privacyContactDpo') ?? base.privacyContactDpo;
+
+  @override
+  String get privacyContactAddress => _t('privacyContactAddress') ?? base.privacyContactAddress;
+
+  @override
+  String privacyContactResponse(int days) => _f('privacyContactResponse', {'days': days}) ?? base.privacyContactResponse(days);
+
+  @override
+  String get privacyContactBoard => _t('privacyContactBoard') ?? base.privacyContactBoard;
+
+  @override
+  String get privacyContactBoardLink => _t('privacyContactBoardLink') ?? base.privacyContactBoardLink;
+
+  @override
+  String get privacyContactNotPublished => _t('privacyContactNotPublished') ?? base.privacyContactNotPublished;
+
+  @override
+  String get consultBookTitle => _t('consultBookTitle') ?? base.consultBookTitle;
+
+  @override
+  String get consultBookIntro => _t('consultBookIntro') ?? base.consultBookIntro;
+
+  @override
+  String get consultDoctorSection => _t('consultDoctorSection') ?? base.consultDoctorSection;
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) => _f('consultNoTeleconsultDoctors', {'hospital': hospital}) ?? base.consultNoTeleconsultDoctors(hospital);
+
+  @override
+  String get consultRequestQuoteInstead => _t('consultRequestQuoteInstead') ?? base.consultRequestQuoteInstead;
+
+  @override
+  String get consultDateSection => _t('consultDateSection') ?? base.consultDateSection;
+
+  @override
+  String get consultDateHint => _t('consultDateHint') ?? base.consultDateHint;
+
+  @override
+  String get consultTimeSection => _t('consultTimeSection') ?? base.consultTimeSection;
+
+  @override
+  String consultTimesLocal(String zone) => _f('consultTimesLocal', {'zone': zone}) ?? base.consultTimesLocal(zone);
+
+  @override
+  String get consultQuestionLabel => _t('consultQuestionLabel') ?? base.consultQuestionLabel;
+
+  @override
+  String get consultQuestionHint => _t('consultQuestionHint') ?? base.consultQuestionHint;
+
+  @override
+  String get consultReportsSection => _t('consultReportsSection') ?? base.consultReportsSection;
+
+  @override
+  String get consultReportsHint => _t('consultReportsHint') ?? base.consultReportsHint;
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) => _f('consultReportsExistingCase', {'caseNumber': caseNumber, 'hospital': hospital}) ?? base.consultReportsExistingCase(caseNumber, hospital);
+
+  @override
+  String get consultUpload => _t('consultUpload') ?? base.consultUpload;
+
+  @override
+  String get consultFeeLabel => _t('consultFeeLabel') ?? base.consultFeeLabel;
+
+  @override
+  String get consultFeeFree => _t('consultFeeFree') ?? base.consultFeeFree;
+
+  @override
+  String get consultFeePayNote => _t('consultFeePayNote') ?? base.consultFeePayNote;
+
+  @override
+  String get consultSubmit => _t('consultSubmit') ?? base.consultSubmit;
+
+  @override
+  String get consultPickDoctor => _t('consultPickDoctor') ?? base.consultPickDoctor;
+
+  @override
+  String get consultPickSlot => _t('consultPickSlot') ?? base.consultPickSlot;
+
+  @override
+  String get consultRequestedSnack => _t('consultRequestedSnack') ?? base.consultRequestedSnack;
+
+  @override
+  String get consultErrorExists => _t('consultErrorExists') ?? base.consultErrorExists;
+
+  @override
+  String get consultErrorUnavailable => _t('consultErrorUnavailable') ?? base.consultErrorUnavailable;
+
+  @override
+  String get consultErrorDoctorRequired => _t('consultErrorDoctorRequired') ?? base.consultErrorDoctorRequired;
+
+  @override
+  String get consultErrorInvalidDoctor => _t('consultErrorInvalidDoctor') ?? base.consultErrorInvalidDoctor;
+
+  @override
+  String get consultMineTitle => _t('consultMineTitle') ?? base.consultMineTitle;
+
+  @override
+  String get consultMineSubtitle => _t('consultMineSubtitle') ?? base.consultMineSubtitle;
+
+  @override
+  String get consultListEmpty => _t('consultListEmpty') ?? base.consultListEmpty;
+
+  @override
+  String get consultListEmptyBody => _t('consultListEmptyBody') ?? base.consultListEmptyBody;
+
+  @override
+  String get consultFindDoctor => _t('consultFindDoctor') ?? base.consultFindDoctor;
+
+  @override
+  String get consultDetailTitle => _t('consultDetailTitle') ?? base.consultDetailTitle;
+
+  @override
+  String consultWithDoctor(String doctor) => _f('consultWithDoctor', {'doctor': doctor}) ?? base.consultWithDoctor(doctor);
+
+  @override
+  String consultFollowupWith(String doctor) => _f('consultFollowupWith', {'doctor': doctor}) ?? base.consultFollowupWith(doctor);
+
+  @override
+  String get consultDoctorTbc => _t('consultDoctorTbc') ?? base.consultDoctorTbc;
+
+  @override
+  String consultScheduledAt(String when, int minutes) => _f('consultScheduledAt', {'when': when, 'minutes': minutes}) ?? base.consultScheduledAt(when, minutes);
+
+  @override
+  String get consultAwaitingTime => _t('consultAwaitingTime') ?? base.consultAwaitingTime;
+
+  @override
+  String consultPreferredTime(String when) => _f('consultPreferredTime', {'when': when}) ?? base.consultPreferredTime(when);
+
+  @override
+  String get consultJoinVideo => _t('consultJoinVideo') ?? base.consultJoinVideo;
+
+  @override
+  String get consultJoinHint => _t('consultJoinHint') ?? base.consultJoinHint;
+
+  @override
+  String get consultLinkSoon => _t('consultLinkSoon') ?? base.consultLinkSoon;
+
+  @override
+  String get consultReminderScheduled => _t('consultReminderScheduled') ?? base.consultReminderScheduled;
+
+  @override
+  String get consultReminderPending => _t('consultReminderPending') ?? base.consultReminderPending;
+
+  @override
+  String get consultPaid => _t('consultPaid') ?? base.consultPaid;
+
+  @override
+  String get consultPaymentDue => _t('consultPaymentDue') ?? base.consultPaymentDue;
+
+  @override
+  String get consultPaymentPending => _t('consultPaymentPending') ?? base.consultPaymentPending;
+
+  @override
+  String consultPayButton(String amount) => _f('consultPayButton', {'amount': amount}) ?? base.consultPayButton(amount);
+
+  @override
+  String get consultPayTitle => _t('consultPayTitle') ?? base.consultPayTitle;
+
+  @override
+  String get consultPaySuccess => _t('consultPaySuccess') ?? base.consultPaySuccess;
+
+  @override
+  String get consultPayFailed => _t('consultPayFailed') ?? base.consultPayFailed;
+
+  @override
+  String get consultPayPending => _t('consultPayPending') ?? base.consultPayPending;
+
+  @override
+  String get consultCancel => _t('consultCancel') ?? base.consultCancel;
+
+  @override
+  String get consultCancelConfirmTitle => _t('consultCancelConfirmTitle') ?? base.consultCancelConfirmTitle;
+
+  @override
+  String get consultCancelConfirmBody => _t('consultCancelConfirmBody') ?? base.consultCancelConfirmBody;
+
+  @override
+  String get consultKeep => _t('consultKeep') ?? base.consultKeep;
+
+  @override
+  String get consultCancelled => _t('consultCancelled') ?? base.consultCancelled;
+
+  @override
+  String consultOpenCase(String caseNumber) => _f('consultOpenCase', {'caseNumber': caseNumber}) ?? base.consultOpenCase(caseNumber);
+
+  @override
+  String get consultNotesSection => _t('consultNotesSection') ?? base.consultNotesSection;
+
+  @override
+  String get consultBookVideoButton => _t('consultBookVideoButton') ?? base.consultBookVideoButton;
 }
 
 /// Every ARB key, in template order.
@@ -12436,4 +13053,163 @@ const List<String> kL10nKeys = [
   'inviteMissingArrival',
   'inviteMissingDuration',
   'inviteMissingTreatment',
+  'reportSheetTitleReview',
+  'reportSheetIntroReview',
+  'reviewReportAction',
+  'orgSuspendedTitle',
+  'orgSuspendedBodyAgent',
+  'orgSuspendedBodyHospital',
+  'orgSuspendedCallSupport',
+  'orgSuspendedWhatsAppSupport',
+  'orgSuspendedNoContact',
+  'orgSuspendedCheckAgain',
+  'hpAvailabilityTitle',
+  'hpAvailabilityDoctorTitle',
+  'hpMoreAvailabilitySubtitle',
+  'hpAvailabilityIntroDoctor',
+  'hpAvailabilityIntroHospital',
+  'hpAvailabilityConsultShort',
+  'hpAvailabilityAdmitShort',
+  'hpAvailabilityBooked',
+  'hpAvailabilityBelowBooked',
+  'hpAvailabilityInvalidNumber',
+  'hpAvailabilityQuickFill',
+  'hpAvailabilityQuickFillHint',
+  'hpAvailabilityWeekdaysOnly',
+  'hpAvailabilityApply',
+  'hpAvailabilitySaved',
+  'hpAvailabilityFixErrors',
+  'hpAvailabilityBelowBookedError',
+  'hpAvailabilityDiscardTitle',
+  'hpAvailabilityDiscard',
+  'hpAvailabilityKeepEditing',
+  'hpAvailabilityEditButton',
+  'hpAvailabilityPastDay',
+  'privacyRequestsTitle',
+  'privacyRequestsSubtitle',
+  'privacyRequestsEmpty',
+  'privacyRequestNew',
+  'privacyRequestFormIntro',
+  'privacyRequestKindLabel',
+  'privacyRequestKindAccess',
+  'privacyRequestKindCorrection',
+  'privacyRequestKindErasure',
+  'privacyRequestKindNomination',
+  'privacyRequestKindWithdrawConsent',
+  'privacyRequestKindComplaint',
+  'privacyRequestKindOther',
+  'privacyRequestDetailsLabel',
+  'privacyRequestDetailsHint',
+  'privacyRequestDetailsTooShort',
+  'privacyRequestOnBehalfLabel',
+  'privacyRequestOnBehalfHint',
+  'privacyRequestSubmit',
+  'privacyRequestSent',
+  'privacyRequestStatusReceived',
+  'privacyRequestStatusInProgress',
+  'privacyRequestStatusAwaitingRequester',
+  'privacyRequestStatusCompleted',
+  'privacyRequestStatusRejected',
+  'privacyRequestDueBy',
+  'privacyRequestOverdue',
+  'privacyRequestSentOn',
+  'privacyRequestClosedOn',
+  'privacyRequestYourRequest',
+  'privacyRequestResolution',
+  'privacyRequestNoAnswerYet',
+  'privacyNomineeTitle',
+  'privacyNomineeSubtitleNone',
+  'privacyNomineeSubtitleSet',
+  'privacyNomineeIntro',
+  'privacyNomineeName',
+  'privacyNomineeRelationship',
+  'privacyNomineeEmail',
+  'privacyNomineePhone',
+  'privacyNomineeContactRequired',
+  'privacyNomineeTooShort',
+  'privacyNomineeSave',
+  'privacyNomineeSaved',
+  'privacyNomineeRemove',
+  'privacyNomineeRemoveConfirm',
+  'privacyNomineeRemoved',
+  'privacyShareHospitalsTitle',
+  'privacyShareHospitalsOn',
+  'privacyShareHospitalsOff',
+  'privacyShareHospitalsWithdrawTitle',
+  'privacyShareHospitalsWithdrawBody',
+  'privacyShareAgentTitle',
+  'privacyShareAgentOn',
+  'privacyShareAgentOff',
+  'privacyShareAgentWithdrawTitle',
+  'privacyShareAgentWithdrawBody',
+  'privacyShareWithdraw',
+  'privacyShareUpdated',
+  'privacyContactTitle',
+  'privacyContactSubtitle',
+  'privacyContactGrievance',
+  'privacyContactDpo',
+  'privacyContactAddress',
+  'privacyContactResponse',
+  'privacyContactBoard',
+  'privacyContactBoardLink',
+  'privacyContactNotPublished',
+  'consultBookTitle',
+  'consultBookIntro',
+  'consultDoctorSection',
+  'consultNoTeleconsultDoctors',
+  'consultRequestQuoteInstead',
+  'consultDateSection',
+  'consultDateHint',
+  'consultTimeSection',
+  'consultTimesLocal',
+  'consultQuestionLabel',
+  'consultQuestionHint',
+  'consultReportsSection',
+  'consultReportsHint',
+  'consultReportsExistingCase',
+  'consultUpload',
+  'consultFeeLabel',
+  'consultFeeFree',
+  'consultFeePayNote',
+  'consultSubmit',
+  'consultPickDoctor',
+  'consultPickSlot',
+  'consultRequestedSnack',
+  'consultErrorExists',
+  'consultErrorUnavailable',
+  'consultErrorDoctorRequired',
+  'consultErrorInvalidDoctor',
+  'consultMineTitle',
+  'consultMineSubtitle',
+  'consultListEmpty',
+  'consultListEmptyBody',
+  'consultFindDoctor',
+  'consultDetailTitle',
+  'consultWithDoctor',
+  'consultFollowupWith',
+  'consultDoctorTbc',
+  'consultScheduledAt',
+  'consultAwaitingTime',
+  'consultPreferredTime',
+  'consultJoinVideo',
+  'consultJoinHint',
+  'consultLinkSoon',
+  'consultReminderScheduled',
+  'consultReminderPending',
+  'consultPaid',
+  'consultPaymentDue',
+  'consultPaymentPending',
+  'consultPayButton',
+  'consultPayTitle',
+  'consultPaySuccess',
+  'consultPayFailed',
+  'consultPayPending',
+  'consultCancel',
+  'consultCancelConfirmTitle',
+  'consultCancelConfirmBody',
+  'consultKeep',
+  'consultCancelled',
+  'consultOpenCase',
+  'consultNotesSection',
+  'consultBookVideoButton',
 ];

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/auth_controller.dart';
 import '../../../core/models/models.dart';
 import '../../../core/repositories/catalog_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
+import '../../consultations/screens/consultation_book_screen.dart';
 import '../widgets/availability_strip.dart';
 import '../widgets/catalog_cards.dart';
 import '../widgets/detail_sections.dart';
@@ -59,7 +61,15 @@ class DoctorDetailScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
               _Header(doctor: d),
-              ..._sections(context, d),
+              // Agents may browse doctors but book through their own portal.
+              ..._sections(
+                context,
+                d,
+                canBookConsultation: !{
+                  UserRole.agent,
+                  UserRole.hospital,
+                }.contains(ref.watch(currentUserProvider)?.role),
+              ),
             ],
           ),
         ),
@@ -67,7 +77,7 @@ class DoctorDetailScreen extends ConsumerWidget {
     );
   }
 
-  List<Widget> _sections(BuildContext context, DoctorDetail d) {
+  List<Widget> _sections(BuildContext context, DoctorDetail d, {required bool canBookConsultation}) {
     final l10n = context.l10n;
     return [
       const SizedBox(height: 16),
@@ -119,6 +129,16 @@ class DoctorDetailScreen extends ConsumerWidget {
           ),
         ),
       ],
+      if (d.teleconsultAvailable && canBookConsultation) ...[
+        const SizedBox(height: 10),
+        PrimaryButton(
+          key: const ValueKey('doctor-book-video-consultation'),
+          label: l10n.consultBookVideoButton,
+          icon: Icons.videocam_rounded,
+          onPressed: () =>
+              bookVideoConsultation(context, hospitalId: d.hospital.id, doctorId: d.id, specialtyId: d.specialty?.id),
+        ),
+      ],
       if ((d.bio ?? '').isNotEmpty) DetailSection(title: l10n.catalogAboutSection, child: ExpandableText(d.bio!)),
       if (d.qualifications.isNotEmpty)
         DetailSection(
@@ -161,14 +181,19 @@ class DoctorDetailScreen extends ConsumerWidget {
               Text(l10n.reviewsEmptyMessage, style: context.text.bodySmall)
             else
               for (final r in d.reviews.take(3))
-                Padding(padding: const EdgeInsets.only(bottom: 10), child: ReviewTile(review: r, showHospital: true)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: ReviewTile(review: r, showHospital: true, reportable: true),
+                ),
             if (d.reviews.isNotEmpty)
               SecondaryButton(
                 key: const ValueKey('doctor-all-reviews'),
                 label: l10n.reviewsSeeAll(d.ratingCount > 0 ? d.ratingCount : d.reviews.length),
                 icon: Icons.rate_review_outlined,
                 onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => ReviewsScreen.doctor(id: d.id, title: d.fullName)),
+                  MaterialPageRoute<void>(
+                    builder: (_) => ReviewsScreen.doctor(id: d.id, title: d.fullName),
+                  ),
                 ),
               ),
           ],

@@ -248,3 +248,19 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
 - Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
 - Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
   currency), `quoteGroup.total`.
+
+### Client gap fixes (2026-11-18)
+
+- Patient web (`patient:`) pre-travel video consultations: `consult.book.consentLabel` / `consult.book.consentText`
+  (sharing the question, screening and chosen reports with one hospital; withdrawable in Profile > Privacy) -
+  legal, check first; `consult.book.confirmNote`, `consult.detail.reminders`, `consult.detail.cancelPaidText`
+  (refund via support - no refund promise), `consult.errors.*`. Times are labelled "India time" (IST) on purpose.
+- Agent portal (`agent:`): `teleconsult.consent` / `teleconsult.consentHint` (agent confirms the patient agreed to
+  share with the hospital), `teleconsult.payNote`.
+- Patient web extracted (English unchanged): `screening.results.*` - medical, check first: `urgency.*.title|body`,
+  `emergencyBody` ("call your local emergency number ... now"), `disclaimer` ("not a medical diagnosis");
+  `profile.privacyData.*` - legal: `nominee.description` (DPDP nomination), `requests.description_*`,
+  `officer.board` (Data Protection Board of India), `log.actions.*` (ru uses "{{who}} ({{role}}): просмотр — {{what}}"
+  to avoid gendered past-tense verbs); `messages.*`.
+- Agent / hospital portals: `messages.*` (new). Shared `common:report.*` (report dialog) and `common:orgSuspended.*`
+  (suspended agency / hospital screen).
