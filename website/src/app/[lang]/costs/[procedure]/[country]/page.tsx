@@ -48,7 +48,7 @@ function describe(g: CostGuide): string {
 function asOfDate(iso: string | null | undefined): string | null {
   if (!iso) return null;
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+  return Number.isNaN(d.getTime()) ? null : formatDate(d.toISOString().slice(0, 10));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
