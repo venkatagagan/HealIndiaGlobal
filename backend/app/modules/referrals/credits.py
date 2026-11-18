@@ -58,7 +58,11 @@ from app.modules.referrals.service import grant_credit, programme
 
 logger = structlog.get_logger(__name__)
 
-CREDIT_PURPOSES = (PaymentPurpose.BOOKING_DEPOSIT, PaymentPurpose.BOOKING_BALANCE, PaymentPurpose.BOOKING_FULL)
+CREDIT_PURPOSES = (
+    PaymentPurpose.BOOKING_DEPOSIT,
+    PaymentPurpose.BOOKING_BALANCE,
+    PaymentPurpose.BOOKING_FULL,
+)
 GATEWAY = PaymentGateway.PLATFORM_CREDIT
 EXPIRING_SOON = timedelta(days=30)
 
@@ -214,7 +218,9 @@ async def _consume(
             await db.execute(
                 select(PatientCredit)
                 .where(PatientCredit.patient_id == patient_id, *_usable())
-                .order_by(PatientCredit.expires_at.asc().nulls_last(), PatientCredit.created_at, PatientCredit.id)
+                .order_by(
+                    PatientCredit.expires_at.asc().nulls_last(), PatientCredit.created_at, PatientCredit.id
+                )
                 .with_for_update()
                 .execution_options(populate_existing=True)
             )
@@ -292,7 +298,8 @@ async def apply_credit(
     fx_rate = (await get_fx_rate(db, quote.currency)).quantize(FX_QUANT, rounding=ROUND_HALF_UP)
     order = PaymentOrder(
         order_number=await next_number(db, "order"),
-        purpose=PaymentPurpose.BOOKING_BALANCE,  # never the deposit: a partial credit must not settle instalment 1
+        # never the deposit: a partial credit must not settle instalment 1
+        purpose=PaymentPurpose.BOOKING_BALANCE,
         status=OrderStatus.CREATED,
         gateway=GATEWAY,
         payer_user_id=user.id,

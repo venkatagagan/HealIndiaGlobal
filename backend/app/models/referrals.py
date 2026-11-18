@@ -4,7 +4,8 @@
                                 referrer's own devices, for the self-referral check)
 * ``referrals``                 referrer -> referred patient (one per referred person); pending -> qualified
                                 (the referred patient's first booking COMPLETED) -> rewarded, or void
-* ``patient_credits``           credit grants (INR base minor units, like the ledger); ``remaining_minor`` is a
+* ``patient_credits``           credit grants (INR base minor units, like the ledger); ``remaining_minor``
+                                is a
                                 cached remainder consumed FIFO by expiry; the ledger account
                                 ``PLATFORM:REFERRAL_CREDIT`` holds the liability
 * ``patient_credit_movements``  append-only history: grant / redeem / reinstate / expire / void
@@ -129,7 +130,9 @@ class PatientCredit(UUIDPkMixin, TimestampMixin, Base):
     __tablename__ = "patient_credits"
     __table_args__ = (
         sa.CheckConstraint("amount_minor > 0", name="amount_positive"),
-        sa.CheckConstraint("remaining_minor >= 0 AND remaining_minor <= amount_minor", name="remaining_range"),
+        sa.CheckConstraint(
+            "remaining_minor >= 0 AND remaining_minor <= amount_minor", name="remaining_range"
+        ),
         sa.Index("ix_patient_credits_patient_status", "patient_id", "status"),
         sa.Index("ix_patient_credits_status_expires_at", "status", "expires_at"),
     )

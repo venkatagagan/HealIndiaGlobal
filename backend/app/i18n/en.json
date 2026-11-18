@@ -487,5 +487,34 @@
     "unknown_locale": "This language is not available.",
     "unknown_translation_key": "This translation key does not exist.",
     "default_language_required": "English is the default language and cannot be switched off."
+  },
+  "referral": {
+    "notifications": {
+      "signed_up": {
+        "title": "A friend joined with your code",
+        "body": "{name} signed up with your referral code. You earn your reward once their first booking is completed."
+      },
+      "rewarded": {
+        "title": "You earned a referral reward",
+        "body": "Thank you for referring {name}! {amount} of credit has been added to your account for your next booking."
+      },
+      "qualified": {
+        "title": "Referral confirmed",
+        "body": "Your referral of {name} is confirmed. You have reached this year's limit of referral rewards, so no credit was added this time."
+      },
+      "welcome_credit": {
+        "title": "Welcome credit added",
+        "body": "{amount} of credit has been added to your account because a friend invited you. Use it on your next booking."
+      }
+    }
+  },
+  "crm": {
+    "notifications": {
+      "follow_up_due": {
+        "title": "Lead follow-ups due",
+        "body": "{count} leads have a follow-up due today.",
+        "body_one": "Follow up with {name} today."
+      }
+    }
   }
 }

@@ -1,15 +1,17 @@
 """Patient referral programme (docs/REFERRALS.md).
 
 Flow
-1. Every patient has a personal code (``referral_codes``; created on first use of ``GET /patient/referral``).
-2. A new patient signs up with ``referral_code`` (website ``/{lang}?ref=CODE``, patient web ``/register?ref=``,
-   app deep link ``<scheme>://register?ref=``): :func:`record_signup_referral` stores a ``pending`` referral, or a
-   ``void`` one when the anti-abuse checks match (same email, phone or device as the referrer).
-3. ``booking.completed`` of the referred patient's FIRST booking: :func:`on_booking_completed` re-checks (payment
-   fingerprints, expiry), marks it ``qualified`` and issues the credits the ``referral_programme`` setting allows
-   (referrer, subject to the yearly cap, and/or the new patient) -> ``rewarded``.
-4. Staff can void a referral (unused credit from it is voided too). Pending referrals that never qualify are
-   voided by the daily job after ``qualify_within_days``; unused credit expires after ``credit_validity_days``.
+1. Every patient has a personal code (``referral_codes``; created on first use of
+   ``GET /patient/referral``).
+2. A new patient signs up with ``referral_code`` (website ``/{lang}?ref=CODE``, patient web
+   ``/register?ref=``, app deep link ``<scheme>://register?ref=``): :func:`record_signup_referral` stores a
+   ``pending`` referral, or a ``void`` one when the anti-abuse checks match (same email, phone or device).
+3. ``booking.completed`` of the referred patient's FIRST booking: :func:`on_booking_completed` re-checks
+   (payment fingerprints, expiry), marks it ``qualified`` and issues the credits the ``referral_programme``
+   setting allows (referrer, subject to the yearly cap, and/or the new patient) -> ``rewarded``.
+4. Staff can void a referral (unused credit from it is voided too). Pending referrals that never qualify
+   are voided by the daily job after ``qualify_within_days``; unused credit expires after
+   ``credit_validity_days``.
 
 Credits are INR minor units (the ledger base currency). Ledger: issue = Dr ``EXPENSE:REFERRAL_REWARDS`` / Cr
 ``PLATFORM:REFERRAL_CREDIT``; expiry and void reverse it. Spending credit is a booking payment through the
@@ -124,7 +126,7 @@ async def programme(db: AsyncSession) -> Programme:
 async def reward_amount(
     db: AsyncSession, amounts: dict[str, int], fallback: str, currency: str | None
 ) -> tuple[int, str, int]:
-    """``(amount, currency, inr_amount)`` of a reward for a patient whose preferred currency is ``currency``."""
+    """``(amount, currency, inr_amount)`` of a reward for a patient preferring ``currency``."""
     ccy = (currency or "").upper()
     if ccy not in amounts:
         ccy = fallback
@@ -462,7 +464,9 @@ async def grant_credit(
         PatientCreditMovement(
             patient_id=patient_id,
             credit_id=credit.id,
-            kind=CreditMovementKind.REINSTATE if kind == PatientCreditKind.REINSTATED else CreditMovementKind.GRANT,
+            kind=CreditMovementKind.REINSTATE
+            if kind == PatientCreditKind.REINSTATED
+            else CreditMovementKind.GRANT,
             amount_minor=amount_minor,
             refund_id=source_refund_id,
             note=note,
@@ -476,7 +480,10 @@ async def grant_credit(
             reference_id=credit.id,
             idempotency_key=f"referral_credit_grant:{credit.id}",
             description=f"Referral credit issued ({_v(kind)})",
-            entries=[(REFERRAL_REWARDS_EXPENSE, "debit", amount_minor), (REFERRAL_CREDIT, "credit", amount_minor)],
+            entries=[
+                (REFERRAL_REWARDS_EXPENSE, "debit", amount_minor),
+                (REFERRAL_CREDIT, "credit", amount_minor),
+            ],
         )
     await db.flush()
     return credit
@@ -485,9 +492,11 @@ async def grant_credit(
 async def release_credit(
     db: AsyncSession, credit: PatientCredit, *, kind: CreditMovementKind, note: str | None = None
 ) -> int:
-    """Expire or void the unused remainder of ``credit`` (reverses the expense). Returns the amount released."""
+    """Expire or void the unused remainder of ``credit`` (reverses the expense). Returns the amount."""
     remaining = int(credit.remaining_minor)
-    credit.status = PatientCreditStatus.EXPIRED if kind == CreditMovementKind.EXPIRE else PatientCreditStatus.VOID
+    credit.status = (
+        PatientCreditStatus.EXPIRED if kind == CreditMovementKind.EXPIRE else PatientCreditStatus.VOID
+    )
     if remaining <= 0:
         await db.flush()
         return 0
@@ -542,7 +551,9 @@ async def on_booking_completed(db: AsyncSession, booking_id: uuid.UUID) -> Refer
     referral = (
         await db.execute(
             select(Referral)
-            .where(Referral.referred_patient_id == booking.patient_id, Referral.status == ReferralStatus.PENDING)
+            .where(
+                Referral.referred_patient_id == booking.patient_id, Referral.status == ReferralStatus.PENDING
+            )
             .with_for_update()
         )
     ).scalar_one_or_none()
@@ -658,7 +669,9 @@ async def _notify_rewards(
             referrer.user_id,
             "referral.rewarded" if credit else "referral.qualified",
             title_key=(
-                "referral.notifications.rewarded.title" if credit else "referral.notifications.qualified.title"
+                "referral.notifications.rewarded.title"
+                if credit
+                else "referral.notifications.qualified.title"
             ),
             body_key=(
                 "referral.notifications.rewarded.body" if credit else "referral.notifications.qualified.body"
@@ -705,7 +718,10 @@ async def void_referral(
         (
             await db.execute(
                 select(PatientCredit)
-                .where(PatientCredit.referral_id == referral.id, PatientCredit.status == PatientCreditStatus.ACTIVE)
+                .where(
+                    PatientCredit.referral_id == referral.id,
+                    PatientCredit.status == PatientCreditStatus.ACTIVE,
+                )
                 .with_for_update()
             )
         )
@@ -722,7 +738,11 @@ async def void_referral(
         entity_type="referral",
         entity_id=referral.id,
         before={"status": before},
-        after={"status": ReferralStatus.VOID.value, "reason": referral.void_reason, "credit_released_minor": released},
+        after={
+            "status": ReferralStatus.VOID.value,
+            "reason": referral.void_reason,
+            "credit_released_minor": released,
+        },
         request=request,
     )
     await db.commit()

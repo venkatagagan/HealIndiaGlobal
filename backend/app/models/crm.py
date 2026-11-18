@@ -105,7 +105,9 @@ class AgentLead(UUIDPkMixin, TimestampMixin, Base):
     follow_up_reminded_on: Mapped[str | None] = mapped_column(String(10))
     last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     tags: Mapped[list[str]] = text_array_col()
-    converted_patient_id: Mapped[uuid.UUID | None] = fk("patient_profiles.id", ondelete="SET NULL", nullable=True)
+    converted_patient_id: Mapped[uuid.UUID | None] = fk(
+        "patient_profiles.id", ondelete="SET NULL", nullable=True
+    )
     converted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 

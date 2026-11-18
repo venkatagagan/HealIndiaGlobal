@@ -104,6 +104,8 @@ class RegisterIn(_In):
     phone: str | None = Field(default=None, max_length=32)
     country_code: str | None = Field(default=None, max_length=2)
     referral_code: str | None = Field(default=None, max_length=16)
+    # app/browser install id: only a keyed hash is kept, for the referral self-referral check
+    device_id: str | None = Field(default=None, max_length=200)
     agency_name: str | None = Field(default=None, max_length=200)
     hospital_name: str | None = Field(default=None, max_length=200)
     city: str | None = Field(default=None, max_length=100)
@@ -152,6 +154,8 @@ class GoogleIn(_In):
     hospital_name: str | None = Field(default=None, max_length=200)
     city: str | None = Field(default=None, max_length=100)
     referral_code: str | None = Field(default=None, max_length=16)
+    # app/browser install id: only a keyed hash is kept, for the referral self-referral check
+    device_id: str | None = Field(default=None, max_length=200)
     accept_agreement: bool = False
     # CG-24: required only when this call creates a new account (400 ``age_attestation_required`` otherwise).
     is_adult: bool | None = None
@@ -176,6 +180,8 @@ class AppleIn(_In):
     hospital_name: str | None = Field(default=None, max_length=200)
     city: str | None = Field(default=None, max_length=100)
     referral_code: str | None = Field(default=None, max_length=16)
+    # app/browser install id: only a keyed hash is kept, for the referral self-referral check
+    device_id: str | None = Field(default=None, max_length=200)
     accept_agreement: bool = False
     # CG-24: required only when this call creates a new account (400 ``age_attestation_required`` otherwise).
     is_adult: bool | None = None

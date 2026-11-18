@@ -487,5 +487,34 @@
     "unknown_locale": "Cette langue n'est pas disponible.",
     "unknown_translation_key": "Cette clé de traduction n'existe pas.",
     "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé."
+  },
+  "referral": {
+    "notifications": {
+      "signed_up": {
+        "title": "Un ami s'est inscrit avec votre code",
+        "body": "{name} s'est inscrit avec votre code de parrainage. Vous recevrez votre récompense dès que sa première réservation sera terminée."
+      },
+      "rewarded": {
+        "title": "Vous avez gagné une récompense de parrainage",
+        "body": "Merci d'avoir parrainé {name} ! Un crédit de {amount} a été ajouté à votre compte pour votre prochaine réservation."
+      },
+      "qualified": {
+        "title": "Parrainage confirmé",
+        "body": "Votre parrainage de {name} est confirmé. Vous avez atteint la limite annuelle de récompenses de parrainage : aucun crédit n'a été ajouté cette fois."
+      },
+      "welcome_credit": {
+        "title": "Crédit de bienvenue ajouté",
+        "body": "Un crédit de {amount} a été ajouté à votre compte car un ami vous a invité. Utilisez-le pour votre prochaine réservation."
+      }
+    }
+  },
+  "crm": {
+    "notifications": {
+      "follow_up_due": {
+        "title": "Relances de prospects à faire",
+        "body": "{count} prospects ont une relance prévue aujourd'hui.",
+        "body_one": "Relancez {name} aujourd'hui."
+      }
+    }
   }
 }

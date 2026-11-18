@@ -259,6 +259,12 @@ async def erase_personal_data(db: AsyncSession, user: User, profile: PatientProf
             )
             for payment in payments:
                 payment.raw = strip_pii(payment.raw or {})
+        # --- referral programme and the agency's pre-conversion lead record ------------------------------
+        from app.modules.crm.privacy import erase_for_patient as crm_erase
+        from app.modules.referrals.privacy import erase_for_patient as referrals_erase
+
+        await referrals_erase(db, profile_id)
+        summary["agent_leads_erased"] = await crm_erase(db, profile_id)
         # --- the profile keeps an anonymous shell (FK target of retained cases/bookings/payments) -----
         for field in _PROFILE_ERASED_FIELDS:
             setattr(profile, field, None)

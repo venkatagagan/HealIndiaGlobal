@@ -1,7 +1,8 @@
 """The ``referral_programme`` platform setting (finance-controlled; docs/REFERRALS.md).
 
 Reward amounts are integer minor units per currency. A patient is rewarded in their preferred currency when it
-is listed, else in ``fallback_currency`` (a fixed "USD-equivalent" credit by default); either way the credit is
+is listed, else in ``fallback_currency`` (a fixed "USD-equivalent" credit by default); either way the credit
+is
 booked in INR (the ledger base currency) at the day's rate and shown back in the patient's currency.
 
 The defaults are placeholders until the business decides (TODO-BUSINESS): USD 50 for the referrer, USD 25 for
@@ -75,7 +76,9 @@ def validate_referral_programme(value: Any) -> dict[str, Any]:
             if not _CCY_RE.match(code):
                 raise _invalid(f"referral_programme.{key} has an invalid currency code")
             if isinstance(amount, bool) or not isinstance(amount, int) or not 0 <= amount <= MAX_REWARD_MINOR:
-                raise _invalid(f"referral_programme.{key}.{code} must be a non-negative integer (minor units)")
+                raise _invalid(
+                    f"referral_programme.{key}.{code} must be a non-negative integer (minor units)"
+                )
             amounts[code] = amount
         out[key] = amounts
     fallback = str(value.get("fallback_currency", REFERRAL_DEFAULTS["fallback_currency"]) or "").upper()

@@ -15,8 +15,8 @@ from app.models.cases import (
     ItineraryItem,
     Quote,
 )
-from app.models.crm import AgentLead, AgentLeadActivity
 from app.models.catalog import CostBenchmark, CulturalTip, FxRate, PlatformSetting, Procedure, Specialty
+from app.models.crm import AgentLead, AgentLeadActivity
 from app.models.docai import DocumentAnalysis
 from app.models.documents import Document
 from app.models.guests import GuestAiUsage, GuestContactVerification, IntroConsultation
@@ -45,13 +45,13 @@ from app.models.messaging import (
 )
 from app.models.patients import PatientCompanion, PatientProfile, SavedItem
 from app.models.payments import Installment, Invoice, Payment, PaymentOrder, Refund, WebhookEvent
+from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
 from app.models.referrals import (
     PatientCredit,
     PatientCreditMovement,
     Referral,
     ReferralCode,
 )
-from app.models.privacy import BreachIncident, DataNominee, DataRightsRequest, GuardianConsent
 from app.models.screening import AIRequestLog, Screening, ScreeningMatch
 from app.models.sequences import NUMBER_SEQUENCES, next_number
 from app.models.settlements import CommissionRule, Payout, PayoutAccount, SettlementBatch, SettlementItem

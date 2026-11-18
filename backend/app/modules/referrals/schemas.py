@@ -189,7 +189,9 @@ class ReferralSummaryOut(BaseModel):
     credits_voided_minor: int
     credits_reinstated_minor: int
     outstanding_minor: int  # usable credit owed to patients (from the credits table)
-    ledger_liability_minor: int  # PLATFORM:REFERRAL_CREDIT balance (should equal outstanding + expired-unswept)
+    ledger_liability_minor: (
+        int  # PLATFORM:REFERRAL_CREDIT balance (should equal outstanding + expired-unswept)
+    )
     base_currency: str
 
 

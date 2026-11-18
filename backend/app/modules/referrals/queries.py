@@ -69,7 +69,9 @@ async def balance_out(db: AsyncSession, profile: PatientProfile) -> CreditBalanc
     )
 
 
-async def _reward(db: AsyncSession, amounts: dict[str, int], fallback: str, ccy: str | None) -> MoneyOut | None:
+async def _reward(
+    db: AsyncSession, amounts: dict[str, int], fallback: str, ccy: str | None
+) -> MoneyOut | None:
     amount, code, _ = await service.reward_amount(db, amounts, fallback, ccy)
     return MoneyOut(amount_minor=amount, currency=code) if amount > 0 else None
 
@@ -237,7 +239,9 @@ async def check_code(db: AsyncSession, code: str, currency: str | None) -> CodeC
     row = await service.lookup_code(db, code)
     if row is not None and prog.enabled:
         reward = (
-            await _reward(db, prog.referee_reward, prog.fallback_currency, currency) if prog.reward_referee else None
+            await _reward(db, prog.referee_reward, prog.fallback_currency, currency)
+            if prog.reward_referee
+            else None
         )
         return CodeCheckOut(valid=True, kind="patient", referee_reward=reward)
     if await agent_code_valid(db, code):
@@ -294,7 +298,9 @@ async def _party(db: AsyncSession, patient_id: uuid.UUID) -> ReferralPartyOut:
 
 async def admin_outs(db: AsyncSession, rows: list[Referral]) -> list[AdminReferralOut]:
     ids = [r.id for r in rows] or [uuid.uuid4()]
-    credits = (await db.execute(select(PatientCredit).where(PatientCredit.referral_id.in_(ids)))).scalars().all()
+    credits = (
+        (await db.execute(select(PatientCredit).where(PatientCredit.referral_id.in_(ids)))).scalars().all()
+    )
     by_referral: dict[uuid.UUID, list[ReferralCreditBrief]] = {}
     for c in credits:
         if c.referral_id is None:
@@ -355,11 +361,15 @@ async def admin_get(db: AsyncSession, referral_id: uuid.UUID) -> AdminReferralOu
 
 async def summary(db: AsyncSession) -> ReferralSummaryOut:
     by_status = {s.value: 0 for s in ReferralStatus}
-    for status, n in (await db.execute(select(Referral.status, func.count()).group_by(Referral.status))).all():
+    for status, n in (
+        await db.execute(select(Referral.status, func.count()).group_by(Referral.status))
+    ).all():
         by_status[_v(status)] = int(n)
     by_channel = {
         _v(ch): int(n)
-        for ch, n in (await db.execute(select(Referral.channel, func.count()).group_by(Referral.channel))).all()
+        for ch, n in (
+            await db.execute(select(Referral.channel, func.count()).group_by(Referral.channel))
+        ).all()
     }
     sums = {
         _v(kind): int(total or 0)
