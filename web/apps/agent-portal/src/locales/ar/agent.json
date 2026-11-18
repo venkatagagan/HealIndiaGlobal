@@ -730,7 +730,8 @@
     "filters": {
       "specialty": "التخصص",
       "language": "اللغة",
-      "gender": "الجنس"
+      "gender": "الجنس",
+      "sort": "الترتيب"
     },
     "emptyTitle": "لا يوجد أطباء يطابقون عوامل التصفية هذه",
     "resetFilters": "إعادة تعيين عوامل التصفية",
@@ -742,7 +743,11 @@
     "experienceYears_other": "{{count}} سنة",
     "successRate": "نسبة النجاح {{pct}}%",
     "teleconsult": "استشارة عن بُعد",
-    "speaks": "يتحدث: {{languages}}"
+    "speaks": "يتحدث: {{languages}}",
+    "sort": {
+      "soonest": "أقرب استشارة",
+      "experience": "الأكثر خبرة"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "الطبيب",
@@ -1675,5 +1680,14 @@
     "attachments_few": "المرفقات: {{count}} - راجع مستندات الملف",
     "attachments_many": "المرفقات: {{count}} - راجع مستندات الملف",
     "attachments_other": "المرفقات: {{count}} - راجع مستندات الملف"
+  },
+  "earliest": {
+    "title": "أقرب المواعيد المتاحة",
+    "hint": "بحسب المواعيد التي نشرها المستشفى (بتواريخ الهند). يؤكّد المستشفى عند الرد.",
+    "consultation": "استشارة {{date}}",
+    "admission": "دخول المستشفى {{date}}",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "none": "لم تُنشر مواعيد متاحة بعد"
   }
 }

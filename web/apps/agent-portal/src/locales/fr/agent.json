@@ -638,7 +638,8 @@
     "filters": {
       "specialty": "Spécialité",
       "language": "Langue",
-      "gender": "Sexe"
+      "gender": "Sexe",
+      "sort": "Trier"
     },
     "emptyTitle": "Aucun médecin ne correspond à ces filtres",
     "resetFilters": "Réinitialiser les filtres",
@@ -646,7 +647,11 @@
     "experienceYears_other": "{{count}} ans",
     "successRate": "{{pct}} % de réussite",
     "teleconsult": "Téléconsultation",
-    "speaks": "Parle : {{languages}}"
+    "speaks": "Parle : {{languages}}",
+    "sort": {
+      "soonest": "Consultation la plus proche",
+      "experience": "Plus expérimentés"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "Médecin",
@@ -1503,5 +1508,14 @@
     "emptyText": "Une conversation est créée automatiquement pour chaque dossier.",
     "attachments_one": "{{count}} pièce jointe - voir les documents du dossier",
     "attachments_other": "{{count}} pièces jointes - voir les documents du dossier"
+  },
+  "earliest": {
+    "title": "Premières dates libres",
+    "hint": "D'après les créneaux publiés par l'hôpital (dates en Inde). L'hôpital confirme dans sa réponse.",
+    "consultation": "Consultation {{date}}",
+    "admission": "Admission {{date}}",
+    "today": "aujourd'hui",
+    "tomorrow": "demain",
+    "none": "Aucune date libre publiée pour l'instant"
   }
 }

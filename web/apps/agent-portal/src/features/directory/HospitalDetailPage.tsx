@@ -12,6 +12,7 @@ import { approxRangeText, ApproxMoney, useDisplayCurrency } from '../../lib/disp
 import { phase1Api } from '../../lib/phase1Api';
 import { EnquiryDialog, type EnquiryTarget } from '../cases/EnquiryDialog';
 import { DoctorCardView } from './DoctorsPage';
+import { EarliestChips } from './Earliest';
 
 type Tab = 'overview' | 'doctors' | 'procedures' | 'reviews';
 
@@ -70,6 +71,12 @@ export function HospitalDetailPage() {
             <Globe2 className="h-3 w-3" aria-hidden /> {t('hospitalDetail.internationalDesk')}
           </Badge>
         )}
+      </div>
+
+      <div className="mb-6 rounded-xl border border-border bg-surface p-4">
+        <p className="mb-2 text-sm font-medium">{t('earliest.title')}</p>
+        <EarliestChips consultation={h.next_available_consultation} admission={h.next_available_admission} showEmpty />
+        <p className="mt-2 text-xs text-muted">{t('earliest.hint')}</p>
       </div>
 
       <Tabs<Tab>
@@ -176,6 +183,9 @@ export function HospitalDetailPage() {
                     </Button>
                   }
                 />
+                {p.next_available_admission ? (
+                  <EarliestChips admission={p.next_available_admission} className="px-5 pt-3" />
+                ) : null}
                 {(p.inclusions.length > 0 || p.packages.length > 0) && (
                   <div className="space-y-4 p-5">
                     {p.inclusions.length > 0 && (

@@ -638,7 +638,8 @@
     "filters": {
       "specialty": "বিশেষত্ব",
       "language": "ভাষা",
-      "gender": "লিঙ্গ"
+      "gender": "লিঙ্গ",
+      "sort": "সাজান"
     },
     "emptyTitle": "এই ফিল্টারগুলির সাথে কোনো ডাক্তার মেলেনি",
     "resetFilters": "ফিল্টার রিসেট করুন",
@@ -646,7 +647,11 @@
     "experienceYears_other": "{{count}} বছর",
     "successRate": "{{pct}}% সাফল্য",
     "teleconsult": "টেলিকনসাল্ট",
-    "speaks": "ভাষা: {{languages}}"
+    "speaks": "ভাষা: {{languages}}",
+    "sort": {
+      "soonest": "সবচেয়ে কাছের পরামর্শ",
+      "experience": "সবচেয়ে অভিজ্ঞ"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "ডাক্তার",
@@ -1503,5 +1508,14 @@
     "emptyText": "প্রতিটি কেসের জন্য স্বয়ংক্রিয়ভাবে একটি কথোপকথন তৈরি হয়।",
     "attachments_one": "{{count}}টি সংযুক্তি - কেসের ডকুমেন্ট দেখুন",
     "attachments_other": "{{count}}টি সংযুক্তি - কেসের ডকুমেন্ট দেখুন"
+  },
+  "earliest": {
+    "title": "সবচেয়ে কাছের খালি তারিখ",
+    "hint": "হাসপাতালের প্রকাশিত স্লট অনুযায়ী (ভারতের তারিখ)। উত্তর দেওয়ার সময় হাসপাতাল নিশ্চিত করে।",
+    "consultation": "পরামর্শ {{date}}",
+    "admission": "ভর্তি {{date}}",
+    "today": "আজ",
+    "tomorrow": "আগামীকাল",
+    "none": "এখনও কোনো খালি তারিখ প্রকাশিত হয়নি"
   }
 }

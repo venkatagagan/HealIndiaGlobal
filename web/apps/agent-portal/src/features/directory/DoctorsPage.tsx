@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
-import { Globe2, Star, Stethoscope, Video } from 'lucide-react';
+import { ArrowDownUp, Globe2, Star, Stethoscope, Video } from 'lucide-react';
 import { FilterBar, SelectFilter } from '@hig/shared/ui';
 import { GENDER_LABELS, catalogApi, type DoctorCard, type Gender } from '@hig/shared/api';
 import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '../../components/ui';
@@ -8,12 +8,16 @@ import { languageLabel, languageOptions } from '../../lib/constants';
 import { useAppTranslation } from '../../i18n';
 import { qk, useSpecialties } from '../../lib/queries';
 import { filterParam, formatNumber, useDocumentTitle, useTableState } from '../../lib/shared';
+import { EarliestChips } from './Earliest';
+
+const DOCTOR_SORTS = ['soonest', 'experience'] as const;
 
 const FILTERS = {
   q: filterParam.text(),
   specialty: filterParam.text(),
   language: filterParam.text(),
   gender: filterParam.oneOf(['female', 'male'] as const),
+  order: filterParam.oneOf(DOCTOR_SORTS),
 };
 
 export function DoctorsPage() {
@@ -31,6 +35,7 @@ export function DoctorsPage() {
         specialty: filters.specialty || undefined,
         language: filters.language || undefined,
         gender: (filters.gender || undefined) as Gender | undefined,
+        sort: filters.order || undefined,
         page,
         page_size: 12,
       }),
@@ -46,6 +51,16 @@ export function DoctorsPage() {
           onReset={table.resetFilters}
           resultCount={query.data?.total}
           resultLabel={(n) => t('doctors.resultCount', { count: n, n: formatNumber(n) })}
+          actions={
+            <SelectFilter
+              label={t('doctors.filters.sort')}
+              icon={<ArrowDownUp className="size-3.5 opacity-70" aria-hidden />}
+              value={filters.order}
+              onChange={(v) => setFilter('order', v)}
+              options={DOCTOR_SORTS.map((s) => ({ value: s, label: t(`doctors.sort.${s}`) }))}
+              align="end"
+            />
+          }
         >
           <SelectFilter
             label={t('doctors.filters.specialty')}
@@ -146,6 +161,7 @@ export function DoctorCardView({ doctor: d }: { doctor: DoctorCard }) {
           <Badge key={q}>{q}</Badge>
         ))}
       </div>
+      <EarliestChips className="mt-2" consultation={d.next_available_consultation} admission={d.next_available_admission} />
       {d.languages.length > 0 && <p className="mt-2 text-xs text-muted">{t('doctors.speaks', { languages: d.languages.map(languageLabel).join(', ') })}</p>}
     </Link>
   );

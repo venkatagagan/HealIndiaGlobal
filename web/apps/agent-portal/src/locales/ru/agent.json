@@ -684,7 +684,8 @@
     "filters": {
       "specialty": "Специализация",
       "language": "Язык",
-      "gender": "Пол"
+      "gender": "Пол",
+      "sort": "Сортировка"
     },
     "emptyTitle": "Нет врачей, соответствующих фильтрам",
     "resetFilters": "Сбросить фильтры",
@@ -694,7 +695,11 @@
     "experienceYears_other": "{{count}} года",
     "successRate": "Успешность {{pct}}%",
     "teleconsult": "Телеконсультация",
-    "speaks": "Языки: {{languages}}"
+    "speaks": "Языки: {{languages}}",
+    "sort": {
+      "soonest": "Ближайшая консультация",
+      "experience": "Наибольший опыт"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "Врач",
@@ -1589,5 +1594,14 @@
     "attachments_few": "Вложений: {{count}} — см. документы обращения",
     "attachments_many": "Вложений: {{count}} — см. документы обращения",
     "attachments_other": "Вложений: {{count}} — см. документы обращения"
+  },
+  "earliest": {
+    "title": "Ближайшие свободные даты",
+    "hint": "По опубликованному больницей расписанию (даты по Индии). Больница подтверждает в ответе.",
+    "consultation": "Консультация: {{date}}",
+    "admission": "Госпитализация: {{date}}",
+    "today": "сегодня",
+    "tomorrow": "завтра",
+    "none": "Свободные даты пока не опубликованы"
   }
 }

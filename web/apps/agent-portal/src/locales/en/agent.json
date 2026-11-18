@@ -638,7 +638,8 @@
     "filters": {
       "specialty": "Specialty",
       "language": "Language",
-      "gender": "Gender"
+      "gender": "Gender",
+      "sort": "Sort"
     },
     "emptyTitle": "No doctors match these filters",
     "resetFilters": "Reset filters",
@@ -646,7 +647,11 @@
     "experienceYears_other": "{{count}} yrs",
     "successRate": "{{pct}}% success",
     "teleconsult": "Teleconsult",
-    "speaks": "Speaks {{languages}}"
+    "speaks": "Speaks {{languages}}",
+    "sort": {
+      "soonest": "Soonest consultation",
+      "experience": "Most experienced"
+    }
   },
   "doctorDetail": {
     "fallbackTitle": "Doctor",
@@ -1503,5 +1508,14 @@
     "emptyText": "A conversation is created automatically for every case.",
     "attachments_one": "{{count}} attachment - see case documents",
     "attachments_other": "{{count}} attachments - see case documents"
+  },
+  "earliest": {
+    "title": "Earliest free dates",
+    "hint": "From the hospital's published slots (India dates). The hospital confirms when it replies.",
+    "consultation": "Consultation {{date}}",
+    "admission": "Admission {{date}}",
+    "today": "today",
+    "tomorrow": "tomorrow",
+    "none": "No free dates published yet"
   }
 }
