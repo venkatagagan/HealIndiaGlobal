@@ -10,16 +10,28 @@ import {
   type HospitalProfileOut,
 } from '@hig/shared/api';
 import { Button, Checkbox, Chip, FormField, Input, Switch } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { parseOptionalNumber } from '../../lib/format';
 import { qk } from '../../lib/queries';
 
-const ACCREDITATION_HINTS: Record<string, string> = {
-  jci: 'Joint Commission International',
-  nabh: 'National Accreditation Board for Hospitals & Healthcare Providers',
-  nabl: 'National Accreditation Board for Testing & Calibration Laboratories',
-  iso: 'ISO 9001 / 15189 certification',
-};
+type T = ReturnType<typeof useAppTranslation>['t'];
 
+function accreditationHint(code: string, t: T): string | undefined {
+  switch (code) {
+    case 'jci':
+      return t('onboarding.services.accreditationHints.jci');
+    case 'nabh':
+      return t('onboarding.services.accreditationHints.nabh');
+    case 'nabl':
+      return t('onboarding.services.accreditationHints.nabl');
+    case 'iso':
+      return t('onboarding.services.accreditationHints.iso');
+    default:
+      return undefined;
+  }
+}
+
+/** Language names are stored (and shown to patients) as entered, in English - data, not UI text. */
 export const COMMON_LANGUAGES = [
   'English',
   'Hindi',
@@ -37,6 +49,7 @@ export const COMMON_LANGUAGES = [
 
 /** Step 2 - accreditations, spoken languages, international patient desk, airport distance. */
 export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut; onSaved?: () => void }) {
+  const { t } = useAppTranslation();
   const ids = useId();
   const queryClient = useQueryClient();
   const [accreditations, setAccreditations] = useState<string[]>(profile.accreditations ?? []);
@@ -56,7 +69,7 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
       }),
     onSuccess: (updated) => {
       queryClient.setQueryData(qk.profile, updated);
-      toast.success('Saved');
+      toast.success(t('onboarding.services.saved'));
       onSaved?.();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -77,17 +90,14 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
   return (
     <div className="space-y-8">
       <section>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Accreditations</h3>
-        <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">
-          Select only accreditations you currently hold. Upload certificates in the KYC step - they are verified before
-          being shown to patients.
-        </p>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('onboarding.services.accreditations')}</h3>
+        <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">{t('onboarding.services.accreditationsHelp')}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {ACCREDITATIONS.map((a) => (
             <div key={a} className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
               <Checkbox
                 label={ACCREDITATION_LABELS[a]}
-                description={ACCREDITATION_HINTS[a]}
+                description={accreditationHint(a, t)}
                 checked={accreditations.includes(a)}
                 onChange={() => setAccreditations(toggle(accreditations, a))}
               />
@@ -97,8 +107,8 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
       </section>
 
       <section>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Languages spoken by staff</h3>
-        <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">Used to match international patients.</p>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('onboarding.services.languages')}</h3>
+        <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">{t('onboarding.services.languagesHelp')}</p>
         <div className="flex flex-wrap gap-2">
           {allLanguages.map((lang) => (
             <Chip key={lang} selected={languages.includes(lang)} onClick={() => setLanguages(toggle(languages, lang))}>
@@ -108,11 +118,11 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
         </div>
         <div className="mt-3 flex max-w-sm gap-2">
           <label htmlFor={`${ids}-lang`} className="sr-only">
-            Add another language
+            {t('onboarding.services.addLanguage')}
           </label>
           <Input
             id={`${ids}-lang`}
-            placeholder="Add another language"
+            placeholder={t('onboarding.services.addLanguage')}
             value={customLanguage}
             maxLength={40}
             onChange={(e) => setCustomLanguage(e.target.value)}
@@ -124,7 +134,7 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
             }}
           />
           <Button variant="outline" onClick={addCustom} icon={<Plus className="h-4 w-4" aria-hidden />}>
-            Add
+            {t('onboarding.services.add')}
           </Button>
         </div>
       </section>
@@ -133,13 +143,13 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
         <Switch
           checked={desk}
           onChange={setDesk}
-          label="International patient desk"
-          description="A dedicated team that handles visas, interpreters and airport pickups."
+          label={t('onboarding.services.desk')}
+          description={t('onboarding.services.deskHelp')}
         />
         <FormField
-          label="Distance from nearest international airport (km)"
+          label={t('onboarding.services.airportDistance')}
           htmlFor={`${ids}-airport`}
-          error={airportValue === undefined ? 'Enter a distance between 0 and 500 km' : undefined}
+          error={airportValue === undefined ? t('onboarding.services.airportDistanceError') : undefined}
         >
           <Input
             id={`${ids}-airport`}
@@ -157,7 +167,7 @@ export function ServicesStep({ profile, onSaved }: { profile: HospitalProfileOut
           disabled={airportValue === undefined || languages.length === 0}
           onClick={() => save.mutate()}
         >
-          {onSaved ? 'Save & continue' : 'Save'}
+          {onSaved ? t('onboarding.saveAndContinue') : t('common.save')}
         </Button>
       </div>
     </div>

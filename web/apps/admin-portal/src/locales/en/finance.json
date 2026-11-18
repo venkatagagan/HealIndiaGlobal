@@ -1,0 +1,1077 @@
+{
+  "nav": {
+    "groups": {
+      "payments": "Payments",
+      "settlements": "Settlements",
+      "accounting": "Accounting & reports"
+    },
+    "items": {
+      "overview": "Finance overview",
+      "orders": "Payment orders",
+      "reconciliation": "Bank reconciliation",
+      "refunds": "Refunds",
+      "settlementItems": "Settlement items",
+      "batches": "Batches",
+      "payouts": "Payouts",
+      "documents": "Invoices & credit notes",
+      "payoutAccounts": "Payout accounts",
+      "commissionRules": "Commission rules",
+      "ledger": "Ledger",
+      "reports": "Reports"
+    }
+  },
+  "guard": {
+    "noAccessTitle": "You don't have access to this page",
+    "noAccessDescription": "This finance page is limited to finance staff. Ask a super admin if you need access."
+  },
+  "ui": {
+    "closeDialog": "Close dialog",
+    "loading": "Loading…",
+    "tryAgain": "Try again",
+    "nothingToShow": "Nothing to show",
+    "pagination": "Pagination",
+    "pageOf": "Page {{page}} of {{pages}} · {{total}} total",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
+  },
+  "common": {
+    "all": "All",
+    "reason": "Reason",
+    "fieldRequired": "{{label}} is required",
+    "charCount": "{{count}}/{{max}}",
+    "cancel": "Cancel"
+  },
+  "ledger": {
+    "tabs": {
+      "label": "Ledger sections",
+      "accounts": "Accounts",
+      "journal": "Journal",
+      "trialBalance": "Trial balance",
+      "adjustments": "Adjustments"
+    },
+    "txn": {
+      "title": "Journal entry",
+      "subtitle": "{{type}} · posted {{posted}}",
+      "description": "Description",
+      "reference": "Reference",
+      "idempotencyKey": "Idempotency key",
+      "transactionId": "Transaction id",
+      "debits": "Debits",
+      "credits": "Credits",
+      "balanced": "Balanced",
+      "unbalanced": "Unbalanced"
+    },
+    "entries": {
+      "caption": "Ledger entries",
+      "account": "Account",
+      "debit": "Debit",
+      "credit": "Credit"
+    }
+  },
+  "reviews": {
+    "people": {
+      "you": "you",
+      "youNamed": "you ({{name}})",
+      "unknownUser": "user {{id}}…"
+    },
+    "approval": {
+      "differentUser": {
+        "action": "A different finance user must approve this action: you requested it, so you cannot also approve it.",
+        "bankTransfer": "A different finance user must approve this bank transfer: you requested it, so you cannot also approve it.",
+        "payout": "A different finance user must approve this payout: you requested it, so you cannot also approve it.",
+        "request": "A different finance user must approve this request: you requested it, so you cannot also approve it.",
+        "refund": "A different finance user must approve this refund: you requested it, so you cannot also approve it.",
+        "adjustment": "A different finance user must approve this adjustment: you requested it, so you cannot also approve it."
+      },
+      "requestChanged": "This request changed after you opened it. The latest details have been reloaded: please review it again."
+    },
+    "requestedBy": "Requested by",
+    "byAt": "{{name}} · {{at}}",
+    "requesterCannotApprove": "You requested this; a different finance user must approve it",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectRequest": "Reject request",
+    "rejectRequestFailed": "Could not reject the request",
+    "approveRequestFailed": "Could not approve the request",
+    "payeeFallback": "Payee",
+    "markPaid": {
+      "title": "Bank transfer confirmation",
+      "awaitingTitle": "Awaiting a second finance user",
+      "awaitingBody": "The order stays <0>pending</0> until a different finance user checks the bank statement and approves this request. Approving applies the capture (escrow, receipt, booking); rejecting discards it.",
+      "reference": "Bank reference / UTR",
+      "amountReceived": "Amount received",
+      "approvedBy": "Approved by",
+      "rejectedBy": "Rejected by",
+      "approve": "Approve payment",
+      "sameUser": "You recorded this request, so you cannot approve it (maker-checker). Ask another finance user to approve it; you can still reject it if it was entered by mistake.",
+      "approveTitle": "Approve bank transfer",
+      "approved": "{{number}} marked as paid",
+      "approveFailed": "Could not approve the payment",
+      "approveBody": "Confirm that <0>{{amount}}</0> with reference <1>{{reference}}</1> has been credited to the platform bank account. The order is captured and posted to the ledger; this cannot be undone except by a refund.",
+      "rejectTitle": "Reject mark-paid request",
+      "rejected": "Mark-paid request rejected; the order stays pending",
+      "rejectBody": "The order stays pending and nothing is posted. A finance user can record a new request once the transfer is confirmed."
+    },
+    "amount": {
+      "cardTitle": "Amount reviews ({{count}})",
+      "expectedReceivedRich": "Expected <0>{{expected}}</0>, received <1>{{received}}</1>",
+      "expectedReceived": "Expected {{expected}}, received {{received}}.",
+      "shortBy": "Short by {{amount}}",
+      "overBy": "Over by {{amount}}",
+      "held": "Held {{held}} · payment <0>{{id}}</0>",
+      "decidedBy": "Decided by {{name}} · {{at}}",
+      "returningNote": "A full return was started but the gateway did not confirm it. Retry the return (it is idempotent).",
+      "retryReturn": "Retry return",
+      "returnInFull": "Return in full",
+      "accepted": "Received amount accepted",
+      "returned": "Payment returned to the payer",
+      "decisionFailed": "Could not record the decision",
+      "noteLabel": "Note (kept in the audit log)",
+      "noteRequired": "A note is required",
+      "accept": {
+        "title": "Accept the received amount",
+        "button": "Accept amount",
+        "explain": "The payment is captured for the amount actually received and applied pro rata: the booking is credited with that amount only, and the remaining balance stays due from the patient."
+      },
+      "return": {
+        "title": "Return the payment in full",
+        "button": "Return payment",
+        "explain": "The whole payment is refunded to the payer through the gateway. Nothing is posted to the books and the order stays unpaid, so the patient has to pay the correct amount again."
+      }
+    },
+    "refundThreshold": {
+      "title": "Dual approval",
+      "every": "Every refund must be approved by a finance user other than the one who requested it.",
+      "above": "Refunds above <0>{{amount}}</0> (converted to INR) must be approved by a finance user other than the one who requested them. Smaller refunds can be approved by the requester.",
+      "defaultSetting": "Default threshold; finance can change it in <0>Settings</0>.",
+      "customSetting": "Threshold set in <0>Settings</0>."
+    },
+    "payoutPaid": {
+      "utrBy": "UTR <0>{{utr}}</0> by {{name}}",
+      "requesterCannotConfirm": "You recorded this UTR; a different finance user must confirm it",
+      "confirmed": "Payout confirmed as paid",
+      "confirmFailed": "Could not confirm the payout",
+      "confirm": "Confirm paid",
+      "sameUser": "Another finance user must confirm.",
+      "rejectTitle": "Reject recorded UTR",
+      "rejected": "UTR rejected; the payout is back in the queue",
+      "rejectFailed": "Could not reject the UTR",
+      "rejectBody": "The recorded UTR is cleared and the payout stays unpaid. Nothing is posted to the ledger."
+    },
+    "payoutFailure": {
+      "reversalRequestedBy": "Reversal requested by {{name}} · ref <0>{{reference}}</0>",
+      "failureRequestedBy": "Failure requested by {{name}} · ref <0>{{reference}}</0>",
+      "approveReversal": "Approve reversal",
+      "approveFailure": "Approve failure",
+      "sameUser": "You requested this, so another finance user must approve it.",
+      "approveReversalTitle": "Approve payout reversal",
+      "approveFailureTitle": "Approve payout failure",
+      "reversed": "Payout reversed; its items are eligible again",
+      "failed": "Payout marked as failed",
+      "reference": "Bank / gateway reference",
+      "reversalEffect": "The payout becomes reversed, its ledger posting is reversed and its items return to eligible for the next batch.",
+      "failureEffect": "The payout fails and its items return to eligible for the next batch.",
+      "checkReference": "Check the reference against the bank statement or the gateway dashboard first.",
+      "rejectTitle": "Reject failure request",
+      "rejected": "Failure request rejected; the payout is unchanged"
+    },
+    "queue": {
+      "title": "Awaiting finance review",
+      "openOverview": "Open finance overview",
+      "loadFailed": "Could not load the review queues.",
+      "amountReviews": "Amount differences to review",
+      "markPaidApprovals": "Bank transfers awaiting 2nd approval",
+      "refunds": "Refunds awaiting approval",
+      "batches": "Settlement batches to approve",
+      "payoutConfirmations": "Payouts awaiting UTR confirmation",
+      "payoutReconciliations": "Payouts needing reconciliation",
+      "payoutReversals": "Payout failures awaiting 2nd approval",
+      "adjustments": "Ledger adjustments to approve"
+    }
+  },
+  "settlementUi": {
+    "tabs": {
+      "label": "Settlement sections",
+      "items": "Items",
+      "batches": "Batches",
+      "payouts": "Payouts",
+      "documents": "Invoices & credit notes",
+      "needAttention": "{{count}} need attention"
+    },
+    "payee": "Payee",
+    "payeeType": "Payee type",
+    "picker": {
+      "chooseTypeFirst": "Choose a payee type first",
+      "vendorIdAll": "Vendor id (blank = all vendors)",
+      "vendorId": "Vendor id",
+      "searchHospitals": "Search hospitals",
+      "searchAgents": "Search agents",
+      "searchHospitalsPlaceholder": "Search hospitals…",
+      "searchAgentsPlaceholder": "Search agents…",
+      "allPayees": "All payees",
+      "select": "Select…",
+      "selected": "Selected ({{id}}…)"
+    },
+    "generate": {
+      "title": "Generate settlement batch",
+      "description": "Collects eligible settlement items (on-hold items are skipped; negative clawback items net against the payee's positive items) into a batch that needs approval by a different finance user.",
+      "created": "Batch {{number}} created: {{items}} items, net {{net}}",
+      "failed": "Could not generate the batch",
+      "chooseType": "Choose a payee type",
+      "payeeHint": "Leave as “All payees” to batch every payee of this type",
+      "invalidId": "Enter a valid id",
+      "periodEnd": "Period end",
+      "periodEndHint": "Include items that became eligible on or before this date",
+      "periodEndFuture": "Period end cannot be in the future",
+      "makerNote": "You will be recorded as the batch maker. Another finance or super-admin user must approve it before payouts are processed.",
+      "submit": "Generate batch"
+    },
+    "payoutPaid": {
+      "titleReconcile": "Record Razorpay transfer / UTR",
+      "title": "Record payout UTR",
+      "labelReconcile": "Razorpay transfer id (trf_…) or bank UTR",
+      "label": "UTR / bank reference",
+      "confirm": "Record reference",
+      "recorded": "Reference recorded; a second finance user must confirm the payout",
+      "failed": "Could not mark the payout paid",
+      "unknownTitle": "Gateway outcome unknown",
+      "unknownBody": "The transfer call timed out or returned an unclear answer, so it was not retried. Search the Razorpay dashboard (Route → Transfers) for this payout id (<0>notes.payout_id</0>). If the transfer exists, enter its <1>trf_…</1> id here; a different finance user then confirms it. If it does not exist, use <2>Request failure</2> instead so the items are batched again.",
+      "body": "Enter the UTR from the bank transfer. This records it only: a different finance user must confirm it before the payout is posted to the ledger (payee payable → bank)."
+    },
+    "payoutFail": {
+      "requestTitle": "Request payout failure",
+      "markTitle": "Mark payout failed",
+      "reasonRequired": "A reason is required",
+      "referenceRequired": "A bank return or gateway reference (at least 3 characters) is required",
+      "requested": "Failure requested; a different finance user must approve it",
+      "marked": "Payout marked as failed; its items are eligible again",
+      "serverReferenceRequired": "A bank or gateway reference is required to fail this payout",
+      "failed": "Could not mark the payout failed",
+      "twoPersonTitle": "Two-person control",
+      "dualProcessed": "This payout was already marked paid, so money may have left the platform. Record the bank return (bounce) reference; a different finance user must then approve the request before the payout is reversed and its items return to eligible.",
+      "dualUnknown": "The gateway outcome of this payout is unknown, so money may have left the platform. Record the reference that proves no transfer was made (e.g. the Razorpay dashboard search); a different finance user must then approve the request before the payout fails and its items return to eligible.",
+      "immediate": "No money has been sent for this payout yet, so it fails immediately and its items return to eligible for the next batch.",
+      "referenceHint": "Bank return reference, gateway case id, etc.",
+      "requestFailure": "Request failure",
+      "markFailed": "Mark failed"
+    },
+    "rowActions": {
+      "recordTransfer": "Record transfer",
+      "markPaid": "Mark paid",
+      "reportBounce": "Report bounce",
+      "reportBounceTitle": "The bank returned this payout: request a reversal"
+    }
+  },
+  "markPaid": {
+    "title": "Mark {{number}} as paid",
+    "description": "Record the bank transfer after you have confirmed the credit in the platform bank account. A second finance user then approves it.",
+    "referenceRequired": "Enter the bank reference / UTR",
+    "amountRequired": "Enter the amount received",
+    "recorded": "Request recorded; {{number}} stays pending until a second finance user approves it",
+    "failed": "Could not record the payment",
+    "expected": "Expected: <0>{{amount}}</0>",
+    "reference": "Bank reference / UTR",
+    "amountReceived": "Amount received ({{currency}})",
+    "mismatchTitle": "Amount differs from the order",
+    "mismatchBody": "Received {{received}} vs expected {{expected}}. Only an exact match can be marked paid. Ask the payer to send the difference (or return the transfer outside the platform) and record it once the full amount has arrived.",
+    "requestOnly": "This records a request only. The order is captured when a different finance user approves it.",
+    "submit": "Record payment"
+  },
+  "refundDialog": {
+    "title": "Create refund",
+    "description": "Refunds go to the approval queue; the gateway refund runs after approval.",
+    "findOrder": "Find a paid order",
+    "findOrderHint": "Search by order number, payer or booking number",
+    "noOrders": "No refundable orders found",
+    "noOrdersHint": "Only paid or partially refunded orders can be refunded.",
+    "payer": "Payer",
+    "noBooking": "no booking",
+    "amountRequired": "Enter the refund amount",
+    "amountPositive": "Enter a positive amount",
+    "amountTooHigh": "Cannot exceed the refundable {{amount}}",
+    "reasonRequired": "A reason is required",
+    "requested": "Refund of {{amount}} requested",
+    "failed": "Could not create the refund",
+    "order": "Order <0>{{number}}</0>",
+    "chooseAnother": "Choose another order",
+    "noPayment": "This order has no captured payment that can be refunded.",
+    "payment": "Payment",
+    "captured": "Captured {{at}}",
+    "refundableLower": "refundable {{amount}}",
+    "amount": "Amount ({{currency}})",
+    "refundable": "Refundable: {{amount}}",
+    "full": "Full",
+    "submit": "Request refund"
+  },
+  "orders": {
+    "title": "Payment orders",
+    "description": "Every checkout attempt across gateways — find a payment, check its status and open it for payments, refunds and reviews.",
+    "unknownPayer": "Unknown payer",
+    "paidBy": "paid by {{name}}",
+    "reviewRequired": "Review required",
+    "openOrder": "Open order {{number}}",
+    "emptyTitle": "No payment orders yet",
+    "emptyDescription": "Orders appear when patients or agents start a checkout.",
+    "searchPlaceholder": "Order, booking or patient…",
+    "columns": {
+      "order": "Order",
+      "patient": "Patient",
+      "status": "Status",
+      "gateway": "Gateway",
+      "amount": "Amount",
+      "amountInr": "Amount (INR)",
+      "booking": "Booking",
+      "method": "Method",
+      "created": "Created",
+      "paid": "Paid"
+    },
+    "filters": {
+      "orderStatus": "Order status",
+      "purpose": "Purpose",
+      "currency": "Currency",
+      "financeReview": "Finance review",
+      "anyReview": "Any review",
+      "date": "Date"
+    }
+  },
+  "orderDetail": {
+    "title": "Payment order",
+    "documentTitle": "Order {{number}}",
+    "actions": "Actions",
+    "purposeVia": "{{purpose}} via {{gateway}}",
+    "replaceMarkPaid": "Replace mark-paid request",
+    "payments": {
+      "title": "Payments",
+      "payment": "Payment",
+      "base": "Base ({{currency}})",
+      "baseAmount": "Base amount",
+      "feeTax": "Fee + tax",
+      "refunded": "Refunded",
+      "captured": "Captured",
+      "refund": "Refund",
+      "emptyTitle": "No payment attempts yet",
+      "emptyDescription": "Payment attempts appear when the payer completes (or abandons) a checkout."
+    },
+    "refunds": {
+      "requested": "Requested",
+      "gatewayRef": "Gateway ref",
+      "processed": "Processed",
+      "emptyTitle": "No refunds for this order"
+    },
+    "fields": {
+      "baseAmount": "Base amount ({{currency}})",
+      "fxRate": "FX rate",
+      "fxRateValue": "{{rate}} {{base}} per {{currency}}",
+      "paidBy": "Paid by",
+      "paymentMethod": "Payment method",
+      "gatewayOrderId": "Gateway order id",
+      "expires": "Expires"
+    }
+  },
+  "overview": {
+    "title": "Finance overview",
+    "description": "Platform money position from the double-entry ledger (base currency INR). Balances update as payments, revenue recognition, refunds and payouts are posted.",
+    "refresh": "Refresh",
+    "sections": {
+      "cash": "Cash & custody",
+      "revenue": "Revenue & taxes",
+      "payables": "Payables & settlements"
+    },
+    "stats": {
+      "escrow": "Patient escrow",
+      "escrowHint": "Captured patient money held until treatment completes",
+      "gatewayReceivable": "Gateway receivable",
+      "gatewayReceivableHint": "Captured but not yet swept to the bank by the gateway",
+      "bank": "Bank",
+      "bankHint": "Platform bank balance per ledger",
+      "gmv": "GMV",
+      "gmvHint": "Gross captured patient payments",
+      "commissionRevenue": "Commission revenue",
+      "commissionRevenueHint": "Recognised on booking completion",
+      "gstPayable": "GST payable",
+      "gstPayableHint": "GST output on commission (TAX:GST_OUTPUT)",
+      "tdsPayable": "TDS payable (194-O)",
+      "tdsPayableHint": "Withheld from hospital payouts (TAX:TDS_194O)",
+      "hospitalPayables": "Hospital payables",
+      "hospitalPayablesHint": "Owed to hospitals after commission, GST and TDS",
+      "agentPayables": "Agent payables",
+      "agentPayablesHint": "Facilitator commissions owed",
+      "pendingSettlements": "Pending settlements",
+      "pendingSettlementsHint": "Net of settlement items not yet paid out"
+    },
+    "queues": {
+      "title": "Work queues",
+      "bankTransfers": "Bank transfers to reconcile",
+      "batches": "Settlement batches awaiting approval",
+      "checking": "checking…",
+      "outBy": "Out by {{amount}}",
+      "unavailable": "Unavailable"
+    },
+    "flow": {
+      "title": "How money flows",
+      "captureTitle": "Capture",
+      "capture": "A patient pays through the gateway (or bank transfer). Dr gateway receivable / Cr patient escrow; gateway fees are expensed against the receivable.",
+      "revenueTitle": "Revenue recognition",
+      "revenue": "When the hospital marks the booking completed, escrow is released: hospital payable (net), commission revenue, GST output, TDS 194-O and service-fee revenue. Agent commission is expensed to the agent payable.",
+      "settlementTitle": "Settlement",
+      "settlement": "Items become eligible after the hold period. Finance generates a batch, a different finance user approves it (maker-checker), then it is processed into payouts (Razorpay Route, manual transfer with UTR, or mock).",
+      "payoutTitle": "Payout and sweep",
+      "payout": "A processed payout debits the payee payable and credits bank. The daily sweep moves settled gateway funds from receivable to bank. Refunds before completion reverse escrow against the receivable."
+    },
+    "latest": {
+      "title": "Latest payment orders",
+      "emptyDescription": "Orders appear when patients start a checkout.",
+      "viewAll": "View all"
+    }
+  },
+  "reconciliation": {
+    "title": "Bank transfer reconciliation",
+    "description": "Match each uploaded proof against the bank statement and record it with the bank reference. A second finance user approves the request before the order is captured.",
+    "queues": {
+      "pending": {
+        "label": "Proof submitted",
+        "emptyTitle": "Nothing to reconcile",
+        "emptyDescription": "All submitted bank transfers have been processed."
+      },
+      "approval": {
+        "label": "Awaiting 2nd approval",
+        "emptyTitle": "No requests awaiting approval",
+        "emptyDescription": "Mark-paid requests recorded by a finance user appear here for a second user to approve."
+      },
+      "created": {
+        "label": "Awaiting proof",
+        "emptyTitle": "No transfers awaiting proof",
+        "emptyDescription": "Bank-transfer checkouts without an uploaded proof appear here."
+      }
+    },
+    "expires": "expires {{when}}",
+    "proof": "Proof",
+    "review": "Review",
+    "caption": "Bank transfers: {{queue}}",
+    "rowLabel": "Review bank transfer {{number}}",
+    "queueLabel": "Reconciliation queue",
+    "drawerTitle": "Bank transfer {{number}}",
+    "drawerTitleEmpty": "Bank transfer",
+    "drawerDescription": "Check the proof against the bank statement before recording the payment.",
+    "amountDue": "Amount due",
+    "baseAt": "<0></0> at {{rate}}",
+    "hospital": "Hospital",
+    "proofTitle": "Proof of payment",
+    "loadingDocuments": "Loading documents…",
+    "documentsFailed": "Could not load proof documents.",
+    "noProof": "No proof uploaded yet.",
+    "openOrder": "Open order",
+    "reviewRequest": "Review request",
+    "openFailed": "Could not open the document",
+    "downloadFailed": "Could not download the document",
+    "viewFile": "View {{name}}",
+    "downloadFile": "Download {{name}}"
+  },
+  "refunds": {
+    "title": "Refunds",
+    "description": "Refund requests are approved before the gateway refund is issued: requested → approved → processing → processed.",
+    "unknownPatient": "Unknown patient",
+    "blockedTitle": "You requested this refund and it is above {{amount}}: a different finance user must approve it",
+    "needsSecond": "Needs a second finance user",
+    "awaitingApproval": "Awaiting approval",
+    "awaitingSecond": "Awaiting second approval",
+    "newRefund": "New refund",
+    "emptyTitle": "No refunds yet",
+    "emptyDescription": "Refunds requested by finance or admins (or created by cancellations) appear here.",
+    "statusLabel": "Refund status",
+    "approveTitle": "Approve refund",
+    "approved": "Refund approved; the gateway refund has been queued",
+    "approveFailed": "Could not approve the refund",
+    "approveBody": "Refund <0>{{amount}}</0> on order <1>{{order}}</1> to the original payment method. This cannot be undone once the gateway processes it.",
+    "reasonValue": "Reason: {{reason}}",
+    "rejectTitle": "Reject refund",
+    "rejectDescription": "{{amount}} on {{order}}",
+    "orderFallback": "order",
+    "rejected": "Refund rejected",
+    "rejectFailed": "Could not reject the refund"
+  },
+  "reports": {
+    "documentTitle": "Finance reports",
+    "description": "Revenue recognised from completed bookings (commission + service fees) against gross merchandise value, plus CSV exports for accounting.",
+    "presets": {
+      "last12Months": "Last 12 months",
+      "thisYear": "This year",
+      "lastYear": "Last year"
+    },
+    "gmv": "GMV",
+    "revenue": "Revenue",
+    "bookings": "Bookings",
+    "commission": "Commission",
+    "takeRate": "Take rate",
+    "groupLabel": "Group revenue",
+    "groupBy": {
+      "month": "By month",
+      "hospital": "By hospital",
+      "specialty": "By specialty"
+    },
+    "groupColumn": {
+      "month": "Month",
+      "hospital": "Hospital",
+      "specialty": "Specialty"
+    },
+    "chartTitle": {
+      "month": "GMV and revenue by month",
+      "hospital": "GMV and revenue by hospital",
+      "specialty": "GMV and revenue by specialty"
+    },
+    "tableTitle": {
+      "month": "Revenue by month",
+      "hospital": "Revenue by hospital",
+      "specialty": "Revenue by specialty"
+    },
+    "top12": "(top 12 by GMV)",
+    "rowCount": "{{rows}} rows",
+    "period": "Period",
+    "emptyTitle": "No revenue in this period",
+    "emptyDescription": "Revenue is recognised when bookings are completed.",
+    "exports": {
+      "title": "CSV exports",
+      "usesRange": "Uses the date range above",
+      "failed": "Export failed",
+      "bookings": {
+        "title": "Bookings",
+        "description": "Bookings with amounts and status",
+        "downloaded": "Bookings export downloaded"
+      },
+      "payments": {
+        "title": "Payments",
+        "description": "Orders, payments and refunds",
+        "downloaded": "Payments export downloaded"
+      },
+      "settlements": {
+        "title": "Settlements",
+        "description": "Settlement items and payouts",
+        "downloaded": "Settlements export downloaded"
+      }
+    }
+  },
+  "ledgerAccounts": {
+    "documentTitle": "Ledger accounts",
+    "description": "Double-entry, immutable ledger in INR. Assets and expenses are debit-positive; liabilities, revenue and equity are credit-positive.",
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "owner": "Owner",
+      "normalSide": "Normal side",
+      "balance": "Balance"
+    },
+    "openAccount": "Open account {{code}}",
+    "emptyTitle": "No accounts yet",
+    "emptyDescription": "Accounts are created automatically on the first posting.",
+    "accountType": "Account type",
+    "searchPlaceholder": "Account code or name…",
+    "nonZero": "Non-zero balance"
+  },
+  "ledgerEntries": {
+    "title": "Ledger account",
+    "documentTitle": "Ledger · {{code}}",
+    "caption": "Account entries",
+    "columns": {
+      "posted": "Posted",
+      "transaction": "Transaction",
+      "balanceEffect": "Balance effect"
+    },
+    "balanceDebitPositive": "Balance (debit-positive)",
+    "balanceCreditPositive": "Balance (credit-positive)",
+    "openEntry": "Open journal entry {{type}}",
+    "emptyTitle": "No entries posted to this account yet",
+    "side": "Side",
+    "transactionType": "Transaction type"
+  },
+  "journal": {
+    "documentTitle": "Ledger journal",
+    "description": "Journal of posted transactions. Each transaction's debits equal its credits (enforced by the database).",
+    "caption": "Ledger transactions",
+    "linesSummary": "Dr {{debits}} · Cr {{credits}}",
+    "lines": "Lines",
+    "emptyTitle": "No transactions posted yet",
+    "emptyDescription": "Payments, revenue recognition, refunds and payouts post balanced journal entries here.",
+    "searchPlaceholder": "Description or reference id…"
+  },
+  "trialBalance": {
+    "description": "Trial balance: total debits and credits per account and account type. A healthy ledger always nets to zero.",
+    "cached": "cached {{amount}}",
+    "totals": "Debits {{debits}} · Credits {{credits}}",
+    "difference": "Difference {{amount}}. Investigate recent postings immediately.",
+    "cacheMismatch": "Cached account balances differ from the entries.",
+    "asOf": "as of {{at}}",
+    "recalculate": "Recalculate",
+    "outOfBalance": "Out of balance",
+    "caption": "Trial balance by account",
+    "emptyTitle": "No postings yet",
+    "withPostings": "With postings",
+    "total": "Total",
+    "net": "Net"
+  },
+  "adjustments": {
+    "documentTitle": "Ledger adjustments",
+    "description": "Tax remittances, FX differences and manual corrections. A request posts nothing until a different finance user approves it.",
+    "kinds": {
+      "tax_remittance": {
+        "label": "Tax remittance",
+        "help": "GST / TDS paid to the government: debit TAX:* accounts, credit PLATFORM:BANK."
+      },
+      "fx_difference": {
+        "label": "FX difference",
+        "help": "Must use PLATFORM:FX_GAIN_LOSS (debit = loss, credit = gain) against escrow, bank or a gateway receivable."
+      },
+      "manual": {
+        "label": "Manual correction",
+        "help": "Must use PLATFORM:ADJUSTMENTS (expense) or PLATFORM:EQUITY (capital in/out). Payee payables cannot be adjusted here."
+      }
+    },
+    "statuses": {
+      "pending_approval": "Pending approval",
+      "posted": "Posted",
+      "rejected": "Rejected"
+    },
+    "columns": {
+      "adjustment": "Adjustment",
+      "decided": "Decided"
+    },
+    "viewEntry": "View entry",
+    "ownTitle": "You requested this adjustment; a different finance user must approve it",
+    "newAdjustment": "New adjustment",
+    "emptyTitle": "No adjustments yet",
+    "emptyDescription": "Tax remittances, FX differences and manual corrections requested by finance appear here.",
+    "statusLabel": "Adjustment status",
+    "searchPlaceholder": "Description or reference…",
+    "kind": "Kind",
+    "requestTitle": "Request a ledger adjustment",
+    "requestDescription": "The request is validated now and posted only after a different finance user approves it.",
+    "approveTitle": "Approve and post adjustment",
+    "posted": "Adjustment posted to the ledger",
+    "approveFailed": "Could not approve the adjustment",
+    "approveAndPost": "Approve and post",
+    "approveBody": "{{kind}} of <0>{{amount}}</0>: {{description}}",
+    "permanent": "Posting is permanent; corrections need a new adjustment.",
+    "rejectTitle": "Reject adjustment",
+    "rejected": "Adjustment rejected",
+    "rejectFailed": "Could not reject the adjustment",
+    "requested": "Adjustment requested; a second finance user must approve it",
+    "requestFailed": "Could not request the adjustment",
+    "form": {
+      "descriptionError": "Describe the adjustment (at least 3 characters)",
+      "externalReference": "External reference",
+      "externalReferenceHint": "Challan / bank reference (optional)",
+      "entries": "Entries (INR)",
+      "entryAccount": "Entry {{n}} account code",
+      "entryDirection": "Entry {{n}} direction",
+      "entryAmount": "Entry {{n}} amount",
+      "removeEntry": "Remove entry {{n}}",
+      "accountPlaceholder": "Account code, e.g. TAX:GST_OUTPUT",
+      "addEntry": "Add entry",
+      "totals": "Debits <0>{{debits}}</0> · Credits <1>{{credits}}</1>",
+      "entriesInvalid": "Every entry needs an account code and a positive amount.",
+      "unbalanced": "Debits and credits must be equal.",
+      "submit": "Request adjustment"
+    }
+  },
+  "batches": {
+    "title": "Settlement batches",
+    "description": "Batches move from pending approval to approved (by a different finance user), processing and completed. Automatic batches always need a human approver.",
+    "singlePayeeLower": "single payee",
+    "allPayeesLower": "all payees",
+    "singlePayee": "Single payee",
+    "autoNeedsApproval": "Auto · needs approval",
+    "automatic": "Automatic",
+    "automaticSystem": "Automatic (system)",
+    "system": "System",
+    "approvedBy": "Approved by {{name}}",
+    "notApproved": "Not approved yet",
+    "needsApproval": "Needs approval",
+    "openBatch": "Open batch {{number}}",
+    "emptyTitle": "No settlement batches yet",
+    "emptyDescription": "Generate a batch from eligible settlement items, or wait for the daily automatic batch.",
+    "statusLabel": "Batch status",
+    "searchPlaceholder": "Batch number or maker…",
+    "createdBy": "Created by",
+    "originAuto": "Automatic (daily job)",
+    "originManual": "Finance user",
+    "columns": {
+      "batch": "Batch",
+      "payees": "Payees",
+      "gross": "Gross",
+      "netPayable": "Net payable",
+      "makerChecker": "Maker · checker",
+      "makerCheckerTitle": "Maker / checker"
+    }
+  },
+  "batchDetail": {
+    "title": "Settlement batch",
+    "documentTitle": "Batch {{number}}",
+    "gst": "GST",
+    "tds": "TDS",
+    "utrRef": "UTR / gateway ref",
+    "descriptionSingle": "{{type}} settlement for a single payee",
+    "descriptionAll": "{{type}} settlement for all payees",
+    "descriptionSinglePeriod": "{{type}} settlement for a single payee, period ending {{date}}",
+    "descriptionAllPeriod": "{{type}} settlement for all payees, period ending {{date}}",
+    "makerTitle": "You created this batch; a different finance user must approve it.",
+    "processPayouts": "Process payouts",
+    "makerCheckerTitle": "Maker-checker",
+    "makerCheckerBody": "You generated this batch, so you cannot approve it. Ask another finance or super-admin user to review and approve it. You can still reject it.",
+    "autoTitle": "Automatic batch: needs human approval",
+    "autoBody": "The daily settlement job generated this batch. Automatic batches are never auto-approved: a finance user must check the items and payees, then approve (or reject) it before payouts can be processed.",
+    "partialTitle": "Some payouts failed",
+    "partialBody": "Failed payouts return their items to eligible: fix the cause (for example the payee's payout account), then generate a new batch for them. A payout that failed with “payout account changed” was blocked because the payee's account differed from the one approved in this batch.",
+    "itemsCount_one": "{{count}} items",
+    "itemsCount_other": "{{count}} items",
+    "fields": {
+      "maker": "Created by (maker)",
+      "autoMaker": "Automatic batch (system)",
+      "checker": "Approved by (checker)",
+      "approved": "Approved",
+      "notes": "Notes"
+    },
+    "destinations": {
+      "title": "Payout destinations (frozen at generation)",
+      "body": "These are the verified primary payout accounts captured when the batch was generated; approving the batch approves paying them. If a payee's account is changed before payouts run, that payee's payout fails with “payout account changed” and its items return to eligible to be batched again with the new account.",
+      "noSnapshot": "This batch has no account snapshot (generated before destination snapshots were introduced). Check each payee's verified account on the Payout accounts page before approving.",
+      "missing_one": "One payee had no verified primary payout account at generation; their payouts will fail.",
+      "missing_other": "{{count}} payees had no verified primary payout account at generation; their payouts will fail."
+    },
+    "noPayouts": "No payouts yet",
+    "noPayoutsDescription": "Payouts are created when an approved batch is processed.",
+    "itemsCaption": "Settlement items in batch",
+    "noItems": "No items in this batch",
+    "approveTitle": "Approve batch",
+    "approved": "Batch {{number}} approved",
+    "approveFailed": "Could not approve the batch",
+    "processing": "Batch {{number}} sent for processing",
+    "processFailed": "Could not process the batch",
+    "process": "Process",
+    "approveBodyNoAccounts": "You are approving <0>{{items}}</0> items with a net payable of <1>{{net}}</1> to the payees' payout accounts. Check the items, totals and accounts before approving.",
+    "approveBodyOneAccount": "You are approving <0>{{items}}</0> items with a net payable of <1>{{net}}</1> to the payout account shown under “Payout destinations”. Check the items, totals and accounts before approving.",
+    "approveBodyAccounts": "You are approving <0>{{items}}</0> items with a net payable of <1>{{net}}</1> to the {{accounts}} payout accounts shown under “Payout destinations”. Check the items, totals and accounts before approving.",
+    "missingWarning_one": "{{count}} payee(s) have no verified account; their payouts will fail.",
+    "missingWarning_other": "{{count}} payee(s) have no verified account; their payouts will fail.",
+    "processBody": "This creates payouts for <0>{{net}}</0>: linked Razorpay accounts are paid automatically; manual bank transfers wait for you to enter the UTR.",
+    "rejectTitle": "Reject batch",
+    "rejectDescription": "Items return to the eligible pool and can be batched again.",
+    "rejected": "Batch {{number}} rejected",
+    "rejectFailed": "Could not reject the batch",
+    "snapshot": {
+      "holder": "Holder",
+      "route": "Route",
+      "missing": "No verified primary payout account: this payee's payout will fail."
+    }
+  },
+  "payouts": {
+    "description": "Payouts created from processed batches. A manual bank transfer stays open until one finance user records the UTR and a different finance user confirms it.",
+    "awaitingConfirmation": "Awaiting confirmation",
+    "reversalPending": "Reversal pending",
+    "failurePending": "Failure pending",
+    "utrReference": "UTR / gateway reference",
+    "viewBatch": "View batch",
+    "queues": {
+      "reconcile": {
+        "emptyTitle": "Nothing to reconcile",
+        "emptyDescription": "Payouts whose gateway outcome is unknown (timeouts, unclear answers) appear here. They are never re-sent automatically."
+      },
+      "confirm": {
+        "emptyTitle": "No payouts awaiting confirmation",
+        "emptyDescription": "UTRs recorded by one finance user appear here for a second user to confirm."
+      },
+      "reversal": {
+        "emptyTitle": "No failure requests",
+        "emptyDescription": "Requests to fail a paid-out or unreconciled payout wait here for a second finance user."
+      }
+    },
+    "reconcileTitle": "Resolve each payout by hand",
+    "reconcileBody": "The Razorpay Route call for these payouts timed out or returned an unclear answer, so the platform did not retry it (a retry could pay twice). Search the Razorpay dashboard for the payout id. If the transfer exists, use <0>Record transfer</0> with its <1>trf_…</1> id and have a second finance user confirm it. If it does not, use <2>Request failure</2> with the reference you checked; after a second finance user approves, the items return to eligible and are batched again.",
+    "emptyDescription": "Payouts are created when an approved settlement batch is processed.",
+    "statusLabel": "Payout status",
+    "searchPlaceholder": "Payee, UTR or batch…",
+    "queue": "Queue",
+    "awaitingUtrConfirmation": "Awaiting UTR confirmation",
+    "failureReversalPending": "Failure / reversal pending"
+  },
+  "documents": {
+    "description": "Commission tax invoices and credit notes issued to hospitals, and commission statements for agents. Credit notes reverse commission on clawed-back items.",
+    "kinds": {
+      "commission_invoice": "Commission invoice",
+      "credit_note": "Credit note",
+      "agent_statement": "Agent commission statement"
+    },
+    "kindTabs": {
+      "commission_invoice": "Tax invoices",
+      "credit_note": "Credit notes",
+      "agent_statement": "Agent statements"
+    },
+    "columns": {
+      "document": "Document",
+      "issuedTo": "Issued to",
+      "recipientGstin": "Recipient GSTIN",
+      "subtotal": "Subtotal",
+      "issued": "Issued"
+    },
+    "downloadFailed": "Could not download the PDF",
+    "downloadPdfLabel": "Download {{number}} PDF",
+    "caption": "Settlement documents",
+    "open": "Open {{number}}",
+    "emptyTitle": "No documents yet",
+    "emptyDescription": "Documents are issued when settlement payouts are paid.",
+    "kindLabel": "Document kind",
+    "searchPlaceholder": "Document number, GSTIN or payee…",
+    "detailTitle": "Settlement document",
+    "detail": {
+      "number": "Number",
+      "supplierGstin": "Supplier GSTIN",
+      "placeOfSupply": "Place of supply",
+      "downloadPdf": "Download PDF"
+    },
+    "lines": {
+      "caption": "Line items",
+      "withholding": "Withholding",
+      "taxable": "Taxable",
+      "netPaid": "Net paid",
+      "taxableValue": "Taxable value",
+      "against": "Against {{number}}"
+    }
+  },
+  "settlementItems": {
+    "description": "Hospital net and agent commission per completed booking. Items become eligible after the hold period and are paid out in approved batches.",
+    "reversedLabel": "Clawback / reversed",
+    "eligibleFrom": "Eligible from",
+    "hold": "Hold",
+    "release": "Release",
+    "exportSelected": "Export selected",
+    "emptyTitle": "No settlement items yet",
+    "emptyDescription": "Items are created when bookings complete: the hospital's net amount and the agent's commission.",
+    "statusLabel": "Item status",
+    "searchPlaceholder": "Payee or booking number…",
+    "netAmount": "Net amount",
+    "eligibleHoldEnds": "Eligible (hold ends)",
+    "thisPage": "This page:",
+    "pageGross": "Gross {{amount}}",
+    "pageCommission": "Commission {{amount}}",
+    "pageNet": "Net {{amount}}",
+    "holdTitle": "Put item on hold",
+    "holdDescription": "{{payee}} · net {{amount}}",
+    "holdConfirm": "Hold item",
+    "held": "Item placed on hold; it will be skipped by batches until released",
+    "holdFailed": "Could not hold the item",
+    "releaseTitle": "Release hold",
+    "heldBecause": "Held because: {{reason}}",
+    "note": "Note",
+    "released": "Hold released",
+    "releaseFailed": "Could not release the item"
+  },
+  "commissionRules": {
+    "description": "Platform commission charged to hospitals and agent commission paid out of it. The most specific active rule wins: procedure at a hospital → hospital → procedure → specialty → global; without a rule the platform defaults apply.",
+    "allBookings": "All bookings",
+    "procedureAt": "{{procedure}} at {{hospital}}",
+    "states": {
+      "active": "In effect",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
+      "inactive": "Inactive"
+    },
+    "columns": {
+      "appliesTo": "Applies to",
+      "scope": "Scope",
+      "rate": "Rate",
+      "effective": "Effective"
+    },
+    "bps": "{{bps}} bps",
+    "openEnded": "open-ended",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "deactivated": "Rule deactivated",
+    "activated": "Rule activated",
+    "updateFailed": "Could not update the rule",
+    "newRule": "New rule",
+    "emptyTitle": "No commission rules",
+    "emptyDescription": "Platform defaults apply (15% hospital commission, 5% agent commission unless changed in settings).",
+    "statusLabel": "Rule status",
+    "searchPlaceholder": "Hospital, procedure, agent or rate…",
+    "ruleCount_one": "{{n}} rule",
+    "ruleCount_other": "{{n}} rules",
+    "inEffect": "In effect",
+    "newTitle": "New commission rule",
+    "editTitle": "Edit commission rule",
+    "form": {
+      "rateRequired": "Enter a rate",
+      "rateInvalid": "Enter a percentage between 0 and 100 (max 2 decimals)",
+      "chooseHospital": "Choose a hospital",
+      "chooseSpecialty": "Choose a specialty",
+      "chooseProcedure": "Choose a procedure",
+      "chooseAgent": "Choose an agent",
+      "chooseStart": "Choose a start date",
+      "endBeforeStart": "End date must be on or after the start date",
+      "updated": "Commission rule updated",
+      "created": "Commission rule created",
+      "saveFailed": "Could not save the rule",
+      "rate": "Rate (%)",
+      "basisPoints": "{{bps}} basis points",
+      "rateHint": "e.g. 15 for 15% (1500 bps)",
+      "agentNote": "Agent commission is paid out of the platform commission and is capped by it on each booking.",
+      "hospitalOptional": "Hospital (optional: procedure at this hospital only)",
+      "anyHospital": "Any hospital",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to",
+      "effectiveToHint": "Leave empty for open-ended",
+      "saveChanges": "Save changes",
+      "createRule": "Create rule",
+      "specialtiesFailed": "Could not load specialties",
+      "selectSpecialty": "Select a specialty",
+      "searchProcedures": "Search procedures",
+      "searchProceduresPlaceholder": "Search procedures…",
+      "selectProcedure": "Select a procedure"
+    }
+  },
+  "payoutAccounts": {
+    "description": "Bank accounts hospitals and agents registered for settlements (account numbers encrypted and masked). Verify each against the bank proof before it receives payouts.",
+    "routeAutomatic": "Razorpay Route (automatic)",
+    "verified": "Verified",
+    "awaitingVerification": "Awaiting verification",
+    "payoutRoute": "Payout route",
+    "manualTransfer": "Manual transfer",
+    "primary": "Primary",
+    "added": "Added",
+    "verify": "Verify",
+    "youSubmitted": "You submitted these details",
+    "emptyTitle": "No payout accounts yet",
+    "emptyDescription": "Hospitals and agents add payout accounts from their portals.",
+    "verification": "Verification",
+    "searchPlaceholder": "Holder, bank, IFSC, last 4 digits or owner…",
+    "ownerType": "Owner type",
+    "verifyTitle": "Verify payout account",
+    "verifyDescription": "Confirm the account details match the owner's bank proof document.",
+    "submitterTitle": "You submitted these bank details; a different finance user must verify them",
+    "verifiedToast": "Payout account verified",
+    "verifyFailed": "Could not verify the account",
+    "markVerified": "Mark verified",
+    "makerCheckerTitle": "Maker-checker: you cannot verify this account",
+    "makerCheckerBody": "These bank details were submitted by {{name}}. The person who submits payout details cannot also verify them: ask a different finance user to check the bank proof and verify.",
+    "accountHolder": "Account holder",
+    "accountNumber": "Account number",
+    "submittedBy": "Details submitted by"
+  },
+  "enums": {
+    "status": {
+      "created": "Created",
+      "pending": "Pending",
+      "paid": "Paid",
+      "captured": "Captured",
+      "authorized": "Authorized",
+      "partially_refunded": "Partially refunded",
+      "refunded": "Refunded",
+      "failed": "Failed",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "requested": "Requested",
+      "approved": "Approved",
+      "processing": "Processing",
+      "processed": "Processed",
+      "rejected": "Rejected",
+      "eligible": "Eligible",
+      "on_hold": "On hold",
+      "batched": "Batched",
+      "reversed": "Reversed",
+      "draft": "Draft",
+      "pending_approval": "Pending approval",
+      "completed": "Completed",
+      "partially_failed": "Partially failed",
+      "queued": "Queued",
+      "needs_reconciliation": "Needs reconciliation",
+      "active": "Active",
+      "disabled": "Disabled",
+      "due": "Due",
+      "overdue": "Overdue",
+      "returning": "Returning",
+      "accepted": "Accepted",
+      "returned": "Returned",
+      "posted": "Posted"
+    },
+    "paymentGateway": {
+      "razorpay": "Card / UPI (Razorpay)",
+      "stripe": "Card (Stripe)",
+      "bank_transfer": "Bank transfer (SWIFT)",
+      "mock": "Test payment (dev)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "Consultation fee",
+      "booking_deposit": "Booking deposit",
+      "booking_balance": "Booking balance",
+      "booking_full": "Booking full",
+      "installment": "Installment",
+      "service": "Service"
+    },
+    "paymentMethod": {
+      "card": "Card",
+      "upi": "UPI",
+      "netbanking": "Net banking",
+      "bank_transfer": "Bank transfer",
+      "wallet": "Wallet",
+      "emi": "EMI",
+      "mock": "Mock"
+    },
+    "ledgerAccountType": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "revenue": "Revenue",
+      "expense": "Expense",
+      "equity": "Equity"
+    },
+    "ledgerOwnerType": {
+      "platform": "Platform",
+      "hospital": "Hospital",
+      "agent": "Agent",
+      "vendor": "Vendor",
+      "gateway": "Gateway",
+      "tax": "Tax"
+    },
+    "entryDirection": {
+      "debit": "Debit",
+      "credit": "Credit"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "Payment captured",
+      "gateway_fee": "Gateway fee",
+      "revenue_recognition": "Revenue recognition",
+      "agent_commission": "Agent commission",
+      "refund": "Refund",
+      "payout": "Payout",
+      "adjustment": "Adjustment",
+      "cancellation_retention": "Cancellation retention",
+      "tax_remittance": "Tax remittance",
+      "fx_difference": "Fx difference"
+    },
+    "commissionScope": {
+      "global": "Global",
+      "hospital": "Hospital",
+      "specialty": "Specialty",
+      "procedure": "Procedure",
+      "agent": "Agent"
+    },
+    "payeeType": {
+      "hospital": "Hospital",
+      "agent": "Agent",
+      "vendor": "Vendor"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "Manual bank transfer",
+      "mock": "Mock (dev)"
+    },
+    "invoiceKind": {
+      "patient_receipt": "Patient receipt",
+      "commission_invoice": "Commission invoice",
+      "agent_statement": "Agent statement",
+      "credit_note": "Credit note"
+    },
+    "reviewKind": {
+      "amount": "Amount review",
+      "mark_paid": "Awaiting 2nd approval"
+    }
+  }
+}

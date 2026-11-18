@@ -4,24 +4,26 @@ import { SOS_STATUSES, SOS_STATUS_LABELS, travelApi, type SosAlertOut, type SosS
 import { DateCell, StatusBadgeCell, type DataTableColumn } from '@hig/shared/ui';
 import { Button } from '../../ui';
 import { opsKeys, useOpsMutation } from '../../lib/mutations';
+import { useAppTranslation } from '../../../../i18n';
 import { PatientCaseCell, TravelListPanel } from './TravelListPanel';
 
 export function SosPanel({ canManage }: { canManage: boolean }) {
+  const { t } = useAppTranslation();
   const update = useOpsMutation({
     mutationFn: (v: { id: string; status: SosStatus }) => travelApi.updateSos(v.id, { status: v.status }),
-    success: (r) => (r.status === 'resolved' ? 'SOS alert resolved' : 'SOS alert acknowledged'),
+    success: (r) => (r.status === 'resolved' ? t('travel.sos.resolvedToast') : t('travel.sos.acknowledgedToast')),
     invalidate: [opsKeys.sos, opsKeys.travel, opsKeys.dashboard],
   });
 
   const columns: DataTableColumn<SosAlertOut>[] = [
     {
       key: 'when',
-      header: 'Raised',
+      header: t('travel.sos.columns.raised'),
       sticky: true,
       mobile: 'secondary',
       cell: (s) => (
         <span className="flex items-start gap-1.5">
-          {s.status === 'open' && <Siren className="mt-0.5 size-4 shrink-0 animate-pulse text-danger" aria-label="Open" />}
+          {s.status === 'open' && <Siren className="mt-0.5 size-4 shrink-0 animate-pulse text-danger" aria-label={t('travel.sos.openIcon')} />}
           <DateCell value={s.created_at} display="relative" secondary={<DateCell value={s.created_at} display="datetime" />} className="font-medium" />
         </span>
       ),
@@ -29,15 +31,15 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
     },
     {
       key: 'patient',
-      header: 'Patient',
+      header: t('travel.sos.columns.patient'),
       mobile: 'primary',
       className: 'max-w-56',
       cell: (s) => (
         <span className="block min-w-0">
-          <PatientCaseCell name={s.patient?.full_name ?? 'Patient'} caseId={s.case_id} caseNumber={s.case_number} />
+          <PatientCaseCell name={s.patient?.full_name ?? t('travel.sos.patientFallback')} caseId={s.case_id} caseNumber={s.case_number} />
           {s.patient_phone && (
             <a href={`tel:${s.patient_phone}`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-xs text-primary-ink hover:underline">
-              <Phone className="size-3" aria-hidden /> {s.patient_phone}
+              <Phone className="size-3" aria-hidden /> <span dir="ltr">{s.patient_phone}</span>
             </a>
           )}
         </span>
@@ -46,14 +48,14 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
     },
     {
       key: 'message',
-      header: 'Message',
+      header: t('travel.sos.columns.message'),
       className: 'max-w-xs',
-      cell: (s) => <p className="line-clamp-3 whitespace-pre-line text-sm">{s.message || <span className="text-muted">No message</span>}</p>,
+      cell: (s) => <p className="line-clamp-3 whitespace-pre-line text-sm">{s.message || <span className="text-muted">{t('travel.sos.noMessage')}</span>}</p>,
       exportValue: (s) => s.message ?? '',
     },
     {
       key: 'location',
-      header: 'Location',
+      header: t('travel.sos.columns.location'),
       cell: (s) =>
         s.lat != null && s.lng != null ? (
           <a
@@ -63,7 +65,10 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 text-xs text-primary-ink hover:underline"
           >
-            <MapPin className="size-3" aria-hidden /> {s.lat.toFixed(4)}, {s.lng.toFixed(4)}
+            <MapPin className="size-3" aria-hidden />{' '}
+            <span dir="ltr">
+              {s.lat.toFixed(4)}, {s.lng.toFixed(4)}
+            </span>
           </a>
         ) : (
           <span className="text-muted">—</span>
@@ -72,12 +77,12 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('travel.sos.columns.status'),
       mobile: 'badge',
       cell: (s) => (
         <span className="flex flex-col items-start gap-0.5">
           <StatusBadgeCell status={s.status} kind="sos" />
-          {s.acknowledged_by?.full_name && <span className="text-xs text-muted">by {s.acknowledged_by.full_name}</span>}
+          {s.acknowledged_by?.full_name && <span className="text-xs text-muted">{t('travel.sos.by', { name: s.acknowledged_by.full_name })}</span>}
         </span>
       ),
       mobileCell: (s) => <StatusBadgeCell status={s.status} kind="sos" />,
@@ -85,8 +90,8 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
     },
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('travel.sos.columns.actions')}</span>,
+      title: t('travel.sos.columns.actions'),
       hideable: false,
       exportable: false,
       mobile: 'meta',
@@ -104,7 +109,7 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
                   update.mutate({ id: s.id, status: 'acknowledged' });
                 }}
               >
-                Acknowledge
+                {t('travel.sos.acknowledge')}
               </Button>
             )}
             <Button
@@ -117,7 +122,7 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
                 update.mutate({ id: s.id, status: 'resolved' });
               }}
             >
-              Resolve
+              {t('travel.sos.resolve')}
             </Button>
           </span>
         ) : null,
@@ -128,17 +133,17 @@ export function SosPanel({ canManage }: { canManage: boolean }) {
     <TravelListPanel<SosAlertOut>
       resource="sos"
       name="sos"
-      caption="SOS alerts"
+      caption={t('travel.sos.caption')}
       fetchPage={(p) => travelApi.listSos({ ...p, status: p.status as SosStatus[] | undefined })}
       columns={columns}
       statuses={SOS_STATUSES}
       statusLabels={SOS_STATUS_LABELS}
       statusKind="sos"
-      dateLabel="Raised"
+      dateLabel={t('travel.sos.columns.raised')}
       refetchInterval={15_000}
       rowClassName={(s) => (s.status === 'open' ? 'bg-danger-soft/60' : s.status === 'acknowledged' ? 'bg-warning-soft/40' : undefined)}
-      emptyTitle="No SOS alerts"
-      emptyDescription="Emergency alerts raised by patients from the app appear here in real time."
+      emptyTitle={t('travel.sos.emptyTitle')}
+      emptyDescription={t('travel.sos.emptyDescription')}
     />
   );
 }

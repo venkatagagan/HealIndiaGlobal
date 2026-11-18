@@ -95,8 +95,16 @@ class TriageResult(BaseModel):
     travel_advice: str = ""
     disclaimer: str = DISCLAIMER
     engine: AIEngine = AIEngine.RULES
+    #: language of ``summary_localized`` ("en" when there is none); in API responses: the language of
+    #: ``summary`` (patients get their language, everyone else English)
+    summary_language: str = "en"
+    #: the summary in the patient's language (stored; empty when the patient's language is English or the
+    #: rules engine produced the result)
+    summary_localized: str = ""
+    #: API responses only: the English summary (hospitals/agents/staff read ``summary`` = this)
+    summary_en: str | None = None
 
-    @field_validator("summary", "travel_advice", "disclaimer", mode="before")
+    @field_validator("summary", "travel_advice", "disclaimer", "summary_localized", mode="before")
     @classmethod
     def _clip_long(cls, v: Any) -> Any:
         return _clip(v, MAX_TEXT)

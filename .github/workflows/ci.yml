@@ -116,6 +116,12 @@ jobs:
       - name: Install
         run: npm ci --no-audit --no-fund
 
+      - name: Translation catalogs (every language has every key; exports for the admin editor are current)
+        working-directory: .
+        run: |
+          node scripts/i18n/check-catalogs.mjs
+          node scripts/i18n/export-catalogs.mjs --check
+
       - name: Typecheck
         run: npm run typecheck
 

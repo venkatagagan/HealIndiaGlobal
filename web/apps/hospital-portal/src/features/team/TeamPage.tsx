@@ -36,27 +36,31 @@ import { useAuth } from '../../auth/AuthProvider';
 import { useHospital } from '../../auth/HospitalProvider';
 import { qk } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useAppTranslation } from '../../i18n';
 
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
-const ROLE_HINTS: Record<HospitalMemberRole, string> = {
-  owner: 'Full access including team and payouts',
-  admin: 'Manage profile, pricing, doctors and team',
-  coordinator: 'Handle enquiries, quotes, bookings and messages',
-  finance: 'Settlements, payouts and statements',
-  doctor: 'View cases and patient documents',
-};
+function roleHint(t: TFn, role: HospitalMemberRole): string {
+  return t(`team.roleHints.${role}`);
+}
 
-const roleOptions = HOSPITAL_MEMBER_ROLES.map((r) => ({ value: r, label: HOSPITAL_MEMBER_ROLE_LABELS[r] }));
+function roleOptions() {
+  return HOSPITAL_MEMBER_ROLES.map((r) => ({ value: r, label: HOSPITAL_MEMBER_ROLE_LABELS[r] }));
+}
 
-const inviteSchema = z.object({
-  full_name: z.string().trim().min(2, 'Enter their name').max(120),
-  email: z.email({ message: 'Enter a valid email' }),
-  member_role: z.enum(HOSPITAL_MEMBER_ROLES),
-});
-type InviteValues = z.infer<typeof inviteSchema>;
+function makeInviteSchema(t: TFn) {
+  return z.object({
+    full_name: z.string().trim().min(2, t('team.invite.errors.name')).max(120),
+    email: z.email({ message: t('team.invite.errors.email') }),
+    member_role: z.enum(HOSPITAL_MEMBER_ROLES),
+  });
+}
+type InviteValues = z.infer<ReturnType<typeof makeInviteSchema>>;
 
 function InviteModal({ onClose }: { onClose: () => void }) {
+  const { t } = useAppTranslation();
   const ids = useId();
+  const inviteSchema = useMemo(() => makeInviteSchema(t), [t]);
   const queryClient = useQueryClient();
   const {
     register,
@@ -71,7 +75,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
   const invite = useMutation({
     mutationFn: (v: InviteValues) => hospitalPortalApi.inviteMember(v),
     onSuccess: (m) => {
-      toast.success(`Invitation sent to ${m.email ?? m.full_name}`);
+      toast.success(t('team.invite.sent', { recipient: m.email ?? m.full_name }));
       void queryClient.invalidateQueries({ queryKey: qk.members });
       onClose();
     },
@@ -81,28 +85,28 @@ function InviteModal({ onClose }: { onClose: () => void }) {
     <Modal
       open
       onClose={onClose}
-      title="Invite team member"
-      description="They receive an email to set their password and join this hospital."
+      title={t('team.invite.title')}
+      description={t('team.invite.description')}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={invite.isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" form={`${ids}-form`} loading={invite.isPending}>
-            Send invite
+            {t('team.invite.send')}
           </Button>
         </>
       }
     >
       <form id={`${ids}-form`} noValidate className="space-y-4" onSubmit={handleSubmit((v) => invite.mutate(v))}>
-        <FormField label="Full name" htmlFor={`${ids}-name`} required error={errors.full_name?.message}>
+        <FormField label={t('team.invite.fullName')} htmlFor={`${ids}-name`} required error={errors.full_name?.message}>
           <Input id={`${ids}-name`} autoComplete="off" {...register('full_name')} aria-invalid={!!errors.full_name} />
         </FormField>
-        <FormField label="Email" htmlFor={`${ids}-email`} required error={errors.email?.message}>
+        <FormField label={t('team.invite.email')} htmlFor={`${ids}-email`} required error={errors.email?.message}>
           <Input id={`${ids}-email`} type="email" autoComplete="off" {...register('email')} aria-invalid={!!errors.email} />
         </FormField>
-        <FormField label="Role" htmlFor={`${ids}-role`} required hint={ROLE_HINTS[role]}>
-          <Select id={`${ids}-role`} options={roleOptions} {...register('member_role')} />
+        <FormField label={t('team.invite.role')} htmlFor={`${ids}-role`} required hint={roleHint(t, role)}>
+          <Select id={`${ids}-role`} options={roleOptions()} {...register('member_role')} />
         </FormField>
       </form>
     </Modal>
@@ -112,7 +116,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
 
 type MemberStatus = 'active' | 'invited' | 'suspended';
 const MEMBER_STATUSES: MemberStatus[] = ['active', 'invited', 'suspended'];
-const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = { active: 'Active', invited: 'Invited', suspended: 'Suspended' };
+const memberStatusLabel = (t: TFn, s: MemberStatus): string => t(`team.memberStatus.${s}`);
 const memberStatus = (m: HospitalMemberOut): MemberStatus =>
   m.status === 'pending_verification' ? 'invited' : m.status === 'suspended' ? 'suspended' : 'active';
 
@@ -123,7 +127,8 @@ const FILTERS = {
 };
 
 export function TeamPage() {
-  useDocumentTitle('Team');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('team.title'));
   const { user } = useAuth();
   const { canManage, memberRole } = useHospital();
   const queryClient = useQueryClient();
@@ -136,7 +141,7 @@ export function TeamPage() {
   const updateRole = useMutation({
     mutationFn: ({ id, role }: { id: string; role: HospitalMemberRole }) => hospitalPortalApi.updateMember(id, { member_role: role }),
     onSuccess: () => {
-      toast.success('Role updated');
+      toast.success(t('team.roleUpdated'));
       void queryClient.invalidateQueries({ queryKey: qk.members });
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -144,7 +149,7 @@ export function TeamPage() {
   const remove = useMutation({
     mutationFn: (m: HospitalMemberOut) => hospitalPortalApi.removeMember(m.id),
     onSuccess: () => {
-      toast.success('Member removed');
+      toast.success(t('team.memberRemoved'));
       setRemoving(null);
       void queryClient.invalidateQueries({ queryKey: qk.members });
     },
@@ -154,7 +159,7 @@ export function TeamPage() {
   const all = useMemo(() => members.data ?? [], [members.data]);
   const owners = all.filter((m) => m.member_role === 'owner').length;
   // only owners may grant or change the owner role
-  const options = roleOptions.map((o) => ({ ...o, disabled: o.value === 'owner' && memberRole !== 'owner' }));
+  const options = roleOptions().map((o) => ({ ...o, disabled: o.value === 'owner' && memberRole !== 'owner' }));
   const base = all
     .filter(matchesSearch(filters.q, (m) => [m.full_name, m.email]))
     .filter((m) => !filters.role.length || filters.role.includes(m.member_role));
@@ -166,25 +171,25 @@ export function TeamPage() {
   const columns: DataTableColumn<HospitalMemberOut>[] = [
     {
       key: 'member',
-      header: 'Member',
+      header: t('team.columns.member'),
       sortable: true,
       sticky: true,
       mobile: 'primary',
       className: 'max-w-72',
       sortValue: (m) => m.full_name,
-      cell: (m) => <PersonCell name={m.full_name} secondary={[m.user_id === user?.id ? 'You' : null, m.email].filter(Boolean).join(' · ') || undefined} />,
+      cell: (m) => <PersonCell name={m.full_name} secondary={[m.user_id === user?.id ? t('team.you') : null, m.email].filter(Boolean).join(' · ') || undefined} />,
       exportValue: (m) => m.full_name,
     },
     {
       key: 'email',
-      header: 'Email',
+      header: t('team.columns.email'),
       defaultHidden: true,
       cell: (m) => m.email ?? '—',
       exportValue: (m) => m.email ?? '',
     },
     {
       key: 'role',
-      header: 'Role',
+      header: t('team.columns.role'),
       sortable: true,
       mobile: 'badge',
       sortValue: (m) => HOSPITAL_MEMBER_ROLES.indexOf(m.member_role),
@@ -193,7 +198,7 @@ export function TeamPage() {
           <Badge tone={m.member_role === 'owner' ? 'accent' : 'neutral'}>{HOSPITAL_MEMBER_ROLE_LABELS[m.member_role]}</Badge>
         ) : (
           <Select
-            aria-label={`Role for ${m.full_name}`}
+            aria-label={t('team.roleFor', { name: m.full_name })}
             className="h-8 w-40 text-xs"
             value={m.member_role}
             options={options}
@@ -206,22 +211,22 @@ export function TeamPage() {
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('common.status'),
       sortable: true,
       sortValue: (m) => MEMBER_STATUSES.indexOf(memberStatus(m)),
       cell: (m) => {
         const s = memberStatus(m);
         return (
           <Badge tone={s === 'active' ? 'success' : s === 'invited' ? 'warning' : 'danger'} dot>
-            {MEMBER_STATUS_LABELS[s]}
+            {memberStatusLabel(t, s)}
           </Badge>
         );
       },
-      exportValue: (m) => MEMBER_STATUS_LABELS[memberStatus(m)],
+      exportValue: (m) => memberStatusLabel(t, memberStatus(m)),
     },
     {
       key: 'added',
-      header: 'Added',
+      header: t('team.columns.added'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (m) => m.created_at,
@@ -230,14 +235,14 @@ export function TeamPage() {
     },
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('common.actions')}</span>,
+      title: t('common.actions'),
       hideable: false,
       exportable: false,
       align: 'end',
       cell: (m) =>
         locked(m) ? null : (
-          <Button variant="ghost" size="icon-sm" aria-label={`Remove ${m.full_name}`} onClick={() => setRemoving(m)}>
+          <Button variant="ghost" size="icon-sm" aria-label={t('team.removeName', { name: m.full_name })} onClick={() => setRemoving(m)}>
             <Trash2 className="size-4 text-danger-ink" aria-hidden />
           </Button>
         ),
@@ -247,16 +252,16 @@ export function TeamPage() {
   const countBy = (s: MemberStatus) => base.filter((m) => memberStatus(m) === s).length;
   const inviteButton = canManage ? (
     <Button leftIcon={<UserPlus className="size-4" aria-hidden />} onClick={() => setInviting(true)}>
-      Invite member
+      {t('team.inviteMember')}
     </Button>
   ) : undefined;
 
   return (
     <div>
-      <PageHeader title="Team" description="People from your hospital who can access this portal, and what each role may do." actions={inviteButton} />
+      <PageHeader title={t('team.title')} description={t('team.description')} actions={inviteButton} />
       <DataTable
         id="hospital.team"
-        caption="Team members"
+        caption={t('team.caption')}
         table={table}
         columns={columns}
         rows={members.data ? rows : undefined}
@@ -264,13 +269,16 @@ export function TeamPage() {
         error={members.error}
         onRetry={() => void members.refetch()}
         emptyIcon={<Users className="size-6" aria-hidden />}
-        emptyTitle="No team members"
+        emptyTitle={t('team.emptyTitle')}
         emptyAction={inviteButton}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Member status"
-              items={[{ value: '', label: 'All', count: base.length }, ...MEMBER_STATUSES.map((s) => ({ value: s, label: MEMBER_STATUS_LABELS[s], count: countBy(s) }))]}
+              label={t('team.statusFilter')}
+              items={[
+                { value: '', label: t('common.all'), count: base.length },
+                ...MEMBER_STATUSES.map((s) => ({ value: s, label: memberStatusLabel(t, s), count: countBy(s) })),
+              ]}
               value={filters.status}
               onChange={(v) => setFilter('status', v)}
             />
@@ -278,18 +286,18 @@ export function TeamPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Name or email…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('team.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={<ExportButton filename="team" columns={columns} rows={rows} />}
           >
             <MultiSelectFilter
-              label="Role"
+              label={t('team.columns.role')}
               value={filters.role}
               onChange={(v) => setFilter('role', v)}
               options={HOSPITAL_MEMBER_ROLES.map((r) => ({
                 value: r,
                 label: HOSPITAL_MEMBER_ROLE_LABELS[r],
-                description: ROLE_HINTS[r],
+                description: roleHint(t, r),
                 count: all.filter((m) => m.member_role === r).length,
               }))}
             />
@@ -300,7 +308,7 @@ export function TeamPage() {
         {HOSPITAL_MEMBER_ROLES.map((r) => (
           <div key={r} className="rounded-lg border border-border bg-surface p-3 text-xs">
             <p className="font-semibold text-fg">{HOSPITAL_MEMBER_ROLE_LABELS[r]}</p>
-            <p className="mt-0.5 text-muted">{ROLE_HINTS[r]}</p>
+            <p className="mt-0.5 text-muted">{roleHint(t, r)}</p>
           </div>
         ))}
       </div>
@@ -314,9 +322,9 @@ export function TeamPage() {
         keepOpenOnConfirm
         loading={remove.isPending}
         tone="danger"
-        title="Remove team member?"
-        description={removing ? `${removing.full_name} will immediately lose access to this hospital's portal.` : undefined}
-        confirmLabel="Remove"
+        title={t('team.removeTitle')}
+        description={removing ? t('team.removeDescription', { name: removing.full_name }) : undefined}
+        confirmLabel={t('common.remove')}
       />
     </div>
   );

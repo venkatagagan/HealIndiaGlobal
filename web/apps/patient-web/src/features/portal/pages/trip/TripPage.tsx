@@ -26,6 +26,7 @@ import {
   type BookingOut,
   type ChecklistItemOut,
 } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import {
   qk,
   useAccommodationBookings,
@@ -45,7 +46,7 @@ import {
 import { BackLink, Money, StatusBadge } from '../../components/common';
 import { HelplineList, SosButton, telHref } from '../../components/SupportDialogs';
 import { paths } from '../../lib/paths';
-import { cn, daysUntil, formatDate, formatDateTime, useDocumentTitle } from '../../lib/shared';
+import { cn, daysUntil, formatDate, formatDateTime, formatNumber, useDocumentTitle } from '../../lib/shared';
 import {
   Button,
   ButtonLink,
@@ -64,7 +65,8 @@ import { TravelRequestDialog, type RequestKind } from './TravelRequestDialog';
 
 /** /app/trip -> the next upcoming booking's trip hub. */
 export function TripIndexPage() {
-  useDocumentTitle('Trip');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('trip.index.docTitle'));
   const dashboard = useDashboard();
   const bookings = useBookings({ page_size: 20 });
   if (dashboard.isPending || bookings.isPending) return <SkeletonList rows={2} />;
@@ -75,20 +77,21 @@ export function TripIndexPage() {
   if (next) return <Navigate to={paths.trip(next.id)} replace />;
   return (
     <div>
-      <PageHeader title="Your trip" />
+      <PageHeader title={t('trip.index.title')} />
       <EmptyState
         icon={<Plane className="h-8 w-8" aria-hidden />}
-        title="No upcoming trip"
-        description="When you book treatment, your visa, flights, pickup, stay and itinerary are organised here."
-        action={<ButtonLink to={paths.cases}>Go to my cases</ButtonLink>}
+        title={t('trip.index.emptyTitle')}
+        description={t('trip.index.emptyDescription')}
+        action={<ButtonLink to={paths.cases}>{t('trip.index.goToCases')}</ButtonLink>}
       />
     </div>
   );
 }
 
 export function TripPage() {
+  const { t } = useAppTranslation();
   const { bookingId = '' } = useParams();
-  useDocumentTitle('Trip hub');
+  useDocumentTitle(t('trip.hub.title'));
   const booking = useBooking(bookingId);
   if (booking.isPending) {
     return (
@@ -102,19 +105,21 @@ export function TripPage() {
   return <TripHub booking={booking.data} />;
 }
 
+/** `label` is a catalog key (`trip.requests.<kind>`), translated at render time. */
 const REQUEST_BUTTONS: { kind: RequestKind; label: string; icon: ReactNode }[] = [
-  { kind: 'flight', label: 'Flight', icon: <Plane className="h-5 w-5" aria-hidden /> },
-  { kind: 'airport_pickup', label: 'Airport pickup', icon: <PlaneLanding className="h-5 w-5" aria-hidden /> },
-  { kind: 'airport_drop', label: 'Airport drop', icon: <PlaneTakeoff className="h-5 w-5" aria-hidden /> },
-  { kind: 'accommodation', label: 'Accommodation', icon: <BedDouble className="h-5 w-5" aria-hidden /> },
-  { kind: 'translator', label: 'Translator', icon: <Languages className="h-5 w-5" aria-hidden /> },
-  { kind: 'local_guide', label: 'Local guide', icon: <Compass className="h-5 w-5" aria-hidden /> },
+  { kind: 'flight', label: 'trip.requests.flight', icon: <Plane className="h-5 w-5" aria-hidden /> },
+  { kind: 'airport_pickup', label: 'trip.requests.airportPickup', icon: <PlaneLanding className="h-5 w-5" aria-hidden /> },
+  { kind: 'airport_drop', label: 'trip.requests.airportDrop', icon: <PlaneTakeoff className="h-5 w-5" aria-hidden /> },
+  { kind: 'accommodation', label: 'trip.requests.accommodation', icon: <BedDouble className="h-5 w-5" aria-hidden /> },
+  { kind: 'translator', label: 'trip.requests.translator', icon: <Languages className="h-5 w-5" aria-hidden /> },
+  { kind: 'local_guide', label: 'trip.requests.localGuide', icon: <Compass className="h-5 w-5" aria-hidden /> },
 ];
 
 /** Checklist items the patient can tick themselves; the rest are updated by staff/hospital. */
 const SELF_SERVICE_KEYS = new Set(['travel_insurance', 'documents_uploaded', 'flight_booked']);
 
 function TripHub({ booking }: { booking: BookingOut }) {
+  const { t } = useAppTranslation();
   const qc = useQueryClient();
   const caseFilter = { case_id: booking.case_id, page_size: 50 };
   const hospital = useHospital(booking.hospital.id);
@@ -145,7 +150,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
     const next = item.status === 'done' ? 'pending' : 'done';
     updateItem.mutate(
       { itemId: item.id, status: next },
-      { onError: (err) => toast.error(errorMessage(err, 'Could not update the checklist.')) },
+      { onError: (err) => toast.error(errorMessage(err, t('trip.hub.checklistUpdateFailed'))) },
     );
   }
 
@@ -153,16 +158,16 @@ function TripHub({ booking }: { booking: BookingOut }) {
     try {
       await documentsApi.downloadAndSave({ id: documentId, file_name: 'invitation-letter.pdf' });
     } catch (err) {
-      toast.error(errorMessage(err, 'Download failed.'));
+      toast.error(errorMessage(err, t('trip.hub.downloadFailed')));
     }
   }
 
   return (
     <div className="pb-20">
       <PageHeader
-        back={<BackLink to={paths.booking(booking.id)}>Booking {booking.booking_number}</BackLink>}
-        title="Trip hub"
-        description={`${booking.procedure?.name ?? 'Treatment'} · ${booking.hospital.name}, ${booking.hospital.city}`}
+        back={<BackLink to={paths.booking(booking.id)}>{t('trip.hub.backToBooking', { number: booking.booking_number })}</BackLink>}
+        title={t('trip.hub.title')}
+        description={`${booking.procedure?.name ?? t('trip.hub.treatment')} · ${booking.hospital.name}, ${booking.hospital.city}`}
         actions={<SosButton caseId={booking.case_id} />}
       />
 
@@ -171,16 +176,20 @@ function TripHub({ booking }: { booking: BookingOut }) {
         <Card className="overflow-hidden lg:col-span-2">
           <div className="grid sm:grid-cols-2">
             <div className="flex flex-col justify-center bg-gradient-to-br from-[#161B22] to-[#0B0F14] p-6 text-white">
-              <p className="text-sm text-slate-300">Until treatment</p>
+              <p className="text-sm text-slate-300">{t('trip.hub.untilTreatment')}</p>
               {days !== null && days >= 0 ? (
                 <p>
-                  <span className="text-5xl font-extrabold text-violet-500">{days}</span>
-                  <span className="ml-2 text-lg text-slate-300">days</span>
+                  <span className="text-5xl font-extrabold text-violet-500">{formatNumber(days)}</span>
+                  <span className="ms-2 text-lg text-slate-300">{t('trip.hub.daysUnit', { count: days })}</span>
                 </p>
               ) : (
-                <p className="text-2xl font-bold text-violet-400">{booking.status === 'admitted' ? 'In treatment' : 'Underway'}</p>
+                <p className="text-2xl font-bold text-violet-400">
+                  {booking.status === 'admitted' ? t('trip.hub.inTreatment') : t('trip.hub.underway')}
+                </p>
               )}
-              <p className="mt-2 text-sm text-slate-400">Admission {formatDate(booking.admission_date, 'EEEE d MMMM yyyy')}</p>
+              <p className="mt-2 text-sm text-slate-400">
+                {t('trip.hub.admission', { date: formatDate(booking.admission_date, 'EEEE d MMMM yyyy') })}
+              </p>
               <div className="mt-3">
                 <StatusBadge status={booking.status} />
               </div>
@@ -191,7 +200,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400">{h?.address ?? booking.hospital.city}</p>
               {h?.airport_distance_km != null ? (
-                <p className="text-sm text-slate-500">{h.airport_distance_km} km from the airport</p>
+                <p className="text-sm text-slate-500">{t('trip.hub.airportDistance', { km: formatNumber(h.airport_distance_km) })}</p>
               ) : null}
               {h?.phone ? (
                 <a href={telHref(h.phone)} className="flex items-center gap-2 text-sm text-green-700 hover:underline dark:text-green-400">
@@ -204,7 +213,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
               >
-                <MapPin className="h-4 w-4" aria-hidden /> Open map
+                <MapPin className="h-4 w-4" aria-hidden /> {t('trip.hub.openMap')}
               </a>
             </div>
           </div>
@@ -212,14 +221,19 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
         {/* Checklist */}
         <Card>
-          <CardHeader title="Pre-arrival checklist" description={items.length ? `${done} of ${items.length} done` : undefined} />
+          <CardHeader
+            title={t('trip.hub.checklistTitle')}
+            description={
+              items.length ? t('trip.hub.checklistProgress', { done: formatNumber(done), total: formatNumber(items.length) }) : undefined
+            }
+          />
           <CardBody className="space-y-3">
             {checklist.isPending ? (
               <Skeleton className="h-32 w-full" />
             ) : checklist.isError ? (
               <ErrorState error={checklist.error} onRetry={() => void checklist.refetch()} />
             ) : items.length === 0 ? (
-              <p className="text-sm text-slate-500">Your checklist is created when the booking is confirmed.</p>
+              <p className="text-sm text-slate-500">{t('trip.hub.checklistEmpty')}</p>
             ) : (
               <>
                 <ProgressBar value={(done / items.length) * 100} tone="violet" />
@@ -239,7 +253,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
                             disabled={updateItem.isPending}
                             className="text-xs font-semibold text-violet-600 hover:underline disabled:opacity-50 dark:text-violet-400"
                           >
-                            {item.status === 'done' ? 'Undo' : 'Mark done'}
+                            {item.status === 'done' ? t('trip.hub.undo') : t('trip.hub.markDone')}
                           </button>
                         ) : null}
                       </li>
@@ -253,7 +267,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
         {/* Requests */}
         <Card className="lg:col-span-3">
-          <CardHeader title="Travel & stay" description="Request services - your coordinator confirms details and prices." />
+          <CardHeader title={t('trip.hub.travelTitle')} description={t('trip.hub.travelDescription')} />
           <CardBody className="space-y-6">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {REQUEST_BUTTONS.map((b) => (
@@ -264,7 +278,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
                   className="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 p-4 text-sm font-medium transition hover:border-violet-400 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-slate-800"
                 >
                   <span className="text-violet-600 dark:text-violet-400">{b.icon}</span>
-                  {b.label}
+                  {t(b.label)}
                 </button>
               ))}
             </div>
@@ -273,7 +287,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
               {/* Visa */}
               <div>
                 <h3 className="mb-2 flex items-center gap-2 font-semibold">
-                  <FileCheck2 className="h-5 w-5 text-green-600" aria-hidden /> Visa
+                  <FileCheck2 className="h-5 w-5 text-green-600" aria-hidden /> {t('trip.hub.visa')}
                 </h3>
                 {visa.isPending ? (
                   <Skeleton className="h-16 w-full" />
@@ -281,9 +295,9 @@ function TripHub({ booking }: { booking: BookingOut }) {
                   <ErrorState error={visa.error} onRetry={() => void visa.refetch()} />
                 ) : visa.data.items.length === 0 ? (
                   <div className="rounded-xl border border-dashed border-slate-300 p-4 text-sm dark:border-slate-700">
-                    <p>Most international patients need an India e-Medical visa. We provide the hospital invitation letter.</p>
+                    <p>{t('trip.hub.visaIntro')}</p>
                     <Button size="sm" className="mt-3" onClick={() => setRequest('visa')}>
-                      Request visa support
+                      {t('trip.hub.requestVisa')}
                     </Button>
                   </div>
                 ) : (
@@ -294,14 +308,16 @@ function TripHub({ booking }: { booking: BookingOut }) {
                           <span className="font-medium">{VISA_TYPE_LABELS[v.visa_type]}</span>
                           <StatusBadge status={v.status} />
                         </div>
-                        {v.application_reference ? <p className="text-xs text-slate-500">Ref. {v.application_reference}</p> : null}
+                        {v.application_reference ? (
+                          <p className="text-xs text-slate-500">{t('trip.hub.reference', { ref: v.application_reference })}</p>
+                        ) : null}
                         {v.invitation_letter_document_id ? (
                           <button
                             type="button"
                             onClick={() => void downloadInvitation(v.invitation_letter_document_id as string)}
                             className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-green-700 hover:underline dark:text-green-400"
                           >
-                            <Download className="h-3.5 w-3.5" aria-hidden /> Invitation letter
+                            <Download className="h-3.5 w-3.5" aria-hidden /> {t('trip.hub.invitationLetter')}
                           </button>
                         ) : null}
                         {v.notes ? <p className="mt-1 text-xs text-slate-500">{v.notes}</p> : null}
@@ -310,7 +326,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
                     {!activeVisa || visa.data.items.every((v) => v.visa_type !== 'e_medical_attendant') ? (
                       <li>
                         <button type="button" onClick={() => setRequest('visa')} className="text-sm font-semibold text-violet-600 hover:underline">
-                          + Add a visa request (e.g. for a companion)
+                          {t('trip.hub.addVisaRequest')}
                         </button>
                       </li>
                     ) : null}
@@ -320,39 +336,43 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
               {/* Transport */}
               <ServiceList
-                title="Flights & transfers"
+                title={t('trip.hub.flightsTitle')}
                 icon={<Car className="h-5 w-5 text-green-600" aria-hidden />}
                 loading={travel.isPending}
                 error={travel.error}
-                empty="No flight or transfer requests yet."
-                items={(travel.data?.items ?? []).map((t) => ({
-                  id: t.id,
-                  title: TRAVEL_KIND_LABELS[t.kind],
-                  status: t.status,
+                empty={t('trip.hub.flightsEmpty')}
+                items={(travel.data?.items ?? []).map((tb) => ({
+                  id: tb.id,
+                  title: TRAVEL_KIND_LABELS[tb.kind],
+                  status: tb.status,
                   lines: [
-                    [t.from_location, t.to_location].filter(Boolean).join(' → '),
-                    t.depart_at ? `Departs ${formatDateTime(t.depart_at)}` : t.arrive_at ? `Arrives ${formatDateTime(t.arrive_at)}` : '',
-                    [t.carrier, t.flight_number, t.pnr ? `PNR ${t.pnr}` : null].filter(Boolean).join(' · '),
+                    [tb.from_location, tb.to_location].filter(Boolean).join(t('trip.hub.routeSeparator')),
+                    tb.depart_at
+                      ? t('trip.hub.departs', { date: formatDateTime(tb.depart_at) })
+                      : tb.arrive_at
+                        ? t('trip.hub.arrives', { date: formatDateTime(tb.arrive_at) })
+                        : '',
+                    [tb.carrier, tb.flight_number, tb.pnr ? t('trip.hub.pnr', { pnr: tb.pnr }) : null].filter(Boolean).join(' · '),
                   ],
-                  price: t.price_minor != null && t.currency ? <Money minor={t.price_minor} currency={t.currency} trim /> : null,
+                  price: tb.price_minor != null && tb.currency ? <Money minor={tb.price_minor} currency={tb.currency} trim /> : null,
                 }))}
               />
 
               {/* Stay */}
               <ServiceList
-                title="Accommodation"
+                title={t('trip.hub.accommodationTitle')}
                 icon={<BedDouble className="h-5 w-5 text-green-600" aria-hidden />}
                 loading={stays.isPending}
                 error={stays.error}
-                empty="No accommodation requested yet."
+                empty={t('trip.hub.accommodationEmpty')}
                 items={(stays.data?.items ?? []).map((s) => ({
                   id: s.id,
-                  title: s.provider?.name ?? 'Accommodation',
+                  title: s.provider?.name ?? t('trip.hub.accommodationTitle'),
                   status: s.status,
                   lines: [
-                    `${formatDate(s.check_in)} - ${formatDate(s.check_out)} · ${s.guests} guest${s.guests === 1 ? '' : 's'}`,
+                    `${formatDate(s.check_in)} - ${formatDate(s.check_out)} · ${t('trip.hub.guests', { count: s.guests, n: formatNumber(s.guests) })}`,
                     s.provider?.address ?? '',
-                    s.confirmation_code ? `Confirmation ${s.confirmation_code}` : '',
+                    s.confirmation_code ? t('trip.hub.confirmation', { code: s.confirmation_code }) : '',
                   ],
                   price: s.total_minor != null && s.currency ? <Money minor={s.total_minor} currency={s.currency} trim /> : null,
                 }))}
@@ -360,11 +380,11 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
               {/* Services */}
               <ServiceList
-                title="Translator & local guide"
+                title={t('trip.hub.servicesTitle')}
                 icon={<Languages className="h-5 w-5 text-green-600" aria-hidden />}
                 loading={services.isPending}
                 error={services.error}
-                empty="No translator or guide requested yet."
+                empty={t('trip.hub.servicesEmpty')}
                 items={(services.data?.items ?? []).map((s) => ({
                   id: s.id,
                   title: `${SERVICE_KIND_LABELS[s.kind]}${s.provider ? ` · ${s.provider.name}` : ''}`,
@@ -383,23 +403,23 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
         {/* Itinerary */}
         <Card className="lg:col-span-2">
-          <CardHeader title="Itinerary" description="Appointments, admission and transfers, in order." />
+          <CardHeader title={t('trip.hub.itineraryTitle')} description={t('trip.hub.itineraryDescription')} />
           <CardBody>
             {itinerary.isPending ? (
               <Skeleton className="h-32 w-full" />
             ) : itinerary.isError ? (
               <ErrorState error={itinerary.error} onRetry={() => void itinerary.refetch()} />
             ) : itinerary.data.length === 0 ? (
-              <p className="text-sm text-slate-500">Your coordinator and the hospital will add your schedule here.</p>
+              <p className="text-sm text-slate-500">{t('trip.hub.itineraryEmpty')}</p>
             ) : (
-              <ol className="relative space-y-5 border-l border-slate-200 pl-6 dark:border-slate-800">
+              <ol className="relative space-y-5 border-s border-slate-200 ps-6 dark:border-slate-800">
                 {[...itinerary.data]
                   .sort((a, b) => a.starts_at.localeCompare(b.starts_at))
                   .map((item) => (
                     <li key={item.id} className="relative">
                       <span
                         className={cn(
-                          'absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white dark:border-[#161B22]',
+                          'absolute -start-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white dark:border-[#161B22]',
                           item.status === 'done' ? 'bg-green-500' : item.status === 'cancelled' ? 'bg-slate-400' : 'bg-violet-500',
                         )}
                         aria-hidden
@@ -438,7 +458,7 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
         {/* Helplines */}
         <Card>
-          <CardHeader title="Help, 24/7" />
+          <CardHeader title={t('trip.hub.helpTitle')} />
           <CardBody>
             <HelplineList coordinator={dashboard.data?.coordinator} />
           </CardBody>
@@ -446,14 +466,14 @@ function TripHub({ booking }: { booking: BookingOut }) {
 
         {/* Cultural tips */}
         <Card className="lg:col-span-3">
-          <CardHeader title="Cultural tips" description="A few things that make your stay in India easier." />
+          <CardHeader title={t('trip.hub.tipsTitle')} description={t('trip.hub.tipsDescription')} />
           <CardBody>
             {tips.isPending ? (
               <Skeleton className="h-40 w-full" />
             ) : tips.isError ? (
               <ErrorState error={tips.error} onRetry={() => void tips.refetch()} />
             ) : tips.data.length === 0 ? (
-              <p className="text-sm text-slate-500">No tips yet.</p>
+              <p className="text-sm text-slate-500">{t('trip.hub.tipsEmpty')}</p>
             ) : (
               <div className="-mx-1 flex snap-x gap-4 overflow-x-auto px-1 pb-2">
                 {[...tips.data]
@@ -481,10 +501,10 @@ function TripHub({ booking }: { booking: BookingOut }) {
       </div>
 
       {/* Floating actions (mobile) */}
-      <div className="fixed bottom-20 right-4 z-20 flex flex-col items-end gap-2 lg:hidden">
+      <div className="fixed bottom-20 end-4 z-20 flex flex-col items-end gap-2 lg:hidden">
         {helpline ? (
           <a href={telHref(helpline)} className="inline-flex items-center gap-2 rounded-full bg-red-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg">
-            <Phone className="h-4 w-4" aria-hidden /> Call 24/7 helpline
+            <Phone className="h-4 w-4" aria-hidden /> {t('trip.hub.callHelpline')}
           </a>
         ) : null}
         <button
@@ -492,14 +512,14 @@ function TripHub({ booking }: { booking: BookingOut }) {
           onClick={() => setRequest('translator')}
           className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg"
         >
-          <Languages className="h-4 w-4" aria-hidden /> Get translator
+          <Languages className="h-4 w-4" aria-hidden /> {t('trip.hub.getTranslator')}
         </button>
         <button
           type="button"
           onClick={() => setRequest('local_guide')}
           className="inline-flex items-center gap-2 rounded-full bg-green-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg"
         >
-          <Compass className="h-4 w-4" aria-hidden /> Local guide
+          <Compass className="h-4 w-4" aria-hidden /> {t('trip.requests.localGuide')}
         </button>
       </div>
 
@@ -533,6 +553,7 @@ function ServiceList({
   empty: string;
   items: { id: string; title: string; status: string; lines: string[]; price: ReactNode }[];
 }) {
+  const { t } = useAppTranslation();
   return (
     <div>
       <h3 className="mb-2 flex items-center gap-2 font-semibold">
@@ -541,7 +562,7 @@ function ServiceList({
       {loading ? (
         <Skeleton className="h-16 w-full" />
       ) : error ? (
-        <p className="text-sm text-red-600">Could not load. Please refresh.</p>
+        <p className="text-sm text-red-600">{t('trip.hub.loadFailed')}</p>
       ) : items.length === 0 ? (
         <p className="text-sm text-slate-500">{empty}</p>
       ) : (

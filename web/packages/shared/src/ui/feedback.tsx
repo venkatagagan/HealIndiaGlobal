@@ -3,7 +3,7 @@ import { AlertTriangle, Inbox, RefreshCw } from 'lucide-react';
 import { Toaster as SonnerToaster, toast, type ToasterProps as SonnerToasterProps } from 'sonner';
 import { errorMessage } from '../api/client';
 import { cn } from '../lib/cn';
-import { useCommonTranslation } from '../lib/i18n';
+import { useCommonTranslation, useLanguage } from '../lib/i18n';
 import { useTheme } from '../lib/theme';
 import { Button } from './Button';
 import { Spinner } from './Spinner';
@@ -191,11 +191,13 @@ export type ToasterProps = SonnerToasterProps;
 /** Mount once near the root. Follows the app theme (dark/light). */
 export function Toaster(props: ToasterProps) {
   const { isDark } = useTheme();
+  const { dir } = useLanguage();
   return (
     <SonnerToaster
       richColors
       closeButton
-      position="top-right"
+      position={dir === 'rtl' ? 'top-left' : 'top-right'}
+      dir={dir}
       theme={isDark ? 'dark' : 'light'}
       {...props}
     />

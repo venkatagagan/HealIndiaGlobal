@@ -314,7 +314,7 @@ export function Switch({
   };
   const track = size === 'sm' ? 'h-5 w-9' : 'h-6 w-11';
   const thumb = size === 'sm' ? 'size-4' : 'size-5';
-  const shift = size === 'sm' ? 'translate-x-4' : 'translate-x-5';
+  const shift = size === 'sm' ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-5 rtl:-translate-x-5';
   const control = (
     <button
       type="button"

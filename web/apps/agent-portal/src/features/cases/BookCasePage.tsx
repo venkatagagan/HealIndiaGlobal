@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { ArrowLeft, CalendarDays, Check } from 'lucide-react';
 import {
+  CASE_STATUS_LABELS,
   PACKAGE_TIER_LABELS,
   PAYMENT_OPTIONS,
   PAYMENT_OPTION_LABELS,
@@ -31,12 +32,15 @@ import {
 } from '../../components/ui';
 import { qk } from '../../lib/queries';
 import { cn, formatDate, isoDateFromToday, useDocumentTitle } from '../../lib/shared';
+import { Trans } from 'react-i18next';
+import { useAppTranslation } from '../../i18n';
 import { EmergencyAckPanel, PatientUpgradeRequiredNotice, needsEmergencyAck } from '@hig/shared/ui';
-import { CARE_GATE_MESSAGES, QuoteDetails, careGateOf, type CareGate } from './quotes';
+import { QuoteDetails, careGateMessage, careGateOf, type CareGate } from './quotes';
 
 export function BookCasePage() {
+  const { t } = useAppTranslation();
   const { caseId = '' } = useParams();
-  useDocumentTitle('Book treatment');
+  useDocumentTitle(t('bookCase.title'));
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const caseQuery = useQuery({ queryKey: qk.case(caseId), queryFn: () => casesApi.get(caseId) });
@@ -83,13 +87,13 @@ export function BookCasePage() {
     onSuccess: (booking) => {
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       void queryClient.invalidateQueries({ queryKey: ['bookings'] });
-      toast.success(`Booking ${booking.booking_number} created`);
+      toast.success(t('bookCase.created', { number: booking.booking_number }));
       navigate(`/bookings/${booking.id}/pay`);
     },
     onError: (error) => {
       const blocked = careGateOf(error);
       setGate(blocked);
-      toast.error(blocked ? CARE_GATE_MESSAGES[blocked] : errorMessage(error));
+      toast.error(blocked ? careGateMessage(blocked) : errorMessage(error));
     },
   });
 
@@ -99,18 +103,18 @@ export function BookCasePage() {
 
   const back = (
     <Link to={`/cases/${c.id}`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> {c.case_number}
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {c.case_number}
     </Link>
   );
 
   if (c.status !== 'accepted') {
     return (
       <div>
-        <PageHeader back={back} title="Book treatment" />
+        <PageHeader back={back} title={t('bookCase.title')} />
         <Card>
           <EmptyState
-            title="Accept a quote first"
-            description={`This case is “${c.status.replace('_', ' ')}”. A booking can be created once a quote from the hospital has been accepted.`}
+            title={t('bookCase.acceptFirst')}
+            description={t('bookCase.acceptFirstDescription', { status: CASE_STATUS_LABELS[c.status] })}
           />
         </Card>
       </div>
@@ -120,7 +124,7 @@ export function BookCasePage() {
   if (needsEmergencyAck(c) || gate === 'emergency') {
     return (
       <div>
-        <PageHeader back={back} title="Book treatment" description={`${c.patient.full_name} · ${c.hospital.name}`} />
+        <PageHeader back={back} title={t('bookCase.title')} description={`${c.patient.full_name} · ${c.hospital.name}`} />
         <EmergencyAckPanel caseId={c.id} audience="agent" onAcknowledged={() => setGate(null)} />
       </div>
     );
@@ -128,10 +132,10 @@ export function BookCasePage() {
   if (gate === 'guest') {
     return (
       <div>
-        <PageHeader back={back} title="Book treatment" description={`${c.patient.full_name} · ${c.hospital.name}`} />
+        <PageHeader back={back} title={t('bookCase.title')} description={`${c.patient.full_name} · ${c.hospital.name}`} />
         <PatientUpgradeRequiredNotice patientName={c.patient.full_name} />
         <Button variant="outline" className="mt-4" onClick={() => setGate(null)}>
-          Try again
+          {t('bookCase.tryAgain')}
         </Button>
       </div>
     );
@@ -148,23 +152,23 @@ export function BookCasePage() {
 
   return (
     <div>
-      <PageHeader back={back} title="Book treatment" description={`${c.patient.full_name} · ${c.hospital.name}${c.doctor ? ` · ${c.doctor.full_name}` : ''}`} />
+      <PageHeader back={back} title={t('bookCase.title')} description={`${c.patient.full_name} · ${c.hospital.name}${c.doctor ? ` · ${c.doctor.full_name}` : ''}`} />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           {acceptedQuote ? (
             <Card>
-              <CardHeader title="Accepted quote" />
+              <CardHeader title={t('bookCase.acceptedQuote')} />
               <div className="p-5">
                 <QuoteDetails quote={acceptedQuote} />
               </div>
             </Card>
           ) : (
             <Card>
-              <CardHeader title="Choose a package" description="Package prices from the hospital’s published rates" />
+              <CardHeader title={t('bookCase.choosePackage')} description={t('bookCase.choosePackageHint')} />
               {hospital.isPending ? (
                 <LoadingBlock />
               ) : packages.length === 0 ? (
-                <EmptyState title="No packages available" description="Ask the hospital to send a quote for this case instead." />
+                <EmptyState title={t('bookCase.noPackages')} description={t('bookCase.noPackagesHint')} />
               ) : (
                 <div className="grid gap-3 p-5 sm:grid-cols-3">
                   {packages.map((p) => (
@@ -174,7 +178,7 @@ export function BookCasePage() {
                       aria-pressed={packageId === p.id}
                       onClick={() => setPackageId(p.id)}
                       className={cn(
-                        'rounded-xl border p-4 text-left transition-colors',
+                        'rounded-xl border p-4 text-start transition-colors',
                         packageId === p.id ? 'border-primary bg-primary-soft' : 'border-border hover:bg-surface-2',
                       )}
                     >
@@ -185,7 +189,7 @@ export function BookCasePage() {
                       </p>
                       {p.original_price_minor && p.original_price_minor > p.price_minor && (
                         <p className="text-xs text-primary-ink">
-                          Save <Money minor={p.original_price_minor - p.price_minor} currency={p.currency} />
+                          <Trans t={t} i18nKey="bookCase.save" components={{ 0: <Money minor={p.original_price_minor - p.price_minor} currency={p.currency} /> }} />
                         </p>
                       )}
                       {p.description && <p className="mt-2 text-xs text-muted">{p.description}</p>}
@@ -197,14 +201,14 @@ export function BookCasePage() {
           )}
 
           <Card>
-            <CardHeader title="Admission date" description={c.doctor ? `Availability for ${c.doctor.full_name}` : 'Hospital admission availability'} />
+            <CardHeader title={t('bookCase.admissionDate')} description={c.doctor ? t('bookCase.availabilityFor', { name: c.doctor.full_name }) : t('bookCase.hospitalAvailability')} />
             <div className="space-y-4 p-5">
               {availability.isPending ? (
                 <div className="flex justify-center py-4">
                   <Spinner />
                 </div>
               ) : availableDates.length > 0 ? (
-                <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Available admission dates">
+                <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('bookCase.availableDates')}>
                   {availableDates.slice(0, 30).map((d) => (
                     <button
                       key={`${d.date}-${d.slot_kind}`}
@@ -218,81 +222,81 @@ export function BookCasePage() {
                       )}
                     >
                       {formatDate(d.date, 'EEE d MMM')}
-                      <span className="block text-xs opacity-80">{d.available} slot{d.available === 1 ? '' : 's'}</span>
+                      <span className="block text-xs opacity-80">{t('bookCase.slots', { count: d.available })}</span>
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted">No published availability — choose a preferred date and the hospital will confirm.</p>
+                <p className="text-sm text-muted">{t('bookCase.noAvailability')}</p>
               )}
-              <FormField label="Or pick a date" htmlFor="admission-date" hint="At least 3 days from today">
+              <FormField label={t('bookCase.pickDate')} htmlFor="admission-date" hint={t('bookCase.pickDateHint')}>
                 <div className="relative max-w-xs">
-                  <CalendarDays className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden />
-                  <Input id="admission-date" type="date" className="pl-9" min={from} max={to} value={admissionDate} onChange={(e) => setAdmissionDate(e.target.value)} />
+                  <CalendarDays className="pointer-events-none absolute top-1/2 start-3 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden />
+                  <Input id="admission-date" type="date" className="ps-9" min={from} max={to} value={admissionDate} onChange={(e) => setAdmissionDate(e.target.value)} />
                 </div>
               </FormField>
             </div>
           </Card>
 
           <Card>
-            <CardHeader title="Payment option" />
+            <CardHeader title={t('bookCase.paymentOption')} />
             <div className="space-y-4 p-5">
               <Segmented<PaymentOption>
-                ariaLabel="Payment option"
+                ariaLabel={t('bookCase.paymentOption')}
                 value={paymentOption}
                 onChange={setPaymentOption}
                 options={PAYMENT_OPTIONS.map((o) => ({ value: o, label: PAYMENT_OPTION_LABELS[o] }))}
               />
               <p className="text-sm text-muted">
-                {paymentOption === 'full' && 'Pay the full amount now to confirm the booking.'}
-                {paymentOption === 'deposit' && 'Pay a deposit now to confirm the booking; the balance is due before admission.'}
-                {paymentOption === 'installments' && 'Pay a deposit now and the balance in monthly instalments.'}
+                {paymentOption === 'full' && t('bookCase.payFull')}
+                {paymentOption === 'deposit' && t('bookCase.payDeposit')}
+                {paymentOption === 'installments' && t('bookCase.payInstallments')}
               </p>
               {paymentOption === 'installments' && (
                 <Segmented<string>
-                  ariaLabel="Instalment months"
+                  ariaLabel={t('bookCase.installmentMonths')}
                   value={String(installmentMonths)}
                   onChange={(v) => setInstallmentMonths(Number(v))}
-                  options={[3, 6, 12].map((m) => ({ value: String(m), label: `${m} months` }))}
+                  options={[3, 6, 12].map((m) => ({ value: String(m), label: t('bookCase.months', { count: m }) }))}
                 />
               )}
               <Checkbox
                 checked={insurance}
                 onChange={(e) => setInsurance(e.target.checked)}
-                label="Patient will claim through insurance"
-                description="The hospital prepares the documents required for the claim."
+                label={t('bookCase.insurance')}
+                description={t('bookCase.insuranceHint')}
               />
             </div>
           </Card>
         </div>
 
         <Card className="h-fit lg:sticky lg:top-20">
-          <CardHeader title="Summary" />
+          <CardHeader title={t('bookCase.summary')} />
           <dl className="space-y-3 p-5 text-sm">
             <div className="flex justify-between gap-3">
-              <dt className="text-muted">Treatment</dt>
-              <dd className="text-right">{c.procedure?.name ?? c.specialty?.name ?? 'As quoted'}</dd>
+              <dt className="text-muted">{t('bookCase.treatment')}</dt>
+              <dd className="text-end">{c.procedure?.name ?? c.specialty?.name ?? t('bookCase.asQuoted')}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-muted">Admission</dt>
+              <dt className="text-muted">{t('bookCase.admission')}</dt>
               <dd>{admissionDate ? formatDate(admissionDate) : '—'}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-muted">Payment</dt>
+              <dt className="text-muted">{t('bookCase.payment')}</dt>
               <dd>
                 {PAYMENT_OPTION_LABELS[paymentOption]}
-                {paymentOption === 'installments' ? ` · ${installmentMonths} mo` : ''}
+                {paymentOption === 'installments' ? ` · ${t('bookCase.monthsShort', { count: installmentMonths })}` : ''}
               </dd>
             </div>
             <div className="flex justify-between gap-3 border-t border-border pt-3 text-base">
-              <dt className="font-semibold">Total</dt>
+              <dt className="font-semibold">{t('bookCase.total')}</dt>
               <dd className="font-bold">{price ? <Money minor={price.minor} currency={price.currency} /> : '—'}</dd>
             </div>
-            <p className="text-xs text-muted">Final amounts, taxes and the deposit are calculated by the platform when the booking is created.</p>
+            <p className="text-xs text-muted">{t('bookCase.finalAmounts')}</p>
           </dl>
           <div className="border-t border-border p-5">
             <Button className="w-full" size="lg" disabled={!canSubmit} loading={create.isPending} icon={<Check className="h-4 w-4" aria-hidden />} onClick={() => create.mutate()}>
-              Create booking & continue to payment
+              {t('bookCase.submit')}
             </Button>
           </div>
         </Card>

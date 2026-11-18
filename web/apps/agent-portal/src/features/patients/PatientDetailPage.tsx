@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { ArrowLeft, Briefcase, ClipboardPlus, Pencil } from 'lucide-react';
@@ -40,34 +40,35 @@ import { ReportAiPanel } from '@hig/shared/docai';
 import { DocumentList, DocumentUploader } from '../documents/Documents';
 import { PatientFormDialog } from './PatientForm';
 import { PatientConsentCard } from './PatientConsentCard';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 type Tab = 'profile' | 'screenings' | 'cases' | 'documents';
 
-const SCREENING_COLUMNS: DataTableColumn<ScreeningOut>[] = [
+const screeningColumns = (t: AppT): DataTableColumn<ScreeningOut>[] => [
   {
     key: 'screening',
-    header: 'Screening',
+    header: t('patientDetail.screeningColumns.screening'),
     mobile: 'primary',
     className: 'max-w-96',
     sortable: true,
     sortValue: (s) => s.specialty?.name ?? s.ai_result?.suggested_specialties[0]?.name ?? '',
     cell: (s) => (
       <TextCell
-        primary={s.specialty?.name ?? s.ai_result?.suggested_specialties[0]?.name ?? 'General screening'}
+        primary={s.specialty?.name ?? s.ai_result?.suggested_specialties[0]?.name ?? t('patientDetail.generalScreening')}
         secondary={s.ai_result?.summary ?? undefined}
       />
     ),
   },
   {
     key: 'urgency',
-    header: 'Urgency',
+    header: t('patientDetail.screeningColumns.urgency'),
     mobile: 'badge',
     cell: (s) => (s.urgency ? <StatusBadge status={s.urgency} kind="urgency" dot /> : <span className="text-muted">—</span>),
   },
-  { key: 'status', header: 'Status', mobile: 'badge', cell: (s) => <StatusBadgeCell status={s.status} kind="screening" /> },
+  { key: 'status', header: t('patientDetail.screeningColumns.status'), mobile: 'badge', cell: (s) => <StatusBadgeCell status={s.status} kind="screening" /> },
   {
     key: 'submitted',
-    header: 'Submitted',
+    header: t('patientDetail.screeningColumns.submitted'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (s) => s.submitted_at ?? s.created_at,
@@ -75,18 +76,18 @@ const SCREENING_COLUMNS: DataTableColumn<ScreeningOut>[] = [
   },
 ];
 
-const CASE_COLUMNS: DataTableColumn<CaseOut>[] = [
+const caseColumns = (t: AppT): DataTableColumn<CaseOut>[] => [
   {
     key: 'case',
-    header: 'Case',
+    header: t('patientDetail.caseColumns.case'),
     mobile: 'secondary',
     sortable: true,
     sortValue: (c) => c.case_number,
-    cell: (c) => <IdCell value={c.case_number} copy={false} secondary={c.procedure?.name ?? c.specialty?.name ?? 'General enquiry'} />,
+    cell: (c) => <IdCell value={c.case_number} copy={false} secondary={c.procedure?.name ?? c.specialty?.name ?? t('patientDetail.generalEnquiry')} />,
   },
   {
     key: 'hospital',
-    header: 'Hospital',
+    header: t('patientDetail.caseColumns.hospital'),
     mobile: 'primary',
     className: 'max-w-64',
     sortable: true,
@@ -95,7 +96,7 @@ const CASE_COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('patientDetail.caseColumns.status'),
     mobile: 'badge',
     sortable: true,
     sortValue: (c) => c.status,
@@ -103,7 +104,7 @@ const CASE_COLUMNS: DataTableColumn<CaseOut>[] = [
   },
   {
     key: 'quote',
-    header: 'Latest quote',
+    header: t('patientDetail.caseColumns.latestQuote'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -112,12 +113,12 @@ const CASE_COLUMNS: DataTableColumn<CaseOut>[] = [
       c.latest_quote ? (
         <MoneyCell minor={c.latest_quote.total_minor} currency={c.latest_quote.currency} />
       ) : (
-        <span className="text-xs text-muted">Awaiting quote</span>
+        <span className="text-xs text-muted">{t('patientDetail.awaitingQuote')}</span>
       ),
   },
   {
     key: 'opened',
-    header: 'Opened',
+    header: t('patientDetail.caseColumns.opened'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (c) => c.created_at,
@@ -127,6 +128,9 @@ const CASE_COLUMNS: DataTableColumn<CaseOut>[] = [
 
 
 export function PatientDetailPage() {
+  const { t } = useAppTranslation();
+  const SCREENING_COLUMNS = useMemo(() => screeningColumns(t), [t]);
+  const CASE_COLUMNS = useMemo(() => caseColumns(t), [t]);
   const { patientId = '' } = useParams();
   const [params, setParams] = useSearchParams();
   const tab = (params.get('tab') as Tab | null) ?? 'profile';
@@ -147,12 +151,12 @@ export function PatientDetailPage() {
   });
   const { data: agent } = useAgentProfile();
 
-  const name = patient.data ? patientName(patient.data) : 'Patient';
+  const name = patient.data ? patientName(patient.data) : t('patientDetail.fallbackName');
   useDocumentTitle(name);
 
   const back = (
     <Link to="/patients" className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> Patients
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('patientDetail.back')}
     </Link>
   );
 
@@ -175,19 +179,19 @@ export function PatientDetailPage() {
       <PageHeader
         back={back}
         title={name}
-        description={[countryName(p.nationality), p.gender ? GENDER_LABELS[p.gender] : null, age !== null ? `${age} years` : null]
+        description={[countryName(p.nationality), p.gender ? GENDER_LABELS[p.gender] : null, age !== null ? t('patientDetail.ageYears', { count: age }) : null]
           .filter(Boolean)
           .join(' · ')}
         actions={
           <>
             <Button variant="outline" icon={<Pencil className="h-4 w-4" aria-hidden />} onClick={() => setEditOpen(true)}>
-              Edit
+              {t('patientDetail.edit')}
             </Button>
             <ButtonLink to={`/cases/new?patient=${p.id}`} variant="outline" icon={<Briefcase className="h-4 w-4" aria-hidden />}>
-              New enquiry
+              {t('patientDetail.newEnquiry')}
             </ButtonLink>
             <ButtonLink to={`/patients/${p.id}/screenings/new`} icon={<ClipboardPlus className="h-4 w-4" aria-hidden />}>
-              New screening
+              {t('patientDetail.newScreening')}
             </ButtonLink>
           </>
         }
@@ -196,12 +200,12 @@ export function PatientDetailPage() {
       <Tabs<Tab>
         className="mb-6"
         value={tab}
-        onChange={(t) => setParams({ tab: t }, { replace: true })}
+        onChange={(next) => setParams({ tab: next }, { replace: true })}
         tabs={[
-          { value: 'profile', label: 'Profile' },
-          { value: 'screenings', label: 'Screenings', count: screenings.data?.total },
-          { value: 'cases', label: 'Cases', count: cases.data?.total },
-          { value: 'documents', label: 'Documents', count: documents.data?.length },
+          { value: 'profile', label: t('patientDetail.tabs.profile') },
+          { value: 'screenings', label: t('patientDetail.tabs.screenings'), count: screenings.data?.total },
+          { value: 'cases', label: t('patientDetail.tabs.cases'), count: cases.data?.total },
+          { value: 'documents', label: t('patientDetail.tabs.documents'), count: documents.data?.length },
         ]}
       />
 
@@ -209,38 +213,38 @@ export function PatientDetailPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <PatientConsentCard patient={p} />
           <Card>
-            <CardHeader title="Personal details" />
+            <CardHeader title={t('patientDetail.personal.title')} />
             <dl className="grid grid-cols-1 gap-x-6 gap-y-4 p-5 text-sm sm:grid-cols-2">
-              <Detail label="Full name" value={name} />
-              <Detail label="Date of birth" value={p.date_of_birth ? formatDate(p.date_of_birth) : '—'} />
-              <Detail label="Nationality" value={countryName(p.nationality)} />
-              <Detail label="Residence" value={countryName(p.country_of_residence ?? p.nationality)} />
-              <Detail label="Email" value={p.email ?? '—'} />
-              <Detail label="Phone" value={p.phone ?? '—'} />
-              <Detail label="WhatsApp" value={p.whatsapp ?? '—'} />
-              <Detail label="Preferred currency" value={p.preferred_currency} />
-              <Detail label="Passport" value={p.passport_last4 ? `•••• ${p.passport_last4}` : 'Not on file'} />
-              <Detail label="Passport expiry" value={p.passport_expiry ? formatDate(p.passport_expiry) : '—'} />
+              <Detail label={t('patientDetail.personal.fullName')} value={name} />
+              <Detail label={t('patientDetail.personal.dob')} value={p.date_of_birth ? formatDate(p.date_of_birth) : '—'} />
+              <Detail label={t('patientDetail.personal.nationality')} value={countryName(p.nationality)} />
+              <Detail label={t('patientDetail.personal.residence')} value={countryName(p.country_of_residence ?? p.nationality)} />
+              <Detail label={t('patientDetail.personal.email')} value={p.email ?? '—'} />
+              <Detail label={t('patientDetail.personal.phone')} value={p.phone ?? '—'} />
+              <Detail label={t('patientDetail.personal.whatsapp')} value={p.whatsapp ?? '—'} />
+              <Detail label={t('patientDetail.personal.currency')} value={p.preferred_currency} />
+              <Detail label={t('patientDetail.personal.passport')} value={p.passport_last4 ? `•••• ${p.passport_last4}` : t('patientDetail.personal.notOnFile')} />
+              <Detail label={t('patientDetail.personal.passportExpiry')} value={p.passport_expiry ? formatDate(p.passport_expiry) : '—'} />
               <Detail
-                label="Relationship"
+                label={t('patientDetail.personal.relationship')}
                 value={
                   agent && p.managed_by_agent_id === agent.id
-                    ? 'Managed by your agency'
+                    ? t('patientDetail.personal.managed')
                     : agent && p.referred_by_agent_id === agent.id
-                      ? 'Referred by your agency'
+                      ? t('patientDetail.personal.referred')
                       : '—'
                 }
               />
             </dl>
           </Card>
           <Card>
-            <CardHeader title="Medical information" />
+            <CardHeader title={t('patientDetail.medical.title')} />
             <dl className="grid gap-y-4 p-5 text-sm">
-              <Detail label="Blood group" value={p.blood_group ?? '—'} />
-              <Detail label="Allergies" value={p.allergies ?? 'None recorded'} />
-              <Detail label="Medical history" value={<span className="whitespace-pre-line">{p.medical_history ?? 'None recorded'}</span>} />
+              <Detail label={t('patientDetail.medical.bloodGroup')} value={p.blood_group ?? '—'} />
+              <Detail label={t('patientDetail.medical.allergies')} value={p.allergies ?? t('patientDetail.medical.noneRecorded')} />
+              <Detail label={t('patientDetail.medical.history')} value={<span className="whitespace-pre-line">{p.medical_history ?? t('patientDetail.medical.noneRecorded')}</span>} />
               <Detail
-                label="Emergency contact"
+                label={t('patientDetail.medical.emergencyContact')}
                 value={
                   p.emergency_contact
                     ? `${p.emergency_contact.name} (${p.emergency_contact.relationship}) · ${p.emergency_contact.phone}`
@@ -255,16 +259,16 @@ export function PatientDetailPage() {
       {tab === 'screenings' && (
         <Card>
           <CardHeader
-            title="Screenings"
-            description="AI symptom screenings submitted for this patient"
+            title={t('patientDetail.screenings.title')}
+            description={t('patientDetail.screenings.description')}
             actions={
               <ButtonLink size="sm" to={`/patients/${p.id}/screenings/new`}>
-                New screening
+                {t('patientDetail.newScreening')}
               </ButtonLink>
             }
           />
           <DataTable
-            caption="Screenings"
+            caption={t('patientDetail.screenings.title')}
             columns={SCREENING_COLUMNS}
             rows={screenings.data?.items}
             loading={screenings.isPending}
@@ -272,11 +276,11 @@ export function PatientDetailPage() {
             onRetry={() => void screenings.refetch()}
             defaultSort={{ key: 'submitted', direction: 'desc' }}
             rowHref={(s) => (s.status === 'draft' ? `/screenings/${s.id}/edit` : `/screenings/${s.id}`)}
-            rowLabel={(s) => `Open screening from ${formatDate(s.submitted_at ?? s.created_at)}`}
+            rowLabel={(s) => t('patientDetail.screenings.openRow', { date: formatDate(s.submitted_at ?? s.created_at) })}
             responsive="cards"
             className="rounded-none border-0 shadow-none"
-            emptyTitle="No screenings yet"
-            emptyDescription="Run a screening to get matched hospitals and doctors."
+            emptyTitle={t('patientDetail.screenings.emptyTitle')}
+            emptyDescription={t('patientDetail.screenings.emptyDescription')}
           />
         </Card>
       )}
@@ -284,23 +288,23 @@ export function PatientDetailPage() {
       {tab === 'cases' && (
         <Card>
           <CardHeader
-            title="Cases"
-            description="Enquiries sent to hospitals for this patient"
+            title={t('patientDetail.cases.title')}
+            description={t('patientDetail.cases.description')}
             actions={
               <>
                 {(cases.data?.items.filter((c) => c.latest_quote).length ?? 0) >= 2 && (
                   <ButtonLink size="sm" variant="outline" to={`/cases/compare?patient=${p.id}`}>
-                    Compare quotes
+                    {t('patientDetail.cases.compare')}
                   </ButtonLink>
                 )}
                 <ButtonLink size="sm" to={`/cases/new?patient=${p.id}`}>
-                  New enquiry
+                  {t('patientDetail.newEnquiry')}
                 </ButtonLink>
               </>
             }
           />
           <DataTable
-            caption="Cases"
+            caption={t('patientDetail.cases.title')}
             columns={CASE_COLUMNS}
             rows={cases.data?.items}
             loading={cases.isPending}
@@ -308,25 +312,24 @@ export function PatientDetailPage() {
             onRetry={() => void cases.refetch()}
             defaultSort={{ key: 'opened', direction: 'desc' }}
             rowHref={(c) => `/cases/${c.id}`}
-            rowLabel={(c) => `Open case ${c.case_number}`}
+            rowLabel={(c) => t('patientDetail.cases.openRow', { number: c.case_number })}
             responsive="cards"
             className="rounded-none border-0 shadow-none"
-            emptyTitle="No cases yet"
-            emptyDescription="Send an enquiry to up to three hospitals to receive quotes."
+            emptyTitle={t('patientDetail.cases.emptyTitle')}
+            emptyDescription={t('patientDetail.cases.emptyDescription')}
           />
         </Card>
       )}
 
       {tab === 'documents' && (
         <Card>
-          <CardHeader title="Documents" description="Passport, medical reports and other files uploaded on the patient’s behalf" />
+          <CardHeader title={t('patientDetail.documents.title')} description={t('patientDetail.documents.description')} />
           <div className="border-b border-border p-5">
             <DocumentUploader kinds={PATIENT_DOCUMENT_KINDS} target={{ patient_id: p.id }} />
           </div>
           <div className="border-b border-border p-5">
             <p className="mb-3 text-sm text-muted">
-              Read a medical report with AI: upload the PDF or photograph the pages, then check and confirm the extracted
-              results with the patient. Only confirmed data is shared with hospitals.
+              {t('patientDetail.documents.aiIntro')}
             </p>
             <ReportAiPanel patientId={p.id} defaultKind="medical_report" audience="clinical" existing="pending" />
           </div>

@@ -13,6 +13,7 @@ import { errorMessage, isApiError } from '../api/client';
 import { casesApi } from '../api/endpoints/cases';
 import type { CaseOut, Uuid } from '../api/types';
 import { cn } from '../lib/cn';
+import { useCommonTranslation } from '../lib/i18n';
 import { Button } from './Button';
 
 /** Who is looking at the gate: the patient themself, or an agent acting for their patient. */
@@ -41,28 +42,10 @@ export function useAcknowledgeEmergency(caseId: Uuid) {
   });
 }
 
-const COPY: Record<CareGateAudience, { title: string; lead: string; ack: string; done: string }> = {
-  patient: {
-    title: 'Emergency — seek local care now',
-    lead:
-      'Your answers suggest you may need urgent medical care. Please seek local emergency care now: call your local emergency number or go to the nearest emergency ' +
-      'department. Do not wait to travel for treatment.',
-    ack:
-      'I have read this guidance. I have sought (or will seek) local medical advice, and I understand Heal India ' +
-      'Global does not provide emergency care.',
-    done: 'Thank you. You can continue with your case.',
-  },
-  agent: {
-    title: 'Emergency — seek local care now',
-    lead:
-      "This patient's screening suggests they may need urgent medical care. Before planning medical travel, make sure " +
-      'the patient seeks local emergency care now: their local emergency ' +
-      'number or the nearest emergency department. They should not wait to travel for treatment.',
-    ack:
-      'I have shared this guidance with the patient. They have sought (or will seek) local medical advice, and we ' +
-      'understand Heal India Global does not provide emergency care.',
-    done: 'Acknowledged. You can continue with this case.',
-  },
+/** Catalog keys (common:careGates.emergency.*) of the audience-specific texts. */
+const COPY_KEYS: Record<CareGateAudience, { lead: string; ack: string; done: string }> = {
+  patient: { lead: 'patientLead', ack: 'patientAck', done: 'patientDone' },
+  agent: { lead: 'agentLead', ack: 'agentAck', done: 'agentDone' },
 };
 
 export interface EmergencyAckPanelProps {
@@ -79,7 +62,14 @@ export interface EmergencyAckPanelProps {
 export function EmergencyAckPanel({ caseId, audience = 'patient', onAcknowledged, className }: EmergencyAckPanelProps) {
   const ack = useAcknowledgeEmergency(caseId);
   const [read, setRead] = useState(false);
-  const copy = COPY[audience];
+  const { t } = useCommonTranslation();
+  const keys = COPY_KEYS[audience];
+  const copy = {
+    title: t('careGates.emergency.title'),
+    lead: t(`careGates.emergency.${keys.lead}`),
+    ack: t(`careGates.emergency.${keys.ack}`),
+    done: t(`careGates.emergency.${keys.done}`),
+  };
   return (
     <section
       role="alert"
@@ -96,12 +86,9 @@ export function EmergencyAckPanel({ caseId, audience = 'patient', onAcknowledged
             {copy.title}
           </h2>
           <p className="font-medium">{copy.lead}</p>
-          <p>
-            Medical travel is not a substitute for emergency care. Treatment planning in India can continue only after
-            a local doctor has confirmed it is safe to travel.
-          </p>
+          <p>{t('careGates.emergency.notSubstitute')}</p>
           <p className="flex items-center gap-2 font-semibold">
-            <Phone className="h-4 w-4" aria-hidden /> In India, dial 112 for emergencies.
+            <Phone className="h-4 w-4" aria-hidden /> {t('careGates.emergency.dialIndia')}
           </p>
           <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl bg-white/70 p-3 dark:bg-black/20">
             <input
@@ -127,7 +114,7 @@ export function EmergencyAckPanel({ caseId, audience = 'patient', onAcknowledged
                 })
               }
             >
-              I understand - continue
+              {t('careGates.emergency.continue')}
             </Button>
           </div>
         </div>
@@ -141,6 +128,7 @@ export function EmergencyAckPanel({ caseId, audience = 'patient', onAcknowledged
  * themselves (agents cannot create the account for them).
  */
 export function PatientUpgradeRequiredNotice({ patientName, className }: { patientName?: string; className?: string }) {
+  const { t } = useCommonTranslation();
   return (
     <div
       role="status"
@@ -152,12 +140,8 @@ export function PatientUpgradeRequiredNotice({ patientName, className }: { patie
       <div className="flex gap-3">
         <UserPlus className="mt-0.5 h-5 w-5 shrink-0 text-violet-600 dark:text-violet-300" aria-hidden />
         <div className="space-y-1">
-          <p className="font-semibold">{patientName ? `${patientName} needs a full account` : 'The patient needs a full account'}</p>
-          <p className="text-slate-600 dark:text-slate-300">
-            This patient is still using a guest session. Hospitals need a verified account before quotes can be
-            accepted, bookings made or payments taken. Ask the patient to open Heal India Global and choose
-            &ldquo;Create account&rdquo; - everything from their guest session is kept - then try again.
-          </p>
+          <p className="font-semibold">{patientName ? t('careGates.upgrade.titleNamed', { name: patientName }) : t('careGates.upgrade.title')}</p>
+          <p className="text-slate-600 dark:text-slate-300">{t('careGates.upgrade.body')}</p>
         </div>
       </div>
     </div>

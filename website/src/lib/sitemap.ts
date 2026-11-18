@@ -17,7 +17,9 @@ import { GUIDE_SLUGS } from '@/lib/guides';
 import { cityGuide, guideContent, legalDocument } from '@/lib/content';
 import { growthSitemapPaths } from '@/lib/growth/links';
 import { routes } from '@/lib/routes';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, languageAlternates } from '@/lib/seo';
+import { isLocale, localizePath, type Locale } from '@/i18n/config';
+import { getEnabledLocales } from '@/i18n/languages';
 
 export const SITEMAP_SECTIONS = ['pages', 'treatments', 'hospitals', 'doctors', 'destinations', 'guides'] as const;
 export type SitemapSection = (typeof SITEMAP_SECTIONS)[number];
@@ -121,21 +123,33 @@ async function sectionItems(): Promise<Record<SitemapSection, Item[]>> {
   return out;
 }
 
-function toEntries(items: Item[]): MetadataRoute.Sitemap {
+/**
+ * One entry per page and enabled language (/hospitals, /ar/hospitals, ...), each listing every language version
+ * (xhtml:link hreflang, plus x-default = English). English-only pages are listed once, in English.
+ */
+function toEntries(items: Item[], enabled: readonly Locale[]): MetadataRoute.Sitemap {
   const seen = new Set<string>();
   return items
     .filter((i) => (seen.has(i.path) ? false : (seen.add(i.path), true)))
-    .map((i) => ({
-      url: absoluteUrl(i.path || '/'),
-      ...(i.lastModified ? { lastModified: i.lastModified } : {}),
-      priority: i.priority,
-    }));
+    .flatMap((i) => {
+      const path = i.path || '/';
+      const languages = languageAlternates(path, enabled);
+      const locales = Object.keys(languages).filter(isLocale);
+      return locales.map((l) => ({
+        url: absoluteUrl(localizePath(path, l)),
+        ...(i.lastModified ? { lastModified: i.lastModified } : {}),
+        priority: i.priority,
+        ...(locales.length > 1
+          ? { alternates: { languages: Object.fromEntries(Object.entries(languages).map(([k, v]) => [k, absoluteUrl(v)])) } }
+          : {}),
+      }));
+    });
 }
 
 export async function sitemapSection(section: string): Promise<MetadataRoute.Sitemap> {
   if (!(SITEMAP_SECTIONS as readonly string[]).includes(section)) return [];
-  const items = await sectionItems();
-  return toEntries(items[section as SitemapSection]);
+  const [items, enabled] = await Promise.all([sectionItems(), getEnabledLocales()]);
+  return toEntries(items[section as SitemapSection], enabled);
 }
 
 /** Sections with at least one URL, with the newest lastmod of their entries (for the sitemap index). */

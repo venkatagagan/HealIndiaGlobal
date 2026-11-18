@@ -72,7 +72,10 @@ export function Popover({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const gap = 6;
-    let left = align === 'end' ? a.right - width : a.left;
+    // 'end' = the anchor's right edge in LTR, its left edge in RTL
+    const rtl = getComputedStyle(anchor).direction === 'rtl';
+    const alignRight = (align === 'end') !== rtl;
+    let left = alignRight ? a.right - width : a.left;
     left = Math.max(8, Math.min(left, vw - width - 8));
     const below = vh - a.bottom - gap - 8;
     const above = a.top - gap - 8;

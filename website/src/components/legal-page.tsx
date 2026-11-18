@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getDictionary } from '@/i18n';
+import { requestLocale } from '@/i18n/request';
 import { legalDocument, resolveLegalHref, tableOfContents, type LegalDoc } from '@/lib/content';
 import { TocNav } from './toc-nav';
 import { href, routes } from '@/lib/routes';
@@ -7,22 +8,17 @@ import { pageMetadata } from '@/lib/seo';
 import { PageHero } from './page-hero';
 import { InlineNote } from './data-notice';
 import { MarkdownContent } from './markdown';
-import Link from 'next/link';
+import Link from '@/components/link';
 
 const PATHS: Record<LegalDoc, string> = { terms: routes.terms, privacy: routes.privacy, refunds: routes.refunds };
-/** Search titles (50-60 characters with the site-name suffix); the on-page heading stays t.legal[doc].title. */
-const LEGAL_SEO_TITLE: Record<LegalDoc, string> = {
-  terms: 'Website and service terms of use',
-  privacy: 'Privacy policy: how we protect your data',
-  refunds: 'Cancellation and refund policy',
-};
 
 export async function legalMetadata(doc: LegalDoc): Promise<Metadata> {
-  const t = getDictionary();
+  const t = await getDictionary();
   const legal = legalDocument(doc);
   return pageMetadata({
     path: PATHS[doc],
-    title: [LEGAL_SEO_TITLE[doc], t.legal[doc].title],
+    // Search title (t.legal.seoTitles: 50-60 characters with the site-name suffix); the heading is t.legal[doc].title.
+    title: [t.legal.seoTitles[doc], t.legal[doc].title],
     description: t.legal[doc].metaDescription,
     // Drafts and placeholders are not indexed.
     noindex: !legal || legal.isDraft,
@@ -34,7 +30,7 @@ export async function legalMetadata(doc: LegalDoc): Promise<Metadata> {
  * with a visible "draft" banner; without them, a short honest summary.
  */
 export async function LegalPage({ doc }: { doc: LegalDoc }) {
-  const t = getDictionary();
+  const t = await getDictionary();
   const legal = legalDocument(doc);
   const title = t.legal[doc].title;
   return (
@@ -50,6 +46,7 @@ export async function LegalPage({ doc }: { doc: LegalDoc }) {
         {legal ? (
           <>
             {legal.isDraft ? <InlineNote tone="amber" text={t.legal.draftBanner} /> : null}
+            {requestLocale() !== 'en' ? <InlineNote text={t.common.englishOnly} /> : null}
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-12">
               <MarkdownContent resolveHref={(h) => resolveLegalHref(h)} className="max-w-3xl min-w-0">
                 {legal.body}

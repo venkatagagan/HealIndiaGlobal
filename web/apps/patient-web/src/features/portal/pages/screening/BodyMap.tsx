@@ -1,23 +1,15 @@
 import { useState, type KeyboardEvent } from 'react';
 import { RotateCcw } from 'lucide-react';
-import { cn } from '../../lib/shared';
+import { BODY_AREA_LABELS as SHARED_BODY_AREA_LABELS } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
+import { cn, formatNumber } from '../../lib/shared';
 import { Chip, SegmentedControl } from '../../ui/primitives';
 
-/** Body-map regions (identical to the backend catalog BODY_AREAS). */
-export const BODY_AREA_LABELS: Record<string, string> = {
-  head: 'Head',
-  neck: 'Neck',
-  chest: 'Chest',
-  abdomen: 'Abdomen',
-  pelvis: 'Pelvis',
-  back: 'Back',
-  left_arm: 'Left arm',
-  right_arm: 'Right arm',
-  left_leg: 'Left leg',
-  right_leg: 'Right leg',
-  skin: 'Skin',
-  general: 'Whole body / general',
-};
+/**
+ * Body-map region labels (the shared, translated catalog BODY_AREAS). "Left"/"Right" are the patient's own
+ * anatomical sides - they never follow the reading direction.
+ */
+export const BODY_AREA_LABELS: Readonly<Record<string, string | undefined>> = SHARED_BODY_AREA_LABELS;
 
 export const MAP_AREAS = ['head', 'neck', 'chest', 'abdomen', 'pelvis', 'back', 'left_arm', 'right_arm', 'left_leg', 'right_leg'];
 export const EXTRA_AREAS = ['skin', 'general'];
@@ -57,6 +49,7 @@ function regionsFor(view: View): Region[] {
 }
 
 export function BodyMap({ value, onChange }: { value: string[]; onChange: (areas: string[]) => void }) {
+  const { t } = useAppTranslation();
   const [view, setView] = useState<View>('front');
   const selected = new Set(value);
 
@@ -78,23 +71,25 @@ export function BodyMap({ value, onChange }: { value: string[]; onChange: (areas
     <div className="grid items-start gap-6 md:grid-cols-[minmax(0,280px)_1fr]">
       <div className="rounded-2xl bg-gradient-to-b from-slate-900 to-[#0B0F14] p-4">
         <SegmentedControl
-          ariaLabel="Body view"
+          ariaLabel={t('screening.bodyMap.viewLabel')}
           value={view}
           onChange={setView}
           options={[
-            { value: 'front', label: 'Front' },
-            { value: 'back', label: 'Back' },
+            { value: 'front', label: t('screening.bodyMap.front') },
+            { value: 'back', label: t('screening.bodyMap.back') },
           ]}
         />
+        {/* Physical anatomy: the drawing is never mirrored for right-to-left languages. */}
         <svg
           viewBox="0 0 200 420"
           className="mx-auto mt-4 h-[360px] w-auto max-w-full"
           role="group"
-          aria-label={`Body map, ${view} view. Select the areas where you have symptoms.`}
+          aria-label={view === 'front' ? t('screening.bodyMap.mapLabelFront') : t('screening.bodyMap.mapLabelBack')}
         >
           {regionsFor(view).map((region, i) => {
             const isSelected = selected.has(region.area);
-            const label = `${BODY_AREA_LABELS[region.area] ?? region.area}${isSelected ? ' (selected)' : ''}`;
+            const name = BODY_AREA_LABELS[region.area] ?? region.area;
+            const label = isSelected ? t('screening.bodyMap.areaSelected', { area: name }) : name;
             return (
               <path
                 key={`${view}-${i}`}
@@ -117,18 +112,23 @@ export function BodyMap({ value, onChange }: { value: string[]; onChange: (areas
             );
           })}
           <text x="100" y="416" textAnchor="middle" className="fill-slate-400 text-[10px]">
-            {view === 'front' ? 'Front (facing you)' : 'Back'}
+            {view === 'front' ? t('screening.bodyMap.frontFacing') : t('screening.bodyMap.back')}
           </text>
         </svg>
       </div>
 
       <div className="space-y-4">
         <div>
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Selected areas</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('screening.bodyMap.selectedAreas')}</p>
           {value.length ? (
             <div className="mt-2 flex flex-wrap gap-2">
               {value.map((a) => (
-                <Chip key={a} selected onClick={() => toggle(a)} ariaLabel={`Remove ${BODY_AREA_LABELS[a] ?? a}`}>
+                <Chip
+                  key={a}
+                  selected
+                  onClick={() => toggle(a)}
+                  ariaLabel={t('screening.bodyMap.removeArea', { area: BODY_AREA_LABELS[a] ?? a })}
+                >
                   {BODY_AREA_LABELS[a] ?? a} <span aria-hidden>×</span>
                 </Chip>
               ))}
@@ -137,15 +137,15 @@ export function BodyMap({ value, onChange }: { value: string[]; onChange: (areas
                 onClick={() => onChange([])}
                 className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
               >
-                <RotateCcw className="h-3.5 w-3.5" aria-hidden /> Clear
+                <RotateCcw className="h-3.5 w-3.5" aria-hidden /> {t('screening.bodyMap.clear')}
               </button>
             </div>
           ) : (
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Tap on the body to select an area.</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('screening.bodyMap.tapHint')}</p>
           )}
         </div>
         <div>
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Or choose from the list</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('screening.bodyMap.chooseFromList')}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {[...MAP_AREAS, ...EXTRA_AREAS].map((a) => (
               <Chip key={a} selected={selected.has(a)} onClick={() => toggle(a)}>
@@ -161,28 +161,31 @@ export function BodyMap({ value, onChange }: { value: string[]; onChange: (areas
 
 const PAIN_FACES = ['😀', '🙂', '🙂', '🙂', '😐', '😐', '😟', '😣', '😣', '😫', '😭'];
 
-export function painLabel(value: number): string {
-  if (value === 0) return 'No pain';
-  if (value <= 3) return 'Mild';
-  if (value <= 6) return 'Moderate';
-  if (value <= 8) return 'Severe';
-  return 'Worst imaginable';
+/** Catalog key (namespace `patient`) of the word for a 0-10 pain score. */
+export function painLabelKey(value: number): string {
+  if (value === 0) return 'screening.pain.levels.none';
+  if (value <= 3) return 'screening.pain.levels.mild';
+  if (value <= 6) return 'screening.pain.levels.moderate';
+  if (value <= 8) return 'screening.pain.levels.severe';
+  return 'screening.pain.levels.worst';
 }
 
 export function PainSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const { t } = useAppTranslation();
   const tone = value <= 3 ? 'text-green-500' : value <= 6 ? 'text-amber-500' : 'text-red-500';
+  const word = t(painLabelKey(value));
   return (
     <div className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
       <div className="flex items-center justify-between">
         <label htmlFor="pain-intensity" className="font-medium">
-          Pain intensity
+          {t('screening.pain.label')}
         </label>
         <span className="flex items-center gap-2">
           <span className="text-3xl" aria-hidden>
             {PAIN_FACES[value] ?? '🙂'}
           </span>
           <span className={cn('text-sm font-semibold', tone)}>
-            {value}/10 · {painLabel(value)}
+            {t('screening.pain.score', { value: formatNumber(value) })} · {word}
           </span>
         </span>
       </div>
@@ -194,13 +197,13 @@ export function PainSlider({ value, onChange }: { value: number; onChange: (v: n
         step={1}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        aria-valuetext={`${value} out of 10, ${painLabel(value)}`}
+        aria-valuetext={t('screening.pain.valueText', { value: formatNumber(value), label: word })}
         className="mt-4 w-full accent-green-500"
       />
       <div className="mt-1 flex justify-between text-xs text-slate-500">
-        <span>0 · None</span>
-        <span>5 · Moderate</span>
-        <span>10 · Worst</span>
+        <span>{formatNumber(0)} · {t('screening.pain.scaleNone')}</span>
+        <span>{formatNumber(5)} · {t('screening.pain.scaleModerate')}</span>
+        <span>{formatNumber(10)} · {t('screening.pain.scaleWorst')}</span>
       </div>
     </div>
   );

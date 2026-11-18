@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Bell, CheckCheck } from 'lucide-react';
 import { errorMessage, notificationsApi, type NotificationListParams, type NotificationOut } from '@hig/shared/api';
 import { Button, Card, EmptyState, ErrorState, PageHeader, Pagination, Skeleton, Tabs } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { cn, formatDateTime, formatRelative } from '../../lib/format';
 import { qk } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -22,7 +23,8 @@ function linkFor(n: NotificationOut): string | null {
 }
 
 export function NotificationsPage() {
-  useDocumentTitle('Notifications');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('notifications.title'));
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [unreadOnly, setUnreadOnly] = useState(false);
@@ -39,7 +41,7 @@ export function NotificationsPage() {
   const markAll = useMutation({
     mutationFn: notificationsApi.markAllRead,
     onSuccess: () => {
-      toast.success('All notifications marked as read');
+      toast.success(t('notifications.allMarkedRead'));
       invalidate();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -54,10 +56,10 @@ export function NotificationsPage() {
   return (
     <>
       <PageHeader
-        title="Notifications"
+        title={t('notifications.title')}
         actions={
           <Button variant="outline" icon={<CheckCheck className="h-4 w-4" aria-hidden />} loading={markAll.isPending} onClick={() => markAll.mutate()}>
-            Mark all as read
+            {t('notifications.markAllRead')}
           </Button>
         }
       />
@@ -65,8 +67,8 @@ export function NotificationsPage() {
         <Tabs
           className="px-3"
           tabs={[
-            { value: 'all' as const, label: 'All' },
-            { value: 'unread' as const, label: 'Unread' },
+            { value: 'all' as const, label: t('common.all') },
+            { value: 'unread' as const, label: t('notifications.unread') },
           ]}
           value={unreadOnly ? 'unread' : 'all'}
           onChange={(v) => {
@@ -83,7 +85,7 @@ export function NotificationsPage() {
         ) : list.isError ? (
           <ErrorState error={list.error} onRetry={() => void list.refetch()} />
         ) : list.data.items.length === 0 ? (
-          <EmptyState icon={<Bell className="h-6 w-6" aria-hidden />} title={unreadOnly ? 'You are all caught up' : 'No notifications yet'} />
+          <EmptyState icon={<Bell className="h-6 w-6" aria-hidden />} title={unreadOnly ? t('notifications.allCaughtUp') : t('notifications.empty')} />
         ) : (
           <>
             <ul className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -93,13 +95,13 @@ export function NotificationsPage() {
                     type="button"
                     onClick={() => open(n)}
                     className={cn(
-                      'flex w-full items-start gap-3 px-5 py-4 text-left transition-colors hover:bg-slate-50 dark:hover:bg-raised-dark/40',
+                      'flex w-full items-start gap-3 px-5 py-4 text-start transition-colors hover:bg-slate-50 dark:hover:bg-raised-dark/40',
                       !n.read_at && 'bg-brand-50/40 dark:bg-brand-500/5',
                     )}
                   >
                     <span
                       className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', n.read_at ? 'bg-transparent' : 'bg-brand-500')}
-                      aria-label={n.read_at ? undefined : 'Unread'}
+                      aria-label={n.read_at ? undefined : t('notifications.unread')}
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold text-slate-900 dark:text-slate-100">{n.title}</span>

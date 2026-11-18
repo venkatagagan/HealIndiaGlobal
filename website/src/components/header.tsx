@@ -1,11 +1,13 @@
 import type { Dictionary } from '@/i18n';
+import type { Locale } from '@/i18n/config';
 import { href, routes } from '@/lib/routes';
 import { getNavData } from '@/lib/nav';
 import { AuthNav } from './auth-nav';
+import { LanguageSwitcher, type SwitcherLanguage } from './language-switcher';
 import { Logo } from './logo';
 import { MegaMenu, MobileNav } from './mega-menu';
 
-export async function Header({ t }: { t: Dictionary }) {
+export async function Header({ t, locale, languages }: { t: Dictionary; locale: Locale; languages: SwitcherLanguage[] }) {
   const data = await getNavData(t);
   const n = t.nav;
   const authLabels = { login: n.login, getStarted: n.getStarted, goToPortal: n.goToPortal };
@@ -16,6 +18,7 @@ export async function Header({ t }: { t: Dictionary }) {
         <Logo href={href(routes.home)} label={`${t.common.brand} - ${t.common.home}`} />
         <MegaMenu data={data} />
         <div className="ms-auto flex items-center gap-1.5">
+          <LanguageSwitcher current={locale} languages={languages} label={t.common.chooseLanguage} />
           <div className="hidden sm:block">
             <AuthNav loginHref={href(routes.login)} registerHref={href(routes.register)} labels={authLabels} />
           </div>

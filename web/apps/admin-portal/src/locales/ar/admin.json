@@ -1,0 +1,2115 @@
+{
+  "cases": {
+    "list": {
+      "title": "الحالات",
+      "description": "جميع حالات المرضى في كل المستشفيات والوكلاء — تابِع التقدم، وعيِّن المنسقين، وتصرَّف فيما هو متعثر.",
+      "age": "{{age}} سنة",
+      "via": "عبر {{agency}}",
+      "opened": "فُتحت في {{date}}",
+      "mobileOpened": "{{number}} · فُتحت في {{date}}",
+      "noScreening": "لا يوجد فحص أولي",
+      "unassigned": "غير مُعيَّن",
+      "all": "الكل",
+      "showAll": "عرض جميع الحالات",
+      "needsCoordinator": "تحتاج إلى منسق",
+      "rowLabel": "فتح الحالة {{number}}",
+      "exportSelected": "تصدير المحدد",
+      "emptyTitle": "لا توجد حالات بعد",
+      "emptyDescription": "تظهر الحالات هنا عندما يرسل المرضى أو الوكلاء استفسارًا إلى مستشفى.",
+      "caseStatus": "حالة الملف",
+      "searchPlaceholder": "رقم الحالة أو المريض…",
+      "columns": {
+        "case": "الحالة",
+        "patient": "المريض",
+        "hospital": "المستشفى",
+        "status": "الوضع",
+        "urgency": "درجة الاستعجال",
+        "latestQuote": "أحدث عرض سعر",
+        "coordinator": "المنسق",
+        "updated": "آخر تحديث",
+        "created": "تاريخ الإنشاء"
+      },
+      "filters": {
+        "agent": "الوكيل",
+        "date": "التاريخ"
+      }
+    }
+  },
+  "caseDetail": {
+    "documentTitle": "الحالة {{number}}",
+    "eyebrow": "الحالة",
+    "back": "الحالات",
+    "loading": "جارٍ تحميل الحالة…",
+    "loadingShort": "جارٍ التحميل…",
+    "cancel": "إلغاء",
+    "statusHistory": "سجل الأوضاع",
+    "documentsDescription": "التقارير الطبية ووثائق الهوية والفواتير المشتركة في هذه الحالة",
+    "hero": {
+      "opened": "فُتحت في {{date}}",
+      "updated": "آخر تحديث {{when}}",
+      "messages": "الرسائل",
+      "changeStatus": "تغيير الوضع"
+    },
+    "emergency": {
+      "title": "أظهر الفحص الأولي احتمال وجود حالة طارئة",
+      "contact": "التواصل مع المريض",
+      "acknowledged": "أقرَّ المريض بالاطلاع على إرشادات الطوارئ في {{date}}.",
+      "notAcknowledged": "لم يُقرّ المريض بعد بالاطلاع على إرشادات الطوارئ - يبقى قبول عرض السعر والحجز موقوفين حتى يفعل ذلك.",
+      "redFlags": "علامات تحذيرية: {{flags}}."
+    },
+    "tabs": {
+      "label": "أقسام الحالة",
+      "overview": "نظرة عامة",
+      "screening": "الفحص الأولي",
+      "quotes": "عروض الأسعار",
+      "booking": "الحجز والمدفوعات",
+      "travel": "السفر",
+      "documents": "المستندات",
+      "activity": "النشاط"
+    },
+    "facts": {
+      "title": "معلومات أساسية",
+      "age_zero": "{{count}} سنة",
+      "age_one": "{{count}} سنة",
+      "age_two": "{{count}} سنتان",
+      "age_few": "{{count}} سنوات",
+      "age_many": "{{count}} سنة",
+      "age_other": "{{count}} سنة",
+      "patient": "المريض",
+      "hospital": "المستشفى",
+      "city": "المدينة",
+      "doctor": "الطبيب",
+      "treatment": "العلاج",
+      "source": "المصدر",
+      "viaAgent": "وكيل · {{agency}}",
+      "direct": "مباشر",
+      "latestQuote": "أحدث عرض سعر",
+      "payment": "الدفع"
+    },
+    "next": {
+      "assign": "تعيين منسق",
+      "assignHint": "لا يوجد منسق مسؤول عن هذه الحالة بعد - عيِّن منسقًا ليكون للمريض جهة اتصال واحدة.",
+      "chaseQuote": "متابعة عرض السعر مع المستشفى",
+      "chaseQuoteHint": "في انتظار إرسال المستشفى لعرض السعر.",
+      "followUp": "المتابعة مع المريض",
+      "followUpHint": "أُرسل عرض سعر - على المريض قبوله أو رفضه.",
+      "checkPayment": "التحقق من الدفع",
+      "checkPaymentHint": "تم قبول عرض السعر - يُؤكَّد الحجز بمجرد دفع العربون.",
+      "markAdmitted": "تسجيل الدخول إلى المستشفى",
+      "admissionPlanned": "الدخول إلى المستشفى مقرر في {{date}}.",
+      "markCompleted": "تسجيل الاكتمال",
+      "markCompletedHint": "أكمِل الحالة بعد خروج المريض من المستشفى."
+    },
+    "overview": {
+      "quotesSent": "عروض الأسعار المرسلة",
+      "latestWhen": "الأحدث {{when}}",
+      "noneYet": "لا يوجد بعد",
+      "waitingHospital": "في انتظار المستشفى",
+      "admission": "الدخول إلى المستشفى",
+      "notBooked": "لم يُحجز بعد",
+      "summary": "ملخص الحالة",
+      "patient": "المريض",
+      "nationality": "الجنسية",
+      "specialty": "التخصص",
+      "procedure": "الإجراء",
+      "opened": "تاريخ الفتح",
+      "patientNotes": "ملاحظات المريض",
+      "medicalSummary": "الملخص الطبي",
+      "aiGlance": "الفحص الأولي بالذكاء الاصطناعي في لمحة",
+      "fullScreening": "الفحص الأولي الكامل"
+    },
+    "timeline": {
+      "opened": "فُتحت الحالة"
+    },
+    "screening": {
+      "symptoms": "الأعراض التي أبلغ عنها المريض",
+      "bodyAreas": "مناطق الجسم",
+      "painIntensity": "شدة الألم",
+      "painValue": "{{value}} / 10",
+      "duration": "المدة",
+      "durationUnits": {
+        "days_zero": "{{count}} يوم",
+        "days_one": "{{count}} يوم",
+        "days_two": "{{count}} يومان",
+        "days_few": "{{count}} أيام",
+        "days_many": "{{count}} يومًا",
+        "days_other": "{{count}} يوم",
+        "weeks_zero": "{{count}} أسبوع",
+        "weeks_one": "{{count}} أسبوع",
+        "weeks_two": "{{count}} أسبوعان",
+        "weeks_few": "{{count}} أسابيع",
+        "weeks_many": "{{count}} أسبوعًا",
+        "weeks_other": "{{count}} أسبوع",
+        "months_zero": "{{count}} شهر",
+        "months_one": "{{count}} شهر",
+        "months_two": "{{count}} شهران",
+        "months_few": "{{count}} أشهر",
+        "months_many": "{{count}} شهرًا",
+        "months_other": "{{count}} شهر",
+        "years_zero": "{{count}} سنة",
+        "years_one": "{{count}} سنة",
+        "years_two": "{{count}} سنتان",
+        "years_few": "{{count}} سنوات",
+        "years_many": "{{count}} سنة",
+        "years_other": "{{count}} سنة"
+      },
+      "previousTreatment": "العلاج السابق",
+      "none": "لا يوجد",
+      "homeCountry": "بلد الإقامة",
+      "submitted": "تاريخ الإرسال",
+      "notes": "ملاحظات",
+      "aiTriage": "الفرز بالذكاء الاصطناعي",
+      "rulesEngine": "محرك القواعد",
+      "suggestedSpecialties": "التخصصات المقترحة",
+      "possibleConditions": "الحالات المرضية المحتملة",
+      "recommendedTests": "الفحوصات الموصى بها",
+      "redFlags": "علامات تحذيرية",
+      "noAiResult": "لا توجد نتيجة من الذكاء الاصطناعي",
+      "notProcessed": "لم تتم معالجة الفحص الأولي."
+    },
+    "quotes": {
+      "emptyTitle": "لا يوجد عرض سعر بعد",
+      "emptyDescription": "لم يرسل المستشفى عرض سعر لهذه الحالة بعد.",
+      "quoteFrom": "عرض سعر بتاريخ {{date}}",
+      "sent": "أُرسل في {{date}}",
+      "sentBy": "أُرسل في {{date}} بواسطة {{name}}",
+      "treatmentPlan": "خطة العلاج",
+      "lineItems": "بنود عرض السعر",
+      "noLineItems": "لا توجد بنود",
+      "estimatedStay_zero": "مدة الإقامة التقديرية: <0>{{count}} يوم</0>",
+      "estimatedStay_one": "مدة الإقامة التقديرية: <0>{{count}} يوم</0>",
+      "estimatedStay_two": "مدة الإقامة التقديرية: <0>{{count}} يومان</0>",
+      "estimatedStay_few": "مدة الإقامة التقديرية: <0>{{count}} أيام</0>",
+      "estimatedStay_many": "مدة الإقامة التقديرية: <0>{{count}} يومًا</0>",
+      "estimatedStay_other": "مدة الإقامة التقديرية: <0>{{count}} يوم</0>",
+      "estimatedStayUnknown": "مدة الإقامة التقديرية: <0>— أيام</0>",
+      "validUntil": "صالح حتى: <0>{{date}}</0>",
+      "accepted": "تاريخ القبول: <0>{{date}}</0>",
+      "rejected": "مرفوض: {{reason}}",
+      "columns": {
+        "category": "الفئة",
+        "description": "الوصف",
+        "amount": "المبلغ"
+      }
+    },
+    "payment": {
+      "ofTotal": "من {{total}}",
+      "balanceDue": "المبلغ المتبقي <0>{{amount}}</0>",
+      "fullyPaid": "مدفوع بالكامل",
+      "refunded": "مُسترد {{amount}}"
+    },
+    "orders": {
+      "title": "أوامر الدفع",
+      "description": "العربون والمبالغ المتبقية والأقساط الصادرة لهذا الحجز",
+      "rowLabel": "فتح الأمر {{number}}",
+      "emptyTitle": "لا توجد أوامر دفع بعد",
+      "columns": {
+        "order": "الأمر",
+        "status": "الوضع",
+        "amount": "المبلغ",
+        "created": "تاريخ الإنشاء",
+        "paid": "تاريخ الدفع",
+        "open": "فتح"
+      }
+    },
+    "booking": {
+      "title": "الحجز",
+      "emptyDescription": "يُنشأ الحجز عندما يقبل المريض عرض السعر ويدفع العربون.",
+      "manage": "إدارة الحجز",
+      "discharge": "الخروج من المستشفى",
+      "paymentOption": "طريقة الدفع",
+      "package": "الباقة",
+      "subtotal": "المجموع الفرعي",
+      "serviceFeeTax": "رسوم الخدمة + الضريبة",
+      "discount": "الخصم",
+      "total": "الإجمالي",
+      "cancelled": "أُلغي: {{reason}}"
+    },
+    "travel": {
+      "visa": "التأشيرة",
+      "visaRequests": "طلبات التأشيرة",
+      "noVisa": "لا يوجد طلب تأشيرة",
+      "flights": "الرحلات الجوية والتنقلات",
+      "travelBookings": "حجوزات السفر",
+      "noFlights": "لا توجد رحلات أو تنقلات",
+      "accommodation": "الإقامة",
+      "accommodationBookings": "حجوزات الإقامة",
+      "noAccommodation": "لا توجد إقامة محجوزة",
+      "pnr": "PNR {{pnr}}",
+      "nights_zero": "{{count}} ليلة",
+      "nights_one": "{{count}} ليلة",
+      "nights_two": "{{count}} ليلتان",
+      "nights_few": "{{count}} ليالٍ",
+      "nights_many": "{{count}} ليلة",
+      "nights_other": "{{count}} ليلة",
+      "guests_zero": "{{count}} ضيف",
+      "guests_one": "{{count}} ضيف",
+      "guests_two": "{{count}} ضيفان",
+      "guests_few": "{{count}} ضيوف",
+      "guests_many": "{{count}} ضيفًا",
+      "guests_other": "{{count}} ضيف",
+      "deskLink": "مكتب السفر",
+      "columns": {
+        "visaType": "نوع التأشيرة",
+        "status": "الوضع",
+        "reference": "المرجع",
+        "requested": "تاريخ الطلب",
+        "type": "النوع",
+        "route": "المسار",
+        "departs": "المغادرة",
+        "stay": "الإقامة",
+        "dates": "التواريخ",
+        "total": "الإجمالي"
+      }
+    },
+    "audit": {
+      "title": "سجل التدقيق",
+      "description": "كل تغيير مسجَّل على هذه الحالة",
+      "openInLog": "فتح في سجل التدقيق",
+      "emptyTitle": "لا توجد إدخالات تدقيق",
+      "user": "مستخدم",
+      "system": "النظام",
+      "columns": {
+        "when": "الوقت",
+        "action": "الإجراء",
+        "by": "بواسطة",
+        "change": "التغيير"
+      }
+    },
+    "coordinator": {
+      "title": "المنسق",
+      "assigned": "تم تعيين المنسق",
+      "change": "تغيير",
+      "assign": "تعيين",
+      "owns": "مسؤول عن هذه الحالة",
+      "none": "لم يُعيَّن منسق",
+      "field": "منسق الدعم",
+      "placeholder": "اختر منسقًا"
+    },
+    "status": {
+      "moved": "نُقلت الحالة إلى {{status}}",
+      "markTitle": "تعيين الحالة: {{status}}",
+      "changeTitle": "تغيير وضع الحالة",
+      "moveTo": "النقل إلى {{status}}",
+      "update": "تحديث الوضع",
+      "current": "الوضع الحالي:",
+      "newStatus": "الوضع الجديد",
+      "note": "ملاحظة",
+      "noteRequiredHint": "اذكر السبب؛ سيتم إخطار المريض والمستشفى.",
+      "noteOptionalHint": "اختياري، يظهر في سجل الأوضاع.",
+      "cancelWarning": "إذا كان للحالة حجز مدفوع، فألغِ الحجز من صفحة الحجوزات لتُطبَّق سياسة الاسترداد."
+    }
+  },
+  "travel": {
+    "common": {
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "loading": "جارٍ التحميل…"
+    },
+    "desk": {
+      "title": "مكتب السفر",
+      "description": "تنبيهات الطوارئ (SOS)، والتأشيرات الطبية، والرحلات الجوية، والتنقل من المطار وإليه، والإقامة، والخدمات داخل البلد. تبدأ طلبات المرضى بوضع \"مطلوب\".",
+      "readOnly": "للعرض فقط: يتولى موظفو العمليات والدعم تحديثات السفر.",
+      "tabs": {
+        "sos": "تنبيهات الطوارئ",
+        "visa": "التأشيرة",
+        "travel": "الرحلات الجوية والتنقلات",
+        "accommodation": "الإقامة",
+        "services": "المترجمون والخدمات"
+      }
+    },
+    "list": {
+      "all": "الكل",
+      "statusTabs": "وضع {{caption}}",
+      "searchPlaceholder": "اسم المريض…",
+      "status": "الوضع",
+      "caseNumber": "الحالة {{number}}",
+      "openCase": "فتح الحالة"
+    },
+    "sos": {
+      "caption": "تنبيهات الطوارئ",
+      "resolvedToast": "تم حل تنبيه الطوارئ",
+      "acknowledgedToast": "تم استلام تنبيه الطوارئ",
+      "openIcon": "مفتوح",
+      "patientFallback": "المريض",
+      "noMessage": "لا توجد رسالة",
+      "by": "بواسطة {{name}}",
+      "acknowledge": "استلام",
+      "resolve": "حل",
+      "emptyTitle": "لا توجد تنبيهات طوارئ",
+      "emptyDescription": "تظهر هنا فورًا تنبيهات الطوارئ التي يرسلها المرضى من التطبيق.",
+      "columns": {
+        "raised": "وقت الإرسال",
+        "patient": "المريض",
+        "message": "الرسالة",
+        "location": "الموقع",
+        "status": "الوضع",
+        "actions": "الإجراءات"
+      }
+    },
+    "visa": {
+      "caption": "طلبات التأشيرة",
+      "ref": "المرجع {{reference}}",
+      "attached": "مرفق",
+      "none": "لا يوجد",
+      "rowLabel": "تعديل طلب تأشيرة {{name}}",
+      "rowLabelNoName": "تعديل طلب تأشيرة المريض",
+      "emptyTitle": "لا توجد طلبات تأشيرة بعد",
+      "emptyDescription": "يطلب المرضى المساعدة في التأشيرة الطبية من حالتهم؛ وتصل الطلبات إلى هنا.",
+      "updated": "تم تحديث طلب التأشيرة",
+      "modalTitle": "طلب تأشيرة · {{name}}",
+      "columns": {
+        "patient": "المريض",
+        "type": "نوع التأشيرة",
+        "status": "الوضع",
+        "letter": "خطاب الدعوة",
+        "reference": "المرجع",
+        "applied": "تاريخ التقديم",
+        "requested": "تاريخ الطلب"
+      },
+      "form": {
+        "status": "الوضع",
+        "reference": "مرجع الطلب",
+        "appliedAt": "وقت التقديم",
+        "decidedAt": "وقت القرار",
+        "autoHint": "يُضبط تلقائيًا عند تغيير الوضع.",
+        "letter": "خطاب الدعوة",
+        "letterHint": "يرفع المستشفى خطابات الدعوة إلى الحالة (نوع المستند: خطاب دعوة).",
+        "letterOption": "{{name}} ({{date}})",
+        "notes": "ملاحظات"
+      }
+    },
+    "bookings": {
+      "unassigned": "غير مُعيَّن",
+      "inactive": "(غير نشط)",
+      "modalTitle": "{{kind}} · {{name}}",
+      "columns": {
+        "patient": "المريض",
+        "type": "النوع",
+        "route": "المسار",
+        "departs": "المغادرة",
+        "pax": "الركاب",
+        "price": "السعر",
+        "status": "الوضع",
+        "stay": "الإقامة",
+        "dates": "التواريخ",
+        "guests": "الضيوف",
+        "total": "الإجمالي",
+        "service": "الخدمة",
+        "provider": "مقدم الخدمة",
+        "when": "الموعد"
+      },
+      "errors": {
+        "price": "أدخل سعرًا صحيحًا.",
+        "passengers": "يجب أن يكون عدد الركاب رقمًا صحيحًا.",
+        "nightlyRate": "أدخل سعرًا صحيحًا لليلة الواحدة.",
+        "checkOut": "يجب أن يكون تاريخ المغادرة بعد تاريخ الوصول.",
+        "guests": "يجب ألا يقل عدد الضيوف عن 1."
+      },
+      "form": {
+        "from": "من",
+        "to": "إلى",
+        "arrives": "الوصول",
+        "carrier": "الناقل / المورّد",
+        "flightNumber": "رقم الرحلة",
+        "pnr": "PNR / رقم التأكيد",
+        "passengers": "الركاب",
+        "notes": "ملاحظات",
+        "confirmationCode": "رمز التأكيد",
+        "checkIn": "تسجيل الوصول",
+        "checkOut": "تسجيل المغادرة",
+        "nights_zero": "{{count}} ليلة",
+        "nights_one": "{{count}} ليلة",
+        "nights_two": "{{count}} ليلتان",
+        "nights_few": "{{count}} ليالٍ",
+        "nights_many": "{{count}} ليلة",
+        "nights_other": "{{count}} ليلة",
+        "roomType": "نوع الغرفة",
+        "nightlyRate": "سعر الليلة",
+        "totalHint": "يُحسب عند الحفظ: سعر الليلة x عدد الليالي.",
+        "starts": "البداية",
+        "ends": "النهاية"
+      },
+      "flights": {
+        "caption": "الرحلات الجوية والتنقلات",
+        "dateLabel": "المغادرة",
+        "fallbackKind": "السفر",
+        "rowLabel": "تعديل {{kind}} للمريض {{name}}",
+        "rowLabelNoName": "تعديل {{kind}} للمريض",
+        "emptyTitle": "لا توجد طلبات رحلات أو تنقلات",
+        "emptyDescription": "يطلب المرضى الرحلات الجوية والتنقل من المطار وإليه من حالتهم.",
+        "updated": "تم تحديث حجز السفر"
+      },
+      "stays": {
+        "caption": "الإقامة",
+        "modalTitle": "الإقامة · {{provider}} · {{name}}",
+        "rowLabel": "تعديل إقامة {{name}}",
+        "rowLabelNoName": "تعديل إقامة المريض",
+        "emptyTitle": "لا توجد حجوزات إقامة",
+        "emptyDescription": "تظهر هنا أماكن الإقامة القريبة من المستشفى التي يطلبها المرضى.",
+        "updated": "تم تحديث حجز الإقامة"
+      },
+      "services": {
+        "caption": "المترجمون والخدمات",
+        "dateLabel": "تاريخ الخدمة",
+        "rowLabel": "تعديل {{kind}} للمريض {{name}}",
+        "rowLabelNoName": "تعديل {{kind}} للمريض",
+        "emptyTitle": "لا توجد حجوزات خدمات",
+        "emptyDescription": "تظهر هنا طلبات المترجمين والمرشدين والتنقل والتأمين.",
+        "updated": "تم تحديث حجز الخدمة"
+      }
+    }
+  },
+  "hospitals": {
+    "title": "المستشفيات",
+    "description": "المستشفيات الشريكة — راجع بيانات التحقق (KYC)، ووافق على التسجيلات الجديدة، وأدر الشروط التجارية.",
+    "featured": "مميّز",
+    "openRow": "فتح {{name}}",
+    "emptyTitle": "لا توجد مستشفيات بعد",
+    "emptyDescription": "تظهر المستشفيات هنا بمجرد تسجيلها في بوابة المستشفيات.",
+    "searchPlaceholder": "الاسم أو المدينة أو البريد الإلكتروني…",
+    "defaultCommission": "افتراضي",
+    "moreSpecialties_zero": "+{{count}} أخرى",
+    "moreSpecialties_one": "+{{count}} أخرى",
+    "moreSpecialties_two": "+{{count}} أخريان",
+    "moreSpecialties_few": "+{{count}} أخرى",
+    "moreSpecialties_many": "+{{count}} أخرى",
+    "moreSpecialties_other": "+{{count}} أخرى",
+    "quick": {
+      "label": "حالة المستشفى",
+      "all": "الكل",
+      "approvalQueue": "قائمة انتظار الموافقة",
+      "active": "نشط",
+      "suspended": "موقوف",
+      "rejected": "مرفوض",
+      "draft": "مسودة"
+    },
+    "columns": {
+      "hospital": "المستشفى",
+      "location": "الموقع",
+      "status": "الحالة",
+      "kyc": "KYC",
+      "accreditations": "الاعتمادات",
+      "specialties": "التخصصات",
+      "rating": "التقييم",
+      "commission": "العمولة",
+      "registered": "تاريخ التسجيل",
+      "updated": "آخر تحديث"
+    },
+    "filters": {
+      "state": "الولاية",
+      "kyc": "KYC",
+      "featuredOnly": "المميّزة فقط",
+      "status": "الحالة",
+      "city": "المدينة",
+      "specialty": "التخصص",
+      "accreditation": "الاعتماد"
+    }
+  },
+  "bookings": {
+    "title": "الحجوزات",
+    "description": "العلاجات المؤكدة — تقدّم الدفع وحالات الدخول والخروج في جميع المستشفيات.",
+    "payment": {
+      "paid": "مدفوع بالكامل",
+      "partial": "مدفوع جزئيًا",
+      "unpaid": "غير مدفوع"
+    },
+    "bookedOn": "تم الحجز في {{date}}",
+    "days_zero": "{{count}} يوم",
+    "days_one": "{{count}} يوم",
+    "days_two": "{{count}} يومان",
+    "days_few": "{{count}} أيام",
+    "days_many": "{{count}} يومًا",
+    "days_other": "{{count}} يوم",
+    "installments_zero": "{{count}} قسط",
+    "installments_one": "{{count}} قسط",
+    "installments_two": "{{count}} قسطان",
+    "installments_few": "{{count}} أقساط",
+    "installments_many": "{{count}} قسطًا",
+    "installments_other": "{{count}} قسط",
+    "due": "المستحق {{amount}}",
+    "columns": {
+      "booking": "الحجز",
+      "patient": "المريض",
+      "hospital": "المستشفى",
+      "admission": "الدخول",
+      "status": "الحالة",
+      "total": "الإجمالي",
+      "paid": "المدفوع",
+      "booked": "تاريخ الحجز"
+    },
+    "quickAll": "الكل",
+    "quickLabel": "حالة الحجز",
+    "openRow": "فتح الحجز {{number}}",
+    "exportSelected": "تصدير المحدد",
+    "emptyTitle": "لا توجد حجوزات بعد",
+    "emptyDescription": "تظهر الحجوزات هنا عندما يقبل المريض عرض السعر ويحجز موعد الدخول.",
+    "searchPlaceholder": "رقم الحجز أو المريض…",
+    "filters": {
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "hospital": "المستشفى",
+      "payment": "الدفع",
+      "date": "التاريخ",
+      "dateAdmission": "الدخول",
+      "dateBooked": "الحجز"
+    },
+    "track": {
+      "booked": "تم الحجز",
+      "depositPaid": "تم دفع العربون",
+      "admitted": "تم الدخول",
+      "completed": "مكتمل",
+      "cancelled": "ملغى"
+    },
+    "drawer": {
+      "cancelSuccess": "تم إلغاء الحجز؛ وحُسب المبلغ القابل للاسترداد وفق سياسة الاسترداد",
+      "markAdmitted": "تحديد كمُدخَل",
+      "markCompleted": "تحديد كمكتمل",
+      "cancelBooking": "إلغاء الحجز",
+      "cancelDescription": "يحسب الخادم المبالغ المستردة وفق سياسة الاسترداد، ويتولى قسم المالية معالجتها.",
+      "title": "الحجز",
+      "titleWithNumber": "الحجز {{number}}",
+      "insuranceClaim": "مطالبة تأمين",
+      "admission": "الدخول <0>{{date}}</0>",
+      "admissionWithDuration_zero": "الدخول <0>{{date}}</0> · {{count}} يوم",
+      "admissionWithDuration_one": "الدخول <0>{{date}}</0> · {{count}} يوم",
+      "admissionWithDuration_two": "الدخول <0>{{date}}</0> · {{count}} يومان",
+      "admissionWithDuration_few": "الدخول <0>{{date}}</0> · {{count}} أيام",
+      "admissionWithDuration_many": "الدخول <0>{{date}}</0> · {{count}} يومًا",
+      "admissionWithDuration_other": "الدخول <0>{{date}}</0> · {{count}} يوم",
+      "openCase": "فتح الحالة ←",
+      "cancelledAt": "أُلغي في {{date}}",
+      "noReason": "لم يُسجَّل سبب.",
+      "payment": "الدفع",
+      "paymentOptionWithInstallments_zero": "{{option}} · {{count}} قسط شهري",
+      "paymentOptionWithInstallments_one": "{{option}} · {{count}} قسط شهري",
+      "paymentOptionWithInstallments_two": "{{option}} · {{count}} قسطان شهريان",
+      "paymentOptionWithInstallments_few": "{{option}} · {{count}} أقساط شهرية",
+      "paymentOptionWithInstallments_many": "{{option}} · {{count}} قسطًا شهريًا",
+      "paymentOptionWithInstallments_other": "{{option}} · {{count}} قسط شهري",
+      "total": "الإجمالي",
+      "paid": "المدفوع",
+      "paidPct": "{{pct}}% من الإجمالي",
+      "balanceDue": "الرصيد المستحق",
+      "refunded": "المسترد",
+      "subtotal": "المجموع الفرعي",
+      "discount": "الخصم",
+      "serviceFee": "رسوم الخدمة",
+      "tax": "الضريبة",
+      "deposit": "العربون",
+      "treatment": "العلاج",
+      "procedure": "الإجراء",
+      "package": "الباقة",
+      "doctor": "الطبيب",
+      "admissionDate": "الدخول",
+      "discharge": "الخروج",
+      "duration": "المدة",
+      "confirmed": "تاريخ التأكيد",
+      "admitted": "تاريخ الدخول",
+      "completed": "تاريخ الاكتمال"
+    },
+    "transition": {
+      "admitSuccess": "تم تحديد المريض كمُدخَل",
+      "completeSuccess": "تم تحديد العلاج كمكتمل؛ وسيتم إنشاء بنود التسوية",
+      "admitTitle": "تحديد دخول المريض",
+      "completeTitle": "تحديد اكتمال العلاج",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد",
+      "admitHelp": "يقوم المستشفى بذلك عادةً. استخدم هذا الخيار عندما يؤكد المستشفى الدخول هاتفيًا.",
+      "completeHelp": "يؤدي الإكمال إلى إثبات الإيراد وإنشاء بنود التسوية للمستشفى والوكيل. لا يمكن التراجع عن ذلك.",
+      "dischargeDate": "تاريخ الخروج",
+      "note": "ملاحظة"
+    },
+    "checklist": {
+      "updated": "تم تحديث قائمة التحقق",
+      "title": "قائمة التحقق قبل الوصول",
+      "progress": "تم إنجاز {{done}} من {{total}}",
+      "empty": "لا توجد قائمة تحقق بعد.",
+      "statusOf": "حالة {{label}}"
+    },
+    "itinerary": {
+      "added": "تمت إضافة بند إلى خط الرحلة",
+      "removed": "تمت إزالة بند من خط الرحلة",
+      "when": "الموعد",
+      "item": "البند",
+      "status": "الحالة",
+      "remove": "إزالة",
+      "removeItem": "إزالة {{title}}",
+      "title": "خط الرحلة",
+      "addItem": "إضافة بند",
+      "emptyTitle": "لا توجد بنود في خط الرحلة",
+      "emptyDescription": "تظهر هنا المواعيد والتنقلات وإجراءات الوصول المخطط لها لهذه الإقامة.",
+      "addTitle": "إضافة بند إلى خط الرحلة",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "kind": "النوع",
+      "startsAt": "يبدأ في",
+      "titleField": "العنوان",
+      "location": "المكان",
+      "description": "الوصف"
+    }
+  },
+  "hospitalDetail": {
+    "documentTitle": "المستشفى",
+    "loading": "جارٍ تحميل المستشفى…",
+    "back": "المستشفيات",
+    "eyebrow": "مستشفى",
+    "featured": "مميّز",
+    "kycBadge": "KYC: {{status}}",
+    "rating_zero": "★ {{rating}} ({{count}} تقييم)",
+    "rating_one": "★ {{rating}} ({{count}} تقييم)",
+    "rating_two": "★ {{rating}} ({{count}} تقييمان)",
+    "rating_few": "★ {{rating}} ({{count}} تقييمات)",
+    "rating_many": "★ {{rating}} ({{count}} تقييمًا)",
+    "rating_other": "★ {{rating}} ({{count}} تقييم)",
+    "noReviews": "لا توجد تقييمات بعد",
+    "reasonShared": "{{status}}: تمت مشاركة السبب مع المستشفى",
+    "waitingReview": "بانتظار مراجعتك",
+    "days_zero": "{{count}} يوم",
+    "days_one": "{{count}} يوم",
+    "days_two": "{{count}} يومان",
+    "days_few": "{{count}} أيام",
+    "days_many": "{{count}} يومًا",
+    "days_other": "{{count}} يوم",
+    "toast": {
+      "approved": "تمت الموافقة على المستشفى وأصبح منشورًا الآن",
+      "rejected": "تم رفض المستشفى",
+      "suspended": "تم إيقاف المستشفى",
+      "registrationVerified": "تم التحقق من تسجيل {{name}}",
+      "verificationRemoved": "تمت إزالة التحقق عن {{name}}"
+    },
+    "checklist": {
+      "kycUploaded_zero": "مستندات KYC المرفوعة ({{count}})",
+      "kycUploaded_one": "مستندات KYC المرفوعة ({{count}})",
+      "kycUploaded_two": "مستندات KYC المرفوعة ({{count}})",
+      "kycUploaded_few": "مستندات KYC المرفوعة ({{count}})",
+      "kycUploaded_many": "مستندات KYC المرفوعة ({{count}})",
+      "kycUploaded_other": "مستندات KYC المرفوعة ({{count}})",
+      "notVerifiedYet_zero": "{{count}} لم يُتحقق منها بعد",
+      "notVerifiedYet_one": "{{count}} لم يُتحقق منه بعد",
+      "notVerifiedYet_two": "{{count}} لم يُتحقق منهما بعد",
+      "notVerifiedYet_few": "{{count}} لم يُتحقق منها بعد",
+      "notVerifiedYet_many": "{{count}} لم يُتحقق منها بعد",
+      "notVerifiedYet_other": "{{count}} لم يُتحقق منها بعد",
+      "doctorsListed_zero": "الأطباء المدرجون ({{count}})",
+      "doctorsListed_one": "الأطباء المدرجون ({{count}})",
+      "doctorsListed_two": "الأطباء المدرجون ({{count}})",
+      "doctorsListed_few": "الأطباء المدرجون ({{count}})",
+      "doctorsListed_many": "الأطباء المدرجون ({{count}})",
+      "doctorsListed_other": "الأطباء المدرجون ({{count}})",
+      "doctorsWithoutRegistration_zero": "{{count}} طبيب بلا رقم تسجيل",
+      "doctorsWithoutRegistration_one": "{{count}} طبيب بلا رقم تسجيل",
+      "doctorsWithoutRegistration_two": "{{count}} طبيبان بلا رقم تسجيل",
+      "doctorsWithoutRegistration_few": "{{count}} أطباء بلا رقم تسجيل",
+      "doctorsWithoutRegistration_many": "{{count}} طبيبًا بلا رقم تسجيل",
+      "doctorsWithoutRegistration_other": "{{count}} طبيب بلا رقم تسجيل",
+      "registrationsOnFile": "تسجيلات الأطباء مسجّلة",
+      "verifiedPayout": "حساب صرف موثّق",
+      "noVerifiedPayout": "لا يوجد حساب صرف موثّق"
+    },
+    "actions": {
+      "suspend": "إيقاف",
+      "reject": "رفض",
+      "approveHospital": "الموافقة على المستشفى",
+      "reactivate": "إعادة التفعيل"
+    },
+    "track": {
+      "drafted": "تمت صياغة الملف",
+      "submitted": "أُرسل للمراجعة",
+      "kycVerified": "تم التحقق من KYC",
+      "live": "منشور"
+    },
+    "tabs": {
+      "label": "أقسام المستشفى",
+      "overview": "نظرة عامة",
+      "kyc": "KYC والمستندات",
+      "doctors": "الأطباء",
+      "team": "الفريق",
+      "cases": "الحالات",
+      "activity": "النشاط"
+    },
+    "kyc": {
+      "title": "مستندات KYC",
+      "description": "مستندات التسجيل والتراخيص والمستندات الضريبية التي رفعها المستشفى",
+      "empty": "لم يرفع المستشفى أي مستندات KYC بعد."
+    },
+    "team": {
+      "title": "أعضاء الفريق",
+      "description": "موظفو المستشفى الذين لديهم صلاحية الدخول إلى البوابة",
+      "empty": "لا يوجد أعضاء في الفريق",
+      "name": "الاسم",
+      "role": "الدور",
+      "status": "الحالة",
+      "added": "تاريخ الإضافة"
+    },
+    "facts": {
+      "title": "معلومات أساسية",
+      "cases": "الحالات",
+      "doctors": "الأطباء",
+      "commission": "العمولة",
+      "platformDefault": "الإعداد الافتراضي للمنصة",
+      "settlementCycle": "دورة التسوية",
+      "approved": "تاريخ الموافقة"
+    },
+    "payout": {
+      "title": "حسابات الصرف",
+      "empty": "لم تتم إضافة حساب صرف.",
+      "verified": "موثّق",
+      "unverified": "غير موثّق",
+      "primary": "رئيسي"
+    },
+    "approveDialog": {
+      "titleApprove": "الموافقة على المستشفى؟",
+      "titleReactivate": "إعادة تفعيل المستشفى؟",
+      "message": "سيُدرج <0>{{name}}</0> علنًا ويمكنه استقبال استفسارات المرضى.",
+      "noKycWarning": "تحذير: لم يتم رفع أي مستندات KYC.",
+      "missingRegistrationWarning_zero": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} طبيب نشط.",
+      "missingRegistrationWarning_one": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} طبيب نشط.",
+      "missingRegistrationWarning_two": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} طبيبين نشطين.",
+      "missingRegistrationWarning_few": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} أطباء نشطين.",
+      "missingRegistrationWarning_many": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} طبيبًا نشطًا.",
+      "missingRegistrationWarning_other": "تحذير: لا يوجد رقم تسجيل طبي مسجّل لـ {{count}} طبيب نشط.",
+      "confirm": "موافقة"
+    },
+    "rejectDialog": {
+      "title": "رفض المستشفى",
+      "description": "تتم مشاركة السبب مع المستشفى ليتمكن من التصحيح وإعادة الإرسال.",
+      "confirm": "رفض"
+    },
+    "suspendDialog": {
+      "title": "إيقاف المستشفى",
+      "description": "المستشفيات الموقوفة مخفية عن المرضى ولا يمكنها استقبال استفسارات جديدة.",
+      "confirm": "إيقاف"
+    },
+    "profile": {
+      "title": "الملف التعريفي",
+      "legalName": "الاسم القانوني",
+      "gstin": "GSTIN",
+      "pan": "PAN",
+      "address": "العنوان",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "website": "الموقع الإلكتروني",
+      "established": "سنة التأسيس",
+      "beds": "عدد الأسرّة",
+      "airportDistance": "المسافة من المطار",
+      "km": "{{distance}} km",
+      "internationalDesk": "مكتب المرضى الدوليين",
+      "yes": "نعم",
+      "no": "لا",
+      "languages": "اللغات",
+      "specialties": "التخصصات",
+      "about": "نبذة"
+    },
+    "doctors": {
+      "title": "الأطباء",
+      "doctor": "الطبيب",
+      "years_zero": "{{count}} سنة",
+      "years_one": "{{count}} سنة",
+      "years_two": "{{count}} سنتان",
+      "years_few": "{{count}} سنوات",
+      "years_many": "{{count}} سنة",
+      "years_other": "{{count}} سنة",
+      "qualifications": "المؤهلات",
+      "registration": "التسجيل",
+      "verification": "التحقق",
+      "inactive": "غير نشط",
+      "noRegistration": "لا يوجد تسجيل",
+      "verifiedAt": "تم التحقق في {{date}}",
+      "verified": "تم التحقق",
+      "notVerified": "لم يتم التحقق",
+      "action": "إجراء",
+      "unverify": "إلغاء التحقق",
+      "verify": "تحقق",
+      "verifyHelp": "تحقق من كل تسجيل في <0>السجل الطبي الهندي التابع للمجلس الوطني الطبي (NMC)</0> (أو لدى المجلس الطبي للولاية) قبل التوثيق. لا يرى المرضى الشارة إلا بعد هذا التحقق.",
+      "empty": "لم تتم إضافة أطباء بعد"
+    },
+    "cases": {
+      "title": "الحالات",
+      "description": "الأحدث تحديثًا أولًا",
+      "caption": "الحالات في هذا المستشفى",
+      "case": "الحالة",
+      "opened": "فُتحت في {{date}}",
+      "patient": "المريض",
+      "status": "الحالة",
+      "updated": "آخر تحديث",
+      "openInCases": "فتح في الحالات",
+      "range": "{{from}}–{{to}} من {{total}}",
+      "previous": "السابق",
+      "next": "التالي",
+      "openRow": "فتح الحالة {{number}}",
+      "empty": "لا توجد حالات بعد"
+    },
+    "activity": {
+      "title": "سجل التدقيق",
+      "description": "الموافقات وتغييرات الملف والشروط التجارية",
+      "openInAudit": "فتح في سجل التدقيق",
+      "when": "الوقت",
+      "action": "الإجراء",
+      "by": "بواسطة",
+      "user": "مستخدم",
+      "system": "النظام",
+      "change": "التغيير",
+      "empty": "لا توجد إدخالات تدقيق"
+    },
+    "terms": {
+      "title": "الشروط التجارية",
+      "description": "العمولة ودورة الصرف لهذا المستشفى",
+      "updated": "تم تحديث المستشفى",
+      "commissionError": "يجب أن تكون العمولة نسبة مئوية بين 0 و100.",
+      "cycleError": "يجب أن تكون دورة التسوية عددًا صحيحًا من الأيام بين 1 و90.",
+      "commissionRate": "نسبة العمولة (%)",
+      "commissionHint": "فارغ = الإعداد الافتراضي للمنصة ({{value}}). قواعد العمولة الخاصة (المالية) لها الأولوية.",
+      "settlementCycle": "دورة التسوية (بالأيام)",
+      "cycleHint": "فارغ = الإعداد الافتراضي للمنصة ({{value}} يوم).",
+      "save": "حفظ الشروط",
+      "featured": "مميّز على موقع المرضى"
+    }
+  },
+  "users": {
+    "title": "المستخدمون",
+    "description": "جميع الحسابات على المنصة — المرضى والوكلاء وفرق المستشفيات والموظفون.",
+    "unnamedUser": "مستخدم بلا اسم",
+    "guestAccount": "حساب ضيف",
+    "never": "أبدًا",
+    "openRow": "فتح {{name}}",
+    "userFallback": "المستخدم",
+    "empty": "لا يوجد مستخدمون بعد",
+    "columns": {
+      "user": "المستخدم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "status": "الحالة",
+      "security": "الأمان",
+      "country": "الدولة",
+      "lastLogin": "آخر تسجيل دخول",
+      "joined": "تاريخ الانضمام"
+    },
+    "badges": {
+      "verified": "موثَّق",
+      "mfa": "المصادقة متعددة العوامل",
+      "guest": "ضيف"
+    },
+    "security": {
+      "verified": "البريد الإلكتروني موثَّق",
+      "unverified": "البريد الإلكتروني غير موثَّق",
+      "mfa": "المصادقة متعددة العوامل مفعّلة",
+      "noMfa": "المصادقة متعددة العوامل غير مفعّلة",
+      "guest": "حسابات الضيوف"
+    },
+    "filters": {
+      "all": "الكل",
+      "role": "الدور",
+      "searchPlaceholder": "الاسم أو البريد الإلكتروني أو الهاتف…",
+      "security": "الأمان",
+      "status": "الحالة",
+      "country": "الدولة",
+      "joined": "تاريخ الانضمام"
+    },
+    "toast": {
+      "updated": "تم تحديث المستخدم"
+    },
+    "actions": {
+      "activate": "تفعيل",
+      "suspend": "تعليق",
+      "changeRole": "تغيير الدور"
+    },
+    "drawer": {
+      "titleFallback": "المستخدم",
+      "joinedOn": "انضم في {{date}}",
+      "lastLoginOn": "آخر تسجيل دخول: {{date}}",
+      "neverLower": "أبدًا",
+      "lockedUntilTitle": "مقفل حتى {{date}}",
+      "failedAttempts_zero": "{{count}} محاولة تسجيل دخول فاشلة.",
+      "failedAttempts_one": "{{count}} محاولة تسجيل دخول فاشلة.",
+      "failedAttempts_two": "{{count}} محاولتا تسجيل دخول فاشلتان.",
+      "failedAttempts_few": "{{count}} محاولات تسجيل دخول فاشلة.",
+      "failedAttempts_many": "{{count}} محاولة تسجيل دخول فاشلة.",
+      "failedAttempts_other": "{{count}} محاولة تسجيل دخول فاشلة.",
+      "profile": "الملف الشخصي",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "country": "الدولة",
+      "language": "اللغة",
+      "agentId": "معرّف الوكيل",
+      "patientProfile": "ملف المريض",
+      "security": "الأمان",
+      "lastLogin": "آخر تسجيل دخول",
+      "failedLogins": "محاولات الدخول الفاشلة",
+      "lockedUntil": "مقفل حتى",
+      "hospitalMemberships": "العضوية في المستشفيات",
+      "role": "الدور",
+      "onlyAdmins": "يمكن لمسؤولي العمليات فقط تعديل المستخدمين.",
+      "cannotChangeSelf": "لا يمكنك تعديل حسابك من هنا.",
+      "onlySuperAdmin": "يمكن للمسؤول الأعلى فقط تعديل مسؤول أعلى آخر."
+    },
+    "confirm": {
+      "changeRoleTitle": "تغيير الدور؟",
+      "suspendTitle": "تعليق المستخدم؟",
+      "activateTitle": "تفعيل المستخدم؟",
+      "changeRoleMessage": "سيصبح <0>{{name}}</0> بدور <1>{{role}}</1> (كان {{previous}}). تتغير صلاحياته فورًا ويُسجَّل التغيير في سجل التدقيق.",
+      "suspendMessage": "سيُسجَّل خروج <0>{{name}}</0> ولن يتمكن من تسجيل الدخول حتى تتم إعادة تفعيله.",
+      "activateMessage": "سيتمكن <0>{{name}}</0> من تسجيل الدخول مجددًا."
+    }
+  },
+  "staff": {
+    "title": "الموظفون",
+    "description": "مستخدمو العمليات والمالية والدعم الذين يعملون في هذه اللوحة.",
+    "newStaffUser": "موظف جديد",
+    "empty": "لا يوجد موظفون بعد",
+    "columns": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "phone": "الهاتف"
+    },
+    "filters": {
+      "allStaff": "جميع الموظفين",
+      "role": "دور الموظف",
+      "searchPlaceholder": "الاسم أو البريد الإلكتروني أو الهاتف…"
+    },
+    "validation": {
+      "passwordLength": "10 أحرف على الأقل.",
+      "passwordMix": "يجب أن تحتوي على حرف ورقم.",
+      "fullName": "أدخل الاسم الكامل.",
+      "email": "أدخل بريدًا إلكترونيًا صالحًا."
+    },
+    "toast": {
+      "created": "تم إنشاء الموظف {{name}}"
+    },
+    "form": {
+      "cancel": "إلغاء",
+      "create": "إنشاء المستخدم",
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "password": "كلمة مرور مؤقتة",
+      "passwordHint": "10 أحرف على الأقل تتضمن حرفًا ورقمًا. شاركها بطريقة آمنة، وعلى المستخدم تغييرها بعد تسجيل الدخول."
+    }
+  },
+  "agents": {
+    "documentTitle": "الوكلاء",
+    "title": "الوكلاء والميسّرون",
+    "description": "اعتمد الميسّرين وتحقق من وثائق التحقق من الهوية (KYC) وحدد المستوى والعمولة.",
+    "default": "افتراضي",
+    "openRow": "فتح {{name}}",
+    "empty": {
+      "title": "لا يوجد وكلاء بعد",
+      "description": "يظهر الميسّرون هنا عند تسجيلهم في بوابة الوكلاء."
+    },
+    "quick": {
+      "all": "الكل",
+      "approvalQueue": "قائمة انتظار الاعتماد",
+      "active": "نشط",
+      "suspended": "معلّق",
+      "rejected": "مرفوض"
+    },
+    "columns": {
+      "agency": "الوكالة",
+      "code": "الرمز",
+      "status": "الحالة",
+      "kyc": "التحقق من الهوية (KYC)",
+      "tier": "المستوى",
+      "location": "الموقع",
+      "commission": "العمولة",
+      "joined": "تاريخ الانضمام"
+    },
+    "filters": {
+      "agentStatus": "حالة الوكيل",
+      "searchPlaceholder": "الوكالة أو الرمز أو البريد الإلكتروني…",
+      "status": "الحالة",
+      "kyc": "التحقق من الهوية (KYC)",
+      "tier": "المستوى",
+      "country": "الدولة"
+    },
+    "toast": {
+      "approved": "تم اعتماد الوكيل",
+      "rejected": "تم رفض الوكيل",
+      "suspended": "تم تعليق الوكيل",
+      "updated": "تم تحديث الوكيل"
+    },
+    "actions": {
+      "approve": "اعتماد",
+      "reactivate": "إعادة التفعيل",
+      "reject": "رفض",
+      "suspend": "تعليق"
+    },
+    "drawer": {
+      "commissionError": "يجب أن تكون العمولة نسبة مئوية بين 0 و100.",
+      "titleFallback": "الوكيل",
+      "kycBadge": "التحقق من الهوية: {{status}}",
+      "locationNotSet": "الموقع غير محدد",
+      "joinedOn": "انضم في {{date}}",
+      "patients": "المرضى",
+      "tier": "المستوى",
+      "commission": "العمولة",
+      "kycDocuments": "وثائق التحقق من الهوية (KYC)",
+      "waitingTitle": "في انتظار الاعتماد",
+      "waitingBody": "راجع وثائق التحقق من الهوية أدناه، ثم اعتمد هذا الميسّر أو ارفضه.",
+      "rejectedTitle": "مرفوض",
+      "suspendedTitle": "معلّق",
+      "contact": "جهة الاتصال",
+      "contactPerson": "الشخص المسؤول",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "website": "الموقع الإلكتروني",
+      "joined": "تاريخ الانضمام",
+      "approved": "تاريخ الاعتماد",
+      "kycDescription": "تحقق من كل وثيقة قبل اعتماد الوكيل.",
+      "kycEmpty": "لم يتم رفع أي وثائق للتحقق من الهوية.",
+      "tierCommission": "المستوى والعمولة",
+      "tierCommissionDescription": "العمولة الفارغة = القيمة الافتراضية للمنصة ({{rate}})، وتُدفع من عمولة المنصة.",
+      "saveChanges": "حفظ التغييرات",
+      "commissionPct": "العمولة (%)"
+    },
+    "confirm": {
+      "approveTitle": "اعتماد الوكيل؟",
+      "approveMessage": "سيتمكن <0>{{name}}</0> من تسجيل المرضى وطلب عروض الأسعار وكسب العمولة.",
+      "rejectTitle": "رفض الوكيل",
+      "rejectDescription": "تتم مشاركة السبب مع الوكيل.",
+      "suspendTitle": "تعليق الوكيل",
+      "suspendDescription": "لا يمكن للوكلاء المعلّقين تسجيل الدخول إلى بوابة الوكلاء أو إنشاء حالات جديدة."
+    }
+  },
+  "audit": {
+    "title": "سجل التدقيق",
+    "description": "سجل غير قابل للتعديل للإجراءات المتعلقة بالأمان والإجراءات التي تغيّر الحالة.",
+    "openRow": "فتح حدث التدقيق {{action}}",
+    "empty": "لا توجد أحداث تدقيق بعد",
+    "actor": {
+      "user": "مستخدم",
+      "system": "النظام",
+      "automated": "تلقائي"
+    },
+    "columns": {
+      "when": "الوقت",
+      "action": "الإجراء",
+      "entity": "الكيان",
+      "actor": "المنفّذ",
+      "ip": "عنوان IP"
+    },
+    "filters": {
+      "everyAction": "جميع إجراءات {{group}}",
+      "userWithId": "المستخدم {{id}}",
+      "selectedUser": "المستخدم المحدد",
+      "searchPlaceholder": "الإجراء أو معرّف الكيان أو المنفّذ…",
+      "actorRole": "دور المنفّذ",
+      "systemAutomated": "النظام (تلقائي)",
+      "action": "الإجراء",
+      "entity": "الكيان",
+      "actor": "المنفّذ",
+      "date": "التاريخ",
+      "entityId": "معرّف الكيان"
+    },
+    "drawer": {
+      "titleFallback": "حدث تدقيق",
+      "entity": "الكيان",
+      "actor": "المنفّذ",
+      "actorId": "معرّف المنفّذ",
+      "ip": "عنوان IP",
+      "userAgent": "وكيل المستخدم",
+      "sameEntity": "الكيان نفسه",
+      "showAllForEntity": "عرض جميع أحداث هذا الكيان",
+      "changes": "التغييرات"
+    }
+  },
+  "catalog": {
+    "title": "الكتالوج",
+    "description": "التخصصات والإجراءات ومراجع التكلفة في بلد المريض التي يستخدمها البحث والمطابقة بالذكاء الاصطناعي وأداة مقارنة التكاليف.",
+    "tabs": {
+      "specialties": "التخصصات",
+      "procedures": "الإجراءات",
+      "benchmarks": "مراجع التكلفة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "filters": {
+      "status": "الحالة",
+      "specialty": "التخصص",
+      "procedure": "الإجراء",
+      "country": "البلد"
+    },
+    "columns": {
+      "status": "الحالة",
+      "specialty": "التخصص",
+      "procedures": "الإجراءات",
+      "savings": "التوفير",
+      "order": "الترتيب",
+      "procedure": "الإجراء",
+      "indiaPrice": "السعر في الهند",
+      "stayRecovery": "الإقامة / التعافي",
+      "benchmarks": "المراجع",
+      "country": "البلد",
+      "homeCost": "التكلفة في بلد المريض",
+      "wait": "الانتظار",
+      "source": "المصدر"
+    },
+    "fields": {
+      "name": "الاسم",
+      "slug": "المعرّف النصي (Slug)",
+      "slugHint": "أحرف لاتينية صغيرة وأرقام وشرطات؛ يُستخدم في الروابط العامة.",
+      "icon": "الأيقونة",
+      "iconHint": "اسم أيقونة Lucide، مثل heart-pulse",
+      "sortOrder": "ترتيب العرض",
+      "savingsMin": "الحد الأدنى للتوفير (%)",
+      "savingsMax": "الحد الأقصى للتوفير (%)",
+      "description": "الوصف",
+      "active": "نشط",
+      "specialty": "التخصص",
+      "currency": "العملة",
+      "indiaPriceFrom": "السعر في الهند من",
+      "indiaPriceTo": "السعر في الهند إلى",
+      "hospitalStayDays": "الإقامة في المستشفى (بالأيام)",
+      "recoveryDays": "التعافي (بالأيام)",
+      "totalStayDays": "إجمالي الإقامة في الهند (بالأيام)",
+      "keywords": "الكلمات المفتاحية",
+      "keywordsHint": "مفصولة بفواصل؛ يستخدمها البحث ومحرك قواعد الذكاء الاصطناعي",
+      "bodyAreas": "مناطق الجسم",
+      "bodyAreasHint": "مفصولة بفواصل، مثل knee, hip, lower_back",
+      "procedure": "الإجراء",
+      "countryIso2": "البلد (ISO-2)",
+      "countryHint": "مثل US, GB, NG",
+      "homeCostFrom": "التكلفة في بلد المريض من",
+      "homeCostTo": "التكلفة في بلد المريض إلى",
+      "waitTime": "مدة الانتظار المعتادة",
+      "waitTimeHint": "مثل 3–6 أشهر",
+      "source": "المصدر",
+      "sourceHint": "مصدر هذا الرقم"
+    },
+    "entities": {
+      "specialty": "تخصص",
+      "specialties": "تخصصات",
+      "procedure": "إجراء",
+      "procedures": "إجراءات",
+      "benchmark": "مرجع تكلفة",
+      "benchmarks": "مراجع تكلفة"
+    },
+    "gaps": {
+      "label": "إجراءات تنقصها مراجع التكلفة ({{countries}})",
+      "value": "{{gaps}} من {{total}}",
+      "hint": "{{none}} بلا أي مرجع على الإطلاق. {{sample}}"
+    },
+    "specialties": {
+      "proceduresCount_zero": "{{count}} إجراء",
+      "proceduresCount_one": "إجراء واحد ({{count}})",
+      "proceduresCount_two": "إجراءان ({{count}})",
+      "proceduresCount_few": "{{count}} إجراءات",
+      "proceduresCount_many": "{{count}} إجراءً",
+      "proceduresCount_other": "{{count}} إجراء"
+    },
+    "procedures": {
+      "stayValue": "{{stay}} / {{recovery}} يوم"
+    },
+    "benchmarks": {
+      "description": "التكلفة المعتادة للدفع الذاتي في بلد المريض؛ تُحسب بها نسبة التوفير المعروضة للمرضى."
+    }
+  },
+  "content": {
+    "title": "المحتوى",
+    "description": "نصائح للمرضى، وأماكن الإقامة والخدمات لدى الشركاء، وأسعار صرف العملات المستخدمة عند الدفع.",
+    "tabs": {
+      "tips": "نصائح ثقافية",
+      "accommodation": "مزودو الإقامة",
+      "services": "مزودو الخدمات",
+      "fx": "أسعار الصرف"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "filters": {
+      "status": "الحالة",
+      "category": "الفئة",
+      "type": "النوع",
+      "city": "المدينة",
+      "service": "الخدمة",
+      "language": "اللغة"
+    },
+    "columns": {
+      "tip": "النصيحة",
+      "category": "الفئة",
+      "order": "الترتيب",
+      "status": "الحالة",
+      "provider": "المزوّد",
+      "city": "المدينة",
+      "nightly": "لليلة",
+      "amenities": "المرافق",
+      "contact": "التواصل",
+      "service": "الخدمة",
+      "languages": "اللغات",
+      "rate": "السعر",
+      "rating": "التقييم",
+      "currency": "العملة",
+      "source": "المصدر",
+      "asOf": "بتاريخ"
+    },
+    "fields": {
+      "title": "العنوان",
+      "text": "النص",
+      "category": "الفئة",
+      "categoryHint": "مثل الطعام، الآداب العامة، المال",
+      "sortOrder": "ترتيب العرض",
+      "imageUrl": "رابط الصورة",
+      "active": "نشط",
+      "name": "الاسم",
+      "type": "النوع",
+      "city": "المدينة",
+      "starRating": "عدد النجوم",
+      "address": "العنوان",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "currency": "العملة",
+      "nightlyRate": "سعر الليلة",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "amenities": "المرافق",
+      "amenitiesHint": "مفصولة بفواصل، مثل واي فاي، مطبخ، إمكانية الوصول بالكرسي المتحرك",
+      "photoUrls": "روابط الصور",
+      "photoUrlsHint": "روابط https مفصولة بفواصل",
+      "service": "الخدمة",
+      "languages": "اللغات",
+      "languagesHint": "مفصولة بفواصل، مثل الإنجليزية، العربية، الفرنسية",
+      "rate": "السعر",
+      "rateUnit": "وحدة السعر",
+      "quoteCurrencyHint": "ISO-4217، مثل USD",
+      "inrPerUnit": "INR لكل وحدة واحدة",
+      "inrPerUnitHint": "مثلًا 83.25 تعني 1 USD = ₹83.25",
+      "source": "المصدر"
+    },
+    "entities": {
+      "tip": "نصيحة ثقافية",
+      "tips": "نصائح ثقافية",
+      "accommodation": "مزوّد إقامة",
+      "accommodationPlural": "مزودو الإقامة",
+      "service": "مزوّد خدمة",
+      "servicePlural": "مزودو الخدمات",
+      "fx": "سعر صرف",
+      "fxPlural": "أسعار الصرف"
+    },
+    "fx": {
+      "description": "العملة الأساسية هي INR. يُثبَّت السعر في كل أمر دفع عند الدفع؛ وتغيير السعر لا يغيّر الطلبات القائمة."
+    }
+  },
+  "settings": {
+    "documentTitle": "الإعدادات",
+    "title": "إعدادات المنصة",
+    "description": "تسري التغييرات فورًا وتُسجَّل في سجل التدقيق. لا يمكن تغيير الإعدادات المالية إلا من قِبل فريق المالية أو مشرف أعلى.",
+    "websiteNotice": "تُعدَّل أرقام المساعدة وواتساب وروابط التواصل الاجتماعي والتحليلات والتحقق في محركات البحث والادعاءات التسويقية والمراجعون الطبيون وتذييل الموقع من صفحة <0>الموقع وبيانات التواصل</0> (المشرف الأعلى).",
+    "rawJson": "قيمة JSON خام.",
+    "groups": {
+      "commercial": "تجاري",
+      "tax": "الضرائب",
+      "settlements": "التسويات",
+      "payments": "المدفوعات",
+      "patientSupport": "دعم المرضى",
+      "other": "أخرى"
+    },
+    "items": {
+      "default_commission_bps": {
+        "label": "عمولة المستشفى الافتراضية",
+        "description": "عمولة المنصة من إيرادات المستشفى عند عدم وجود سعر خاص بالمستشفى أو بقاعدة."
+      },
+      "default_agent_commission_bps": {
+        "label": "عمولة الوكيل الافتراضية",
+        "description": "تُدفع للوكلاء المُحيلين من عمولة المنصة."
+      },
+      "patient_service_fee_bps": {
+        "label": "رسوم خدمة المريض",
+        "description": "تُضاف إلى سعر العلاج عند الحجز."
+      },
+      "deposit_pct": {
+        "label": "عربون الحجز",
+        "description": "نسبة إجمالي الحجز المطلوبة لتأكيد الحجز (خيار العربون)."
+      },
+      "gst_rate_bps": {
+        "label": "ضريبة GST على العمولة",
+        "description": "ضريبة GST المفروضة على عمولة المنصة."
+      },
+      "tds_194o_rate_bps": {
+        "label": "TDS (القسم 194-O)",
+        "description": "ضريبة مقتطعة من المنبع على المبلغ الإجمالي للمستشفى."
+      },
+      "settlement_hold_days": {
+        "label": "مدة حجز التسوية",
+        "description": "عدد الأيام بعد اكتمال العلاج قبل أن تصبح البنود مؤهلة للصرف."
+      },
+      "settlement_cycle_days": {
+        "label": "دورة التسوية الافتراضية",
+        "description": "عدد الأيام بين دفعات الصرف التلقائية (يمكن للمستشفيات تغييرها)."
+      },
+      "refund_policy": {
+        "label": "سياسة الاسترداد",
+        "description": "نسبة الاسترداد حسب عدد الأيام قبل الدخول إلى المستشفى. تُطبَّق أول شريحة مطابقة (بدءًا بأكبر عدد من الأيام)."
+      },
+      "cancellation_retention_hospital_share_bps": {
+        "label": "المبلغ المحتجز عند الإلغاء: حصة المستشفى",
+        "description": "حصة المستشفى من المبلغ المحتجز عند الإلغاء (100% = كامل المبلغ للمستشفى)."
+      },
+      "agent_tds_rate_bps": {
+        "label": "TDS الوكيل (القسم 194H)",
+        "description": "ضريبة مقتطعة من المنبع على العمولة المدفوعة للوكلاء المقيمين."
+      },
+      "agent_nonresident_withholding_bps": {
+        "label": "الاستقطاع للوكلاء غير المقيمين",
+        "description": "استقطاع على العمولة المدفوعة للوكلاء غير المقيمين (يُحدَّد وفق مشورة المحاسب القانوني / اتفاقية DTAA)."
+      },
+      "platform_gstin": {
+        "label": "رقم GSTIN للمنصة",
+        "description": "رقم GSTIN للمورّد المطبوع على فواتير ضريبة العمولة والإشعارات الدائنة."
+      },
+      "platform_gst_state": {
+        "label": "ولاية تسجيل GST للمنصة",
+        "description": "ولاية التسجيل: CGST + SGST عندما يكون المستشفى في الولاية نفسها، وإلا IGST."
+      },
+      "refund_dual_approval_threshold_minor": {
+        "label": "حد الموافقة المزدوجة على الاسترداد",
+        "description": "يجب أن يوافق على المبالغ المستردة التي تتجاوز هذا المبلغ (بعد تحويله إلى INR) مستخدمٌ من المالية غير مقدّم الطلب. 0 = كل استرداد يحتاج إلى موافقة ثانية."
+      },
+      "fx_rate_max_age_hours": {
+        "label": "أقصى عمر لسعر الصرف",
+        "description": "تُرفض الطلبات بالعملات الأجنبية (fx_rate_unavailable) في بيئة الإنتاج إذا كان سعر الصرف المخزّن أقدم من هذه المدة. 0 يعطّل هذا الفحص."
+      },
+      "bank_transfer_details": {
+        "label": "بيانات التحويل المصرفي",
+        "description": "تُعرض للمرضى الذين يدفعون عبر SWIFT / التحويل المصرفي."
+      },
+      "supported_currencies": {
+        "label": "العملات المدعومة",
+        "description": "رموز ISO-4217 للعملات التي يمكن للمرضى الدفع بها."
+      }
+    },
+    "updated": "تم تحديث {{label}}",
+    "financeBadge": "المالية",
+    "defaultBadge": "افتراضي",
+    "updatedAt": "آخر تحديث {{date}}",
+    "updatedAtBy": "آخر تحديث {{date}} بواسطة {{name}}",
+    "save": "حفظ",
+    "reset": "إعادة تعيين",
+    "readOnly": "للقراءة فقط لدورك",
+    "units": {
+      "days": "أيام",
+      "hours": "ساعات"
+    },
+    "editors": {
+      "bpsSuffix": "% ({{bps}} نقطة أساس)",
+      "percentage": "النسبة المئوية",
+      "percentageError": "أدخل نسبة مئوية بين 0 و100.",
+      "wholeNumberError": "أدخل عددًا صحيحًا بين 0 و{{max}}.",
+      "amountInr": "المبلغ بالروبية INR",
+      "amountInrError": "أدخل مبلغًا بالروبية (حتى منزلتين عشريتين)؛ 0 يعني أن كل استرداد يحتاج إلى موافقة ثانية.",
+      "value": "القيمة",
+      "valueRequired": "أدخل قيمة."
+    },
+    "refundPolicy": {
+      "invalidTier": "يجب أن تكون الأيام أعدادًا صحيحة ≥ 0 ونسبة الاسترداد بين 0 و100%.",
+      "duplicateDays": "يجب أن تكون كل قيمة \"أيام قبل\" فريدة.",
+      "noTiers": "أضف شريحة واحدة على الأقل.",
+      "daysHeader": "N يومًا على الأقل قبل الدخول إلى المستشفى",
+      "refundHeader": "الاسترداد %",
+      "daysBefore": "الأيام قبل",
+      "refundPercent": "نسبة الاسترداد",
+      "removeTier": "إزالة الشريحة",
+      "addTier": "إضافة شريحة"
+    },
+    "stringMap": {
+      "keysError": "يجب أن تكون المفاتيح فريدة وغير فارغة.",
+      "key": "المفتاح",
+      "value": "القيمة",
+      "removeEntry": "إزالة الإدخال",
+      "addEntry": "إضافة إدخال"
+    },
+    "stringList": {
+      "values": "القيم",
+      "error": "استخدم رموز عملات ISO من 3 أحرف مفصولة بفواصل."
+    },
+    "json": {
+      "label": "قيمة JSON",
+      "invalid": "JSON غير صالح."
+    }
+  },
+  "websiteSettings": {
+    "title": "الموقع وبيانات التواصل",
+    "description": "ما يعرضه الموقع العام: أرقام التواصل، والأزرار العائمة، وروابط التواصل الاجتماعي، والتحليلات، والتحقق في محركات البحث، والادعاءات التسويقية، والمراجعون الطبيون، والتذييل. تظهر التغييرات المحفوظة على الموقع خلال ثوانٍ وتُسجَّل في سجل التدقيق. الحقل الفارغ يعني غير محدد: عندها يستخدم الموقع القيمة الافتراضية للنشر (أو يُخفي العنصر).",
+    "readOnly": "للقراءة فقط: لا يمكن تغيير هذه الإعدادات إلا من قِبل مشرف أعلى.",
+    "sections": {
+      "contact": "التواصل وأرقام المساعدة",
+      "buttons": "الأزرار العائمة",
+      "social": "حسابات التواصل الاجتماعي",
+      "analytics": "التحليلات",
+      "search": "محركات البحث",
+      "marketing": "الادعاءات التسويقية",
+      "reviewers": "المراجعون الطبيون",
+      "footer": "التذييل"
+    },
+    "saved": "تم حفظ {{title}} - يُحدَّث الموقع خلال ثوانٍ",
+    "defaultBadge": "افتراضي",
+    "superAdminBadge": "مشرف أعلى",
+    "updatedAt": "آخر تحديث {{date}}",
+    "updatedAtBy": "آخر تحديث {{date}} بواسطة {{name}}",
+    "save": "حفظ",
+    "reset": "إعادة تعيين",
+    "fixErrors": "صحّح الحقول المظللة لتتمكن من الحفظ.",
+    "errors": {
+      "phoneDigits": "استخدم من {{min}} إلى 15 رقمًا.",
+      "phoneDigitsExample": "استخدم من {{min}} إلى 15 رقمًا، مثل +91 98765 43210.",
+      "phoneInternational": "استخدم الصيغة الدولية: + ورمز البلد.",
+      "httpsUrl": "أدخل رابطًا كاملًا يبدأ بـ https://.",
+      "email": "أدخل عنوان بريد إلكتروني صالحًا.",
+      "ga4Format": "استخدم الصيغة G-XXXXXXXXXX.",
+      "ga4Required": "مطلوب لـ Google Analytics 4.",
+      "hostName": "أدخل اسم مضيف مثل healindiaglobal.com.",
+      "verificationCode": "الصق رمز التحقق فقط (أو وسم {{tag}} كاملًا).",
+      "indexNowKey": "من 8 إلى 128 حرفًا: أحرف وأرقام و-.",
+      "wholePercent": "أدخل نسبة مئوية صحيحة من 0 إلى 100.",
+      "statId": "المعرّف: يبدأ بحرف؛ أحرف وأرقام و- و_ فقط.",
+      "uniqueId": "يجب أن يكون كل معرّف فريدًا.",
+      "statRequired": "التسمية والقيمة مطلوبتان.",
+      "reviewerId": "المعرّف: أحرف لاتينية صغيرة وأرقام وشرطات (مثل dr-asha-rao).",
+      "reviewerPhoto": "الصورة: رابط https:// أو مسار في الموقع مثل /brand/reviewers/name.jpg.",
+      "reviewerIncomplete": "يحتاج المراجع النشط إلى الاسم والمؤهلات ورقم التسجيل والمجلس الطبي."
+    },
+    "contact": {
+      "placeholderNumber": "رقم مؤقت: مخفي على الموقع حتى تُدخل رقمًا حقيقيًا.",
+      "whatsapp": "رقم واتساب",
+      "whatsappHint": "زر واتساب العائم والتذييل وصفحة التواصل. فارغ = مخفي.",
+      "phone": "رقم الهاتف / خط المساعدة",
+      "phoneHint": "زر الاتصال العائم والتذييل وصفحة التواصل وتطبيق المريض (خط مساعدة على مدار الساعة). فارغ = مخفي.",
+      "emergency": "رقم الطوارئ",
+      "emergencyHint": "يظهر في صفحة التواصل وفي تطبيق المريض.",
+      "email": "البريد الإلكتروني العام للتواصل",
+      "emailHint": "التذييل وصفحة التواصل وصفحة حذف الحساب وبيانات Organization. فارغ = القيمة الافتراضية للنشر.",
+      "supportHours": "ساعات الدعم",
+      "supportHoursPlaceholder": "على مدار الساعة، كل يوم",
+      "supportHoursHint": "يظهر في صفحة التواصل. فارغ = لا يظهر.",
+      "whatsappMessage": "رسالة واتساب المعبأة مسبقًا",
+      "whatsappMessageHint": "النص الذي يُفتح به واتساب لدى الزائر."
+    },
+    "buttons": {
+      "showWhatsapp": "إظهار زر واتساب",
+      "showCall": "إظهار زر الاتصال",
+      "note": "لا يظهر الزر إلا إذا كان مفعّلًا وكان رقمه محددًا (الأرقام المحفوظة في التواصل وأرقام المساعدة).",
+      "preview": "معاينة",
+      "none": "لا توجد أزرار عائمة"
+    },
+    "social": {
+      "urlLabel": "رابط {{network}}",
+      "note": "تظهر كأيقونات في التذييل وتُدرج كـ sameAs في البيانات المنظمة Organization. فارغ = لا يظهر."
+    },
+    "analytics": {
+      "provider": "المزوّد",
+      "providerHint": "بلا = استخدام إعداد بيئة النشر (متوقف ما لم يُضبط هناك). تتبع سياسة Content-Security-Policy للموقع هذا الاختيار.",
+      "none": "بلا",
+      "plausible": "Plausible (بدون ملفات تعريف الارتباط، بدون شريط موافقة)",
+      "ga4": "Google Analytics 4 (بعد الموافقة على ملفات تعريف الارتباط)",
+      "plausibleDomain": "نطاق Plausible",
+      "plausibleDomainHint": "فارغ = مضيف الموقع نفسه.",
+      "plausibleScript": "رابط سكربت Plausible",
+      "plausibleScriptHint": "فارغ = plausible.io. يعمل أيضًا سكربت مستضاف ذاتيًا.",
+      "ga4Id": "معرّف القياس GA4"
+    },
+    "search": {
+      "google": "التحقق من الموقع في Google",
+      "googlePlaceholder": "محتوى وسم HTML من Search Console",
+      "googleHint": "Search Console -> الإعدادات -> الملكية -> وسم HTML: قيمة content=\"...\".",
+      "bing": "التحقق من الموقع في Bing",
+      "bingPlaceholder": "محتوى msvalidate.01",
+      "bingHint": "Bing Webmaster Tools -> قيمة وسم meta في HTML.",
+      "indexNow": "مفتاح IndexNow",
+      "indexNowHint": "على الخادم فقط: يُقدَّم من /indexnow-key.txt ويُستخدم لإبلاغ Bing وغيره بالصفحات المتغيرة. يتطلب ضبط سر إعادة التحقق للموقع.",
+      "generate": "إنشاء"
+    },
+    "marketing": {
+      "intro": "ادعاءات تظهر في الصفحة الرئيسية وصفحات الإجراءات. يُطبع الادعاء الذي لا مصدر له مع حاشية \"رقم تقديري\"؛ أوقف كل ما لا يمكنك إثباته.",
+      "maxSavings": "أقصى توفير (%)",
+      "savingsSource": "مصدر التوفير",
+      "savingsSourcePlaceholder": "مثل قوائم أسعار المستشفيات الشريكة مقارنة بالدفع الذاتي في الولايات المتحدة، 2026",
+      "showInHero": "إظهار في الواجهة الرئيسية",
+      "stats": "إحصاءات الصفحة الرئيسية",
+      "statId": "المعرّف",
+      "statLabel": "التسمية",
+      "statValue": "القيمة",
+      "statSource": "ملاحظة المصدر",
+      "statShow": "إظهار",
+      "removeStat": "إزالة الإحصاء {{name}}",
+      "addStat": "إضافة إحصاء",
+      "indiaWait": "مدة الانتظار المعتادة في الهند",
+      "indiaWaitHint": "تظهر في حاسبة التكلفة في صفحات الإجراءات.",
+      "showTestimonials": "إظهار الشهادات (مع وسمها دائمًا بأنها توضيحية)",
+      "claimsVerified": "جميع الادعاءات تحققت منها فرق التسويق / الشؤون القانونية"
+    },
+    "reviewers": {
+      "intro": "يُذكرون في الصفحات الصحية التي تسمّيهم في بياناتها الأولية (reviewedBy: {{tag}}). لا يظهر للعامة إلا المراجعون النشطون ذوو التسجيل المكتمل. لا تُضف شخصًا حقيقيًا إلا بموافقته الكتابية وبتسجيل طبي يمكن التحقق منه.",
+      "active": "نشط (يظهر على الموقع)",
+      "inactive": "غير نشط",
+      "remove": "إزالة",
+      "id": "المعرّف (تستخدمه الصفحات)",
+      "name": "الاسم الكامل",
+      "credentials": "المؤهلات",
+      "registrationNumber": "رقم التسجيل",
+      "registrationCouncil": "مجلس التسجيل",
+      "registrationCouncilPlaceholder": "مثل Karnataka Medical Council",
+      "photoUrl": "رابط الصورة",
+      "photoUrlPlaceholder": "https://... أو /brand/reviewers/name.jpg",
+      "bio": "نبذة قصيرة",
+      "add": "إضافة مراجع"
+    },
+    "footer": {
+      "developedBy": "تطوير",
+      "developedByHint": "فارغ = بدون سطر إشارة.",
+      "developerUrl": "رابط المطوّر",
+      "disclaimer": "إخلاء المسؤولية",
+      "disclaimerHint": "إخلاء مسؤولية قصير في التذييل. فارغ = النص المدمج.",
+      "preview": "معاينة التذييل",
+      "disclaimerLabel": "إخلاء المسؤولية:",
+      "builtInDisclaimer": "نص إخلاء المسؤولية المدمج",
+      "developedByPreview": "تطوير <0>{{name}}<1/></0>"
+    }
+  },
+  "shell": {
+    "title": "لوحة الموظفين",
+    "login": {
+      "title": "تسجيل دخول الموظفين",
+      "subtitle": "لوحة العمليات والمالية في Heal India Global"
+    },
+    "notFound": {
+      "title": "الصفحة غير موجودة",
+      "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها."
+    }
+  },
+  "nav": {
+    "groups": {
+      "operations": "عمليات المرضى",
+      "partners": "الشركاء",
+      "catalog": "الدليل والمحتوى",
+      "people": "الأشخاص والصلاحيات",
+      "system": "النظام"
+    },
+    "dashboard": "لوحة المعلومات",
+    "hospitals": "المستشفيات",
+    "agents": "الوكلاء",
+    "cases": "الحالات",
+    "bookings": "الحجوزات",
+    "travel": "مكتب السفر",
+    "messages": "صندوق الدعم",
+    "users": "المستخدمون",
+    "staff": "الموظفون",
+    "catalog": "الدليل",
+    "content": "المحتوى",
+    "settings": "الإعدادات",
+    "website": "الموقع وبيانات التواصل",
+    "languages": "اللغات",
+    "translations": "الترجمات",
+    "audit": "سجل التدقيق",
+    "moderation": "البلاغات",
+    "enquiries": "استفسارات الموقع",
+    "privacy": "طلبات الخصوصية"
+  },
+  "ui": {
+    "loading": "جارٍ التحميل…",
+    "spinner": "جارٍ التحميل",
+    "empty": "لا يوجد شيء هنا بعد",
+    "error": {
+      "title": "تعذّر تحميل البيانات",
+      "retry": "إعادة المحاولة"
+    },
+    "table": {
+      "noResults": "لا توجد نتائج",
+      "noResultsHint": "جرّب تغيير عوامل التصفية."
+    },
+    "pagination": {
+      "label": "التنقل بين الصفحات",
+      "summary_zero": "{{total}} نتيجة · الصفحة {{page}} من {{pages}}",
+      "summary_one": "نتيجة واحدة ({{total}}) · الصفحة {{page}} من {{pages}}",
+      "summary_two": "نتيجتان ({{total}}) · الصفحة {{page}} من {{pages}}",
+      "summary_few": "{{total}} نتائج · الصفحة {{page}} من {{pages}}",
+      "summary_many": "{{total}} نتيجة · الصفحة {{page}} من {{pages}}",
+      "summary_other": "{{total}} نتيجة · الصفحة {{page}} من {{pages}}",
+      "previous": "الصفحة السابقة",
+      "next": "الصفحة التالية"
+    },
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "reason": {
+      "label": "السبب",
+      "tooShort": "يرجى إدخال 3 أحرف على الأقل."
+    },
+    "track": {
+      "label": "التقدّم",
+      "step": "الخطوة {{step}} من {{total}}",
+      "done": "(مكتملة)",
+      "current": "(الحالية)"
+    }
+  },
+  "status": {
+    "active": "نشط",
+    "approved": "معتمد",
+    "verified": "تم التحقق",
+    "confirmed": "مؤكَّد",
+    "completed": "مكتمل",
+    "resolved": "تمت المعالجة",
+    "paid": "مدفوع",
+    "done": "تم",
+    "booked": "محجوز",
+    "accepted": "مقبول",
+    "admitted": "تم الإدخال",
+    "in_treatment": "قيد العلاج",
+    "quoted": "تم إرسال عرض السعر",
+    "sent": "مُرسَل",
+    "applied": "تم التقديم",
+    "invitation_issued": "صدرت الدعوة",
+    "acknowledged": "تم الاستلام",
+    "enquiry": "استفسار",
+    "pending": "قيد الانتظار",
+    "pending_review": "بانتظار المراجعة",
+    "pending_payment": "بانتظار الدفع",
+    "pending_verification": "بانتظار التحقق",
+    "requested": "مطلوب",
+    "documents_pending": "بانتظار المستندات",
+    "uploaded": "تم الرفع",
+    "open": "مفتوح",
+    "suspended": "موقوف",
+    "rejected": "مرفوض",
+    "cancelled": "ملغى",
+    "declined": "مرفوض",
+    "deleted": "محذوف",
+    "failed": "فشل",
+    "draft": "مسودة",
+    "inactive": "غير نشط",
+    "expired": "منتهي الصلاحية",
+    "closed": "مغلق",
+    "refunded": "تم الاسترداد",
+    "submitted": "مُقدَّم",
+    "scheduled": "مُجدوَل",
+    "processing": "قيد المعالجة"
+  },
+  "components": {
+    "crud": {
+      "errors": {
+        "required": "مطلوب",
+        "wholeNumber": "أدخل عددًا صحيحًا",
+        "min": "الحد الأدنى {{min}}",
+        "max": "الحد الأقصى {{max}}",
+        "number": "أدخل رقمًا",
+        "amount": "أدخل مبلغًا صالحًا",
+        "url": "أدخل رابطًا كاملًا يبدأ بـ http(s)",
+        "email": "أدخل بريدًا إلكترونيًا صالحًا"
+      },
+      "deleted": "تم حذف {{entity}}",
+      "updated": "تم تحديث {{entity}}",
+      "created": "تم إنشاء {{entity}}",
+      "actions": "الإجراءات",
+      "editRow": "تعديل {{label}}",
+      "deleteRow": "حذف {{label}}",
+      "add": "إضافة {{entity}}",
+      "empty": "لا توجد عناصر بعد ({{entities}})",
+      "search": "البحث في {{entities}}…",
+      "readOnly": "للقراءة فقط: يمكن لمسؤولي العمليات فقط تعديل الدليل.",
+      "deleteTitle": "حذف {{entity}}؟",
+      "deleteMessage": "ستتم إزالة <0>{{label}}</0>. إذا كان مستخدمًا في مكان آخر فقد يرفض الخادم الحذف؛ عطّله بدلًا من ذلك.",
+      "delete": "حذف",
+      "editTitle": "تعديل {{entity}}",
+      "newTitle": "{{entity}} جديد",
+      "saveChanges": "حفظ التغييرات",
+      "create": "إنشاء",
+      "commaSeparated": "مفصولة بفواصل",
+      "select": "اختر…"
+    },
+    "documents": {
+      "markedVerified": "تم تعليم المستند على أنه تم التحقق منه",
+      "markedRejected": "تم تعليم المستند على أنه مرفوض",
+      "marked": "تم تعليم المستند: {{status}}",
+      "empty": "لم يتم رفع أي مستندات.",
+      "view": "عرض",
+      "download": "تنزيل",
+      "verify": "تحقق",
+      "reject": "رفض",
+      "rejectTitle": "رفض المستند",
+      "rejectNote": "ملاحظة لمن رفع المستند",
+      "document": "مستند",
+      "loading": "جارٍ تحميل المستند…"
+    },
+    "jsonDiff": {
+      "added": "مُضاف",
+      "removed": "محذوف",
+      "changed": "مُعدَّل",
+      "changedFields_zero": "لا توجد حقول معدّلة ({{value}})",
+      "changedFields_one": "حقل واحد معدّل ({{value}})",
+      "changedFields_two": "حقلان معدّلان ({{value}})",
+      "changedFields_few": "{{value}} حقول معدّلة",
+      "changedFields_many": "{{value}} حقلًا معدّلًا",
+      "changedFields_other": "{{value}} حقل معدّل",
+      "showUnchanged": "إظهار غير المعدّل",
+      "rawJson": "JSON الخام",
+      "before": "قبل",
+      "after": "بعد",
+      "field": "الحقل",
+      "noData": "لم تُسجَّل بيانات قبل/بعد لهذا الحدث.",
+      "noChanges": "لا توجد تغييرات في الحقول."
+    },
+    "money": {
+      "currency": "العملة"
+    }
+  },
+  "charts": {
+    "noData": "لا توجد بيانات لهذه الفترة",
+    "noEnquiries": "لا توجد استفسارات في هذه الفترة",
+    "stepConversion": "{{value}} من المرحلة السابقة"
+  },
+  "dashboard": {
+    "title": "لوحة المعلومات",
+    "greeting": {
+      "morning": "صباح الخير، {{name}}",
+      "afternoon": "مساء الخير، {{name}}",
+      "evening": "مساء الخير، {{name}}"
+    },
+    "description": "ابدأ بقوائم العمل التي تحتاج إلى إجراء، ثم تابع اتجاهات أداء المنصة.",
+    "refresh": "تحديث",
+    "updatedAt": "آخر تحديث {{date}}",
+    "attentionTitle": "يحتاج إلى انتباهك",
+    "attentionDescription": "تفتح كل بطاقة القائمة المطابقة، مُصفّاة ومرتبة من الأقدم.",
+    "performance": "الأداء",
+    "range": "{{from}} – {{to}} مقارنة بـ {{prevFrom}} – {{prevTo}}",
+    "loading": "جارٍ التحميل…",
+    "periodLabel": "الفترة",
+    "periods": {
+      "7d": {
+        "label": "7 أيام",
+        "long": "آخر 7 أيام"
+      },
+      "30d": {
+        "label": "30 يومًا",
+        "long": "آخر 30 يومًا"
+      },
+      "90d": {
+        "label": "90 يومًا",
+        "long": "آخر 90 يومًا"
+      },
+      "mtd": {
+        "label": "هذا الشهر",
+        "long": "هذا الشهر"
+      }
+    },
+    "kpi": {
+      "new_cases": {
+        "label": "الاستفسارات",
+        "help": "الاستفسارات الجديدة: الحالات التي فتحها المرضى أو الوكلاء أو الموظفون في الفترة المحددة."
+      },
+      "quotes_sent": {
+        "label": "عروض الأسعار المرسلة",
+        "help": "عروض الأسعار التي أرسلتها المستشفيات إلى المرضى (باستثناء المسودات) في الفترة المحددة."
+      },
+      "bookings": {
+        "label": "الحجوزات",
+        "help": "الحجوزات المؤكدة: الحجوزات التي استُلم مقدّمها أو مبلغها الكامل في الفترة المحددة."
+      },
+      "conversion_rate": {
+        "label": "معدل التحويل",
+        "help": "من الاستفسار إلى الحجز: نسبة الحالات المفتوحة في هذه الفترة التي وصلت إلى \"محجوز\" (أو ما بعده) حتى الآن. قد تتحول الحالات الحديثة لاحقًا."
+      },
+      "gmv_minor": {
+        "label": "إجمالي قيمة المعاملات",
+        "help": "إجمالي قيمة المعاملات: مدفوعات المرضى المحصّلة في الفترة، محوّلة إلى INR بسعر يوم الدفع."
+      },
+      "revenue_minor": {
+        "label": "الإيرادات",
+        "help": "إيرادات المنصة: إيرادات العمولات ورسوم الخدمة المسجّلة في دفتر الأستاذ خلال الفترة، بعد خصم العكوسات."
+      },
+      "about": "حول {{label}}",
+      "previous": "الفترة السابقة: {{value}}",
+      "vsPrev": "مقارنة بالسابقة",
+      "forPeriod": "عن {{period}}"
+    },
+    "funnel": {
+      "title": "مسار الحالات",
+      "description": "الحالات المفتوحة في {{period}}، حسب أبعد مرحلة وصلت إليها",
+      "conversion": "من الاستفسار إلى الحجز: <0>{{value}}</0>"
+    },
+    "bySpecialty": {
+      "title": "الحالات حسب التخصص",
+      "description": "الحالات المفتوحة في {{period}}"
+    },
+    "topHospitals": {
+      "title": "أفضل المستشفيات",
+      "description": "حسب إجمالي قيمة المعاملات المحصّلة في {{period}}",
+      "bookings_zero": "{{value}} حجز",
+      "bookings_one": "{{value}} حجز",
+      "bookings_two": "{{value}} حجز",
+      "bookings_few": "{{value}} حجوزات",
+      "bookings_many": "{{value}} حجزًا",
+      "bookings_other": "{{value}} حجز",
+      "tooltip_zero": "{{name}}: {{amount}} من {{value}} حجز",
+      "tooltip_one": "{{name}}: {{amount}} من {{value}} حجز",
+      "tooltip_two": "{{name}}: {{amount}} من {{value}} حجز",
+      "tooltip_few": "{{name}}: {{amount}} من {{value}} حجوزات",
+      "tooltip_many": "{{name}}: {{amount}} من {{value}} حجزًا",
+      "tooltip_other": "{{name}}: {{amount}} من {{value}} حجز"
+    },
+    "activityAria": "النشاط ولمحة عن المنصة",
+    "recentActivity": {
+      "title": "النشاط الأخير",
+      "description": "أحدث الإجراءات على الحالات وعروض الأسعار والحجوزات والشركاء",
+      "auditLink": "سجل التدقيق"
+    },
+    "snapshot": {
+      "title": "لمحة عن المنصة",
+      "description": "الآن، منذ البداية",
+      "escrow": "أموال المرضى في حساب الضمان",
+      "pendingSettlements": "التسويات المعلّقة",
+      "activeHospitals": "المستشفيات النشطة",
+      "activeAgents": "الوكلاء النشطون",
+      "openCases": "الحالات المفتوحة",
+      "patients": "المرضى المسجّلون"
+    },
+    "trend": {
+      "metrics": {
+        "gmv": "إجمالي قيمة المعاملات",
+        "bookings": "الحجوزات",
+        "new_cases": "الاستفسارات"
+      },
+      "perWeek": "{{metric}} أسبوعيًا",
+      "perDay": "{{metric}} يوميًا",
+      "total": "الإجمالي {{value}}",
+      "metricLabel": "المقياس",
+      "showChart": "عرض الرسم البياني",
+      "showTable": "عرض كجدول",
+      "empty": {
+        "gmv": "لا توجد قيمة معاملات في هذه الفترة",
+        "bookings": "لا توجد حجوزات في هذه الفترة",
+        "new_cases": "لا توجد استفسارات في هذه الفترة"
+      },
+      "emptyHint": "اختر فترة أطول في الأعلى لرؤية الاتجاه.",
+      "byWeek": "{{metric}} حسب الأسبوع",
+      "byDay": "{{metric}} حسب اليوم",
+      "weekOf": "أسبوع",
+      "day": "اليوم",
+      "weekOfDate": "أسبوع {{date}}"
+    },
+    "admissions": {
+      "title": "حالات الإدخال هذا الأسبوع",
+      "description": "المرضى المتوقع وصولهم إلى مستشفى خلال الأيام السبعة القادمة",
+      "allBookings": "كل الحجوزات",
+      "empty": "لا توجد حالات إدخال خلال الأيام السبعة القادمة",
+      "patient": "مريض"
+    },
+    "infoTip": "حول هذا المقياس",
+    "delta": {
+      "noChange": "بلا تغيير",
+      "new": "جديد",
+      "points": "{{value}} نقطة"
+    },
+    "age": {
+      "minutes": "{{value}} د",
+      "hours": "{{value}} س",
+      "days": "{{value}} ي"
+    },
+    "activity": {
+      "error": "تعذّر تحميل النشاط الأخير.",
+      "empty": "لا يوجد نشاط بعد.",
+      "someone": "مستخدم",
+      "system": "النظام",
+      "caseCreate": "<0>{{who}}</0> فتح الحالة {{number}}",
+      "caseCreateNoNumber": "<0>{{who}}</0> فتح حالة",
+      "caseStatus": "<0>{{who}}</0> نقل حالة إلى {{status}}",
+      "caseStatusUnknown": "<0>{{who}}</0> نقل حالة إلى حالة جديدة",
+      "assignCoordinator": "<0>{{who}}</0> عيّن منسقًا لحالة",
+      "quoteSend": "<0>{{who}}</0> أرسل عرض سعر",
+      "quoteSendAmount": "<0>{{who}}</0> أرسل عرض سعر بقيمة {{amount}}",
+      "quoteAccept": "<0>{{who}}</0> قبل عرض سعر",
+      "bookingConfirm": "<0>{{who}}</0> أكّد حجزًا",
+      "bookingAdmit": "<0>{{who}}</0> أدخل مريضًا",
+      "bookingComplete": "<0>{{who}}</0> أكمل علاجًا",
+      "paymentCaptured": "<0>{{who}}</0> حصّل دفعة",
+      "paymentCapturedAmount": "<0>{{who}}</0> حصّل دفعة بقيمة {{amount}}",
+      "hospitalApprove": "<0>{{who}}</0> اعتمد مستشفى",
+      "agentApprove": "<0>{{who}}</0> اعتمد وكيلًا",
+      "documentUpload": "<0>{{who}}</0> رفع مستندًا",
+      "generic": "<0>{{who}}</0>: {{text}}"
+    },
+    "attention": {
+      "cardLabel": "{{label}}: {{value}}",
+      "cardLabelAge": "{{label}}: {{value}}، أقدم انتظار {{age}}",
+      "oldestWaiting": "أقدم انتظار",
+      "oldest": "الأقدم",
+      "caughtUp": "لا توجد أعمال متأخرة",
+      "caughtUpHint": "لا شيء في قوائمك يحتاج إلى إجراء الآن.",
+      "allClear": "لا شيء معلّق:",
+      "emergency_cases": {
+        "label": "فحوصات طارئة",
+        "description": "حالات مفتوحة صنّفها الفحص بالذكاء الاصطناعي كحالة طارئة محتملة"
+      },
+      "open_sos": {
+        "label": "نداءات استغاثة مفتوحة",
+        "description": "مرضى في الهند يطلبون مساعدة عاجلة"
+      },
+      "quotes_overdue": {
+        "label": "عروض أسعار تجاوزت المهلة",
+        "description": "استفسارات تنتظر عرض سعر المستشفى منذ أكثر من {{hours}} ساعة"
+      },
+      "unassigned_enquiries": {
+        "label": "استفسارات بلا منسق",
+        "description": "استفسارات جديدة لم يُعيَّن لها منسق"
+      },
+      "quotes_awaiting_patient": {
+        "label": "بانتظار قرار المريض",
+        "description": "عروض أسعار مرسلة لم يقبلها المريض بعد"
+      },
+      "hospitals_pending": {
+        "label": "مستشفيات للمراجعة",
+        "description": "ملفات مستشفيات مقدّمة للاعتماد"
+      },
+      "agents_pending": {
+        "label": "وكلاء للاعتماد",
+        "description": "تسجيلات وكلاء بانتظار الاعتماد"
+      },
+      "agent_kyc_pending": {
+        "label": "تحقق هوية الوكلاء (KYC)",
+        "description": "وكلاء تنتظر مستندات KYC الخاصة بهم التحقق"
+      },
+      "payout_accounts_unverified": {
+        "label": "حسابات صرف للتحقق",
+        "description": "حسابات بنكية تحتاج إلى تحقق مستخدم مالي ثانٍ"
+      },
+      "markPaidApprovals": {
+        "label": "تحويلات بنكية للاعتماد",
+        "description": "طلبات تعليم كمدفوع بانتظار مستخدم مالي ثانٍ"
+      },
+      "refunds": {
+        "label": "مبالغ مستردة للاعتماد",
+        "description": "طلبات استرداد بانتظار الاعتماد"
+      },
+      "batches": {
+        "label": "دفعات تسوية للاعتماد",
+        "description": "دفعات بانتظار معتمد ثانٍ"
+      },
+      "payoutConfirmations": {
+        "label": "مدفوعات للتأكيد",
+        "description": "مدفوعات لها رقم UTR بانتظار مستخدم مالي ثانٍ"
+      },
+      "payoutReversals": {
+        "label": "إخفاقات صرف للاعتماد",
+        "description": "طلبات إخفاق أو عكس بانتظار معتمد ثانٍ"
+      },
+      "payoutReconciliations": {
+        "label": "مدفوعات للمطابقة",
+        "description": "نتيجة بوابة الدفع غير معروفة - راجع كشف الحساب البنكي"
+      },
+      "amountReviews": {
+        "label": "فروقات في المبالغ",
+        "description": "طلبات دُفعت بمبلغ مختلف عن المطلوب"
+      },
+      "adjustments": {
+        "label": "تسويات دفتر الأستاذ",
+        "description": "تسويات يدوية بانتظار الاعتماد"
+      }
+    }
+  },
+  "languages": {
+    "title": "اللغات",
+    "description": "فعّل اللغة بعد مراجعة ترجماتها. الإنجليزية هي اللغة الافتراضية ومفعّلة دائمًا. تصل التغييرات إلى التطبيقات خلال دقيقة تقريبًا.",
+    "toast": {
+      "enabled": "تم تفعيل {{name}}",
+      "disabled": "تم إيقاف {{name}}"
+    },
+    "columns": {
+      "language": "اللغة",
+      "code": "الرمز",
+      "direction": "الاتجاه",
+      "overall": "المترجم",
+      "updated": "آخر تغيير",
+      "enabled": "مفعّلة"
+    },
+    "rtl": "من اليمين إلى اليسار",
+    "ltr": "من اليسار إلى اليمين",
+    "overallLabel": "{{name}}: نسبة النص المترجم",
+    "defaultHint": "الإنجليزية هي اللغة الافتراضية ولا يمكن إيقافها.",
+    "alwaysOn": "مفعّلة دائمًا",
+    "on": "مفعّلة",
+    "off": "متوقفة",
+    "empty": "لا توجد لغات",
+    "readOnly": "للقراءة فقط: يمكن للمسؤولين فقط تفعيل اللغات أو إيقافها.",
+    "byApp": {
+      "title": "اكتمال الترجمة حسب التطبيق",
+      "description": "نسبة النص الإنجليزي في كل تطبيق التي لها ترجمة (مرفقة مع التطبيق أو عدّلها مسؤول). اختر قيمة لرؤية ما ينقص في <0>الترجمات</0>.",
+      "empty": "الإنجليزية فقط متاحة.",
+      "app": "التطبيق",
+      "overall": "كل التطبيقات",
+      "openMissing": "النص الناقص بـ{{name}} في {{app}}"
+    },
+    "disable": {
+      "title": "إيقاف {{name}}؟",
+      "message": "ستختفي {{name}} من كل مبدّلات اللغة ومن الموقع. سيرى من اختارها النص بالإنجليزية. تبقى الترجمات وتعديلاتك محفوظة.",
+      "confirm": "إيقاف"
+    },
+    "apps": {
+      "patient_web": "موقع المرضى",
+      "agent": "بوابة الوكلاء",
+      "hospital": "بوابة المستشفيات",
+      "admin": "بوابة الإدارة",
+      "website": "الموقع الإلكتروني",
+      "mobile": "تطبيق الجوال",
+      "server": "رسائل البريد والإشعارات ورسائل الواجهة البرمجية"
+    }
+  },
+  "translations": {
+    "title": "الترجمات",
+    "description": "غيّر أي نص في أي تطبيق وبأي لغة. تصبح التغييرات فعّالة خلال دقيقة تقريبًا وتُسجَّل في سجل التدقيق.",
+    "app": "التطبيق",
+    "language": "اللغة",
+    "languageOff": "{{name}} (متوقفة)",
+    "placeholdersHint": "أبقِ العناصر النائبة مثل {{example1}} أو {{example2}} كما هي تمامًا - إذ تُستبدل بقيم حقيقية.",
+    "columns": {
+      "key": "المفتاح",
+      "source": "الإنجليزية",
+      "shipped": "الترجمة المرفقة",
+      "override": "النص المعدَّل",
+      "actions": "الإجراءات"
+    },
+    "missing": "ناقصة",
+    "updatedBy": "{{name}} · {{date}}",
+    "edit": "تعديل",
+    "editRow": "تعديل {{key}}",
+    "clear": "إزالة التعديل",
+    "clearRow": "إزالة تعديل {{key}}",
+    "toast": {
+      "saved": "تم حفظ التعديل",
+      "cleared": "تمت إزالة التعديل - عاد النص المرفق"
+    },
+    "status": {
+      "label": "حالة الترجمة",
+      "all": "الكل",
+      "missing": "ناقصة",
+      "overridden": "معدّلة",
+      "translated": "مترجمة"
+    },
+    "searchPlaceholder": "ابحث في المفتاح أو النص الإنجليزي أو الترجمة…",
+    "empty": "لا توجد نصوص مطابقة",
+    "readOnly": "للقراءة فقط: يمكن للمسؤولين فقط تغيير النصوص.",
+    "clearDialog": {
+      "title": "إزالة التعديل؟",
+      "message": "سيعود النص إلى الترجمة المرفقة (أو إلى الإنجليزية إذا لم توجد ترجمة)."
+    },
+    "editDialog": {
+      "title": "تعديل النص · {{language}}",
+      "override": "نصّك",
+      "emptyError": "أدخل النص، أو استخدم \"إزالة التعديل\" للعودة إلى النص المرفق.",
+      "counter_zero": "{{value}} / {{max}} حرف",
+      "counter_one": "{{value}} / {{max}} حرف",
+      "counter_two": "{{value}} / {{max}} حرف",
+      "counter_few": "{{value}} / {{max}} أحرف",
+      "counter_many": "{{value}} / {{max}} حرفًا",
+      "counter_other": "{{value}} / {{max}} حرف",
+      "save": "حفظ",
+      "missingPlaceholders_zero": "العناصر النائبة التالية من النص الإنجليزي ناقصة: {{list}}. أبقِها كما هي تمامًا؛ إذ تُستبدل بقيم حقيقية.",
+      "missingPlaceholders_one": "هذا العنصر النائب من النص الإنجليزي ناقص: {{list}}. أبقِه كما هو تمامًا؛ إذ يُستبدل بقيمة حقيقية.",
+      "missingPlaceholders_two": "هذان العنصران النائبان من النص الإنجليزي ناقصان: {{list}}. أبقِهما كما هما تمامًا؛ إذ يُستبدلان بقيم حقيقية.",
+      "missingPlaceholders_few": "هذه العناصر النائبة من النص الإنجليزي ناقصة: {{list}}. أبقِها كما هي تمامًا؛ إذ تُستبدل بقيم حقيقية.",
+      "missingPlaceholders_many": "هذه العناصر النائبة من النص الإنجليزي ناقصة: {{list}}. أبقِها كما هي تمامًا؛ إذ تُستبدل بقيم حقيقية.",
+      "missingPlaceholders_other": "هذه العناصر النائبة من النص الإنجليزي ناقصة: {{list}}. أبقِها كما هي تمامًا؛ إذ تُستبدل بقيم حقيقية.",
+      "tagsNote": "يحدد النص الإنجليزي الروابط أو الكلمات الغامقة بوسوم مرقّمة مثل <0>…</0>. يُحفظ نصّك كنص عادي: تُزال هذه الوسوم فيضيع الرابط أو التنسيق الغامق.",
+      "plainText": "نص عادي فقط: تتم إزالة HTML عند الحفظ. يُسجَّل كل تغيير في سجل التدقيق."
+    }
+  }
+}

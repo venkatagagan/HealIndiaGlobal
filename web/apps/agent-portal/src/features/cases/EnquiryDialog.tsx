@@ -8,6 +8,8 @@ import { Button, Checkbox, FormField, Modal, Textarea } from '../../components/u
 import { MAX_ENQUIRY_HOSPITALS } from '../../lib/constants';
 import { patientName } from '../../lib/format';
 import { PatientPicker } from '../patients/PatientPicker';
+import { Trans } from 'react-i18next';
+import { useAppTranslation } from '../../i18n';
 
 export interface EnquiryTarget {
   hospital_id: string;
@@ -46,6 +48,7 @@ export function EnquiryDialog({
   patientLabel?: string;
   screeningId?: string | null;
 }) {
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const notesId = useId();
@@ -94,9 +97,9 @@ export function EnquiryDialog({
     void queryClient.invalidateQueries({ queryKey: ['agent-dashboard'] });
     void queryClient.invalidateQueries({ queryKey: ['agent-patients'] });
     const ok = out.filter((r) => r.created).length;
-    if (ok === out.length) toast.success(ok === 1 ? 'Enquiry sent' : `Enquiry sent to ${ok} hospitals`);
-    else if (ok > 0) toast.warning(`Sent to ${ok} of ${out.length} hospitals`);
-    else toast.error('The enquiry could not be sent');
+    if (ok === out.length) toast.success(ok === 1 ? t('enquiryDialog.sentOne') : t('enquiryDialog.sentMany', { count: ok }));
+    else if (ok > 0) toast.warning(t('enquiryDialog.sentPartial', { ok, total: out.length }));
+    else toast.error(t('enquiryDialog.sendFailed'));
   };
 
   const succeeded = results?.filter((r) => r.created) ?? [];
@@ -106,11 +109,11 @@ export function EnquiryDialog({
       open={open}
       onClose={onClose}
       size="lg"
-      title={results ? 'Enquiry results' : list.length > 1 ? `Send enquiry to ${list.length} hospitals` : 'Send enquiry'}
+      title={results ? t('enquiryDialog.resultsTitle') : list.length > 1 ? t('enquiryDialog.sendToMany', { count: list.length }) : t('enquiryDialog.send')}
       description={
         results
-          ? 'Hospitals usually respond with an itemised quote within 48 hours.'
-          : 'Each hospital receives its own case. You will be able to compare their quotes side by side.'
+          ? t('enquiryDialog.resultsDescription')
+          : t('enquiryDialog.sendDescription')
       }
       footer={
         results ? (
@@ -123,7 +126,7 @@ export function EnquiryDialog({
                   navigate(`/cases/compare?ids=${succeeded.map((r) => r.created?.id).join(',')}`);
                 }}
               >
-                Compare quotes
+                {t('enquiryDialog.compareQuotes')}
               </Button>
             )}
             {succeeded.length === 1 && succeeded[0]?.created && (
@@ -134,7 +137,7 @@ export function EnquiryDialog({
                   navigate(`/cases/${succeeded[0]?.created?.id}`);
                 }}
               >
-                Open case
+                {t('enquiryDialog.openCase')}
               </Button>
             )}
             <Button
@@ -143,16 +146,16 @@ export function EnquiryDialog({
                 navigate(effectivePatientId ? `/cases?patient=${effectivePatientId}` : '/cases');
               }}
             >
-              View cases
+              {t('enquiryDialog.viewCases')}
             </Button>
           </>
         ) : (
           <>
             <Button variant="outline" onClick={onClose} disabled={sending}>
-              Cancel
+              {t('enquiryDialog.cancel')}
             </Button>
             <Button onClick={() => void send()} loading={sending} disabled={!effectivePatientId || !consent || list.length === 0}>
-              Send enquiry
+              {t('enquiryDialog.send')}
             </Button>
           </>
         )
@@ -169,7 +172,7 @@ export function EnquiryDialog({
               )}
               <div className="text-sm">
                 <p className="font-medium">{r.target.hospital_name}</p>
-                <p className="text-muted">{r.created ? `Case ${r.created.case_number} created` : r.error}</p>
+                <p className="text-muted">{r.created ? t('enquiryDialog.caseCreated', { number: r.created.case_number }) : r.error}</p>
               </div>
             </li>
           ))}
@@ -179,39 +182,39 @@ export function EnquiryDialog({
           {fixedPatientId ? (
             label && (
               <p className="text-sm">
-                Patient: <strong>{label}</strong>
+                <Trans t={t} i18nKey="enquiryDialog.patientLine" values={{ name: label }} components={{ 0: <strong /> }} />
               </p>
             )
           ) : (
             <PatientPicker value={picked} onChange={setPicked} />
           )}
           <div>
-            <p className="mb-2 text-sm font-medium">Hospitals ({list.length}/{MAX_ENQUIRY_HOSPITALS})</p>
+            <p className="mb-2 text-sm font-medium">{t('enquiryDialog.hospitals', { count: list.length, max: MAX_ENQUIRY_HOSPITALS })}</p>
             <ul className="space-y-2">
-              {list.map((t) => (
-                <li key={t.hospital_id} className="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-sm">
+              {list.map((target) => (
+                <li key={target.hospital_id} className="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-sm">
                   <Building2 className="h-4 w-4 text-muted" aria-hidden />
                   <span className="min-w-0 flex-1">
-                    <span className="block font-medium">{t.hospital_name}</span>
-                    {(t.doctor_name || t.procedure_name) && (
-                      <span className="block text-xs text-muted">{[t.doctor_name, t.procedure_name].filter(Boolean).join(' · ')}</span>
+                    <span className="block font-medium">{target.hospital_name}</span>
+                    {(target.doctor_name || target.procedure_name) && (
+                      <span className="block text-xs text-muted">{[target.doctor_name, target.procedure_name].filter(Boolean).join(' · ')}</span>
                     )}
                   </span>
                 </li>
               ))}
             </ul>
             {targets.length > MAX_ENQUIRY_HOSPITALS && (
-              <p className="mt-2 text-xs text-warning">Only the first {MAX_ENQUIRY_HOSPITALS} hospitals will receive this enquiry.</p>
+              <p className="mt-2 text-xs text-warning">{t('enquiryDialog.onlyFirst', { max: MAX_ENQUIRY_HOSPITALS })}</p>
             )}
           </div>
-          <FormField label="Message to the hospitals" htmlFor={notesId} hint="Summary of the condition, expectations, preferred dates">
+          <FormField label={t('enquiryDialog.message')} htmlFor={notesId} hint={t('enquiryDialog.messageHint')}>
             <Textarea id={notesId} rows={4} maxLength={4000} value={notes} onChange={(e) => setNotes(e.target.value)} />
           </FormField>
           <Checkbox
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
-            label="The patient consents to sharing their information with these hospitals"
-            description="Their profile, screening and uploaded reports are shared with the selected hospitals only."
+            label={t('enquiryDialog.consent')}
+            description={t('enquiryDialog.consentHint')}
           />
         </div>
       )}

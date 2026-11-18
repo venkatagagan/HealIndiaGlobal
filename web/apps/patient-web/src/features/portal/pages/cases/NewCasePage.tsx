@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -5,6 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { authApi, catalogApi, errorMessage, isApiError } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { qk, useCreateCase, useHospital, useScreenings } from '../../api/queries';
 import { GuestAccountRequired, isGuestUpgradeError, useGuestGate } from '../../components/CareGates';
 import { Accreditations, Avatar, BackLink, Rating } from '../../components/common';
@@ -27,16 +29,21 @@ import {
 } from '../../ui/primitives';
 import { SHARE_CONSENT_VERSION } from '../screening/RequestQuoteDialog';
 
-const schema = z.object({
-  screening_id: z.string(),
-  patient_notes: z.string().max(4000),
-  consent_share: z.boolean().refine((v) => v, 'You need to agree before we can send your case to the hospital'),
-});
-type Values = z.infer<typeof schema>;
+type TFn = ReturnType<typeof useAppTranslation>['t'];
+
+function buildSchema(t: TFn) {
+  return z.object({
+    screening_id: z.string(),
+    patient_notes: z.string().max(4000),
+    consent_share: z.boolean().refine((v) => v, t('cases.new.consentRequired')),
+  });
+}
+type Values = z.infer<ReturnType<typeof buildSchema>>;
 
 /** /app/cases/new?doctor=&hospital=&procedure= - direct quote request from the public doctor/hospital pages. */
 export function NewCasePage() {
-  useDocumentTitle('Request a quote');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('cases.new.title'));
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const doctorId = params.get('doctor') ?? undefined;
@@ -53,6 +60,7 @@ export function NewCasePage() {
   const screenings = useScreenings({ status: 'completed', page_size: 20 });
   const create = useCreateCase();
   const gate = useGuestGate();
+  const schema = useMemo(() => buildSchema(t), [t]);
   const form = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: { screening_id: '', patient_notes: '', consent_share: false },
@@ -62,9 +70,9 @@ export function NewCasePage() {
   if (!doctorId && !hospitalParam) {
     return (
       <EmptyState
-        title="Choose a hospital or doctor first"
-        description="Browse hospitals and doctors, or let our AI screening find the best match for you."
-        action={<ButtonLink to={paths.newScreening()}>Start AI screening</ButtonLink>}
+        title={t('cases.new.chooseFirstTitle')}
+        description={t('cases.new.chooseFirstDescription')}
+        action={<ButtonLink to={paths.newScreening()}>{t('cases.new.startScreening')}</ButtonLink>}
       />
     );
   }
@@ -98,18 +106,18 @@ export function NewCasePage() {
         ...(v.screening_id ? { screening_id: v.screening_id } : {}),
         ...(v.patient_notes.trim() ? { patient_notes: v.patient_notes.trim() } : {}),
       });
-      toast.success(`Quote requested. Case ${created.case_number} created.`);
+      toast.success(t('cases.new.requested', { number: created.case_number }));
       navigate(paths.case(created.id), { replace: true });
     } catch (err) {
       if (isGuestUpgradeError(err)) gate.handleError(err);
-      else if (isApiError(err) && err.status === 403) toast.error('Please create a full account before requesting quotes.');
-      else toast.error(errorMessage(err, 'Your request could not be sent.'));
+      else if (isApiError(err) && err.status === 403) toast.error(t('cases.new.fullAccountRequired'));
+      else toast.error(errorMessage(err, t('cases.new.sendFailed')));
     }
   });
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader back={<BackLink to={paths.cases}>My cases</BackLink>} title="Request a quote" />
+      <PageHeader back={<BackLink to={paths.cases}>{t('cases.list.title')}</BackLink>} title={t('cases.new.title')} />
       <Card className="mb-6 flex items-center gap-4 p-5">
         <Avatar name={d?.full_name ?? h.name} src={d?.photo_url ?? h.logo_url} size={56} />
         <div className="min-w-0">
@@ -127,39 +135,32 @@ export function NewCasePage() {
       </Card>
       <Card>
         <CardBody>
-          {gate.isGuest ? <GuestAccountRequired action="request a quote" /> : null}
+          {gate.isGuest ? <GuestAccountRequired action={t('cases.new.guestAction')} /> : null}
           {gate.dialog}
           <form onSubmit={onSubmit} noValidate className="space-y-5">
-            <Alert tone="blue">
-              The hospital reviews your information and sends an itemized quote, usually within 48 hours. Free and without
-              obligation.
-            </Alert>
-            <Field
-              label="Attach a screening (recommended)"
-              htmlFor="nc-screening"
-              hint="Gives the doctors your symptoms, history and reports up front."
-            >
+            <Alert tone="blue">{t('cases.new.intro')}</Alert>
+            <Field label={t('cases.new.screeningLabel')} htmlFor="nc-screening" hint={t('cases.new.screeningHint')}>
               <Select id="nc-screening" {...form.register('screening_id')} disabled={screenings.isPending}>
-                <option value="">No screening</option>
+                <option value="">{t('cases.new.noScreening')}</option>
                 {(screenings.data?.items ?? []).map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.specialty?.name ?? 'General screening'} · {formatDate(s.completed_at ?? s.created_at)}
+                    {s.specialty?.name ?? t('cases.new.generalScreening')} · {formatDate(s.completed_at ?? s.created_at)}
                   </option>
                 ))}
               </Select>
             </Field>
             <Field
-              label="Describe your condition and what you need"
+              label={t('cases.new.notesLabel')}
               htmlFor="nc-notes"
               error={errors.patient_notes?.message}
-              hint="Diagnosis so far, preferred dates, questions for the doctor."
+              hint={t('cases.new.notesHint')}
             >
               <Textarea id="nc-notes" rows={5} maxLength={4000} {...form.register('patient_notes')} />
             </Field>
             <div>
               <Checkbox
-                label="I agree to share my profile, screening answers and medical reports with this hospital"
-                description="Required so the hospital's doctors can assess your case."
+                label={t('cases.new.consentLabel')}
+                description={t('cases.new.consentDescription')}
                 {...form.register('consent_share')}
               />
               {errors.consent_share ? (
@@ -170,10 +171,10 @@ export function NewCasePage() {
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <ButtonLink to={paths.newScreening(d?.specialty.slug)} variant="outline">
-                Take AI screening first
+                {t('cases.new.screeningFirst')}
               </ButtonLink>
               <Button type="submit" loading={isSubmitting}>
-                Send request
+                {t('cases.new.send')}
               </Button>
             </div>
           </form>

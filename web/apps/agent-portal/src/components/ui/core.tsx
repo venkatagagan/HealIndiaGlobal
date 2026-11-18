@@ -10,6 +10,7 @@ import {
 import { Link, type LinkProps } from 'react-router';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'accent';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
@@ -106,7 +107,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
   ref,
 ) {
   return (
-    <select ref={ref} className={cn(fieldBase, 'h-10 pr-8', className)} {...rest}>
+    <select ref={ref} className={cn(fieldBase, 'h-10 pe-8', className)} {...rest}>
       {children}
     </select>
   );
@@ -159,7 +160,7 @@ export function FormField({
       {label && (
         <label htmlFor={htmlFor} className="block text-sm font-medium text-fg">
           {label}
-          {required && <span className="ml-0.5 text-danger" aria-hidden>*</span>}
+          {required && <span className="ms-0.5 text-danger" aria-hidden>*</span>}
         </label>
       )}
       {children}
@@ -241,11 +242,12 @@ export function Badge({
   );
 }
 
-export function Spinner({ className, label = 'Loading' }: { className?: string; label?: string }) {
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <span role="status" className="inline-flex items-center">
       <Loader2 className={cn('h-5 w-5 animate-spin text-primary', className)} aria-hidden />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('ui.loading')}</span>
     </span>
   );
 }

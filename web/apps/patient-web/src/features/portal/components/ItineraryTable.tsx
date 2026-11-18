@@ -1,6 +1,9 @@
+import { useMemo } from 'react';
+import type { TFunction } from 'i18next';
 import { CalendarClock, MapPin } from 'lucide-react';
 import { ITINERARY_KIND_LABELS, type ItineraryItemOut, type Uuid } from '@hig/shared/api';
 import { DataTable, DateCell, StatusBadgeCell, type DataTableColumn } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { useItinerary } from '../api/queries';
 import { cn, formatDateTime } from '../lib/shared';
 
@@ -9,19 +12,23 @@ const mapHref = (i: ItineraryItemOut) =>
     ? `https://www.openstreetmap.org/?mlat=${i.lat}&mlon=${i.lng}#map=17/${i.lat}/${i.lng}`
     : `https://www.openstreetmap.org/search?query=${encodeURIComponent(i.location ?? '')}`;
 
-const COLUMNS: DataTableColumn<ItineraryItemOut>[] = [
+const columns = (t: TFunction): DataTableColumn<ItineraryItemOut>[] => [
   {
     key: 'starts_at',
-    header: 'When',
+    header: t('itinerary.when'),
     sortable: true,
     mobile: 'meta',
     cell: (i) => (
-      <DateCell value={i.starts_at} display="datetime" secondary={i.ends_at ? `until ${formatDateTime(i.ends_at, 'HH:mm')}` : undefined} />
+      <DateCell
+        value={i.starts_at}
+        display="datetime"
+        secondary={i.ends_at ? t('itinerary.until', { time: formatDateTime(i.ends_at, 'HH:mm') }) : undefined}
+      />
     ),
   },
   {
     key: 'title',
-    header: 'What',
+    header: t('itinerary.what'),
     mobile: 'primary',
     className: 'max-w-72',
     cell: (i) => (
@@ -33,7 +40,7 @@ const COLUMNS: DataTableColumn<ItineraryItemOut>[] = [
   },
   {
     key: 'location',
-    header: 'Where',
+    header: t('itinerary.where'),
     className: 'max-w-56',
     cell: (i) =>
       i.location ? (
@@ -53,7 +60,7 @@ const COLUMNS: DataTableColumn<ItineraryItemOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('itinerary.status'),
     mobile: 'badge',
     cell: (i) => <StatusBadgeCell status={i.status} kind="itinerary" />,
   },
@@ -61,11 +68,13 @@ const COLUMNS: DataTableColumn<ItineraryItemOut>[] = [
 
 /** Compact, sortable itinerary for a booking (case detail). The trip hub keeps its timeline view. */
 export function ItineraryTable({ bookingId }: { bookingId: Uuid }) {
+  const { t } = useAppTranslation();
   const itinerary = useItinerary(bookingId);
+  const cols = useMemo(() => columns(t), [t]);
   return (
     <DataTable
-      caption="Itinerary"
-      columns={COLUMNS}
+      caption={t('itinerary.caption')}
+      columns={cols}
       rows={itinerary.data}
       loading={itinerary.isLoading}
       error={itinerary.error}
@@ -76,8 +85,8 @@ export function ItineraryTable({ bookingId }: { bookingId: Uuid }) {
       showViewOptions={false}
       className="shadow-none"
       emptyIcon={<CalendarClock className="size-7" aria-hidden />}
-      emptyTitle="No schedule yet"
-      emptyDescription="Your coordinator and the hospital will add appointments, admission and transfers here."
+      emptyTitle={t('itinerary.emptyTitle')}
+      emptyDescription={t('itinerary.emptyDescription')}
     />
   );
 }

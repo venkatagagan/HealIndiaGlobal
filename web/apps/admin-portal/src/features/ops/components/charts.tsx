@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 import { niceTicks } from '../lib/inr';
 
@@ -42,7 +44,7 @@ function ChartTooltip({
       <p className="flex items-center gap-2 text-muted">
         <span className="inline-block size-2 rounded-full bg-[var(--series-1)]" aria-hidden />
         <span>{name}</span>
-        <span className="ml-auto pl-3 font-semibold tabular-nums text-fg">{formatValue(Number(payload[0]?.value ?? 0))}</span>
+        <span className="ms-auto ps-3 font-semibold tabular-nums text-fg">{formatValue(Number(payload[0]?.value ?? 0))}</span>
       </p>
     </div>
   );
@@ -145,7 +147,8 @@ export function RankedBars({
   formatValue: (value: number) => string;
   empty?: ReactNode;
 }) {
-  if (rows.length === 0) return <>{empty ?? <p className="py-6 text-center text-sm text-muted">No data for this period</p>}</>;
+  const { t } = useAppTranslation();
+  if (rows.length === 0) return <>{empty ?? <p className="py-6 text-center text-sm text-muted">{t('charts.noData')}</p>}</>;
   const max = Math.max(...rows.map((r) => r.value), 1);
   return (
     <ol className="space-y-3">
@@ -197,8 +200,9 @@ export function FunnelBars({
   stages: readonly { key: string; label: string; count: number; to?: string }[];
   className?: string;
 }) {
+  const { t } = useAppTranslation();
   const first = stages[0]?.count ?? 0;
-  if (!first) return <p className="py-6 text-center text-sm text-muted">No enquiries in this period</p>;
+  if (!first) return <p className="py-6 text-center text-sm text-muted">{t('charts.noEnquiries')}</p>;
   return (
     <ol className={cn('space-y-2.5', className)}>
       {stages.map((s, i) => {
@@ -211,11 +215,14 @@ export function FunnelBars({
               <span className="text-fg">{s.label}</span>
               <span className="flex items-baseline gap-2">
                 {step !== null && (
-                  <span className="text-xs text-muted" title={`${step}% of the previous stage`}>
-                    {step}%
+                  <span
+                    className="text-xs text-muted"
+                    title={t('charts.stepConversion', { value: formatNumber(step / 100, { style: 'percent' }) })}
+                  >
+                    {formatNumber(step / 100, { style: 'percent' })}
                   </span>
                 )}
-                <span className="min-w-8 text-right font-semibold tabular-nums text-fg">{s.count.toLocaleString('en-IN')}</span>
+                <span className="min-w-8 text-end font-semibold tabular-nums text-fg">{formatNumber(s.count)}</span>
               </span>
             </div>
             <div className="h-2 rounded-full bg-surface-2">

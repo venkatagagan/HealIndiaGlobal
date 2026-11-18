@@ -7,12 +7,26 @@
 ``notify`` adds a ``notifications`` row in the caller's transaction (no commit), queues the realtime event
 ``notification.created`` for after the commit, and - for important kinds, when the user has an email -
 enqueues the ``messaging.send_email`` job. With ``dedupe_key`` it is idempotent per user.
+
+Translated notifications (preferred): pass catalog keys instead of English text; they are rendered in each
+RECIPIENT's language (``app.i18n.recipient_locale``: their ``preferred_language`` when it is enabled, else
+English) and stored already translated::
+
+    await notify_many(db, user_ids, "booking.confirmed",
+                      title_key="notifications.booking_confirmed.title",
+                      body_key=["notifications.booking_confirmed.body",
+                                Msg("notifications.booking_confirmed.admission", {"date": "2026-12-01"})],
+                      params={"booking_number": b.booking_number, "hospital": name}, data={...})
+
+``body_key`` may be a key, a :class:`~app.i18n.Msg` or a list of them (joined with a space; ``None`` entries
+are skipped). ``params`` are shared by every part; a ``Msg``'s own params win. Plain ``title``/``body``
+strings still work and are used as-is (no translation).
 """
 
 from __future__ import annotations
 
 import uuid
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import Any
 
@@ -20,6 +34,8 @@ from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.jobs import enqueue
+from app.i18n import Msg, recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import Notification, User
 from app.modules.messaging import push
 from app.modules.messaging.outbox import queue_realtime
@@ -87,23 +103,57 @@ def notification_out(n: Notification) -> NotificationOut:
     )
 
 
+TextKey = str | Msg | None
+TextKeys = TextKey | Sequence[TextKey]
+
+
+def render_text(keys: TextKeys, locale: str, params: Mapping[str, Any] | None = None) -> str:
+    """Render one key / :class:`Msg` / list of them in ``locale`` (list parts joined with a space)."""
+    parts = [keys] if keys is None or isinstance(keys, str | Msg) else list(keys)
+    shared = dict(params or {})
+    out: list[str] = []
+    for part in parts:
+        if part is None:
+            continue
+        if isinstance(part, Msg):
+            text = t(part.key, locale, **{**shared, **dict(part.params or {})})
+        else:
+            text = t(part, locale, **shared)
+        if text.strip():
+            out.append(text.strip())
+    return " ".join(out)
+
+
 async def notify(
     db: AsyncSession,
     user_id: uuid.UUID | str,
     kind: str,
-    title: str,
+    title: str | None = None,
     body: str | None = None,
     data: dict[str, Any] | None = None,
     *,
     dedupe_key: str | None = None,
     email: bool | None = None,
+    title_key: TextKeys = None,
+    body_key: TextKeys = None,
+    params: Mapping[str, Any] | None = None,
 ) -> Notification | None:
     """Create a notification for ``user_id``. Returns ``None`` when the user is missing/inactive or a
-    notification with the same ``dedupe_key`` already exists for that user."""
+    notification with the same ``dedupe_key`` already exists for that user. ``title_key``/``body_key`` (+
+    ``params``) are rendered in the recipient's language and take precedence over ``title``/``body``."""
     uid = user_id if isinstance(user_id, uuid.UUID) else uuid.UUID(str(user_id))
     user = await db.get(User, uid)
     if user is None or not is_active_user(user):
         return None
+    if title_key is not None or body_key is not None:
+        await i18n_runtime.ensure_fresh()
+        locale = recipient_locale(user)
+        if title_key is not None:
+            title = render_text(title_key, locale, params)
+        if body_key is not None:
+            body = render_text(body_key, locale, params) or None
+    if not title:
+        raise ValueError("notify() needs a title or a title_key")
     payload: dict[str, Any] = {k: v for k, v in (data or {}).items() if v is not None}
     if dedupe_key:
         exists = (
@@ -155,16 +205,32 @@ async def notify_many(
     db: AsyncSession,
     user_ids: Iterable[uuid.UUID | str | None],
     kind: str,
-    title: str,
+    title: str | None = None,
     body: str | None = None,
     data: dict[str, Any] | None = None,
     *,
     dedupe_key: str | None = None,
     email: bool | None = None,
+    title_key: TextKeys = None,
+    body_key: TextKeys = None,
+    params: Mapping[str, Any] | None = None,
 ) -> list[Notification]:
+    """``notify`` for several users (deduplicated); each one gets the text in their own language."""
     created: list[Notification] = []
     for uid in dict.fromkeys(str(u) for u in user_ids if u):
-        n = await notify(db, uid, kind, title, body, data, dedupe_key=dedupe_key, email=email)
+        n = await notify(
+            db,
+            uid,
+            kind,
+            title,
+            body,
+            data,
+            dedupe_key=dedupe_key,
+            email=email,
+            title_key=title_key,
+            body_key=body_key,
+            params=params,
+        )
         if n is not None:
             created.append(n)
     return created

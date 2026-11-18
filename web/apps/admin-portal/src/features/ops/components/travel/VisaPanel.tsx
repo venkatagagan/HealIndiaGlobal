@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   documentsApi,
@@ -14,12 +14,15 @@ import { Badge, DateCell, StatusBadgeCell, TextCell, type DataTableColumn } from
 import { Button, Field, Input, Modal, Select, Textarea } from '../../ui';
 import { formatDateTime, toDateTimeLocal } from '../../lib/format';
 import { opsKeys, useOpsMutation } from '../../lib/mutations';
+import { useAppTranslation } from '../../../../i18n';
 import { PatientCaseCell, TravelListPanel } from './TravelListPanel';
 
-const COLUMNS: DataTableColumn<VisaRequestOut>[] = [
+type T = ReturnType<typeof useAppTranslation>['t'];
+
+const visaColumns = (t: T): DataTableColumn<VisaRequestOut>[] => [
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('travel.visa.columns.patient'),
     sticky: true,
     mobile: 'primary',
     className: 'max-w-56',
@@ -28,54 +31,56 @@ const COLUMNS: DataTableColumn<VisaRequestOut>[] = [
   },
   {
     key: 'type',
-    header: 'Visa type',
+    header: t('travel.visa.columns.type'),
     mobile: 'secondary',
-    cell: (v) => <TextCell primary={VISA_TYPE_LABELS[v.visa_type] ?? v.visa_type} secondary={v.application_reference ? `Ref ${v.application_reference}` : undefined} />,
+    cell: (v) => <TextCell primary={VISA_TYPE_LABELS[v.visa_type] ?? v.visa_type} secondary={v.application_reference ? t('travel.visa.ref', { reference: v.application_reference }) : undefined} />,
     mobileCell: (v) => VISA_TYPE_LABELS[v.visa_type] ?? v.visa_type,
     exportValue: (v) => VISA_TYPE_LABELS[v.visa_type] ?? v.visa_type,
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('travel.visa.columns.status'),
     mobile: 'badge',
     cell: (v) => <StatusBadgeCell status={v.status} kind="visa" />,
     exportValue: (v) => VISA_STATUS_LABELS[v.status],
   },
   {
     key: 'letter',
-    header: 'Invitation letter',
-    cell: (v) => (v.invitation_letter_document_id ? <Badge tone="success">Attached</Badge> : <span className="text-muted">None</span>),
-    exportValue: (v) => (v.invitation_letter_document_id ? 'Attached' : ''),
+    header: t('travel.visa.columns.letter'),
+    cell: (v) => (v.invitation_letter_document_id ? <Badge tone="success">{t('travel.visa.attached')}</Badge> : <span className="text-muted">{t('travel.visa.none')}</span>),
+    exportValue: (v) => (v.invitation_letter_document_id ? t('travel.visa.attached') : ''),
   },
   {
     key: 'ref',
-    header: 'Reference',
+    header: t('travel.visa.columns.reference'),
     defaultHidden: true,
     cell: (v) => <span className="font-mono text-xs">{v.application_reference ?? '—'}</span>,
     exportValue: (v) => v.application_reference ?? '',
   },
-  { key: 'applied', header: 'Applied', cell: (v) => <DateCell value={v.applied_at} display="date" />, exportValue: (v) => v.applied_at ?? '' },
-  { key: 'created', header: 'Requested', cell: (v) => <DateCell value={v.created_at} display="relative" className="text-muted" />, exportValue: (v) => v.created_at },
+  { key: 'applied', header: t('travel.visa.columns.applied'), cell: (v) => <DateCell value={v.applied_at} display="date" />, exportValue: (v) => v.applied_at ?? '' },
+  { key: 'created', header: t('travel.visa.columns.requested'), cell: (v) => <DateCell value={v.created_at} display="relative" className="text-muted" />, exportValue: (v) => v.created_at },
 ];
 
 export function VisaPanel({ canManage }: { canManage: boolean }) {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => visaColumns(t), [t]);
   const [editing, setEditing] = useState<VisaRequestOut | null>(null);
   return (
     <>
       <TravelListPanel<VisaRequestOut>
         resource="visa"
         name="visa"
-        caption="Visa requests"
+        caption={t('travel.visa.caption')}
         fetchPage={(p) => travelApi.listVisaRequests(p)}
-        columns={COLUMNS}
+        columns={columns}
         statuses={VISA_STATUSES}
         statusLabels={VISA_STATUS_LABELS}
         statusKind="visa"
-        dateLabel="Requested"
+        dateLabel={t('travel.visa.columns.requested')}
         onRowClick={canManage ? setEditing : undefined}
-        rowLabel={(v) => `Edit visa request of ${v.patient?.full_name ?? 'patient'}`}
-        emptyTitle="No visa requests yet"
-        emptyDescription="Patients request medical-visa help from their case; requests land here."
+        rowLabel={(v) => (v.patient?.full_name ? t('travel.visa.rowLabel', { name: v.patient.full_name }) : t('travel.visa.rowLabelNoName'))}
+        emptyTitle={t('travel.visa.emptyTitle')}
+        emptyDescription={t('travel.visa.emptyDescription')}
       />
       <VisaEditModal visa={editing} onClose={() => setEditing(null)} />
     </>
@@ -83,6 +88,7 @@ export function VisaPanel({ canManage }: { canManage: boolean }) {
 }
 
 function VisaEditModal({ visa, onClose }: { visa: VisaRequestOut | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const [form, setForm] = useState({
     status: 'not_started' as VisaStatus,
     application_reference: '',
@@ -117,7 +123,7 @@ function VisaEditModal({ visa, onClose }: { visa: VisaRequestOut | null; onClose
         invitation_letter_document_id: form.invitation_letter_document_id || null,
         notes: form.notes.trim() || null,
       }),
-    success: 'Visa request updated',
+    success: t('travel.visa.updated'),
     invalidate: [opsKeys.travel],
     onSuccess: onClose,
   });
@@ -126,21 +132,21 @@ function VisaEditModal({ visa, onClose }: { visa: VisaRequestOut | null; onClose
     <Modal
       open={!!visa}
       onClose={onClose}
-      title={`Visa request · ${visa?.patient?.full_name ?? ''}`}
+      title={t('travel.visa.modalTitle', { name: visa?.patient?.full_name ?? '' })}
       size="lg"
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('travel.common.cancel')}
           </Button>
           <Button loading={save.isPending} onClick={() => save.mutate()}>
-            Save
+            {t('travel.common.save')}
           </Button>
         </>
       }
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Status" required>
+        <Field label={t('travel.visa.form.status')} required>
           {(id) => (
             <Select
               id={id}
@@ -150,7 +156,7 @@ function VisaEditModal({ visa, onClose }: { visa: VisaRequestOut | null; onClose
             />
           )}
         </Field>
-        <Field label="Application reference">
+        <Field label={t('travel.visa.form.reference')}>
           {(id) => (
             <Input
               id={id}
@@ -161,28 +167,28 @@ function VisaEditModal({ visa, onClose }: { visa: VisaRequestOut | null; onClose
           )}
         </Field>
         {/* applied_at / decided_at are stamped by the server on the status change (not part of VisaRequestUpdate) */}
-        <Field label="Applied at" hint="Set automatically when the status changes.">
+        <Field label={t('travel.visa.form.appliedAt')} hint={t('travel.visa.form.autoHint')}>
           {(id) => <Input id={id} type="datetime-local" value={form.applied_at} readOnly disabled />}
         </Field>
-        <Field label="Decided at" hint="Set automatically when the status changes.">
+        <Field label={t('travel.visa.form.decidedAt')} hint={t('travel.visa.form.autoHint')}>
           {(id) => <Input id={id} type="datetime-local" value={form.decided_at} readOnly disabled />}
         </Field>
         <Field
-          label="Invitation letter"
+          label={t('travel.visa.form.letter')}
           className="sm:col-span-2"
-          hint="Letters are uploaded by the hospital to the case (document kind: invitation letter)."
+          hint={t('travel.visa.form.letterHint')}
         >
           {(id) => (
             <Select
               id={id}
               value={form.invitation_letter_document_id}
               onChange={(e) => setForm({ ...form, invitation_letter_document_id: e.target.value })}
-              placeholder={letters.isLoading ? 'Loading…' : 'None'}
-              options={(letters.data ?? []).map((d) => ({ value: d.id, label: `${d.file_name} (${formatDateTime(d.created_at)})` }))}
+              placeholder={letters.isLoading ? t('travel.common.loading') : t('travel.visa.none')}
+              options={(letters.data ?? []).map((d) => ({ value: d.id, label: t('travel.visa.form.letterOption', { name: d.file_name, date: formatDateTime(d.created_at) }) }))}
             />
           )}
         </Field>
-        <Field label="Notes" className="sm:col-span-2">
+        <Field label={t('travel.visa.form.notes')} className="sm:col-span-2">
           {(id) => <Textarea id={id} value={form.notes} maxLength={2000} onChange={(e) => setForm({ ...form, notes: e.target.value })} />}
         </Field>
       </div>

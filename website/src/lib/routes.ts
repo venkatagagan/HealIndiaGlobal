@@ -1,4 +1,7 @@
-/** Site paths ('' = home). Use `href()` to turn a path into a link target. */
+import { localizePath } from '@/i18n/config';
+import { requestLocale } from '@/i18n/request';
+
+/** Site paths ('' = home, always without a language prefix). Use `href()` to turn a path into a link target. */
 export const routes = {
   home: '',
   treatments: '/treatments',
@@ -38,7 +41,11 @@ export const routes = {
   acceptInvite: '/accept-invite',
 } as const;
 
-/** Link target for a site path (the home path '' becomes '/'). The site is English only, with no locale prefix. */
+/**
+ * Link target for a site path in the language of the page being rendered: the home path '' becomes '/', and on a
+ * translated page the language prefix is added ('/hospitals' -> '/ar/hospitals'). English has no prefix. In client
+ * components (no server render) paths stay unprefixed; the Link component (components/link.tsx) adds the prefix.
+ */
 export function href(path: string): string {
-  return path || '/';
+  return localizePath(path || '/', requestLocale());
 }

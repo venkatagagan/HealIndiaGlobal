@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { MessageSquareQuote } from 'lucide-react';
 import { hospitalPortalApi, type ReviewOut } from '@hig/shared/api';
 import { Card, CardBody, EmptyState, ErrorState, PageHeader, Skeleton, Stars, StatusBadge, Tabs } from '../../components/ui';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../i18n';
 import { formatDate } from '../../lib/format';
 import { qk, useHospitalDoctors } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -16,7 +18,8 @@ function matches(r: ReviewOut, f: Filter): boolean {
 }
 
 export function ReviewsPage() {
-  useDocumentTitle('Reviews');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('reviews.title'));
   const reviews = useQuery({ queryKey: qk.reviews, queryFn: hospitalPortalApi.listReviews });
   const doctors = useHospitalDoctors();
   const doctorName = useMemo(() => new Map((doctors.data ?? []).map((d) => [d.id, d.full_name])), [doctors.data]);
@@ -29,7 +32,7 @@ export function ReviewsPage() {
 
   return (
     <>
-      <PageHeader title="Reviews" description="What patients say after their treatment. Published reviews appear on your public profile." />
+      <PageHeader title={t('reviews.title')} description={t('reviews.description')} />
       {reviews.isPending ? (
         <Skeleton className="h-64" />
       ) : reviews.isError ? (
@@ -40,17 +43,17 @@ export function ReviewsPage() {
         <Card>
           <EmptyState
             icon={<MessageSquareQuote className="h-6 w-6" aria-hidden />}
-            title="No reviews yet"
-            description="Patients are invited to review after their treatment is completed."
+            title={t('reviews.emptyTitle')}
+            description={t('reviews.emptyDescription')}
           />
         </Card>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[18rem_1fr]">
           <Card className="self-start">
             <CardBody>
-              <p className="text-4xl font-bold text-slate-900 dark:text-white">{avg.toFixed(1)}</p>
+              <p className="text-4xl font-bold text-slate-900 dark:text-white">{formatNumber(avg, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
               <Stars value={avg} size="md" />
-              <p className="mt-1 text-sm text-slate-500">{list.length} reviews</p>
+              <p className="mt-1 text-sm text-slate-500">{t('reviews.count', { count: list.length, formatted: formatNumber(list.length) })}</p>
               <ul className="mt-4 space-y-1.5">
                 {dist.map((d) => (
                   <li key={d.star} className="flex items-center gap-2 text-xs">
@@ -61,7 +64,7 @@ export function ReviewsPage() {
                         style={{ width: `${list.length ? (d.count / list.length) * 100 : 0}%` }}
                       />
                     </span>
-                    <span className="w-6 text-right text-slate-500">{d.count}</span>
+                    <span className="w-6 text-end text-slate-500">{d.count}</span>
                   </li>
                 ))}
               </ul>
@@ -71,16 +74,16 @@ export function ReviewsPage() {
             <Tabs
               className="px-3"
               tabs={[
-                { value: 'all' as const, label: 'All', count: list.length },
-                { value: '5' as const, label: '5 stars', count: dist[0]?.count },
-                { value: '4' as const, label: '4 stars', count: dist[1]?.count },
-                { value: 'low' as const, label: '3 or less', count: list.filter((r) => r.rating <= 3).length },
+                { value: 'all' as const, label: t('common.all'), count: list.length },
+                { value: '5' as const, label: t('reviews.stars', { count: 5 }), count: dist[0]?.count },
+                { value: '4' as const, label: t('reviews.stars', { count: 4 }), count: dist[1]?.count },
+                { value: 'low' as const, label: t('reviews.threeOrLess'), count: list.filter((r) => r.rating <= 3).length },
               ]}
               value={filter}
               onChange={setFilter}
             />
             {shown.length === 0 ? (
-              <EmptyState title="No reviews in this filter" />
+              <EmptyState title={t('reviews.emptyFilter')} />
             ) : (
               <ul className="divide-y divide-slate-100 dark:divide-slate-800">
                 {shown.map((r) => (
@@ -94,7 +97,7 @@ export function ReviewsPage() {
                     </div>
                     {r.body && <p className="mt-2 text-sm whitespace-pre-line text-slate-700 dark:text-slate-300">{r.body}</p>}
                     <p className="mt-2 text-xs text-slate-500">
-                      {r.patient_name ?? 'Patient'} · {formatDate(r.created_at)}
+                      {r.patient_name ?? t('common.patient')} · {formatDate(r.created_at)}
                       {r.doctor_id && doctorName.get(r.doctor_id) ? ` · ${doctorName.get(r.doctor_id)}` : ''}
                     </p>
                   </li>

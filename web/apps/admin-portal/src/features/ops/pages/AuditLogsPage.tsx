@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Boxes, UserRound, Zap } from 'lucide-react';
+import type { TFunction } from 'i18next';
 import { adminApi, USER_ROLES, USER_ROLE_LABELS, type AuditLogListParams, type AuditLogOut } from '@hig/shared/api';
 import { fetchAllPages, filterParam, useDocumentTitle, useTableState, type FilterValues } from '@hig/shared/lib';
 import {
@@ -19,6 +20,7 @@ import {
   type DataTableColumn,
   type FilterOption,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { Drawer, KeyValue } from '../ui';
 import { JsonDiff } from '../components/JsonDiff';
 import { formatDateTime } from '../lib/format';
@@ -59,57 +61,74 @@ function actionTone(action: string): 'danger' | 'success' | 'warning' | 'info' |
   return 'neutral';
 }
 
-const actorName = (l: AuditLogOut) => l.actor_name ?? (l.actor_user_id ? 'User' : 'System');
+const actorName = (l: AuditLogOut, t: TFunction) => l.actor_name ?? (l.actor_user_id ? t('audit.actor.user') : t('audit.actor.system'));
 
-const COLUMNS: DataTableColumn<AuditLogOut>[] = [
-  {
-    key: 'when',
-    header: 'When',
-    sticky: true,
-    mobile: 'secondary',
-    cell: (l) => <DateCell value={l.created_at} display="datetime" secondary={<DateCell value={l.created_at} display="relative" />} />,
-    mobileCell: (l) => formatDateTime(l.created_at, 'd MMM yyyy, HH:mm'),
-    exportValue: (l) => l.created_at,
-  },
-  {
-    key: 'action',
-    header: 'Action',
-    mobile: 'primary',
-    cell: (l) => (
-      <Badge tone={actionTone(l.action)} className="font-mono">
-        {l.action}
-      </Badge>
-    ),
-    mobileCell: (l) => <span className="font-mono text-sm">{l.action}</span>,
-    exportValue: (l) => l.action,
-  },
-  {
-    key: 'entity',
-    header: 'Entity',
-    className: 'max-w-64',
-    cell: (l) => <TextCell primary={<span className="capitalize">{l.entity_type.replace(/_/g, ' ')}</span>} secondary={<span className="font-mono">{l.entity_id ?? '—'}</span>} />,
-    exportValue: (l) => `${l.entity_type}${l.entity_id ? `:${l.entity_id}` : ''}`,
-  },
-  {
-    key: 'actor',
-    header: 'Actor',
-    className: 'max-w-56',
-    cell: (l) => (
-      <PersonCell
-        name={actorName(l)}
-        avatar={!!l.actor_user_id}
-        secondary={l.actor_role ? (USER_ROLE_LABELS[l.actor_role as keyof typeof USER_ROLE_LABELS] ?? l.actor_role) : l.actor_user_id ? undefined : 'Automated'}
-      />
-    ),
-    exportValue: (l) => actorName(l),
-  },
-  {
-    key: 'ip',
-    header: 'IP address',
-    cell: (l) => <span className="font-mono text-xs">{l.ip ?? '—'}</span>,
-    exportValue: (l) => l.ip ?? '',
-  },
-];
+function auditColumns(t: TFunction): DataTableColumn<AuditLogOut>[] {
+  return [
+    {
+      key: 'when',
+      header: t('audit.columns.when'),
+      sticky: true,
+      mobile: 'secondary',
+      cell: (l) => <DateCell value={l.created_at} display="datetime" secondary={<DateCell value={l.created_at} display="relative" />} />,
+      mobileCell: (l) => formatDateTime(l.created_at, 'd MMM yyyy, HH:mm'),
+      exportValue: (l) => l.created_at,
+    },
+    {
+      key: 'action',
+      header: t('audit.columns.action'),
+      mobile: 'primary',
+      cell: (l) => (
+        <Badge tone={actionTone(l.action)} className="font-mono">
+          {l.action}
+        </Badge>
+      ),
+      mobileCell: (l) => <span className="font-mono text-sm">{l.action}</span>,
+      exportValue: (l) => l.action,
+    },
+    {
+      key: 'entity',
+      header: t('audit.columns.entity'),
+      className: 'max-w-64',
+      cell: (l) => (
+        <TextCell
+          primary={<span className="capitalize">{l.entity_type.replace(/_/g, ' ')}</span>}
+          secondary={<span className="font-mono">{l.entity_id ?? '—'}</span>}
+        />
+      ),
+      exportValue: (l) => `${l.entity_type}${l.entity_id ? `:${l.entity_id}` : ''}`,
+    },
+    {
+      key: 'actor',
+      header: t('audit.columns.actor'),
+      className: 'max-w-56',
+      cell: (l) => (
+        <PersonCell
+          name={actorName(l, t)}
+          avatar={!!l.actor_user_id}
+          secondary={
+            l.actor_role
+              ? (USER_ROLE_LABELS[l.actor_role as keyof typeof USER_ROLE_LABELS] ?? l.actor_role)
+              : l.actor_user_id
+                ? undefined
+                : t('audit.actor.automated')
+          }
+        />
+      ),
+      exportValue: (l) => actorName(l, t),
+    },
+    {
+      key: 'ip',
+      header: t('audit.columns.ip'),
+      cell: (l) => (
+        <span className="font-mono text-xs" dir="ltr">
+          {l.ip ?? '—'}
+        </span>
+      ),
+      exportValue: (l) => l.ip ?? '',
+    },
+  ];
+}
 
 /** Chip for a URL filter that has no control of its own (set from the event drawer). */
 function UrlChip({ label, value, onClear }: { label: string; value: string; onClear: () => void }) {
@@ -118,7 +137,9 @@ function UrlChip({ label, value, onClear }: { label: string; value: string; onCl
 }
 
 export default function AuditLogsPage() {
-  useDocumentTitle('Audit log');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('audit.title'));
+  const columns = useMemo(() => auditColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultPageSize: 50 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -137,27 +158,31 @@ export default function AuditLogsPage() {
     const actions = facets.data?.audit_actions ?? [];
     const groups = [...new Set(actions.map((a) => a.split('.')[0]!).filter(Boolean))].sort();
     return [
-      ...groups.map((g) => ({ value: `${g}.*`, label: `${g}.*`, description: `Every ${g} action` })),
+      ...groups.map((g) => ({ value: `${g}.*`, label: `${g}.*`, description: t('audit.filters.everyAction', { group: g }) })),
       ...actions.map((a) => ({ value: a, label: a })),
     ];
-  }, [facets.data]);
+  }, [facets.data, t]);
   const actorOptions = useMemo<FilterOption[]>(() => {
     const opts = (staff.data ?? []).map((s) => ({ value: s.id, label: s.full_name, description: USER_ROLE_LABELS[s.role] }));
     if (filters.actor_user_id && !opts.some((o) => o.value === filters.actor_user_id)) {
       const known = list.data?.items.find((l) => l.actor_user_id === filters.actor_user_id);
-      opts.unshift({ value: filters.actor_user_id, label: known?.actor_name ?? `User ${filters.actor_user_id.slice(0, 8)}`, description: 'Selected user' });
+      opts.unshift({
+        value: filters.actor_user_id,
+        label: known?.actor_name ?? t('audit.filters.userWithId', { id: filters.actor_user_id.slice(0, 8) }),
+        description: t('audit.filters.selectedUser'),
+      });
     }
     return opts;
-  }, [staff.data, filters.actor_user_id, list.data]);
+  }, [staff.data, filters.actor_user_id, list.data, t]);
 
   return (
     <div>
-      <PageHeader title="Audit log" description="Append-only record of security-relevant and state-changing actions." />
+      <PageHeader title={t('audit.title')} description={t('audit.description')} />
       <DataTable
         id="admin.audit"
-        caption="Audit log"
+        caption={t('audit.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -165,17 +190,17 @@ export default function AuditLogsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={setSelected}
-        rowLabel={(l) => `Open audit event ${l.action}`}
+        rowLabel={(l) => t('audit.openRow', { action: l.action })}
         density="compact"
-        emptyTitle="No audit events yet"
+        emptyTitle={t('audit.empty')}
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Action, entity id or actor…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('audit.filters.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="audit-log"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() => fetchAllPages((page, size) => adminApi.auditLogs({ ...apiFilters, page, page_size: size }))}
@@ -183,15 +208,15 @@ export default function AuditLogsPage() {
             }
             more={
               <MultiSelectFilter
-                label="Actor role"
+                label={t('audit.filters.actorRole')}
                 value={filters.actor_role}
                 onChange={(v) => setFilter('actor_role', v)}
-                options={[{ value: SYSTEM, label: 'System (automated)' }, ...USER_ROLES.map((r) => ({ value: r, label: USER_ROLE_LABELS[r] }))]}
+                options={[{ value: SYSTEM, label: t('audit.filters.systemAutomated') }, ...USER_ROLES.map((r) => ({ value: r, label: USER_ROLE_LABELS[r] }))]}
               />
             }
           >
             <SelectFilter
-              label="Action"
+              label={t('audit.filters.action')}
               icon={<Zap className="size-3.5 opacity-70" aria-hidden />}
               value={filters.action}
               onChange={(v) => setFilter('action', v)}
@@ -200,16 +225,16 @@ export default function AuditLogsPage() {
               searchable
             />
             <SelectFilter
-              label="Entity"
+              label={t('audit.filters.entity')}
               icon={<Boxes className="size-3.5 opacity-70" aria-hidden />}
               value={filters.entity_type}
               onChange={(v) => setFilters({ entity_type: v, entity_id: '' })}
-              options={(facets.data?.audit_entity_types ?? []).map((t) => ({ value: t, label: t.replace(/_/g, ' ') }))}
+              options={(facets.data?.audit_entity_types ?? []).map((type) => ({ value: type, label: type.replace(/_/g, ' ') }))}
               loading={facets.isLoading}
               searchable
             />
             <SelectFilter
-              label="Actor"
+              label={t('audit.filters.actor')}
               icon={<UserRound className="size-3.5 opacity-70" aria-hidden />}
               value={filters.actor_user_id}
               onChange={(v) => setFilter('actor_user_id', v)}
@@ -217,8 +242,8 @@ export default function AuditLogsPage() {
               loading={staff.isLoading}
               searchable
             />
-            <DateRangeFilter label="Date" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
-            <UrlChip label="Entity id" value={filters.entity_id} onClear={() => setFilter('entity_id', '')} />
+            <DateRangeFilter label={t('audit.filters.date')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <UrlChip label={t('audit.filters.entityId')} value={filters.entity_id} onClear={() => setFilter('entity_id', '')} />
           </FilterBar>
         }
       />
@@ -227,20 +252,20 @@ export default function AuditLogsPage() {
         open={!!selected}
         onClose={() => setSelected(null)}
         width="xl"
-        title={selected?.action ?? 'Audit event'}
+        title={selected?.action ?? t('audit.drawer.titleFallback')}
         subtitle={selected ? formatDateTime(selected.created_at, 'd MMM yyyy, HH:mm:ss') : undefined}
       >
         {selected && (
           <div className="space-y-5">
             <KeyValue
               items={[
-                ['Entity', `${selected.entity_type} · ${selected.entity_id ?? '—'}`],
+                [t('audit.drawer.entity'), `${selected.entity_type} · ${selected.entity_id ?? '—'}`],
                 [
-                  'Actor',
-                  `${actorName(selected)}${selected.actor_role ? ` (${USER_ROLE_LABELS[selected.actor_role as keyof typeof USER_ROLE_LABELS] ?? selected.actor_role})` : ''}`,
+                  t('audit.drawer.actor'),
+                  `${actorName(selected, t)}${selected.actor_role ? ` (${USER_ROLE_LABELS[selected.actor_role as keyof typeof USER_ROLE_LABELS] ?? selected.actor_role})` : ''}`,
                 ],
                 [
-                  'Actor id',
+                  t('audit.drawer.actorId'),
                   selected.actor_user_id ? (
                     <button
                       type="button"
@@ -256,10 +281,15 @@ export default function AuditLogsPage() {
                     '—'
                   ),
                 ],
-                ['IP address', selected.ip ?? '—'],
-                ['User agent', <span key="ua" className="text-xs">{selected.user_agent ?? '—'}</span>],
+                [t('audit.drawer.ip'), selected.ip ?? '—'],
                 [
-                  'Same entity',
+                  t('audit.drawer.userAgent'),
+                  <span key="ua" className="text-xs">
+                    {selected.user_agent ?? '—'}
+                  </span>,
+                ],
+                [
+                  t('audit.drawer.sameEntity'),
                   selected.entity_id ? (
                     <button
                       type="button"
@@ -269,7 +299,7 @@ export default function AuditLogsPage() {
                         setSelected(null);
                       }}
                     >
-                      Show all events for this entity
+                      {t('audit.drawer.showAllForEntity')}
                     </button>
                   ) : (
                     '—'
@@ -278,7 +308,7 @@ export default function AuditLogsPage() {
               ]}
             />
             <section>
-              <h3 className="mb-2 text-xs font-semibold uppercase text-slate-500">Changes</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase text-slate-500">{t('audit.drawer.changes')}</h3>
               <JsonDiff before={selected.before} after={selected.after} />
             </section>
           </div>

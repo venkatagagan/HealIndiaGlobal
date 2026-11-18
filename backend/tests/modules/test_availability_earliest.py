@@ -155,6 +155,8 @@ async def test_card_lists_use_constant_queries(client, db, engine):
             event.remove(engine.sync_engine, "before_cursor_execute", before)
         return counter["n"]
 
+    # warm-up: the first request also loads process-wide caches (enabled languages, translation overrides)
+    await client.get(f"{API}/hospitals")
     small = await count_queries()
     for i in range(4):
         h = await create_hospital(db, slug=f"extra-{i}", name=f"Extra {i}", city="Delhi")

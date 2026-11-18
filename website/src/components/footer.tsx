@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/link';
 import { ArrowRight, BadgeCheck, LockKeyhole, Mail, PhoneCall, ShieldCheck } from 'lucide-react';
 import type { Dictionary } from '@/i18n';
 import { fmt } from '@/i18n/format';
@@ -134,7 +134,7 @@ export async function Footer({ t, specialties }: { t: Dictionary; specialties: S
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-brand-deep hover:bg-brand-hover"
             >
               {t.common.getAssessment}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
             </a>
           </div>
         </div>

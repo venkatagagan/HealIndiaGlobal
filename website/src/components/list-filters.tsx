@@ -114,7 +114,7 @@ export function ListFilters({
   const active = Object.values(values).some(Boolean);
   // One compact row: each control carries its own label ("City: Any"), so no label rows above the selects.
   const control = (on: boolean) =>
-    `h-10 rounded-full border bg-white pl-4 pr-9 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 ${
+    `h-10 rounded-full border bg-white ps-4 pe-9 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 ${
       on ? 'border-primary-500 text-primary-800 ring-1 ring-primary-500/30' : 'border-slate-300 text-slate-800 hover:border-slate-400'
     }`;
 
@@ -134,7 +134,7 @@ export function ListFilters({
             f.checkbox ? (
               <label
                 key={f.key}
-                className={`${control(values[f.key] === 'true')} col-span-2 inline-flex shrink-0 cursor-pointer items-center gap-2 pr-4 whitespace-nowrap sm:col-span-1`}
+                className={`${control(values[f.key] === 'true')} col-span-2 inline-flex shrink-0 cursor-pointer items-center gap-2 pe-4 whitespace-nowrap sm:col-span-1`}
               >
                 <input
                   type="checkbox"
@@ -175,7 +175,7 @@ export function ListFilters({
               {resetLabel}
             </button>
           ) : null}
-          <div className="col-span-2 flex min-w-0 items-center justify-between gap-3 sm:ml-auto sm:justify-end">
+          <div className="col-span-2 flex min-w-0 items-center justify-between gap-3 sm:ms-auto sm:justify-end">
             <p aria-live="polite" className="text-sm font-medium whitespace-nowrap text-slate-600">
               {count !== null ? resultText(count) : null}
             </p>

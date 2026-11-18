@@ -20,8 +20,29 @@ Copy `.env.example` to `.env.local` to change the API, portal URLs, contact sett
 
 ## Routes
 
-The site is **English only** and served at the root with no locale prefix. Old `/en/*`, `/ar/*` and `/fr/*` URLs
-redirect permanently (308) to the same path at the root (`next.config.ts`).
+### Languages
+
+English is served at the root with no prefix (`/hospitals`); Arabic (right-to-left), French, Bengali and Russian live
+under `/ar`, `/fr`, `/bn`, `/ru` (`/ar/hospitals`). Only the languages an admin has switched on are routed and linked
+(`GET {API}/i18n/languages`, refreshed every 5 minutes); with the API unreachable (CI builds) the site is English only,
+and a switched-off language answers 404. `/en/...` redirects (308) to the unprefixed URL.
+
+* Pages live under `src/app/[lang]/`; `src/proxy.ts` rewrites English URLs to `/en/...` internally, 404s disabled
+  languages, and on a person's first visit (no `hig_lang` cookie, never for crawlers) redirects once to the browser
+  language when it is enabled. The header language switcher keeps the current page and stores the choice in the cookie.
+* UI text: `src/i18n/dictionaries/<lang>.ts` (`en.ts` is the source; the others are typed against it, so a missing key
+  fails `npm run typecheck`). `getDictionary()` (src/i18n/index.ts) applies admin text overrides
+  (`GET {API}/i18n/overrides?app=website`, keys = dotted dictionary paths such as `nav.faq` or `home.steps.0.title`).
+  After changing a dictionary run `node scripts/i18n/export-catalogs.mjs` from the repo root (uses
+  `scripts/export-i18n.mjs`).
+* Every page has a self canonical, hreflang alternates for the enabled languages plus `x-default` (English); the
+  section sitemaps list every language version with `xhtml:link` alternates.
+* Numbers, dates, lists, country names and money use `Intl` in the page language (`src/i18n/format.ts`); layout uses
+  logical (start/end) utilities and directional icons flip with `rtl:-scale-x-100`.
+* **Long-form content is English only for now**: guides, city and procedure guides (`content/en`) and the legal
+  documents (`docs/legal`) show their English body on translated pages, marked `lang="en" dir="ltr"` with a short
+  "available in English only" note. Cost guides, patient stories and procedure x city pages exist in English only
+  (`/ar/costs` redirects to `/costs`; links from translated pages point to the English URL).
 
 | Route | Content |
 |---|---|
@@ -179,9 +200,9 @@ about approved health pages without a real reviewer.
 
 ## Adding pages
 
-* New page: create `src/app/<route>/page.tsx` using `getDictionary()` and `pageMetadata(...)`, add the path to
-  `src/lib/routes.ts`, the strings to `src/i18n/dictionaries/en.ts` (the only dictionary; UI copy is English only)
-  and the route to `src/app/sitemap.ts`.
+* New page: create `src/app/[lang]/<route>/page.tsx` using `await getDictionary()` and `pageMetadata(...)`, add the
+  path to `src/lib/routes.ts` (link with `href()` and `@/components/link`, which keep the page language), the strings
+  to `src/i18n/dictionaries/en.ts` **and** `ar.ts`, `fr.ts`, `bn.ts`, `ru.ts`, and the route to `src/lib/sitemap.ts`.
 
 ## Deployment
 

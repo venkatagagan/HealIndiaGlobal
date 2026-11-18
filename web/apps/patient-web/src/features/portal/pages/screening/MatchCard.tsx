@@ -1,8 +1,9 @@
 import { BadgeCheck, Bookmark, BookmarkCheck, CirclePlus, CircleCheck, MapPin } from 'lucide-react';
 import type { MatchOut } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { Accreditations, Avatar, Money, Rating } from '../../components/common';
 import { paths } from '../../lib/paths';
-import { cn, formatMoneyRange } from '../../lib/shared';
+import { cn, formatMoneyRange, formatNumber } from '../../lib/shared';
 import { Badge, Button, ButtonLink, Card } from '../../ui/primitives';
 
 export function MatchCard({
@@ -24,6 +25,7 @@ export function MatchCard({
   saved: boolean;
   onToggleSave?: () => void;
 }) {
+  const { t } = useAppTranslation();
   const doctor = match.doctor;
   const score = Math.round(Number(match.match_score));
   const title = doctor?.full_name ?? match.hospital.name;
@@ -38,12 +40,14 @@ export function MatchCard({
               {doctor ? (
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {doctor.specialty.name}
-                  {doctor.experience_years ? ` · ${doctor.experience_years} years of experience` : ''}
+                  {doctor.experience_years
+                    ? ` · ${t('screening.match.experience', { count: doctor.experience_years, years: formatNumber(doctor.experience_years) })}`
+                    : ''}
                 </p>
               ) : null}
             </div>
             <Badge tone={score >= 80 ? 'green' : score >= 60 ? 'blue' : 'neutral'} className="text-sm">
-              {score}% match
+              {t('screening.match.score', { score: formatNumber(score) })}
             </Badge>
           </div>
           <p className="mt-1 flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300">
@@ -63,7 +67,8 @@ export function MatchCard({
         <Rating value={doctor?.rating_avg ?? match.hospital.rating_avg} count={doctor?.rating_count ?? match.hospital.rating_count} />
         {doctor?.success_rate_pct != null ? (
           <span className="inline-flex items-center gap-1 text-blue-700 dark:text-blue-300">
-            <BadgeCheck className="h-4 w-4" aria-hidden /> {Number(doctor.success_rate_pct).toFixed(0)}% success
+            <BadgeCheck className="h-4 w-4" aria-hidden />{' '}
+            {t('screening.match.success', { pct: formatNumber(Number(doctor.success_rate_pct), { maximumFractionDigits: 0 }) })}
           </span>
         ) : null}
         {match.procedure ? <span className="text-slate-500">{match.procedure.name}</span> : null}
@@ -81,17 +86,24 @@ export function MatchCard({
 
       <div className="mt-auto flex flex-wrap items-end justify-between gap-3 border-t border-slate-100 px-5 py-4 dark:border-slate-800">
         <div>
-          <p className="text-xs text-slate-500">Estimated total cost</p>
+          <p className="text-xs text-slate-500">{t('screening.match.estimatedTotal')}</p>
           <p className="text-2xl font-bold text-red-500">
-            {match.estimated_cost_minor != null ? <Money minor={match.estimated_cost_minor} currency={match.currency} trim /> : 'On request'}
+            {match.estimated_cost_minor != null ? (
+              <Money minor={match.estimated_cost_minor} currency={match.currency} trim />
+            ) : (
+              t('screening.match.onRequest')
+            )}
           </p>
           {match.savings ? (
             <p className="text-xs font-medium text-green-600 dark:text-green-400">
-              Save {match.savings.pct_min}-{match.savings.pct_max}% vs{' '}
-              {formatMoneyRange(match.savings.home_min_minor, match.savings.home_max_minor, match.savings.home_currency)} at home
+              {t('screening.match.savingsVsHome', {
+                min: formatNumber(match.savings.pct_min),
+                max: formatNumber(match.savings.pct_max),
+                range: formatMoneyRange(match.savings.home_min_minor, match.savings.home_max_minor, match.savings.home_currency),
+              })}
             </p>
           ) : null}
-          {match.package ? <p className="text-xs text-slate-500">Package: {match.package.name}</p> : null}
+          {match.package ? <p className="text-xs text-slate-500">{t('screening.match.package', { name: match.package.name })}</p> : null}
         </div>
         {showActions ? (
           <div className="flex flex-wrap gap-2">
@@ -100,7 +112,7 @@ export function MatchCard({
                 variant="ghost"
                 size="sm"
                 onClick={onToggleSave}
-                aria-label={saved ? 'Remove doctor from saved' : 'Save doctor'}
+                aria-label={saved ? t('screening.match.unsaveDoctor') : t('screening.match.saveDoctor')}
                 icon={saved ? <BookmarkCheck className="h-4 w-4 text-green-600" aria-hidden /> : <Bookmark className="h-4 w-4" aria-hidden />}
               />
             ) : null}
@@ -112,19 +124,19 @@ export function MatchCard({
               aria-pressed={selected}
               icon={selected ? <CircleCheck className="h-4 w-4" aria-hidden /> : <CirclePlus className="h-4 w-4" aria-hidden />}
             >
-              Compare
+              {t('screening.match.compare')}
             </Button>
             {doctor ? (
               <ButtonLink to={paths.doctor(doctor.id)} variant="outline" size="sm" target="_blank" rel="noopener">
-                View details
+                {t('screening.match.viewDetails')}
               </ButtonLink>
             ) : (
               <ButtonLink to={paths.hospital(match.hospital.slug)} variant="outline" size="sm" target="_blank" rel="noopener">
-                View hospital
+                {t('screening.match.viewHospital')}
               </ButtonLink>
             )}
             <Button size="sm" variant="danger" onClick={onRequestQuote}>
-              Request quote
+              {t('screening.match.requestQuote')}
             </Button>
           </div>
         ) : null}

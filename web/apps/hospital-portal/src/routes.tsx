@@ -5,6 +5,7 @@ import { RequireHospital } from './auth/RequireHospital';
 import { HospitalProvider } from './auth/HospitalProvider';
 import { ErrorState, LinkButton, PageLoader } from './components/ui';
 import { PortalLayout } from './layout/PortalLayout';
+import { useAppTranslation } from './i18n';
 import { RealtimeProvider } from './lib/realtime';
 
 /** Code-split page: the lazy component is created once at module load (never per render). */
@@ -42,12 +43,13 @@ const ProfilePage = lazyPage(async () => {
   }, 'ProfilePage');
 
 function RouteError() {
+  const { t } = useAppTranslation();
   const error = useRouteError();
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center p-4">
-      <ErrorState title="Something went wrong" error={error} onRetry={() => window.location.reload()} />
+      <ErrorState title={t('routes.errorTitle')} error={error} onRetry={() => window.location.reload()} />
       <LinkButton to="/" variant="ghost" size="sm">
-        Back to dashboard
+        {t('routes.backToDashboard')}
       </LinkButton>
     </div>
   );

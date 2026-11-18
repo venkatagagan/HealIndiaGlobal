@@ -51,7 +51,10 @@ import { useHospital } from '../../auth/HospitalProvider';
 import { formatDate, formatMoney, fromMinor, toMinor } from '../../lib/format';
 import { qk } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useAppTranslation } from '../../i18n';
 import { PayoutAccountSection } from './PayoutAccountForm';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 const TABS = ['items', 'payouts', 'statements', 'account'] as const;
 type Tab = (typeof TABS)[number];
@@ -63,6 +66,7 @@ const major = (m: number | undefined, ccy: string) => (m === undefined ? '' : fr
 // KPI strip
 // ---------------------------------------------------------------------------------------------------------
 function Summary() {
+  const { t } = useAppTranslation();
   const summary = useQuery({ queryKey: qk.financeSummary, queryFn: financeApi.payeeSummary });
   if (summary.isError) {
     return (
@@ -85,42 +89,50 @@ function Summary() {
     <>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Pending (in hold period)"
+          label={t('finance.summary.pending')}
           value={formatMoney(s.pending_minor, s.currency)}
           icon={<Clock className="size-5" aria-hidden />}
           tone="warning"
-          hint="Completed treatments within the post-discharge hold"
+          hint={t('finance.summary.pendingHint')}
         />
         <StatCard
-          label="Eligible for payout"
+          label={t('finance.summary.eligible')}
           value={formatMoney(s.eligible_minor, s.currency)}
           icon={<Wallet className="size-5" aria-hidden />}
           tone="info"
-          hint="Included in the next settlement batch"
+          hint={t('finance.summary.eligibleHint')}
         />
         <StatCard
-          label="On hold"
+          label={t('finance.summary.onHold')}
           value={formatMoney(s.on_hold_minor, s.currency)}
           icon={<PauseCircle className="size-5" aria-hidden />}
           tone="danger"
-          hint="Held by finance - see reasons below"
+          hint={t('finance.summary.onHoldHint')}
         />
-        <StatCard label="Paid out" value={formatMoney(s.paid_minor, s.currency)} icon={<CheckCircle2 className="size-5" aria-hidden />} tone="success" />
+        <StatCard
+          label={t('finance.summary.paidOut')}
+          value={formatMoney(s.paid_minor, s.currency)}
+          icon={<CheckCircle2 className="size-5" aria-hidden />}
+          tone="success"
+        />
       </div>
       <div className="mt-4 mb-6 flex flex-wrap gap-x-8 gap-y-2 rounded-xl border border-border bg-surface px-5 py-3 text-sm text-muted">
         <span className="inline-flex items-center gap-2">
           <CalendarClock className="size-4" aria-hidden />
-          Next payout: <strong className="text-fg">{formatDate(s.next_payout_date)}</strong>
+          {t('finance.summary.nextPayout')} <strong className="text-fg">{formatDate(s.next_payout_date)}</strong>
         </span>
         <span>
-          Last payout:{' '}
+          {t('finance.summary.lastPayout')}{' '}
           {s.last_payout ? (
             <strong className="text-fg">
-              {formatMoney(s.last_payout.amount_minor, s.last_payout.currency)} on {formatDate(s.last_payout.processed_at ?? s.last_payout.created_at)}
-              {s.last_payout.utr ? ` · UTR ${s.last_payout.utr}` : ''}
+              {t('finance.summary.lastPayoutValue', {
+                amount: formatMoney(s.last_payout.amount_minor, s.last_payout.currency),
+                date: formatDate(s.last_payout.processed_at ?? s.last_payout.created_at),
+              })}
+              {s.last_payout.utr ? ` · ${t('finance.summary.utrValue', { utr: s.last_payout.utr })}` : ''}
             </strong>
           ) : (
-            'none yet'
+            t('finance.summary.noneYet')
           )}
         </span>
       </div>
@@ -156,18 +168,25 @@ function itemApiFilters(f: FilterValues<typeof ITEM_FILTERS>): Omit<SettlementIt
 
 const deduction = (m: number, ccy: string) => <MoneyCell minor={-m} currency={ccy} className="text-muted" />;
 
-const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
+const itemColumns = (t: TFn): DataTableColumn<SettlementItemOut>[] => [
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('finance.columns.booking'),
     sticky: true,
     mobile: 'primary',
-    cell: (it) => <IdCell value={it.booking_number ?? 'Booking'} secondary={it.hold_reason ? <span className="text-danger-ink">Hold: {it.hold_reason}</span> : undefined} />,
+    cell: (it) => (
+      <IdCell
+        value={it.booking_number ?? t('finance.columns.booking')}
+        secondary={
+          it.hold_reason ? <span className="text-danger-ink">{t('finance.items.hold', { reason: it.hold_reason })}</span> : undefined
+        }
+      />
+    ),
     exportValue: (it) => it.booking_number ?? '',
   },
   {
     key: 'gross',
-    header: 'Gross',
+    header: t('finance.columns.gross'),
     align: 'end',
     sortable: true,
     sortKey: 'gross_minor',
@@ -175,12 +194,12 @@ const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
     cell: (it) => <MoneyCell minor={it.gross_minor} currency={it.currency} />,
     exportValue: (it) => major(it.gross_minor, it.currency),
   },
-  { key: 'commission', header: 'Commission', align: 'end', cell: (it) => deduction(it.commission_minor, it.currency), exportValue: (it) => major(it.commission_minor, it.currency) },
-  { key: 'gst', header: 'GST', align: 'end', cell: (it) => deduction(it.tax_minor, it.currency), exportValue: (it) => major(it.tax_minor, it.currency) },
-  { key: 'tds', header: 'TDS', align: 'end', defaultHidden: true, cell: (it) => deduction(it.tds_minor, it.currency), exportValue: (it) => major(it.tds_minor, it.currency) },
+  { key: 'commission', header: t('finance.columns.commission'), align: 'end', cell: (it) => deduction(it.commission_minor, it.currency), exportValue: (it) => major(it.commission_minor, it.currency) },
+  { key: 'gst', header: t('finance.columns.gst'), align: 'end', cell: (it) => deduction(it.tax_minor, it.currency), exportValue: (it) => major(it.tax_minor, it.currency) },
+  { key: 'tds', header: t('finance.columns.tds'), align: 'end', defaultHidden: true, cell: (it) => deduction(it.tds_minor, it.currency), exportValue: (it) => major(it.tds_minor, it.currency) },
   {
     key: 'net',
-    header: 'Net',
+    header: t('finance.columns.net'),
     align: 'end',
     sortable: true,
     sortKey: 'net_minor',
@@ -191,7 +210,7 @@ const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('common.status'),
     sortable: true,
     mobile: 'badge',
     cell: (it) => <StatusBadgeCell status={it.status} kind="settlementItem" />,
@@ -199,7 +218,7 @@ const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
   },
   {
     key: 'eligible',
-    header: 'Eligible',
+    header: t('finance.columns.eligible'),
     sortable: true,
     sortKey: 'eligible_at',
     cell: (it) => <DateCell value={it.eligible_at} display="date" />,
@@ -207,7 +226,7 @@ const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
   },
   {
     key: 'created',
-    header: 'Created',
+    header: t('common.created'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -218,6 +237,8 @@ const ITEM_COLUMNS: DataTableColumn<SettlementItemOut>[] = [
 ];
 
 function ItemsTab() {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => itemColumns(t), [t]);
   const table = useTableState({ filters: ITEM_FILTERS, prefix: 'si_', defaultSort: '-created_at', sortKeys: ITEM_SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => itemApiFilters(filters), [filters]);
@@ -230,7 +251,7 @@ function ItemsTab() {
   });
   const quick: SettlementItemStatus[] = ['pending', 'eligible', 'on_hold', 'batched', 'paid'];
   const quickItems: QuickFilterItem<SettlementItemStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('common.all'), count: counts.data?.total },
     ...quick.map((s) => ({ value: s, label: SETTLEMENT_ITEM_STATUS_LABELS[s], count: counts.data ? (counts.data.counts[s] ?? 0) : undefined })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 && quick.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -238,9 +259,9 @@ function ItemsTab() {
   return (
     <DataTable
       id="hospital.finance.items"
-      caption="Settlement items"
+      caption={t('finance.tabs.items')}
       table={table}
-      columns={ITEM_COLUMNS}
+      columns={columns}
       rows={items.data?.items}
       total={items.data?.total}
       loading={items.isLoading}
@@ -248,22 +269,22 @@ function ItemsTab() {
       error={items.error}
       onRetry={() => void items.refetch()}
       rowHref={(it) => `/bookings/${it.booking_id}`}
-      rowLabel={(it) => `Open booking ${it.booking_number ?? ''}`}
-      emptyTitle="No settlement items yet"
-      emptyDescription="Items are created when a booking is completed (patient discharged)."
+      rowLabel={(it) => t('finance.openBooking', { number: it.booking_number ?? '' })}
+      emptyTitle={t('finance.items.emptyTitle')}
+      emptyDescription={t('finance.items.emptyDescription')}
       header={
         <div className="border-b border-border px-2 sm:px-3">
-          <QuickFilters label="Settlement status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+          <QuickFilters label={t('finance.items.statusFilter')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
         </div>
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Booking number…' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('finance.items.searchPlaceholder') }}
           onReset={table.resetFilters}
           actions={
             <ExportButton
               filename="settlement-items"
-              columns={ITEM_COLUMNS}
+              columns={columns}
               rows={items.data?.items}
               total={items.data?.total}
               fetchAll={() => fetchAllPages((page, size) => financeApi.listItems({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}
@@ -271,23 +292,23 @@ function ItemsTab() {
           }
         >
           <MultiSelectFilter
-            label="Status"
+            label={t('common.status')}
             value={filters.status}
             onChange={(v) => setFilter('status', v)}
             options={SETTLEMENT_ITEM_STATUSES.map((s) => ({ value: s, label: SETTLEMENT_ITEM_STATUS_LABELS[s], tone: statusTone(s, 'settlementItem'), count: counts.data ? (counts.data.counts[s] ?? 0) : undefined }))}
           />
           <DateRangeFilter
-            label="Date"
+            label={t('common.date')}
             value={{ from: filters.from, to: filters.to }}
             onChange={({ from, to }) => setFilters({ from, to })}
             fieldOptions={[
-              { value: 'eligible', label: 'Eligible' },
-              { value: 'created', label: 'Created' },
+              { value: 'eligible', label: t('finance.columns.eligible') },
+              { value: 'created', label: t('common.created') },
             ]}
             field={filters.date_field || 'eligible'}
             onFieldChange={(date_field) => setFilter('date_field', date_field)}
           />
-          <AmountRangeFilter label="Net amount" currency={CURRENCY} value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
+          <AmountRangeFilter label={t('finance.items.netAmount')} currency={CURRENCY} value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
         </FilterBar>
       }
     />
@@ -322,21 +343,21 @@ function payoutApiFilters(f: FilterValues<typeof PAYOUT_FILTERS>): Omit<PayoutLi
   };
 }
 
-const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
+const payoutColumns = (t: TFn): DataTableColumn<PayoutOut>[] => [
   {
     key: 'date',
-    header: 'Date',
+    header: t('common.date'),
     sortable: true,
     sortKey: 'processed_at',
     sortDescFirst: true,
     sticky: true,
     mobile: 'secondary',
-    cell: (p) => <DateCell value={p.processed_at ?? p.created_at} display="datetime" secondary={p.processed_at ? undefined : 'Not processed yet'} />,
+    cell: (p) => <DateCell value={p.processed_at ?? p.created_at} display="datetime" secondary={p.processed_at ? undefined : t('finance.payouts.notProcessed')} />,
     exportValue: (p) => p.processed_at ?? p.created_at,
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('common.amount'),
     align: 'end',
     sortable: true,
     sortKey: 'amount_minor',
@@ -347,7 +368,7 @@ const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('common.status'),
     sortable: true,
     mobile: 'badge',
     cell: (p) => (
@@ -360,26 +381,26 @@ const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
   },
   {
     key: 'method',
-    header: 'Method',
+    header: t('finance.columns.method'),
     cell: (p) => PAYOUT_METHOD_LABELS[p.method] ?? p.method,
     exportValue: (p) => PAYOUT_METHOD_LABELS[p.method] ?? p.method,
   },
   {
     key: 'utr',
-    header: 'UTR / reference',
+    header: t('finance.columns.utr'),
     cell: (p) => <IdCell value={p.utr ?? p.gateway_payout_id} />,
     exportValue: (p) => p.utr ?? p.gateway_payout_id ?? '',
   },
   {
     key: 'batch',
-    header: 'Batch',
+    header: t('finance.columns.batch'),
     defaultHidden: true,
     cell: (p) => <TextCell primary={p.batch_number ?? '—'} />,
     exportValue: (p) => p.batch_number ?? '',
   },
   {
     key: 'created',
-    header: 'Created',
+    header: t('common.created'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -390,6 +411,8 @@ const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
 ];
 
 function PayoutsTab() {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => payoutColumns(t), [t]);
   const table = useTableState({ filters: PAYOUT_FILTERS, prefix: 'po_', defaultSort: '-created_at', sortKeys: PAYOUT_SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => payoutApiFilters(filters), [filters]);
@@ -402,7 +425,7 @@ function PayoutsTab() {
   });
   const quick: PayoutStatus[] = ['queued', 'processing', 'processed', 'failed'];
   const quickItems: QuickFilterItem<PayoutStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('common.all'), count: counts.data?.total },
     ...quick.map((s) => ({ value: s, label: PAYOUT_STATUS_LABELS[s], count: counts.data ? (counts.data.counts[s] ?? 0) : undefined })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 && quick.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -410,30 +433,30 @@ function PayoutsTab() {
   return (
     <DataTable
       id="hospital.finance.payouts"
-      caption="Payouts"
+      caption={t('finance.tabs.payouts')}
       table={table}
-      columns={PAYOUT_COLUMNS}
+      columns={columns}
       rows={payouts.data?.items}
       total={payouts.data?.total}
       loading={payouts.isLoading}
       fetching={payouts.isFetching && !payouts.isLoading}
       error={payouts.error}
       onRetry={() => void payouts.refetch()}
-      emptyTitle="No payouts yet"
-      emptyDescription="Payouts are made in settlement cycles once items become eligible."
+      emptyTitle={t('finance.payouts.emptyTitle')}
+      emptyDescription={t('finance.payouts.emptyDescription')}
       header={
         <div className="border-b border-border px-2 sm:px-3">
-          <QuickFilters label="Payout status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+          <QuickFilters label={t('finance.payouts.statusFilter')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
         </div>
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'UTR or batch number…' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('finance.payouts.searchPlaceholder') }}
           onReset={table.resetFilters}
           actions={
             <ExportButton
               filename="payouts"
-              columns={PAYOUT_COLUMNS}
+              columns={columns}
               rows={payouts.data?.items}
               total={payouts.data?.total}
               fetchAll={() => fetchAllPages((page, size) => financeApi.listPayouts({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}
@@ -441,7 +464,7 @@ function PayoutsTab() {
           }
           more={
             <MultiSelectFilter
-              label="Method"
+              label={t('finance.columns.method')}
               value={filters.method}
               onChange={(v) => setFilter('method', v)}
               options={PAYOUT_METHODS.map((m) => ({ value: m, label: PAYOUT_METHOD_LABELS[m] ?? m }))}
@@ -449,23 +472,23 @@ function PayoutsTab() {
           }
         >
           <MultiSelectFilter
-            label="Status"
+            label={t('common.status')}
             value={filters.status}
             onChange={(v) => setFilter('status', v)}
             options={PAYOUT_STATUSES.map((s) => ({ value: s, label: PAYOUT_STATUS_LABELS[s], tone: statusTone(s, 'payout'), count: counts.data ? (counts.data.counts[s] ?? 0) : undefined }))}
           />
           <DateRangeFilter
-            label="Date"
+            label={t('common.date')}
             value={{ from: filters.from, to: filters.to }}
             onChange={({ from, to }) => setFilters({ from, to })}
             fieldOptions={[
-              { value: 'processed', label: 'Paid on' },
-              { value: 'created', label: 'Created' },
+              { value: 'processed', label: t('finance.payouts.paidOn') },
+              { value: 'created', label: t('common.created') },
             ]}
             field={filters.date_field || 'processed'}
             onFieldChange={(date_field) => setFilter('date_field', date_field)}
           />
-          <AmountRangeFilter label="Amount" currency={CURRENCY} value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
+          <AmountRangeFilter label={t('common.amount')} currency={CURRENCY} value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
         </FilterBar>
       }
     />
@@ -555,36 +578,37 @@ async function fetchStatement(params: { from?: string; to?: string }): Promise<{
   return { summary: { ...summary, currency: ccy }, rows };
 }
 
-const typeLabel = (t: string) => t.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+const typeLabel = (t: TFn, type: string) =>
+  t(`finance.statement.types.${type}`, { defaultValue: type.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase()) });
 const TYPE_TONES: Record<string, 'success' | 'danger' | 'info' | 'neutral'> = { earning: 'success', clawback: 'danger', payout: 'info' };
 const optionalMoney = (m: number | undefined, ccy: string) => (m === undefined ? <span className="text-muted">—</span> : <MoneyCell minor={m} currency={ccy} />);
 
-const STATEMENT_COLUMNS: DataTableColumn<Txn>[] = [
-  { key: 'date', header: 'Date', sortable: true, sticky: true, mobile: 'secondary', sortValue: (r) => r.date, cell: (r) => <DateCell value={r.date} display="date" />, exportValue: (r) => r.date },
+const statementColumns = (t: TFn): DataTableColumn<Txn>[] => [
+  { key: 'date', header: t('common.date'), sortable: true, sticky: true, mobile: 'secondary', sortValue: (r) => r.date, cell: (r) => <DateCell value={r.date} display="date" />, exportValue: (r) => r.date },
   {
     key: 'type',
-    header: 'Type',
+    header: t('common.type'),
     sortable: true,
     mobile: 'badge',
     sortValue: (r) => r.type,
-    cell: (r) => <StatusBadge status={r.type} label={typeLabel(r.type)} tone={TYPE_TONES[r.type] ?? 'neutral'} dot={false} />,
-    exportValue: (r) => typeLabel(r.type),
+    cell: (r) => <StatusBadge status={r.type} label={typeLabel(t, r.type)} tone={TYPE_TONES[r.type] ?? 'neutral'} dot={false} />,
+    exportValue: (r) => typeLabel(t, r.type),
   },
   {
     key: 'reference',
-    header: 'Reference',
+    header: t('finance.columns.reference'),
     mobile: 'primary',
     cell: (r) => <IdCell value={r.booking_number ?? r.reference} copy={false} secondary={r.booking_number && r.reference ? r.reference : undefined} />,
     exportValue: (r) => r.booking_number ?? r.reference ?? '',
   },
-  { key: 'description', header: 'Description', className: 'max-w-72', cell: (r) => <TextCell primary={r.description ?? '—'} />, exportValue: (r) => r.description ?? '' },
-  { key: 'gross', header: 'Gross', align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.gross_minor, r.currency), exportValue: (r) => major(r.gross_minor, r.currency) },
-  { key: 'commission', header: 'Commission', align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.commission_minor, r.currency), exportValue: (r) => major(r.commission_minor, r.currency) },
-  { key: 'gst', header: 'GST', align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.tax_minor, r.currency), exportValue: (r) => major(r.tax_minor, r.currency) },
-  { key: 'tds', header: 'TDS', align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.tds_minor, r.currency), exportValue: (r) => major(r.tds_minor, r.currency) },
+  { key: 'description', header: t('common.description'), className: 'max-w-72', cell: (r) => <TextCell primary={r.description ?? '—'} />, exportValue: (r) => r.description ?? '' },
+  { key: 'gross', header: t('finance.columns.gross'), align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.gross_minor, r.currency), exportValue: (r) => major(r.gross_minor, r.currency) },
+  { key: 'commission', header: t('finance.columns.commission'), align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.commission_minor, r.currency), exportValue: (r) => major(r.commission_minor, r.currency) },
+  { key: 'gst', header: t('finance.columns.gst'), align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.tax_minor, r.currency), exportValue: (r) => major(r.tax_minor, r.currency) },
+  { key: 'tds', header: t('finance.columns.tds'), align: 'end', defaultHidden: true, cell: (r) => optionalMoney(r.tds_minor, r.currency), exportValue: (r) => major(r.tds_minor, r.currency) },
   {
     key: 'net',
-    header: 'Amount',
+    header: t('common.amount'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -592,11 +616,13 @@ const STATEMENT_COLUMNS: DataTableColumn<Txn>[] = [
     cell: (r) => <MoneyCell minor={r.net_minor} currency={r.currency} className={r.net_minor < 0 ? 'text-danger-ink' : 'text-success-ink'} />,
     exportValue: (r) => major(r.net_minor, r.currency),
   },
-  { key: 'currency', header: 'Currency', defaultHidden: true, cell: (r) => r.currency, exportValue: (r) => r.currency },
-  { key: 'status', header: 'Status', defaultHidden: true, cell: (r) => (r.status ? <StatusBadge status={r.status} /> : '—'), exportValue: (r) => r.status ?? '' },
+  { key: 'currency', header: t('finance.columns.currency'), defaultHidden: true, cell: (r) => r.currency, exportValue: (r) => r.currency },
+  { key: 'status', header: t('common.status'), defaultHidden: true, cell: (r) => (r.status ? <StatusBadge status={r.status} /> : '—'), exportValue: (r) => r.status ?? '' },
 ];
 
 function StatementsTab() {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => statementColumns(t), [t]);
   const table = useTableState({ filters: STATEMENT_FILTERS, prefix: 'st_', defaultSort: '-date', defaultPageSize: 50 });
   const { filters, setFilter, setFilters } = table;
   const period = { from: filters.from, to: filters.to };
@@ -605,36 +631,38 @@ function StatementsTab() {
   const all = statement.data?.rows ?? [];
   const summary = statement.data?.summary;
   const rows = all.filter(matchesSearch(filters.q, (r) => [r.reference, r.booking_number, r.description])).filter((r) => !filters.type || r.type === filters.type);
-  const types = [...new Set(all.map((r) => r.type))].sort().map((t) => ({ value: t, label: typeLabel(t), count: all.filter((r) => r.type === t).length }));
+  const types = [...new Set(all.map((r) => r.type))]
+    .sort()
+    .map((type) => ({ value: type, label: typeLabel(t, type), count: all.filter((r) => r.type === type).length }));
   const ccy = summary?.currency ?? CURRENCY;
-  const periodLabel = summary?.from_date && summary.to_date ? `${formatDate(summary.from_date)} – ${formatDate(summary.to_date)}` : 'Last 30 days';
+  const periodLabel = summary?.from_date && summary.to_date ? `${formatDate(summary.from_date)} – ${formatDate(summary.to_date)}` : t('finance.statement.last30');
   const figures: [string, number | undefined][] = [
-    ['Opening balance', summary?.opening_balance_minor],
-    ['Earned', summary?.total_earned_minor],
-    ['Paid out', summary?.total_paid_minor],
-    ['Closing balance', summary?.closing_balance_minor],
+    [t('finance.statement.openingBalance'), summary?.opening_balance_minor],
+    [t('finance.statement.earned'), summary?.total_earned_minor],
+    [t('finance.summary.paidOut'), summary?.total_paid_minor],
+    [t('finance.statement.closingBalance'), summary?.closing_balance_minor],
   ];
 
   return (
     <DataTable
       id="hospital.finance.statements"
-      caption="Statement"
+      caption={t('finance.statement.caption')}
       table={table}
-      columns={STATEMENT_COLUMNS}
+      columns={columns}
       rows={statement.data ? rows : undefined}
       rowKey={(r, i) => `${r.date}-${r.reference ?? ''}-${i}`}
       rowHref={(r) => (r.booking_id ? `/bookings/${r.booking_id}` : null)}
-      rowLabel={(r) => `Open booking ${r.booking_number ?? ''}`}
+      rowLabel={(r) => t('finance.openBooking', { number: r.booking_number ?? '' })}
       loading={statement.isPending}
       fetching={statement.isFetching && !statement.isPending}
       error={statement.error}
       onRetry={() => void statement.refetch()}
-      emptyTitle="No transactions in this period"
-      emptyDescription="Pick a longer period to see older settlements and payouts."
+      emptyTitle={t('finance.statement.emptyTitle')}
+      emptyDescription={t('finance.statement.emptyDescription')}
       header={
         <div className="border-b border-border px-4 py-3 sm:px-5">
           <p className="text-xs font-medium tracking-wide text-muted uppercase">
-            {periodLabel} · {all.length} transaction{all.length === 1 ? '' : 's'}
+            {periodLabel} · {t('finance.statement.transactions', { count: all.length })}
           </p>
           <dl className="mt-2 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
             {figures.map(([label, value]) => (
@@ -648,12 +676,12 @@ function StatementsTab() {
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Reference or description…' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('finance.statement.searchPlaceholder') }}
           onReset={table.resetFilters}
-          actions={<ExportButton filename="statement" columns={STATEMENT_COLUMNS} rows={rows} />}
+          actions={<ExportButton filename="statement" columns={columns} rows={rows} />}
         >
-          <DateRangeFilter label="Period" value={period} onChange={({ from, to }) => setFilters({ from, to })} />
-          <SelectFilter label="Type" value={filters.type} onChange={(v) => setFilter('type', v)} options={types} />
+          <DateRangeFilter label={t('finance.statement.period')} value={period} onChange={({ from, to }) => setFilters({ from, to })} />
+          <SelectFilter label={t('common.type')} value={filters.type} onChange={(v) => setFilter('type', v)} options={types} />
         </FilterBar>
       }
     />
@@ -664,7 +692,8 @@ function StatementsTab() {
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export function FinancePage() {
-  useDocumentTitle('Finance');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('finance.title'));
   const { canFinance } = useHospital();
   const [searchParams, setSearchParams] = useSearchParams();
   const raw = searchParams.get('tab');
@@ -675,9 +704,9 @@ export function FinancePage() {
   if (!canFinance) {
     return (
       <div>
-        <PageHeader title="Finance" />
+        <PageHeader title={t('finance.title')} />
         <Card>
-          <EmptyState title="Finance access required" description="Ask a hospital owner or admin to give you the Finance role." />
+          <EmptyState title={t('finance.accessRequired')} description={t('finance.accessRequiredDescription')} />
         </Card>
       </div>
     );
@@ -685,18 +714,18 @@ export function FinancePage() {
   return (
     <div>
       <PageHeader
-        title="Finance"
-        description="Settlements are paid after discharge and the hold period, net of platform commission, GST on commission and TDS (194-O)."
+        title={t('finance.title')}
+        description={t('finance.description')}
       />
       <Summary />
       <Tabs
         className="mb-4"
-        aria-label="Finance sections"
+        aria-label={t('finance.sections')}
         tabs={[
-          { value: 'items', label: 'Settlement items' },
-          { value: 'payouts', label: 'Payouts' },
-          { value: 'statements', label: 'Statements' },
-          { value: 'account', label: 'Payout account' },
+          { value: 'items', label: t('finance.tabs.items') },
+          { value: 'payouts', label: t('finance.tabs.payouts') },
+          { value: 'statements', label: t('finance.tabs.statements') },
+          { value: 'account', label: t('finance.tabs.account') },
         ]}
         value={tab}
         onChange={setTab}
@@ -706,7 +735,7 @@ export function FinancePage() {
       {tab === 'statements' && <StatementsTab />}
       {tab === 'account' && (
         <Card>
-          <CardHeader title="Payout bank account" description="Settlements are transferred to this account." />
+          <CardHeader title={t('finance.account.title')} description={t('finance.account.description')} />
           <CardBody>
             <PayoutAccountSection />
           </CardBody>

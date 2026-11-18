@@ -802,6 +802,10 @@ def validate_contract(result: Any, expected_engine: str | None = None) -> list[s
     return errors
 
 
+#: TriageResult fields filled by the service (not part of the model output contract / TRIAGE_JSON_SCHEMA)
+SERVER_SIDE_FIELDS = frozenset({"engine", "summary_language", "summary_localized", "summary_en"})
+
+
 def validate_json_schema(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
     """Minimal JSON-schema check for the subset ``TRIAGE_JSON_SCHEMA`` uses (type, enum, properties, required,
     additionalProperties, items, minimum/maximum)."""
@@ -921,7 +925,8 @@ def score_case(
             out, expected_engine=None if "fallback" in run.engine_used else expected_engine
         )
         if module_schema is not None:
-            stripped = {k: v for k, v in out.items() if k != "engine"}
+            # engine + the server-side language bookkeeping are set by the service, not by the model
+            stripped = {k: v for k, v in out.items() if k not in SERVER_SIDE_FIELDS}
             schema_errors += [
                 f"TRIAGE_JSON_SCHEMA {e}" for e in validate_json_schema(stripped, module_schema)
             ]

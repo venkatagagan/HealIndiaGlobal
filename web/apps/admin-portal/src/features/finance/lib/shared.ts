@@ -24,3 +24,4 @@ export {
 export { useDebouncedValue, useDocumentTitle } from '@hig/shared/lib';
 export { useTheme } from '@hig/shared/lib';
 export { cn } from '@hig/shared/lib';
+export { formatNumber, intlLocale } from '@hig/shared/lib';

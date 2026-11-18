@@ -16,10 +16,13 @@ import {
   type PaymentOrderOut,
   type Uuid,
 } from '@hig/shared/api';
-import { formatMoney, fromMinor } from '@hig/shared/lib';
+import { formatMoney, fromMinor, i18n } from '@hig/shared/lib';
 import { Button, DataTable, DateCell, MoneyCell, TextCell, type DataTableColumn } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { qk } from '../api/queries';
 import { PatientStatus, patientStatusLabel } from './listing';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 export interface PaymentRow {
   id: Uuid;
@@ -33,7 +36,7 @@ export const paymentDate = (r: PaymentRow) => r.order.paid_at ?? r.order.created
 
 export function paymentDescription(r: PaymentRow): string {
   const purpose = PAYMENT_PURPOSE_LABELS[r.order.purpose] ?? r.order.purpose;
-  const what = r.booking ? (r.booking.procedure?.name ?? r.booking.package?.name ?? 'Treatment') : null;
+  const what = r.booking ? (r.booking.procedure?.name ?? r.booking.package?.name ?? i18n.t('patient:bookings.treatment')) : null;
   return what ? `${purpose} · ${what}` : purpose;
 }
 
@@ -68,6 +71,7 @@ export function usePaymentHistory(options: { bookingId?: Uuid; bookings?: readon
 }
 
 export function ReceiptButton({ receipt, compact = false }: { receipt: InvoiceOut | null; compact?: boolean }) {
+  const { t } = useAppTranslation();
   const [busy, setBusy] = useState(false);
   if (!receipt) return <span className="text-xs text-muted">—</span>;
   return (
@@ -76,7 +80,7 @@ export function ReceiptButton({ receipt, compact = false }: { receipt: InvoiceOu
       size="xs"
       loading={busy}
       leftIcon={<Download className="size-3.5" aria-hidden />}
-      aria-label={`Download receipt ${receipt.invoice_number}`}
+      aria-label={t('payments.receipt.downloadLabel', { number: receipt.invoice_number })}
       onClick={async (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -84,33 +88,33 @@ export function ReceiptButton({ receipt, compact = false }: { receipt: InvoiceOu
         try {
           await paymentsApi.downloadInvoicePdf(receipt);
         } catch (err) {
-          toast.error(errorMessage(err, 'Download failed.'));
+          toast.error(errorMessage(err, t('payments.receipt.downloadFailed')));
         } finally {
           setBusy(false);
         }
       }}
     >
-      {compact ? 'PDF' : 'Receipt'}
+      {compact ? t('payments.receipt.pdf') : t('payments.receipt.button')}
     </Button>
   );
 }
 
-export function paymentColumns({ withBooking }: { withBooking: boolean }): DataTableColumn<PaymentRow>[] {
+export function paymentColumns({ withBooking, t }: { withBooking: boolean; t: TFn }): DataTableColumn<PaymentRow>[] {
   return [
     {
       key: 'date',
-      header: 'Date',
+      header: t('payments.columns.date'),
       sticky: true,
       sortable: true,
       sortDescFirst: true,
       sortValue: paymentDate,
       mobile: 'meta',
-      cell: (r) => <DateCell value={paymentDate(r)} display="date" secondary={r.order.paid_at ? undefined : 'Started'} />,
+      cell: (r) => <DateCell value={paymentDate(r)} display="date" secondary={r.order.paid_at ? undefined : t('payments.columns.started')} />,
       exportValue: paymentDate,
     },
     {
       key: 'description',
-      header: 'Description',
+      header: t('payments.columns.description'),
       mobile: 'primary',
       className: 'max-w-72',
       sortable: true,
@@ -130,21 +134,21 @@ export function paymentColumns({ withBooking }: { withBooking: boolean }): DataT
     },
     {
       key: 'method',
-      header: 'Method',
+      header: t('payments.columns.method'),
       defaultHidden: true,
       cell: (r) => <span className="whitespace-nowrap text-sm">{PAYMENT_GATEWAY_LABELS[r.order.gateway] ?? r.order.gateway}</span>,
       exportValue: (r) => PAYMENT_GATEWAY_LABELS[r.order.gateway] ?? r.order.gateway,
     },
     {
       key: 'reference',
-      header: 'Reference',
+      header: t('payments.columns.reference'),
       defaultHidden: true,
       cell: (r) => <span className="font-mono text-xs">{r.order.order_number}</span>,
       exportValue: (r) => r.order.order_number,
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('payments.columns.amount'),
       align: 'end',
       sortable: true,
       sortValue: (r) => r.order.amount_minor,
@@ -153,14 +157,18 @@ export function paymentColumns({ withBooking }: { withBooking: boolean }): DataT
           minor={r.order.amount_minor}
           currency={r.order.currency}
           className={r.order.status === 'paid' ? undefined : 'opacity-80'}
-          secondary={r.order.base_currency !== r.order.currency ? `≈ ${formatMoney(r.order.base_amount_minor, r.order.base_currency)}` : undefined}
+          secondary={
+            r.order.base_currency !== r.order.currency
+              ? t('payments.columns.approx', { amount: formatMoney(r.order.base_amount_minor, r.order.base_currency) })
+              : undefined
+          }
         />
       ),
       exportValue: (r) => `${r.order.currency} ${fromMinor(r.order.amount_minor, r.order.currency)}`,
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('payments.columns.status'),
       sortable: true,
       sortValue: (r) => r.order.status,
       mobile: 'badge',
@@ -169,7 +177,7 @@ export function paymentColumns({ withBooking }: { withBooking: boolean }): DataT
     },
     {
       key: 'receipt',
-      header: 'Receipt',
+      header: t('payments.columns.receipt'),
       align: 'end',
       hideable: false,
       exportable: true,
@@ -180,12 +188,13 @@ export function paymentColumns({ withBooking }: { withBooking: boolean }): DataT
 }
 
 /** Compact payments table for detail pages (no filter bar). */
-export function PaymentsTable({ bookingId, emptyText = 'No payments yet.' }: { bookingId: Uuid; emptyText?: string }) {
+export function PaymentsTable({ bookingId, emptyText }: { bookingId: Uuid; emptyText?: string }) {
+  const { t } = useAppTranslation();
   const history = usePaymentHistory({ bookingId });
-  const columns = useMemo(() => paymentColumns({ withBooking: false }), []);
+  const columns = useMemo(() => paymentColumns({ withBooking: false, t }), [t]);
   return (
     <DataTable
-      caption="Payments"
+      caption={t('payments.table.caption')}
       columns={columns}
       rows={history.rows}
       loading={history.loading}
@@ -198,8 +207,8 @@ export function PaymentsTable({ bookingId, emptyText = 'No payments yet.' }: { b
       showViewOptions={false}
       className="shadow-none"
       emptyIcon={<Receipt className="size-7" aria-hidden />}
-      emptyTitle={emptyText}
-      emptyDescription="Receipts appear here after each successful payment."
+      emptyTitle={emptyText ?? t('payments.table.emptyTitle')}
+      emptyDescription={t('payments.table.emptyDescription')}
     />
   );
 }

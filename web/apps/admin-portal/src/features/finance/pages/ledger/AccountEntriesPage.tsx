@@ -3,12 +3,8 @@ import { useParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ENTRY_DIRECTIONS,
-  ENTRY_DIRECTION_LABELS,
   financeApi,
-  LEDGER_ACCOUNT_TYPE_LABELS,
-  LEDGER_OWNER_TYPE_LABELS,
   LEDGER_TXN_TYPES,
-  LEDGER_TXN_TYPE_LABELS,
   type AccountEntryListParams,
   type AccountEntryOut,
 } from '@hig/shared/api';
@@ -26,6 +22,7 @@ import {
   TextCell,
   type DataTableColumn,
 } from '@hig/shared/ui';
+import { enumLabel, enumOptions, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys } from '../../api/queries';
 import { Mono, Money } from '../../components/finance';
 import { LedgerTabs, NORMAL_BALANCE, TransactionModal } from '../../components/ledger';
@@ -50,10 +47,10 @@ function toApiFilters(f: FilterValues<typeof FILTERS>): Omit<AccountEntryListPar
   };
 }
 
-const COLUMNS: DataTableColumn<AccountEntryOut>[] = [
+const entryColumns = (t: FinanceT): DataTableColumn<AccountEntryOut>[] => [
   {
     key: 'posted',
-    header: 'Posted',
+    header: t('ledgerEntries.columns.posted'),
     sortable: true,
     sortKey: 'posted_at',
     sortDescFirst: true,
@@ -64,15 +61,15 @@ const COLUMNS: DataTableColumn<AccountEntryOut>[] = [
   },
   {
     key: 'txn',
-    header: 'Transaction',
+    header: t('ledgerEntries.columns.transaction'),
     mobile: 'primary',
     className: 'max-w-96',
-    cell: (e) => <TextCell primary={LEDGER_TXN_TYPE_LABELS[e.txn_type] ?? e.txn_type} secondary={e.description ?? undefined} />,
-    exportValue: (e) => LEDGER_TXN_TYPE_LABELS[e.txn_type] ?? e.txn_type,
+    cell: (e) => <TextCell primary={enumLabel('ledgerTxnType', e.txn_type)} secondary={e.description ?? undefined} />,
+    exportValue: (e) => enumLabel('ledgerTxnType', e.txn_type),
   },
   {
     key: 'reference',
-    header: 'Reference',
+    header: t('ledger.txn.reference'),
     cell: (e) =>
       e.reference_type ? (
         <TextCell primary={e.reference_type} secondary={e.reference_id ? <span className="font-mono">{e.reference_id.slice(0, 8)}…</span> : undefined} />
@@ -83,7 +80,7 @@ const COLUMNS: DataTableColumn<AccountEntryOut>[] = [
   },
   {
     key: 'debit',
-    header: 'Debit',
+    header: t('ledger.entries.debit'),
     align: 'end',
     sortable: true,
     sortKey: 'amount_minor',
@@ -93,14 +90,14 @@ const COLUMNS: DataTableColumn<AccountEntryOut>[] = [
   },
   {
     key: 'credit',
-    header: 'Credit',
+    header: t('ledger.entries.credit'),
     align: 'end',
     cell: (e) => (e.direction === 'credit' ? <MoneyCell minor={e.amount_minor} currency={e.currency} /> : null),
     exportValue: (e) => (e.direction === 'credit' ? fromMinor(e.amount_minor, e.currency) : ''),
   },
   {
     key: 'effect',
-    header: 'Balance effect',
+    header: t('ledgerEntries.columns.balanceEffect'),
     align: 'end',
     mobile: 'badge',
     cell: (e) => (
@@ -113,6 +110,8 @@ const COLUMNS: DataTableColumn<AccountEntryOut>[] = [
 ];
 
 export default function AccountEntriesPage() {
+  const { t } = useFinanceTranslation();
+  const columns = useMemo(() => entryColumns(t), [t]);
   const { accountId = '' } = useParams();
   const account = useQuery({
     queryKey: [...financeKeys.all, 'account', accountId],
@@ -120,7 +119,7 @@ export default function AccountEntriesPage() {
     enabled: Boolean(accountId),
   });
   const a = account.data;
-  useDocumentTitle(a ? `Ledger · ${a.code}` : 'Ledger account');
+  useDocumentTitle(a ? t('ledgerEntries.documentTitle', { code: a.code }) : t('ledgerEntries.title'));
 
   const table = useTableState({ filters: FILTERS, defaultSort: '-posted_at', sortKeys: SORT_KEYS, defaultPageSize: 50 });
   const { filters, setFilter, setFilters } = table;
@@ -137,8 +136,8 @@ export default function AccountEntriesPage() {
   return (
     <div>
       <PageHeader
-        back={{ to: financePath('ledger'), label: 'Accounts' }}
-        title={a ? <span className="font-mono">{a.code}</span> : 'Ledger account'}
+        back={{ to: financePath('ledger'), label: t('ledger.tabs.accounts') }}
+        title={a ? <span className="font-mono">{a.code}</span> : t('ledgerEntries.title')}
         description={a?.name}
       />
       <LedgerTabs />
@@ -148,10 +147,13 @@ export default function AccountEntriesPage() {
           <DescriptionList
             columns={3}
             items={[
-              { label: 'Type', value: <Badge>{LEDGER_ACCOUNT_TYPE_LABELS[a.type]}</Badge> },
-              { label: 'Owner', value: <>{LEDGER_OWNER_TYPE_LABELS[a.owner_type]}{a.owner_id && <> · <Mono>{a.owner_id}</Mono></>}</> },
+              { label: t('ledgerAccounts.columns.type'), value: <Badge>{enumLabel('ledgerAccountType', a.type)}</Badge> },
               {
-                label: `Balance (${NORMAL_BALANCE[a.type]}-positive)`,
+                label: t('ledgerAccounts.columns.owner'),
+                value: <>{enumLabel('ledgerOwnerType', a.owner_type)}{a.owner_id && <> · <Mono>{a.owner_id}</Mono></>}</>,
+              },
+              {
+                label: NORMAL_BALANCE[a.type] === 'debit' ? t('ledgerEntries.balanceDebitPositive') : t('ledgerEntries.balanceCreditPositive'),
                 value: <Money minor={a.balance_minor} currency={a.currency} signed className="text-lg font-semibold" />,
               },
             ]}
@@ -161,9 +163,9 @@ export default function AccountEntriesPage() {
 
       <DataTable
         id="admin.finance.ledger.entries"
-        caption="Account entries"
+        caption={t('ledgerEntries.caption')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={entries.data?.items}
         total={entries.data?.total}
         loading={entries.isLoading}
@@ -171,8 +173,8 @@ export default function AccountEntriesPage() {
         error={entries.error}
         onRetry={() => void entries.refetch()}
         onRowClick={(e) => setTxnId(e.transaction_id)}
-        rowLabel={(e) => `Open journal entry ${LEDGER_TXN_TYPE_LABELS[e.txn_type] ?? e.txn_type}`}
-        emptyTitle="No entries posted to this account yet"
+        rowLabel={(e) => t('ledgerEntries.openEntry', { type: enumLabel('ledgerTxnType', e.txn_type) })}
+        emptyTitle={t('ledgerEntries.emptyTitle')}
         toolbar={
           <FilterBar
             onReset={table.resetFilters}
@@ -180,7 +182,7 @@ export default function AccountEntriesPage() {
             actions={
               <ExportButton
                 filename={`ledger-${a?.code ?? accountId}`.replace(/[^\w.-]+/g, '_')}
-                columns={COLUMNS}
+                columns={columns}
                 rows={entries.data?.items}
                 total={entries.data?.total}
                 fetchAll={() =>
@@ -190,19 +192,19 @@ export default function AccountEntriesPage() {
             }
           >
             <SelectFilter
-              label="Side"
+              label={t('ledgerEntries.side')}
               value={filters.direction}
               onChange={(v) => setFilter('direction', v)}
-              options={ENTRY_DIRECTIONS.map((d) => ({ value: d, label: ENTRY_DIRECTION_LABELS[d] }))}
+              options={enumOptions('entryDirection', ENTRY_DIRECTIONS)}
             />
             <MultiSelectFilter
-              label="Transaction type"
+              label={t('ledgerEntries.transactionType')}
               value={filters.txn_type}
               onChange={(v) => setFilter('txn_type', v)}
-              options={LEDGER_TXN_TYPES.map((t) => ({ value: t, label: LEDGER_TXN_TYPE_LABELS[t] }))}
+              options={enumOptions('ledgerTxnType', LEDGER_TXN_TYPES)}
               searchable
             />
-            <DateRangeFilter label="Posted" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('ledgerEntries.columns.posted')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />

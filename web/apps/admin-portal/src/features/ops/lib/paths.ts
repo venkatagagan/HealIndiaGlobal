@@ -19,6 +19,8 @@ export const opsPaths = {
   content: `${OPS_BASE}/content`,
   settings: `${OPS_BASE}/settings`,
   website: `${OPS_BASE}/settings/website`,
+  languages: `${OPS_BASE}/settings/languages`,
+  translations: `${OPS_BASE}/settings/translations`,
   audit: `${OPS_BASE}/audit-logs`,
   messages: `${OPS_BASE}/messages`,
   privacy: `${OPS_BASE}/privacy-requests`,

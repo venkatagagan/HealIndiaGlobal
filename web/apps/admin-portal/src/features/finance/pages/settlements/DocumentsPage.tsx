@@ -8,7 +8,6 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Download, Users } from 'lucide-react';
 import {
   financeApi,
-  PAYEE_TYPE_LABELS,
   type PayeeType,
   type SettlementDocumentKind,
   type SettlementDocumentListParams,
@@ -37,6 +36,7 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { formatDateTime } from '../../lib/shared';
+import { enumLabel, enumOptions, ft, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys, useSettlementDocument } from '../../api/queries';
 import { Mono, Money, notifyError } from '../../components/finance';
 import { PayeeFilter, payeeParams, SettlementTabs } from '../../components/settlements';
@@ -44,17 +44,9 @@ import { DescriptionList, ErrorState, LoadingState, Modal } from '../../componen
 import { listOrUndefined, minorOrUndefined } from '../../lib/tables';
 import { financePath } from '../../paths';
 
+/** Catalog: documents.kinds.<kind> (labels) and documents.kindTabs.<kind> (quick filter tabs) */
 const KINDS = ['commission_invoice', 'credit_note', 'agent_statement'] as const satisfies readonly SettlementDocumentKind[];
-const KIND_LABELS: Record<SettlementDocumentKind, string> = {
-  commission_invoice: 'Commission invoice',
-  credit_note: 'Credit note',
-  agent_statement: 'Agent commission statement',
-};
-const KIND_TABS: Record<SettlementDocumentKind, string> = {
-  commission_invoice: 'Tax invoices',
-  credit_note: 'Credit notes',
-  agent_statement: 'Agent statements',
-};
+const kindLabel = (kind: string) => ft(`documents.kinds.${kind}`, { defaultValue: kind });
 const kindTone = (k: string) => (k === 'credit_note' ? 'warning' : k === 'agent_statement' ? 'accent' : 'info');
 
 // ---------------------------------------------------------------------------------------------------------
@@ -90,7 +82,7 @@ function toApiFilters(f: DocFilters): ApiFilters {
 }
 
 function issuedTo(d: SettlementDocumentOut): { name: string; type: string } | null {
-  const type = d.hospital_id ? PAYEE_TYPE_LABELS.hospital : d.agent_id ? PAYEE_TYPE_LABELS.agent : null;
+  const type = d.hospital_id ? enumLabel('payeeType', 'hospital') : d.agent_id ? enumLabel('payeeType', 'agent') : null;
   const id = d.hospital_id ?? d.agent_id;
   if (!type || !id) return null;
   return { name: d.payee_name ?? `${id.slice(0, 8)}…`, type };
@@ -100,29 +92,29 @@ const signedMoney = (minor: number, currency: string, className = '') => (
   <MoneyCell minor={minor} currency={currency} className={`${minor < 0 ? 'text-danger-ink' : ''} ${className}`} />
 );
 
-function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
+function baseColumns(t: FinanceT): DataTableColumn<SettlementDocumentOut>[] {
   return [
     {
       key: 'number',
-      header: 'Document',
+      header: t('documents.columns.document'),
       sortable: true,
       sortKey: 'invoice_number',
       sticky: true,
       mobile: 'secondary',
-      cell: (d) => <IdCell value={d.invoice_number} secondary={KIND_LABELS[d.kind as SettlementDocumentKind] ?? d.kind} />,
+      cell: (d) => <IdCell value={d.invoice_number} secondary={kindLabel(d.kind)} />,
       exportValue: (d) => d.invoice_number,
     },
     {
       key: 'kind',
-      header: 'Kind',
+      header: t('adjustments.kind'),
       mobile: 'badge',
       defaultHidden: true,
-      cell: (d) => <Badge tone={kindTone(d.kind)}>{KIND_LABELS[d.kind as SettlementDocumentKind] ?? d.kind}</Badge>,
-      exportValue: (d) => KIND_LABELS[d.kind as SettlementDocumentKind] ?? d.kind,
+      cell: (d) => <Badge tone={kindTone(d.kind)}>{kindLabel(d.kind)}</Badge>,
+      exportValue: (d) => kindLabel(d.kind),
     },
     {
       key: 'payee',
-      header: 'Issued to',
+      header: t('documents.columns.issuedTo'),
       mobile: 'primary',
       className: 'max-w-60',
       cell: (d) => {
@@ -133,28 +125,28 @@ function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
     },
     {
       key: 'gstin',
-      header: 'Recipient GSTIN',
+      header: t('documents.columns.recipientGstin'),
       defaultHidden: true,
       cell: (d) => <span className="font-mono text-xs">{d.recipient_gstin ?? '—'}</span>,
       exportValue: (d) => d.recipient_gstin ?? '',
     },
     {
       key: 'subtotal',
-      header: 'Subtotal',
+      header: t('documents.columns.subtotal'),
       align: 'end',
       cell: (d) => signedMoney(d.subtotal_minor, d.currency, 'text-muted [&>span]:font-normal'),
       exportValue: (d) => fromMinor(d.subtotal_minor, d.currency),
     },
     {
       key: 'tax',
-      header: 'GST',
+      header: t('batchDetail.gst'),
       align: 'end',
       cell: (d) => signedMoney(d.tax_minor, d.currency, 'text-muted [&>span]:font-normal'),
       exportValue: (d) => fromMinor(d.tax_minor, d.currency),
     },
     {
       key: 'total',
-      header: 'Total',
+      header: t('trialBalance.total'),
       align: 'end',
       sortable: true,
       sortKey: 'total_minor',
@@ -164,7 +156,7 @@ function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
     },
     {
       key: 'batch',
-      header: 'Batch',
+      header: t('batches.columns.batch'),
       cell: (d) =>
         d.settlement_batch_id ? (
           <Link
@@ -172,7 +164,7 @@ function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
             className="text-sm font-medium text-primary-ink hover:underline"
             onClick={(e) => e.stopPropagation()}
           >
-            View batch
+            {t('payouts.viewBatch')}
           </Link>
         ) : (
           <span className="text-muted">—</span>
@@ -181,7 +173,7 @@ function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
     },
     {
       key: 'issued',
-      header: 'Issued',
+      header: t('documents.columns.issued'),
       sortable: true,
       sortKey: 'issued_at',
       sortDescFirst: true,
@@ -191,10 +183,9 @@ function baseColumns(): DataTableColumn<SettlementDocumentOut>[] {
   ];
 }
 
-const EXPORT_COLUMNS = baseColumns();
-
 export default function DocumentsPage() {
-  useDocumentTitle('Invoices & credit notes');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('nav.items.documents'));
   const table = useTableState({ filters: FILTERS, defaultSort: '-issued_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const [searchParams, setSearchParams] = useSearchParams();
@@ -224,20 +215,21 @@ export default function DocumentsPage() {
     placeholderData: keepPreviousData,
   });
   const [downloading, setDownloading] = useState<string | null>(null);
+  const exportColumns = useMemo(() => baseColumns(t), [t]);
 
   const download = async (d: SettlementDocumentOut) => {
     setDownloading(d.id);
     try {
       await financeApi.downloadSettlementDocumentPdf(d);
     } catch (e) {
-      notifyError(e, 'Could not download the PDF');
+      notifyError(e, ft('documents.downloadFailed'));
     } finally {
       setDownloading(null);
     }
   };
 
   const columns: DataTableColumn<SettlementDocumentOut>[] = [
-    ...baseColumns(),
+    ...exportColumns,
     {
       key: 'pdf',
       header: <span className="sr-only">PDF</span>,
@@ -256,7 +248,7 @@ export default function DocumentsPage() {
             void download(d);
           }}
           leftIcon={<Download className="size-3.5" aria-hidden />}
-          aria-label={`Download ${d.invoice_number} PDF`}
+          aria-label={t('documents.downloadPdfLabel', { number: d.invoice_number })}
         >
           PDF
         </Button>
@@ -267,26 +259,23 @@ export default function DocumentsPage() {
   const c = counts.data;
   const kindOptions: FilterOption<SettlementDocumentKind>[] = KINDS.map((k) => ({
     value: k,
-    label: KIND_LABELS[k],
+    label: kindLabel(k),
     tone: kindTone(k),
     count: c ? (c.counts[k] ?? 0) : undefined,
   }));
   const quickItems: QuickFilterItem<SettlementDocumentKind>[] = [
-    { value: '', label: 'All', count: c?.total },
-    ...KINDS.map((k) => ({ value: k, label: KIND_TABS[k], count: c ? (c.counts[k] ?? 0) : undefined })),
+    { value: '', label: t('common.all'), count: c?.total },
+    ...KINDS.map((k) => ({ value: k, label: t(`documents.kindTabs.${k}`), count: c ? (c.counts[k] ?? 0) : undefined })),
   ];
   const quickValue = filters.kind.length === 0 ? '' : filters.kind.length === 1 ? filters.kind[0]! : null;
 
   return (
     <div>
-      <PageHeader
-        title="Invoices & credit notes"
-        description="Commission tax invoices and credit notes issued to hospitals, and commission statements for agents. Credit notes reverse commission on clawed-back items."
-      />
+      <PageHeader title={t('nav.items.documents')} description={t('documents.description')} />
       <SettlementTabs />
       <DataTable
         id="admin.finance.settlement-documents"
-        caption="Settlement documents"
+        caption={t('documents.caption')}
         table={table}
         columns={columns}
         rows={list.data?.items}
@@ -296,22 +285,22 @@ export default function DocumentsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={(d) => setDoc(d.id)}
-        rowLabel={(d) => `Open ${d.invoice_number}`}
-        emptyTitle="No documents yet"
-        emptyDescription="Documents are issued when settlement payouts are paid."
+        rowLabel={(d) => t('documents.open', { number: d.invoice_number })}
+        emptyTitle={t('documents.emptyTitle')}
+        emptyDescription={t('documents.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Document kind" items={quickItems} value={quickValue} onChange={(k) => setFilter('kind', k ? [k] : [])} />
+            <QuickFilters label={t('documents.kindLabel')} items={quickItems} value={quickValue} onChange={(k) => setFilter('kind', k ? [k] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Document number, GSTIN or payee…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('documents.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="settlement-documents"
-                columns={EXPORT_COLUMNS}
+                columns={exportColumns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -324,14 +313,14 @@ export default function DocumentsPage() {
             more={
               <>
                 <SelectFilter
-                  label="Payee type"
+                  label={t('settlementUi.payeeType')}
                   icon={<Users className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.payee_type}
                   onChange={(v) => setFilters({ payee_type: v, payee: '' })}
-                  options={PAYEE_TYPES_FILTER.map((t) => ({ value: t, label: PAYEE_TYPE_LABELS[t] }))}
+                  options={enumOptions('payeeType', PAYEE_TYPES_FILTER)}
                 />
                 <AmountRangeFilter
-                  label="Total"
+                  label={t('trialBalance.total')}
                   currency="INR"
                   value={{ min: filters.min, max: filters.max }}
                   onChange={({ min, max }) => setFilters({ min, max })}
@@ -339,13 +328,13 @@ export default function DocumentsPage() {
               </>
             }
           >
-            <MultiSelectFilter label="Kind" value={filters.kind} onChange={(v) => setFilter('kind', v)} options={kindOptions} />
+            <MultiSelectFilter label={t('adjustments.kind')} value={filters.kind} onChange={(v) => setFilter('kind', v)} options={kindOptions} />
             <PayeeFilter value={filters.payee} onChange={(v) => setFilter('payee', v)} payeeType={filters.payee_type} />
-            <DateRangeFilter label="Issued" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('documents.columns.issued')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />
-      <Modal open={Boolean(openDoc)} onClose={() => setDoc('')} title="Settlement document" size="lg">
+      <Modal open={Boolean(openDoc)} onClose={() => setDoc('')} title={t('documents.detailTitle')} size="lg">
         {openDoc && <DocumentDetail id={openDoc} downloading={downloading === openDoc} onDownload={(d) => void download(d)} />}
       </Modal>
     </div>
@@ -358,6 +347,7 @@ function DocumentDetail({ id, downloading, onDownload }: {
   downloading: boolean;
   onDownload: (d: SettlementDocumentOut) => void;
 }) {
+  const { t } = useFinanceTranslation();
   const q = useSettlementDocument(id);
   if (q.isLoading) return <LoadingState />;
   if (q.isError || !q.data) return <ErrorState error={q.error} onRetry={() => void q.refetch()} />;
@@ -367,18 +357,18 @@ function DocumentDetail({ id, downloading, onDownload }: {
     <div className="space-y-4">
       <DescriptionList
         items={[
-          { label: 'Number', value: <Mono>{d.invoice_number}</Mono> },
-          { label: 'Kind', value: KIND_LABELS[d.kind as SettlementDocumentKind] ?? d.kind },
-          { label: 'Issued to', value: to ? `${to.name} (${to.type})` : '—' },
-          { label: 'Issued', value: formatDateTime(d.issued_at) },
-          { label: 'Supplier GSTIN', value: <Mono>{d.supplier_gstin ?? '—'}</Mono> },
-          { label: 'Recipient GSTIN', value: <Mono>{d.recipient_gstin ?? '—'}</Mono> },
-          { label: 'Place of supply', value: d.place_of_supply ?? '—' },
+          { label: t('documents.detail.number'), value: <Mono>{d.invoice_number}</Mono> },
+          { label: t('adjustments.kind'), value: kindLabel(d.kind) },
+          { label: t('documents.columns.issuedTo'), value: to ? `${to.name} (${to.type})` : '—' },
+          { label: t('documents.columns.issued'), value: formatDateTime(d.issued_at) },
+          { label: t('documents.detail.supplierGstin'), value: <Mono>{d.supplier_gstin ?? '—'}</Mono> },
+          { label: t('documents.columns.recipientGstin'), value: <Mono>{d.recipient_gstin ?? '—'}</Mono> },
+          { label: t('documents.detail.placeOfSupply'), value: d.place_of_supply ?? '—' },
           {
-            label: 'Batch',
+            label: t('batches.columns.batch'),
             value: d.settlement_batch_id ? (
               <Link to={financePath(`settlements/batches/${d.settlement_batch_id}`)} className="text-primary-ink hover:underline">
-                View batch
+                {t('payouts.viewBatch')}
               </Link>
             ) : (
               '—'
@@ -389,7 +379,7 @@ function DocumentDetail({ id, downloading, onDownload }: {
       <LineItemsTable doc={d} />
       <div className="flex justify-end">
         <Button variant="outline" loading={downloading} onClick={() => onDownload(d)} leftIcon={<Download className="size-4" aria-hidden />}>
-          Download PDF
+          {t('documents.detail.downloadPdf')}
         </Button>
       </div>
     </div>
@@ -410,6 +400,7 @@ function taxSplit(li: SettlementDocumentLineItem): Record<string, number> {
  * commission, withholding and net. Footnote lines (`note`) are listed under the table.
  */
 function LineItemsTable({ doc: d }: { doc: SettlementDocumentOut }) {
+  const { t } = useFinanceTranslation();
   const statement = d.kind === 'agent_statement';
   const lines = d.line_items.filter((li) => !li.note);
   const notes = d.line_items.filter((li) => li.note);
@@ -419,29 +410,43 @@ function LineItemsTable({ doc: d }: { doc: SettlementDocumentOut }) {
   const taxCols = heads.length ? heads : ['GST'];
   const money = (minor: number | null | undefined) => (minor == null ? '—' : <Money minor={minor} currency={d.currency} />);
   const th = 'px-3 py-2 font-medium';
-  const num = 'px-3 py-2 text-right tabular-nums';
-  const headers = statement ? ['Commission', 'Withholding', 'Net'] : ['Taxable', ...taxCols, 'Total'];
-  const cols = (statement ? 1 : 2) + headers.length;
-  const totals: [string, number][] = statement
-    ? [['Commission', d.subtotal_minor], ['Net paid', d.total_minor]]
+  const num = 'px-3 py-2 text-end tabular-nums';
+  // GST heads (CGST / SGST / IGST) are tax codes and stay as they are
+  const headers: { key: string; label: string }[] = statement
+    ? [
+        { key: 'commission', label: t('reports.commission') },
+        { key: 'withholding', label: t('documents.lines.withholding') },
+        { key: 'net', label: t('trialBalance.net') },
+      ]
     : [
-        ['Taxable value', d.subtotal_minor],
+        { key: 'taxable', label: t('documents.lines.taxable') },
+        ...taxCols.map((h) => ({ key: h, label: h })),
+        { key: 'total', label: t('trialBalance.total') },
+      ];
+  const cols = (statement ? 1 : 2) + headers.length;
+  const totals: [string, string, number][] = statement
+    ? [
+        ['commission', t('reports.commission'), d.subtotal_minor],
+        ['net', t('documents.lines.netPaid'), d.total_minor],
+      ]
+    : [
+        ['taxable', t('documents.lines.taxableValue'), d.subtotal_minor],
         ...(heads.length
-          ? heads.map((h): [string, number] => [h, splits.reduce((sum, s) => sum + (s[h] ?? 0), 0)])
-          : [['GST', d.tax_minor] as [string, number]]),
-        ['Total', d.total_minor],
+          ? heads.map((h): [string, string, number] => [h, h, splits.reduce((sum, s) => sum + (s[h] ?? 0), 0)])
+          : [['GST', 'GST', d.tax_minor] as [string, string, number]]),
+        ['total', t('trialBalance.total'), d.total_minor],
       ];
   return (
     <div className="space-y-2">
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-sm">
-          <caption className="sr-only">Line items</caption>
+          <caption className="sr-only">{t('documents.lines.caption')}</caption>
           <thead className="bg-surface-2/60">
-            <tr className="text-left text-xs text-muted">
-              <th scope="col" className={th}>Description</th>
-              {!statement && <th scope="col" className={th}>SAC</th>}
+            <tr className="text-start text-xs text-muted">
+              <th scope="col" className={`${th} text-start`}>{t('ledger.txn.description')}</th>
+              {!statement && <th scope="col" className={`${th} text-start`}>SAC</th>}
               {headers.map((h) => (
-                <th key={h} scope="col" className={`${th} text-right`}>{h}</th>
+                <th key={h.key} scope="col" className={`${th} text-end`}>{h.label}</th>
               ))}
             </tr>
           </thead>
@@ -450,7 +455,9 @@ function LineItemsTable({ doc: d }: { doc: SettlementDocumentOut }) {
               <tr key={li.item_id ?? i}>
                 <td className="px-3 py-2">
                   {li.description}
-                  {li.original_invoice_number && <span className="block text-xs text-muted">Against {li.original_invoice_number}</span>}
+                  {li.original_invoice_number && (
+                    <span className="block text-xs text-muted">{t('documents.lines.against', { number: li.original_invoice_number })}</span>
+                  )}
                 </td>
                 {statement ? (
                   <>
@@ -469,12 +476,12 @@ function LineItemsTable({ doc: d }: { doc: SettlementDocumentOut }) {
             ))}
           </tbody>
           <tfoot className="border-t border-border text-fg">
-            {totals.map(([label, minor], i) => {
+            {totals.map(([key, label, minor], i) => {
               const last = i === totals.length - 1;
               return (
-                <tr key={label}>
-                  <td colSpan={cols - 1} className={`px-3 text-right ${i === 0 ? 'pt-2' : ''} ${last ? 'pb-2 font-semibold' : 'text-muted'}`}>{label}</td>
-                  <td className={`px-3 text-right tabular-nums ${i === 0 ? 'pt-2' : ''} ${last ? 'pb-2' : ''}`}>
+                <tr key={key}>
+                  <td colSpan={cols - 1} className={`px-3 text-end ${i === 0 ? 'pt-2' : ''} ${last ? 'pb-2 font-semibold' : 'text-muted'}`}>{label}</td>
+                  <td className={`px-3 text-end tabular-nums ${i === 0 ? 'pt-2' : ''} ${last ? 'pb-2' : ''}`}>
                     <Money minor={minor} currency={d.currency} className={last ? 'font-semibold' : undefined} />
                   </td>
                 </tr>

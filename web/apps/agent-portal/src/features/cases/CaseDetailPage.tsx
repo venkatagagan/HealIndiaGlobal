@@ -29,6 +29,7 @@ import {
 } from '../../components/ui';
 import { qk } from '../../lib/queries';
 import { formatDate, formatDateTime, useDocumentTitle } from '../../lib/shared';
+import { useAppTranslation } from '../../i18n';
 import { DocumentList, DocumentUploader } from '../documents/Documents';
 import { EmergencyAckPanel, PatientUpgradeRequiredNotice, needsEmergencyAck } from '@hig/shared/ui';
 import { AcceptQuoteDialog, QuoteDetails, RejectQuoteDialog, isQuoteActionable, type CareGate } from './quotes';
@@ -36,11 +37,12 @@ import { AcceptQuoteDialog, QuoteDetails, RejectQuoteDialog, isQuoteActionable, 
 const CANCELLABLE: CaseDetail['status'][] = ['enquiry', 'quoted', 'accepted', 'booked'];
 
 export function CaseDetailPage() {
+  const { t } = useAppTranslation();
   const { caseId = '' } = useParams();
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: qk.case(caseId), queryFn: () => casesApi.get(caseId) });
   const c = query.data;
-  useDocumentTitle(c ? c.case_number : 'Case');
+  useDocumentTitle(c ? c.case_number : t('caseDetail.fallbackTitle'));
 
   const siblings = useQuery({
     queryKey: qk.cases({ patient_id: c?.patient.id, page_size: 50 }),
@@ -57,7 +59,7 @@ export function CaseDetailPage() {
   const cancelCase = useMutation({
     mutationFn: (note: string) => casesApi.changeStatus(caseId, { to_status: 'cancelled', ...(note ? { note } : {}) }),
     onSuccess: () => {
-      toast.success('Case cancelled');
+      toast.success(t('caseDetail.caseCancelled'));
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       setCancelCaseOpen(false);
     },
@@ -66,7 +68,7 @@ export function CaseDetailPage() {
   const cancelBooking = useMutation({
     mutationFn: (reason: string) => bookingsApi.cancel(c?.booking?.id ?? '', { reason }),
     onSuccess: () => {
-      toast.success('Booking cancelled. Any refund due under the cancellation policy will be processed automatically.');
+      toast.success(t('caseDetail.bookingCancelled'));
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       void queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setCancelBookingOpen(false);
@@ -76,7 +78,7 @@ export function CaseDetailPage() {
 
   const back = (
     <Link to="/cases" className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-      <ArrowLeft className="h-4 w-4" aria-hidden /> Cases
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('caseDetail.back')}
     </Link>
   );
   if (query.isPending) return <LoadingBlock />;
@@ -112,24 +114,24 @@ export function CaseDetailPage() {
         actions={
           <>
             <ButtonLink to={`/messages?case=${c.id}`} variant="outline" icon={<MessageSquare className="h-4 w-4" aria-hidden />}>
-              Messages
+              {t('caseDetail.messages')}
             </ButtonLink>
             {relatedSiblings.some((s) => s.latest_quote) && c.latest_quote && (
               <ButtonLink
                 variant="outline"
                 to={`/cases/compare?ids=${[c.id, ...relatedSiblings.filter((s) => s.latest_quote).map((s) => s.id)].slice(0, 3).join(',')}`}
               >
-                Compare quotes
+                {t('caseDetail.compareQuotes')}
               </ButtonLink>
             )}
             {canBook && (
               <ButtonLink to={`/cases/${c.id}/book`} icon={<CalendarCheck className="h-4 w-4" aria-hidden />}>
-                Book treatment
+                {t('caseDetail.bookTreatment')}
               </ButtonLink>
             )}
             {CANCELLABLE.includes(c.status) && !booking && (
               <Button variant="ghost" className="text-danger" onClick={() => setCancelCaseOpen(true)}>
-                Cancel case
+                {t('caseDetail.cancelCase')}
               </Button>
             )}
           </>
@@ -147,11 +149,11 @@ export function CaseDetailPage() {
 
           <Card>
             <CardHeader
-              title="Quotes"
-              description={quotes.length ? undefined : 'The hospital has not sent a quote yet. You will be notified when it arrives.'}
+              title={t('caseDetail.quotes')}
+              description={quotes.length ? undefined : t('caseDetail.noQuoteYet')}
             />
             {quotes.length === 0 ? (
-              <EmptyState title="Awaiting quote" description="Hospitals usually reply within 48 hours." className="py-8" />
+              <EmptyState title={t('caseDetail.awaitingQuote')} description={t('caseDetail.replyTime')} className="py-8" />
             ) : (
               <div className="divide-y divide-border">
                 {quotes.map((q) => (
@@ -160,10 +162,10 @@ export function CaseDetailPage() {
                     {isQuoteActionable(c.status, q) && (
                       <div className="flex flex-wrap justify-end gap-2">
                         <Button variant="outline" icon={<X className="h-4 w-4" aria-hidden />} onClick={() => setRejecting(q)}>
-                          Decline
+                          {t('caseDetail.decline')}
                         </Button>
                         <Button icon={<Check className="h-4 w-4" aria-hidden />} onClick={() => setAccepting(q)}>
-                          Accept quote
+                          {t('caseDetail.acceptQuote')}
                         </Button>
                       </div>
                     )}
@@ -174,7 +176,7 @@ export function CaseDetailPage() {
           </Card>
 
           <Card>
-            <CardHeader title="Documents" description="Shared with the hospital on this case" />
+            <CardHeader title={t('caseDetail.documents')} description={t('caseDetail.documentsHint')} />
             <div className="border-b border-border p-5">
               <DocumentUploader kinds={PATIENT_DOCUMENT_KINDS} target={{ case_id: c.id, patient_id: c.patient.id }} />
             </div>
@@ -184,27 +186,27 @@ export function CaseDetailPage() {
 
         <div className="space-y-6">
           <Card>
-            <CardHeader title="Case details" />
+            <CardHeader title={t('caseDetail.details')} />
             <dl className="space-y-3 p-5 text-sm">
-              <Row label="Patient">
+              <Row label={t('caseDetail.patient')}>
                 <Link to={`/patients/${c.patient.id}`} className="font-medium text-primary-ink hover:underline">
                   {c.patient.full_name}
                 </Link>
-                {c.patient.age !== null && <span className="text-muted"> · {c.patient.age} yrs</span>}
+                {c.patient.age !== null && <span className="text-muted"> · {t('caseDetail.ageYears', { count: c.patient.age })}</span>}
               </Row>
-              <Row label="Hospital">
+              <Row label={t('caseDetail.hospital')}>
                 <Link to={`/hospitals/${c.hospital.slug}`} className="font-medium hover:underline">
                   {c.hospital.name}
                 </Link>
               </Row>
-              <Row label="Doctor">{c.doctor ? `${c.doctor.full_name}${c.doctor.specialty_name ? ` · ${c.doctor.specialty_name}` : ''}` : '—'}</Row>
-              <Row label="Treatment">{c.procedure?.name ?? c.specialty?.name ?? 'General enquiry'}</Row>
-              <Row label="Coordinator">{c.coordinator?.full_name ?? 'Not yet assigned'}</Row>
-              <Row label="Created">{formatDateTime(c.created_at)}</Row>
+              <Row label={t('caseDetail.doctor')}>{c.doctor ? `${c.doctor.full_name}${c.doctor.specialty_name ? ` · ${c.doctor.specialty_name}` : ''}` : '—'}</Row>
+              <Row label={t('caseDetail.treatment')}>{c.procedure?.name ?? c.specialty?.name ?? t('caseDetail.generalEnquiry')}</Row>
+              <Row label={t('caseDetail.coordinator')}>{c.coordinator?.full_name ?? t('caseDetail.notAssigned')}</Row>
+              <Row label={t('caseDetail.created')}>{formatDateTime(c.created_at)}</Row>
               {c.screening_id && (
-                <Row label="Screening">
+                <Row label={t('caseDetail.screening')}>
                   <Link to={`/screenings/${c.screening_id}`} className="font-medium text-primary-ink hover:underline">
-                    View results
+                    {t('caseDetail.viewResults')}
                   </Link>
                 </Row>
               )}
@@ -213,13 +215,13 @@ export function CaseDetailPage() {
               <div className="space-y-3 border-t border-border p-5 text-sm">
                 {c.patient_notes && (
                   <div>
-                    <p className="text-xs font-semibold text-muted uppercase">Enquiry message</p>
+                    <p className="text-xs font-semibold text-muted uppercase">{t('caseDetail.enquiryMessage')}</p>
                     <p className="mt-1 whitespace-pre-line">{c.patient_notes}</p>
                   </div>
                 )}
                 {c.medical_summary && (
                   <div>
-                    <p className="text-xs font-semibold text-muted uppercase">Medical summary</p>
+                    <p className="text-xs font-semibold text-muted uppercase">{t('caseDetail.medicalSummary')}</p>
                     <p className="mt-1 whitespace-pre-line">{c.medical_summary}</p>
                   </div>
                 )}
@@ -228,23 +230,23 @@ export function CaseDetailPage() {
           </Card>
 
           <Card>
-            <CardHeader title="Timeline" />
+            <CardHeader title={t('caseDetail.timeline')} />
             {c.timeline.length === 0 ? (
-              <p className="p-5 text-sm text-muted">No status changes yet.</p>
+              <p className="p-5 text-sm text-muted">{t('caseDetail.noTimeline')}</p>
             ) : (
               <ol className="space-y-4 p-5">
                 {[...c.timeline]
                   .sort((a, b) => b.created_at.localeCompare(a.created_at))
-                  .map((t, i) => (
-                    <li key={`${t.created_at}-${i}`} className="relative flex gap-3 text-sm">
+                  .map((entry, i) => (
+                    <li key={`${entry.created_at}-${i}`} className="relative flex gap-3 text-sm">
                       <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden />
                       <div>
-                        <p className="font-medium">{CASE_STATUS_LABELS[t.to_status]}</p>
+                        <p className="font-medium">{CASE_STATUS_LABELS[entry.to_status]}</p>
                         <p className="text-xs text-muted">
-                          {formatDateTime(t.created_at)}
-                          {t.changed_by_name ? ` · ${t.changed_by_name}` : ''}
+                          {formatDateTime(entry.created_at)}
+                          {entry.changed_by_name ? ` · ${entry.changed_by_name}` : ''}
                         </p>
-                        {t.note && <p className="mt-0.5 text-muted">{t.note}</p>}
+                        {entry.note && <p className="mt-0.5 text-muted">{entry.note}</p>}
                       </div>
                     </li>
                   ))}
@@ -267,23 +269,23 @@ export function CaseDetailPage() {
         open={cancelCaseOpen}
         onClose={() => setCancelCaseOpen(false)}
         onConfirm={(note) => cancelCase.mutate(note)}
-        title="Cancel this case?"
-        description="The hospital is notified and stops working on this enquiry."
-        confirmLabel="Cancel case"
+        title={t('caseDetail.cancelCaseTitle')}
+        description={t('caseDetail.cancelCaseDescription')}
+        confirmLabel={t('caseDetail.cancelCase')}
         tone="danger"
         loading={cancelCase.isPending}
-        reason={{ label: 'Reason', required: true, placeholder: 'e.g. Patient chose another hospital' }}
+        reason={{ label: t('caseDetail.reason'), required: true, placeholder: t('caseDetail.cancelCasePlaceholder') }}
       />
       <ConfirmDialog
         open={cancelBookingOpen}
         onClose={() => setCancelBookingOpen(false)}
         onConfirm={(reason) => cancelBooking.mutate(reason)}
-        title="Cancel this booking?"
-        description="Refunds follow the cancellation policy (full refund 14+ days before admission, 50% from 7 days, none after)."
-        confirmLabel="Cancel booking"
+        title={t('caseDetail.cancelBookingTitle')}
+        description={t('caseDetail.cancelBookingDescription')}
+        confirmLabel={t('caseDetail.cancelBooking')}
         tone="danger"
         loading={cancelBooking.isPending}
-        reason={{ label: 'Reason', required: true }}
+        reason={{ label: t('caseDetail.reason'), required: true }}
       />
     </div>
   );
@@ -293,50 +295,51 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex justify-between gap-4">
       <dt className="text-muted">{label}</dt>
-      <dd className="text-right">{children}</dd>
+      <dd className="text-end">{children}</dd>
     </div>
   );
 }
 
 function BookingCard({ booking, onCancel }: { booking: BookingOut; onCancel: () => void }) {
+  const { t } = useAppTranslation();
   const payable = ['pending_payment', 'confirmed', 'admitted'].includes(booking.status) && booking.balance_due_minor > 0;
   return (
     <Card>
       <CardHeader
         title={
           <span className="flex flex-wrap items-center gap-2">
-            Booking {booking.booking_number} <StatusBadge kind="booking" status={booking.status} />
+            {t('caseDetail.booking.title', { number: booking.booking_number })} <StatusBadge kind="booking" status={booking.status} />
           </span>
         }
         actions={
           <>
             {payable && (
               <ButtonLink size="sm" to={`/bookings/${booking.id}/pay`} icon={<CreditCard className="h-4 w-4" aria-hidden />}>
-                {booking.status === 'pending_payment' ? 'Pay now' : 'Pay balance'}
+                {booking.status === 'pending_payment' ? t('caseDetail.booking.payNow') : t('caseDetail.booking.payBalance')}
               </ButtonLink>
             )}
             {['pending_payment', 'confirmed'].includes(booking.status) && (
               <Button size="sm" variant="ghost" className="text-danger" onClick={onCancel}>
-                Cancel booking
+                {t('caseDetail.cancelBooking')}
               </Button>
             )}
           </>
         }
       />
       <dl className="grid gap-4 p-5 text-sm sm:grid-cols-3">
-        <Stat label="Admission">{formatDate(booking.admission_date)}</Stat>
-        <Stat label="Duration">{booking.duration_days ? `${booking.duration_days} days` : '—'}</Stat>
-        <Stat label="Payment option">
+        <Stat label={t('caseDetail.booking.admission')}>{formatDate(booking.admission_date)}</Stat>
+        <Stat label={t('caseDetail.booking.duration')}>{booking.duration_days ? t('caseDetail.booking.days', { count: booking.duration_days }) : '—'}</Stat>
+        <Stat label={t('caseDetail.booking.paymentOption')}>
           {PAYMENT_OPTION_LABELS[booking.payment_option]}
-          {booking.installment_months ? ` · ${booking.installment_months} months` : ''}
+          {booking.installment_months ? ` · ${t('caseDetail.booking.months', { count: booking.installment_months })}` : ''}
         </Stat>
-        <Stat label="Total">
+        <Stat label={t('caseDetail.booking.total')}>
           <Money minor={booking.total_minor} currency={booking.currency} className="font-semibold" />
         </Stat>
-        <Stat label="Paid">
+        <Stat label={t('caseDetail.booking.paid')}>
           <Money minor={booking.amount_paid_minor - booking.amount_refunded_minor} currency={booking.currency} />
         </Stat>
-        <Stat label="Balance due">
+        <Stat label={t('caseDetail.booking.balanceDue')}>
           <Money minor={booking.balance_due_minor} currency={booking.currency} className={booking.balance_due_minor > 0 ? 'font-semibold text-danger' : ''} />
         </Stat>
       </dl>

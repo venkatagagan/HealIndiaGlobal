@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -7,6 +8,7 @@ import { Badge, DataTable, DateCell, QuickFilters, type DataTableColumn, type Qu
 import { Button, PageHeader } from '../../components/ui';
 import { qk, useUnreadCount } from '../../lib/queries';
 import { cn, filterParam, useDocumentTitle, useTableState } from '../../lib/shared';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 function str(data: Record<string, unknown> | null, key: string): string | null {
   const v = data?.[key];
@@ -27,32 +29,33 @@ export function notificationLink(n: NotificationOut): string | null {
   return null;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  message: 'Messages',
-  case: 'Cases',
-  quote: 'Quotes',
-  booking: 'Bookings',
-  payment: 'Payments',
-  screening: 'Screenings',
-  payout: 'Payouts',
-  settlement: 'Commission',
-  commission: 'Commission',
-  agent: 'Account',
-  consent: 'Consent',
-  document: 'Documents',
+const CATEGORY_KEYS: Record<string, string> = {
+  message: 'notifications.category.messages',
+  case: 'notifications.category.cases',
+  quote: 'notifications.category.quotes',
+  booking: 'notifications.category.bookings',
+  payment: 'notifications.category.payments',
+  screening: 'notifications.category.screenings',
+  payout: 'notifications.category.payouts',
+  settlement: 'notifications.category.commission',
+  commission: 'notifications.category.commission',
+  agent: 'notifications.category.account',
+  consent: 'notifications.category.consent',
+  document: 'notifications.category.documents',
 };
-const category = (n: NotificationOut) => {
+const category = (t: AppT, n: NotificationOut) => {
   const head = n.kind.split('.')[0] ?? n.kind;
-  return CATEGORY_LABELS[head] ?? humanize(head);
+  const key = CATEGORY_KEYS[head];
+  return key ? t(key) : humanize(head);
 };
 
 const VIEWS = ['unread'] as const;
 const FILTERS = { view: filterParam.oneOf(VIEWS) };
 
-const COLUMNS: DataTableColumn<NotificationOut>[] = [
+const columns = (t: AppT): DataTableColumn<NotificationOut>[] => [
   {
     key: 'notification',
-    header: 'Notification',
+    header: t('notifications.columns.notification'),
     mobile: 'primary',
     className: 'max-w-[40rem]',
     cell: (n) => (
@@ -61,7 +64,7 @@ const COLUMNS: DataTableColumn<NotificationOut>[] = [
         <span className="min-w-0">
           <span className={cn('block truncate text-sm', !n.read_at && 'font-semibold')}>{n.title}</span>
           {n.body && <span className="block truncate text-xs text-muted">{n.body}</span>}
-          {!n.read_at && <span className="sr-only">Unread</span>}
+          {!n.read_at && <span className="sr-only">{t('notifications.unread')}</span>}
         </span>
       </span>
     ),
@@ -70,25 +73,27 @@ const COLUMNS: DataTableColumn<NotificationOut>[] = [
   },
   {
     key: 'category',
-    header: 'Category',
+    header: t('notifications.columns.category'),
     mobile: 'badge',
     cell: (n) => (
       <Badge tone="neutral" className="whitespace-nowrap">
-        {category(n)}
+        {category(t, n)}
       </Badge>
     ),
-    exportValue: (n) => category(n),
+    exportValue: (n) => category(t, n),
   },
   {
     key: 'received',
-    header: 'Received',
+    header: t('notifications.columns.received'),
     cell: (n) => <DateCell value={n.created_at} display="relative" className="text-muted" />,
     exportValue: (n) => n.created_at,
   },
 ];
 
 export function NotificationsPage() {
-  useDocumentTitle('Notifications');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('notifications.title'));
+  const COLUMNS = useMemo(() => columns(t), [t]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const table = useTableState({ filters: FILTERS, defaultPageSize: 25 });
@@ -119,7 +124,7 @@ export function NotificationsPage() {
   const markAll = useMutation({
     mutationFn: notificationsApi.markAllRead,
     onSuccess: () => {
-      toast.success('All notifications marked as read');
+      toast.success(t('notifications.allMarked'));
       invalidate();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -132,15 +137,15 @@ export function NotificationsPage() {
   };
 
   const quickItems: QuickFilterItem<'unread'>[] = [
-    { value: '', label: 'All', count: totalAll.data },
-    { value: 'unread', label: 'Unread', count: unread.data?.count },
+    { value: '', label: t('notifications.quick.all'), count: totalAll.data },
+    { value: 'unread', label: t('notifications.quick.unread'), count: unread.data?.count },
   ];
 
   return (
     <div>
       <PageHeader
-        title="Notifications"
-        description="Updates on your patients’ cases, quotes, bookings and commission."
+        title={t('notifications.title')}
+        description={t('notifications.description')}
         actions={
           <Button
             variant="outline"
@@ -149,13 +154,13 @@ export function NotificationsPage() {
             disabled={unread.data?.count === 0}
             onClick={() => markAll.mutate()}
           >
-            Mark all as read
+            {t('notifications.markAll')}
           </Button>
         }
       />
       <DataTable
         id="agent.notifications"
-        caption="Notifications"
+        caption={t('notifications.title')}
         table={table}
         columns={COLUMNS}
         rows={query.data?.items}
@@ -165,7 +170,7 @@ export function NotificationsPage() {
         error={query.error}
         onRetry={() => void query.refetch()}
         onRowClick={open}
-        rowLabel={(n) => `Open notification: ${n.title}`}
+        rowLabel={(n) => t('notifications.openRow', { title: n.title })}
         rowClassName={(n) => (n.read_at ? undefined : 'bg-primary-soft/30')}
         selectable
         bulkActions={(selected, clear) => (
@@ -177,16 +182,16 @@ export function NotificationsPage() {
             disabled={!selected.some((n) => !n.read_at)}
             onClick={() => markMany.mutate(selected.filter((n) => !n.read_at).map((n) => n.id), { onSuccess: clear })}
           >
-            Mark as read
+            {t('notifications.markRead')}
           </Button>
         )}
         emptyIcon={<Bell className="size-6" aria-hidden />}
-        emptyTitle={unreadOnly ? 'You’re all caught up' : 'No notifications yet'}
-        emptyDescription={unreadOnly ? 'There are no unread notifications.' : 'Updates about your patients will appear here.'}
+        emptyTitle={unreadOnly ? t('notifications.caughtUp') : t('notifications.emptyTitle')}
+        emptyDescription={unreadOnly ? t('notifications.noUnread') : t('notifications.emptyDescription')}
         filtersActive={false}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Notification filter" items={quickItems} value={table.filters.view} onChange={(v) => table.setFilter('view', v)} />
+            <QuickFilters label={t('notifications.filterLabel')} items={quickItems} value={table.filters.view} onChange={(v) => table.setFilter('view', v)} />
           </div>
         }
       />

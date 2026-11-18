@@ -13,6 +13,8 @@ from app.core.config import settings
 from app.core.email import render_template, send_email
 from app.core.enums import UserRole
 from app.core.jobs import PermanentJobError, task
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import Notification, User
 from app.modules.messaging.policies import is_active_user, role_of
 
@@ -57,13 +59,17 @@ async def send_notification_email(db: AsyncSession, payload: dict[str, Any]) -> 
     url = portal_url_for(user)
     if isinstance(link, str) and link.startswith("/") and not link.startswith("//"):
         url = f"{url}{link}"
+    # The title/body were stored in the recipient's language; the template text follows the same language.
+    await i18n_runtime.ensure_fresh()
+    locale = recipient_locale(user)
     html = render_template(
         "generic_notification.html",
+        locale=locale,
         title=notification.title,
         body=notification.body or "",
         name=user.full_name or "",
         url=url,
-        action_label="View details",
+        action_label=t("email.common.view_details", locale),
     )
     await send_email(user.email, notification.title, html)
     data["emailed_at"] = datetime.now(UTC).isoformat()

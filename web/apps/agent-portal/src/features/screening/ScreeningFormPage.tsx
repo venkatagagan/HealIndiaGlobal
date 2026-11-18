@@ -44,12 +44,14 @@ import {
   Select,
   Textarea,
 } from '../../components/ui';
-import { BODY_AREA_LABELS, BODY_AREAS, LANGUAGE_OPTIONS, SYMPTOM_REGION } from '../../lib/constants';
+import { BODY_AREA_LABELS, BODY_AREAS, LANGUAGE_OPTIONS, SYMPTOM_REGION, languageLabel } from '../../lib/constants';
 import { patientName } from '../../lib/format';
 import { qk, useSpecialties } from '../../lib/queries';
-import { SUPPORTED_CURRENCIES, currencyExponent, formatDate, toMinor, useDocumentTitle } from '../../lib/shared';
+import { SUPPORTED_CURRENCIES, currencyExponent, formatDate, formatNumber, toMinor, useDocumentTitle } from '../../lib/shared';
 import { DocumentAiStatus, DocumentCapture } from '@hig/shared/docai';
 import { VoiceIntakeButton, type ConfirmedIntake } from '@hig/shared/voice';
+import { Trans } from 'react-i18next';
+import { useAppTranslation } from '../../i18n';
 
 const REPORT_KINDS = ['medical_report', 'lab_result', 'imaging', 'prescription'] as const satisfies readonly DocumentKind[];
 const SEVERITY_KEYS = ['work', 'sleep', 'mobility'] as const;
@@ -157,6 +159,7 @@ function toggle<T>(list: T[], value: T): T[] {
 }
 
 export function ScreeningFormPage() {
+  const { t } = useAppTranslation();
   const params = useParams();
   const screeningId = params.screeningId;
   const existing = useQuery({
@@ -171,19 +174,19 @@ export function ScreeningFormPage() {
     enabled: Boolean(patientId),
   });
 
-  useDocumentTitle('New screening');
+  useDocumentTitle(t('screeningForm.newTitle'));
 
   if (screeningId && existing.isPending) return <LoadingBlock />;
   if (existing.isError) return <ErrorState error={existing.error} onRetry={() => void existing.refetch()} />;
   if (existing.data && existing.data.status !== 'draft') {
     return (
       <ErrorState
-        title="This screening has already been submitted"
-        error={new Error('Submitted screenings cannot be edited. Open it to see the results or start a new one.')}
+        title={t('screeningForm.alreadySubmitted')}
+        error={new Error(t('screeningForm.alreadySubmittedHint'))}
       />
     );
   }
-  if (!patientId) return <ErrorState error={new Error('No patient selected for this screening.')} />;
+  if (!patientId) return <ErrorState error={new Error(t('screeningForm.noPatient'))} />;
   if (patient.isPending) return <LoadingBlock />;
   if (patient.isError) return <ErrorState error={patient.error} onRetry={() => void patient.refetch()} />;
 
@@ -212,6 +215,7 @@ function ScreeningForm({
   defaultCurrency: string;
   existing: ScreeningOut | null;
 }) {
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [form, setForm] = useState<FormState>(() =>
@@ -254,20 +258,20 @@ function ScreeningForm({
     const e: Record<string, string> = {};
     const answered = Object.values(form.symptoms).some((a) => a !== 'no');
     if (!form.specialty_slug && form.body_areas.length === 0 && !answered && form.notes.trim().length < 10) {
-      e.general = 'Choose a specialty, a body area or a symptom, or describe the condition in the notes.';
+      e.general = t('screeningForm.errors.general');
     }
     if (form.duration_value && (!/^\d+$/.test(form.duration_value) || Number(form.duration_value) > 1000)) {
-      e.duration_value = 'Enter a whole number';
+      e.duration_value = t('screeningForm.errors.wholeNumber');
     }
     const min = form.budget_min ? toMinor(form.budget_min, form.budget_currency) : null;
     const max = form.budget_max ? toMinor(form.budget_max, form.budget_currency) : null;
-    if (form.budget_min && min === null) e.budget = 'Enter a valid minimum budget';
-    if (form.budget_max && max === null) e.budget = 'Enter a valid maximum budget';
-    if (min !== null && max !== null && min > max) e.budget = 'Minimum budget is higher than the maximum';
+    if (form.budget_min && min === null) e.budget = t('screeningForm.errors.budgetMin');
+    if (form.budget_max && max === null) e.budget = t('screeningForm.errors.budgetMax');
+    if (min !== null && max !== null && min > max) e.budget = t('screeningForm.errors.budgetOrder');
     if (form.travel_window_start && form.travel_window_end && form.travel_window_start > form.travel_window_end) {
-      e.travel = 'Travel window end must be after the start';
+      e.travel = t('screeningForm.errors.travelOrder');
     }
-    if (form.notes.length > 4000) e.notes = 'Keep notes under 4000 characters';
+    if (form.notes.length > 4000) e.notes = t('screeningForm.errors.notesLength', { max: formatNumber(4000) });
     return Object.keys(e).length ? e : null;
   };
 
@@ -299,11 +303,11 @@ function ScreeningForm({
     const problems = validate();
     if (problems) {
       setErrors(problems);
-      toast.error(Object.values(problems)[0] ?? 'Please check the form');
+      toast.error(Object.values(problems)[0] ?? t('screeningForm.errors.checkForm'));
       return;
     }
     if (mode === 'submit' && !attested) {
-      setErrors({ consent: 'Confirm the patient’s consent before submitting' });
+      setErrors({ consent: t('screeningForm.errors.consent') });
       return;
     }
     setSaving(mode);
@@ -315,7 +319,7 @@ function ScreeningForm({
       void queryClient.invalidateQueries({ queryKey: ['screenings'] });
       void queryClient.invalidateQueries({ queryKey: ['agent-patients'] });
       if (mode === 'draft') {
-        toast.success('Screening saved as draft');
+        toast.success(t('screeningForm.savedDraft'));
         navigate(`/patients/${patientId}?tab=screenings`);
         return;
       }
@@ -335,17 +339,16 @@ function ScreeningForm({
       <PageHeader
         back={
           <Link to={`/patients/${patientId}?tab=screenings`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-            <ArrowLeft className="h-4 w-4" aria-hidden /> {patientLabel}
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {patientLabel}
           </Link>
         }
-        title={existing ? 'Continue screening' : 'New screening'}
-        description={`Symptom screening for ${patientLabel}. Our AI triage suggests specialties and matches accredited hospitals and doctors — it is not a diagnosis.`}
+        title={existing ? t('screeningForm.continueTitle') : t('screeningForm.newTitle')}
+        description={t('screeningForm.description', { name: patientLabel })}
       />
 
       <div className="mb-6 flex flex-col gap-3 rounded-xl border border-accent/30 bg-accent-soft/40 p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-fg">
-          <span className="font-semibold">Let the patient describe it by voice</span> in their own language (or type it) -
-          the answers are pre-filled below for you to check before saving.
+          <Trans t={t} i18nKey="screeningForm.voiceIntro" components={{ 0: <span className="font-semibold" /> }} />
         </p>
         <VoiceIntakeButton
           patientId={patientId}
@@ -370,10 +373,10 @@ function ScreeningForm({
           </div>
         )}
 
-        <Section title="1. Condition" description="What brings the patient to India?">
-          <FormField label="Specialty" htmlFor="sc-specialty" hint="Leave empty if unsure — the AI will suggest one.">
+        <Section title={t('screeningForm.step1')} description={t('screeningForm.step1Hint')}>
+          <FormField label={t('screeningForm.specialty')} htmlFor="sc-specialty" hint={t('screeningForm.specialtyHint')}>
             <Select id="sc-specialty" value={form.specialty_slug} onChange={(e) => set('specialty_slug', e.target.value)}>
-              <option value="">Not sure / let AI suggest</option>
+              <option value="">{t('screeningForm.letAiSuggest')}</option>
               {(specialties.data ?? []).map((s) => (
                 <option key={s.slug} value={s.slug}>
                   {s.name}
@@ -382,7 +385,7 @@ function ScreeningForm({
             </Select>
           </FormField>
           <fieldset>
-            <legend className="mb-2 text-sm font-medium">Where is the problem?</legend>
+            <legend className="mb-2 text-sm font-medium">{t('screeningForm.where')}</legend>
             <div className="flex flex-wrap gap-2">
               {BODY_AREAS.map((area) => (
                 <Chip key={area} selected={form.body_areas.includes(area)} onClick={() => set('body_areas', toggle(form.body_areas, area))}>
@@ -393,9 +396,9 @@ function ScreeningForm({
           </fieldset>
           <div>
             <label htmlFor="sc-pain" className="mb-2 flex items-center justify-between text-sm font-medium">
-              <span>Pain intensity</span>
+              <span>{t('screeningForm.painIntensity')}</span>
               <span className="text-lg" aria-hidden>
-                {PAIN_FACES[form.pain_intensity]} <span className="text-sm font-semibold tabular-nums">{form.pain_intensity}/10</span>
+                {PAIN_FACES[form.pain_intensity]} <span className="text-sm font-semibold tabular-nums">{formatNumber(form.pain_intensity)}/{formatNumber(10)}</span>
               </span>
             </label>
             <input
@@ -407,21 +410,21 @@ function ScreeningForm({
               value={form.pain_intensity}
               onChange={(e) => set('pain_intensity', Number(e.target.value))}
               className="w-full"
-              aria-valuetext={`${form.pain_intensity} out of 10`}
+              aria-valuetext={t('screeningForm.painValue', { value: form.pain_intensity })}
             />
             <div className="mt-1 flex justify-between text-xs text-muted">
-              <span>No pain</span>
-              <span>Worst imaginable</span>
+              <span>{t('screeningForm.noPain')}</span>
+              <span>{t('screeningForm.worstPain')}</span>
             </div>
           </div>
         </Section>
 
-        <Section title="2. Symptoms" description="Does the patient experience these? Answer yes, maybe or no.">
+        <Section title={t('screeningForm.step2')} description={t('screeningForm.step2Hint')}>
           {symptomLibrary.isPending ? (
-            <LoadingBlock label="Loading symptoms…" className="py-4" />
+            <LoadingBlock label={t('screeningForm.loadingSymptoms')} className="py-4" />
           ) : (
             <ul className="divide-y divide-border rounded-lg border border-border">
-              {symptomNames.length === 0 && <li className="px-4 py-3 text-sm text-muted">Add the patient’s symptoms below.</li>}
+              {symptomNames.length === 0 && <li className="px-4 py-3 text-sm text-muted">{t('screeningForm.addSymptomsBelow')}</li>}
               {symptomNames.map((name) => (
                 <li key={name} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
                   <span className="text-sm">{name}</span>
@@ -432,16 +435,16 @@ function ScreeningForm({
                       value={form.symptoms[name] ?? null}
                       onChange={(answer) => set('symptoms', { ...form.symptoms, [name]: answer })}
                       options={[
-                        { value: 'yes', label: 'Yes' },
-                        { value: 'maybe', label: 'Maybe' },
-                        { value: 'no', label: 'No' },
+                        { value: 'yes', label: t('screeningForm.answer.yes') },
+                        { value: 'maybe', label: t('screeningForm.answer.maybe') },
+                        { value: 'no', label: t('screeningForm.answer.no') },
                       ]}
                     />
                     {form.symptoms[name] && (
                       <button
                         type="button"
                         className="rounded p-1 text-muted hover:text-fg"
-                        aria-label={`Clear answer for ${name}`}
+                        aria-label={t('screeningForm.clearAnswer', { name })}
                         onClick={() => {
                           const next = { ...form.symptoms };
                           delete next[name];
@@ -458,8 +461,8 @@ function ScreeningForm({
           )}
           <div className="flex gap-2">
             <Input
-              aria-label="Add another symptom"
-              placeholder="Add another symptom (e.g. swelling after walking)"
+              aria-label={t('screeningForm.addSymptomLabel')}
+              placeholder={t('screeningForm.addSymptomPlaceholder')}
               value={customSymptom}
               maxLength={120}
               onChange={(e) => setCustomSymptom(e.target.value)}
@@ -484,14 +487,14 @@ function ScreeningForm({
                 setCustomSymptom('');
               }}
             >
-              Add
+              {t('screeningForm.add')}
             </Button>
           </div>
         </Section>
 
-        <Section title="3. History & severity">
+        <Section title={t('screeningForm.step3')}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="How long has this been going on?" htmlFor="sc-duration" error={errors.duration_value}>
+            <FormField label={t('screeningForm.duration')} htmlFor="sc-duration" error={errors.duration_value}>
               <div className="flex gap-2">
                 <Input
                   id="sc-duration"
@@ -503,7 +506,7 @@ function ScreeningForm({
                   onChange={(e) => set('duration_value', e.target.value)}
                   className="w-28"
                 />
-                <Select aria-label="Duration unit" value={form.duration_unit} onChange={(e) => set('duration_unit', e.target.value as DurationUnit)}>
+                <Select aria-label={t('screeningForm.durationUnit')} value={form.duration_unit} onChange={(e) => set('duration_unit', e.target.value as DurationUnit)}>
                   {DURATION_UNITS.map((u) => (
                     <option key={u} value={u}>
                       {DURATION_UNIT_LABELS[u]}
@@ -514,13 +517,13 @@ function ScreeningForm({
             </FormField>
           </div>
           <fieldset className="space-y-2">
-            <legend className="mb-1 text-sm font-medium">Impact on daily life</legend>
+            <legend className="mb-1 text-sm font-medium">{t('screeningForm.impactLegend')}</legend>
             {SEVERITY_KEYS.map((key) => (
               <div key={key} className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-sm capitalize">{key}</span>
+                <span className="text-sm">{t(`screeningForm.severityArea.${key}`)}</span>
                 <Segmented<SeverityLevel>
                   size="sm"
-                  ariaLabel={`Impact on ${key}`}
+                  ariaLabel={t(`screeningForm.impactOn.${key}`)}
                   value={form.severity[key] ?? null}
                   onChange={(level) => set('severity', { ...form.severity, [key]: level })}
                   options={SEVERITY_LEVELS.map((l) => ({ value: l, label: SEVERITY_LEVEL_LABELS[l] }))}
@@ -529,30 +532,30 @@ function ScreeningForm({
             ))}
           </fieldset>
           <fieldset>
-            <legend className="mb-2 text-sm font-medium">Previous treatments</legend>
+            <legend className="mb-2 text-sm font-medium">{t('screeningForm.previousTreatments')}</legend>
             <div className="flex flex-wrap gap-2">
-              {PREVIOUS_TREATMENTS.map((t) => (
+              {PREVIOUS_TREATMENTS.map((treatment) => (
                 <Chip
-                  key={t}
-                  selected={form.previous_treatments.includes(t)}
-                  onClick={() => set('previous_treatments', toggle(form.previous_treatments, t))}
+                  key={treatment}
+                  selected={form.previous_treatments.includes(treatment)}
+                  onClick={() => set('previous_treatments', toggle(form.previous_treatments, treatment))}
                 >
-                  {PREVIOUS_TREATMENT_LABELS[t]}
+                  {PREVIOUS_TREATMENT_LABELS[treatment]}
                 </Chip>
               ))}
             </div>
           </fieldset>
           <div className="space-y-3">
-            <p className="text-sm font-medium">Medical reports</p>
+            <p className="text-sm font-medium">{t('screeningForm.medicalReports')}</p>
             <DocumentCapture
               patientId={patientId}
               defaultKind="medical_report"
               onUploaded={(docs) => set('report_document_ids', [...new Set([...form.report_document_ids, ...docs.map((d) => d.id)])])}
-              onAnalysisCreated={() => toast.success('The AI is reading the report - review and confirm it from the report list below.')}
+              onAnalysisCreated={() => toast.success(t('screeningForm.aiReading'))}
             />
             {reportDocs.length > 0 && (
               <div className="space-y-2 rounded-lg border border-border p-3">
-                <p className="text-xs text-muted">Attach reports to this screening (up to 3 are analysed by AI when consent is given):</p>
+                <p className="text-xs text-muted">{t('screeningForm.attachReports')}</p>
                 {reportDocs.map((d) => (
                   <div key={d.id} className="flex flex-wrap items-center justify-between gap-2">
                     <Checkbox
@@ -567,65 +570,65 @@ function ScreeningForm({
               </div>
             )}
           </div>
-          <FormField label="Notes for the medical team" htmlFor="sc-notes" error={errors.notes}>
+          <FormField label={t('screeningForm.notes')} htmlFor="sc-notes" error={errors.notes}>
             <Textarea
               id="sc-notes"
               rows={4}
               maxLength={4000}
               value={form.notes}
               onChange={(e) => set('notes', e.target.value)}
-              placeholder="Diagnosis already received, current medication, what the patient is hoping for…"
+              placeholder={t('screeningForm.notesPlaceholder')}
             />
           </FormField>
         </Section>
 
-        <Section title="4. Preferences">
+        <Section title={t('screeningForm.step4')}>
           <fieldset>
-            <legend className="mb-2 text-sm font-medium">Languages the patient speaks</legend>
+            <legend className="mb-2 text-sm font-medium">{t('screeningForm.languages')}</legend>
             <div className="flex flex-wrap gap-2">
               {LANGUAGE_OPTIONS.map((lang) => (
                 <Chip key={lang} selected={form.languages.includes(lang)} onClick={() => set('languages', toggle(form.languages, lang))}>
-                  {lang}
+                  {languageLabel(lang)}
                 </Chip>
               ))}
             </div>
           </fieldset>
           <div>
-            <p className="mb-2 text-sm font-medium">Doctor gender</p>
+            <p className="mb-2 text-sm font-medium">{t('screeningForm.doctorGender')}</p>
             <Segmented<DoctorGenderPref>
-              ariaLabel="Doctor gender preference"
+              ariaLabel={t('screeningForm.doctorGenderLabel')}
               value={form.doctor_gender}
               onChange={(v) => set('doctor_gender', v)}
               options={DOCTOR_GENDER_PREFS.map((g) => ({ value: g, label: DOCTOR_GENDER_PREF_LABELS[g] }))}
             />
           </div>
-          <FormField label="Budget range" error={errors.budget} hint="Total treatment budget, optional">
+          <FormField label={t('screeningForm.budget')} error={errors.budget} hint={t('screeningForm.budgetHint')}>
             <div className="flex flex-wrap gap-2">
-              <Select aria-label="Budget currency" className="w-24" value={form.budget_currency} onChange={(e) => set('budget_currency', e.target.value)}>
+              <Select aria-label={t('screeningForm.budgetCurrency')} className="w-24" value={form.budget_currency} onChange={(e) => set('budget_currency', e.target.value)}>
                 {SUPPORTED_CURRENCIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
               </Select>
-              <Input aria-label="Minimum budget" placeholder="Min" inputMode="decimal" className="w-36" value={form.budget_min} onChange={(e) => set('budget_min', e.target.value)} />
-              <Input aria-label="Maximum budget" placeholder="Max" inputMode="decimal" className="w-36" value={form.budget_max} onChange={(e) => set('budget_max', e.target.value)} />
+              <Input aria-label={t('screeningForm.budgetMinLabel')} placeholder={t('screeningForm.min')} inputMode="decimal" className="w-36" value={form.budget_min} onChange={(e) => set('budget_min', e.target.value)} />
+              <Input aria-label={t('screeningForm.budgetMaxLabel')} placeholder={t('screeningForm.max')} inputMode="decimal" className="w-36" value={form.budget_max} onChange={(e) => set('budget_max', e.target.value)} />
             </div>
           </FormField>
-          <FormField label="Travel window" error={errors.travel}>
+          <FormField label={t('screeningForm.travelWindow')} error={errors.travel}>
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 type="date"
-                aria-label="Earliest travel date"
+                aria-label={t('screeningForm.travelStart')}
                 className="w-44"
                 min={new Date().toISOString().slice(0, 10)}
                 value={form.travel_window_start}
                 onChange={(e) => set('travel_window_start', e.target.value)}
               />
-              <span className="text-muted">to</span>
+              <span className="text-muted">{t('screeningForm.to')}</span>
               <Input
                 type="date"
-                aria-label="Latest travel date"
+                aria-label={t('screeningForm.travelEnd')}
                 className="w-44"
                 min={form.travel_window_start || new Date().toISOString().slice(0, 10)}
                 value={form.travel_window_end}
@@ -638,10 +641,10 @@ function ScreeningForm({
             onChange={(e) => set('use_ai', e.target.checked)}
             label={
               <span className="inline-flex items-center gap-1.5">
-                <Sparkles className="h-4 w-4 text-accent" aria-hidden /> Use AI analysis
+                <Sparkles className="h-4 w-4 text-accent" aria-hidden /> {t('screeningForm.useAi')}
               </span>
             }
-            description="When off, a rules-based matcher is used and no information is sent to the AI provider."
+            description={t('screeningForm.useAiHint')}
           />
         </Section>
 
@@ -649,8 +652,8 @@ function ScreeningForm({
           <Checkbox
             checked={attested}
             onChange={(e) => setAttested(e.target.checked)}
-            label="I confirm the patient has consented"
-            description="The patient has agreed to this information being processed for AI screening and shared with the matched hospitals for quotes. The screening is decision support, not a medical diagnosis."
+            label={t('screeningForm.consent')}
+            description={t('screeningForm.consentHint')}
           />
           {errors.consent && (
             <p className="mt-2 text-xs text-danger" role="alert">
@@ -659,10 +662,10 @@ function ScreeningForm({
           )}
           <div className="mt-5 flex flex-wrap justify-end gap-2">
             <Button variant="outline" loading={saving === 'draft'} disabled={saving !== null} onClick={() => void save('draft')}>
-              Save draft
+              {t('screeningForm.saveDraft')}
             </Button>
             <Button type="submit" loading={saving === 'submit'} disabled={saving !== null} icon={<Sparkles className="h-4 w-4" aria-hidden />}>
-              Find matching hospitals
+              {t('screeningForm.submit')}
             </Button>
           </div>
         </Card>

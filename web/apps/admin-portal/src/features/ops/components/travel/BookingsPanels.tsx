@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   adminApi,
   enumOptions,
@@ -22,7 +22,10 @@ import { Button, Field, Input, Modal, Select, Textarea } from '../../ui';
 import { MoneyInput, moneyValueFrom, moneyValueToMinor, type MoneyValue } from '../MoneyInput';
 import { formatDate, formatMoney, fromDateTimeLocal, toDateTimeLocal } from '../../lib/format';
 import { opsKeys, useOpsMutation } from '../../lib/mutations';
+import { useAppTranslation } from '../../../../i18n';
 import { PatientCaseCell, TravelListPanel } from './TravelListPanel';
+
+type T = ReturnType<typeof useAppTranslation>['t'];
 
 const statusOptions = enumOptions(SERVICE_BOOKING_STATUSES, SERVICE_BOOKING_STATUS_LABELS);
 const QUICK = ['requested', 'quoted', 'confirmed', 'completed', 'cancelled'] as const;
@@ -31,13 +34,14 @@ const money = (minor: number | null | undefined, currency: string | null | undef
   minor != null && currency ? `${currency} ${fromMinor(minor, currency)}` : '';
 
 function SaveFooter({ onClose, onSave, loading }: { onClose: () => void; onSave: () => void; loading: boolean }) {
+  const { t } = useAppTranslation();
   return (
     <>
       <Button variant="outline" onClick={onClose}>
-        Cancel
+        {t('travel.common.cancel')}
       </Button>
       <Button loading={loading} onClick={onSave}>
-        Save
+        {t('travel.common.save')}
       </Button>
     </>
   );
@@ -46,70 +50,72 @@ function SaveFooter({ onClose, onSave, loading }: { onClose: () => void; onSave:
 // ---------------------------------------------------------------------------------------------------------
 // Flights & transfers
 // ---------------------------------------------------------------------------------------------------------
-const TRAVEL_COLUMNS: DataTableColumn<TravelBookingOut>[] = [
+const travelColumns = (t: T): DataTableColumn<TravelBookingOut>[] => [
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('travel.bookings.columns.patient'),
     sticky: true,
     mobile: 'primary',
     className: 'max-w-56',
-    cell: (t) => <PatientCaseCell name={t.patient?.full_name} caseId={t.case_id} caseNumber={t.case_number} />,
-    exportValue: (t) => t.patient?.full_name ?? '',
+    cell: (b) => <PatientCaseCell name={b.patient?.full_name} caseId={b.case_id} caseNumber={b.case_number} />,
+    exportValue: (b) => b.patient?.full_name ?? '',
   },
   {
     key: 'kind',
-    header: 'Type',
+    header: t('travel.bookings.columns.type'),
     mobile: 'secondary',
-    cell: (t) => <Badge tone="info">{TRAVEL_KIND_LABELS[t.kind] ?? t.kind}</Badge>,
-    mobileCell: (t) => TRAVEL_KIND_LABELS[t.kind] ?? t.kind,
-    exportValue: (t) => TRAVEL_KIND_LABELS[t.kind] ?? t.kind,
+    cell: (b) => <Badge tone="info">{TRAVEL_KIND_LABELS[b.kind] ?? b.kind}</Badge>,
+    mobileCell: (b) => TRAVEL_KIND_LABELS[b.kind] ?? b.kind,
+    exportValue: (b) => TRAVEL_KIND_LABELS[b.kind] ?? b.kind,
   },
   {
     key: 'route',
-    header: 'Route',
+    header: t('travel.bookings.columns.route'),
     className: 'max-w-64',
-    cell: (t) => <TextCell primary={`${t.from_location ?? '?'} → ${t.to_location ?? '?'}`} secondary={[t.carrier, t.flight_number, t.pnr].filter(Boolean).join(' · ') || undefined} />,
-    exportValue: (t) => `${t.from_location ?? ''} -> ${t.to_location ?? ''}`,
+    cell: (b) => <TextCell primary={`${b.from_location ?? '?'} → ${b.to_location ?? '?'}`} secondary={[b.carrier, b.flight_number, b.pnr].filter(Boolean).join(' · ') || undefined} />,
+    exportValue: (b) => `${b.from_location ?? ''} -> ${b.to_location ?? ''}`,
   },
-  { key: 'depart', header: 'Departs', cell: (t) => <DateCell value={t.depart_at} display="datetime" />, exportValue: (t) => t.depart_at ?? '' },
-  { key: 'pax', header: 'Pax', align: 'end', defaultHidden: true, cell: (t) => t.passengers ?? '—', exportValue: (t) => t.passengers ?? '' },
+  { key: 'depart', header: t('travel.bookings.columns.departs'), cell: (b) => <DateCell value={b.depart_at} display="datetime" />, exportValue: (b) => b.depart_at ?? '' },
+  { key: 'pax', header: t('travel.bookings.columns.pax'), align: 'end', defaultHidden: true, cell: (b) => b.passengers ?? '—', exportValue: (b) => b.passengers ?? '' },
   {
     key: 'price',
-    header: 'Price',
+    header: t('travel.bookings.columns.price'),
     align: 'end',
-    cell: (t) => <MoneyCell minor={t.price_minor} currency={t.currency} />,
-    exportValue: (t) => money(t.price_minor, t.currency),
+    cell: (b) => <MoneyCell minor={b.price_minor} currency={b.currency} />,
+    exportValue: (b) => money(b.price_minor, b.currency),
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('travel.bookings.columns.status'),
     mobile: 'badge',
-    cell: (t) => <StatusBadgeCell status={t.status} kind="serviceBooking" />,
-    exportValue: (t) => SERVICE_BOOKING_STATUS_LABELS[t.status],
+    cell: (b) => <StatusBadgeCell status={b.status} kind="serviceBooking" />,
+    exportValue: (b) => SERVICE_BOOKING_STATUS_LABELS[b.status],
   },
 ];
 
 export function TravelBookingsPanel({ canManage }: { canManage: boolean }) {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => travelColumns(t), [t]);
   const [editing, setEditing] = useState<TravelBookingOut | null>(null);
   return (
     <>
       <TravelListPanel<TravelBookingOut>
         resource="travel"
         name="flights"
-        caption="Flights & transfers"
+        caption={t('travel.bookings.flights.caption')}
         fetchPage={(p) => travelApi.listTravelBookings(p)}
-        columns={TRAVEL_COLUMNS}
+        columns={columns}
         statuses={SERVICE_BOOKING_STATUSES}
         quickStatuses={QUICK}
         statusLabels={SERVICE_BOOKING_STATUS_LABELS}
         statusKind="serviceBooking"
-        kinds={{ label: 'Type', options: TRAVEL_KINDS.map((k) => ({ value: k, label: TRAVEL_KIND_LABELS[k] })) }}
-        dateLabel="Departure"
+        kinds={{ label: t('travel.bookings.columns.type'), options: TRAVEL_KINDS.map((k) => ({ value: k, label: TRAVEL_KIND_LABELS[k] })) }}
+        dateLabel={t('travel.bookings.flights.dateLabel')}
         onRowClick={canManage ? setEditing : undefined}
-        rowLabel={(t) => `Edit ${TRAVEL_KIND_LABELS[t.kind]} of ${t.patient?.full_name ?? 'patient'}`}
+        rowLabel={(b) => (b.patient?.full_name ? t('travel.bookings.flights.rowLabel', { kind: TRAVEL_KIND_LABELS[b.kind], name: b.patient.full_name }) : t('travel.bookings.flights.rowLabelNoName', { kind: TRAVEL_KIND_LABELS[b.kind] }))}
         rowClassName={requestedRow}
-        emptyTitle="No flight or transfer requests"
-        emptyDescription="Patients request flights and airport transfers from their case."
+        emptyTitle={t('travel.bookings.flights.emptyTitle')}
+        emptyDescription={t('travel.bookings.flights.emptyDescription')}
       />
       <TravelBookingModal booking={editing} onClose={() => setEditing(null)} />
     </>
@@ -117,6 +123,7 @@ export function TravelBookingsPanel({ canManage }: { canManage: boolean }) {
 }
 
 function TravelBookingModal({ booking, onClose }: { booking: TravelBookingOut | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const [f, setF] = useState({
     status: 'requested' as ServiceBookingStatus,
     kind: 'flight' as TravelKind,
@@ -168,14 +175,14 @@ function TravelBookingModal({ booking, onClose }: { booking: TravelBookingOut | 
         price_minor: priceMinor,
         currency: priceMinor == null ? null : price.currency,
       }),
-    success: 'Travel booking updated',
+    success: t('travel.bookings.flights.updated'),
     invalidate: [opsKeys.travel],
     onSuccess: onClose,
   });
   const submit = () => {
     const minor = moneyValueToMinor(price);
-    if (minor === undefined) return setError('Enter a valid price.');
-    if (f.passengers && (!Number.isInteger(Number(f.passengers)) || Number(f.passengers) < 1)) return setError('Passengers must be a whole number.');
+    if (minor === undefined) return setError(t('travel.bookings.errors.price'));
+    if (f.passengers && (!Number.isInteger(Number(f.passengers)) || Number(f.passengers) < 1)) return setError(t('travel.bookings.errors.passengers'));
     setError(null);
     save.mutate(minor);
   };
@@ -190,16 +197,16 @@ function TravelBookingModal({ booking, onClose }: { booking: TravelBookingOut | 
       open={!!booking}
       onClose={onClose}
       size="lg"
-      title={`${booking ? TRAVEL_KIND_LABELS[booking.kind] : 'Travel'} · ${booking?.patient?.full_name ?? ''}`}
+      title={t('travel.bookings.modalTitle', { kind: booking ? TRAVEL_KIND_LABELS[booking.kind] : t('travel.bookings.flights.fallbackKind'), name: booking?.patient?.full_name ?? '' })}
       footer={<SaveFooter onClose={onClose} onSave={submit} loading={save.isPending} />}
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Status" required>
+        <Field label={t('travel.bookings.columns.status')} required>
           {(id) => (
             <Select id={id} value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as ServiceBookingStatus })} options={statusOptions} />
           )}
         </Field>
-        <Field label="Type" required>
+        <Field label={t('travel.bookings.columns.type')} required>
           {(id) => (
             <Select
               id={id}
@@ -209,24 +216,24 @@ function TravelBookingModal({ booking, onClose }: { booking: TravelBookingOut | 
             />
           )}
         </Field>
-        {text('from_location', 'From')}
-        {text('to_location', 'To')}
-        <Field label="Departs">
+        {text('from_location', t('travel.bookings.form.from'))}
+        {text('to_location', t('travel.bookings.form.to'))}
+        <Field label={t('travel.bookings.columns.departs')}>
           {(id) => <Input id={id} type="datetime-local" value={f.depart_at} onChange={(e) => setF({ ...f, depart_at: e.target.value })} />}
         </Field>
-        <Field label="Arrives">
+        <Field label={t('travel.bookings.form.arrives')}>
           {(id) => <Input id={id} type="datetime-local" value={f.arrive_at} onChange={(e) => setF({ ...f, arrive_at: e.target.value })} />}
         </Field>
-        {text('carrier', 'Carrier / vendor')}
-        {text('flight_number', 'Flight number', 20)}
-        {text('pnr', 'PNR / confirmation', 40)}
-        <Field label="Passengers">
+        {text('carrier', t('travel.bookings.form.carrier'))}
+        {text('flight_number', t('travel.bookings.form.flightNumber'), 20)}
+        {text('pnr', t('travel.bookings.form.pnr'), 40)}
+        <Field label={t('travel.bookings.form.passengers')}>
           {(id) => <Input id={id} inputMode="numeric" value={f.passengers} onChange={(e) => setF({ ...f, passengers: e.target.value })} />}
         </Field>
-        <Field label="Price" className="sm:col-span-2" error={error}>
+        <Field label={t('travel.bookings.columns.price')} className="sm:col-span-2" error={error}>
           {(id) => <MoneyInput id={id} value={price} onChange={setPrice} invalid={!!error} />}
         </Field>
-        <Field label="Notes" className="sm:col-span-2">
+        <Field label={t('travel.bookings.form.notes')} className="sm:col-span-2">
           {(id) => <Textarea id={id} value={f.notes} maxLength={2000} onChange={(e) => setF({ ...f, notes: e.target.value })} />}
         </Field>
       </div>
@@ -237,10 +244,10 @@ function TravelBookingModal({ booking, onClose }: { booking: TravelBookingOut | 
 // ---------------------------------------------------------------------------------------------------------
 // Accommodation
 // ---------------------------------------------------------------------------------------------------------
-const STAY_COLUMNS: DataTableColumn<AccommodationBookingOut>[] = [
+const stayColumns = (t: T): DataTableColumn<AccommodationBookingOut>[] => [
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('travel.bookings.columns.patient'),
     sticky: true,
     mobile: 'primary',
     className: 'max-w-56',
@@ -249,7 +256,7 @@ const STAY_COLUMNS: DataTableColumn<AccommodationBookingOut>[] = [
   },
   {
     key: 'provider',
-    header: 'Stay',
+    header: t('travel.bookings.columns.stay'),
     mobile: 'secondary',
     className: 'max-w-56',
     cell: (a) => <TextCell primary={a.provider?.name ?? '—'} secondary={a.provider?.city ?? undefined} />,
@@ -258,21 +265,21 @@ const STAY_COLUMNS: DataTableColumn<AccommodationBookingOut>[] = [
   },
   {
     key: 'dates',
-    header: 'Dates',
+    header: t('travel.bookings.columns.dates'),
     cell: (a) => <TextCell primary={`${formatDate(a.check_in, 'd MMM')} – ${formatDate(a.check_out)}`} secondary={a.room_type ?? undefined} />,
     exportValue: (a) => `${a.check_in} - ${a.check_out}`,
   },
-  { key: 'guests', header: 'Guests', align: 'end', cell: (a) => a.guests, exportValue: (a) => a.guests },
+  { key: 'guests', header: t('travel.bookings.columns.guests'), align: 'end', cell: (a) => a.guests, exportValue: (a) => a.guests },
   {
     key: 'total',
-    header: 'Total',
+    header: t('travel.bookings.columns.total'),
     align: 'end',
     cell: (a) => <MoneyCell minor={a.total_minor} currency={a.currency} />,
     exportValue: (a) => money(a.total_minor, a.currency),
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('travel.bookings.columns.status'),
     mobile: 'badge',
     cell: (a) => <StatusBadgeCell status={a.status} kind="serviceBooking" />,
     exportValue: (a) => SERVICE_BOOKING_STATUS_LABELS[a.status],
@@ -280,25 +287,27 @@ const STAY_COLUMNS: DataTableColumn<AccommodationBookingOut>[] = [
 ];
 
 export function AccommodationPanel({ canManage }: { canManage: boolean }) {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => stayColumns(t), [t]);
   const [editing, setEditing] = useState<AccommodationBookingOut | null>(null);
   return (
     <>
       <TravelListPanel<AccommodationBookingOut>
         resource="accommodation"
         name="accommodation"
-        caption="Accommodation"
+        caption={t('travel.bookings.stays.caption')}
         fetchPage={(p) => travelApi.listAccommodationBookings(p)}
-        columns={STAY_COLUMNS}
+        columns={columns}
         statuses={SERVICE_BOOKING_STATUSES}
         quickStatuses={QUICK}
         statusLabels={SERVICE_BOOKING_STATUS_LABELS}
         statusKind="serviceBooking"
-        dateLabel="Check-in"
+        dateLabel={t('travel.bookings.form.checkIn')}
         onRowClick={canManage ? setEditing : undefined}
-        rowLabel={(a) => `Edit stay of ${a.patient?.full_name ?? 'patient'}`}
+        rowLabel={(a) => (a.patient?.full_name ? t('travel.bookings.stays.rowLabel', { name: a.patient.full_name }) : t('travel.bookings.stays.rowLabelNoName'))}
         rowClassName={requestedRow}
-        emptyTitle="No accommodation bookings"
-        emptyDescription="Stays near the hospital requested by patients appear here."
+        emptyTitle={t('travel.bookings.stays.emptyTitle')}
+        emptyDescription={t('travel.bookings.stays.emptyDescription')}
       />
       <AccommodationModal booking={editing} onClose={() => setEditing(null)} />
     </>
@@ -306,6 +315,7 @@ export function AccommodationPanel({ canManage }: { canManage: boolean }) {
 }
 
 function AccommodationModal({ booking, onClose }: { booking: AccommodationBookingOut | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const [f, setF] = useState({
     status: 'requested' as ServiceBookingStatus,
     check_in: '',
@@ -347,15 +357,15 @@ function AccommodationModal({ booking, onClose }: { booking: AccommodationBookin
         nightly_rate_minor: v.nightly,
         currency: nightly.currency,
       }),
-    success: 'Accommodation booking updated',
+    success: t('travel.bookings.stays.updated'),
     invalidate: [opsKeys.travel],
     onSuccess: onClose,
   });
   const submit = () => {
     const n = moneyValueToMinor(nightly);
-    if (n === undefined) return setError('Enter a valid nightly rate.');
-    if (!f.check_in || !f.check_out || f.check_out <= f.check_in) return setError('Check-out must be after check-in.');
-    if (!Number.isInteger(Number(f.guests)) || Number(f.guests) < 1) return setError('Guests must be at least 1.');
+    if (n === undefined) return setError(t('travel.bookings.errors.nightlyRate'));
+    if (!f.check_in || !f.check_out || f.check_out <= f.check_in) return setError(t('travel.bookings.errors.checkOut'));
+    if (!Number.isInteger(Number(f.guests)) || Number(f.guests) < 1) return setError(t('travel.bookings.errors.guests'));
     setError(null);
     save.mutate({ nightly: n });
   };
@@ -367,41 +377,41 @@ function AccommodationModal({ booking, onClose }: { booking: AccommodationBookin
       open={!!booking}
       onClose={onClose}
       size="lg"
-      title={`Stay · ${booking?.provider?.name ?? ''} · ${booking?.patient?.full_name ?? ''}`}
+      title={t('travel.bookings.stays.modalTitle', { provider: booking?.provider?.name ?? '', name: booking?.patient?.full_name ?? '' })}
       footer={<SaveFooter onClose={onClose} onSave={submit} loading={save.isPending} />}
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Status" required>
+        <Field label={t('travel.bookings.columns.status')} required>
           {(id) => (
             <Select id={id} value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as ServiceBookingStatus })} options={statusOptions} />
           )}
         </Field>
-        <Field label="Confirmation code">
+        <Field label={t('travel.bookings.form.confirmationCode')}>
           {(id) => <Input id={id} value={f.confirmation_code} maxLength={60} onChange={(e) => setF({ ...f, confirmation_code: e.target.value })} />}
         </Field>
-        <Field label="Check-in" required>
+        <Field label={t('travel.bookings.form.checkIn')} required>
           {(id) => <Input id={id} type="date" value={f.check_in} onChange={(e) => setF({ ...f, check_in: e.target.value })} />}
         </Field>
-        <Field label="Check-out" required hint={nights ? `${nights} night${nights === 1 ? '' : 's'}` : undefined}>
+        <Field label={t('travel.bookings.form.checkOut')} required hint={nights ? t('travel.bookings.form.nights', { count: nights }) : undefined}>
           {(id) => <Input id={id} type="date" value={f.check_out} onChange={(e) => setF({ ...f, check_out: e.target.value })} />}
         </Field>
-        <Field label="Guests" required>
+        <Field label={t('travel.bookings.columns.guests')} required>
           {(id) => <Input id={id} inputMode="numeric" value={f.guests} onChange={(e) => setF({ ...f, guests: e.target.value })} />}
         </Field>
-        <Field label="Room type">
+        <Field label={t('travel.bookings.form.roomType')}>
           {(id) => <Input id={id} value={f.room_type} maxLength={80} onChange={(e) => setF({ ...f, room_type: e.target.value })} />}
         </Field>
-        <Field label="Nightly rate" error={error}>
+        <Field label={t('travel.bookings.form.nightlyRate')} error={error}>
           {(id) => <MoneyInput id={id} value={nightly} onChange={setNightly} invalid={!!error} />}
         </Field>
-        <Field label="Total" hint="Computed on save: nightly rate x nights.">
+        <Field label={t('travel.bookings.columns.total')} hint={t('travel.bookings.form.totalHint')}>
           {(id) => {
             const n = moneyValueToMinor(nightly);
             const estimate = n != null && nights > 0 ? formatMoney(n * nights, nightly.currency) : formatMoney(booking?.total_minor ?? null, booking?.currency ?? nightly.currency);
             return <Input id={id} value={estimate} readOnly disabled />;
           }}
         </Field>
-        <Field label="Notes" className="sm:col-span-2">
+        <Field label={t('travel.bookings.form.notes')} className="sm:col-span-2">
           {(id) => <Textarea id={id} value={f.notes} maxLength={2000} onChange={(e) => setF({ ...f, notes: e.target.value })} />}
         </Field>
       </div>
@@ -412,10 +422,10 @@ function AccommodationModal({ booking, onClose }: { booking: AccommodationBookin
 // ---------------------------------------------------------------------------------------------------------
 // Services (translator, guide, transport, ...)
 // ---------------------------------------------------------------------------------------------------------
-const SERVICE_COLUMNS: DataTableColumn<ServiceBookingOut>[] = [
+const serviceColumns = (t: T): DataTableColumn<ServiceBookingOut>[] => [
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('travel.bookings.columns.patient'),
     sticky: true,
     mobile: 'primary',
     className: 'max-w-56',
@@ -424,7 +434,7 @@ const SERVICE_COLUMNS: DataTableColumn<ServiceBookingOut>[] = [
   },
   {
     key: 'kind',
-    header: 'Service',
+    header: t('travel.bookings.columns.service'),
     mobile: 'secondary',
     cell: (s) => <Badge tone="accent">{SERVICE_KIND_LABELS[s.kind] ?? s.kind}</Badge>,
     mobileCell: (s) => SERVICE_KIND_LABELS[s.kind] ?? s.kind,
@@ -432,21 +442,21 @@ const SERVICE_COLUMNS: DataTableColumn<ServiceBookingOut>[] = [
   },
   {
     key: 'provider',
-    header: 'Provider',
-    cell: (s) => (s.provider?.name ? <TextCell primary={s.provider.name} /> : <Badge tone="warning">Unassigned</Badge>),
-    exportValue: (s) => s.provider?.name ?? 'Unassigned',
+    header: t('travel.bookings.columns.provider'),
+    cell: (s) => (s.provider?.name ? <TextCell primary={s.provider.name} /> : <Badge tone="warning">{t('travel.bookings.unassigned')}</Badge>),
+    exportValue: (s) => s.provider?.name ?? t('travel.bookings.unassigned'),
   },
-  { key: 'when', header: 'When', cell: (s) => <DateCell value={s.starts_at} display="datetime" />, exportValue: (s) => s.starts_at ?? '' },
+  { key: 'when', header: t('travel.bookings.columns.when'), cell: (s) => <DateCell value={s.starts_at} display="datetime" />, exportValue: (s) => s.starts_at ?? '' },
   {
     key: 'price',
-    header: 'Price',
+    header: t('travel.bookings.columns.price'),
     align: 'end',
     cell: (s) => <MoneyCell minor={s.price_minor} currency={s.currency} />,
     exportValue: (s) => money(s.price_minor, s.currency),
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('travel.bookings.columns.status'),
     mobile: 'badge',
     cell: (s) => <StatusBadgeCell status={s.status} kind="serviceBooking" />,
     exportValue: (s) => SERVICE_BOOKING_STATUS_LABELS[s.status],
@@ -454,26 +464,28 @@ const SERVICE_COLUMNS: DataTableColumn<ServiceBookingOut>[] = [
 ];
 
 export function ServiceBookingsPanel({ canManage }: { canManage: boolean }) {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => serviceColumns(t), [t]);
   const [editing, setEditing] = useState<ServiceBookingOut | null>(null);
   return (
     <>
       <TravelListPanel<ServiceBookingOut>
         resource="services"
         name="services"
-        caption="Translators & services"
+        caption={t('travel.bookings.services.caption')}
         fetchPage={(p) => travelApi.listServiceBookings(p)}
-        columns={SERVICE_COLUMNS}
+        columns={columns}
         statuses={SERVICE_BOOKING_STATUSES}
         quickStatuses={QUICK}
         statusLabels={SERVICE_BOOKING_STATUS_LABELS}
         statusKind="serviceBooking"
-        kinds={{ label: 'Service', options: SERVICE_KINDS.map((k) => ({ value: k, label: SERVICE_KIND_LABELS[k] })) }}
-        dateLabel="Service date"
+        kinds={{ label: t('travel.bookings.columns.service'), options: SERVICE_KINDS.map((k) => ({ value: k, label: SERVICE_KIND_LABELS[k] })) }}
+        dateLabel={t('travel.bookings.services.dateLabel')}
         onRowClick={canManage ? setEditing : undefined}
-        rowLabel={(s) => `Edit ${SERVICE_KIND_LABELS[s.kind]} for ${s.patient?.full_name ?? 'patient'}`}
+        rowLabel={(s) => (s.patient?.full_name ? t('travel.bookings.services.rowLabel', { kind: SERVICE_KIND_LABELS[s.kind], name: s.patient.full_name }) : t('travel.bookings.services.rowLabelNoName', { kind: SERVICE_KIND_LABELS[s.kind] }))}
         rowClassName={requestedRow}
-        emptyTitle="No service bookings"
-        emptyDescription="Translator, guide, transport and insurance requests appear here."
+        emptyTitle={t('travel.bookings.services.emptyTitle')}
+        emptyDescription={t('travel.bookings.services.emptyDescription')}
       />
       <ServiceBookingModal booking={editing} onClose={() => setEditing(null)} />
     </>
@@ -481,6 +493,7 @@ export function ServiceBookingsPanel({ canManage }: { canManage: boolean }) {
 }
 
 function ServiceBookingModal({ booking, onClose }: { booking: ServiceBookingOut | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const [f, setF] = useState({ status: 'requested' as ServiceBookingStatus, provider_id: '', starts_at: '', ends_at: '', notes: '' });
   const [price, setPrice] = useState<MoneyValue>({ amount: '', currency: 'INR' });
   const [error, setError] = useState<string | null>(null);
@@ -513,13 +526,13 @@ function ServiceBookingModal({ booking, onClose }: { booking: ServiceBookingOut 
         price_minor: priceMinor,
         currency: priceMinor == null ? null : price.currency,
       }),
-    success: 'Service booking updated',
+    success: t('travel.bookings.services.updated'),
     invalidate: [opsKeys.travel],
     onSuccess: onClose,
   });
   const submit = () => {
     const minor = moneyValueToMinor(price);
-    if (minor === undefined) return setError('Enter a valid price.');
+    if (minor === undefined) return setError(t('travel.bookings.errors.price'));
     setError(null);
     save.mutate(minor);
   };
@@ -529,16 +542,16 @@ function ServiceBookingModal({ booking, onClose }: { booking: ServiceBookingOut 
       open={!!booking}
       onClose={onClose}
       size="lg"
-      title={`${booking ? SERVICE_KIND_LABELS[booking.kind] : 'Service'} · ${booking?.patient?.full_name ?? ''}`}
+      title={t('travel.bookings.modalTitle', { kind: booking ? SERVICE_KIND_LABELS[booking.kind] : t('travel.bookings.columns.service'), name: booking?.patient?.full_name ?? '' })}
       footer={<SaveFooter onClose={onClose} onSave={submit} loading={save.isPending} />}
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Status" required>
+        <Field label={t('travel.bookings.columns.status')} required>
           {(id) => (
             <Select id={id} value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as ServiceBookingStatus })} options={statusOptions} />
           )}
         </Field>
-        <Field label="Provider">
+        <Field label={t('travel.bookings.columns.provider')}>
           {(id) => (
             <Select
               id={id}
@@ -548,24 +561,24 @@ function ServiceBookingModal({ booking, onClose }: { booking: ServiceBookingOut 
                 setF({ ...f, provider_id: e.target.value });
                 if (p && price.amount === '' && p.rate_minor != null) setPrice(moneyValueFrom(p.rate_minor, p.currency));
               }}
-              placeholder={providers.isLoading ? 'Loading…' : 'Unassigned'}
+              placeholder={providers.isLoading ? t('travel.common.loading') : t('travel.bookings.unassigned')}
               options={(providers.data ?? []).map((p) => ({
                 value: p.id,
-                label: `${p.name}${p.city ? ` · ${p.city}` : ''}${p.is_active === false ? ' (inactive)' : ''}`,
+                label: `${p.name}${p.city ? ` · ${p.city}` : ''}${p.is_active === false ? ` ${t('travel.bookings.inactive')}` : ''}`,
               }))}
             />
           )}
         </Field>
-        <Field label="Starts">
+        <Field label={t('travel.bookings.form.starts')}>
           {(id) => <Input id={id} type="datetime-local" value={f.starts_at} onChange={(e) => setF({ ...f, starts_at: e.target.value })} />}
         </Field>
-        <Field label="Ends">
+        <Field label={t('travel.bookings.form.ends')}>
           {(id) => <Input id={id} type="datetime-local" value={f.ends_at} onChange={(e) => setF({ ...f, ends_at: e.target.value })} />}
         </Field>
-        <Field label="Price" className="sm:col-span-2" error={error}>
+        <Field label={t('travel.bookings.columns.price')} className="sm:col-span-2" error={error}>
           {(id) => <MoneyInput id={id} value={price} onChange={setPrice} invalid={!!error} />}
         </Field>
-        <Field label="Notes" className="sm:col-span-2">
+        <Field label={t('travel.bookings.form.notes')} className="sm:col-span-2">
           {(id) => <Textarea id={id} value={f.notes} maxLength={2000} onChange={(e) => setF({ ...f, notes: e.target.value })} />}
         </Field>
       </div>

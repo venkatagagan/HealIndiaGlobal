@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Verify your email - {{ app_name }}{% endblock %}
+{% block title %}{{ t('email.verify.title') }} - {{ app_name }}{% endblock %}
 {% block content %}
-<h1 style="font-size:22px;margin:0 0 16px;">Confirm your email address</h1>
-<p>Hello {{ name | default("there", true) }},</p>
-<p>Thanks for joining {{ app_name }}. Please confirm your email address to secure your account.</p>
-{% with label = "Verify email", url = url %}{% include "_button.html" %}{% endwith %}
-<p>This link expires in {{ expires_hours | default(24, true) }} hours. If you did not create an account, you can ignore this email.</p>
+<h1 style="font-size:22px;margin:0 0 16px;">{{ t('email.verify.heading') }}</h1>
+<p>{% if name is defined and name and name != "there" %}{{ t('email.common.greeting', name=name) }}{% else %}{{ t('email.common.greeting_anonymous') }}{% endif %}</p>
+<p>{{ t('email.verify.intro') }}</p>
+{% with label = t('email.verify.button'), url = url %}{% include "_button.html" %}{% endwith %}
+<p>{{ t('email.verify.expiry', hours=expires_hours | default(24, true)) }}</p>
 {% endblock %}

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { CheckCircle2, RefreshCw, XCircle } from 'lucide-react';
 import {
   LEDGER_ACCOUNT_TYPES,
-  LEDGER_ACCOUNT_TYPE_LABELS,
   type LedgerAccountType,
   type TrialBalanceAccountRow,
 } from '@hig/shared/api';
@@ -22,6 +21,7 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { formatDateTime, formatMoney } from '../../lib/shared';
+import { enumLabel, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { useTrialBalance } from '../../api/queries';
 import { Money } from '../../components/finance';
 import { LedgerTabs } from '../../components/ledger';
@@ -33,10 +33,10 @@ const FILTERS = {
   active: filterParam.boolean(),
 };
 
-const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
+const trialColumns = (t: FinanceT): DataTableColumn<TrialBalanceAccountRow>[] => [
   {
     key: 'code',
-    header: 'Account',
+    header: t('ledger.entries.account'),
     sortable: true,
     sticky: true,
     mobile: 'primary',
@@ -46,15 +46,15 @@ const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
   },
   {
     key: 'type',
-    header: 'Type',
+    header: t('ledgerAccounts.columns.type'),
     sortable: true,
     mobile: 'badge',
-    cell: (a) => <Badge tone="neutral">{LEDGER_ACCOUNT_TYPE_LABELS[a.type]}</Badge>,
-    exportValue: (a) => LEDGER_ACCOUNT_TYPE_LABELS[a.type],
+    cell: (a) => <Badge tone="neutral">{enumLabel('ledgerAccountType', a.type)}</Badge>,
+    exportValue: (a) => enumLabel('ledgerAccountType', a.type),
   },
   {
     key: 'debit_minor',
-    header: 'Debit',
+    header: t('ledger.entries.debit'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -63,7 +63,7 @@ const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
   },
   {
     key: 'credit_minor',
-    header: 'Credit',
+    header: t('ledger.entries.credit'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -72,7 +72,7 @@ const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
   },
   {
     key: 'balance_minor',
-    header: 'Balance',
+    header: t('ledgerAccounts.columns.balance'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -80,7 +80,7 @@ const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
       <span className="block text-end">
         <Money minor={a.balance_minor} currency="INR" signed className="font-semibold" muted={a.balance_minor === 0} />
         {a.cached_balance_minor !== a.balance_minor && (
-          <span className="block text-xs text-danger-ink">cached {formatMoney(a.cached_balance_minor, 'INR')}</span>
+          <span className="block text-xs text-danger-ink">{t('trialBalance.cached', { amount: formatMoney(a.cached_balance_minor, 'INR') })}</span>
         )}
       </span>
     ),
@@ -89,7 +89,9 @@ const COLUMNS: DataTableColumn<TrialBalanceAccountRow>[] = [
 ];
 
 export default function TrialBalancePage() {
-  useDocumentTitle('Trial balance');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('ledger.tabs.trialBalance'));
+  const columns = useMemo(() => trialColumns(t), [t]);
   const tb = useTrialBalance();
   const data = tb.data;
   const table = useTableState({ filters: FILTERS, defaultSort: 'code', defaultPageSize: 50 });
@@ -102,20 +104,32 @@ export default function TrialBalancePage() {
     [all, filters.q, filters.active],
   );
   const rows = useMemo(() => (filters.type ? searched.filter((a) => a.type === filters.type) : searched), [searched, filters.type]);
-  const countOf = (t: LedgerAccountType) => searched.filter((a) => a.type === t).length;
+  const countOf = (type: LedgerAccountType) => searched.filter((a) => a.type === type).length;
   const quickItems: QuickFilterItem<LedgerAccountType>[] = [
-    { value: '', label: 'All', count: searched.length },
-    ...LEDGER_ACCOUNT_TYPES.map((t) => ({ value: t, label: LEDGER_ACCOUNT_TYPE_LABELS[t], count: countOf(t) })),
+    { value: '', label: t('common.all'), count: searched.length },
+    ...LEDGER_ACCOUNT_TYPES.map((type) => ({ value: type, label: enumLabel('ledgerAccountType', type), count: countOf(type) })),
   ];
+
+  const statusParts = data
+    ? [
+        t('trialBalance.totals', {
+          debits: formatMoney(data.total_debit_minor, data.currency),
+          credits: formatMoney(data.total_credit_minor, data.currency),
+        }),
+        ...(!balanced ? [t('trialBalance.difference', { amount: formatMoney(data.net_minor, data.currency) })] : []),
+        ...(data.cached_balances_consistent === false ? [t('trialBalance.cacheMismatch')] : []),
+        ...(data.as_of ? [t('trialBalance.asOf', { at: formatDateTime(data.as_of) })] : []),
+      ]
+    : [];
 
   return (
     <div>
       <PageHeader
-        title="Ledger"
-        description="Trial balance: total debits and credits per account and account type. A healthy ledger always nets to zero."
+        title={t('nav.items.ledger')}
+        description={t('trialBalance.description')}
         actions={
           <Button variant="outline" leftIcon={<RefreshCw className="size-4" aria-hidden />} onClick={() => void tb.refetch()} loading={tb.isFetching}>
-            Recalculate
+            {t('trialBalance.recalculate')}
           </Button>
         }
       />
@@ -133,26 +147,23 @@ export default function TrialBalancePage() {
           >
             {balanced ? <CheckCircle2 className="size-6 shrink-0" aria-hidden /> : <XCircle className="size-6 shrink-0" aria-hidden />}
             <div>
-              <p className="font-semibold">{balanced ? 'Balanced' : 'Out of balance'}</p>
-              <p className="text-sm">
-                Debits {formatMoney(data.total_debit_minor, data.currency)} · Credits {formatMoney(data.total_credit_minor, data.currency)}
-                {!balanced && <> · Difference {formatMoney(data.net_minor, data.currency)}. Investigate recent postings immediately.</>}
-                {data.cached_balances_consistent === false && <> · Cached account balances differ from the entries.</>}
-                {data.as_of && <> · as of {formatDateTime(data.as_of)}</>}
-              </p>
+              <p className="font-semibold">{balanced ? t('ledger.txn.balanced') : t('trialBalance.outOfBalance')}</p>
+              <p className="text-sm">{statusParts.join(' · ')}</p>
             </div>
           </div>
 
           <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
             {data.rows.map((r) => (
               <div key={r.type} className="rounded-xl border border-border bg-surface p-3 shadow-sm">
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted">{LEDGER_ACCOUNT_TYPE_LABELS[r.type] ?? r.type}</dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted">{enumLabel('ledgerAccountType', r.type)}</dt>
                 <dd className="mt-1 font-semibold tabular-nums text-fg">
                   <Money minor={r.balance_minor} currency={data.currency} signed />
                 </dd>
                 <dd className="mt-0.5 text-xs tabular-nums text-muted">
-                  Dr {formatMoney(r.debit_minor, data.currency, undefined, { compact: true })} · Cr{' '}
-                  {formatMoney(r.credit_minor, data.currency, undefined, { compact: true })}
+                  {t('journal.linesSummary', {
+                    debits: formatMoney(r.debit_minor, data.currency, undefined, { compact: true }),
+                    credits: formatMoney(r.credit_minor, data.currency, undefined, { compact: true }),
+                  })}
                 </dd>
               </div>
             ))}
@@ -162,43 +173,43 @@ export default function TrialBalancePage() {
 
       <DataTable
         id="admin.finance.ledger.trial-balance"
-        caption="Trial balance by account"
+        caption={t('trialBalance.caption')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={data ? rows : undefined}
         loading={tb.isLoading}
         fetching={tb.isFetching && !tb.isLoading}
         error={tb.error}
         onRetry={() => void tb.refetch()}
         rowHref={(a) => financePath(`ledger/accounts/${a.id}`)}
-        rowLabel={(a) => `Open account ${a.code}`}
-        emptyTitle="No postings yet"
+        rowLabel={(a) => t('ledgerAccounts.openAccount', { code: a.code })}
+        emptyTitle={t('trialBalance.emptyTitle')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Account type" items={quickItems} value={filters.type} onChange={(t) => setFilter('type', t)} />
+            <QuickFilters label={t('ledgerAccounts.accountType')} items={quickItems} value={filters.type} onChange={(v) => setFilter('type', v)} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Account code or name…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('ledgerAccounts.searchPlaceholder') }}
             onReset={table.resetFilters}
-            actions={<ExportButton filename="trial-balance" columns={COLUMNS} rows={rows} />}
+            actions={<ExportButton filename="trial-balance" columns={columns} rows={rows} />}
           >
-            <ToggleFilter label="With postings" pressed={filters.active === true} onChange={(on) => setFilter('active', on || undefined)} />
+            <ToggleFilter label={t('trialBalance.withPostings')} pressed={filters.active === true} onChange={(on) => setFilter('active', on || undefined)} />
           </FilterBar>
         }
       />
       {data && (
         <div className="mt-3 flex flex-wrap items-center justify-end gap-x-6 gap-y-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm shadow-sm">
-          <span className="font-semibold text-fg">Total</span>
+          <span className="font-semibold text-fg">{t('trialBalance.total')}</span>
           <span>
-            Debits <strong className="tabular-nums">{formatMoney(data.total_debit_minor, data.currency)}</strong>
+            {t('ledger.txn.debits')} <strong className="tabular-nums">{formatMoney(data.total_debit_minor, data.currency)}</strong>
           </span>
           <span>
-            Credits <strong className="tabular-nums">{formatMoney(data.total_credit_minor, data.currency)}</strong>
+            {t('ledger.txn.credits')} <strong className="tabular-nums">{formatMoney(data.total_credit_minor, data.currency)}</strong>
           </span>
           <span>
-            Net <Money minor={data.net_minor} currency={data.currency} signed className="font-semibold" />
+            {t('trialBalance.net')} <Money minor={data.net_minor} currency={data.currency} signed className="font-semibold" />
           </span>
         </div>
       )}

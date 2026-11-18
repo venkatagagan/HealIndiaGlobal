@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { breadcrumbLd, type Crumb } from '@/lib/jsonld';
 import { JsonLd } from './json-ld';
@@ -34,9 +34,9 @@ export function Breadcrumbs({
                 key={item.path}
                 className={`flex items-center gap-1 ${pill && i !== items.length - 2 ? 'max-sm:hidden' : ''}`}
               >
-                {pill && i === items.length - 2 ? <ChevronLeft className="h-3.5 w-3.5 opacity-60 sm:hidden" aria-hidden="true" /> : null}
+                {pill && i === items.length - 2 ? <ChevronLeft className="h-3.5 w-3.5 opacity-60 sm:hidden rtl:-scale-x-100" aria-hidden="true" /> : null}
                 {i > 0 ? (
-                  <ChevronRight className={`${pill ? 'h-3.5 w-3.5 max-sm:hidden' : 'h-4 w-4'} opacity-60`} aria-hidden="true" />
+                  <ChevronRight className={`${pill ? 'h-3.5 w-3.5 max-sm:hidden' : 'h-4 w-4'} opacity-60 rtl:-scale-x-100`} aria-hidden="true" />
                 ) : null}
                 {last ? (
                   <span aria-current="page" className={`font-medium ${dark ? 'text-white' : 'text-slate-900'}`}>

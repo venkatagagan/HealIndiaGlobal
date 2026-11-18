@@ -65,6 +65,8 @@ from app.core.security import (
     verify_password,
     verify_totp,
 )
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import (
     Agent,
     AuditLog,
@@ -412,12 +414,15 @@ async def send_verification_email(db: AsyncSession, user: User) -> None:
     raw = await _new_verification_token(
         db, user.id, VerificationPurpose.VERIFY_EMAIL, timedelta(hours=VERIFY_EMAIL_TTL_HOURS)
     )
+    await i18n_runtime.ensure_fresh()
+    locale = recipient_locale(user)
     await enqueue(
         db,
         "email.send",
         {
             "to": user.email,
-            "subject": f"Verify your email for {settings.APP_NAME}",
+            "subject": t("email.verify.subject", locale, app_name=settings.APP_NAME),
+            "locale": locale,
             "template": "verify_email.html",
             "context": {
                 "name": user.full_name or "there",
@@ -1249,20 +1254,22 @@ async def change_password(
         request=request,
     )
     if user.email:
+        await i18n_runtime.ensure_fresh()
+        locale = recipient_locale(user)
         await enqueue(
             db,
             "email.send",
             {
                 "to": user.email,
-                "subject": "Your password was changed",
+                "subject": t("email.password_changed.subject", locale),
+                "locale": locale,
                 "template": "generic_notification.html",
                 "context": {
-                    "title": "Your password was changed",
-                    "body": "The password for your account was just changed. If this was not you, reset "
-                    "your password immediately and contact support.",
+                    "title": t("email.password_changed.subject", locale),
+                    "body": t("email.password_changed.body", locale),
                     "name": user.full_name or "there",
                     "url": f"{settings.PUBLIC_SITE_URL.rstrip('/')}/forgot-password",
-                    "action_label": "Reset password",
+                    "action_label": t("email.password_changed.button", locale),
                 },
             },
         )
@@ -1303,12 +1310,15 @@ async def forgot_password(db: AsyncSession, email: str, request: Request) -> Non
     raw = await _new_verification_token(
         db, user.id, VerificationPurpose.RESET_PASSWORD, timedelta(minutes=RESET_PASSWORD_TTL_MINUTES)
     )
+    await i18n_runtime.ensure_fresh()
+    locale = recipient_locale(user)
     await enqueue(
         db,
         "email.send",
         {
             "to": user.email,
-            "subject": f"Reset your {settings.APP_NAME} password",
+            "subject": t("email.reset.subject", locale, app_name=settings.APP_NAME),
+            "locale": locale,
             "template": "reset_password.html",
             "context": {
                 "name": user.full_name or "there",

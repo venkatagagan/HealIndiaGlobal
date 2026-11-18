@@ -51,6 +51,14 @@ async def create_transcription(
     screening_id: Annotated[uuid.UUID | None, Form()] = None,
     case_id: Annotated[uuid.UUID | None, Form()] = None,
     consent_ai: Annotated[bool, Form()] = False,
+    language: Annotated[
+        str | None,
+        Form(
+            max_length=16,
+            description="Spoken language hint, e.g. the UI language 'ar'. Used when it is an enabled "
+            "language; otherwise the language is auto-detected (English when not enabled).",
+        ),
+    ] = None,
 ) -> VoiceTranscriptionOut:
     """Upload a recording (max ``VOICE_MAX_SECONDS``); transcription + extraction run in the background."""
     data = await _read_audio(audio)
@@ -63,6 +71,7 @@ async def create_transcription(
         consent_ai=consent_ai,
         patient_id=patient_id,
         request=request,
+        language=language,
     )
 
 

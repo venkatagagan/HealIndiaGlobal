@@ -4,17 +4,20 @@ import { toast } from 'sonner';
 import { Check, Hourglass, LoaderCircle } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { errorMessage } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { qk, useRerunScreening, useScreening } from '../../api/queries';
 import { useRealtimeEvent } from '../../lib/realtime';
 import { paths } from '../../lib/paths';
 import { cn, useDocumentTitle } from '../../lib/shared';
 import { Button, ButtonLink, ErrorState } from '../../ui/primitives';
 
-const STEPS = ['Analyzing your condition', 'Matching with specialists', 'Calculating savings'];
+/** Catalog keys of the visual progress steps. */
+const STEPS = ['screening.processing.steps.analyzing', 'screening.processing.steps.matching', 'screening.processing.steps.savings'];
 
 export function ProcessingPage() {
   const { id = '' } = useParams();
-  useDocumentTitle('Finding your match');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('screening.processing.documentTitle'));
   const navigate = useNavigate();
   const qc = useQueryClient();
   const screening = useScreening(id, { pollMs: 2000 });
@@ -23,7 +26,7 @@ export function ProcessingPage() {
 
   // Advance the visual steps while the server works (the last one waits for completion).
   useEffect(() => {
-    const timer = setInterval(() => setTick((t) => t + 1), 1800);
+    const timer = setInterval(() => setTick((n) => n + 1), 1800);
     return () => clearInterval(timer);
   }, []);
 
@@ -36,8 +39,8 @@ export function ProcessingPage() {
   const status = screening.data?.status;
   useEffect(() => {
     if (status !== 'completed') return;
-    const t = setTimeout(() => navigate(paths.screeningResults(id), { replace: true }), 900);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => navigate(paths.screeningResults(id), { replace: true }), 900);
+    return () => clearTimeout(timeout);
   }, [status, id, navigate]);
 
   if (screening.isError) return <ErrorState error={screening.error} onRetry={() => void screening.refetch()} />;
@@ -59,13 +62,17 @@ export function ProcessingPage() {
             </span>
           </div>
           <h1 className="text-center text-2xl font-bold sm:text-3xl">
-            {failed ? 'We hit a problem' : done ? 'Your matches are ready' : 'Finding your perfect match...'}
+            {failed
+              ? t('screening.processing.failedTitle')
+              : done
+                ? t('screening.processing.doneTitle')
+                : t('screening.processing.workingTitle')}
           </h1>
 
           {failed ? (
             <div className="mt-6 space-y-4 text-center">
               <p className="text-sm text-slate-300">
-                {screening.data?.error ? 'The analysis could not be completed. ' : ''}Your answers are saved - you can try again.
+                {screening.data?.error ? t('screening.processing.failedWithError') : t('screening.processing.failedRetry')}
               </p>
               <div className="flex flex-wrap justify-center gap-2">
                 <Button
@@ -78,19 +85,19 @@ export function ProcessingPage() {
                     })
                   }
                 >
-                  Try again
+                  {t('screening.processing.tryAgain')}
                 </Button>
                 <ButtonLink to={paths.dashboard} variant="outline" className="border-white/30 text-white hover:bg-white/10">
-                  Back to dashboard
+                  {t('screening.processing.backToDashboard')}
                 </ButtonLink>
               </div>
             </div>
           ) : (
             <ol className="mx-auto mt-8 max-w-sm space-y-4" aria-live="polite">
-              {STEPS.map((label, i) => {
+              {STEPS.map((stepKey, i) => {
                 const state = i < active || done ? 'done' : i === active ? 'active' : 'todo';
                 return (
-                  <li key={label} className="flex items-center gap-3">
+                  <li key={stepKey} className="flex items-center gap-3">
                     <span
                       className={cn(
                         'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2',
@@ -108,8 +115,14 @@ export function ProcessingPage() {
                       )}
                     </span>
                     <span className={cn('text-sm sm:text-base', state === 'todo' ? 'text-slate-500' : 'text-white')}>
-                      {label}
-                      <span className="sr-only">{state === 'done' ? ' - done' : state === 'active' ? ' - in progress' : ''}</span>
+                      {t(stepKey)}
+                      <span className="sr-only">
+                        {state === 'done'
+                          ? ` - ${t('screening.processing.stepDone')}`
+                          : state === 'active'
+                            ? ` - ${t('screening.processing.stepInProgress')}`
+                            : ''}
+                      </span>
                     </span>
                   </li>
                 );
@@ -118,7 +131,7 @@ export function ProcessingPage() {
           )}
           {!failed ? (
             <p className="mt-10 text-center text-xs text-slate-400">
-              This usually takes under a minute. You can leave this page - we will notify you when your matches are ready.
+              {t('screening.processing.footer')}
             </p>
           ) : null}
         </div>

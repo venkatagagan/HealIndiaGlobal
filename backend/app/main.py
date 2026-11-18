@@ -26,10 +26,12 @@ from app.core.config import settings
 from app.core.errors import error_response, register_exception_handlers
 from app.core.events import load_module_hooks
 from app.core.jobs import run_worker
+from app.core.locale import LocaleMiddleware
 from app.core.logging import configure_logging
 from app.core.middleware import CatchAllErrorsMiddleware, RequestIDMiddleware, SecurityHeadersMiddleware
 from app.core.realtime import hub
 from app.core.redis import close_redis, get_redis
+from app.i18n import runtime as i18n_runtime
 
 logger = structlog.get_logger("app.main")
 
@@ -55,6 +57,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     load_module_hooks()
     hub.start_listener()
+    if not settings.is_test:
+        await i18n_runtime.refresh()
     stop_event = asyncio.Event()
     worker_task: asyncio.Task[None] | None = None
     if settings.RUN_WORKER_IN_API and not settings.is_test:
@@ -102,8 +106,9 @@ def create_app() -> FastAPI:
 
     # Middleware: add_middleware() wraps the current stack, so add innermost first.
     # Final order (outer -> inner): RequestID/access-log, SecurityHeaders, TrustedHost (prod), CORS, GZip,
-    # CatchAllErrors.
+    # Locale (Content-Language), CatchAllErrors.
     app.add_middleware(CatchAllErrorsMiddleware)
+    app.add_middleware(LocaleMiddleware)
     app.add_middleware(GZipMiddleware, minimum_size=1024)
     app.add_middleware(
         CORSMiddleware,

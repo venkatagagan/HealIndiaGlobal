@@ -1,0 +1,796 @@
+{
+  "brand": {
+    "name": "Heal India Global",
+    "tagline": "Votre porte d’accès à l’excellence médicale indienne"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "retry": "Réessayer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Envoyer",
+    "search": "Rechercher",
+    "clear": "Effacer",
+    "upload": "Téléverser",
+    "download": "Télécharger",
+    "remove": "Retirer",
+    "view": "Voir",
+    "continue": "Continuer",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signUp": "S’inscrire",
+    "more": "Plus"
+  },
+  "states": {
+    "loading": "Chargement…",
+    "empty": "Rien pour le moment",
+    "noResults": "Aucun résultat",
+    "error": "Une erreur est survenue",
+    "errorDescription": "Veuillez réessayer dans un instant.",
+    "notAvailable": "Non disponible"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "page": "Page {{page}} sur {{pages}}",
+    "summary": "{{from}}–{{to}} sur {{total}}",
+    "goTo": "Aller à la page {{page}}"
+  },
+  "table": {
+    "sortAscending": "Tri croissant",
+    "sortDescending": "Tri décroissant",
+    "sortBy": "Trier par {{column}}",
+    "actions": "Actions",
+    "rowsPerPage": "Lignes par page",
+    "viewOptions": "Options d’affichage du tableau",
+    "density": "Densité",
+    "comfortable": "Confortable",
+    "compact": "Compacte",
+    "columns": "Colonnes",
+    "resetView": "Réinitialiser l’affichage",
+    "open": "Ouvrir",
+    "noMatchTitle": "Aucun résultat correspondant",
+    "noMatchDescription": "Essayez une autre recherche ou retirez certains filtres.",
+    "resetFilters": "Réinitialiser les filtres",
+    "bulkActions": "Actions groupées",
+    "selected_one": "{{n}} sélectionné",
+    "selected_other": "{{n}} sélectionnés",
+    "clearSelection": "Effacer la sélection",
+    "selectPage": "Sélectionner toutes les lignes de cette page",
+    "deselectPage": "Désélectionner toutes les lignes de cette page",
+    "selectRow": "Sélectionner la ligne",
+    "deselectRow": "Désélectionner la ligne",
+    "selectPageShort": "Sélectionner la page"
+  },
+  "upload": {
+    "drop": "Glissez-déposez vos fichiers ici, ou",
+    "browse": "parcourez",
+    "hint": "PDF, JPG, PNG, WEBP, HEIC ou DICOM · jusqu’à {{size}} MB",
+    "tooLarge": "« {{name}} » dépasse {{size}} MB",
+    "badType": "« {{name}} » n’est pas un type de fichier pris en charge",
+    "tooMany": "Vous pouvez téléverser jusqu’à {{max}} fichiers",
+    "remove": "Retirer {{name}}",
+    "uploading": "Téléversement…"
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "toggle": "Activer/désactiver le mode sombre"
+  },
+  "layout": {
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "collapseSidebar": "Réduire la barre latérale",
+    "expandSidebar": "Développer la barre latérale",
+    "skipToContent": "Aller au contenu",
+    "mainNavigation": "Navigation principale",
+    "userMenu": "Menu du compte",
+    "allRightsReserved": "Tous droits réservés.",
+    "asideTitle": "Des soins de classe mondiale, coordonnés pour vous",
+    "asidePoint1": "Hôpitaux et spécialistes partenaires accrédités",
+    "asidePoint2": "Devis de traitement transparents et détaillés",
+    "asidePoint3": "Visa, voyage et séjour coordonnés de bout en bout"
+  },
+  "dialog": {
+    "confirmTitle": "Êtes-vous sûr ?",
+    "confirmDescription": "Cette action est irréversible."
+  },
+  "stepper": {
+    "progress": "Étape {{current}} sur {{total}}",
+    "completed": "Terminée",
+    "current": "Étape en cours"
+  },
+  "form": {
+    "optional": "Facultatif",
+    "required": "Obligatoire"
+  },
+  "roles": {
+    "patient": "Patient",
+    "agent": "Agent",
+    "hospital": "Hôpital",
+    "admin": "Administrateur des opérations",
+    "finance": "Finance",
+    "support": "Assistance",
+    "super_admin": "Super administrateur"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "signInTitle": "Connectez-vous à votre compte",
+    "signInSubtitle": "Bon retour ! Saisissez vos informations pour continuer.",
+    "staffTitle": "Connexion du personnel",
+    "staffSubtitle": "Console des opérations — réservée au personnel autorisé.",
+    "signIn": "Se connecter",
+    "signingIn": "Connexion…",
+    "mfaTitle": "Vérification en deux étapes",
+    "mfaPrompt": "Saisissez le code à 6 chiffres de votre application d’authentification.",
+    "mfaCode": "Code de vérification",
+    "verify": "Vérifier et se connecter",
+    "useDifferentAccount": "Utiliser un autre compte",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Vous n’avez pas de compte ?",
+    "createAccount": "Créer un compte",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "checkingSession": "Vérification de votre session…",
+    "redirecting": "Redirection vers la connexion…",
+    "wrongPortalTitle": "Ce portail n’est pas destiné à votre compte",
+    "wrongPortalBody": "Vous êtes connecté en tant que {{name}} ({{role}}). Cet espace est réservé à : {{roles}}.",
+    "goToMyPortal": "Aller à mon portail",
+    "guest": "Continuer en tant qu’invité",
+    "errors": {
+      "emailRequired": "Saisissez votre adresse e-mail",
+      "emailInvalid": "Saisissez une adresse e-mail valide",
+      "passwordRequired": "Saisissez votre mot de passe",
+      "codeInvalid": "Saisissez le code à 6 chiffres",
+      "generic": "La connexion a échoué. Veuillez réessayer."
+    }
+  },
+  "register": {
+    "title": "Créez votre compte",
+    "subtitle": "Rejoignez Heal India Global en une minute.",
+    "accountType": "Type de compte",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "country": "Pays (code à 2 lettres)",
+    "referralCode": "Code de parrainage",
+    "agencyName": "Nom de l’agence",
+    "hospitalName": "Nom de l’hôpital",
+    "city": "Ville",
+    "passwordHint": "Au moins 10 caractères, dont une lettre et un chiffre.",
+    "acceptTerms": "J’accepte les Conditions d’utilisation et la Politique de confidentialité.",
+    "terms": "Conditions d’utilisation",
+    "privacy": "Politique de confidentialité",
+    "submit": "Créer un compte",
+    "submitting": "Création du compte…",
+    "roleHints": {
+      "patient": "Trouvez un traitement en Inde et gérez votre voyage médical.",
+      "agent": "Orientez et suivez des patients en tant que facilitateur.",
+      "hospital": "Référencez votre hôpital et accueillez des patients internationaux."
+    },
+    "errors": {
+      "fullNameRequired": "Saisissez votre nom complet",
+      "passwordWeak": "Utilisez au moins 10 caractères, dont une lettre et un chiffre",
+      "termsRequired": "Vous devez accepter les conditions pour continuer",
+      "agencyRequired": "Saisissez le nom de votre agence",
+      "hospitalRequired": "Saisissez le nom de l’hôpital",
+      "cityRequired": "Saisissez la ville",
+      "countryInvalid": "Utilisez un code pays à 2 lettres, par ex. FR",
+      "ageRequired": "Veuillez confirmer votre âge",
+      "adultRequired": "Les comptes agent et hôpital sont réservés aux personnes de 18 ans ou plus."
+    },
+    "age": {
+      "legend": "Votre âge",
+      "adult": "J'ai 18 ans ou plus",
+      "minor": "J'ai moins de 18 ans et un parent ou tuteur donnera son consentement pour mes soins",
+      "minorHint": "Nous demanderons à un parent ou tuteur de donner son consentement avant le début des soins.",
+      "confirmAdult": "Je confirme avoir 18 ans ou plus."
+    }
+  },
+  "realtime": {
+    "connected": "En direct",
+    "reconnecting": "Reconnexion…"
+  },
+  "language": {
+    "label": "Langue",
+    "choose": "Choisir une langue"
+  },
+  "careGates": {
+    "emergency": {
+      "title": "Urgence — consultez un service de soins local maintenant",
+      "patientLead": "Vos réponses indiquent que vous pourriez avoir besoin de soins médicaux urgents. Veuillez consulter dès maintenant un service d’urgence local : appelez le numéro d’urgence de votre pays ou rendez-vous aux urgences les plus proches. N’attendez pas de voyager pour vous faire soigner.",
+      "patientAck": "J’ai lu ces recommandations. J’ai demandé (ou je vais demander) un avis médical local, et je comprends que Heal India Global ne fournit pas de soins d’urgence.",
+      "patientDone": "Merci. Vous pouvez poursuivre votre dossier.",
+      "agentLead": "Le questionnaire de ce patient indique qu’il pourrait avoir besoin de soins médicaux urgents. Avant de planifier un voyage médical, assurez-vous que le patient consulte dès maintenant un service d’urgence local : le numéro d’urgence de son pays ou les urgences les plus proches. Il ne doit pas attendre de voyager pour se faire soigner.",
+      "agentAck": "J’ai transmis ces recommandations au patient. Il a demandé (ou va demander) un avis médical local, et nous comprenons que Heal India Global ne fournit pas de soins d’urgence.",
+      "agentDone": "Pris en compte. Vous pouvez poursuivre ce dossier.",
+      "notSubstitute": "Un voyage médical ne remplace pas des soins d’urgence. La planification du traitement en Inde ne peut reprendre qu’après qu’un médecin local a confirmé que le voyage est sans danger.",
+      "dialIndia": "En Inde, composez le 112 en cas d’urgence.",
+      "continue": "J’ai compris - continuer"
+    },
+    "upgrade": {
+      "titleNamed": "{{name}} a besoin d’un compte complet",
+      "title": "Le patient a besoin d’un compte complet",
+      "body": "Ce patient utilise encore une session invité. Les hôpitaux exigent un compte vérifié avant que des devis puissent être acceptés, des réservations effectuées ou des paiements encaissés. Demandez au patient d’ouvrir Heal India Global et de choisir « Créer un compte » - tout ce qui figure dans sa session invité est conservé - puis réessayez."
+    }
+  },
+  "clipboard": {
+    "copied": "Copié dans le presse-papiers",
+    "failed": "Impossible de copier",
+    "copyValue": "Copier {{value}}"
+  },
+  "export": {
+    "label": "Exporter",
+    "nothing": "Rien à exporter",
+    "exported_one": "{{n}} ligne exportée",
+    "exported_other": "{{n}} lignes exportées",
+    "failed": "L’export a échoué",
+    "currentPage": "Page actuelle",
+    "allResults": "Tous les résultats correspondants",
+    "rows_one": "{{n}} ligne",
+    "rows_other": "{{n}} lignes",
+    "hint": "CSV · filtres et tri actuels"
+  },
+  "breadcrumb": "Fil d’Ariane",
+  "filters": {
+    "any": "Tous",
+    "yes": "Oui",
+    "filterPlaceholder": "Filtrer {{label}}…",
+    "filterOptions": "Options de filtre {{label}}",
+    "noMatches": "Aucune correspondance",
+    "selectAll": "Tout sélectionner",
+    "selected_one": "{{n}} sélectionné",
+    "selected_other": "{{n}} sélectionnés",
+    "presets": {
+      "today": "Aujourd’hui",
+      "last7": "7 derniers jours",
+      "last30": "30 derniers jours",
+      "last90": "90 derniers jours",
+      "thisMonth": "Ce mois-ci",
+      "lastMonth": "Mois dernier"
+    },
+    "fromDate": "À partir du {{date}}",
+    "untilDate": "Jusqu’au {{date}}",
+    "dateField": "Champ de date",
+    "presetsLabel": "Préréglages",
+    "from": "Du",
+    "to": "Au",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "apply": "Appliquer",
+    "searchPlaceholder": "Rechercher…",
+    "clearSearch": "Effacer la recherche",
+    "more": "Plus de filtres",
+    "results_one": "{{n}} résultat",
+    "results_other": "{{n}} résultats",
+    "done": "Terminé",
+    "active": "Filtres actifs",
+    "remove": "Retirer le filtre {{label}}",
+    "resetAll": "Tout réinitialiser",
+    "quick": "Filtres rapides"
+  },
+  "notifications": {
+    "label": "Notifications",
+    "unreadLabel": "Notifications, {{count}} non lues"
+  },
+  "deleteAccount": {
+    "blockers": {
+      "casesInProgress": "dossiers de traitement en cours",
+      "activeBookings": "réservations actives",
+      "paymentsInProgress": "paiements en cours",
+      "ownedListedHospitals": "hôpitaux référencés dont vous êtes le seul propriétaire (ajoutez un autre propriétaire ou demandez-nous d’abord de retirer le référencement)"
+    },
+    "blockerCount": "{{n}} {{label}}",
+    "patient": {
+      "erased": "Vos coordonnées, vos numéros de passeport et d’assurance, vos notes de santé, vos accompagnants, vos éléments enregistrés et les documents qui ne font pas partie d’un dossier sont effacés, et vous êtes déconnecté partout.",
+      "lose": "Vous perdrez l’accès à vos questionnaires, dossiers, messages et documents."
+    },
+    "agent": {
+      "erased": "Vos coordonnées et le profil de votre agence sont effacés, votre agence est fermée et vous êtes déconnecté partout. Vos patients conservent leurs propres comptes et dossiers.",
+      "lose": "Vous perdrez l’accès à vos patients, dossiers, messages et à l’historique de vos commissions."
+    },
+    "hospital": {
+      "erased": "Vos coordonnées sont effacées, vous êtes retiré de toutes les équipes hospitalières et vous êtes déconnecté partout. La fiche de l’hôpital elle-même reste à ses autres propriétaires.",
+      "lose": "Vous perdrez l’accès au portail hôpital, à ses dossiers et à ses messages."
+    },
+    "wrongPassword": "Le mot de passe est incorrect.",
+    "wrongCode": "Le code d’authentification n’est pas valide.",
+    "failed": "Votre compte n’a pas pu être supprimé. Veuillez réessayer ou contacter l’assistance.",
+    "requestedToast": "Suppression demandée. Notre équipe vous contactera et fermera le compte lorsque plus rien ne sera en cours.",
+    "requestFailed": "La demande n’a pas pu être envoyée. Veuillez contacter l’assistance.",
+    "deletedTitle": "Votre compte a été supprimé",
+    "signedOut": "Vous avez été déconnecté sur tous vos appareils.",
+    "requiredToKeep": "Ce que nous sommes tenus de conserver :",
+    "title": "Supprimer le compte",
+    "description": "Fermer définitivement votre compte Heal India Global et effacer vos données personnelles.",
+    "whatDeleted": "Ce qui est supprimé",
+    "whatKept": "Ce que nous conservons (obligation légale)",
+    "keptDefault": "Les enregistrements de paiement et les dossiers médicaux liés à un dossier de traitement, pendant la durée exigée par la loi, avec un accès limité à l’hôpital traitant et à notre équipe de conformité.",
+    "inProgressNote": "Les comptes avec un traitement, des réservations ou des paiements en cours peuvent être supprimés une fois ceux-ci terminés ou annulés, ou vous pouvez nous demander de fermer le compte pour vous.",
+    "deleteMine": "Supprimer mon compte",
+    "confirmTitle": "Supprimer votre compte ?",
+    "confirmDescription": "Cette action est irréversible.",
+    "requested": "Suppression demandée",
+    "request": "Demander la suppression",
+    "deletePermanently": "Supprimer définitivement",
+    "guestNote": "Les données d’invité ne peuvent pas être récupérées après la suppression.",
+    "password": "Votre mot de passe",
+    "passwordHint": "Laissez vide uniquement si vous vous connectez toujours avec Google ou Apple.",
+    "code": "Code d’authentification",
+    "codeHint": "Le code à 6 chiffres de votre application d’authentification.",
+    "reason": "Pourquoi partez-vous ?",
+    "typeToConfirm": "Saisissez {{word}} pour confirmer",
+    "requestSent": "Votre demande de suppression a été envoyée. Nous vous contacterons par e-mail.",
+    "requestHint": "Vous pouvez nous demander de fermer le compte pour vous avec « Demander la suppression »."
+  },
+  "enums": {
+    "userRole": {
+      "patient": "Patient",
+      "agent": "Agent",
+      "hospital": "Personnel hospitalier",
+      "admin": "Administrateur des opérations",
+      "finance": "Finance",
+      "support": "Assistance / coordinateur",
+      "super_admin": "Super administrateur"
+    },
+    "userStatus": {
+      "active": "Actif",
+      "pending_verification": "Vérification en attente",
+      "suspended": "Suspendu",
+      "deleted": "Supprimé"
+    },
+    "gender": {
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre",
+      "undisclosed": "Je préfère ne pas le dire"
+    },
+    "doctorGenderPref": {
+      "male": "Homme",
+      "female": "Femme",
+      "no_preference": "Aucune préférence"
+    },
+    "kycStatus": {
+      "not_submitted": "Non soumis",
+      "pending": "En cours d’examen",
+      "approved": "Approuvé",
+      "rejected": "Refusé"
+    },
+    "hospitalStatus": {
+      "draft": "Brouillon",
+      "pending_review": "Examen en attente",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "rejected": "Refusé"
+    },
+    "agentStatus": {
+      "pending": "Approbation en attente",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "rejected": "Refusé"
+    },
+    "hospitalMemberRole": {
+      "owner": "Propriétaire",
+      "admin": "Administrateur",
+      "coordinator": "Coordinateur",
+      "finance": "Finance",
+      "doctor": "Médecin"
+    },
+    "packageTier": {
+      "medical_only": "Médical uniquement",
+      "medical_stay": "Médical + séjour",
+      "all_inclusive": "Tout compris"
+    },
+    "screeningStatus": {
+      "draft": "Brouillon",
+      "processing": "En traitement",
+      "completed": "Terminé",
+      "failed": "Échec"
+    },
+    "urgency": {
+      "routine": "Courant",
+      "soon": "Prochainement",
+      "urgent": "Urgent",
+      "emergency": "Urgence"
+    },
+    "durationUnit": {
+      "days": "Jours",
+      "weeks": "Semaines",
+      "months": "Mois",
+      "years": "Années"
+    },
+    "severityLevel": {
+      "none": "Aucune",
+      "mild": "Légère",
+      "moderate": "Modérée",
+      "severe": "Sévère"
+    },
+    "symptomAnswer": {
+      "yes": "Oui",
+      "maybe": "Peut-être",
+      "no": "Non"
+    },
+    "previousTreatment": {
+      "medication": "Médicaments",
+      "physical_therapy": "Kinésithérapie",
+      "surgery": "Chirurgie",
+      "other": "Autre"
+    },
+    "caseStatus": {
+      "enquiry": "Demande",
+      "quoted": "Devis envoyé",
+      "accepted": "Accepté",
+      "booked": "Réservé",
+      "in_treatment": "En traitement",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "declined": "Refusé"
+    },
+    "quoteStatus": {
+      "draft": "Brouillon",
+      "sent": "Envoyé",
+      "accepted": "Accepté",
+      "rejected": "Refusé",
+      "expired": "Expiré",
+      "withdrawn": "Retiré"
+    },
+    "quoteLineCategory": {
+      "surgery": "Chirurgie",
+      "hospital_stay": "Hospitalisation",
+      "medications": "Médicaments",
+      "tests_scans": "Analyses et examens d’imagerie",
+      "doctor_fees": "Honoraires médicaux",
+      "implants": "Implants",
+      "other": "Autre"
+    },
+    "bookingStatus": {
+      "pending_payment": "Paiement en attente",
+      "confirmed": "Confirmée",
+      "admitted": "Admis",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "paymentOption": {
+      "full": "Payer la totalité",
+      "deposit": "Payer un acompte maintenant",
+      "installments": "Paiement échelonné"
+    },
+    "consultationStatus": {
+      "requested": "Demandée",
+      "scheduled": "Planifiée",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "consultationMode": {
+      "video": "Vidéo",
+      "phone": "Téléphone"
+    },
+    "checklistStatus": {
+      "pending": "En attente",
+      "in_progress": "En cours",
+      "done": "Fait"
+    },
+    "checklistKey": {
+      "treatment_booked": "Traitement réservé",
+      "visa_approved": "Visa approuvé",
+      "flight_booked": "Vol réservé",
+      "travel_insurance": "Assurance voyage",
+      "airport_pickup": "Accueil à l’aéroport",
+      "documents_uploaded": "Documents téléversés",
+      "accommodation_booked": "Hébergement réservé"
+    },
+    "itineraryKind": {
+      "appointment": "Rendez-vous",
+      "admission": "Admission",
+      "surgery": "Chirurgie",
+      "pickup": "Prise en charge",
+      "checkin": "Arrivée",
+      "checkout": "Départ",
+      "followup": "Suivi",
+      "sightseeing": "Visite touristique",
+      "other": "Autre"
+    },
+    "itineraryStatus": {
+      "scheduled": "Planifié",
+      "done": "Fait",
+      "cancelled": "Annulé"
+    },
+    "visaStatus": {
+      "not_started": "Non commencé",
+      "documents_pending": "Documents en attente",
+      "invitation_issued": "Invitation émise",
+      "applied": "Demande déposée",
+      "approved": "Approuvé",
+      "rejected": "Refusé"
+    },
+    "visaType": {
+      "e_medical": "Visa e-Medical",
+      "e_medical_attendant": "Visa e-Medical accompagnant"
+    },
+    "travelKind": {
+      "flight": "Vol",
+      "airport_pickup": "Accueil à l’aéroport",
+      "airport_drop": "Transfert vers l’aéroport",
+      "local_transport": "Transport local"
+    },
+    "serviceBookingStatus": {
+      "requested": "Demandée",
+      "quoted": "Devis envoyé",
+      "confirmed": "Confirmée",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "accommodationType": {
+      "hotel": "Hôtel",
+      "guest_house": "Maison d’hôtes",
+      "service_apartment": "Appartement avec services",
+      "hospital_guest_room": "Chambre d’hôte de l’hôpital"
+    },
+    "serviceKind": {
+      "translator": "Traducteur",
+      "local_guide": "Guide local",
+      "transport": "Transport",
+      "travel_agent": "Agent de voyage",
+      "insurance": "Assurance"
+    },
+    "rateUnit": {
+      "hour": "Par heure",
+      "day": "Par jour",
+      "trip": "Par trajet",
+      "fixed": "Forfait"
+    },
+    "sosStatus": {
+      "open": "Ouverte",
+      "acknowledged": "Prise en compte",
+      "resolved": "Résolue"
+    },
+    "documentKind": {
+      "passport": "Passeport",
+      "visa": "Visa",
+      "medical_report": "Rapport médical",
+      "prescription": "Ordonnance",
+      "lab_result": "Résultat d’analyse",
+      "imaging": "Imagerie (radio / IRM / scanner)",
+      "invitation_letter": "Lettre d’invitation",
+      "invoice": "Facture",
+      "receipt": "Reçu",
+      "kyc_registration": "KYC - Certificat d’enregistrement",
+      "kyc_accreditation": "KYC - Certificat d’accréditation",
+      "kyc_pan": "KYC - Carte PAN",
+      "kyc_gst": "KYC - Certificat GST",
+      "kyc_id_proof": "KYC - Pièce d’identité",
+      "bank_proof": "Justificatif bancaire",
+      "payment_proof": "Preuve de paiement",
+      "other": "Autre"
+    },
+    "documentStatus": {
+      "uploaded": "Téléversé",
+      "verified": "Vérifié",
+      "rejected": "Refusé"
+    },
+    "consentKind": {
+      "terms": "Conditions d’utilisation",
+      "privacy": "Politique de confidentialité",
+      "ai_processing": "Traitement de mes informations de santé par l’IA",
+      "share_with_hospitals": "Partager mon dossier avec les hôpitaux partenaires",
+      "marketing": "Communications marketing"
+    },
+    "paymentGateway": {
+      "razorpay": "Carte / UPI (Razorpay)",
+      "stripe": "Carte (Stripe)",
+      "bank_transfer": "Virement bancaire (SWIFT)",
+      "mock": "Paiement de test (dev)"
+    },
+    "paymentPurpose": {
+      "consultation_fee": "Frais de consultation",
+      "booking_deposit": "Acompte de réservation",
+      "booking_balance": "Solde de réservation",
+      "booking_full": "Réservation payée en totalité",
+      "installment": "Échéance",
+      "service": "Service"
+    },
+    "orderStatus": {
+      "created": "Créée",
+      "pending": "En attente",
+      "paid": "Payée",
+      "partially_refunded": "Partiellement remboursée",
+      "refunded": "Remboursée",
+      "failed": "Échec",
+      "expired": "Expirée",
+      "cancelled": "Annulée"
+    },
+    "paymentStatus": {
+      "created": "Créé",
+      "authorized": "Autorisé",
+      "captured": "Encaissé",
+      "failed": "Échec",
+      "refunded": "Remboursé",
+      "partially_refunded": "Partiellement remboursé"
+    },
+    "paymentMethod": {
+      "card": "Carte",
+      "upi": "UPI",
+      "netbanking": "Banque en ligne",
+      "bank_transfer": "Virement bancaire",
+      "wallet": "Portefeuille",
+      "emi": "EMI",
+      "mock": "Simulé"
+    },
+    "refundStatus": {
+      "requested": "Demandé",
+      "approved": "Approuvé",
+      "processing": "En traitement",
+      "processed": "Traité",
+      "failed": "Échec",
+      "rejected": "Refusé"
+    },
+    "installmentStatus": {
+      "due": "À payer",
+      "paid": "Payée",
+      "overdue": "En retard",
+      "cancelled": "Annulée"
+    },
+    "invoiceKind": {
+      "patient_receipt": "Reçu patient",
+      "commission_invoice": "Facture de commission",
+      "agent_statement": "Relevé agent",
+      "credit_note": "Avoir"
+    },
+    "ledgerAccountType": {
+      "asset": "Actif",
+      "liability": "Passif",
+      "revenue": "Produits",
+      "expense": "Charges",
+      "equity": "Capitaux propres"
+    },
+    "ledgerOwnerType": {
+      "platform": "Plateforme",
+      "hospital": "Hôpital",
+      "agent": "Agent",
+      "vendor": "Prestataire",
+      "gateway": "Passerelle",
+      "tax": "Taxe"
+    },
+    "entryDirection": {
+      "debit": "Débit",
+      "credit": "Crédit"
+    },
+    "ledgerTxnType": {
+      "payment_captured": "Paiement encaissé",
+      "gateway_fee": "Frais de passerelle",
+      "revenue_recognition": "Comptabilisation des produits",
+      "agent_commission": "Commission agent",
+      "refund": "Remboursement",
+      "payout": "Versement",
+      "adjustment": "Ajustement",
+      "cancellation_retention": "Retenue sur annulation",
+      "tax_remittance": "Reversement de taxe",
+      "fx_difference": "Écart de change"
+    },
+    "commissionScope": {
+      "global": "Global",
+      "hospital": "Hôpital",
+      "specialty": "Spécialité",
+      "procedure": "Intervention",
+      "agent": "Agent"
+    },
+    "payeeType": {
+      "hospital": "Hôpital",
+      "agent": "Agent",
+      "vendor": "Prestataire"
+    },
+    "settlementItemStatus": {
+      "pending": "En attente",
+      "eligible": "Éligible",
+      "on_hold": "Suspendu",
+      "batched": "Groupé",
+      "paid": "Payé",
+      "reversed": "Annulé"
+    },
+    "settlementBatchStatus": {
+      "draft": "Brouillon",
+      "pending_approval": "Approbation en attente",
+      "approved": "Approuvé",
+      "processing": "En traitement",
+      "completed": "Terminé",
+      "partially_failed": "Échec partiel",
+      "cancelled": "Annulé"
+    },
+    "payoutStatus": {
+      "queued": "En file d’attente",
+      "processing": "En traitement",
+      "needs_reconciliation": "À rapprocher",
+      "processed": "Traité",
+      "failed": "Échec",
+      "reversed": "Annulé"
+    },
+    "payoutMethod": {
+      "razorpay_route": "Razorpay Route",
+      "razorpayx": "RazorpayX",
+      "manual_bank_transfer": "Virement bancaire manuel",
+      "mock": "Simulé (dev)"
+    },
+    "payoutAccountStatus": {
+      "active": "Actif",
+      "disabled": "Désactivé"
+    },
+    "jobStatus": {
+      "queued": "En file d’attente",
+      "running": "En cours",
+      "succeeded": "Réussi",
+      "failed": "Échec",
+      "dead": "Abandonné"
+    },
+    "reviewStatus": {
+      "pending": "En attente",
+      "published": "Publié",
+      "hidden": "Masqué"
+    },
+    "accreditation": {
+      "jci": "JCI",
+      "nabh": "NABH",
+      "nabl": "NABL",
+      "iso": "ISO"
+    },
+    "agentTier": {
+      "bronze": "Bronze",
+      "silver": "Argent",
+      "gold": "Or"
+    },
+    "slotKind": {
+      "consultation": "Consultation",
+      "admission": "Admission"
+    },
+    "savedEntityType": {
+      "hospital": "Hôpital",
+      "doctor": "Médecin",
+      "procedure": "Intervention"
+    },
+    "conversationKind": {
+      "case": "Dossier",
+      "support": "Assistance",
+      "direct": "Direct"
+    },
+    "likelihood": {
+      "low": "Faible",
+      "medium": "Moyenne",
+      "high": "Élevée"
+    },
+    "bodyArea": {
+      "head": "Tête",
+      "neck": "Cou",
+      "chest": "Poitrine",
+      "abdomen": "Ventre",
+      "pelvis": "Bassin",
+      "back": "Dos",
+      "left_arm": "Bras gauche",
+      "right_arm": "Bras droit",
+      "left_leg": "Jambe gauche",
+      "right_leg": "Jambe droite",
+      "skin": "Peau",
+      "general": "Tout le corps / général"
+    }
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "unauthorized": "Veuillez vous connecter pour continuer.",
+    "forbidden": "Vous n’avez pas l’autorisation d’effectuer cette action.",
+    "notFound": "Introuvable.",
+    "conflict": "Cet élément a été modifié par quelqu’un d’autre. Actualisez la page et réessayez.",
+    "validation": "Veuillez vérifier les champs signalés.",
+    "rateLimited": "Trop de requêtes. Veuillez patienter un instant et réessayer.",
+    "server": "Le serveur a rencontré un problème. Veuillez réessayer sous peu.",
+    "requestFailed": "La requête a échoué.",
+    "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+  }
+}

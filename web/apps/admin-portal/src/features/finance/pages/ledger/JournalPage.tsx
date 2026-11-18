@@ -4,7 +4,6 @@ import { BookOpen } from 'lucide-react';
 import {
   financeApi,
   LEDGER_TXN_TYPES,
-  LEDGER_TXN_TYPE_LABELS,
   type LedgerTransactionListParams,
   type LedgerTransactionOut,
 } from '@hig/shared/api';
@@ -24,6 +23,7 @@ import {
   TextCell,
   type DataTableColumn,
 } from '@hig/shared/ui';
+import { enumLabel, enumOptions, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys } from '../../api/queries';
 import { LedgerTabs, TransactionModal } from '../../components/ledger';
 import { listOrUndefined, minorOrUndefined } from '../../lib/tables';
@@ -51,82 +51,84 @@ function toApiFilters(f: FilterValues<typeof FILTERS>): Omit<LedgerTransactionLi
   };
 }
 
-function totalOf(t: LedgerTransactionOut): number | null {
-  if (typeof t.total_minor === 'number') return t.total_minor;
-  if (!t.entries) return null;
-  return t.entries.filter((e) => e.direction === 'debit').reduce((s, e) => s + e.amount_minor, 0);
+function totalOf(tx: LedgerTransactionOut): number | null {
+  if (typeof tx.total_minor === 'number') return tx.total_minor;
+  if (!tx.entries) return null;
+  return tx.entries.filter((e) => e.direction === 'debit').reduce((s, e) => s + e.amount_minor, 0);
 }
 
 /** "Dr ESCROW · Cr HOSPITAL:…" summary of the lines of a transaction */
-function linesSummary(t: LedgerTransactionOut): string | undefined {
-  if (!t.entries?.length) return undefined;
+function linesSummary(t: FinanceT, tx: LedgerTransactionOut): string | undefined {
+  if (!tx.entries?.length) return undefined;
   const short = (code: string) => code.replace(/:[0-9a-f]{8}-[0-9a-f-]{27}:/i, ':…:');
-  const dr = t.entries.filter((e) => e.direction === 'debit').map((e) => short(e.account_code));
-  const cr = t.entries.filter((e) => e.direction === 'credit').map((e) => short(e.account_code));
-  return `Dr ${dr.join(', ')} · Cr ${cr.join(', ')}`;
+  const dr = tx.entries.filter((e) => e.direction === 'debit').map((e) => short(e.account_code));
+  const cr = tx.entries.filter((e) => e.direction === 'credit').map((e) => short(e.account_code));
+  return t('journal.linesSummary', { debits: dr.join(', '), credits: cr.join(', ') });
 }
 
-const COLUMNS: DataTableColumn<LedgerTransactionOut>[] = [
+const journalColumns = (t: FinanceT): DataTableColumn<LedgerTransactionOut>[] => [
   {
     key: 'posted',
-    header: 'Posted',
+    header: t('ledgerEntries.columns.posted'),
     sortable: true,
     sortKey: 'posted_at',
     sortDescFirst: true,
     sticky: true,
     mobile: 'secondary',
-    cell: (t) => <DateCell value={t.posted_at} display="datetime" />,
-    exportValue: (t) => t.posted_at,
+    cell: (tx) => <DateCell value={tx.posted_at} display="datetime" />,
+    exportValue: (tx) => tx.posted_at,
   },
   {
     key: 'type',
-    header: 'Type',
+    header: t('ledgerAccounts.columns.type'),
     mobile: 'badge',
-    cell: (t) => <Badge tone="neutral">{LEDGER_TXN_TYPE_LABELS[t.txn_type] ?? t.txn_type}</Badge>,
-    exportValue: (t) => LEDGER_TXN_TYPE_LABELS[t.txn_type] ?? t.txn_type,
+    cell: (tx) => <Badge tone="neutral">{enumLabel('ledgerTxnType', tx.txn_type)}</Badge>,
+    exportValue: (tx) => enumLabel('ledgerTxnType', tx.txn_type),
   },
   {
     key: 'description',
-    header: 'Description',
+    header: t('ledger.txn.description'),
     mobile: 'primary',
     className: 'max-w-[28rem]',
-    cell: (t) => <TextCell primary={t.description ?? <span className="text-muted">—</span>} secondary={linesSummary(t)} />,
-    mobileCell: (t) => t.description ?? LEDGER_TXN_TYPE_LABELS[t.txn_type],
-    exportValue: (t) => t.description ?? '',
+    cell: (tx) => <TextCell primary={tx.description ?? <span className="text-muted">—</span>} secondary={linesSummary(t, tx)} />,
+    mobileCell: (tx) => tx.description ?? enumLabel('ledgerTxnType', tx.txn_type),
+    exportValue: (tx) => tx.description ?? '',
   },
   {
     key: 'reference',
-    header: 'Reference',
-    cell: (t) =>
-      t.reference_type ? (
-        <TextCell primary={t.reference_type} secondary={t.reference_id ? <span className="font-mono">{t.reference_id.slice(0, 8)}…</span> : undefined} />
+    header: t('ledger.txn.reference'),
+    cell: (tx) =>
+      tx.reference_type ? (
+        <TextCell primary={tx.reference_type} secondary={tx.reference_id ? <span className="font-mono">{tx.reference_id.slice(0, 8)}…</span> : undefined} />
       ) : (
         <span className="text-muted">—</span>
       ),
-    exportValue: (t) => (t.reference_type ? `${t.reference_type} ${t.reference_id ?? ''}` : ''),
+    exportValue: (tx) => (tx.reference_type ? `${tx.reference_type} ${tx.reference_id ?? ''}` : ''),
   },
   {
     key: 'lines',
-    header: 'Lines',
+    header: t('journal.lines'),
     align: 'end',
     defaultHidden: true,
-    cell: (t) => <span className="tabular-nums">{t.entries?.length ?? '—'}</span>,
-    exportValue: (t) => t.entries?.length ?? '',
+    cell: (tx) => <span className="tabular-nums">{tx.entries?.length ?? '—'}</span>,
+    exportValue: (tx) => tx.entries?.length ?? '',
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('orders.columns.amount'),
     align: 'end',
-    cell: (t) => <MoneyCell minor={totalOf(t)} currency={t.entries?.[0]?.currency ?? 'INR'} />,
-    exportValue: (t) => {
-      const total = totalOf(t);
-      return total === null ? '' : fromMinor(total, t.entries?.[0]?.currency ?? 'INR');
+    cell: (tx) => <MoneyCell minor={totalOf(tx)} currency={tx.entries?.[0]?.currency ?? 'INR'} />,
+    exportValue: (tx) => {
+      const total = totalOf(tx);
+      return total === null ? '' : fromMinor(total, tx.entries?.[0]?.currency ?? 'INR');
     },
   },
 ];
 
 export default function JournalPage() {
-  useDocumentTitle('Ledger journal');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('journal.documentTitle'));
+  const columns = useMemo(() => journalColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-posted_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -147,32 +149,32 @@ export default function JournalPage() {
 
   return (
     <div>
-      <PageHeader title="Ledger" description="Journal of posted transactions. Each transaction's debits equal its credits (enforced by the database)." />
+      <PageHeader title={t('nav.items.ledger')} description={t('journal.description')} />
       <LedgerTabs />
       <DataTable
         id="admin.finance.ledger.journal"
-        caption="Ledger transactions"
+        caption={t('journal.caption')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={txns.data?.items}
         total={txns.data?.total}
         loading={txns.isLoading}
         fetching={txns.isFetching && !txns.isLoading}
         error={txns.error}
         onRetry={() => void txns.refetch()}
-        onRowClick={(t) => setOpenId(t.id)}
-        rowLabel={(t) => `Open journal entry ${LEDGER_TXN_TYPE_LABELS[t.txn_type] ?? t.txn_type}`}
-        emptyTitle="No transactions posted yet"
-        emptyDescription="Payments, revenue recognition, refunds and payouts post balanced journal entries here."
+        onRowClick={(tx) => setOpenId(tx.id)}
+        rowLabel={(tx) => t('ledgerEntries.openEntry', { type: enumLabel('ledgerTxnType', tx.txn_type) })}
+        emptyTitle={t('journal.emptyTitle')}
+        emptyDescription={t('journal.emptyDescription')}
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Description or reference id…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('journal.searchPlaceholder') }}
             onReset={table.resetFilters}
             resultCount={txns.data?.total}
             actions={
               <ExportButton
                 filename="ledger-journal"
-                columns={COLUMNS}
+                columns={columns}
                 rows={txns.data?.items}
                 total={txns.data?.total}
                 fetchAll={() =>
@@ -182,14 +184,14 @@ export default function JournalPage() {
             }
           >
             <MultiSelectFilter
-              label="Type"
+              label={t('ledgerAccounts.columns.type')}
               value={filters.txn_type}
               onChange={(v) => setFilter('txn_type', v)}
-              options={LEDGER_TXN_TYPES.map((t) => ({ value: t, label: LEDGER_TXN_TYPE_LABELS[t] }))}
+              options={enumOptions('ledgerTxnType', LEDGER_TXN_TYPES)}
               searchable
             />
             <SelectFilter
-              label="Account"
+              label={t('ledger.entries.account')}
               icon={<BookOpen className="size-3.5 opacity-70" aria-hidden />}
               value={filters.account_id}
               onChange={(v) => setFilter('account_id', v)}
@@ -197,8 +199,8 @@ export default function JournalPage() {
               loading={accounts.isLoading}
               searchable
             />
-            <AmountRangeFilter label="Amount" currency="INR" value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
-            <DateRangeFilter label="Posted" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <AmountRangeFilter label={t('orders.columns.amount')} currency="INR" value={{ min: filters.min, max: filters.max }} onChange={({ min, max }) => setFilters({ min, max })} />
+            <DateRangeFilter label={t('ledgerEntries.columns.posted')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />

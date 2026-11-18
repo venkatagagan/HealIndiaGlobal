@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useQuery, type QueryKey } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
+import type { TFunction } from 'i18next';
+import { Trans } from 'react-i18next';
 import { fieldErrors, type CrudEndpoints } from '@hig/shared/api';
 import type { TableStateLike } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import { Button as UiButton, DataTable, ExportButton, FilterBar, type DataTableColumn } from '@hig/shared/ui';
 import { Button, Checkbox, ConfirmDialog, Field, Input, Modal, Select, Textarea, type SelectOption } from '../ui';
 import { MoneyInput } from './MoneyInput';
@@ -72,6 +75,7 @@ function buildPayload<Row>(
   fields: readonly FieldDef<Row>[],
   form: FormState,
   isCreate: boolean,
+  t: TFunction,
 ): { payload: Record<string, unknown>; errors: Record<string, string> } {
   const payload: Record<string, unknown> = {};
   const errors: Record<string, string> = {};
@@ -84,31 +88,31 @@ function buildPayload<Row>(
     }
     const text = String(v ?? '').trim();
     if (text === '') {
-      if (f.required) errors[f.name] = 'Required';
+      if (f.required) errors[f.name] = t('components.crud.errors.required');
       else payload[f.name] = f.kind === 'list' ? [] : null;
       continue;
     }
     switch (f.kind) {
       case 'int': {
         const n = Number(text);
-        if (!Number.isInteger(n)) errors[f.name] = 'Enter a whole number';
-        else if (f.min !== undefined && n < f.min) errors[f.name] = `Minimum ${f.min}`;
-        else if (f.max !== undefined && n > f.max) errors[f.name] = `Maximum ${f.max}`;
+        if (!Number.isInteger(n)) errors[f.name] = t('components.crud.errors.wholeNumber');
+        else if (f.min !== undefined && n < f.min) errors[f.name] = t('components.crud.errors.min', { min: f.min });
+        else if (f.max !== undefined && n > f.max) errors[f.name] = t('components.crud.errors.max', { max: f.max });
         else payload[f.name] = n;
         break;
       }
       case 'decimal': {
         const n = Number(text);
-        if (!Number.isFinite(n)) errors[f.name] = 'Enter a number';
-        else if (f.min !== undefined && n < f.min) errors[f.name] = `Minimum ${f.min}`;
-        else if (f.max !== undefined && n > f.max) errors[f.name] = `Maximum ${f.max}`;
+        if (!Number.isFinite(n)) errors[f.name] = t('components.crud.errors.number');
+        else if (f.min !== undefined && n < f.min) errors[f.name] = t('components.crud.errors.min', { min: f.min });
+        else if (f.max !== undefined && n > f.max) errors[f.name] = t('components.crud.errors.max', { max: f.max });
         else payload[f.name] = f.decimalAsString ? text : n;
         break;
       }
       case 'money': {
         const ccy = String(form[f.currencyField ?? 'currency'] || 'INR');
         const minor = toMinor(text, ccy);
-        if (minor === null || minor < 0) errors[f.name] = 'Enter a valid amount';
+        if (minor === null || minor < 0) errors[f.name] = t('components.crud.errors.amount');
         else payload[f.name] = minor;
         break;
       }
@@ -116,11 +120,11 @@ function buildPayload<Row>(
         payload[f.name] = splitList(text);
         break;
       case 'url':
-        if (!/^https?:\/\/\S+$/i.test(text)) errors[f.name] = 'Enter a full http(s) URL';
+        if (!/^https?:\/\/\S+$/i.test(text)) errors[f.name] = t('components.crud.errors.url');
         else payload[f.name] = text;
         break;
       case 'email':
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) errors[f.name] = 'Enter a valid email';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) errors[f.name] = t('components.crud.errors.email');
         else payload[f.name] = text;
         break;
       default:
@@ -187,6 +191,7 @@ export function CrudSection<Row, In>({
   alsoInvalidate = [],
   description,
 }: CrudSectionProps<Row, In>) {
+  const { t } = useAppTranslation();
   const list = useQuery({ queryKey: [...queryKey, listParams ?? {}], queryFn: () => endpoints.list(listParams) });
   const [editing, setEditing] = useState<{ row: Row | null } | null>(null);
   const [deleting, setDeleting] = useState<Row | null>(null);
@@ -197,7 +202,7 @@ export function CrudSection<Row, In>({
 
   const remove = useOpsMutation({
     mutationFn: (row: Row) => endpoints.delete(idOf(row)),
-    success: `${Title} deleted`,
+    success: () => t('components.crud.deleted', { entity: Title }),
     invalidate: [queryKey, ...alsoInvalidate],
     onSuccess: () => setDeleting(null),
   });
@@ -216,8 +221,8 @@ export function CrudSection<Row, In>({
         ...columns,
         {
           key: '_actions',
-          header: <span className="sr-only">Actions</span>,
-          title: 'Actions',
+          header: <span className="sr-only">{t('components.crud.actions')}</span>,
+          title: t('components.crud.actions'),
           align: 'end',
           hideable: false,
           exportable: false,
@@ -227,7 +232,7 @@ export function CrudSection<Row, In>({
               <Button
                 size="sm"
                 variant="ghost"
-                aria-label={`Edit ${rowLabel(row)}`}
+                aria-label={t('components.crud.editRow', { label: rowLabel(row) })}
                 icon={<Pencil className="size-3.5" />}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -238,7 +243,7 @@ export function CrudSection<Row, In>({
                 size="sm"
                 variant="ghost"
                 className="text-red-600 dark:text-red-400"
-                aria-label={`Delete ${rowLabel(row)}`}
+                aria-label={t('components.crud.deleteRow', { label: rowLabel(row) })}
                 icon={<Trash2 className="size-3.5" />}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -253,7 +258,7 @@ export function CrudSection<Row, In>({
 
   const addButton = canEdit ? (
     <UiButton size="sm" leftIcon={<Plus className="size-4" aria-hidden />} onClick={() => setEditing({ row: null })}>
-      Add {entityName}
+      {t('components.crud.add', { entity: entityName })}
     </UiButton>
   ) : null;
 
@@ -271,12 +276,12 @@ export function CrudSection<Row, In>({
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={canEdit ? (row) => setEditing({ row }) : undefined}
-        rowLabel={(r) => `Edit ${rowLabel(r)}`}
-        emptyTitle={`No ${plural} yet`}
+        rowLabel={(r) => t('components.crud.editRow', { label: rowLabel(r) })}
+        emptyTitle={t('components.crud.empty', { entities: plural })}
         emptyAction={addButton ?? undefined}
         toolbar={
           <FilterBar
-            search={searchText ? { value: q, onChange: (v) => table.setFilter('q', v), placeholder: `Search ${plural}…` } : undefined}
+            search={searchText ? { value: q, onChange: (v) => table.setFilter('q', v), placeholder: t('components.crud.search', { entities: plural }) } : undefined}
             onReset={table.resetFilters}
             actions={
               <>
@@ -289,7 +294,7 @@ export function CrudSection<Row, In>({
           </FilterBar>
         }
       />
-      {!canEdit && <p className="mt-3 text-xs text-muted">Read-only: only operations admins can edit the catalog.</p>}
+      {!canEdit && <p className="mt-3 text-xs text-muted">{t('components.crud.readOnly')}</p>}
       <CrudForm
         open={!!editing}
         row={editing?.row ?? null}
@@ -302,14 +307,16 @@ export function CrudSection<Row, In>({
       <ConfirmDialog
         open={!!deleting}
         tone="danger"
-        title={`Delete ${entityName}?`}
+        title={t('components.crud.deleteTitle', { entity: entityName })}
         message={
-          <>
-            <strong>{deleting ? rowLabel(deleting) : ''}</strong> will be removed. If it is referenced elsewhere the server
-            may refuse; deactivate it instead.
-          </>
+          <Trans
+            t={t}
+            i18nKey="components.crud.deleteMessage"
+            values={{ label: deleting ? rowLabel(deleting) : '' }}
+            components={{ 0: <strong /> }}
+          />
         }
-        confirmLabel="Delete"
+        confirmLabel={t('components.crud.delete')}
         loading={remove.isPending}
         onClose={() => setDeleting(null)}
         onConfirm={() => deleting && remove.mutate(deleting)}
@@ -335,6 +342,7 @@ function CrudForm<Row>({
   save: (payload: Record<string, unknown>, row: Row | null) => Promise<unknown>;
   invalidate: readonly QueryKey[];
 }) {
+  const { t } = useAppTranslation();
   const [form, setForm] = useState<FormState>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   useEffect(() => {
@@ -348,7 +356,8 @@ function CrudForm<Row>({
 
   const mutation = useOpsMutation({
     mutationFn: (payload: Record<string, unknown>) => save(payload, row),
-    success: row ? `${entityName} updated` : `${entityName} created`,
+    success: () =>
+      row ? t('components.crud.updated', { entity: entityName }) : t('components.crud.created', { entity: entityName }),
     invalidate,
     onSuccess: onClose,
   });
@@ -356,7 +365,7 @@ function CrudForm<Row>({
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    const { payload, errors: errs } = buildPayload(fields, form, !row);
+    const { payload, errors: errs } = buildPayload(fields, form, !row, t);
     setErrors(errs);
     if (Object.keys(errs).length === 0) mutation.mutate(payload);
   };
@@ -369,14 +378,14 @@ function CrudForm<Row>({
       open={open}
       onClose={onClose}
       size="lg"
-      title={`${row ? 'Edit' : 'New'} ${entityName}`}
+      title={row ? t('components.crud.editTitle', { entity: entityName }) : t('components.crud.newTitle', { entity: entityName })}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('ui.cancel')}
           </Button>
           <Button type="submit" form="crud-form" loading={mutation.isPending}>
-            {row ? 'Save changes' : 'Create'}
+            {row ? t('components.crud.saveChanges') : t('components.crud.create')}
           </Button>
         </>
       }
@@ -400,7 +409,7 @@ function CrudForm<Row>({
               key={f.name}
               label={f.label}
               required={f.required}
-              hint={f.hint ?? (f.kind === 'list' ? 'Comma separated' : undefined)}
+              hint={f.hint ?? (f.kind === 'list' ? t('components.crud.commaSeparated') : undefined)}
               error={err}
               className={f.wide || f.kind === 'textarea' ? 'sm:col-span-2' : undefined}
             >
@@ -419,7 +428,7 @@ function CrudForm<Row>({
                     value={String(form[f.name] ?? '')}
                     onChange={(e) => set(f.name, e.target.value)}
                     options={f.options ?? []}
-                    placeholder={f.required ? 'Select…' : '—'}
+                    placeholder={f.required ? t('components.crud.select') : '—'}
                   />
                 ) : f.kind === 'money' ? (
                   <MoneyInput

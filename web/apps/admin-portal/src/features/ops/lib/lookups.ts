@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { adminApi, type CaseStatus } from '@hig/shared/api';
+import { intlLocale } from '@hig/shared/lib';
 import { opsKeys } from './mutations';
 
 /** Hospital options for filters (first 100 by name, any status). */
@@ -52,16 +53,19 @@ export function useSpecialtyOptions() {
   });
 }
 
-let regionNames: Intl.DisplayNames | null | undefined;
-/** "NG" -> "Nigeria" (falls back to the code). */
+const regionNamesByLocale = new Map<string, Intl.DisplayNames | null>();
+/** "NG" -> "Nigeria" in the UI language (falls back to the code). */
 export function countryName(code: string | null | undefined): string {
   if (!code) return '';
+  const locale = intlLocale();
+  let regionNames = regionNamesByLocale.get(locale);
   if (regionNames === undefined) {
     try {
-      regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      regionNames = new Intl.DisplayNames([locale, 'en'], { type: 'region' });
     } catch {
       regionNames = null;
     }
+    regionNamesByLocale.set(locale, regionNames);
   }
   try {
     return regionNames?.of(code.toUpperCase()) ?? code;

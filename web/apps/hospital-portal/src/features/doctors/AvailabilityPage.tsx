@@ -34,22 +34,31 @@ import {
   PageHeader,
   Skeleton,
 } from '../../components/ui';
-import { cn } from '../../lib/format';
+import { intlLocale } from '@hig/shared/lib';
+import { cn, formatDate } from '../../lib/format';
 import { qk, useHospitalDoctors } from '../../lib/queries';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useAppTranslation } from '../../i18n';
 
 const KINDS: SlotKind[] = ['consultation', 'admission'];
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const keyOf = (date: string, kind: SlotKind) => `${date}|${kind}`;
+
+/** Short weekday names Sun..Sat in the UI language (4 Jan 2026 is a Sunday). */
+function weekdayNames(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+  return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2026, 0, 4 + i)));
+}
 
 /** Per-day consultation / admission capacity for one doctor (GET/PUT /hospital-portal/doctors/{id}/availability). */
 export function AvailabilityPage() {
+  const { t, i18n } = useAppTranslation();
   const { doctorId = '' } = useParams();
   const { canManage } = useHospital();
   const queryClient = useQueryClient();
   const doctors = useHospitalDoctors();
   const doctor = doctors.data?.find((d) => d.id === doctorId);
-  useDocumentTitle(doctor ? `Availability · ${doctor.full_name}` : 'Availability');
+  useDocumentTitle(doctor ? t('availability.titleFor', { name: doctor.full_name }) : t('availability.title'));
+  const weekdays = useMemo(() => weekdayNames(intlLocale(i18n.language)), [i18n.language]);
 
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const from = format(startOfMonth(month), 'yyyy-MM-dd');
@@ -93,7 +102,7 @@ export function AvailabilityPage() {
       return hospitalPortalApi.setDoctorAvailability(doctorId, slots);
     },
     onSuccess: () => {
-      toast.success('Availability saved');
+      toast.success(t('availability.saved'));
       setEdits({});
       void queryClient.invalidateQueries({ queryKey: ['doctor-availability', doctorId] });
     },
@@ -101,7 +110,7 @@ export function AvailabilityPage() {
   });
 
   const changeMonth = (delta: number) => {
-    if (dirty && !window.confirm('Discard unsaved availability changes for this month?')) return;
+    if (dirty && !window.confirm(t('availability.discardConfirm'))) return;
     setEdits({});
     setMonth((m) => addMonths(m, delta));
   };
@@ -126,11 +135,11 @@ export function AvailabilityPage() {
       <PageHeader
         back={
           <Link to="/doctors" className="mb-2 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
-            <ArrowLeft className="h-4 w-4" aria-hidden /> Doctors
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('doctors.list.title')}
           </Link>
         }
-        title={doctor ? `Availability · ${doctor.full_name}` : 'Doctor availability'}
-        description="Daily capacity for teleconsultations and admissions. Patients only see days with free capacity."
+        title={doctor ? t('availability.titleFor', { name: doctor.full_name }) : t('availability.heading')}
+        description={t('availability.description')}
         actions={
           canManage ? (
             <Button
@@ -139,7 +148,7 @@ export function AvailabilityPage() {
               loading={save.isPending}
               onClick={() => save.mutate()}
             >
-              Save changes
+              {t('common.saveChanges')}
             </Button>
           ) : undefined
         }
@@ -148,13 +157,13 @@ export function AvailabilityPage() {
       <div className="grid gap-6 xl:grid-cols-[1fr_18rem]">
         <Card>
           <div className="flex items-center justify-between gap-3 px-5 pt-4">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">{format(month, 'MMMM yyyy')}</h2>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">{formatDate(month, 'LLLL yyyy')}</h2>
             <div className="flex gap-1">
-              <Button variant="outline" size="icon" aria-label="Previous month" onClick={() => changeMonth(-1)}>
-                <ChevronLeft className="h-4 w-4" aria-hidden />
+              <Button variant="outline" size="icon" aria-label={t('availability.previousMonth')} onClick={() => changeMonth(-1)}>
+                <ChevronLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
               </Button>
-              <Button variant="outline" size="icon" aria-label="Next month" onClick={() => changeMonth(1)}>
-                <ChevronRight className="h-4 w-4" aria-hidden />
+              <Button variant="outline" size="icon" aria-label={t('availability.nextMonth')} onClick={() => changeMonth(1)}>
+                <ChevronRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
               </Button>
             </div>
           </div>
@@ -164,8 +173,8 @@ export function AvailabilityPage() {
             ) : (
               <div className="overflow-x-auto">
                 <div className="grid min-w-[46rem] grid-cols-7 gap-1.5">
-                  {WEEKDAYS.map((d) => (
-                    <div key={d} className="pb-1 text-center text-xs font-semibold text-slate-500">
+                  {weekdays.map((d, i) => (
+                    <div key={i} className="pb-1 text-center text-xs font-semibold text-slate-500">
                       {d}
                     </div>
                   ))}
@@ -197,9 +206,9 @@ export function AvailabilityPage() {
                             return (
                               <div key={kind} className="mb-1 flex items-center gap-1">
                                 <label htmlFor={`av-${key}`} className="w-5 text-[10px] font-semibold text-slate-500" title={SLOT_KIND_LABELS[kind]}>
-                                  {kind === 'consultation' ? 'C' : 'A'}
+                                  {t(`availability.kindShort.${kind}`)}
                                   <span className="sr-only">
-                                    {SLOT_KIND_LABELS[kind]} capacity on {format(day, 'd MMMM')}
+                                    {t('availability.capacityOn', { kind: SLOT_KIND_LABELS[kind], date: formatDate(day, 'd MMMM') })}
                                   </span>
                                 </label>
                                 <Input
@@ -213,8 +222,8 @@ export function AvailabilityPage() {
                                   onChange={(e) => setEdits((prev) => ({ ...prev, [key]: e.target.value }))}
                                 />
                                 {slot && slot.booked > 0 && (
-                                  <span className="text-[10px] whitespace-nowrap text-slate-500" title="Already booked">
-                                    {slot.booked}b
+                                  <span className="text-[10px] whitespace-nowrap text-slate-500" title={t('availability.alreadyBooked')}>
+                                    {t('availability.bookedShort', { count: slot.booked })}
                                   </span>
                                 )}
                               </div>
@@ -228,17 +237,17 @@ export function AvailabilityPage() {
               </div>
             )}
             <p className="mt-3 text-xs text-slate-500">
-              C = teleconsultation slots, A = admissions per day. "b" shows slots already booked; capacity cannot go below it.
-              {invalid.length > 0 && <span className="ml-1 text-danger-500">Fix the highlighted days before saving.</span>}
+              {t('availability.legend')}
+              {invalid.length > 0 && <span className="ms-1 text-danger-500">{t('availability.fixHighlighted')}</span>}
             </p>
           </CardBody>
         </Card>
 
         {canManage && (
           <Card className="self-start">
-            <CardHeader title="Quick fill" description="Apply the same capacity to the rest of this month." />
+            <CardHeader title={t('availability.quickFill.title')} description={t('availability.quickFill.description')} />
             <CardBody className="space-y-4">
-              <FormField label="Consultations per day" htmlFor="bulk-c">
+              <FormField label={t('availability.quickFill.consultations')} htmlFor="bulk-c">
                 <Input
                   id="bulk-c"
                   inputMode="numeric"
@@ -246,7 +255,7 @@ export function AvailabilityPage() {
                   onChange={(e) => setBulk((b) => ({ ...b, consultation: e.target.value }))}
                 />
               </FormField>
-              <FormField label="Admissions per day" htmlFor="bulk-a">
+              <FormField label={t('availability.quickFill.admissions')} htmlFor="bulk-a">
                 <Input
                   id="bulk-a"
                   inputMode="numeric"
@@ -255,16 +264,16 @@ export function AvailabilityPage() {
                 />
               </FormField>
               <Checkbox
-                label="Weekdays only"
+                label={t('availability.quickFill.weekdaysOnly')}
                 checked={bulk.weekdaysOnly}
                 onChange={(e) => setBulk((b) => ({ ...b, weekdaysOnly: e.target.checked }))}
               />
               <Button variant="outline" className="w-full" icon={<Wand2 className="h-4 w-4" aria-hidden />} onClick={applyBulk}>
-                Apply to {format(month, 'MMMM')}
+                {t('availability.quickFill.apply', { month: formatDate(month, 'LLLL') })}
               </Button>
               {dirty && (
                 <Button variant="ghost" className="w-full" onClick={() => setEdits({})}>
-                  Discard changes
+                  {t('availability.quickFill.discard')}
                 </Button>
               )}
             </CardBody>

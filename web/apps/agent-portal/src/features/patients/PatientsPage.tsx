@@ -5,6 +5,9 @@ import { Briefcase, Globe2, UserPlus } from 'lucide-react';
 import {
   AGENT_CONSENT_STATUSES,
   AGENT_CONSENT_STATUS_LABELS,
+  GENDER_LABELS,
+  humanize,
+  type Gender,
   agentPortalApi,
   type AgentConsentStatus,
   type AgentPatientListParams,
@@ -31,8 +34,9 @@ import { Button, PageHeader } from '../../components/ui';
 import { countryName } from '../../lib/constants';
 import { patientName } from '../../lib/format';
 import { qk } from '../../lib/queries';
-import { ageFromDob, fetchAllPages, filterParam, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
+import { ageFromDob, fetchAllPages, filterParam, formatNumber, intlLocale, useDocumentTitle, useTableState, type FilterValues } from '../../lib/shared';
 import { PatientFormDialog } from './PatientForm';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state
@@ -67,86 +71,93 @@ export const CONSENT_TONES: Record<AgentConsentStatus, BadgeTone> = {
   not_recorded: 'neutral',
   withdrawn: 'danger',
 };
-const CONSENT_SHORT: Record<AgentConsentStatus, string> = {
-  confirmed: 'Confirmed',
-  pending_patient_confirmation: 'Awaiting patient',
-  not_recorded: 'Not recorded',
-  withdrawn: 'Withdrawn',
-};
+function consentShort(t: AppT, status: AgentConsentStatus): string {
+  return {
+    confirmed: t('patients.consentShort.confirmed'),
+    pending_patient_confirmation: t('patients.consentShort.pending'),
+    not_recorded: t('patients.consentShort.notRecorded'),
+    withdrawn: t('patients.consentShort.withdrawn'),
+  }[status];
+}
 const QUICK_CONSENT: AgentConsentStatus[] = ['confirmed', 'pending_patient_confirmation', 'not_recorded', 'withdrawn'];
 
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-function personLine(p: AgentPatientOut): string {
+/** "Female · 34 yrs" */
+export function personLine(t: AppT, p: { gender?: string | null; date_of_birth?: string | null }): string {
   const age = ageFromDob(p.date_of_birth);
-  return [p.gender ? p.gender[0]!.toUpperCase() + p.gender.slice(1) : null, age !== null ? `${age} yrs` : null].filter(Boolean).join(' · ');
+  const gender = p.gender ? (GENDER_LABELS[p.gender as Gender] ?? humanize(p.gender)) : null;
+  return [gender, age !== null ? t('patients.ageYears', { count: age }) : null].filter(Boolean).join(' · ');
 }
 
-const COLUMNS: DataTableColumn<AgentPatientOut>[] = [
+const columns = (t: AppT): DataTableColumn<AgentPatientOut>[] => [
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('patients.columns.patient'),
     sortable: true,
     sortKey: 'name',
     sticky: true,
     mobile: 'primary',
     className: 'max-w-64',
-    cell: (p) => <PersonCell name={patientName(p)} secondary={personLine(p) || undefined} />,
+    cell: (p) => <PersonCell name={patientName(p)} secondary={personLine(t, p) || undefined} />,
     exportValue: (p) => patientName(p),
   },
   {
     key: 'consent',
-    header: 'Consent',
+    header: t('patients.columns.consent'),
     mobile: 'badge',
     cell: (p) => {
       const status = p.consent?.status ?? 'not_recorded';
-      return <StatusBadgeCell status={status} label={CONSENT_SHORT[status]} tone={CONSENT_TONES[status]} />;
+      return <StatusBadgeCell status={status} label={consentShort(t, status)} tone={CONSENT_TONES[status]} />;
     },
     exportValue: (p) => AGENT_CONSENT_STATUS_LABELS[p.consent?.status ?? 'not_recorded'],
   },
   {
     key: 'nationality',
-    header: 'Nationality',
+    header: t('patients.columns.nationality'),
     cell: (p) => (
       <TextCell
         primary={countryName(p.nationality)}
-        secondary={p.country_of_residence && p.country_of_residence !== p.nationality ? `Lives in ${countryName(p.country_of_residence)}` : undefined}
+        secondary={p.country_of_residence && p.country_of_residence !== p.nationality ? t('patients.livesIn', { country: countryName(p.country_of_residence) }) : undefined}
       />
     ),
     exportValue: (p) => p.nationality ?? '',
   },
   {
     key: 'contact',
-    header: 'Contact',
+    header: t('patients.columns.contact'),
     className: 'max-w-60',
-    cell: (p) => <TextCell primary={p.email ?? <span className="text-muted">No email</span>} secondary={p.phone ?? undefined} />,
+    cell: (p) => <TextCell primary={p.email ?? <span className="text-muted">{t('patients.noEmail')}</span>} secondary={p.phone ?? undefined} />,
     exportValue: (p) => [p.email, p.phone].filter(Boolean).join(' / '),
   },
   {
     key: 'cases',
-    header: 'Cases',
+    header: t('patients.columns.cases'),
     align: 'end',
     cell: (p) => (
       <span className="inline-flex flex-col items-end leading-tight">
-        <span className="font-medium tabular-nums">{p.cases_count ?? 0}</span>
-        {(p.active_cases_count ?? 0) > 0 && <span className="text-xs text-primary-ink">{p.active_cases_count} active</span>}
+        <span className="font-medium tabular-nums">{formatNumber(p.cases_count ?? 0)}</span>
+        {(p.active_cases_count ?? 0) > 0 && <span className="text-xs text-primary-ink">{t('patients.activeCount', { count: p.active_cases_count ?? 0 })}</span>}
       </span>
     ),
-    mobileCell: (p) => `${p.cases_count ?? 0} cases${(p.active_cases_count ?? 0) > 0 ? ` (${p.active_cases_count} active)` : ''}`,
+    mobileCell: (p) =>
+      (p.active_cases_count ?? 0) > 0
+        ? t('patients.mobileCasesActive', { count: p.cases_count ?? 0, active: formatNumber(p.active_cases_count ?? 0) })
+        : t('patients.mobileCases', { count: p.cases_count ?? 0 }),
     exportValue: (p) => p.cases_count ?? 0,
   },
   {
     key: 'screenings',
-    header: 'Screenings',
+    header: t('patients.columns.screenings'),
     align: 'end',
-    cell: (p) => <span className="tabular-nums">{p.screenings_count ?? 0}</span>,
-    mobileCell: (p) => `${p.screenings_count ?? 0} screenings`,
+    cell: (p) => <span className="tabular-nums">{formatNumber(p.screenings_count ?? 0)}</span>,
+    mobileCell: (p) => t('patients.mobileScreenings', { count: p.screenings_count ?? 0 }),
     exportValue: (p) => p.screenings_count ?? 0,
   },
   {
     key: 'created',
-    header: 'Added',
+    header: t('patients.columns.added'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -155,7 +166,7 @@ const COLUMNS: DataTableColumn<AgentPatientOut>[] = [
   },
   {
     key: 'updated',
-    header: 'Updated',
+    header: t('patients.columns.updated'),
     sortable: true,
     sortKey: 'updated_at',
     sortDescFirst: true,
@@ -169,7 +180,9 @@ const COLUMNS: DataTableColumn<AgentPatientOut>[] = [
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export function PatientsPage() {
-  useDocumentTitle('Patients');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('patients.title'));
+  const COLUMNS = useMemo(() => columns(t), [t]);
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const addOpen = params.get('new') === '1';
@@ -205,12 +218,12 @@ export function PatientsPage() {
   const nationalityOptions: FilterOption[] = Object.entries(counts.data?.nationalities ?? {})
     .map(([code, count]) => ({ value: code, label: countryName(code), count }))
     .concat(filters.nationality.filter((c) => !(c in (counts.data?.nationalities ?? {}))).map((c) => ({ value: c, label: countryName(c), count: 0 })))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    .sort((a, b) => a.label.localeCompare(b.label, intlLocale()));
   const quickItems: QuickFilterItem<AgentConsentStatus>[] = [
-    { value: '', label: 'All patients', count: counts.data?.total },
+    { value: '', label: t('patients.quick.all'), count: counts.data?.total },
     ...QUICK_CONSENT.filter((s) => s !== 'withdrawn' || (counts.data?.counts.withdrawn ?? 0) > 0 || filters.consent.includes(s)).map((s) => ({
       value: s,
-      label: s === 'pending_patient_confirmation' ? 'Awaiting confirmation' : CONSENT_SHORT[s],
+      label: s === 'pending_patient_confirmation' ? t('patients.quick.awaitingConfirmation') : consentShort(t, s),
       count: counts.data?.counts[s],
     })),
   ];
@@ -219,17 +232,17 @@ export function PatientsPage() {
   return (
     <div>
       <PageHeader
-        title="Patients"
-        description="Patients you manage or referred. Add a patient to start a screening or send an enquiry on their behalf."
+        title={t('patients.title')}
+        description={t('patients.description')}
         actions={
           <Button icon={<UserPlus className="h-4 w-4" aria-hidden />} onClick={() => setAddOpen(true)}>
-            Add patient
+            {t('patients.add')}
           </Button>
         }
       />
       <DataTable
         id="agent.patients"
-        caption="Patients"
+        caption={t('patients.title')}
         table={table}
         columns={COLUMNS}
         rows={list.data?.items}
@@ -239,22 +252,22 @@ export function PatientsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(p) => `/patients/${p.id}`}
-        rowLabel={(p) => `Open patient ${patientName(p)}`}
-        emptyTitle="No patients yet"
-        emptyDescription="Add your first patient to begin a screening or send an enquiry to hospitals."
+        rowLabel={(p) => t('patients.openRow', { name: patientName(p) })}
+        emptyTitle={t('patients.emptyTitle')}
+        emptyDescription={t('patients.emptyDescription')}
         emptyAction={
           <Button icon={<UserPlus className="h-4 w-4" aria-hidden />} onClick={() => setAddOpen(true)}>
-            Add patient
+            {t('patients.add')}
           </Button>
         }
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Consent status" items={quickItems} value={quickValue} onChange={(s) => setFilter('consent', s ? [s] : [])} />
+            <QuickFilters label={t('patients.filters.consentStatus')} items={quickItems} value={quickValue} onChange={(s) => setFilter('consent', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Name, email or phone…', label: 'Search patients' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('patients.filters.searchPlaceholder'), label: t('patients.filters.searchLabel') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
@@ -266,9 +279,9 @@ export function PatientsPage() {
               />
             }
           >
-            <MultiSelectFilter label="Consent" value={filters.consent} onChange={(v) => setFilter('consent', v)} options={consentOptions} />
+            <MultiSelectFilter label={t('patients.filters.consent')} value={filters.consent} onChange={(v) => setFilter('consent', v)} options={consentOptions} />
             <MultiSelectFilter
-              label="Nationality"
+              label={t('patients.filters.nationality')}
               icon={<Globe2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.nationality}
               onChange={(v) => setFilter('nationality', v)}
@@ -276,16 +289,16 @@ export function PatientsPage() {
               searchable
             />
             <SelectFilter
-              label="Cases"
+              label={t('patients.filters.cases')}
               icon={<Briefcase className="size-3.5 opacity-70" aria-hidden />}
               value={filters.active}
               onChange={(v) => setFilter('active', v)}
               options={[
-                { value: 'yes', label: 'Has an active case', tone: 'success' },
-                { value: 'no', label: 'No active case' },
+                { value: 'yes', label: t('patients.filters.hasActiveCase'), tone: 'success' },
+                { value: 'no', label: t('patients.filters.noActiveCase') },
               ]}
             />
-            <DateRangeFilter label="Added" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter label={t('patients.filters.added')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           </FilterBar>
         }
       />

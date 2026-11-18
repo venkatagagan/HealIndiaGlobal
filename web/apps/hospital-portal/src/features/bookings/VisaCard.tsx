@@ -1,13 +1,16 @@
+import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Download, FileCheck2, Plane } from 'lucide-react';
 import {
+  TRAVEL_KIND_LABELS,
   VISA_STATUS_LABELS,
   VISA_TYPE_LABELS,
   documentsApi,
   errorMessage,
   travelApi,
   type TravelBookingOut,
+  type TravelKind,
   type VisaRequestOut,
   type VisaStatus,
 } from '@hig/shared/api';
@@ -23,13 +26,18 @@ import {
   StatusBadge,
 } from '../../components/ui';
 import { DataTable, DateCell, MoneyCell, StatusBadgeCell, TextCell, type DataTableColumn } from '@hig/shared/ui';
+import { formatNumber } from '@hig/shared/lib';
 import { formatDateTime } from '../../lib/format';
 import { qk } from '../../lib/queries';
+import { useAppTranslation } from '../../i18n';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 /** Statuses a hospital typically sets; the API enforces what is actually allowed. */
 const HOSPITAL_VISA_STATUSES: VisaStatus[] = ['documents_pending', 'invitation_issued'];
 
 function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: string }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const invalidate = () => void queryClient.invalidateQueries({ queryKey: qk.visa(caseId) });
 
@@ -42,7 +50,7 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
       });
     },
     onSuccess: () => {
-      toast.success('Invitation letter uploaded and shared with the patient');
+      toast.success(t('bookings.visa.letterUploaded'));
       invalidate();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -51,7 +59,7 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
   const setStatus = useMutation({
     mutationFn: (status: VisaStatus) => travelApi.updateVisaRequest(request.id, { status }),
     onSuccess: () => {
-      toast.success('Visa status updated');
+      toast.success(t('bookings.visa.statusUpdated'));
       invalidate();
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -82,8 +90,8 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
             {request.patient?.full_name ? ` · ${request.patient?.full_name}` : ''}
           </p>
           <p className="text-xs text-slate-500">
-            Requested {formatDateTime(request.created_at)}
-            {request.application_reference ? ` · Ref ${request.application_reference}` : ''}
+            {t('bookings.visa.requested', { date: formatDateTime(request.created_at) })}
+            {request.application_reference ? ` · ${t('bookings.visa.reference', { ref: request.application_reference })}` : ''}
           </p>
         </div>
         <StatusBadge status={request.status} label={VISA_STATUS_LABELS[request.status]} />
@@ -92,7 +100,7 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
       <div className="flex flex-wrap items-center gap-2">
         {request.invitation_letter_document_id ? (
           <Button variant="outline" size="sm" icon={<Download className="h-4 w-4" aria-hidden />} onClick={() => void downloadLetter()}>
-            Invitation letter
+            {t('bookings.visa.invitationLetter')}
           </Button>
         ) : null}
         <FileButton
@@ -102,12 +110,12 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
           onInvalid={(m) => toast.error(m)}
           accept=".pdf,application/pdf,image/*"
         >
-          {request.invitation_letter_document_id ? 'Replace letter' : 'Upload invitation letter'}
+          {request.invitation_letter_document_id ? t('bookings.visa.replaceLetter') : t('bookings.visa.uploadLetter')}
         </FileButton>
         {!['approved', 'rejected', 'applied'].includes(request.status) && (
           <div className="w-52">
             <label htmlFor={`visa-status-${request.id}`} className="sr-only">
-              Visa status
+              {t('bookings.visa.visaStatus')}
             </label>
             <Select
               id={`visa-status-${request.id}`}
@@ -126,6 +134,7 @@ function VisaRequestRow({ request, caseId }: { request: VisaRequestOut; caseId: 
 
 /** e-Medical visa requests for the case: upload the hospital invitation letter and track status. */
 export function VisaCard({ caseId }: { caseId: string }) {
+  const { t } = useAppTranslation();
   const visas = useQuery({
     queryKey: qk.visa(caseId),
     queryFn: () => travelApi.listVisaRequests({ case_id: caseId, page_size: 20 }),
@@ -135,10 +144,10 @@ export function VisaCard({ caseId }: { caseId: string }) {
       <CardHeader
         title={
           <span className="flex items-center gap-2">
-            <FileCheck2 className="h-4 w-4 text-accent-600" aria-hidden /> Visa invitation
+            <FileCheck2 className="h-4 w-4 text-accent-600" aria-hidden /> {t('bookings.visa.title')}
           </span>
         }
-        description="Indian e-Medical visas need an invitation letter from the treating hospital."
+        description={t('bookings.visa.description')}
       />
       {visas.isPending ? (
         <div className="p-5">
@@ -147,7 +156,7 @@ export function VisaCard({ caseId }: { caseId: string }) {
       ) : visas.isError ? (
         <ErrorState error={visas.error} onRetry={() => void visas.refetch()} />
       ) : visas.data.items.length === 0 ? (
-        <EmptyState title="No visa request yet" description="The patient has not requested visa assistance for this case." className="py-8" />
+        <EmptyState title={t('bookings.visa.emptyTitle')} description={t('bookings.visa.emptyDescription')} className="py-8" />
       ) : (
         <ul className="divide-y divide-slate-100 dark:divide-slate-800">
           {visas.data.items.map((v) => (
@@ -159,69 +168,84 @@ export function VisaCard({ caseId }: { caseId: string }) {
   );
 }
 
-function travelLine(t: TravelBookingOut): string {
-  const route = [t.from_location, t.to_location].filter(Boolean).join(' → ');
-  const flight = [t.carrier, t.flight_number].filter(Boolean).join(' ');
+function travelLine(tb: TravelBookingOut): string {
+  const route = [tb.from_location, tb.to_location].filter(Boolean).join(' → ');
+  const flight = [tb.carrier, tb.flight_number].filter(Boolean).join(' ');
   return [route, flight].filter(Boolean).join(' · ') || '—';
 }
 
-const kindLabel = (kind: string) => kind.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+const kindLabel = (kind: string) =>
+  TRAVEL_KIND_LABELS[kind as TravelKind] ?? kind.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 
-const TRAVEL_COLUMNS: DataTableColumn<TravelBookingOut>[] = [
+const travelColumns = (t: TFn): DataTableColumn<TravelBookingOut>[] => [
   {
     key: 'kind',
-    header: 'Travel',
+    header: t('bookings.travel.colTravel'),
     mobile: 'primary',
     className: 'max-w-72',
     sortable: true,
-    sortValue: (t) => t.kind,
-    cell: (t) => <TextCell primary={<span className="font-medium">{kindLabel(t.kind)}</span>} secondary={travelLine(t)} />,
+    sortValue: (tb) => tb.kind,
+    cell: (tb) => <TextCell primary={<span className="font-medium">{kindLabel(tb.kind)}</span>} secondary={travelLine(tb)} />,
   },
   {
     key: 'depart',
-    header: 'Departs',
+    header: t('bookings.travel.colDeparts'),
     sortable: true,
-    sortValue: (t) => t.depart_at ?? '',
-    cell: (t) => <DateCell value={t.depart_at} display="datetime" secondary={t.arrive_at ? `Arrives ${formatDateTime(t.arrive_at)}` : undefined} />,
+    sortValue: (tb) => tb.depart_at ?? '',
+    cell: (tb) => (
+      <DateCell
+        value={tb.depart_at}
+        display="datetime"
+        secondary={tb.arrive_at ? t('bookings.travel.arrives', { date: formatDateTime(tb.arrive_at) }) : undefined}
+      />
+    ),
   },
   {
     key: 'pax',
-    header: 'Passengers',
+    header: t('bookings.travel.colPassengers'),
     align: 'end',
-    cell: (t) => (t.passengers ? <span className="tabular-nums">{t.passengers}</span> : <span className="text-muted">—</span>),
+    cell: (tb) => (tb.passengers ? <span className="tabular-nums">{formatNumber(tb.passengers)}</span> : <span className="text-muted">—</span>),
   },
-  { key: 'status', header: 'Status', mobile: 'badge', sortable: true, cell: (t) => <StatusBadgeCell status={t.status} kind="serviceBooking" /> },
+  {
+    key: 'status',
+    header: t('common.status'),
+    mobile: 'badge',
+    sortable: true,
+    cell: (tb) => <StatusBadgeCell status={tb.status} kind="serviceBooking" />,
+  },
   {
     key: 'price',
-    header: 'Price',
+    header: t('bookings.travel.colPrice'),
     align: 'end',
     sortable: true,
-    sortValue: (t) => t.price_minor ?? -1,
-    cell: (t) => <MoneyCell minor={t.price_minor} currency={t.currency} />,
+    sortValue: (tb) => tb.price_minor ?? -1,
+    cell: (tb) => <MoneyCell minor={tb.price_minor} currency={tb.currency} />,
   },
 ];
 
 /** Read-only flights / pickups so the hospital can plan admission and airport transfer. */
 export function TravelCard({ caseId }: { caseId: string }) {
+  const { t } = useAppTranslation();
+  const columns = useMemo(() => travelColumns(t), [t]);
   const travel = useQuery({
     queryKey: qk.travel(caseId),
     queryFn: () => travelApi.listTravelBookings({ case_id: caseId, page_size: 50 }),
   });
   return (
     <DataTable
-      caption="Travel and transfers"
-      columns={TRAVEL_COLUMNS}
+      caption={t('bookings.travel.caption')}
+      columns={columns}
       rows={travel.data?.items}
       loading={travel.isPending}
       error={travel.error}
       onRetry={() => void travel.refetch()}
       defaultSort={{ key: 'depart', direction: 'asc' }}
       responsive="cards"
-      emptyTitle="No travel booked yet"
+      emptyTitle={t('bookings.travel.emptyTitle')}
       header={
         <div className="flex items-center gap-2 border-b border-border px-4 py-3 sm:px-5">
           <Plane className="size-4 text-info-ink" aria-hidden />
-          <h2 className="text-base font-semibold text-fg">Travel &amp; transfers</h2>
+          <h2 className="text-base font-semibold text-fg">{t('bookings.travel.title')}</h2>
         </div>
       }
     />

@@ -1,0 +1,1995 @@
+{
+  "cases": {
+    "list": {
+      "title": "Cases",
+      "description": "Every patient case across hospitals and agents — track progress, assign coordinators and act on what is stuck.",
+      "age": "{{age}}y",
+      "via": "via {{agency}}",
+      "opened": "Opened {{date}}",
+      "mobileOpened": "{{number}} · opened {{date}}",
+      "noScreening": "No screening",
+      "unassigned": "Unassigned",
+      "all": "All",
+      "showAll": "Show all cases",
+      "needsCoordinator": "Needs a coordinator",
+      "rowLabel": "Open case {{number}}",
+      "exportSelected": "Export selected",
+      "emptyTitle": "No cases yet",
+      "emptyDescription": "Cases appear here when patients or agents send an enquiry to a hospital.",
+      "caseStatus": "Case status",
+      "searchPlaceholder": "Case number or patient…",
+      "columns": {
+        "case": "Case",
+        "patient": "Patient",
+        "hospital": "Hospital",
+        "status": "Status",
+        "urgency": "Urgency",
+        "latestQuote": "Latest quote",
+        "coordinator": "Coordinator",
+        "updated": "Updated",
+        "created": "Created"
+      },
+      "filters": {
+        "agent": "Agent",
+        "date": "Date"
+      }
+    }
+  },
+  "caseDetail": {
+    "documentTitle": "Case {{number}}",
+    "eyebrow": "Case",
+    "back": "Cases",
+    "loading": "Loading case…",
+    "loadingShort": "Loading…",
+    "cancel": "Cancel",
+    "statusHistory": "Status history",
+    "documentsDescription": "Medical reports, IDs and invoices shared on this case",
+    "hero": {
+      "opened": "Opened {{date}}",
+      "updated": "updated {{when}}",
+      "messages": "Messages",
+      "changeStatus": "Change status"
+    },
+    "emergency": {
+      "title": "Screened as a possible emergency",
+      "contact": "Contact patient",
+      "acknowledged": "The patient acknowledged the emergency guidance on {{date}}.",
+      "notAcknowledged": "The patient has not acknowledged the emergency guidance yet - quote acceptance and booking stay blocked until they do.",
+      "redFlags": "Red flags: {{flags}}."
+    },
+    "tabs": {
+      "label": "Case sections",
+      "overview": "Overview",
+      "screening": "Screening",
+      "quotes": "Quotes",
+      "booking": "Booking & payments",
+      "travel": "Travel",
+      "documents": "Documents",
+      "activity": "Activity"
+    },
+    "facts": {
+      "title": "Key facts",
+      "age_one": "{{count}} year",
+      "age_other": "{{count}} years",
+      "patient": "Patient",
+      "hospital": "Hospital",
+      "city": "City",
+      "doctor": "Doctor",
+      "treatment": "Treatment",
+      "source": "Source",
+      "viaAgent": "Agent · {{agency}}",
+      "direct": "Direct",
+      "latestQuote": "Latest quote",
+      "payment": "Payment"
+    },
+    "next": {
+      "assign": "Assign coordinator",
+      "assignHint": "No coordinator owns this case yet - assign one so the patient has a single point of contact.",
+      "chaseQuote": "Chase hospital quote",
+      "chaseQuoteHint": "Waiting for the hospital to send a quote.",
+      "followUp": "Follow up with patient",
+      "followUpHint": "A quote was sent - the patient needs to accept or decline it.",
+      "checkPayment": "Check payment",
+      "checkPaymentHint": "Quote accepted - the booking is confirmed once the deposit is paid.",
+      "markAdmitted": "Mark admitted",
+      "admissionPlanned": "Admission planned for {{date}}.",
+      "markCompleted": "Mark completed",
+      "markCompletedHint": "Complete the case once the patient is discharged."
+    },
+    "overview": {
+      "quotesSent": "Quotes sent",
+      "latestWhen": "Latest {{when}}",
+      "noneYet": "None yet",
+      "waitingHospital": "Waiting for the hospital",
+      "admission": "Admission",
+      "notBooked": "Not booked yet",
+      "summary": "Case summary",
+      "patient": "Patient",
+      "nationality": "Nationality",
+      "specialty": "Specialty",
+      "procedure": "Procedure",
+      "opened": "Opened",
+      "patientNotes": "Patient notes",
+      "medicalSummary": "Medical summary",
+      "aiGlance": "AI screening at a glance",
+      "fullScreening": "Full screening"
+    },
+    "timeline": {
+      "opened": "Case opened"
+    },
+    "screening": {
+      "symptoms": "Patient-reported symptoms",
+      "bodyAreas": "Body areas",
+      "painIntensity": "Pain intensity",
+      "painValue": "{{value}} / 10",
+      "duration": "Duration",
+      "durationUnits": {
+        "days_one": "{{count}} day",
+        "days_other": "{{count}} days",
+        "weeks_one": "{{count}} week",
+        "weeks_other": "{{count}} weeks",
+        "months_one": "{{count}} month",
+        "months_other": "{{count}} months",
+        "years_one": "{{count}} year",
+        "years_other": "{{count}} years"
+      },
+      "previousTreatment": "Previous treatment",
+      "none": "None",
+      "homeCountry": "Home country",
+      "submitted": "Submitted",
+      "notes": "Notes",
+      "aiTriage": "AI triage",
+      "rulesEngine": "Rules engine",
+      "suggestedSpecialties": "Suggested specialties",
+      "possibleConditions": "Possible conditions",
+      "recommendedTests": "Recommended tests",
+      "redFlags": "Red flags",
+      "noAiResult": "No AI result",
+      "notProcessed": "The screening has not been processed."
+    },
+    "quotes": {
+      "emptyTitle": "No quote yet",
+      "emptyDescription": "The hospital has not sent a quote for this case.",
+      "quoteFrom": "Quote from {{date}}",
+      "sent": "Sent {{date}}",
+      "sentBy": "Sent {{date}} by {{name}}",
+      "treatmentPlan": "Treatment plan",
+      "lineItems": "Quote line items",
+      "noLineItems": "No line items",
+      "estimatedStay_one": "Estimated stay: <0>{{count}} day</0>",
+      "estimatedStay_other": "Estimated stay: <0>{{count}} days</0>",
+      "estimatedStayUnknown": "Estimated stay: <0>— days</0>",
+      "validUntil": "Valid until: <0>{{date}}</0>",
+      "accepted": "Accepted: <0>{{date}}</0>",
+      "rejected": "Rejected: {{reason}}",
+      "columns": {
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount"
+      }
+    },
+    "payment": {
+      "ofTotal": "of {{total}}",
+      "balanceDue": "Balance due <0>{{amount}}</0>",
+      "fullyPaid": "Fully paid",
+      "refunded": "refunded {{amount}}"
+    },
+    "orders": {
+      "title": "Payment orders",
+      "description": "Deposits, balances and installments raised for this booking",
+      "rowLabel": "Open order {{number}}",
+      "emptyTitle": "No payment orders yet",
+      "columns": {
+        "order": "Order",
+        "status": "Status",
+        "amount": "Amount",
+        "created": "Created",
+        "paid": "Paid",
+        "open": "Open"
+      }
+    },
+    "booking": {
+      "title": "Booking",
+      "emptyDescription": "A booking is created when the patient accepts a quote and pays the deposit.",
+      "manage": "Manage booking",
+      "discharge": "Discharge",
+      "paymentOption": "Payment option",
+      "package": "Package",
+      "subtotal": "Subtotal",
+      "serviceFeeTax": "Service fee + tax",
+      "discount": "Discount",
+      "total": "Total",
+      "cancelled": "Cancelled: {{reason}}"
+    },
+    "travel": {
+      "visa": "Visa",
+      "visaRequests": "Visa requests",
+      "noVisa": "No visa request",
+      "flights": "Flights & transfers",
+      "travelBookings": "Travel bookings",
+      "noFlights": "No flights or transfers",
+      "accommodation": "Accommodation",
+      "accommodationBookings": "Accommodation bookings",
+      "noAccommodation": "No accommodation booked",
+      "pnr": "PNR {{pnr}}",
+      "nights_one": "{{count}} night",
+      "nights_other": "{{count}} nights",
+      "guests_one": "{{count}} guest",
+      "guests_other": "{{count}} guests",
+      "deskLink": "Travel desk",
+      "columns": {
+        "visaType": "Visa type",
+        "status": "Status",
+        "reference": "Reference",
+        "requested": "Requested",
+        "type": "Type",
+        "route": "Route",
+        "departs": "Departs",
+        "stay": "Stay",
+        "dates": "Dates",
+        "total": "Total"
+      }
+    },
+    "audit": {
+      "title": "Audit trail",
+      "description": "Every change recorded on this case",
+      "openInLog": "Open in audit log",
+      "emptyTitle": "No audit entries",
+      "user": "User",
+      "system": "System",
+      "columns": {
+        "when": "When",
+        "action": "Action",
+        "by": "By",
+        "change": "Change"
+      }
+    },
+    "coordinator": {
+      "title": "Coordinator",
+      "assigned": "Coordinator assigned",
+      "change": "Change",
+      "assign": "Assign",
+      "owns": "Owns this case",
+      "none": "No coordinator assigned",
+      "field": "Support coordinator",
+      "placeholder": "Select a coordinator"
+    },
+    "status": {
+      "moved": "Case moved to {{status}}",
+      "markTitle": "Mark case {{status}}",
+      "changeTitle": "Change case status",
+      "moveTo": "Move to {{status}}",
+      "update": "Update status",
+      "current": "Current status:",
+      "newStatus": "New status",
+      "note": "Note",
+      "noteRequiredHint": "Explain why; the patient and hospital are notified.",
+      "noteOptionalHint": "Optional, shown in the status history.",
+      "cancelWarning": "If the case has a paid booking, cancel the booking from Bookings so the refund policy is applied."
+    }
+  },
+  "travel": {
+    "common": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "loading": "Loading…"
+    },
+    "desk": {
+      "title": "Travel desk",
+      "description": "SOS alerts, medical visas, flights, airport transfers, stays and in-country services. Patient requests start as Requested.",
+      "readOnly": "Read-only: travel updates are handled by operations and support staff.",
+      "tabs": {
+        "sos": "SOS alerts",
+        "visa": "Visa",
+        "travel": "Flights & transfers",
+        "accommodation": "Accommodation",
+        "services": "Translators & services"
+      }
+    },
+    "list": {
+      "all": "All",
+      "statusTabs": "{{caption}} status",
+      "searchPlaceholder": "Patient name…",
+      "status": "Status",
+      "caseNumber": "Case {{number}}",
+      "openCase": "Open case"
+    },
+    "sos": {
+      "caption": "SOS alerts",
+      "resolvedToast": "SOS alert resolved",
+      "acknowledgedToast": "SOS alert acknowledged",
+      "openIcon": "Open",
+      "patientFallback": "Patient",
+      "noMessage": "No message",
+      "by": "by {{name}}",
+      "acknowledge": "Acknowledge",
+      "resolve": "Resolve",
+      "emptyTitle": "No SOS alerts",
+      "emptyDescription": "Emergency alerts raised by patients from the app appear here in real time.",
+      "columns": {
+        "raised": "Raised",
+        "patient": "Patient",
+        "message": "Message",
+        "location": "Location",
+        "status": "Status",
+        "actions": "Actions"
+      }
+    },
+    "visa": {
+      "caption": "Visa requests",
+      "ref": "Ref {{reference}}",
+      "attached": "Attached",
+      "none": "None",
+      "rowLabel": "Edit visa request of {{name}}",
+      "rowLabelNoName": "Edit visa request of patient",
+      "emptyTitle": "No visa requests yet",
+      "emptyDescription": "Patients request medical-visa help from their case; requests land here.",
+      "updated": "Visa request updated",
+      "modalTitle": "Visa request · {{name}}",
+      "columns": {
+        "patient": "Patient",
+        "type": "Visa type",
+        "status": "Status",
+        "letter": "Invitation letter",
+        "reference": "Reference",
+        "applied": "Applied",
+        "requested": "Requested"
+      },
+      "form": {
+        "status": "Status",
+        "reference": "Application reference",
+        "appliedAt": "Applied at",
+        "decidedAt": "Decided at",
+        "autoHint": "Set automatically when the status changes.",
+        "letter": "Invitation letter",
+        "letterHint": "Letters are uploaded by the hospital to the case (document kind: invitation letter).",
+        "letterOption": "{{name}} ({{date}})",
+        "notes": "Notes"
+      }
+    },
+    "bookings": {
+      "unassigned": "Unassigned",
+      "inactive": "(inactive)",
+      "modalTitle": "{{kind}} · {{name}}",
+      "columns": {
+        "patient": "Patient",
+        "type": "Type",
+        "route": "Route",
+        "departs": "Departs",
+        "pax": "Pax",
+        "price": "Price",
+        "status": "Status",
+        "stay": "Stay",
+        "dates": "Dates",
+        "guests": "Guests",
+        "total": "Total",
+        "service": "Service",
+        "provider": "Provider",
+        "when": "When"
+      },
+      "errors": {
+        "price": "Enter a valid price.",
+        "passengers": "Passengers must be a whole number.",
+        "nightlyRate": "Enter a valid nightly rate.",
+        "checkOut": "Check-out must be after check-in.",
+        "guests": "Guests must be at least 1."
+      },
+      "form": {
+        "from": "From",
+        "to": "To",
+        "arrives": "Arrives",
+        "carrier": "Carrier / vendor",
+        "flightNumber": "Flight number",
+        "pnr": "PNR / confirmation",
+        "passengers": "Passengers",
+        "notes": "Notes",
+        "confirmationCode": "Confirmation code",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "nights_one": "{{count}} night",
+        "nights_other": "{{count}} nights",
+        "roomType": "Room type",
+        "nightlyRate": "Nightly rate",
+        "totalHint": "Computed on save: nightly rate x nights.",
+        "starts": "Starts",
+        "ends": "Ends"
+      },
+      "flights": {
+        "caption": "Flights & transfers",
+        "dateLabel": "Departure",
+        "fallbackKind": "Travel",
+        "rowLabel": "Edit {{kind}} of {{name}}",
+        "rowLabelNoName": "Edit {{kind}} of patient",
+        "emptyTitle": "No flight or transfer requests",
+        "emptyDescription": "Patients request flights and airport transfers from their case.",
+        "updated": "Travel booking updated"
+      },
+      "stays": {
+        "caption": "Accommodation",
+        "modalTitle": "Stay · {{provider}} · {{name}}",
+        "rowLabel": "Edit stay of {{name}}",
+        "rowLabelNoName": "Edit stay of patient",
+        "emptyTitle": "No accommodation bookings",
+        "emptyDescription": "Stays near the hospital requested by patients appear here.",
+        "updated": "Accommodation booking updated"
+      },
+      "services": {
+        "caption": "Translators & services",
+        "dateLabel": "Service date",
+        "rowLabel": "Edit {{kind}} for {{name}}",
+        "rowLabelNoName": "Edit {{kind}} for patient",
+        "emptyTitle": "No service bookings",
+        "emptyDescription": "Translator, guide, transport and insurance requests appear here.",
+        "updated": "Service booking updated"
+      }
+    }
+  },
+  "hospitals": {
+    "title": "Hospitals",
+    "description": "Partner hospitals — review KYC, approve new registrations and manage commercial terms.",
+    "featured": "Featured",
+    "openRow": "Open {{name}}",
+    "emptyTitle": "No hospitals yet",
+    "emptyDescription": "Hospitals appear here as soon as they register on the hospital portal.",
+    "searchPlaceholder": "Name, city or email…",
+    "defaultCommission": "Default",
+    "moreSpecialties_one": "+{{count}} more",
+    "moreSpecialties_other": "+{{count}} more",
+    "quick": {
+      "label": "Hospital status",
+      "all": "All",
+      "approvalQueue": "Approval queue",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected",
+      "draft": "Draft"
+    },
+    "columns": {
+      "hospital": "Hospital",
+      "location": "Location",
+      "status": "Status",
+      "kyc": "KYC",
+      "accreditations": "Accreditations",
+      "specialties": "Specialties",
+      "rating": "Rating",
+      "commission": "Commission",
+      "registered": "Registered",
+      "updated": "Updated"
+    },
+    "filters": {
+      "state": "State",
+      "kyc": "KYC",
+      "featuredOnly": "Featured only",
+      "status": "Status",
+      "city": "City",
+      "specialty": "Specialty",
+      "accreditation": "Accreditation"
+    }
+  },
+  "bookings": {
+    "title": "Bookings",
+    "description": "Confirmed treatments — payment progress, admissions and discharges across every hospital.",
+    "payment": {
+      "paid": "Paid in full",
+      "partial": "Partially paid",
+      "unpaid": "Unpaid"
+    },
+    "bookedOn": "Booked {{date}}",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "installments_one": "{{count}} installment",
+    "installments_other": "{{count}} installments",
+    "due": "Due {{amount}}",
+    "columns": {
+      "booking": "Booking",
+      "patient": "Patient",
+      "hospital": "Hospital",
+      "admission": "Admission",
+      "status": "Status",
+      "total": "Total",
+      "paid": "Paid",
+      "booked": "Booked"
+    },
+    "quickAll": "All",
+    "quickLabel": "Booking status",
+    "openRow": "Open booking {{number}}",
+    "exportSelected": "Export selected",
+    "emptyTitle": "No bookings yet",
+    "emptyDescription": "Bookings appear here once a patient accepts a quote and books an admission date.",
+    "searchPlaceholder": "Booking number or patient…",
+    "filters": {
+      "total": "Total",
+      "status": "Status",
+      "hospital": "Hospital",
+      "payment": "Payment",
+      "date": "Date",
+      "dateAdmission": "Admission",
+      "dateBooked": "Booked"
+    },
+    "track": {
+      "booked": "Booked",
+      "depositPaid": "Deposit paid",
+      "admitted": "Admitted",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "drawer": {
+      "cancelSuccess": "Booking cancelled; refundable amount computed per refund policy",
+      "markAdmitted": "Mark admitted",
+      "markCompleted": "Mark completed",
+      "cancelBooking": "Cancel booking",
+      "cancelDescription": "Refunds are calculated by the server from the refund policy and processed by Finance.",
+      "title": "Booking",
+      "titleWithNumber": "Booking {{number}}",
+      "insuranceClaim": "Insurance claim",
+      "admission": "Admission <0>{{date}}</0>",
+      "admissionWithDuration_one": "Admission <0>{{date}}</0> · {{count}} day",
+      "admissionWithDuration_other": "Admission <0>{{date}}</0> · {{count}} days",
+      "openCase": "Open case →",
+      "cancelledAt": "Cancelled {{date}}",
+      "noReason": "No reason recorded.",
+      "payment": "Payment",
+      "paymentOptionWithInstallments_one": "{{option}} · {{count}} monthly installment",
+      "paymentOptionWithInstallments_other": "{{option}} · {{count}} monthly installments",
+      "total": "Total",
+      "paid": "Paid",
+      "paidPct": "{{pct}}% of total",
+      "balanceDue": "Balance due",
+      "refunded": "Refunded",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "serviceFee": "Service fee",
+      "tax": "Tax",
+      "deposit": "Deposit",
+      "treatment": "Treatment",
+      "procedure": "Procedure",
+      "package": "Package",
+      "doctor": "Doctor",
+      "admissionDate": "Admission",
+      "discharge": "Discharge",
+      "duration": "Duration",
+      "confirmed": "Confirmed",
+      "admitted": "Admitted",
+      "completed": "Completed"
+    },
+    "transition": {
+      "admitSuccess": "Patient marked as admitted",
+      "completeSuccess": "Treatment marked completed; settlement items will be created",
+      "admitTitle": "Mark patient admitted",
+      "completeTitle": "Mark treatment completed",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "admitHelp": "Normally done by the hospital. Use this when the hospital confirms admission by phone.",
+      "completeHelp": "Completing recognises revenue and creates hospital/agent settlement items. This cannot be undone.",
+      "dischargeDate": "Discharge date",
+      "note": "Note"
+    },
+    "checklist": {
+      "updated": "Checklist updated",
+      "title": "Pre-arrival checklist",
+      "progress": "{{done}} of {{total}} done",
+      "empty": "No checklist yet.",
+      "statusOf": "Status of {{label}}"
+    },
+    "itinerary": {
+      "added": "Itinerary item added",
+      "removed": "Itinerary item removed",
+      "when": "When",
+      "item": "Item",
+      "status": "Status",
+      "remove": "Remove",
+      "removeItem": "Remove {{title}}",
+      "title": "Itinerary",
+      "addItem": "Add item",
+      "emptyTitle": "No itinerary items",
+      "emptyDescription": "Appointments, transfers and check-ins planned for this stay appear here.",
+      "addTitle": "Add itinerary item",
+      "cancel": "Cancel",
+      "add": "Add",
+      "kind": "Kind",
+      "startsAt": "Starts at",
+      "titleField": "Title",
+      "location": "Location",
+      "description": "Description"
+    }
+  },
+  "hospitalDetail": {
+    "documentTitle": "Hospital",
+    "loading": "Loading hospital…",
+    "back": "Hospitals",
+    "eyebrow": "Hospital",
+    "featured": "Featured",
+    "kycBadge": "KYC {{status}}",
+    "rating_one": "★ {{rating}} ({{count}} review)",
+    "rating_other": "★ {{rating}} ({{count}} reviews)",
+    "noReviews": "No reviews yet",
+    "reasonShared": "{{status}}: reason shared with the hospital",
+    "waitingReview": "Waiting for your review",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "toast": {
+      "approved": "Hospital approved and now live",
+      "rejected": "Hospital rejected",
+      "suspended": "Hospital suspended",
+      "registrationVerified": "Registration verified for {{name}}",
+      "verificationRemoved": "Verification removed for {{name}}"
+    },
+    "checklist": {
+      "kycUploaded_one": "KYC documents uploaded ({{count}})",
+      "kycUploaded_other": "KYC documents uploaded ({{count}})",
+      "notVerifiedYet_one": "{{count}} not verified yet",
+      "notVerifiedYet_other": "{{count}} not verified yet",
+      "doctorsListed_one": "Doctors listed ({{count}})",
+      "doctorsListed_other": "Doctors listed ({{count}})",
+      "doctorsWithoutRegistration_one": "{{count}} doctor(s) without a registration number",
+      "doctorsWithoutRegistration_other": "{{count}} doctor(s) without a registration number",
+      "registrationsOnFile": "Doctor registrations on file",
+      "verifiedPayout": "Verified payout account",
+      "noVerifiedPayout": "No verified payout account"
+    },
+    "actions": {
+      "suspend": "Suspend",
+      "reject": "Reject",
+      "approveHospital": "Approve hospital",
+      "reactivate": "Re-activate"
+    },
+    "track": {
+      "drafted": "Profile drafted",
+      "submitted": "Submitted for review",
+      "kycVerified": "KYC verified",
+      "live": "Live"
+    },
+    "tabs": {
+      "label": "Hospital sections",
+      "overview": "Overview",
+      "kyc": "KYC & documents",
+      "doctors": "Doctors",
+      "team": "Team",
+      "cases": "Cases",
+      "activity": "Activity"
+    },
+    "kyc": {
+      "title": "KYC documents",
+      "description": "Registration, licences and tax documents uploaded by the hospital",
+      "empty": "The hospital has not uploaded KYC documents yet."
+    },
+    "team": {
+      "title": "Team members",
+      "description": "Hospital staff with portal access",
+      "empty": "No team members",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "added": "Added"
+    },
+    "facts": {
+      "title": "Key facts",
+      "cases": "Cases",
+      "doctors": "Doctors",
+      "commission": "Commission",
+      "platformDefault": "Platform default",
+      "settlementCycle": "Settlement cycle",
+      "approved": "Approved"
+    },
+    "payout": {
+      "title": "Payout accounts",
+      "empty": "No payout account added.",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "primary": "Primary"
+    },
+    "approveDialog": {
+      "titleApprove": "Approve hospital?",
+      "titleReactivate": "Re-activate hospital?",
+      "message": "<0>{{name}}</0> will be listed publicly and can receive patient enquiries.",
+      "noKycWarning": "Warning: no KYC documents have been uploaded.",
+      "missingRegistrationWarning_one": "Warning: {{count}} active doctor(s) have no medical registration number on file.",
+      "missingRegistrationWarning_other": "Warning: {{count}} active doctor(s) have no medical registration number on file.",
+      "confirm": "Approve"
+    },
+    "rejectDialog": {
+      "title": "Reject hospital",
+      "description": "The reason is shared with the hospital so they can fix and resubmit.",
+      "confirm": "Reject"
+    },
+    "suspendDialog": {
+      "title": "Suspend hospital",
+      "description": "Suspended hospitals are hidden from patients and cannot receive new enquiries.",
+      "confirm": "Suspend"
+    },
+    "profile": {
+      "title": "Profile",
+      "legalName": "Legal name",
+      "gstin": "GSTIN",
+      "pan": "PAN",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "established": "Established",
+      "beds": "Beds",
+      "airportDistance": "Airport distance",
+      "km": "{{distance}} km",
+      "internationalDesk": "International desk",
+      "yes": "Yes",
+      "no": "No",
+      "languages": "Languages",
+      "specialties": "Specialties",
+      "about": "About"
+    },
+    "doctors": {
+      "title": "Doctors",
+      "doctor": "Doctor",
+      "years_one": "{{count}} yr",
+      "years_other": "{{count}} yrs",
+      "qualifications": "Qualifications",
+      "registration": "Registration",
+      "verification": "Verification",
+      "inactive": "Inactive",
+      "noRegistration": "No registration",
+      "verifiedAt": "Verified {{date}}",
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "action": "Action",
+      "unverify": "Unverify",
+      "verify": "Verify",
+      "verifyHelp": "Check each registration on the <0>NMC Indian Medical Register</0> (or the State Medical Council) before verifying. Patients only see the badge after this check.",
+      "empty": "No doctors added yet"
+    },
+    "cases": {
+      "title": "Cases",
+      "description": "Most recently updated first",
+      "caption": "Cases at this hospital",
+      "case": "Case",
+      "opened": "Opened {{date}}",
+      "patient": "Patient",
+      "status": "Status",
+      "updated": "Updated",
+      "openInCases": "Open in Cases",
+      "range": "{{from}}–{{to}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next",
+      "openRow": "Open case {{number}}",
+      "empty": "No cases yet"
+    },
+    "activity": {
+      "title": "Audit trail",
+      "description": "Approvals, profile and commercial changes",
+      "openInAudit": "Open in audit log",
+      "when": "When",
+      "action": "Action",
+      "by": "By",
+      "user": "User",
+      "system": "System",
+      "change": "Change",
+      "empty": "No audit entries"
+    },
+    "terms": {
+      "title": "Commercial terms",
+      "description": "Commission and payout cycle for this hospital",
+      "updated": "Hospital updated",
+      "commissionError": "Commission must be a percentage between 0 and 100.",
+      "cycleError": "Settlement cycle must be a whole number of days between 1 and 90.",
+      "commissionRate": "Commission rate (%)",
+      "commissionHint": "Blank = platform default ({{value}}). Specific commission rules (Finance) take precedence.",
+      "settlementCycle": "Settlement cycle (days)",
+      "cycleHint": "Blank = platform default ({{value}} days).",
+      "save": "Save terms",
+      "featured": "Featured on the patient site"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Every account on the platform — patients, agents, hospital teams and staff.",
+    "unnamedUser": "Unnamed user",
+    "guestAccount": "Guest account",
+    "never": "Never",
+    "openRow": "Open {{name}}",
+    "userFallback": "user",
+    "empty": "No users yet",
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "security": "Security",
+      "country": "Country",
+      "lastLogin": "Last login",
+      "joined": "Joined"
+    },
+    "badges": {
+      "verified": "Verified",
+      "mfa": "MFA",
+      "guest": "Guest"
+    },
+    "security": {
+      "verified": "Email verified",
+      "unverified": "Email not verified",
+      "mfa": "MFA on",
+      "noMfa": "MFA off",
+      "guest": "Guest accounts"
+    },
+    "filters": {
+      "all": "All",
+      "role": "Role",
+      "searchPlaceholder": "Name, email or phone…",
+      "security": "Security",
+      "status": "Status",
+      "country": "Country",
+      "joined": "Joined"
+    },
+    "toast": {
+      "updated": "User updated"
+    },
+    "actions": {
+      "activate": "Activate",
+      "suspend": "Suspend",
+      "changeRole": "Change role"
+    },
+    "drawer": {
+      "titleFallback": "User",
+      "joinedOn": "Joined {{date}}",
+      "lastLoginOn": "Last login {{date}}",
+      "neverLower": "never",
+      "lockedUntilTitle": "Locked until {{date}}",
+      "failedAttempts_one": "{{count}} failed sign-in attempt.",
+      "failedAttempts_other": "{{count}} failed sign-in attempts.",
+      "profile": "Profile",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "language": "Language",
+      "agentId": "Agent id",
+      "patientProfile": "Patient profile",
+      "security": "Security",
+      "lastLogin": "Last login",
+      "failedLogins": "Failed logins",
+      "lockedUntil": "Locked until",
+      "hospitalMemberships": "Hospital memberships",
+      "role": "Role",
+      "onlyAdmins": "Only operations admins can change users.",
+      "cannotChangeSelf": "You cannot change your own account here.",
+      "onlySuperAdmin": "Only a super admin can change another super admin."
+    },
+    "confirm": {
+      "changeRoleTitle": "Change role?",
+      "suspendTitle": "Suspend user?",
+      "activateTitle": "Activate user?",
+      "changeRoleMessage": "<0>{{name}}</0> will become <1>{{role}}</1> (was {{previous}}). Their permissions change immediately and the change is recorded in the audit log.",
+      "suspendMessage": "<0>{{name}}</0> will be signed out and unable to log in until reactivated.",
+      "activateMessage": "<0>{{name}}</0> will be able to sign in again."
+    }
+  },
+  "staff": {
+    "title": "Staff",
+    "description": "Operations, finance and support users who work in this console.",
+    "newStaffUser": "New staff user",
+    "empty": "No staff users yet",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "phone": "Phone"
+    },
+    "filters": {
+      "allStaff": "All staff",
+      "role": "Staff role",
+      "searchPlaceholder": "Name, email or phone…"
+    },
+    "validation": {
+      "passwordLength": "At least 10 characters.",
+      "passwordMix": "Must contain a letter and a digit.",
+      "fullName": "Enter the full name.",
+      "email": "Enter a valid email."
+    },
+    "toast": {
+      "created": "Staff user {{name}} created"
+    },
+    "form": {
+      "cancel": "Cancel",
+      "create": "Create user",
+      "fullName": "Full name",
+      "email": "Email",
+      "role": "Role",
+      "password": "Temporary password",
+      "passwordHint": "At least 10 characters with a letter and a digit. Share it securely; the user should change it after signing in."
+    }
+  },
+  "agents": {
+    "documentTitle": "Agents",
+    "title": "Agents & facilitators",
+    "description": "Approve facilitators, verify their KYC and set tier and commission.",
+    "default": "Default",
+    "openRow": "Open {{name}}",
+    "empty": {
+      "title": "No agents yet",
+      "description": "Facilitators appear here when they sign up on the agent portal."
+    },
+    "quick": {
+      "all": "All",
+      "approvalQueue": "Approval queue",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected"
+    },
+    "columns": {
+      "agency": "Agency",
+      "code": "Code",
+      "status": "Status",
+      "kyc": "KYC",
+      "tier": "Tier",
+      "location": "Location",
+      "commission": "Commission",
+      "joined": "Joined"
+    },
+    "filters": {
+      "agentStatus": "Agent status",
+      "searchPlaceholder": "Agency, code or email…",
+      "status": "Status",
+      "kyc": "KYC",
+      "tier": "Tier",
+      "country": "Country"
+    },
+    "toast": {
+      "approved": "Agent approved",
+      "rejected": "Agent rejected",
+      "suspended": "Agent suspended",
+      "updated": "Agent updated"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reactivate": "Re-activate",
+      "reject": "Reject",
+      "suspend": "Suspend"
+    },
+    "drawer": {
+      "commissionError": "Commission must be a percentage between 0 and 100.",
+      "titleFallback": "Agent",
+      "kycBadge": "KYC {{status}}",
+      "locationNotSet": "Location not set",
+      "joinedOn": "Joined {{date}}",
+      "patients": "Patients",
+      "tier": "Tier",
+      "commission": "Commission",
+      "kycDocuments": "KYC documents",
+      "waitingTitle": "Waiting for approval",
+      "waitingBody": "Check the KYC documents below, then approve or reject this facilitator.",
+      "rejectedTitle": "Rejected",
+      "suspendedTitle": "Suspended",
+      "contact": "Contact",
+      "contactPerson": "Contact person",
+      "email": "Email",
+      "phone": "Phone",
+      "website": "Website",
+      "joined": "Joined",
+      "approved": "Approved",
+      "kycDescription": "Verify each document before approving the agent.",
+      "kycEmpty": "No KYC documents uploaded.",
+      "tierCommission": "Tier & commission",
+      "tierCommissionDescription": "Blank commission = platform default ({{rate}}), paid out of platform commission.",
+      "saveChanges": "Save changes",
+      "commissionPct": "Commission (%)"
+    },
+    "confirm": {
+      "approveTitle": "Approve agent?",
+      "approveMessage": "<0>{{name}}</0> will be able to register patients, request quotes and earn commission.",
+      "rejectTitle": "Reject agent",
+      "rejectDescription": "The reason is shared with the agent.",
+      "suspendTitle": "Suspend agent",
+      "suspendDescription": "Suspended agents cannot sign in to the agent portal or create new cases."
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Append-only record of security-relevant and state-changing actions.",
+    "openRow": "Open audit event {{action}}",
+    "empty": "No audit events yet",
+    "actor": {
+      "user": "User",
+      "system": "System",
+      "automated": "Automated"
+    },
+    "columns": {
+      "when": "When",
+      "action": "Action",
+      "entity": "Entity",
+      "actor": "Actor",
+      "ip": "IP address"
+    },
+    "filters": {
+      "everyAction": "Every {{group}} action",
+      "userWithId": "User {{id}}",
+      "selectedUser": "Selected user",
+      "searchPlaceholder": "Action, entity id or actor…",
+      "actorRole": "Actor role",
+      "systemAutomated": "System (automated)",
+      "action": "Action",
+      "entity": "Entity",
+      "actor": "Actor",
+      "date": "Date",
+      "entityId": "Entity id"
+    },
+    "drawer": {
+      "titleFallback": "Audit event",
+      "entity": "Entity",
+      "actor": "Actor",
+      "actorId": "Actor id",
+      "ip": "IP address",
+      "userAgent": "User agent",
+      "sameEntity": "Same entity",
+      "showAllForEntity": "Show all events for this entity",
+      "changes": "Changes"
+    }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "description": "Specialties, procedures and home-country cost benchmarks used by search, AI matching and the cost comparison tool.",
+    "tabs": {
+      "specialties": "Specialties",
+      "procedures": "Procedures",
+      "benchmarks": "Cost benchmarks"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "filters": {
+      "status": "Status",
+      "specialty": "Specialty",
+      "procedure": "Procedure",
+      "country": "Country"
+    },
+    "columns": {
+      "status": "Status",
+      "specialty": "Specialty",
+      "procedures": "Procedures",
+      "savings": "Savings",
+      "order": "Order",
+      "procedure": "Procedure",
+      "indiaPrice": "India price",
+      "stayRecovery": "Stay / recovery",
+      "benchmarks": "Benchmarks",
+      "country": "Country",
+      "homeCost": "Home cost",
+      "wait": "Wait",
+      "source": "Source"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "slugHint": "Lowercase letters, digits and dashes; used in public URLs.",
+      "icon": "Icon",
+      "iconHint": "Lucide icon name, e.g. heart-pulse",
+      "sortOrder": "Sort order",
+      "savingsMin": "Savings min (%)",
+      "savingsMax": "Savings max (%)",
+      "description": "Description",
+      "active": "Active",
+      "specialty": "Specialty",
+      "currency": "Currency",
+      "indiaPriceFrom": "India price from",
+      "indiaPriceTo": "India price to",
+      "hospitalStayDays": "Hospital stay (days)",
+      "recoveryDays": "Recovery (days)",
+      "totalStayDays": "Total stay in India (days)",
+      "keywords": "Keywords",
+      "keywordsHint": "Comma separated; used by search and the AI rules engine",
+      "bodyAreas": "Body areas",
+      "bodyAreasHint": "Comma separated, e.g. knee, hip, lower_back",
+      "procedure": "Procedure",
+      "countryIso2": "Country (ISO-2)",
+      "countryHint": "e.g. US, GB, NG",
+      "homeCostFrom": "Home cost from",
+      "homeCostTo": "Home cost to",
+      "waitTime": "Typical wait time",
+      "waitTimeHint": "e.g. 3–6 months",
+      "source": "Source",
+      "sourceHint": "Where the figure comes from"
+    },
+    "entities": {
+      "specialty": "specialty",
+      "specialties": "specialties",
+      "procedure": "procedure",
+      "procedures": "procedures",
+      "benchmark": "benchmark",
+      "benchmarks": "benchmarks"
+    },
+    "gaps": {
+      "label": "Procedures missing cost benchmarks ({{countries}})",
+      "value": "{{gaps}} of {{total}}",
+      "hint": "{{none}} with none at all. {{sample}}"
+    },
+    "specialties": {
+      "proceduresCount_one": "{{count}} procedure",
+      "proceduresCount_other": "{{count}} procedures"
+    },
+    "procedures": {
+      "stayValue": "{{stay}} / {{recovery}} days"
+    },
+    "benchmarks": {
+      "description": "Typical self-pay cost in the patient's home country; drives the savings shown to patients."
+    }
+  },
+  "content": {
+    "title": "Content",
+    "description": "Patient-facing tips, partner stays and services, and the currency rates used at checkout.",
+    "tabs": {
+      "tips": "Cultural tips",
+      "accommodation": "Accommodation providers",
+      "services": "Service providers",
+      "fx": "FX rates"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "filters": {
+      "status": "Status",
+      "category": "Category",
+      "type": "Type",
+      "city": "City",
+      "service": "Service",
+      "language": "Language"
+    },
+    "columns": {
+      "tip": "Tip",
+      "category": "Category",
+      "order": "Order",
+      "status": "Status",
+      "provider": "Provider",
+      "city": "City",
+      "nightly": "Nightly",
+      "amenities": "Amenities",
+      "contact": "Contact",
+      "service": "Service",
+      "languages": "Languages",
+      "rate": "Rate",
+      "rating": "Rating",
+      "currency": "Currency",
+      "source": "Source",
+      "asOf": "As of"
+    },
+    "fields": {
+      "title": "Title",
+      "text": "Text",
+      "category": "Category",
+      "categoryHint": "e.g. food, etiquette, money",
+      "sortOrder": "Sort order",
+      "imageUrl": "Image URL",
+      "active": "Active",
+      "name": "Name",
+      "type": "Type",
+      "city": "City",
+      "starRating": "Star rating",
+      "address": "Address",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "currency": "Currency",
+      "nightlyRate": "Nightly rate",
+      "phone": "Phone",
+      "email": "Email",
+      "amenities": "Amenities",
+      "amenitiesHint": "Comma separated, e.g. wifi, kitchen, wheelchair access",
+      "photoUrls": "Photo URLs",
+      "photoUrlsHint": "Comma separated https URLs",
+      "service": "Service",
+      "languages": "Languages",
+      "languagesHint": "Comma separated, e.g. English, Arabic, French",
+      "rate": "Rate",
+      "rateUnit": "Rate unit",
+      "quoteCurrencyHint": "ISO-4217, e.g. USD",
+      "inrPerUnit": "INR per 1 unit",
+      "inrPerUnitHint": "e.g. 83.25 means 1 USD = ₹83.25",
+      "source": "Source"
+    },
+    "entities": {
+      "tip": "cultural tip",
+      "tips": "cultural tips",
+      "accommodation": "accommodation provider",
+      "accommodationPlural": "accommodation providers",
+      "service": "service provider",
+      "servicePlural": "service providers",
+      "fx": "FX rate",
+      "fxPlural": "FX rates"
+    },
+    "fx": {
+      "description": "Base currency is INR. Rates are snapshotted onto each payment order at checkout; changing a rate does not alter existing orders."
+    }
+  },
+  "settings": {
+    "documentTitle": "Settings",
+    "title": "Platform settings",
+    "description": "Changes take effect immediately and are recorded in the audit log. Finance settings can only be changed by finance staff or a super admin.",
+    "websiteNotice": "Helplines, WhatsApp, social links, analytics, search-engine verification, marketing claims, medical reviewers and the footer are edited on <0>Website & contact</0> (super admin).",
+    "rawJson": "Raw JSON value.",
+    "groups": {
+      "commercial": "Commercial",
+      "tax": "Tax",
+      "settlements": "Settlements",
+      "payments": "Payments",
+      "patientSupport": "Patient support",
+      "other": "Other"
+    },
+    "items": {
+      "default_commission_bps": {
+        "label": "Default hospital commission",
+        "description": "Platform commission on hospital revenue when no hospital or rule-specific rate applies."
+      },
+      "default_agent_commission_bps": {
+        "label": "Default agent commission",
+        "description": "Paid to referring agents out of the platform commission."
+      },
+      "patient_service_fee_bps": {
+        "label": "Patient service fee",
+        "description": "Added on top of the treatment price at booking."
+      },
+      "deposit_pct": {
+        "label": "Booking deposit",
+        "description": "Share of the booking total required to confirm a booking (deposit option)."
+      },
+      "gst_rate_bps": {
+        "label": "GST on commission",
+        "description": "GST charged on platform commission."
+      },
+      "tds_194o_rate_bps": {
+        "label": "TDS (section 194-O)",
+        "description": "Tax deducted at source on hospital gross amount."
+      },
+      "settlement_hold_days": {
+        "label": "Settlement hold",
+        "description": "Days after treatment completion before items become eligible for payout."
+      },
+      "settlement_cycle_days": {
+        "label": "Default settlement cycle",
+        "description": "Days between automatic payout batches (hospitals may override)."
+      },
+      "refund_policy": {
+        "label": "Refund policy",
+        "description": "Refund percentage by days before admission. The first matching tier (highest days first) applies."
+      },
+      "cancellation_retention_hospital_share_bps": {
+        "label": "Cancellation retention: hospital share",
+        "description": "Share of the amount retained on a cancellation that goes to the hospital (100% = all to the hospital)."
+      },
+      "agent_tds_rate_bps": {
+        "label": "Agent TDS (section 194H)",
+        "description": "Tax deducted at source on commission paid to resident agents."
+      },
+      "agent_nonresident_withholding_bps": {
+        "label": "Non-resident agent withholding",
+        "description": "Withholding on commission paid to non-resident agents (set per CA / DTAA advice)."
+      },
+      "platform_gstin": {
+        "label": "Platform GSTIN",
+        "description": "Supplier GSTIN printed on commission tax invoices and credit notes."
+      },
+      "platform_gst_state": {
+        "label": "Platform GST state",
+        "description": "State of registration: CGST + SGST when the hospital is in the same state, IGST otherwise."
+      },
+      "refund_dual_approval_threshold_minor": {
+        "label": "Refund dual-approval threshold",
+        "description": "Refunds above this amount (converted to INR) must be approved by a finance user other than the requester. 0 = every refund needs a second approver."
+      },
+      "fx_rate_max_age_hours": {
+        "label": "Maximum FX rate age",
+        "description": "Foreign-currency orders are refused (fx_rate_unavailable) in production when the stored exchange rate is older than this. 0 disables the check."
+      },
+      "bank_transfer_details": {
+        "label": "Bank transfer details",
+        "description": "Shown to patients who pay by SWIFT / bank transfer."
+      },
+      "supported_currencies": {
+        "label": "Supported currencies",
+        "description": "ISO-4217 codes patients may pay in."
+      }
+    },
+    "updated": "{{label}} updated",
+    "financeBadge": "Finance",
+    "defaultBadge": "Default",
+    "updatedAt": "Updated {{date}}",
+    "updatedAtBy": "Updated {{date}} by {{name}}",
+    "save": "Save",
+    "reset": "Reset",
+    "readOnly": "Read-only for your role",
+    "units": {
+      "days": "days",
+      "hours": "hours"
+    },
+    "editors": {
+      "bpsSuffix": "% ({{bps}} bps)",
+      "percentage": "Percentage",
+      "percentageError": "Enter a percentage between 0 and 100.",
+      "wholeNumberError": "Enter a whole number between 0 and {{max}}.",
+      "amountInr": "Amount in INR",
+      "amountInrError": "Enter an amount in rupees (up to 2 decimals); 0 means every refund needs a second approver.",
+      "value": "Value",
+      "valueRequired": "Enter a value."
+    },
+    "refundPolicy": {
+      "invalidTier": "Days must be whole numbers ≥ 0 and refunds 0–100%.",
+      "duplicateDays": "Each \"days before\" value must be unique.",
+      "noTiers": "Add at least one tier.",
+      "daysHeader": "At least N days before admission",
+      "refundHeader": "Refund %",
+      "daysBefore": "Days before",
+      "refundPercent": "Refund percent",
+      "removeTier": "Remove tier",
+      "addTier": "Add tier"
+    },
+    "stringMap": {
+      "keysError": "Keys must be unique and non-empty.",
+      "key": "Key",
+      "value": "Value",
+      "removeEntry": "Remove entry",
+      "addEntry": "Add entry"
+    },
+    "stringList": {
+      "values": "Values",
+      "error": "Use 3-letter ISO currency codes separated by commas."
+    },
+    "json": {
+      "label": "JSON value",
+      "invalid": "Invalid JSON."
+    }
+  },
+  "websiteSettings": {
+    "title": "Website & contact",
+    "description": "What the public website shows: contact numbers, floating buttons, social links, analytics, search-engine verification, marketing claims, medical reviewers and the footer. Saved changes reach the website within seconds and are recorded in the audit log. An empty field means unset: the website then uses its deployment default (or hides the item).",
+    "readOnly": "Read-only: only a super admin can change these settings.",
+    "sections": {
+      "contact": "Contact & helplines",
+      "buttons": "Floating buttons",
+      "social": "Social profiles",
+      "analytics": "Analytics",
+      "search": "Search engines",
+      "marketing": "Marketing claims",
+      "reviewers": "Medical reviewers",
+      "footer": "Footer"
+    },
+    "saved": "{{title}} saved - the website updates within a few seconds",
+    "defaultBadge": "Default",
+    "superAdminBadge": "Super admin",
+    "updatedAt": "Updated {{date}}",
+    "updatedAtBy": "Updated {{date}} by {{name}}",
+    "save": "Save",
+    "reset": "Reset",
+    "fixErrors": "Fix the highlighted fields to save.",
+    "errors": {
+      "phoneDigits": "Use {{min}}-15 digits.",
+      "phoneDigitsExample": "Use {{min}}-15 digits, e.g. +91 98765 43210.",
+      "phoneInternational": "Use international format: + and the country code.",
+      "httpsUrl": "Enter a full https:// URL.",
+      "email": "Enter a valid email address.",
+      "ga4Format": "Use the format G-XXXXXXXXXX.",
+      "ga4Required": "Required for Google Analytics 4.",
+      "hostName": "Enter a host name such as healindiaglobal.com.",
+      "verificationCode": "Paste only the verification code (or the whole {{tag}} tag).",
+      "indexNowKey": "8-128 characters: letters, digits and -.",
+      "wholePercent": "Enter a whole percentage 0-100.",
+      "statId": "Id: start with a letter; letters, digits, - and _ only.",
+      "uniqueId": "Each id must be unique.",
+      "statRequired": "Label and value are required.",
+      "reviewerId": "Id: lowercase letters, digits and hyphens (e.g. dr-asha-rao).",
+      "reviewerPhoto": "Photo: an https:// URL or a site path such as /brand/reviewers/name.jpg.",
+      "reviewerIncomplete": "An active reviewer needs name, credentials, registration number and council."
+    },
+    "contact": {
+      "placeholderNumber": "Placeholder number: hidden on the website until you enter a real one.",
+      "whatsapp": "WhatsApp number",
+      "whatsappHint": "Floating WhatsApp button, footer and contact page. Empty = hidden.",
+      "phone": "Phone / helpline number",
+      "phoneHint": "Floating Call button, footer, contact page and the patient app (24/7 helpline). Empty = hidden.",
+      "emergency": "Emergency number",
+      "emergencyHint": "Shown on the contact page and in the patient app.",
+      "email": "Public contact email",
+      "emailHint": "Footer, contact page, account deletion page and Organization data. Empty = deployment default.",
+      "supportHours": "Support hours",
+      "supportHoursPlaceholder": "24/7, every day",
+      "supportHoursHint": "Shown on the contact page. Empty = not shown.",
+      "whatsappMessage": "WhatsApp prefilled message",
+      "whatsappMessageHint": "Text the visitor's WhatsApp opens with."
+    },
+    "buttons": {
+      "showWhatsapp": "Show WhatsApp button",
+      "showCall": "Show Call button",
+      "note": "A button is only shown when it is switched on and its number is set (saved numbers in Contact & helplines).",
+      "preview": "Preview",
+      "none": "No floating buttons"
+    },
+    "social": {
+      "urlLabel": "{{network}} URL",
+      "note": "Shown as icons in the footer and listed as sameAs in the Organization structured data. Empty = not shown."
+    },
+    "analytics": {
+      "provider": "Provider",
+      "providerHint": "None = use the deployment's environment setting (off unless configured there). The site's Content-Security-Policy follows this choice.",
+      "none": "None",
+      "plausible": "Plausible (cookieless, no banner)",
+      "ga4": "Google Analytics 4 (after cookie consent)",
+      "plausibleDomain": "Plausible domain",
+      "plausibleDomainHint": "Empty = the website's own host.",
+      "plausibleScript": "Plausible script URL",
+      "plausibleScriptHint": "Empty = plausible.io. A self-hosted script works too.",
+      "ga4Id": "GA4 measurement ID"
+    },
+    "search": {
+      "google": "Google site verification",
+      "googlePlaceholder": "Search Console HTML tag content",
+      "googleHint": "Search Console -> Settings -> Ownership -> HTML tag: the content=\"...\" value.",
+      "bing": "Bing site verification",
+      "bingPlaceholder": "msvalidate.01 content",
+      "bingHint": "Bing Webmaster Tools -> HTML meta tag value.",
+      "indexNow": "IndexNow key",
+      "indexNowHint": "Server-side only: served at /indexnow-key.txt and used to notify Bing and others of changed pages. Needs the website revalidation secret configured.",
+      "generate": "Generate"
+    },
+    "marketing": {
+      "intro": "Claims shown on the home page and procedure pages. A claim without a source is printed with an \"indicative figure\" footnote; switch off anything you cannot back up.",
+      "maxSavings": "Maximum savings (%)",
+      "savingsSource": "Savings source",
+      "savingsSourcePlaceholder": "e.g. Partner hospital price lists vs. US self-pay, 2026",
+      "showInHero": "Show in hero",
+      "stats": "Home-page stats",
+      "statId": "Id",
+      "statLabel": "Label",
+      "statValue": "Value",
+      "statSource": "Source note",
+      "statShow": "Show",
+      "removeStat": "Remove stat {{name}}",
+      "addStat": "Add stat",
+      "indiaWait": "Typical wait in India",
+      "indiaWaitHint": "Shown in the cost calculator on procedure pages.",
+      "showTestimonials": "Show testimonials (always labelled illustrative)",
+      "claimsVerified": "All claims verified by marketing / legal"
+    },
+    "reviewers": {
+      "intro": "Credited on health pages whose front matter names them (reviewedBy: {{tag}}). Only active reviewers with a complete registration are shown publicly. Add a real person only with their written consent and a verifiable medical registration.",
+      "active": "Active (shown on the website)",
+      "inactive": "Inactive",
+      "remove": "Remove",
+      "id": "Id (used by pages)",
+      "name": "Full name",
+      "credentials": "Credentials",
+      "registrationNumber": "Registration number",
+      "registrationCouncil": "Registration council",
+      "registrationCouncilPlaceholder": "e.g. Karnataka Medical Council",
+      "photoUrl": "Photo URL",
+      "photoUrlPlaceholder": "https://... or /brand/reviewers/name.jpg",
+      "bio": "Short bio",
+      "add": "Add reviewer"
+    },
+    "footer": {
+      "developedBy": "Developed by",
+      "developedByHint": "Empty = no credit line.",
+      "developerUrl": "Developer URL",
+      "disclaimer": "Disclaimer",
+      "disclaimerHint": "Short disclaimer in the footer. Empty = the built-in text.",
+      "preview": "Footer preview",
+      "disclaimerLabel": "Disclaimer:",
+      "builtInDisclaimer": "Built-in disclaimer text",
+      "developedByPreview": "Developed by <0>{{name}}<1/></0>"
+    }
+  },
+  "shell": {
+    "title": "Staff console",
+    "login": {
+      "title": "Staff sign-in",
+      "subtitle": "Heal India Global operations & finance console"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or was moved."
+    }
+  },
+  "nav": {
+    "groups": {
+      "operations": "Patient operations",
+      "partners": "Partners",
+      "catalog": "Catalog & content",
+      "people": "People & access",
+      "system": "System"
+    },
+    "dashboard": "Dashboard",
+    "hospitals": "Hospitals",
+    "agents": "Agents",
+    "cases": "Cases",
+    "bookings": "Bookings",
+    "travel": "Travel desk",
+    "messages": "Support inbox",
+    "users": "Users",
+    "staff": "Staff",
+    "catalog": "Catalog",
+    "content": "Content",
+    "settings": "Settings",
+    "website": "Website & contact",
+    "languages": "Languages",
+    "translations": "Translations",
+    "audit": "Audit log",
+    "moderation": "Reports",
+    "enquiries": "Website enquiries",
+    "privacy": "Privacy requests"
+  },
+  "ui": {
+    "loading": "Loading…",
+    "spinner": "Loading",
+    "empty": "Nothing here yet",
+    "error": {
+      "title": "Could not load data",
+      "retry": "Retry"
+    },
+    "table": {
+      "noResults": "No results",
+      "noResultsHint": "Try changing the filters."
+    },
+    "pagination": {
+      "label": "Pagination",
+      "summary_one": "{{total}} result · page {{page}} of {{pages}}",
+      "summary_other": "{{total}} results · page {{page}} of {{pages}}",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "reason": {
+      "label": "Reason",
+      "tooShort": "Please enter at least 3 characters."
+    },
+    "track": {
+      "label": "Progress",
+      "step": "Step {{step}} of {{total}}",
+      "done": "(done)",
+      "current": "(current)"
+    }
+  },
+  "status": {
+    "active": "Active",
+    "approved": "Approved",
+    "verified": "Verified",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "resolved": "Resolved",
+    "paid": "Paid",
+    "done": "Done",
+    "booked": "Booked",
+    "accepted": "Accepted",
+    "admitted": "Admitted",
+    "in_treatment": "In treatment",
+    "quoted": "Quoted",
+    "sent": "Sent",
+    "applied": "Applied",
+    "invitation_issued": "Invitation issued",
+    "acknowledged": "Acknowledged",
+    "enquiry": "Enquiry",
+    "pending": "Pending",
+    "pending_review": "Pending review",
+    "pending_payment": "Pending payment",
+    "pending_verification": "Pending verification",
+    "requested": "Requested",
+    "documents_pending": "Documents pending",
+    "uploaded": "Uploaded",
+    "open": "Open",
+    "suspended": "Suspended",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled",
+    "declined": "Declined",
+    "deleted": "Deleted",
+    "failed": "Failed",
+    "draft": "Draft",
+    "inactive": "Inactive",
+    "expired": "Expired",
+    "closed": "Closed",
+    "refunded": "Refunded",
+    "submitted": "Submitted",
+    "scheduled": "Scheduled",
+    "processing": "Processing"
+  },
+  "components": {
+    "crud": {
+      "errors": {
+        "required": "Required",
+        "wholeNumber": "Enter a whole number",
+        "min": "Minimum {{min}}",
+        "max": "Maximum {{max}}",
+        "number": "Enter a number",
+        "amount": "Enter a valid amount",
+        "url": "Enter a full http(s) URL",
+        "email": "Enter a valid email"
+      },
+      "deleted": "{{entity}} deleted",
+      "updated": "{{entity}} updated",
+      "created": "{{entity}} created",
+      "actions": "Actions",
+      "editRow": "Edit {{label}}",
+      "deleteRow": "Delete {{label}}",
+      "add": "Add {{entity}}",
+      "empty": "No {{entities}} yet",
+      "search": "Search {{entities}}…",
+      "readOnly": "Read-only: only operations admins can edit the catalog.",
+      "deleteTitle": "Delete {{entity}}?",
+      "deleteMessage": "<0>{{label}}</0> will be removed. If it is referenced elsewhere the server may refuse; deactivate it instead.",
+      "delete": "Delete",
+      "editTitle": "Edit {{entity}}",
+      "newTitle": "New {{entity}}",
+      "saveChanges": "Save changes",
+      "create": "Create",
+      "commaSeparated": "Comma separated",
+      "select": "Select…"
+    },
+    "documents": {
+      "markedVerified": "Document marked verified",
+      "markedRejected": "Document marked rejected",
+      "marked": "Document marked {{status}}",
+      "empty": "No documents uploaded.",
+      "view": "View",
+      "download": "Download",
+      "verify": "Verify",
+      "reject": "Reject",
+      "rejectTitle": "Reject document",
+      "rejectNote": "Note for the uploader",
+      "document": "Document",
+      "loading": "Loading document…"
+    },
+    "jsonDiff": {
+      "added": "added",
+      "removed": "removed",
+      "changed": "changed",
+      "changedFields_one": "{{value}} changed field",
+      "changedFields_other": "{{value}} changed fields",
+      "showUnchanged": "Show unchanged",
+      "rawJson": "Raw JSON",
+      "before": "Before",
+      "after": "After",
+      "field": "Field",
+      "noData": "No before/after data recorded for this event.",
+      "noChanges": "No field changes."
+    },
+    "money": {
+      "currency": "Currency"
+    }
+  },
+  "charts": {
+    "noData": "No data for this period",
+    "noEnquiries": "No enquiries in this period",
+    "stepConversion": "{{value}} of the previous stage"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}"
+    },
+    "description": "Start with the queues that need action, then check how the platform is trending.",
+    "refresh": "Refresh",
+    "updatedAt": "Updated {{date}}",
+    "attentionTitle": "Needs your attention",
+    "attentionDescription": "Each card opens the matching list, already filtered and sorted oldest first.",
+    "performance": "Performance",
+    "range": "{{from}} – {{to}} compared with {{prevFrom}} – {{prevTo}}",
+    "loading": "Loading…",
+    "periodLabel": "Period",
+    "periods": {
+      "7d": {
+        "label": "7 days",
+        "long": "last 7 days"
+      },
+      "30d": {
+        "label": "30 days",
+        "long": "last 30 days"
+      },
+      "90d": {
+        "label": "90 days",
+        "long": "last 90 days"
+      },
+      "mtd": {
+        "label": "This month",
+        "long": "this month"
+      }
+    },
+    "kpi": {
+      "new_cases": {
+        "label": "Enquiries",
+        "help": "New enquiries: cases opened by patients, agents or staff in the selected period."
+      },
+      "quotes_sent": {
+        "label": "Quotes sent",
+        "help": "Quotes hospitals sent to patients (drafts excluded) in the selected period."
+      },
+      "bookings": {
+        "label": "Bookings",
+        "help": "Bookings confirmed: bookings whose deposit or full payment was received in the selected period."
+      },
+      "conversion_rate": {
+        "label": "Conversion",
+        "help": "Enquiry to booking: share of the cases opened in this period that have reached \"Booked\" (or beyond) so far. Recent cases may still convert."
+      },
+      "gmv_minor": {
+        "label": "GMV",
+        "help": "Gross merchandise value: patient payments captured in the period, converted to INR at the payment-day rate."
+      },
+      "revenue_minor": {
+        "label": "Revenue",
+        "help": "Platform revenue: commission and service-fee revenue recognised in the ledger in the period, net of reversals."
+      },
+      "about": "About {{label}}",
+      "previous": "Previous period: {{value}}",
+      "vsPrev": "vs prev.",
+      "forPeriod": "for the {{period}}"
+    },
+    "funnel": {
+      "title": "Case funnel",
+      "description": "Cases opened in the {{period}}, by the furthest stage reached",
+      "conversion": "Enquiry → booked: <0>{{value}}</0>"
+    },
+    "bySpecialty": {
+      "title": "Cases by specialty",
+      "description": "Cases opened in the {{period}}"
+    },
+    "topHospitals": {
+      "title": "Top hospitals",
+      "description": "By GMV captured in the {{period}}",
+      "bookings_one": "{{value}} booking",
+      "bookings_other": "{{value}} bookings",
+      "tooltip_one": "{{name}}: {{amount}} from {{value}} booking",
+      "tooltip_other": "{{name}}: {{amount}} from {{value}} bookings"
+    },
+    "activityAria": "Activity and platform snapshot",
+    "recentActivity": {
+      "title": "Recent activity",
+      "description": "Latest actions across cases, quotes, bookings and partners",
+      "auditLink": "Audit log"
+    },
+    "snapshot": {
+      "title": "Platform snapshot",
+      "description": "Right now, all time",
+      "escrow": "Patient money in escrow",
+      "pendingSettlements": "Pending settlements",
+      "activeHospitals": "Active hospitals",
+      "activeAgents": "Active agents",
+      "openCases": "Open cases",
+      "patients": "Registered patients"
+    },
+    "trend": {
+      "metrics": {
+        "gmv": "GMV",
+        "bookings": "Bookings",
+        "new_cases": "Enquiries"
+      },
+      "perWeek": "{{metric}} per week",
+      "perDay": "{{metric}} per day",
+      "total": "Total {{value}}",
+      "metricLabel": "Metric",
+      "showChart": "Show chart",
+      "showTable": "Show as table",
+      "empty": {
+        "gmv": "No gmv in this period",
+        "bookings": "No bookings in this period",
+        "new_cases": "No enquiries in this period"
+      },
+      "emptyHint": "Pick a longer period above to see the trend.",
+      "byWeek": "{{metric}} by week",
+      "byDay": "{{metric}} by day",
+      "weekOf": "Week of",
+      "day": "Day",
+      "weekOfDate": "Week of {{date}}"
+    },
+    "admissions": {
+      "title": "Admissions this week",
+      "description": "Patients due at a hospital in the next 7 days",
+      "allBookings": "All bookings",
+      "empty": "No admissions in the next 7 days",
+      "patient": "Patient"
+    },
+    "infoTip": "About this metric",
+    "delta": {
+      "noChange": "No change",
+      "new": "New",
+      "points": "{{value}} pts"
+    },
+    "age": {
+      "minutes": "{{value}} min",
+      "hours": "{{value}} h",
+      "days": "{{value}} d"
+    },
+    "activity": {
+      "error": "Could not load recent activity.",
+      "empty": "No activity yet.",
+      "someone": "A user",
+      "system": "System",
+      "caseCreate": "<0>{{who}}</0> opened case {{number}}",
+      "caseCreateNoNumber": "<0>{{who}}</0> opened case",
+      "caseStatus": "<0>{{who}}</0> moved a case to {{status}}",
+      "caseStatusUnknown": "<0>{{who}}</0> moved a case to a new status",
+      "assignCoordinator": "<0>{{who}}</0> assigned a coordinator to a case",
+      "quoteSend": "<0>{{who}}</0> sent a quote",
+      "quoteSendAmount": "<0>{{who}}</0> sent a quote of {{amount}}",
+      "quoteAccept": "<0>{{who}}</0> accepted a quote",
+      "bookingConfirm": "<0>{{who}}</0> confirmed a booking",
+      "bookingAdmit": "<0>{{who}}</0> admitted a patient",
+      "bookingComplete": "<0>{{who}}</0> completed a treatment",
+      "paymentCaptured": "<0>{{who}}</0> captured a payment",
+      "paymentCapturedAmount": "<0>{{who}}</0> captured a payment of {{amount}}",
+      "hospitalApprove": "<0>{{who}}</0> approved a hospital",
+      "agentApprove": "<0>{{who}}</0> approved an agent",
+      "documentUpload": "<0>{{who}}</0> uploaded a document",
+      "generic": "<0>{{who}}</0> {{text}}"
+    },
+    "attention": {
+      "cardLabel": "{{label}}: {{value}}",
+      "cardLabelAge": "{{label}}: {{value}}, oldest waiting {{age}}",
+      "oldestWaiting": "Oldest waiting",
+      "oldest": "Oldest",
+      "caughtUp": "You are all caught up",
+      "caughtUpHint": "Nothing in your queues needs action right now.",
+      "allClear": "All clear:",
+      "emergency_cases": {
+        "label": "Emergency screenings",
+        "description": "Open cases the AI screening flagged as a possible emergency"
+      },
+      "open_sos": {
+        "label": "Open SOS alerts",
+        "description": "Patients in India asking for urgent help"
+      },
+      "quotes_overdue": {
+        "label": "Quotes past SLA",
+        "description": "Enquiries waiting more than {{hours}} h for the hospital's quote"
+      },
+      "unassigned_enquiries": {
+        "label": "Unassigned enquiries",
+        "description": "New enquiries without a coordinator"
+      },
+      "quotes_awaiting_patient": {
+        "label": "Awaiting patient decision",
+        "description": "Quotes sent that the patient has not accepted yet"
+      },
+      "hospitals_pending": {
+        "label": "Hospitals to review",
+        "description": "Hospital profiles submitted for approval"
+      },
+      "agents_pending": {
+        "label": "Agents to approve",
+        "description": "Agent sign-ups waiting for approval"
+      },
+      "agent_kyc_pending": {
+        "label": "Agent KYC to verify",
+        "description": "Agents whose KYC documents await verification"
+      },
+      "payout_accounts_unverified": {
+        "label": "Payout accounts to verify",
+        "description": "Bank accounts that need a second finance user to verify"
+      },
+      "markPaidApprovals": {
+        "label": "Bank transfers to approve",
+        "description": "Mark-paid requests awaiting a second finance user"
+      },
+      "refunds": {
+        "label": "Refunds to approve",
+        "description": "Refund requests awaiting approval"
+      },
+      "batches": {
+        "label": "Settlement batches to approve",
+        "description": "Batches awaiting a second approver"
+      },
+      "payoutConfirmations": {
+        "label": "Payouts to confirm",
+        "description": "Payouts with a UTR awaiting a second finance user"
+      },
+      "payoutReversals": {
+        "label": "Payout failures to approve",
+        "description": "Failure / reversal requests awaiting a second approver"
+      },
+      "payoutReconciliations": {
+        "label": "Payouts to reconcile",
+        "description": "Gateway outcome unknown - check the bank statement"
+      },
+      "amountReviews": {
+        "label": "Amount differences",
+        "description": "Orders paid with a different amount than requested"
+      },
+      "adjustments": {
+        "label": "Ledger adjustments",
+        "description": "Manual adjustments awaiting approval"
+      }
+    }
+  },
+  "languages": {
+    "title": "Languages",
+    "description": "Switch a language on once its translations have been reviewed. English is the default and is always on. Changes reach the apps within about a minute.",
+    "toast": {
+      "enabled": "{{name}} switched on",
+      "disabled": "{{name}} switched off"
+    },
+    "columns": {
+      "language": "Language",
+      "code": "Code",
+      "direction": "Direction",
+      "overall": "Translated",
+      "updated": "Last changed",
+      "enabled": "Enabled"
+    },
+    "rtl": "Right-to-left",
+    "ltr": "Left-to-right",
+    "overallLabel": "{{name}}: share of the text that is translated",
+    "defaultHint": "English is the default language and cannot be switched off.",
+    "alwaysOn": "Always on",
+    "on": "On",
+    "off": "Off",
+    "empty": "No languages",
+    "readOnly": "Read-only: only admins can switch languages on or off.",
+    "byApp": {
+      "title": "Completeness by app",
+      "description": "Share of each app's English text that has a translation (shipped or edited by an admin). Select a value to see what is missing in <0>Translations</0>.",
+      "empty": "Only English is available.",
+      "app": "App",
+      "overall": "All apps",
+      "openMissing": "Missing {{name}} text in {{app}}"
+    },
+    "disable": {
+      "title": "Switch off {{name}}?",
+      "message": "{{name}} disappears from every language switcher and from the website. People who chose it will see English. The translations and your edits are kept.",
+      "confirm": "Switch off"
+    },
+    "apps": {
+      "patient_web": "Patient web",
+      "agent": "Agent portal",
+      "hospital": "Hospital portal",
+      "admin": "Admin portal",
+      "website": "Website",
+      "mobile": "Mobile app",
+      "server": "Emails, notifications & API messages"
+    }
+  },
+  "translations": {
+    "title": "Translations",
+    "description": "Change any text of any app in any language. Changes are live within about a minute and are recorded in the audit log.",
+    "app": "App",
+    "language": "Language",
+    "languageOff": "{{name}} (switched off)",
+    "placeholdersHint": "Keep placeholders such as {{example1}} or {{example2}} exactly as they are - they are replaced with real values.",
+    "columns": {
+      "key": "Key",
+      "source": "English",
+      "shipped": "Shipped translation",
+      "override": "Override",
+      "actions": "Actions"
+    },
+    "missing": "Missing",
+    "updatedBy": "{{name}} · {{date}}",
+    "edit": "Edit",
+    "editRow": "Edit {{key}}",
+    "clear": "Clear override",
+    "clearRow": "Clear the override of {{key}}",
+    "toast": {
+      "saved": "Override saved",
+      "cleared": "Override cleared - the shipped text is back"
+    },
+    "status": {
+      "label": "Translation status",
+      "all": "All",
+      "missing": "Missing",
+      "overridden": "Overridden",
+      "translated": "Translated"
+    },
+    "searchPlaceholder": "Search key, English or translation…",
+    "empty": "No texts match",
+    "readOnly": "Read-only: only admins can change texts.",
+    "clearDialog": {
+      "title": "Clear override?",
+      "message": "The text goes back to the shipped translation (or to English when there is none)."
+    },
+    "editDialog": {
+      "title": "Edit text · {{language}}",
+      "override": "Your text",
+      "emptyError": "Enter the text, or use Clear override to go back to the shipped text.",
+      "counter_one": "{{value}} / {{max}} character",
+      "counter_other": "{{value}} / {{max}} characters",
+      "save": "Save",
+      "missingPlaceholders_one": "This placeholder of the English text is missing: {{list}}. Keep it exactly as it is; it is replaced with a real value.",
+      "missingPlaceholders_other": "These placeholders of the English text are missing: {{list}}. Keep them exactly as they are; they are replaced with real values.",
+      "tagsNote": "The English text marks links or bold words with numbered tags such as <0>…</0>. Your text is saved as plain text: these tags are removed, so the link or bold style is lost.",
+      "plainText": "Plain text only: HTML is removed when you save. Every change is recorded in the audit log."
+    }
+  }
+}

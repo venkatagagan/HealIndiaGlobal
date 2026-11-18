@@ -1,5 +1,6 @@
 /** Razorpay Checkout.js loader + typed `open()` wrapper (cards never touch our servers). */
 import type { CheckoutOut, RazorpayVerifyIn } from '@hig/shared/api';
+import { i18n } from '@hig/shared/lib';
 
 const SCRIPT_SRC = 'https://checkout.razorpay.com/v1/checkout.js';
 
@@ -40,12 +41,12 @@ export function loadRazorpay(): Promise<RazorpayCtor> {
     const script = existing ?? document.createElement('script');
     const onLoad = () => {
       if (window.Razorpay) resolve(window.Razorpay);
-      else reject(new Error('Razorpay Checkout failed to initialise.'));
+      else reject(new Error(i18n.t('patient:razorpay.initFailed')));
     };
     const onError = () => {
       loading = null;
       script.remove();
-      reject(new Error('Could not load Razorpay Checkout. Check your connection and try again.'));
+      reject(new Error(i18n.t('patient:razorpay.loadFailed')));
     };
     script.addEventListener('load', onLoad, { once: true });
     script.addEventListener('error', onError, { once: true });
@@ -96,7 +97,7 @@ export async function openRazorpayCheckout(checkout: NonNullable<CheckoutOut['ra
       },
     });
     instance.on('payment.failed', (response) => {
-      lastError = response.error?.description ?? 'The payment was declined.';
+      lastError = response.error?.description ?? i18n.t('patient:razorpay.declined');
     });
     instance.open();
   });

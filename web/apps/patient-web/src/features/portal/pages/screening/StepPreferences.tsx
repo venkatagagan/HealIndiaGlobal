@@ -1,21 +1,32 @@
 import { BrainCircuit, ShieldCheck } from 'lucide-react';
 import { DOCTOR_GENDER_PREFS, DOCTOR_GENDER_PREF_LABELS, type DoctorGenderPref } from '@hig/shared/api';
-import { COUNTRY_OPTIONS, LANGUAGE_OPTIONS } from '../../lib/countries';
-import { SUPPORTED_CURRENCIES, currencySymbol, isoDateFromToday } from '../../lib/shared';
+import { useAppTranslation } from '../../../../i18n';
+import { countryOptions, LANGUAGE_OPTIONS } from '../../lib/countries';
+import { SUPPORTED_CURRENCIES, currencySymbol, formatNumber, isoDateFromToday } from '../../lib/shared';
 import { Checkbox, Chip, Field, Input, SegmentedControl, Select, Switch } from '../../ui/primitives';
 import type { WizardDraft } from './wizardModel';
 
-const BUDGET_PRESETS: { label: string; min: string; max: string }[] = [
-  { label: 'Under 5K', min: '', max: '5000' },
-  { label: '5K – 15K', min: '5000', max: '15000' },
-  { label: '15K – 30K', min: '15000', max: '30000' },
-  { label: '30K – 50K', min: '30000', max: '50000' },
-  { label: '50K+', min: '50000', max: '' },
+const BUDGET_PRESETS: { min: string; max: string }[] = [
+  { min: '', max: '5000' },
+  { min: '5000', max: '15000' },
+  { min: '15000', max: '30000' },
+  { min: '30000', max: '50000' },
+  { min: '50000', max: '' },
 ];
 
+/** "5K" (en), "5 k" (fr), ... */
+const compact = (value: string) => formatNumber(Number(value), { notation: 'compact' });
+
 export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onChange: (patch: Partial<WizardDraft>) => void }) {
+  const { t } = useAppTranslation();
   const symbol = currencySymbol(draft.budget_currency);
   const today = isoDateFromToday(0);
+
+  function presetLabel(p: { min: string; max: string }): string {
+    if (!p.min) return t('screening.preferences.budgetUnder', { amount: compact(p.max) });
+    if (!p.max) return t('screening.preferences.budgetOver', { amount: compact(p.min) });
+    return t('screening.preferences.budgetBetween', { min: compact(p.min), max: compact(p.max) });
+  }
 
   function toggleLanguage(lang: string) {
     onChange({
@@ -26,8 +37,8 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
   return (
     <div className="space-y-8">
       <section>
-        <h3 className="font-semibold">Language</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">We prefer doctors and staff who speak these languages.</p>
+        <h3 className="font-semibold">{t('screening.preferences.language')}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.preferences.languageHint')}</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {LANGUAGE_OPTIONS.map((l) => (
             <Chip key={l.value} selected={draft.languages.includes(l.value)} onClick={() => toggleLanguage(l.value)}>
@@ -38,9 +49,9 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
       </section>
 
       <section className="max-w-md">
-        <h3 className="mb-3 font-semibold">Doctor gender</h3>
+        <h3 className="mb-3 font-semibold">{t('screening.preferences.doctorGender')}</h3>
         <SegmentedControl<DoctorGenderPref>
-          ariaLabel="Doctor gender preference"
+          ariaLabel={t('screening.preferences.doctorGenderLabel')}
           value={draft.doctor_gender}
           onChange={(v) => onChange({ doctor_gender: v })}
           options={DOCTOR_GENDER_PREFS.map((g) => ({ value: g, label: DOCTOR_GENDER_PREF_LABELS[g] }))}
@@ -48,22 +59,22 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
       </section>
 
       <section>
-        <h3 className="font-semibold">Budget range</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Total treatment budget, including the hospital stay.</p>
+        <h3 className="font-semibold">{t('screening.preferences.budget')}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.preferences.budgetHint')}</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {BUDGET_PRESETS.map((p) => (
             <Chip
-              key={p.label}
+              key={`${p.min}-${p.max}`}
               selected={draft.budget_min === p.min && draft.budget_max === p.max}
               onClick={() => onChange({ budget_min: p.min, budget_max: p.max })}
             >
               {symbol}
-              {p.label}
+              {presetLabel(p)}
             </Chip>
           ))}
         </div>
         <div className="mt-4 grid max-w-xl gap-3 sm:grid-cols-3">
-          <Field label="Currency" htmlFor="budget-ccy">
+          <Field label={t('screening.preferences.currency')} htmlFor="budget-ccy">
             <Select
               id="budget-ccy"
               value={draft.budget_currency}
@@ -76,32 +87,32 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
               ))}
             </Select>
           </Field>
-          <Field label={`Minimum (${symbol})`} htmlFor="budget-min">
+          <Field label={t('screening.preferences.minimum', { symbol })} htmlFor="budget-min">
             <Input
               id="budget-min"
               inputMode="decimal"
               value={draft.budget_min}
               onChange={(e) => onChange({ budget_min: e.target.value })}
-              placeholder="No minimum"
+              placeholder={t('screening.preferences.noMinimum')}
             />
           </Field>
-          <Field label={`Maximum (${symbol})`} htmlFor="budget-max">
+          <Field label={t('screening.preferences.maximum', { symbol })} htmlFor="budget-max">
             <Input
               id="budget-max"
               inputMode="decimal"
               value={draft.budget_max}
               onChange={(e) => onChange({ budget_max: e.target.value })}
-              placeholder="No maximum"
+              placeholder={t('screening.preferences.noMaximum')}
             />
           </Field>
         </div>
       </section>
 
       <section>
-        <h3 className="font-semibold">Travel window</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">When could you travel to India?</p>
+        <h3 className="font-semibold">{t('screening.preferences.travelWindow')}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.preferences.travelWindowHint')}</p>
         <div className="mt-3 grid max-w-xl gap-3 sm:grid-cols-2">
-          <Field label="Earliest" htmlFor="tw-start">
+          <Field label={t('screening.preferences.earliest')} htmlFor="tw-start">
             <Input
               id="tw-start"
               type="date"
@@ -110,7 +121,7 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
               onChange={(e) => onChange({ travel_window_start: e.target.value })}
             />
           </Field>
-          <Field label="Latest" htmlFor="tw-end">
+          <Field label={t('screening.preferences.latest')} htmlFor="tw-end">
             <Input
               id="tw-end"
               type="date"
@@ -124,13 +135,13 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
 
       <section className="max-w-xl">
         <Field
-          label="Your home country"
+          label={t('screening.preferences.homeCountry')}
           htmlFor="home-country"
-          hint="Used to compare treatment costs and waiting times with your country."
+          hint={t('screening.preferences.homeCountryHint')}
         >
           <Select id="home-country" value={draft.home_country} onChange={(e) => onChange({ home_country: e.target.value })}>
-            <option value="">Select a country</option>
-            {COUNTRY_OPTIONS.map((c) => (
+            <option value="">{t('screening.preferences.selectCountry')}</option>
+            {countryOptions().map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
               </option>
@@ -145,25 +156,25 @@ export function StepPreferences({ draft, onChange }: { draft: WizardDraft; onCha
           onChange={(v) => onChange({ use_ai: v })}
           label={
             <span className="inline-flex items-center gap-2">
-              <BrainCircuit className="h-4 w-4 text-violet-500" aria-hidden /> Use AI recommendations
+              <BrainCircuit className="h-4 w-4 text-violet-500" aria-hidden /> {t('screening.preferences.useAi')}
             </span>
           }
-          description="An AI model reviews your answers to suggest specialties and procedures. Turn off to use our rule-based matching only."
+          description={t('screening.preferences.useAiHint')}
         />
         {draft.use_ai ? (
           <div className="rounded-xl bg-violet-50 p-4 dark:bg-violet-500/10">
             <p className="flex items-center gap-2 text-sm font-semibold text-violet-900 dark:text-violet-200">
-              <ShieldCheck className="h-4 w-4" aria-hidden /> How your information is used
+              <ShieldCheck className="h-4 w-4" aria-hidden /> {t('screening.preferences.aiInfoTitle')}
             </p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-violet-900/80 dark:text-violet-200/80">
-              <li>Your answers (and any reports you attached) are sent securely to our AI provider to prepare a triage summary.</li>
-              <li>It is not a diagnosis. A doctor always reviews your case before any treatment.</li>
-              <li>Hospitals only see your information after you request a quote and agree to share it.</li>
-              <li>You can withdraw this consent at any time in your profile.</li>
+            <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-violet-900/80 dark:text-violet-200/80">
+              <li>{t('screening.preferences.aiInfo.sent')}</li>
+              <li>{t('screening.preferences.aiInfo.notDiagnosis')}</li>
+              <li>{t('screening.preferences.aiInfo.hospitals')}</li>
+              <li>{t('screening.preferences.aiInfo.withdraw')}</li>
             </ul>
             <Checkbox
               className="mt-3"
-              label="I agree to AI processing of my health information for this screening"
+              label={t('screening.preferences.aiConsent')}
               checked={draft.consent_ai}
               onChange={(e) => onChange({ consent_ai: e.target.checked })}
             />

@@ -1,5 +1,6 @@
 import { convertMinor, formatMoneyRange, formatMoney } from '@/lib/money';
 import type { FxTable } from '@/lib/data/types';
+import { intlLocale } from '@/i18n/format';
 
 /** "₹2,50,000 – ₹4,50,000" plus an approximate conversion ("≈ $2,800 – $5,100") when FX is known. */
 export function PriceRange({
@@ -24,7 +25,7 @@ export function PriceRange({
   if (min === null && max === null) return null;
   const lo = min ?? max ?? 0;
   const hi = max ?? min ?? 0;
-  const intl = 'en';
+  const intl = intlLocale();
   const main = formatMoneyRange(lo, hi, currency, intl);
   let approx: string | null = null;
   if (fx && currency !== approxCurrency) {
@@ -41,5 +42,5 @@ export function PriceRange({
 }
 
 export function Money({ minor, currency }: { minor: number; currency: string }) {
-  return <>{formatMoney(minor, currency, 'en')}</>;
+  return <>{formatMoney(minor, currency, intlLocale())}</>;
 }

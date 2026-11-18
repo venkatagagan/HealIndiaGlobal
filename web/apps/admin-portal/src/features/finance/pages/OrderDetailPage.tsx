@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, Banknote, Undo2 } from 'lucide-react';
-import {
-  PAYMENT_GATEWAY_LABELS,
-  PAYMENT_METHOD_LABELS,
-  PAYMENT_PURPOSE_LABELS,
-  type PaymentOut,
-  type RefundOut,
-} from '@hig/shared/api';
+import { type PaymentOut, type RefundOut } from '@hig/shared/api';
 import { formatDateTime, useDocumentTitle } from '../lib/shared';
+import { enumLabel, useFinanceTranslation } from '../lib/i18n';
 import { useOrder } from '../api/queries';
 import { Mono, Money, StatusBadge } from '../components/finance';
 import { isRefundablePayment, RefundDialog, refundableMinor } from '../components/RefundDialog';
@@ -28,16 +23,17 @@ import { Button, Card, DescriptionList, ErrorState, LoadingState, PageHeader } f
 import { financePath } from '../paths';
 
 export default function OrderDetailPage() {
+  const { t } = useFinanceTranslation();
   const { orderId = '' } = useParams();
   const order = useOrder(orderId);
   const perms = useFinancePermissions();
   const [refundFor, setRefundFor] = useState<string | null | undefined>(undefined);
   const [markPaid, setMarkPaid] = useState(false);
-  useDocumentTitle(order.data ? `Order ${order.data.order_number}` : 'Payment order');
+  useDocumentTitle(order.data ? t('orderDetail.documentTitle', { number: order.data.order_number }) : t('orderDetail.title'));
 
   const back = (
     <Link to={financePath('orders')} className="inline-flex items-center gap-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
-      <ArrowLeft className="size-4" aria-hidden /> Payment orders
+      <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden /> {t('orders.title')}
     </Link>
   );
 
@@ -45,7 +41,7 @@ export default function OrderDetailPage() {
   if (order.isError || !order.data)
     return (
       <div>
-        <PageHeader title="Payment order" back={back} />
+        <PageHeader title={t('orderDetail.title')} back={back} />
         <Card>
           <ErrorState error={order.error} onRetry={() => void order.refetch()} />
         </Card>
@@ -63,19 +59,19 @@ export default function OrderDetailPage() {
   const paymentColumns: DataTableColumn<PaymentOut>[] = [
     {
       key: 'id',
-      header: 'Payment',
+      header: t('orderDetail.payments.payment'),
       mobile: 'secondary',
       cell: (p) => (
         <IdCell
           value={p.gateway_payment_id ?? p.id}
-          secondary={`${PAYMENT_GATEWAY_LABELS[p.gateway] ?? p.gateway} · ${p.method ? PAYMENT_METHOD_LABELS[p.method] : '—'}`}
+          secondary={`${enumLabel('paymentGateway', p.gateway)} · ${p.method ? enumLabel('paymentMethod', p.method) : '—'}`}
         />
       ),
       exportValue: (p) => p.gateway_payment_id ?? p.id,
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('orders.columns.status'),
       sortable: true,
       mobile: 'badge',
       accessor: (p) => p.status,
@@ -83,7 +79,7 @@ export default function OrderDetailPage() {
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('orders.columns.amount'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -93,8 +89,8 @@ export default function OrderDetailPage() {
     },
     {
       key: 'base',
-      header: `Base (${o.base_currency})`,
-      title: 'Base amount',
+      header: t('orderDetail.payments.base', { currency: o.base_currency }),
+      title: t('orderDetail.payments.baseAmount'),
       align: 'end',
       sortable: true,
       sortValue: (p) => p.base_amount_minor,
@@ -102,7 +98,7 @@ export default function OrderDetailPage() {
     },
     {
       key: 'fee',
-      header: 'Fee + tax',
+      header: t('orderDetail.payments.feeTax'),
       align: 'end',
       sortable: true,
       sortValue: (p) => (p.fee_minor ?? 0) + (p.tax_on_fee_minor ?? 0),
@@ -110,7 +106,7 @@ export default function OrderDetailPage() {
     },
     {
       key: 'refunded',
-      header: 'Refunded',
+      header: t('orderDetail.payments.refunded'),
       align: 'end',
       sortable: true,
       sortValue: (p) => p.amount_refunded_minor,
@@ -120,7 +116,7 @@ export default function OrderDetailPage() {
     },
     {
       key: 'captured',
-      header: 'Captured',
+      header: t('orderDetail.payments.captured'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (p) => p.captured_at ?? p.created_at,
@@ -135,15 +131,15 @@ export default function OrderDetailPage() {
     },
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+      title: t('orderDetail.actions'),
       align: 'end',
       hideable: false,
       exportable: false,
       cell: (p) =>
         perms.createRefunds && isRefundablePayment(p) && refundableMinor(p, refunds) > 0 ? (
           <Button size="sm" variant="secondary" onClick={() => setRefundFor(p.id)} icon={<Undo2 className="size-3.5" aria-hidden />}>
-            Refund
+            {t('orderDetail.payments.refund')}
           </Button>
         ) : null,
     },
@@ -152,7 +148,7 @@ export default function OrderDetailPage() {
   const refundColumns: DataTableColumn<RefundOut>[] = [
     {
       key: 'created',
-      header: 'Requested',
+      header: t('orderDetail.refunds.requested'),
       sortable: true,
       sortDescFirst: true,
       mobile: 'secondary',
@@ -161,7 +157,7 @@ export default function OrderDetailPage() {
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('orders.columns.amount'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -169,13 +165,13 @@ export default function OrderDetailPage() {
       sortValue: (r) => r.base_amount_minor,
       cell: (r) => <MoneyCell minor={r.amount_minor} currency={r.currency} />,
     },
-    { key: 'status', header: 'Status', sortable: true, mobile: 'badge', accessor: (r) => r.status, cell: (r) => <StatusBadgeCell status={r.status} kind="refund" /> },
-    { key: 'reason', header: 'Reason', className: 'max-w-64', cell: (r) => <TextCell primary={r.reason ?? '—'} /> },
-    { key: 'approved', header: 'Approved by', cell: (r) => <TextCell primary={r.approved_by_name ?? '—'} /> },
-    { key: 'gw', header: 'Gateway ref', cell: (r) => (r.gateway_refund_id ? <IdCell value={r.gateway_refund_id} /> : <span className="text-muted">—</span>) },
+    { key: 'status', header: t('orders.columns.status'), sortable: true, mobile: 'badge', accessor: (r) => r.status, cell: (r) => <StatusBadgeCell status={r.status} kind="refund" /> },
+    { key: 'reason', header: t('common.reason'), className: 'max-w-64', cell: (r) => <TextCell primary={r.reason ?? '—'} /> },
+    { key: 'approved', header: t('reviews.markPaid.approvedBy'), cell: (r) => <TextCell primary={r.approved_by_name ?? '—'} /> },
+    { key: 'gw', header: t('orderDetail.refunds.gatewayRef'), cell: (r) => (r.gateway_refund_id ? <IdCell value={r.gateway_refund_id} /> : <span className="text-muted">—</span>) },
     {
       key: 'processed',
-      header: 'Processed',
+      header: t('orderDetail.refunds.processed'),
       sortable: true,
       sortDescFirst: true,
       sortValue: (r) => r.processed_at ?? '',
@@ -193,7 +189,7 @@ export default function OrderDetailPage() {
             {o.review_required && <ReviewBadge kind={o.review_required} />}
           </span>
         }
-        description={`${PAYMENT_PURPOSE_LABELS[o.purpose] ?? o.purpose} via ${PAYMENT_GATEWAY_LABELS[o.gateway] ?? o.gateway}`}
+        description={t('orderDetail.purposeVia', { purpose: enumLabel('paymentPurpose', o.purpose), gateway: enumLabel('paymentGateway', o.gateway) })}
         actions={
           <>
             {canMarkPaid && (
@@ -202,12 +198,12 @@ export default function OrderDetailPage() {
                 onClick={() => setMarkPaid(true)}
                 icon={<Banknote className="size-4" aria-hidden />}
               >
-                {markPaidPending ? 'Replace mark-paid request' : 'Mark paid'}
+                {markPaidPending ? t('orderDetail.replaceMarkPaid') : t('settlementUi.rowActions.markPaid')}
               </Button>
             )}
             {canRefund && (
               <Button variant="secondary" onClick={() => setRefundFor(null)} icon={<Undo2 className="size-4" aria-hidden />}>
-                Create refund
+                {t('refundDialog.title')}
               </Button>
             )}
           </>
@@ -217,44 +213,44 @@ export default function OrderDetailPage() {
       <div className="space-y-4">
         <AmountReviewPanel order={o} />
         <MarkPaidRequestPanel order={o} />
-        <Card title="Order">
+        <Card title={t('orders.columns.order')}>
           <DescriptionList
             columns={3}
             items={[
-              { label: 'Amount', value: <Money minor={o.amount_minor} currency={o.currency} /> },
-              { label: `Base amount (${o.base_currency})`, value: <Money minor={o.base_amount_minor} currency={o.base_currency} /> },
-              { label: 'FX rate', value: `${o.fx_rate} ${o.base_currency} per ${o.currency}` },
-              { label: 'Patient', value: o.patient_name ?? '—' },
-              { label: 'Paid by', value: o.payer_name ?? '—' },
-              { label: 'Payment method', value: o.payment_method ? PAYMENT_METHOD_LABELS[o.payment_method] : '—' },
-              { label: 'Booking', value: o.booking_number ?? (o.booking_id ? <Mono>{o.booking_id}</Mono> : '—') },
-              { label: 'Gateway order id', value: <Mono>{o.gateway_order_id ?? '—'}</Mono> },
-              { label: 'Created', value: formatDateTime(o.created_at) },
-              { label: 'Paid', value: formatDateTime(o.paid_at) },
-              { label: 'Expires', value: formatDateTime(o.expires_at) },
+              { label: t('orders.columns.amount'), value: <Money minor={o.amount_minor} currency={o.currency} /> },
+              { label: t('orderDetail.fields.baseAmount', { currency: o.base_currency }), value: <Money minor={o.base_amount_minor} currency={o.base_currency} /> },
+              { label: t('orderDetail.fields.fxRate'), value: t('orderDetail.fields.fxRateValue', { rate: o.fx_rate, base: o.base_currency, currency: o.currency }) },
+              { label: t('orders.columns.patient'), value: o.patient_name ?? '—' },
+              { label: t('orderDetail.fields.paidBy'), value: o.payer_name ?? '—' },
+              { label: t('orderDetail.fields.paymentMethod'), value: o.payment_method ? enumLabel('paymentMethod', o.payment_method) : '—' },
+              { label: t('orders.columns.booking'), value: o.booking_number ?? (o.booking_id ? <Mono>{o.booking_id}</Mono> : '—') },
+              { label: t('orderDetail.fields.gatewayOrderId'), value: <Mono>{o.gateway_order_id ?? '—'}</Mono> },
+              { label: t('orders.columns.created'), value: formatDateTime(o.created_at) },
+              { label: t('orders.columns.paid'), value: formatDateTime(o.paid_at) },
+              { label: t('orderDetail.fields.expires'), value: formatDateTime(o.expires_at) },
             ]}
           />
         </Card>
 
         <SharedDataTable
           id="admin.finance.order.payments"
-          caption="Payments"
+          caption={t('orderDetail.payments.title')}
           columns={paymentColumns}
           rows={payments}
           defaultSort={{ key: 'captured', direction: 'desc' }}
-          emptyTitle="No payment attempts yet"
-          emptyDescription="Payment attempts appear when the payer completes (or abandons) a checkout."
-          header={<SectionTitle title="Payments" count={payments.length} />}
+          emptyTitle={t('orderDetail.payments.emptyTitle')}
+          emptyDescription={t('orderDetail.payments.emptyDescription')}
+          header={<SectionTitle title={t('orderDetail.payments.title')} count={payments.length} />}
         />
 
         <SharedDataTable
           id="admin.finance.order.refunds"
-          caption="Refunds"
+          caption={t('nav.items.refunds')}
           columns={refundColumns}
           rows={refunds}
           defaultSort={{ key: 'created', direction: 'desc' }}
-          emptyTitle="No refunds for this order"
-          header={<SectionTitle title="Refunds" count={refunds.length} />}
+          emptyTitle={t('orderDetail.refunds.emptyTitle')}
+          header={<SectionTitle title={t('nav.items.refunds')} count={refunds.length} />}
         />
       </div>
 

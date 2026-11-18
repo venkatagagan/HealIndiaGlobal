@@ -4,9 +4,10 @@ import { Globe2, Star, Stethoscope, Video } from 'lucide-react';
 import { FilterBar, SelectFilter } from '@hig/shared/ui';
 import { GENDER_LABELS, catalogApi, type DoctorCard, type Gender } from '@hig/shared/api';
 import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '../../components/ui';
-import { LANGUAGE_OPTIONS } from '../../lib/constants';
+import { languageLabel, languageOptions } from '../../lib/constants';
+import { useAppTranslation } from '../../i18n';
 import { qk, useSpecialties } from '../../lib/queries';
-import { filterParam, useDocumentTitle, useTableState } from '../../lib/shared';
+import { filterParam, formatNumber, useDocumentTitle, useTableState } from '../../lib/shared';
 
 const FILTERS = {
   q: filterParam.text(),
@@ -16,7 +17,8 @@ const FILTERS = {
 };
 
 export function DoctorsPage() {
-  useDocumentTitle('Doctors');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('doctors.title'));
   const table = useTableState({ filters: FILTERS, defaultPageSize: 12 });
   const { filters, setFilter, page } = table;
   const specialties = useSpecialties();
@@ -37,16 +39,16 @@ export function DoctorsPage() {
 
   return (
     <div>
-      <PageHeader title="Doctors" description="Specialists at our partner hospitals." />
+      <PageHeader title={t('doctors.title')} description={t('doctors.description')} />
       <Card className="mb-6">
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Doctor name…', label: 'Search doctors' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('doctors.searchPlaceholder'), label: t('doctors.searchLabel') }}
           onReset={table.resetFilters}
           resultCount={query.data?.total}
-          resultLabel={(n) => `${n} doctor${n === 1 ? '' : 's'}`}
+          resultLabel={(n) => t('doctors.resultCount', { count: n, n: formatNumber(n) })}
         >
           <SelectFilter
-            label="Specialty"
+            label={t('doctors.filters.specialty')}
             icon={<Stethoscope className="size-3.5 opacity-70" aria-hidden />}
             value={filters.specialty}
             onChange={(v) => setFilter('specialty', v)}
@@ -55,15 +57,15 @@ export function DoctorsPage() {
             searchable
           />
           <SelectFilter
-            label="Language"
+            label={t('doctors.filters.language')}
             icon={<Globe2 className="size-3.5 opacity-70" aria-hidden />}
             value={filters.language}
             onChange={(v) => setFilter('language', v)}
-            options={LANGUAGE_OPTIONS.map((l) => ({ value: l, label: l }))}
+            options={languageOptions()}
             searchable
           />
           <SelectFilter
-            label="Gender"
+            label={t('doctors.filters.gender')}
             value={filters.gender}
             onChange={(v) => setFilter('gender', v)}
             options={[
@@ -85,8 +87,8 @@ export function DoctorsPage() {
         </Card>
       ) : query.data.items.length === 0 ? (
         <Card>
-          <EmptyState icon={<Stethoscope className="h-6 w-6" />} title="No doctors match these filters"
-            action={table.isFiltered ? <Button variant="outline" onClick={table.resetFilters}>Reset filters</Button> : undefined}
+          <EmptyState icon={<Stethoscope className="h-6 w-6" />} title={t('doctors.emptyTitle')}
+            action={table.isFiltered ? <Button variant="outline" onClick={table.resetFilters}>{t('doctors.resetFilters')}</Button> : undefined}
           />
         </Card>
       ) : (
@@ -106,6 +108,7 @@ export function DoctorsPage() {
 }
 
 export function DoctorCardView({ doctor: d }: { doctor: DoctorCard }) {
+  const { t } = useAppTranslation();
   return (
     <Link to={`/doctors/${d.id}`} className="group block rounded-xl border border-border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex gap-3">
@@ -120,7 +123,7 @@ export function DoctorCardView({ doctor: d }: { doctor: DoctorCard }) {
           <p className="font-semibold group-hover:underline">{d.full_name}</p>
           <p className="text-sm text-muted">
             {d.specialty.name}
-            {d.experience_years ? ` · ${d.experience_years} yrs` : ''}
+            {d.experience_years ? ` · ${t('doctors.experienceYears', { count: d.experience_years })}` : ''}
           </p>
           <p className="truncate text-sm text-muted">
             {d.hospital.name}, {d.hospital.city}
@@ -128,22 +131,22 @@ export function DoctorCardView({ doctor: d }: { doctor: DoctorCard }) {
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
-        {d.success_rate_pct != null && <Badge tone="success">{Number(d.success_rate_pct).toFixed(0)}% success</Badge>}
+        {d.success_rate_pct != null && <Badge tone="success">{t('doctors.successRate', { pct: formatNumber(Number(d.success_rate_pct), { maximumFractionDigits: 0 }) })}</Badge>}
         {d.rating_avg != null && (
           <Badge>
-            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(d.rating_avg).toFixed(1)} ({d.rating_count})
+            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(d.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({formatNumber(d.rating_count)})
           </Badge>
         )}
         {d.teleconsult_available && (
           <Badge tone="accent">
-            <Video className="h-3 w-3" aria-hidden /> Teleconsult
+            <Video className="h-3 w-3" aria-hidden /> {t('doctors.teleconsult')}
           </Badge>
         )}
         {d.qualifications.slice(0, 3).map((q) => (
           <Badge key={q}>{q}</Badge>
         ))}
       </div>
-      {d.languages.length > 0 && <p className="mt-2 text-xs text-muted">Speaks {d.languages.join(', ')}</p>}
+      {d.languages.length > 0 && <p className="mt-2 text-xs text-muted">{t('doctors.speaks', { languages: d.languages.map(languageLabel).join(', ') })}</p>}
     </Link>
   );
 }

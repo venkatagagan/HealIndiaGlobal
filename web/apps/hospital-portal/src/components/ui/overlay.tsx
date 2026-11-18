@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useAppTranslation } from '../../i18n';
 import { cn } from '../../lib/format';
 import { Button, FormField, Textarea } from './controls';
 
@@ -23,6 +24,7 @@ export function Modal({
   footer?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
+  const { t } = useAppTranslation();
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -86,7 +88,7 @@ export function Modal({
             </h2>
             {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
           </div>
-          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
+          <Button variant="ghost" size="icon" aria-label={t('common.close')} onClick={onClose}>
             <X className="h-5 w-5" aria-hidden />
           </Button>
         </div>
@@ -130,7 +132,7 @@ function ConfirmDialogBody({
   onConfirm,
   title,
   description,
-  confirmLabel = 'Confirm',
+  confirmLabel,
   tone = 'primary',
   loading,
   noteLabel,
@@ -138,6 +140,7 @@ function ConfirmDialogBody({
   notePlaceholder,
   children,
 }: ConfirmDialogProps) {
+  const { t } = useAppTranslation();
   const [note, setNote] = useState('');
   const [touched, setTouched] = useState(false);
   const noteId = useId();
@@ -151,7 +154,7 @@ function ConfirmDialogBody({
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant={tone === 'danger' ? 'danger' : 'primary'}
@@ -161,7 +164,7 @@ function ConfirmDialogBody({
               if (!invalid) onConfirm(note.trim());
             }}
           >
-            {confirmLabel}
+            {confirmLabel ?? t('ui.confirm')}
           </Button>
         </>
       }
@@ -174,7 +177,7 @@ function ConfirmDialogBody({
           htmlFor={noteId}
           required={noteRequired}
           className="mt-4"
-          error={touched && invalid ? 'Please add a note.' : undefined}
+          error={touched && invalid ? t('ui.noteRequired') : undefined}
         >
           <Textarea
             id={noteId}

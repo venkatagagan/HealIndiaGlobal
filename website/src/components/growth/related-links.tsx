@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/link';
 import { ArrowRight } from 'lucide-react';
 import { href } from '@/lib/routes';
 import type { GrowthLink } from '@/lib/growth/links';
@@ -22,7 +22,7 @@ export function RelatedLinks({ id, title, items }: { id: string; title: string; 
                 <span className="block font-semibold text-slate-900 group-hover:text-primary-800">{item.title}</span>
                 {item.description ? <span className="mt-0.5 block text-sm text-slate-600">{item.description}</span> : null}
               </span>
-              <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-primary-700" aria-hidden="true" />
+              <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-primary-700 rtl:-scale-x-100" aria-hidden="true" />
             </Link>
           </li>
         ))}

@@ -232,7 +232,12 @@ function analyse(url, html, headers) {
   else if (title.length < 50 || title.length > 60) warnings.push(`title ${title.length} chars (target 50-60)`);
   if (!description) problems.push('missing meta description');
   else if (description.length < 120 || description.length > 160) warnings.push(`description ${description.length} chars (target 120-160)`);
-  if (lang !== 'en') problems.push(`html lang="${lang}"`);
+  // English at the root, other languages under /<code>/ (src/i18n/config.ts); <html dir> must be rtl for Arabic.
+  const pathLang = /^\/(ar|fr|bn|ru)(?:\/|$)/.exec(new URL(url).pathname)?.[1] ?? 'en';
+  const dir = /<html\b[^>]*\sdir="([^"]+)"/i.exec(html)?.[1];
+  if (lang !== pathLang) problems.push(`html lang="${lang}" (expected "${pathLang}")`);
+  if (dir !== (pathLang === 'ar' ? 'rtl' : 'ltr')) problems.push(`html dir="${dir}"`);
+  if (!noindex && !/<link\b[^>]*hreflang="x-default"/i.test(html)) problems.push('missing hreflang x-default');
   if (!noindex) {
     if (!canonicalHref) problems.push('missing canonical');
     else if (!/^https?:\/\//.test(canonicalHref)) problems.push('canonical is not absolute');

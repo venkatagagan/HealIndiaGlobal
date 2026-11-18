@@ -1,5 +1,5 @@
 /**
- * `@hig/shared/voice` - voice intake (PLAN 7.2): record (English) -> transcript ->
+ * `@hig/shared/voice` - voice intake (PLAN 7.2): record (in the UI language) -> transcript ->
  * AI-suggested answers -> mandatory review -> edit -> confirm. See ./README.md for mounting instructions.
  */
 export * from './types';

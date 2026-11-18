@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
+import type { TFunction } from 'i18next';
 import { AlertTriangle, Globe2, Stethoscope, Syringe } from 'lucide-react';
 import {
   adminApi,
@@ -12,7 +13,7 @@ import {
   type SpecialtyIn,
   type SpecialtyOut,
 } from '@hig/shared/api';
-import { filterParam, formatMoneyRange, useDocumentTitle, useTableState } from '@hig/shared/lib';
+import { filterParam, formatMoneyRange, formatNumber, useDocumentTitle, useTableState } from '@hig/shared/lib';
 import {
   Badge,
   PageHeader,
@@ -22,6 +23,7 @@ import {
   type DataTableColumn,
   type FilterOption,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../i18n';
 import { Tabs } from '../ui';
 import { CrudSection, type FieldDef } from '../components/CrudSection';
 import { countryName } from '../lib/lookups';
@@ -35,28 +37,27 @@ const specialtiesKey = [...opsKeys.catalog, 'specialties'];
 const proceduresKey = [...opsKeys.catalog, 'procedures'];
 const benchmarksKey = [...opsKeys.catalog, 'cost-benchmarks'];
 
-const SLUG_HINT = 'Lowercase letters, digits and dashes; used in public URLs.';
-
-const ACTIVE_OPTIONS: FilterOption<'active' | 'inactive'>[] = [
-  { value: 'active', label: 'Active', tone: 'success' },
-  { value: 'inactive', label: 'Inactive', tone: 'danger' },
+const activeOptions = (t: TFunction): FilterOption<'active' | 'inactive'>[] => [
+  { value: 'active', label: t('catalog.status.active'), tone: 'success' },
+  { value: 'inactive', label: t('catalog.status.inactive'), tone: 'danger' },
 ];
 const matchesActive = (filter: string, active: boolean | undefined) =>
   !filter || (filter === 'active' ? active !== false : active === false);
 
 function ActiveBadge({ active }: { active: boolean | undefined }) {
-  return active === false ? <Badge tone="danger">Inactive</Badge> : <Badge tone="success">Active</Badge>;
+  const { t } = useAppTranslation();
+  return active === false ? <Badge tone="danger">{t('catalog.status.inactive')}</Badge> : <Badge tone="success">{t('catalog.status.active')}</Badge>;
 }
 
-function activeColumn<T extends { is_active?: boolean }>(): DataTableColumn<T> {
+function activeColumn<T extends { is_active?: boolean }>(t: TFunction): DataTableColumn<T> {
   return {
     key: 'active',
-    header: 'Status',
+    header: t('catalog.columns.status'),
     mobile: 'badge',
     sortable: true,
     sortValue: (r) => r.is_active !== false,
     cell: (r) => <ActiveBadge active={r.is_active} />,
-    exportValue: (r) => (r.is_active === false ? 'Inactive' : 'Active'),
+    exportValue: (r) => (r.is_active === false ? t('catalog.status.inactive') : t('catalog.status.active')),
   };
 }
 
@@ -73,6 +74,7 @@ const benchmarkGapsKey = [...opsKeys.catalog, 'benchmark-gaps'];
 
 /** Warning tile shown only while some active procedure lacks a benchmark for a top patient country. */
 function BenchmarkGapsTile({ onOpen }: { onOpen: () => void }) {
+  const { t } = useAppTranslation();
   const gaps = useQuery({
     queryKey: benchmarkGapsKey,
     queryFn: () => request<BenchmarkGaps>('GET', '/admin/catalog/benchmark-gaps'),
@@ -89,9 +91,12 @@ function BenchmarkGapsTile({ onOpen }: { onOpen: () => void }) {
       <StatCard
         tone="warning"
         icon={<AlertTriangle className="size-5" aria-hidden />}
-        label={`Procedures missing cost benchmarks (${data.countries.join(', ')})`}
-        value={`${data.procedures_with_gaps} of ${data.total_active_procedures}`}
-        hint={`${data.procedures_without_any_benchmark} with none at all. ${sample}${data.items.length > 3 ? '; ...' : ''}`}
+        label={t('catalog.gaps.label', { countries: data.countries.join(', ') })}
+        value={t('catalog.gaps.value', { gaps: formatNumber(data.procedures_with_gaps), total: formatNumber(data.total_active_procedures) })}
+        hint={t('catalog.gaps.hint', {
+          none: formatNumber(data.procedures_without_any_benchmark),
+          sample: `${sample}${data.items.length > 3 ? '; ...' : ''}`,
+        })}
         onClick={onOpen}
       />
     </div>
@@ -99,7 +104,8 @@ function BenchmarkGapsTile({ onOpen }: { onOpen: () => void }) {
 }
 
 export default function CatalogPage() {
-  useDocumentTitle('Catalog');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('catalog.title'));
   const perms = useOpsPermissions();
   const [params, setParams] = useSearchParams();
   const raw = params.get('tab') ?? '';
@@ -107,16 +113,13 @@ export default function CatalogPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Catalog"
-        description="Specialties, procedures and home-country cost benchmarks used by search, AI matching and the cost comparison tool."
-      />
+      <PageHeader title={t('catalog.title')} description={t('catalog.description')} />
       <BenchmarkGapsTile onOpen={() => setParams({ tab: 'benchmarks' }, { replace: true })} />
       <Tabs
         tabs={[
-          { key: 'specialties', label: 'Specialties' },
-          { key: 'procedures', label: 'Procedures' },
-          { key: 'benchmarks', label: 'Cost benchmarks' },
+          { key: 'specialties', label: t('catalog.tabs.specialties') },
+          { key: 'procedures', label: t('catalog.tabs.procedures') },
+          { key: 'benchmarks', label: t('catalog.tabs.benchmarks') },
         ]}
         value={tab}
         onChange={(k) => setParams(k === 'specialties' ? {} : { tab: k }, { replace: true })}
@@ -136,21 +139,21 @@ function useProcedures() {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-const SPECIALTY_FIELDS: FieldDef<SpecialtyOut>[] = [
-  { name: 'name', label: 'Name', kind: 'text', required: true, maxLength: 120 },
-  { name: 'slug', label: 'Slug', kind: 'text', required: true, maxLength: 120, hint: SLUG_HINT },
-  { name: 'icon', label: 'Icon', kind: 'text', maxLength: 60, hint: 'Lucide icon name, e.g. heart-pulse' },
-  { name: 'sort_order', label: 'Sort order', kind: 'int', defaultValue: '0', min: 0 },
-  { name: 'savings_min_pct', label: 'Savings min (%)', kind: 'int', min: 0, max: 100 },
-  { name: 'savings_max_pct', label: 'Savings max (%)', kind: 'int', min: 0, max: 100 },
-  { name: 'description', label: 'Description', kind: 'textarea', maxLength: 2000 },
-  { name: 'is_active', label: 'Active', kind: 'bool', defaultValue: true },
+const specialtyFields = (t: TFunction): FieldDef<SpecialtyOut>[] => [
+  { name: 'name', label: t('catalog.fields.name'), kind: 'text', required: true, maxLength: 120 },
+  { name: 'slug', label: t('catalog.fields.slug'), kind: 'text', required: true, maxLength: 120, hint: t('catalog.fields.slugHint') },
+  { name: 'icon', label: t('catalog.fields.icon'), kind: 'text', maxLength: 60, hint: t('catalog.fields.iconHint') },
+  { name: 'sort_order', label: t('catalog.fields.sortOrder'), kind: 'int', defaultValue: '0', min: 0 },
+  { name: 'savings_min_pct', label: t('catalog.fields.savingsMin'), kind: 'int', min: 0, max: 100 },
+  { name: 'savings_max_pct', label: t('catalog.fields.savingsMax'), kind: 'int', min: 0, max: 100 },
+  { name: 'description', label: t('catalog.fields.description'), kind: 'textarea', maxLength: 2000 },
+  { name: 'is_active', label: t('catalog.fields.active'), kind: 'bool', defaultValue: true },
 ];
 
-const SPECIALTY_COLUMNS: DataTableColumn<SpecialtyOut>[] = [
+const specialtyColumns = (t: TFunction): DataTableColumn<SpecialtyOut>[] => [
   {
     key: 'name',
-    header: 'Specialty',
+    header: t('catalog.columns.specialty'),
     sortable: true,
     sticky: true,
     mobile: 'primary',
@@ -159,56 +162,67 @@ const SPECIALTY_COLUMNS: DataTableColumn<SpecialtyOut>[] = [
   },
   {
     key: 'procedures_count',
-    header: 'Procedures',
+    header: t('catalog.columns.procedures'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
     mobile: 'secondary',
-    cell: (s) => <span className="tabular-nums">{s.procedures_count}</span>,
-    mobileCell: (s) => `${s.procedures_count} procedures`,
+    cell: (s) => <span className="tabular-nums">{formatNumber(s.procedures_count)}</span>,
+    mobileCell: (s) => t('catalog.specialties.proceduresCount', { count: s.procedures_count }),
   },
   {
     key: 'savings',
-    header: 'Savings',
+    header: t('catalog.columns.savings'),
     sortable: true,
     sortValue: (s) => s.savings_max_pct ?? s.savings_min_pct ?? null,
     cell: (s) => (s.savings_min_pct != null ? `${s.savings_min_pct}–${s.savings_max_pct ?? s.savings_min_pct}%` : <span className="text-muted">—</span>),
     exportValue: (s) => (s.savings_min_pct != null ? `${s.savings_min_pct}-${s.savings_max_pct ?? s.savings_min_pct}%` : ''),
   },
-  { key: 'sort_order', header: 'Order', align: 'end', sortable: true, cell: (s) => <span className="tabular-nums">{s.sort_order ?? '—'}</span> },
-  activeColumn<SpecialtyOut>(),
+  {
+    key: 'sort_order',
+    header: t('catalog.columns.order'),
+    align: 'end',
+    sortable: true,
+    cell: (s) => <span className="tabular-nums">{s.sort_order ?? '—'}</span>,
+  },
+  activeColumn<SpecialtyOut>(t),
 ];
 
 const SPECIALTY_FILTERS = { q: filterParam.text(), active: filterParam.text() };
 
 function SpecialtiesSection({ canEdit }: { canEdit: boolean }) {
+  const { t } = useAppTranslation();
   const table = useTableState({ filters: SPECIALTY_FILTERS, defaultSort: 'sort_order' });
   const { filters, setFilter } = table;
+  const fields = useMemo(() => specialtyFields(t), [t]);
+  const columns = useMemo(() => specialtyColumns(t), [t]);
   return (
     <CrudSection<SpecialtyOut, SpecialtyIn>
       id="admin.catalog.specialties"
       table={table}
-      entityName="specialty"
-      entityPlural="specialties"
+      entityName={t('catalog.entities.specialty')}
+      entityPlural={t('catalog.entities.specialties')}
       queryKey={specialtiesKey}
       endpoints={adminApi.specialties}
-      fields={SPECIALTY_FIELDS}
-      columns={SPECIALTY_COLUMNS}
+      fields={fields}
+      columns={columns}
       rowKey={(s) => s.id}
       rowLabel={(s) => s.name}
       canEdit={canEdit}
       searchText={(s) => `${s.name} ${s.slug}`}
       filterRow={(s) => matchesActive(filters.active, s.is_active)}
-      filters={<SelectFilter label="Status" value={filters.active} onChange={(v) => setFilter('active', v)} options={ACTIVE_OPTIONS} />}
+      filters={
+        <SelectFilter label={t('catalog.filters.status')} value={filters.active} onChange={(v) => setFilter('active', v)} options={activeOptions(t)} />
+      }
     />
   );
 }
 
 // ---------------------------------------------------------------------------------------------------------
-const PROCEDURE_COLUMNS: DataTableColumn<ProcedureOut>[] = [
+const procedureColumns = (t: TFunction): DataTableColumn<ProcedureOut>[] => [
   {
     key: 'name',
-    header: 'Procedure',
+    header: t('catalog.columns.procedure'),
     sortable: true,
     sticky: true,
     mobile: 'primary',
@@ -218,7 +232,7 @@ const PROCEDURE_COLUMNS: DataTableColumn<ProcedureOut>[] = [
   },
   {
     key: 'specialty',
-    header: 'Specialty',
+    header: t('catalog.columns.specialty'),
     sortable: true,
     sortValue: (p) => p.specialty?.name ?? null,
     mobile: 'secondary',
@@ -227,7 +241,7 @@ const PROCEDURE_COLUMNS: DataTableColumn<ProcedureOut>[] = [
   },
   {
     key: 'price',
-    header: 'India price',
+    header: t('catalog.columns.indiaPrice'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -237,64 +251,67 @@ const PROCEDURE_COLUMNS: DataTableColumn<ProcedureOut>[] = [
   },
   {
     key: 'stay',
-    header: 'Stay / recovery',
-    cell: (p) => `${p.hospital_stay_days ?? '—'} / ${p.recovery_days ?? '—'} days`,
+    header: t('catalog.columns.stayRecovery'),
+    cell: (p) => t('catalog.procedures.stayValue', { stay: p.hospital_stay_days ?? '—', recovery: p.recovery_days ?? '—' }),
     exportValue: (p) => `${p.hospital_stay_days ?? ''}/${p.recovery_days ?? ''}`,
   },
   {
     key: 'benchmarks',
-    header: 'Benchmarks',
+    header: t('catalog.columns.benchmarks'),
     align: 'end',
     sortable: true,
     sortValue: (p) => p.benchmarks?.length ?? 0,
-    cell: (p) => <span className="tabular-nums">{p.benchmarks?.length ?? 0}</span>,
+    cell: (p) => <span className="tabular-nums">{formatNumber(p.benchmarks?.length ?? 0)}</span>,
     exportValue: (p) => p.benchmarks?.length ?? 0,
   },
-  activeColumn<ProcedureOut>(),
+  activeColumn<ProcedureOut>(t),
 ];
 
 const PROCEDURE_FILTERS = { q: filterParam.text(), specialty: filterParam.text(), active: filterParam.text() };
 
 function ProceduresSection({ canEdit }: { canEdit: boolean }) {
+  const { t } = useAppTranslation();
   const table = useTableState({ filters: PROCEDURE_FILTERS, defaultSort: 'name' });
   const { filters, setFilter } = table;
   const specialties = useSpecialties();
   const specialtyOptions = useMemo(() => (specialties.data ?? []).map((s) => ({ value: s.id, label: s.name })), [specialties.data]);
+  const columns = useMemo(() => procedureColumns(t), [t]);
   const fields = useMemo<FieldDef<ProcedureOut>[]>(
     () => [
-      { name: 'name', label: 'Name', kind: 'text', required: true, maxLength: 200 },
-      { name: 'slug', label: 'Slug', kind: 'text', required: true, maxLength: 200, hint: SLUG_HINT },
+      { name: 'name', label: t('catalog.fields.name'), kind: 'text', required: true, maxLength: 200 },
+      { name: 'slug', label: t('catalog.fields.slug'), kind: 'text', required: true, maxLength: 200, hint: t('catalog.fields.slugHint') },
       {
         name: 'specialty_id',
-        label: 'Specialty',
+        label: t('catalog.fields.specialty'),
         kind: 'select',
         required: true,
         options: specialtyOptions,
         getValue: (p) => p.specialty?.id,
         defaultValue: filters.specialty,
       },
-      { name: 'currency', label: 'Currency', kind: 'text', defaultValue: 'INR', uppercase: true },
-      { name: 'india_price_min_minor', label: 'India price from', kind: 'money', currencyField: 'currency' },
-      { name: 'india_price_max_minor', label: 'India price to', kind: 'money', currencyField: 'currency' },
-      { name: 'hospital_stay_days', label: 'Hospital stay (days)', kind: 'int', min: 0 },
-      { name: 'recovery_days', label: 'Recovery (days)', kind: 'int', min: 0 },
-      { name: 'total_stay_days', label: 'Total stay in India (days)', kind: 'int', min: 0 },
-      { name: 'keywords', label: 'Keywords', kind: 'list', hint: 'Comma separated; used by search and the AI rules engine' },
-      { name: 'body_areas', label: 'Body areas', kind: 'list', hint: 'Comma separated, e.g. knee, hip, lower_back' },
-      { name: 'description', label: 'Description', kind: 'textarea', maxLength: 5000 },
-      { name: 'is_active', label: 'Active', kind: 'bool', defaultValue: true },
+      { name: 'currency', label: t('catalog.fields.currency'), kind: 'text', defaultValue: 'INR', uppercase: true },
+      { name: 'india_price_min_minor', label: t('catalog.fields.indiaPriceFrom'), kind: 'money', currencyField: 'currency' },
+      { name: 'india_price_max_minor', label: t('catalog.fields.indiaPriceTo'), kind: 'money', currencyField: 'currency' },
+      { name: 'hospital_stay_days', label: t('catalog.fields.hospitalStayDays'), kind: 'int', min: 0 },
+      { name: 'recovery_days', label: t('catalog.fields.recoveryDays'), kind: 'int', min: 0 },
+      { name: 'total_stay_days', label: t('catalog.fields.totalStayDays'), kind: 'int', min: 0 },
+      { name: 'keywords', label: t('catalog.fields.keywords'), kind: 'list', hint: t('catalog.fields.keywordsHint') },
+      { name: 'body_areas', label: t('catalog.fields.bodyAreas'), kind: 'list', hint: t('catalog.fields.bodyAreasHint') },
+      { name: 'description', label: t('catalog.fields.description'), kind: 'textarea', maxLength: 5000 },
+      { name: 'is_active', label: t('catalog.fields.active'), kind: 'bool', defaultValue: true },
     ],
-    [specialtyOptions, filters.specialty],
+    [t, specialtyOptions, filters.specialty],
   );
   return (
     <CrudSection<ProcedureOut, ProcedureIn>
       id="admin.catalog.procedures"
       table={table}
-      entityName="procedure"
+      entityName={t('catalog.entities.procedure')}
+      entityPlural={t('catalog.entities.procedures')}
       queryKey={proceduresKey}
       endpoints={adminApi.procedures}
       fields={fields}
-      columns={PROCEDURE_COLUMNS}
+      columns={columns}
       rowKey={(p) => p.id}
       rowLabel={(p) => p.name}
       canEdit={canEdit}
@@ -304,7 +321,7 @@ function ProceduresSection({ canEdit }: { canEdit: boolean }) {
       filters={
         <>
           <SelectFilter
-            label="Specialty"
+            label={t('catalog.filters.specialty')}
             icon={<Stethoscope className="size-3.5 opacity-70" aria-hidden />}
             value={filters.specialty}
             onChange={(v) => setFilter('specialty', v)}
@@ -312,7 +329,7 @@ function ProceduresSection({ canEdit }: { canEdit: boolean }) {
             loading={specialties.isLoading}
             searchable
           />
-          <SelectFilter label="Status" value={filters.active} onChange={(v) => setFilter('active', v)} options={ACTIVE_OPTIONS} />
+          <SelectFilter label={t('catalog.filters.status')} value={filters.active} onChange={(v) => setFilter('active', v)} options={activeOptions(t)} />
         </>
       }
     />
@@ -323,6 +340,7 @@ function ProceduresSection({ canEdit }: { canEdit: boolean }) {
 const BENCHMARK_FILTERS = { q: filterParam.text(), procedure: filterParam.text(), country: filterParam.text() };
 
 function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
+  const { t } = useAppTranslation();
   const table = useTableState({ filters: BENCHMARK_FILTERS, defaultSort: 'procedure' });
   const { filters, setFilter } = table;
   const procedures = useProcedures();
@@ -338,26 +356,34 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
     () => [
       {
         name: 'procedure_id',
-        label: 'Procedure',
+        label: t('catalog.fields.procedure'),
         kind: 'select',
         required: true,
         options: procedureOptions,
         defaultValue: filters.procedure,
         wide: true,
       },
-      { name: 'country_code', label: 'Country (ISO-2)', kind: 'text', required: true, maxLength: 2, uppercase: true, hint: 'e.g. US, GB, NG' },
-      { name: 'currency', label: 'Currency', kind: 'text', defaultValue: 'USD', uppercase: true },
-      { name: 'cost_min_minor', label: 'Home cost from', kind: 'money', required: true, currencyField: 'currency' },
-      { name: 'cost_max_minor', label: 'Home cost to', kind: 'money', required: true, currencyField: 'currency' },
-      { name: 'wait_time_text', label: 'Typical wait time', kind: 'text', maxLength: 60, hint: 'e.g. 3–6 months' },
-      { name: 'source', label: 'Source', kind: 'text', maxLength: 300, hint: 'Where the figure comes from' },
+      {
+        name: 'country_code',
+        label: t('catalog.fields.countryIso2'),
+        kind: 'text',
+        required: true,
+        maxLength: 2,
+        uppercase: true,
+        hint: t('catalog.fields.countryHint'),
+      },
+      { name: 'currency', label: t('catalog.fields.currency'), kind: 'text', defaultValue: 'USD', uppercase: true },
+      { name: 'cost_min_minor', label: t('catalog.fields.homeCostFrom'), kind: 'money', required: true, currencyField: 'currency' },
+      { name: 'cost_max_minor', label: t('catalog.fields.homeCostTo'), kind: 'money', required: true, currencyField: 'currency' },
+      { name: 'wait_time_text', label: t('catalog.fields.waitTime'), kind: 'text', maxLength: 60, hint: t('catalog.fields.waitTimeHint') },
+      { name: 'source', label: t('catalog.fields.source'), kind: 'text', maxLength: 300, hint: t('catalog.fields.sourceHint') },
     ],
-    [procedureOptions, filters.procedure],
+    [t, procedureOptions, filters.procedure],
   );
   const columns: DataTableColumn<CostBenchmarkOut>[] = [
     {
       key: 'procedure',
-      header: 'Procedure',
+      header: t('catalog.columns.procedure'),
       sortable: true,
       sticky: true,
       mobile: 'primary',
@@ -367,7 +393,7 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
     },
     {
       key: 'country',
-      header: 'Country',
+      header: t('catalog.columns.country'),
       sortable: true,
       mobile: 'secondary',
       sortValue: (b) => countryName(b.country_code),
@@ -382,7 +408,7 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
     },
     {
       key: 'cost',
-      header: 'Home cost',
+      header: t('catalog.columns.homeCost'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -390,10 +416,15 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
       cell: (b) => <span className="whitespace-nowrap tabular-nums">{formatMoneyRange(b.cost_min_minor, b.cost_max_minor, b.currency)}</span>,
       exportValue: (b) => formatMoneyRange(b.cost_min_minor, b.cost_max_minor, b.currency),
     },
-    { key: 'wait', header: 'Wait', cell: (b) => b.wait_time_text ?? <span className="text-muted">—</span>, exportValue: (b) => b.wait_time_text ?? '' },
+    {
+      key: 'wait',
+      header: t('catalog.columns.wait'),
+      cell: (b) => b.wait_time_text ?? <span className="text-muted">—</span>,
+      exportValue: (b) => b.wait_time_text ?? '',
+    },
     {
       key: 'source',
-      header: 'Source',
+      header: t('catalog.columns.source'),
       className: 'max-w-56',
       cell: (b) => <TextCell primary={<span className="text-xs text-muted">{b.source ?? '—'}</span>} />,
       exportValue: (b) => b.source ?? '',
@@ -403,7 +434,8 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
     <CrudSection<CostBenchmarkOut, CostBenchmarkIn>
       id="admin.catalog.benchmarks"
       table={table}
-      entityName="benchmark"
+      entityName={t('catalog.entities.benchmark')}
+      entityPlural={t('catalog.entities.benchmarks')}
       queryKey={benchmarksKey}
       endpoints={adminApi.costBenchmarks}
       fields={fields}
@@ -414,11 +446,11 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
       searchText={(b) => `${nameOf(b)} ${b.country_code} ${countryName(b.country_code)}`}
       filterRow={(b) => (!filters.procedure || b.procedure_id === filters.procedure) && (!filters.country || b.country_code === filters.country)}
       alsoInvalidate={[proceduresKey]}
-      description="Typical self-pay cost in the patient's home country; drives the savings shown to patients."
+      description={t('catalog.benchmarks.description')}
       filters={
         <>
           <SelectFilter
-            label="Procedure"
+            label={t('catalog.filters.procedure')}
             icon={<Syringe className="size-3.5 opacity-70" aria-hidden />}
             value={filters.procedure}
             onChange={(v) => setFilter('procedure', v)}
@@ -427,7 +459,7 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
             searchable
           />
           <SelectFilter
-            label="Country"
+            label={t('catalog.filters.country')}
             icon={<Globe2 className="size-3.5 opacity-70" aria-hidden />}
             value={filters.country}
             onChange={(v) => setFilter('country', v)}

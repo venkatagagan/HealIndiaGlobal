@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { AlertTriangle, ChevronLeft, ChevronRight, Inbox, RefreshCw } from 'lucide-react';
 import { errorMessage } from '@hig/shared/api';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 import { Button, Spinner } from './primitives';
 
@@ -30,17 +32,18 @@ export function PageHeader({
 // ---------------------------------------------------------------------------------------------------------
 // States
 // ---------------------------------------------------------------------------------------------------------
-export function LoadingState({ label = 'Loading…' }: { label?: string }) {
+export function LoadingState({ label }: { label?: string }) {
+  const { t } = useAppTranslation();
   return (
     <div className="flex items-center justify-center gap-2 py-12 text-sm text-muted">
       <Spinner />
-      {label}
+      {label ?? t('ui.loading')}
     </div>
   );
 }
 
 export function EmptyState({
-  title = 'Nothing here yet',
+  title,
   description,
   action,
   icon,
@@ -50,10 +53,11 @@ export function EmptyState({
   action?: ReactNode;
   icon?: ReactNode;
 }) {
+  const { t } = useAppTranslation();
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-4 py-12 text-center">
       <div className="rounded-full bg-surface-2 p-3 text-muted">{icon ?? <Inbox className="size-6" />}</div>
-      <p className="text-sm font-medium text-fg">{title}</p>
+      <p className="text-sm font-medium text-fg">{title ?? t('ui.empty')}</p>
       {description && <p className="max-w-sm text-xs text-muted">{description}</p>}
       {action}
     </div>
@@ -61,16 +65,17 @@ export function EmptyState({
 }
 
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
+  const { t } = useAppTranslation();
   return (
     <div role="alert" className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
       <div className="rounded-full bg-red-100 p-3 text-danger dark:bg-red-500/15">
         <AlertTriangle className="size-6" />
       </div>
-      <p className="text-sm font-medium text-fg">Could not load data</p>
+      <p className="text-sm font-medium text-fg">{t('ui.error.title')}</p>
       <p className="max-w-md text-xs text-muted">{errorMessage(error)}</p>
       {onRetry && (
         <Button variant="outline" size="sm" icon={<RefreshCw className="size-3.5" />} onClick={onRetry}>
-          Retry
+          {t('ui.error.retry')}
         </Button>
       )}
     </div>
@@ -108,7 +113,7 @@ export function StatCard({
       type={onClick ? 'button' : undefined}
       onClick={onClick}
       className={cn(
-        'flex w-full items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-left shadow-card',
+        'flex w-full items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-start shadow-card',
         onClick && 'transition hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
       )}
     >
@@ -223,9 +228,11 @@ export function DataTable<T>({
   empty,
   fetching,
 }: DataTableProps<T>) {
+  const { t } = useAppTranslation();
   if (error) return <ErrorState error={error} onRetry={onRetry} />;
   if (loading && !rows) return <LoadingState />;
-  if (!rows || rows.length === 0) return <>{empty ?? <EmptyState title="No results" description="Try changing the filters." />}</>;
+  if (!rows || rows.length === 0)
+    return <>{empty ?? <EmptyState title={t('ui.table.noResults')} description={t('ui.table.noResultsHint')} />}</>;
   return (
     <div className={cn('-mx-4 overflow-x-auto sm:mx-0', fetching && 'opacity-60 transition-opacity')}>
       <table className="min-w-full divide-y divide-border text-sm">
@@ -236,8 +243,8 @@ export function DataTable<T>({
                 key={c.key}
                 scope="col"
                 className={cn(
-                  'whitespace-nowrap px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted',
-                  c.align === 'right' && 'text-right',
+                  'whitespace-nowrap px-3 py-2 text-start text-xs font-semibold uppercase tracking-wide text-muted',
+                  c.align === 'right' && 'text-end',
                   c.hideOnMobile && 'hidden md:table-cell',
                   c.className,
                 )}
@@ -271,7 +278,7 @@ export function DataTable<T>({
                   key={c.key}
                   className={cn(
                     'px-3 py-2.5 align-middle text-fg',
-                    c.align === 'right' && 'text-right tabular-nums',
+                    c.align === 'right' && 'text-end tabular-nums',
                     c.hideOnMobile && 'hidden md:table-cell',
                     c.className,
                   )}
@@ -298,11 +305,17 @@ export function Pagination({
   total: number;
   onPage: (page: number) => void;
 }) {
+  const { t } = useAppTranslation();
   if (total === 0) return null;
   return (
-    <nav aria-label="Pagination" className="mt-3 flex items-center justify-between gap-2 text-xs text-muted">
+    <nav aria-label={t('ui.pagination.label')} className="mt-3 flex items-center justify-between gap-2 text-xs text-muted">
       <span>
-        {total.toLocaleString()} result{total === 1 ? '' : 's'} · page {page} of {Math.max(pages, 1)}
+        {t('ui.pagination.summary', {
+          count: total,
+          total: formatNumber(total),
+          page: formatNumber(page),
+          pages: formatNumber(Math.max(pages, 1)),
+        })}
       </span>
       <div className="flex gap-1">
         <Button
@@ -310,16 +323,16 @@ export function Pagination({
           size="sm"
           disabled={page <= 1}
           onClick={() => onPage(page - 1)}
-          aria-label="Previous page"
-          icon={<ChevronLeft className="size-3.5" />}
+          aria-label={t('ui.pagination.previous')}
+          icon={<ChevronLeft className="size-3.5 rtl:-scale-x-100" />}
         />
         <Button
           variant="outline"
           size="sm"
           disabled={page >= pages}
           onClick={() => onPage(page + 1)}
-          aria-label="Next page"
-          icon={<ChevronRight className="size-3.5" />}
+          aria-label={t('ui.pagination.next')}
+          icon={<ChevronRight className="size-3.5 rtl:-scale-x-100" />}
         />
       </div>
     </nav>

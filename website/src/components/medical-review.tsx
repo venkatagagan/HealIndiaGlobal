@@ -1,13 +1,13 @@
 import { BadgeCheck, ExternalLink } from 'lucide-react';
 import type { Dictionary } from '@/i18n';
-import { fmt } from '@/i18n/format';
+import { fmt, formatDate } from '@/i18n/format';
 import type { MedicalReview, Source } from '@/lib/medical-review';
 
 function longDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
   return Number.isNaN(d.getTime())
     ? iso
-    : new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(d);
+    : formatDate(d);
 }
 
 /**

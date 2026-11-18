@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router';
+import { Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { addDays, addMonths, format, startOfMonth } from 'date-fns';
 import { ChevronRight, CreditCard, Info } from 'lucide-react';
@@ -10,6 +11,7 @@ import {
   type PackageOut,
   type PaymentOption,
 } from '@hig/shared/api';
+import { useAppTranslation } from '../../../../i18n';
 import { useCase, useCreateBooking, useHospital, useHospitalAvailability } from '../../api/queries';
 import { AvailabilityCalendar } from '../../components/AvailabilityCalendar';
 import {
@@ -21,7 +23,7 @@ import {
 } from '../../components/CareGates';
 import { Avatar, BackLink, Money } from '../../components/common';
 import { paths } from '../../lib/paths';
-import { cn, formatDate, useDocumentTitle } from '../../lib/shared';
+import { cn, formatDate, intlLocale, useDocumentTitle } from '../../lib/shared';
 import {
   Alert,
   Button,
@@ -37,6 +39,8 @@ import {
   Skeleton,
 } from '../../ui/primitives';
 
+type TFn = ReturnType<typeof useAppTranslation>['t'];
+
 type PriceSource = { kind: 'quote'; id: string } | { kind: 'package'; id: string };
 
 const INSTALLMENT_MONTHS = [3, 6, 12] as const;
@@ -44,8 +48,9 @@ const MIN_LEAD_DAYS = 3;
 const HORIZON_MONTHS = 6;
 
 export function BookPage() {
+  const { t } = useAppTranslation();
   const { id = '' } = useParams();
-  useDocumentTitle('Book treatment');
+  useDocumentTitle(t('book.title'));
   const query = useCase(id);
   if (query.isPending) {
     return (
@@ -65,20 +70,21 @@ export function BookPage() {
 
 /** Guests must upgrade (#12) and emergency-screened cases need the acknowledgement (#13) before booking. */
 function BookGate({ data }: { data: CaseDetail }) {
+  const { t } = useAppTranslation();
   const guest = useGuestGate();
   const [emergency, setEmergency] = useState(false);
   if (guest.isGuest) {
     return (
       <div className="mx-auto max-w-3xl">
-        <PageHeader back={<BackLink to={paths.case(data.id)}>Back to case</BackLink>} title="Book treatment" />
-        <GuestAccountRequired action="book your treatment" />
+        <PageHeader back={<BackLink to={paths.case(data.id)}>{t('book.backToCase')}</BackLink>} title={t('book.title')} />
+        <GuestAccountRequired action={t('book.guestAction')} />
       </div>
     );
   }
   if (needsEmergencyAck(data) || emergency) {
     return (
       <div className="mx-auto max-w-3xl">
-        <PageHeader back={<BackLink to={paths.case(data.id)}>Back to case</BackLink>} title="Book treatment" />
+        <PageHeader back={<BackLink to={paths.case(data.id)}>{t('book.backToCase')}</BackLink>} title={t('book.title')} />
         <EmergencyAckPanel caseId={data.id} onAcknowledged={() => setEmergency(false)} />
       </div>
     );
@@ -102,6 +108,7 @@ function BookGate({ data }: { data: CaseDetail }) {
 }
 
 function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unknown) => boolean }) {
+  const { t } = useAppTranslation();
   const navigate = useNavigate();
   const create = useCreateBooking();
   const hospital = useHospital(data.hospital.slug);
@@ -156,11 +163,11 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
 
   async function submit() {
     if (!source) {
-      toast.error('Choose a package or your accepted quote.');
+      toast.error(t('book.errors.chooseSource'));
       return;
     }
     if (!admission) {
-      toast.error('Choose your admission date.');
+      toast.error(t('book.errors.chooseDate'));
       return;
     }
     try {
@@ -172,23 +179,23 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
         ...(option === 'installments' ? { installment_months: months } : {}),
         insurance_claim_requested: insurance,
       });
-      toast.success(`Booking ${booking.booking_number} created`);
+      toast.success(t('book.created', { number: booking.booking_number }));
       navigate(paths.pay(booking.id));
     } catch (err) {
       if (onBlocked?.(err)) return;
-      toast.error(errorMessage(err, 'The booking could not be created.'));
+      toast.error(errorMessage(err, t('book.errors.createFailed')));
     }
   }
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader back={<BackLink to={paths.case(data.id)}>Back to case</BackLink>} title="Select dates & package" />
+      <PageHeader back={<BackLink to={paths.case(data.id)}>{t('book.backToCase')}</BackLink>} title={t('book.formTitle')} />
 
       <Card className="mb-6 flex items-center gap-4 p-5">
         <Avatar name={data.doctor?.full_name ?? data.hospital.name} size={56} />
         <div className="min-w-0">
           {data.doctor ? <p className="text-sm text-slate-500">{data.doctor.full_name}</p> : null}
-          <p className="text-lg font-semibold">{data.doctor?.specialty_name ?? data.procedure?.name ?? 'Treatment'}</p>
+          <p className="text-lg font-semibold">{data.doctor?.specialty_name ?? data.procedure?.name ?? t('bookings.treatment')}</p>
           <p className="text-sm text-slate-600 dark:text-slate-400">
             {data.hospital.name}, {data.hospital.city}
           </p>
@@ -196,10 +203,10 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
       </Card>
 
       {!acceptedQuote && pendingQuote ? (
-        <Alert tone="amber" className="mb-6" title="You have a quote waiting">
-          Accept the hospital's quote on the case page to book at the quoted price, or choose a standard package below.{' '}
+        <Alert tone="amber" className="mb-6" title={t('book.quoteWaitingTitle')}>
+          {t('book.quoteWaitingText')}{' '}
           <ButtonLink to={paths.case(data.id)} variant="ghost" size="sm">
-            Review quote <ChevronRight className="h-4 w-4" aria-hidden />
+            {t('book.reviewQuote')} <ChevronRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
           </ButtonLink>
         </Alert>
       ) : null}
@@ -207,7 +214,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="space-y-6 lg:col-span-3">
           <Card>
-            <CardHeader title="Admission date" description="Green dates have admission slots available." />
+            <CardHeader title={t('book.admissionDate')} description={t('book.admissionDateHint')} />
             <CardBody>
               {availability.isError ? (
                 <ErrorState error={availability.error} onRetry={() => void availability.refetch()} />
@@ -229,9 +236,9 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
               {noAvailabilityPublished ? (
                 <Field
                   className="mt-4"
-                  label="Preferred admission date"
+                  label={t('book.preferredDate')}
                   htmlFor="manual-date"
-                  hint="The hospital has not published slots for this month. Pick a preferred date - they will confirm it."
+                  hint={t('book.preferredDateHint')}
                 >
                   <Input
                     id="manual-date"
@@ -248,26 +255,29 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
               ) : null}
               <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
                 {admission ? (
-                  <>
-                    Admission on <strong>{formatDate(admission, 'EEEE d MMMM yyyy')}</strong>
-                  </>
+                  <Trans
+                    t={t}
+                    i18nKey="book.admissionOn"
+                    values={{ date: formatDate(admission, 'EEEE d MMMM yyyy') }}
+                    components={{ 0: <strong /> }}
+                  />
                 ) : (
-                  'No date selected yet.'
+                  t('book.noDate')
                 )}
-                {stayDays ? ` · Treatment duration: about ${stayDays} days in hospital` : ''}
+                {stayDays ? ` · ${t('book.stayDuration', { count: stayDays })}` : ''}
               </p>
             </CardBody>
           </Card>
 
           <Card>
-            <CardHeader title="Select package" />
+            <CardHeader title={t('book.selectPackage')} />
             <CardBody className="space-y-3">
               {acceptedQuote ? (
                 <SourceOption
                   selected={source?.kind === 'quote'}
                   onSelect={() => setSource({ kind: 'quote', id: acceptedQuote.id })}
-                  title="Your accepted quote"
-                  description={acceptedQuote.treatment_plan || 'Itemized quote from the hospital'}
+                  title={t('book.acceptedQuote')}
+                  description={acceptedQuote.treatment_plan || t('book.itemizedQuote')}
                   price={<Money minor={acceptedQuote.total_minor} currency={acceptedQuote.currency} trim />}
                 />
               ) : null}
@@ -281,12 +291,16 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                     onSelect={() => setSource({ kind: 'package', id: p.id })}
                     title={p.name || PACKAGE_TIER_LABELS[p.tier]}
                     description={p.description ?? PACKAGE_TIER_LABELS[p.tier]}
-                    includes={includesText(p)}
+                    includes={includesText(t, p)}
                     price={<Money minor={p.price_minor} currency={p.currency} trim />}
                     saving={
                       p.original_price_minor && p.original_price_minor > p.price_minor ? (
                         <>
-                          Save <Money minor={p.original_price_minor - p.price_minor} currency={p.currency} trim />
+                          <Trans
+                            t={t}
+                            i18nKey="book.save"
+                            components={{ 0: <Money minor={p.original_price_minor - p.price_minor} currency={p.currency} trim /> }}
+                          />
                         </>
                       ) : null
                     }
@@ -295,8 +309,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
               )}
               {!acceptedQuote && !hospital.isPending && packages.length === 0 ? (
                 <Alert tone="amber">
-                  This hospital has no standard packages for this treatment. Please wait for, and accept, the hospital's quote to
-                  book.
+                  {t('book.noPackages')}
                 </Alert>
               ) : null}
             </CardBody>
@@ -305,13 +318,13 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
 
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <CardHeader title="Payment option" />
+            <CardHeader title={t('book.paymentOption')} />
             <CardBody className="space-y-3">
               {(
                 [
-                  { value: 'deposit', title: 'Pay a deposit now', text: 'Secure your date with a deposit; pay the balance before admission.' },
-                  { value: 'full', title: 'Pay in full', text: 'One payment now.' },
-                  { value: 'installments', title: 'Payment plan', text: 'Deposit now, then monthly instalments.' },
+                  { value: 'deposit', title: t('book.options.depositTitle'), text: t('book.options.depositText') },
+                  { value: 'full', title: t('book.options.fullTitle'), text: t('book.options.fullText') },
+                  { value: 'installments', title: t('book.options.planTitle'), text: t('book.options.planText') },
                 ] as const
               ).map((o) => (
                 <label
@@ -336,7 +349,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                 </label>
               ))}
               {option === 'installments' ? (
-                <div className="flex gap-2 pl-1" role="radiogroup" aria-label="Number of monthly instalments">
+                <div className="flex gap-2 ps-1" role="radiogroup" aria-label={t('book.monthsLabel')}>
                   {INSTALLMENT_MONTHS.map((m) => (
                     <button
                       key={m}
@@ -349,15 +362,15 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                         months === m ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 dark:border-slate-700',
                       )}
                     >
-                      {m} months
+                      {t('bookings.detail.months', { count: m })}
                     </button>
                   ))}
                 </div>
               ) : null}
               <div className="border-t border-slate-200 pt-3 dark:border-slate-800">
                 <Checkbox
-                  label="I want to claim insurance"
-                  description="We will prepare the documents your insurer needs. Payment is still due as scheduled."
+                  label={t('book.insuranceLabel')}
+                  description={t('book.insuranceHint')}
                   checked={insurance}
                   onChange={(e) => setInsurance(e.target.checked)}
                 />
@@ -366,22 +379,21 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
           </Card>
 
           <Card>
-            <CardHeader title="Price summary" />
+            <CardHeader title={t('bookings.summary.title')} />
             <CardBody className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Treatment</span>
+                <span>{t('bookings.list.columns.treatment')}</span>
                 <span className="font-medium">{total != null ? <Money minor={total} currency={currency} /> : '—'}</span>
               </div>
               {option === 'installments' && total != null ? (
                 <div className="flex justify-between text-slate-500">
-                  <span>Plan</span>
-                  <span>Deposit + {months} monthly payments</span>
+                  <span>{t('book.plan')}</span>
+                  <span>{t('book.planValue', { count: months })}</span>
                 </div>
               ) : null}
               <p className="flex gap-2 rounded-xl bg-slate-50 p-3 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
                 <Info className="h-4 w-4 shrink-0" aria-hidden />
-                Taxes, service fees and the exact deposit are calculated on the next step, before you pay. You can pay in your own
-                currency.
+                {t('book.taxesNote')}
               </p>
               <Button
                 size="lg"
@@ -392,7 +404,7 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
                 onClick={() => void submit()}
                 icon={<CreditCard className="h-4 w-4" aria-hidden />}
               >
-                Proceed to payment
+                {t('book.proceed')}
               </Button>
             </CardBody>
           </Card>
@@ -402,16 +414,19 @@ function BookForm({ data, onBlocked }: { data: CaseDetail; onBlocked?: (err: unk
   );
 }
 
-function includesText(p: PackageOut): string | null {
+function includesText(t: TFn, p: PackageOut): string | null {
   const parts: string[] = [];
   const inc = p.includes ?? {};
-  if (inc.accommodation_nights) parts.push(`${inc.accommodation_nights} nights stay`);
-  if (inc.airport_pickup) parts.push('airport pickup');
-  if (inc.translator) parts.push('translator');
-  if (inc.meals) parts.push('meals');
-  if (inc.local_transport) parts.push('local transport');
-  if (inc.followup_teleconsults) parts.push(`${inc.followup_teleconsults} follow-up teleconsults`);
-  return parts.length ? `Includes ${parts.join(', ')}` : null;
+  if (inc.accommodation_nights) parts.push(t('book.includes.nights', { count: inc.accommodation_nights }));
+  if (inc.airport_pickup) parts.push(t('book.includes.airportPickup'));
+  if (inc.translator) parts.push(t('book.includes.translator'));
+  if (inc.meals) parts.push(t('book.includes.meals'));
+  if (inc.local_transport) parts.push(t('book.includes.localTransport'));
+  if (inc.followup_teleconsults) parts.push(t('book.includes.teleconsults', { count: inc.followup_teleconsults }));
+  if (!parts.length) return null;
+  // "a, b, c" (no "and"), in the language's own list style
+  const list = new Intl.ListFormat(intlLocale(), { type: 'unit', style: 'short' }).format(parts);
+  return t('book.includes.text', { list });
 }
 
 function SourceOption({
@@ -444,7 +459,7 @@ function SourceOption({
         {description ? <span className="line-clamp-2 block text-sm text-slate-500 dark:text-slate-400">{description}</span> : null}
         {includes ? <span className="mt-1 block text-xs text-slate-500">{includes}</span> : null}
       </span>
-      <span className="text-right">
+      <span className="text-end">
         <span className="block font-bold">{price}</span>
         {saving ? <span className="block text-xs font-medium text-green-600 dark:text-green-400">{saving}</span> : null}
       </span>

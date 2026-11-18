@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import { Trans } from 'react-i18next';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Landmark, Users } from 'lucide-react';
 import {
   financeApi,
-  PAYEE_TYPE_LABELS,
   PAYOUT_METHODS,
-  PAYOUT_METHOD_LABELS,
   PAYOUT_STATUSES,
-  PAYOUT_STATUS_LABELS,
   type PayeeType,
   type PayoutListParams,
   type PayoutOut,
@@ -36,11 +34,12 @@ import {
   type FilterOption,
   type QuickFilterItem,
 } from '@hig/shared/ui';
+import { enumLabel, enumOptions, useFinanceTranslation, type FinanceT } from '../../lib/i18n';
 import { financeKeys } from '../../api/queries';
 import { Callout } from '../../components/ui';
 import { isPayoutAwaitingConfirmation, isPayoutReversalPending } from '../../components/reviews';
 import {
-  PAYEE_TYPE_OPTIONS,
+  payeeTypeOptions,
   PayeeFilter,
   payeeParams,
   PayoutActionDialogs,
@@ -54,6 +53,7 @@ import { financePath } from '../../paths';
 // URL state (`queue=confirm|reconcile|reversal` keeps the links of the finance review tile working)
 // ---------------------------------------------------------------------------------------------------------
 const PAYEE_TYPES_FILTER = ['hospital', 'agent', 'vendor'] as const satisfies readonly PayeeType[];
+/** Catalog: payouts.queues.<queue>.{emptyTitle,emptyDescription} */
 const QUEUES = ['reconcile', 'confirm', 'reversal'] as const;
 type Queue = (typeof QUEUES)[number];
 const DATE_FIELDS = ['created', 'processed'] as const;
@@ -92,15 +92,6 @@ function toApiFilters(f: PayoutFilters): ApiFilters {
   };
 }
 
-const QUEUE_EMPTY: Record<Queue, { title: string; description: string }> = {
-  reconcile: {
-    title: 'Nothing to reconcile',
-    description: 'Payouts whose gateway outcome is unknown (timeouts, unclear answers) appear here. They are never re-sent automatically.',
-  },
-  confirm: { title: 'No payouts awaiting confirmation', description: 'UTRs recorded by one finance user appear here for a second user to confirm.' },
-  reversal: { title: 'No failure requests', description: 'Requests to fail a paid-out or unreconciled payout wait here for a second finance user.' },
-};
-
 type QuickValue = PayoutStatus | Queue;
 const QUICK_STATUSES: PayoutStatus[] = ['queued', 'processing', 'processed', 'failed', 'reversed'];
 const payoutTone = (s: PayoutStatus) => (s === 'needs_reconciliation' ? ('danger' as const) : statusTone(s, 'payout'));
@@ -108,22 +99,22 @@ const payoutTone = (s: PayoutStatus) => (s === 'needs_reconciliation' ? ('danger
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-function baseColumns(): DataTableColumn<PayoutOut>[] {
+function baseColumns(t: FinanceT): DataTableColumn<PayoutOut>[] {
   return [
     {
       key: 'payee',
-      header: 'Payee',
+      header: t('settlementUi.payee'),
       sticky: true,
       mobile: 'primary',
       className: 'max-w-60',
       cell: (p) => (
-        <TextCell primary={<span className="font-medium">{p.payee_name ?? `${p.payee_id.slice(0, 8)}…`}</span>} secondary={PAYEE_TYPE_LABELS[p.payee_type]} />
+        <TextCell primary={<span className="font-medium">{p.payee_name ?? `${p.payee_id.slice(0, 8)}…`}</span>} secondary={enumLabel('payeeType', p.payee_type)} />
       ),
       exportValue: (p) => p.payee_name ?? p.payee_id,
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('orders.columns.amount'),
       align: 'end',
       sortable: true,
       sortKey: 'amount_minor',
@@ -134,14 +125,16 @@ function baseColumns(): DataTableColumn<PayoutOut>[] {
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('orders.columns.status'),
       sortable: true,
       mobile: 'badge',
       cell: (p) => (
         <span className="flex max-w-56 flex-col items-start gap-1">
           <StatusBadgeCell status={p.status} kind="payout" tone={payoutTone(p.status)} />
-          {isPayoutAwaitingConfirmation(p) && <Badge tone="warning">Awaiting confirmation</Badge>}
-          {isPayoutReversalPending(p) && <Badge tone="danger">{p.status === 'processed' ? 'Reversal pending' : 'Failure pending'}</Badge>}
+          {isPayoutAwaitingConfirmation(p) && <Badge tone="warning">{t('payouts.awaitingConfirmation')}</Badge>}
+          {isPayoutReversalPending(p) && (
+            <Badge tone="danger">{p.status === 'processed' ? t('payouts.reversalPending') : t('payouts.failurePending')}</Badge>
+          )}
           {p.failure_reason && (
             <span className="block max-w-full truncate text-xs text-danger-ink" title={p.failure_reason}>
               {p.failure_reason}
@@ -150,34 +143,34 @@ function baseColumns(): DataTableColumn<PayoutOut>[] {
         </span>
       ),
       mobileCell: (p) => <StatusBadgeCell status={p.status} kind="payout" tone={payoutTone(p.status)} />,
-      exportValue: (p) => PAYOUT_STATUS_LABELS[p.status] ?? p.status,
+      exportValue: (p) => enumLabel('status', p.status),
     },
     {
       key: 'method',
-      header: 'Method',
-      cell: (p) => <span className="whitespace-nowrap">{PAYOUT_METHOD_LABELS[p.method] ?? p.method}</span>,
-      exportValue: (p) => PAYOUT_METHOD_LABELS[p.method] ?? p.method,
+      header: t('orders.columns.method'),
+      cell: (p) => <span className="whitespace-nowrap">{enumLabel('payoutMethod', p.method)}</span>,
+      exportValue: (p) => enumLabel('payoutMethod', p.method),
     },
     {
       key: 'ref',
-      header: 'UTR / gateway ref',
-      title: 'UTR / gateway reference',
+      header: t('batchDetail.utrRef'),
+      title: t('payouts.utrReference'),
       cell: (p) => <IdCell value={p.utr ?? p.gateway_payout_id} />,
       exportValue: (p) => p.utr ?? p.gateway_payout_id ?? '',
     },
     {
       key: 'batch',
-      header: 'Batch',
+      header: t('batches.columns.batch'),
       cell: (p) => (
         <Link to={financePath(`settlements/batches/${p.batch_id}`)} className="font-mono text-[13px] font-medium text-primary-ink hover:underline">
-          {p.batch_number ?? 'View batch'}
+          {p.batch_number ?? t('payouts.viewBatch')}
         </Link>
       ),
       exportValue: (p) => p.batch_number ?? p.batch_id,
     },
     {
       key: 'created',
-      header: 'Created',
+      header: t('orders.columns.created'),
       sortable: true,
       sortKey: 'created_at',
       sortDescFirst: true,
@@ -187,7 +180,7 @@ function baseColumns(): DataTableColumn<PayoutOut>[] {
     },
     {
       key: 'processed',
-      header: 'Processed',
+      header: t('orderDetail.refunds.processed'),
       sortable: true,
       sortKey: 'processed_at',
       sortDescFirst: true,
@@ -197,13 +190,12 @@ function baseColumns(): DataTableColumn<PayoutOut>[] {
   ];
 }
 
-const EXPORT_COLUMNS = baseColumns();
-
 // ---------------------------------------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function PayoutsPage() {
-  useDocumentTitle('Payouts');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('settlementUi.tabs.payouts'));
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -222,13 +214,14 @@ export default function PayoutsPage() {
     placeholderData: keepPreviousData,
   });
 
+  const exportColumns = useMemo(() => baseColumns(t), [t]);
   const columns = useMemo<DataTableColumn<PayoutOut>[]>(
     () => [
-      ...baseColumns(),
+      ...exportColumns,
       {
         key: 'actions',
-        header: <span className="sr-only">Actions</span>,
-        title: 'Actions',
+        header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+        title: t('orderDetail.actions'),
         align: 'end',
         hideable: false,
         exportable: false,
@@ -236,23 +229,23 @@ export default function PayoutsPage() {
         cell: (p) => <PayoutRowActions payout={p} onAction={(a) => setAction({ payout: p, action: a })} />,
       },
     ],
-    [],
+    [exportColumns, t],
   );
 
   const c = counts.data;
   const n = (s: PayoutStatus) => (c ? (c.counts[s] ?? 0) : undefined);
   const statusOptions: FilterOption<PayoutStatus>[] = PAYOUT_STATUSES.map((s) => ({
     value: s,
-    label: PAYOUT_STATUS_LABELS[s],
+    label: enumLabel('status', s),
     tone: payoutTone(s),
     count: n(s),
   }));
   const quickItems: QuickFilterItem<QuickValue>[] = [
-    { value: '', label: 'All', count: c?.total },
-    { value: 'reconcile', label: 'Needs reconciliation', count: n('needs_reconciliation'), tone: 'danger' },
-    { value: 'confirm', label: 'Awaiting confirmation', count: c?.awaiting_confirmation ?? undefined, tone: 'warning' },
-    { value: 'reversal', label: 'Reversal pending', count: c?.reversal_pending ?? undefined, tone: 'warning' },
-    ...QUICK_STATUSES.map((s) => ({ value: s, label: PAYOUT_STATUS_LABELS[s], count: n(s) })),
+    { value: '', label: t('common.all'), count: c?.total },
+    { value: 'reconcile', label: enumLabel('status', 'needs_reconciliation'), count: n('needs_reconciliation'), tone: 'danger' },
+    { value: 'confirm', label: t('payouts.awaitingConfirmation'), count: c?.awaiting_confirmation ?? undefined, tone: 'warning' },
+    { value: 'reversal', label: t('payouts.reversalPending'), count: c?.reversal_pending ?? undefined, tone: 'warning' },
+    ...QUICK_STATUSES.map((s) => ({ value: s, label: enumLabel('status', s), count: n(s) })),
   ];
   const quickValue: QuickValue | '' | null = filters.queue
     ? filters.status.length === 0
@@ -266,29 +259,25 @@ export default function PayoutsPage() {
           ? 'reconcile'
           : null;
   const queue = filters.queue || (quickValue === 'reconcile' ? 'reconcile' : '');
-  const queueEmpty = queue ? QUEUE_EMPTY[queue] : null;
 
   return (
     <div>
-      <PageHeader
-        title="Payouts"
-        description="Payouts created from processed batches. A manual bank transfer stays open until one finance user records the UTR and a different finance user confirms it."
-      />
+      <PageHeader title={t('settlementUi.tabs.payouts')} description={t('payouts.description')} />
       <SettlementTabs />
       {queue === 'reconcile' && (
         <div className="mb-4">
-          <Callout tone="warning" title="Resolve each payout by hand">
-            The Razorpay Route call for these payouts timed out or returned an unclear answer, so the platform did not
-            retry it (a retry could pay twice). Search the Razorpay dashboard for the payout id. If the transfer exists,
-            use <strong>Record transfer</strong> with its <span className="font-mono">trf_…</span> id and have a second
-            finance user confirm it. If it does not, use <strong>Request failure</strong> with the reference you checked;
-            after a second finance user approves, the items return to eligible and are batched again.
+          <Callout tone="warning" title={t('payouts.reconcileTitle')}>
+            <Trans
+              t={t}
+              i18nKey="payouts.reconcileBody"
+              components={{ 0: <strong />, 1: <span className="font-mono" />, 2: <strong /> }}
+            />
           </Callout>
         </div>
       )}
       <DataTable
         id="admin.finance.payouts"
-        caption="Payouts"
+        caption={t('settlementUi.tabs.payouts')}
         table={table}
         columns={columns}
         rows={list.data?.items}
@@ -297,13 +286,13 @@ export default function PayoutsPage() {
         fetching={list.isFetching && !list.isLoading}
         error={list.error}
         onRetry={() => void list.refetch()}
-        emptyTitle={queueEmpty?.title ?? 'No payouts yet'}
-        emptyDescription={queueEmpty?.description ?? 'Payouts are created when an approved settlement batch is processed.'}
-        filtersActive={queueEmpty && table.activeFilterCount === 1 ? false : undefined}
+        emptyTitle={queue ? t(`payouts.queues.${queue}.emptyTitle`) : t('batchDetail.noPayouts')}
+        emptyDescription={queue ? t(`payouts.queues.${queue}.emptyDescription`) : t('payouts.emptyDescription')}
+        filtersActive={queue && table.activeFilterCount === 1 ? false : undefined}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Payout status"
+              label={t('payouts.statusLabel')}
               items={quickItems}
               value={quickValue}
               onChange={(v) =>
@@ -316,12 +305,12 @@ export default function PayoutsPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Payee, UTR or batch…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('payouts.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="payouts"
-                columns={EXPORT_COLUMNS}
+                columns={exportColumns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -332,47 +321,47 @@ export default function PayoutsPage() {
             more={
               <>
                 <SelectFilter
-                  label="Payee type"
+                  label={t('settlementUi.payeeType')}
                   icon={<Users className="size-3.5 opacity-70" aria-hidden />}
                   value={filters.payee_type}
                   onChange={(v) => setFilters({ payee_type: v, payee: '' })}
-                  options={PAYEE_TYPE_OPTIONS}
+                  options={payeeTypeOptions()}
                 />
                 <AmountRangeFilter
-                  label="Amount"
+                  label={t('orders.columns.amount')}
                   currency="INR"
                   value={{ min: filters.min, max: filters.max }}
                   onChange={({ min, max }) => setFilters({ min, max })}
                 />
                 <SelectFilter
-                  label="Queue"
+                  label={t('payouts.queue')}
                   value={filters.queue}
                   onChange={(v) => setFilter('queue', v)}
                   options={[
-                    { value: 'reconcile', label: 'Needs reconciliation', count: n('needs_reconciliation') },
-                    { value: 'confirm', label: 'Awaiting UTR confirmation', count: c?.awaiting_confirmation ?? undefined },
-                    { value: 'reversal', label: 'Failure / reversal pending', count: c?.reversal_pending ?? undefined },
+                    { value: 'reconcile', label: enumLabel('status', 'needs_reconciliation'), count: n('needs_reconciliation') },
+                    { value: 'confirm', label: t('payouts.awaitingUtrConfirmation'), count: c?.awaiting_confirmation ?? undefined },
+                    { value: 'reversal', label: t('payouts.failureReversalPending'), count: c?.reversal_pending ?? undefined },
                   ]}
                 />
               </>
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('orders.columns.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <PayeeFilter value={filters.payee} onChange={(v) => setFilter('payee', v)} payeeType={filters.payee_type} />
             <MultiSelectFilter
-              label="Method"
+              label={t('orders.columns.method')}
               icon={<Landmark className="size-3.5 opacity-70" aria-hidden />}
               value={filters.method}
               onChange={(v) => setFilter('method', v)}
-              options={PAYOUT_METHODS.map((m) => ({ value: m, label: PAYOUT_METHOD_LABELS[m] }))}
+              options={enumOptions('payoutMethod', PAYOUT_METHODS)}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('orders.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Created' },
-                { value: 'processed', label: 'Processed' },
+                { value: 'created', label: t('orders.columns.created') },
+                { value: 'processed', label: t('orderDetail.refunds.processed') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}

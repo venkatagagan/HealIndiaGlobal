@@ -1,13 +1,15 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
+import { Trans } from 'react-i18next';
 import { ArrowDownUp, BadgeCheck, Building2, Globe2, MapPin, Star } from 'lucide-react';
 import { FilterBar, SelectFilter } from '@hig/shared/ui';
 import { HOSPITAL_SORTS, catalogApi, type HospitalCard, type HospitalSort } from '@hig/shared/api';
 import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '../../components/ui';
 import { optionsFromRows, useHospitalOptions } from '../../lib/lookups';
-import { LANGUAGE_OPTIONS } from '../../lib/constants';
+import { languageOptions } from '../../lib/constants';
+import { useAppTranslation } from '../../i18n';
 import { qk, useSpecialties } from '../../lib/queries';
-import { filterParam, formatMoney, useDocumentTitle, useTableState } from '../../lib/shared';
+import { filterParam, formatMoney, formatNumber, useDocumentTitle, useTableState } from '../../lib/shared';
 
 const ACCREDITATIONS = [
   { value: 'jci', label: 'JCI' },
@@ -15,11 +17,11 @@ const ACCREDITATIONS = [
   { value: 'nabl', label: 'NABL' },
   { value: 'iso', label: 'ISO' },
 ];
-const SORT_LABELS: Record<HospitalSort, string> = {
-  rating: 'Top rated',
-  price: 'Lowest price',
-  name: 'Name (A–Z)',
-  soonest: 'Soonest appointment',
+const SORT_KEYS: Record<HospitalSort, string> = {
+  rating: 'hospitals.sort.rating',
+  price: 'hospitals.sort.price',
+  name: 'hospitals.sort.name',
+  soonest: 'hospitals.sort.soonest',
 };
 const FILTERS = {
   q: filterParam.text(),
@@ -31,7 +33,8 @@ const FILTERS = {
 };
 
 export function HospitalsPage() {
-  useDocumentTitle('Hospitals');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('hospitals.title'));
   const table = useTableState({ filters: FILTERS, defaultPageSize: 12 });
   const { filters, setFilter, page } = table;
   const specialties = useSpecialties();
@@ -56,36 +59,36 @@ export function HospitalsPage() {
 
   return (
     <div>
-      <PageHeader title="Hospitals" description="Verified partner hospitals across India. Open a hospital to send an enquiry for one of your patients." />
+      <PageHeader title={t('hospitals.title')} description={t('hospitals.description')} />
       <Card className="mb-6">
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Hospital name…', label: 'Search hospitals' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('hospitals.searchPlaceholder'), label: t('hospitals.searchLabel') }}
           onReset={table.resetFilters}
           resultCount={query.data?.total}
-          resultLabel={(n) => `${n} hospital${n === 1 ? '' : 's'}`}
+          resultLabel={(n) => t('hospitals.resultCount', { count: n, n: formatNumber(n) })}
           actions={
             <SelectFilter
-              label="Sort"
+              label={t('hospitals.filters.sort')}
               icon={<ArrowDownUp className="size-3.5 opacity-70" aria-hidden />}
               value={filters.order}
               onChange={(v) => setFilter('order', v)}
-              options={HOSPITAL_SORTS.map((s) => ({ value: s, label: SORT_LABELS[s] }))}
+              options={HOSPITAL_SORTS.map((s) => ({ value: s, label: t(SORT_KEYS[s]) }))}
               align="end"
             />
           }
           more={
             <SelectFilter
-              label="Language"
+              label={t('hospitals.filters.language')}
               icon={<Globe2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.language}
               onChange={(v) => setFilter('language', v)}
-              options={LANGUAGE_OPTIONS.map((l) => ({ value: l, label: l }))}
+              options={languageOptions()}
               searchable
             />
           }
         >
           <SelectFilter
-            label="Specialty"
+            label={t('hospitals.filters.specialty')}
             value={filters.specialty}
             onChange={(v) => setFilter('specialty', v)}
             options={(specialties.data ?? []).map((sp) => ({ value: sp.slug, label: sp.name }))}
@@ -93,7 +96,7 @@ export function HospitalsPage() {
             searchable
           />
           <SelectFilter
-            label="City"
+            label={t('hospitals.filters.city')}
             icon={<MapPin className="size-3.5 opacity-70" aria-hidden />}
             value={filters.city}
             onChange={(v) => setFilter('city', v)}
@@ -102,7 +105,7 @@ export function HospitalsPage() {
             searchable
           />
           <SelectFilter
-            label="Accreditation"
+            label={t('hospitals.filters.accreditation')}
             icon={<BadgeCheck className="size-3.5 opacity-70" aria-hidden />}
             value={filters.accreditation}
             onChange={(v) => setFilter('accreditation', v)}
@@ -123,9 +126,9 @@ export function HospitalsPage() {
         </Card>
       ) : query.data.items.length === 0 ? (
         <Card>
-          <EmptyState icon={<Building2 className="h-6 w-6" />} title="No hospitals match these filters"
-            description="Try removing a filter."
-            action={table.isFiltered ? <Button variant="outline" onClick={table.resetFilters}>Reset filters</Button> : undefined} />
+          <EmptyState icon={<Building2 className="h-6 w-6" />} title={t('hospitals.emptyTitle')}
+            description={t('hospitals.emptyDescription')}
+            action={table.isFiltered ? <Button variant="outline" onClick={table.resetFilters}>{t('hospitals.resetFilters')}</Button> : undefined} />
         </Card>
       ) : (
         <>
@@ -144,6 +147,7 @@ export function HospitalsPage() {
 }
 
 export function HospitalCardView({ hospital: h }: { hospital: HospitalCard }) {
+  const { t } = useAppTranslation();
   return (
     <Link to={`/hospitals/${h.slug}`} className="group block rounded-xl border border-border bg-surface shadow-sm transition-shadow hover:shadow-md">
       <div className="relative h-32 overflow-hidden rounded-t-xl bg-surface-2">
@@ -152,7 +156,7 @@ export function HospitalCardView({ hospital: h }: { hospital: HospitalCard }) {
         ) : (
           <div className="hero-gradient h-full w-full opacity-80" />
         )}
-        {h.logo_url && <img src={h.logo_url} alt="" className="absolute bottom-2 left-3 h-10 w-10 rounded-lg bg-white object-contain p-1" loading="lazy" />}
+        {h.logo_url && <img src={h.logo_url} alt="" className="absolute bottom-2 start-3 h-10 w-10 rounded-lg bg-white object-contain p-1" loading="lazy" />}
       </div>
       <div className="space-y-2 p-4">
         <p className="font-semibold group-hover:underline">{h.name}</p>
@@ -168,19 +172,24 @@ export function HospitalCardView({ hospital: h }: { hospital: HospitalCard }) {
           ))}
           {h.rating_avg != null && (
             <Badge>
-              <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(h.rating_avg).toFixed(1)} ({h.rating_count})
+              <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(h.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({formatNumber(h.rating_count)})
             </Badge>
           )}
           {h.international_desk && (
             <Badge tone="accent">
-              <Globe2 className="h-3 w-3" aria-hidden /> International desk
+              <Globe2 className="h-3 w-3" aria-hidden /> {t('hospitals.internationalDesk')}
             </Badge>
           )}
         </div>
         {h.specialties.length > 0 && <p className="line-clamp-1 text-xs text-muted">{h.specialties.join(' · ')}</p>}
         {h.starting_price_minor != null && (
           <p className="text-sm">
-            From <span className="font-semibold">{formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true })}</span>
+            <Trans
+              t={t}
+              i18nKey="hospitals.fromPrice"
+              values={{ price: formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true }) }}
+              components={{ 0: <span className="font-semibold" /> }}
+            />
           </p>
         )}
       </div>

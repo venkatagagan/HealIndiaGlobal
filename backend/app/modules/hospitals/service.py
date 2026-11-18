@@ -39,6 +39,8 @@ from app.core.errors import BadRequest, Conflict, Forbidden, NotFound
 from app.core.jobs import enqueue
 from app.core.money import BASE_CURRENCY, CurrencyError, normalize_currency
 from app.core.security import new_opaque_token
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import (
     AvailabilitySlot,
     Booking,
@@ -404,17 +406,24 @@ async def invite_member(
         ).scalar_one_or_none()
         if exists is not None:
             raise Conflict("This user is already a member of the hospital", code="already_member")
+        await i18n_runtime.ensure_fresh()
+        locale = recipient_locale(user)
+        names = {
+            "hospital": hospital_name,
+            "inviter": ctx.user.full_name or t("email.hospital_member_added.default_inviter", locale),
+            "role": role_label,
+        }
         email_payload: dict[str, Any] = {
             "to": email,
-            "subject": f"You have been added to {hospital_name}",
+            "subject": t("email.hospital_member_added.subject", locale, **names),
+            "locale": locale,
             "template": "generic_notification.html",
             "context": {
-                "title": f"You now have access to {hospital_name}",
-                "body": f"{inviter} added you to {hospital_name} as {role_label}. Sign in to the hospital "
-                "portal to get started.",
+                "title": t("email.hospital_member_added.title", locale, **names),
+                "body": t("email.hospital_member_added.body", locale, **names),
                 "name": user.full_name,
                 "url": f"{portal_url}/login",
-                "action_label": "Open hospital portal",
+                "action_label": t("email.hospital_member_added.button", locale),
             },
         }
         created_user = False
@@ -440,7 +449,11 @@ async def invite_member(
         )
         email_payload = {
             "to": email,
-            "subject": f"Invitation to join {hospital_name} on Heal India Global",
+            # A brand-new account has no language yet: English (the default).
+            "subject": t(
+                "email.invite.subject_hospital", "en", organization=hospital_name, app_name=settings.APP_NAME
+            ),
+            "locale": "en",
             "template": "invite.html",
             "context": {
                 "name": body.full_name,

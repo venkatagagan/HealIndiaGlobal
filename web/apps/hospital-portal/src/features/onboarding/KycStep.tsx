@@ -11,14 +11,16 @@ import {
   type HospitalProfileOut,
 } from '@hig/shared/api';
 import { Button, ConfirmDialog, ErrorState, FileButton, Skeleton, StatusBadge } from '../../components/ui';
+import { useAppTranslation } from '../../i18n';
 import { formatBytes, formatDate } from '../../lib/format';
 import { qk } from '../../lib/queries';
 
-export const REQUIRED_KYC_KINDS: { kind: DocumentKind; label: string; hint: string }[] = [
-  { kind: 'kyc_registration', label: 'Hospital registration certificate', hint: 'Clinical establishment / state registration' },
-  { kind: 'kyc_accreditation', label: 'Accreditation certificates', hint: 'JCI / NABH / NABL / ISO - one file per certificate' },
-  { kind: 'kyc_pan', label: 'PAN card', hint: 'PAN of the legal entity' },
-  { kind: 'kyc_gst', label: 'GST registration certificate', hint: 'GSTIN certificate (REG-06)' },
+/** Required KYC documents; `labelKey` / `hintKey` are catalog keys (namespace `hospital`), translated at render time. */
+export const REQUIRED_KYC_KINDS: { kind: DocumentKind; labelKey: string; hintKey: string }[] = [
+  { kind: 'kyc_registration', labelKey: 'onboarding.kyc.kinds.registration.label', hintKey: 'onboarding.kyc.kinds.registration.hint' },
+  { kind: 'kyc_accreditation', labelKey: 'onboarding.kyc.kinds.accreditation.label', hintKey: 'onboarding.kyc.kinds.accreditation.hint' },
+  { kind: 'kyc_pan', labelKey: 'onboarding.kyc.kinds.pan.label', hintKey: 'onboarding.kyc.kinds.pan.hint' },
+  { kind: 'kyc_gst', labelKey: 'onboarding.kyc.kinds.gst.label', hintKey: 'onboarding.kyc.kinds.gst.hint' },
 ];
 
 export function useKycDocuments(hospitalId: string) {
@@ -34,6 +36,7 @@ export function useKycDocuments(hospitalId: string) {
 
 /** Step 4 - KYC uploads (multipart POST /documents with hospital_id). */
 export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; onContinue?: () => void }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const docs = useKycDocuments(profile.id);
   const [uploadingKind, setUploadingKind] = useState<DocumentKind | null>(null);
@@ -45,7 +48,7 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
     onMutate: ({ kind }) => setUploadingKind(kind),
     onSettled: () => setUploadingKind(null),
     onSuccess: (doc) => {
-      toast.success(`${doc.file_name} uploaded`);
+      toast.success(t('onboarding.kyc.uploaded', { name: doc.file_name }));
       void queryClient.invalidateQueries({ queryKey: qk.kycDocs(profile.id) });
     },
     onError: (error) => toast.error(errorMessage(error)),
@@ -54,7 +57,7 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
   const remove = useMutation({
     mutationFn: (doc: DocumentOut) => documentsApi.delete(doc.id),
     onSuccess: () => {
-      toast.success('Document removed');
+      toast.success(t('onboarding.kyc.removed'));
       setToDelete(null);
       void queryClient.invalidateQueries({ queryKey: qk.kycDocs(profile.id) });
     },
@@ -77,10 +80,7 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500 dark:text-slate-400">
-        PDF, JPG, PNG or WebP up to 20 MB. Documents are stored privately and reviewed only by the Heal India Global
-        verification team.
-      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{t('onboarding.kyc.intro')}</p>
       <ul className="space-y-3">
         {REQUIRED_KYC_KINDS.map((req) => {
           const files = byKind(req.kind);
@@ -94,8 +94,8 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
                     aria-hidden
                   />
                   <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{req.label}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{req.hint}</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{t(req.labelKey)}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t(req.hintKey)}</p>
                   </div>
                 </div>
                 <FileButton
@@ -104,7 +104,7 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
                   onFile={(file) => upload.mutate({ kind: req.kind, file })}
                   onInvalid={(m) => toast.error(m)}
                 >
-                  {files.length ? 'Upload another' : 'Upload'}
+                  {files.length ? t('onboarding.kyc.uploadAnother') : t('onboarding.kyc.upload')}
                 </FileButton>
               </div>
               {files.length > 0 && (
@@ -117,11 +117,21 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
                         {formatBytes(doc.size_bytes)} · {formatDate(doc.created_at)}
                       </span>
                       <StatusBadge status={doc.status} />
-                      <Button variant="ghost" size="icon" aria-label={`Download ${doc.file_name}`} onClick={() => void download(doc)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={t('onboarding.kyc.downloadAria', { name: doc.file_name })}
+                        onClick={() => void download(doc)}
+                      >
                         <Download className="h-4 w-4" aria-hidden />
                       </Button>
                       {doc.status !== 'verified' && (
-                        <Button variant="ghost" size="icon" aria-label={`Remove ${doc.file_name}`} onClick={() => setToDelete(doc)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={t('onboarding.kyc.removeAria', { name: doc.file_name })}
+                          onClick={() => setToDelete(doc)}
+                        >
                           <Trash2 className="h-4 w-4 text-danger-500" aria-hidden />
                         </Button>
                       )}
@@ -135,8 +145,8 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
       </ul>
       {onContinue && (
         <div className="flex items-center justify-end gap-3">
-          {!complete && <span className="text-sm text-amber-600 dark:text-amber-400">All four documents are required to submit.</span>}
-          <Button onClick={onContinue}>Continue</Button>
+          {!complete && <span className="text-sm text-amber-600 dark:text-amber-400">{t('onboarding.kyc.allRequired')}</span>}
+          <Button onClick={onContinue}>{t('common.continue')}</Button>
         </div>
       )}
       <ConfirmDialog
@@ -145,9 +155,11 @@ export function KycStep({ profile, onContinue }: { profile: HospitalProfileOut; 
         onConfirm={() => toDelete && remove.mutate(toDelete)}
         loading={remove.isPending}
         tone="danger"
-        title="Remove document?"
-        description={toDelete ? `${toDelete.file_name} (${DOCUMENT_KIND_LABELS[toDelete.kind]}) will be deleted.` : undefined}
-        confirmLabel="Remove"
+        title={t('onboarding.kyc.removeTitle')}
+        description={
+          toDelete ? t('onboarding.kyc.removeDescription', { name: toDelete.file_name, kind: DOCUMENT_KIND_LABELS[toDelete.kind] }) : undefined
+        }
+        confirmLabel={t('common.remove')}
       />
     </div>
   );

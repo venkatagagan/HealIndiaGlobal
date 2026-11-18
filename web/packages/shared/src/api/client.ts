@@ -7,7 +7,18 @@
  * - On 401 the client performs ONE single-flight refresh (POST /auth/refresh) and retries the request once.
  * - Errors are thrown as `ApiError` (status, code, message, details, requestId).
  */
+import i18next from 'i18next';
 import type { ApiErrorBody, TokenOut } from './types';
+
+/**
+ * Client-side fallback text in the UI language (`common:errors.*`). Uses the default i18next instance directly:
+ * `lib/i18n` imports this module, so importing it back would be a cycle. English until i18n is initialised.
+ */
+function text(key: string, english: string): string {
+  if (!i18next.isInitialized) return english;
+  const out = i18next.t(`common:errors.${key}`, { defaultValue: english });
+  return typeof out === 'string' && out ? out : english;
+}
 
 // ---------------------------------------------------------------------------------------------------------
 // Token store (in memory)
@@ -83,7 +94,7 @@ export function isApiError(error: unknown): error is ApiError {
 }
 
 /** Human readable message for any thrown value (for toasts / ErrorState). */
-export function errorMessage(error: unknown, fallback = 'Something went wrong. Please try again.'): string {
+export function errorMessage(error: unknown, fallback: string = text('generic', 'Something went wrong. Please try again.')): string {
   if (error instanceof ApiError) return error.message || fallback;
   if (error instanceof Error && error.message) return error.message;
   return fallback;
@@ -161,6 +172,17 @@ export function configureApiClient(options: {
   if (options.baseUrl !== undefined) config.baseUrl = options.baseUrl.replace(/\/+$/, '');
   if (options.extraHeaders !== undefined) config.extraHeaders = options.extraHeaders;
   if (options.refreshPath !== undefined) config.refreshPath = options.refreshPath;
+}
+
+let requestLanguage: string | null = null;
+
+/** Language sent as `Accept-Language` on every API call (set by lib/i18n when the UI language changes). */
+export function setRequestLanguage(language: string | null): void {
+  requestLanguage = language;
+}
+
+export function getRequestLanguage(): string | null {
+  return requestLanguage;
 }
 
 export function getApiBaseUrl(): string {
@@ -373,24 +395,27 @@ function statusToCode(status: number): string {
 function defaultMessage(status: number): string {
   switch (status) {
     case 401:
-      return 'Please sign in to continue.';
+      return text('unauthorized', 'Please sign in to continue.');
     case 403:
-      return "You don't have permission to do that.";
+      return text('forbidden', "You don't have permission to do that.");
     case 404:
-      return 'Not found.';
+      return text('notFound', 'Not found.');
     case 409:
-      return 'This item was changed by someone else. Refresh and try again.';
+      return text('conflict', 'This item was changed by someone else. Refresh and try again.');
     case 422:
-      return 'Please check the highlighted fields.';
+      return text('validation', 'Please check the highlighted fields.');
     case 429:
-      return 'Too many requests. Please wait a moment and try again.';
+      return text('rateLimited', 'Too many requests. Please wait a moment and try again.');
     default:
-      return status >= 500 ? 'The server had a problem. Please try again shortly.' : 'Request failed.';
+      return status >= 500
+        ? text('server', 'The server had a problem. Please try again shortly.')
+        : text('requestFailed', 'Request failed.');
   }
 }
 
 async function send(method: HttpMethod, path: string, options: RequestOptions, isRetry: boolean): Promise<Response> {
   const headers = new Headers({ Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' });
+  if (requestLanguage) headers.set('Accept-Language', requestLanguage);
   let body: BodyInit | undefined;
   const raw = options.body;
   if (raw !== undefined && raw !== null) {
@@ -424,7 +449,7 @@ async function send(method: HttpMethod, path: string, options: RequestOptions, i
     throw new ApiError({
       status: 0,
       code: 'network_error',
-      message: 'Cannot reach the server. Check your connection and try again.',
+      message: text('network', 'Cannot reach the server. Check your connection and try again.'),
     });
   }
 

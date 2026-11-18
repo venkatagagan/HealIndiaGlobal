@@ -18,6 +18,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.enums import CaseStatus, HospitalMemberRole, PayeeType, UserRole
 from app.core.events import subscribe
 from app.core.money import format_minor
+from app.i18n import recipient_locale, t
+from app.i18n import runtime as i18n_runtime
 from app.models import (
     Agent,
     Booking,
@@ -144,27 +146,17 @@ async def on_user_registered(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     role = policies.role_of(user)
     bodies = {
-        UserRole.PATIENT.value: (
-            "Start with a free AI screening to get matched with accredited Indian hospitals and doctors, "
-            "compare costs and request quotes."
-        ),
-        UserRole.AGENT.value: (
-            "Complete your agency profile and upload your KYC documents. Once approved you can add patients, "
-            "request quotes and track your commissions."
-        ),
-        UserRole.HOSPITAL.value: (
-            "Complete your hospital profile, add doctors and procedures, upload KYC documents and submit for "
-            "review to start receiving international enquiries."
-        ),
+        UserRole.PATIENT.value: "notifications.user_registered.body_patient",
+        UserRole.AGENT.value: "notifications.user_registered.body_agent",
+        UserRole.HOSPITAL.value: "notifications.user_registered.body_hospital",
     }
-    body = bodies.get(role, "Your account is ready.")
     await notify(
         db,
         user.id,
         "user.registered",
-        "Welcome to Heal India Global",
-        body,
-        {"link": "/"},
+        data={"link": "/"},
+        title_key="notifications.user_registered.title",
+        body_key=bodies.get(role, "notifications.user_registered.body_default"),
         dedupe_key=f"user.registered:{user.id}",
         email=not user.is_guest,
     )
@@ -180,9 +172,10 @@ async def on_hospital_approved(db: AsyncSession, payload: dict[str, Any]) -> Non
         db,
         await policies.hospital_member_user_ids(db, hospital_id, OWNER_ROLES),
         "hospital.approved",
-        f"{name} is now live",
-        "Your hospital has been approved and is now visible to international patients.",
-        {"hospital_id": str(hospital_id), "link": "/"},
+        data={"hospital_id": str(hospital_id), "link": "/"},
+        title_key="notifications.hospital_approved.title",
+        body_key="notifications.hospital_approved.body",
+        params={"hospital": name},
         dedupe_key=f"hospital.approved:{hospital_id}",
     )
 
@@ -194,17 +187,18 @@ async def on_hospital_rejected(db: AsyncSession, payload: dict[str, Any]) -> Non
         return
     name = await _hospital_name(db, hospital_id)
     reason = str(payload.get("reason") or "").strip()
-    body = "Your hospital application was not approved."
-    if reason:
-        body += f" Reason: {reason}"
-    body += " Please review your profile and documents and resubmit."
     await notify_many(
         db,
         await policies.hospital_member_user_ids(db, hospital_id, OWNER_ROLES),
         "hospital.rejected",
-        f"{name}: application needs changes",
-        body,
-        {"hospital_id": str(hospital_id), "reason": reason or None, "link": "/onboarding"},
+        data={"hospital_id": str(hospital_id), "reason": reason or None, "link": "/onboarding"},
+        title_key="notifications.hospital_rejected.title",
+        body_key=[
+            "notifications.hospital_rejected.body",
+            "common.reason" if reason else None,
+            "notifications.hospital_rejected.resubmit",
+        ],
+        params={"hospital": name, "reason": reason},
         dedupe_key=f"hospital.rejected:{hospital_id}:{reason[:60]}",
     )
 
@@ -219,9 +213,10 @@ async def on_agent_approved(db: AsyncSession, payload: dict[str, Any]) -> None:
         db,
         agent.user_id,
         "agent.approved",
-        "Your agency has been approved",
-        f"{agent.agency_name} is approved. You can now add patients, request quotes and earn commissions.",
-        {"agent_id": str(agent.id), "link": "/"},
+        data={"agent_id": str(agent.id), "link": "/"},
+        title_key="notifications.agent_approved.title",
+        body_key="notifications.agent_approved.body",
+        params={"agency": agent.agency_name},
         dedupe_key=f"agent.approved:{agent.id}",
     )
 
@@ -233,16 +228,14 @@ async def on_agent_rejected(db: AsyncSession, payload: dict[str, Any]) -> None:
     if agent is None:
         return
     reason = str(payload.get("reason") or "").strip()
-    body = f"The application for {agent.agency_name} was not approved."
-    if reason:
-        body += f" Reason: {reason}"
     await notify(
         db,
         agent.user_id,
         "agent.rejected",
-        "Your agency application was not approved",
-        body,
-        {"agent_id": str(agent.id), "reason": reason or None, "link": "/profile"},
+        data={"agent_id": str(agent.id), "reason": reason or None, "link": "/profile"},
+        title_key="notifications.agent_rejected.title",
+        body_key=["notifications.agent_rejected.body", "common.reason" if reason else None],
+        params={"agency": agent.agency_name, "reason": reason},
         dedupe_key=f"agent.rejected:{agent.id}:{reason[:60]}",
     )
 
@@ -277,25 +270,14 @@ async def on_screening_completed(db: AsyncSession, payload: dict[str, Any]) -> N
             "status": status,
         },
     )
-    if urgency == "emergency":
-        title = "Important: please seek urgent medical care"
-        body = (
-            "Your answers suggest symptoms that may need immediate attention. Please contact your local "
-            "emergency services or nearest hospital now rather than planning travel."
-        )
-    elif status == "failed":
-        title = "We could not complete your screening"
-        body = "Something went wrong while analysing your answers. Please try again or contact support."
-    else:
-        title = "Your screening results are ready"
-        body = "We have matched you with hospitals and doctors for your condition. View your top matches."
+    variant = "emergency" if urgency == "emergency" else "failed" if status == "failed" else "ready"
     await notify_many(
         db,
         recipients,
         "screening.completed",
-        title,
-        body,
-        {
+        title_key=f"notifications.screening.{variant}_title",
+        body_key=f"notifications.screening.{variant}_body",
+        data={
             "screening_id": str(screening_id),
             "patient_id": str(patient_id) if patient_id else None,
             "urgency": urgency,
@@ -355,20 +337,19 @@ async def on_case_created(db: AsyncSession, payload: dict[str, Any]) -> None:
         db,
         await _hospital_side(db, case),
         "case.created",
-        f"New enquiry {case.case_number}",
-        f"{patient_name} has requested a treatment quote. Review the case and send a quote.",
-        {"case_id": str(case.id), "case_number": case.case_number, "link": f"/cases/{case.id}"},
+        data={"case_id": str(case.id), "case_number": case.case_number, "link": f"/cases/{case.id}"},
+        title_key="notifications.case_created.title",
+        body_key="notifications.case_created.body",
+        params={"case_number": case.case_number, "patient": patient_name},
         dedupe_key=f"case.created:{case.id}",
     )
     await _push_case_updated(db, case)
 
 
-_CASE_STATUS_TEXT: dict[str, tuple[str, str]] = {
-    CaseStatus.CANCELLED.value: ("Case {num} cancelled", "Case {num} has been cancelled."),
-    CaseStatus.DECLINED.value: (
-        "Case {num} declined by the hospital",
-        "{hospital} is unable to take case {num}. Your coordinator can help you find another hospital.",
-    ),
+#: catalog prefix (``<prefix>.title`` / ``<prefix>.body``) of the case transitions notified here
+_CASE_STATUS_TEXT: dict[str, str] = {
+    CaseStatus.CANCELLED.value: "notifications.case_cancelled",
+    CaseStatus.DECLINED.value: "notifications.case_declined",
 }
 
 
@@ -387,11 +368,7 @@ async def on_case_status_changed(db: AsyncSession, payload: dict[str, Any]) -> N
         # Other transitions are covered by more specific events (quote.*, booking.*).
         return
     hospital = await _hospital_name(db, case.hospital_id)
-    title = text[0].format(num=case.case_number, hospital=hospital)
-    body = text[1].format(num=case.case_number, hospital=hospital)
     note = str(payload.get("note") or "").strip()
-    if note:
-        body += f" Note: {note}"
     recipients = await _patient_side(db, case) + await _coordinator(case)
     if to_status == CaseStatus.CANCELLED.value:
         recipients += await _hospital_side(db, case)
@@ -399,9 +376,10 @@ async def on_case_status_changed(db: AsyncSession, payload: dict[str, Any]) -> N
         db,
         recipients,
         f"case.{to_status}",
-        title,
-        body,
-        {
+        title_key=f"{text}.title",
+        body_key=[f"{text}.body", "common.note" if note else None],
+        params={"case_number": case.case_number, "hospital": hospital, "note": note},
+        data={
             "case_id": str(case.id),
             "case_number": case.case_number,
             "status": to_status,
@@ -420,16 +398,21 @@ async def on_quote_sent(db: AsyncSession, payload: dict[str, Any]) -> None:
     if case is None or quote_id is None:
         return
     hospital = await _hospital_name(db, quote.hospital_id if quote else case.hospital_id)
-    amount = f" for {_money(quote.total_minor, quote.currency)}" if quote is not None else ""
-    valid = f" valid until {quote.valid_until.isoformat()}" if quote is not None and quote.valid_until else ""
+    amount = _money(quote.total_minor, quote.currency) if quote is not None else ""
+    valid = quote.valid_until.isoformat() if quote is not None and quote.valid_until else ""
     await notify_many(
         db,
         await _patient_side(db, case),
         "quote.sent",
-        f"New quote from {hospital}",
-        f"{hospital} sent a treatment quote{amount} for case {case.case_number}{valid}. "
-        "Review and accept it.",
-        {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        data={"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        title_key="notifications.quote_sent.title",
+        body_key=[
+            "notifications.quote_sent.body",
+            "notifications.quote_sent.amount" if amount else None,
+            "notifications.quote_sent.valid_until" if valid else None,
+            "notifications.quote_sent.cta",
+        ],
+        params={"hospital": hospital, "case_number": case.case_number, "amount": amount, "date": valid},
         dedupe_key=f"quote.sent:{quote_id}",
     )
     await _push_case_updated(db, case, {"quote_id": str(quote_id)})
@@ -444,14 +427,19 @@ async def on_quote_accepted(db: AsyncSession, payload: dict[str, Any]) -> None:
     if case is None or quote_id is None:
         return
     patient_name = await _patient_name(db, case.patient_id)
-    amount = f" ({_money(quote.total_minor, quote.currency)})" if quote is not None else ""
+    amount = _money(quote.total_minor, quote.currency) if quote is not None else ""
     await notify_many(
         db,
         await _hospital_side(db, case) + await _coordinator(case),
         "quote.accepted",
-        f"Quote accepted for {case.case_number}",
-        f"{patient_name} accepted your quote{amount}. The booking and payment will follow.",
-        {"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        data={"case_id": str(case.id), "quote_id": str(quote_id), "link": f"/cases/{case.id}"},
+        title_key="notifications.quote_accepted.title",
+        body_key=[
+            "notifications.quote_accepted.body",
+            "notifications.quote_accepted.amount" if amount else None,
+            "notifications.quote_accepted.next",
+        ],
+        params={"case_number": case.case_number, "patient": patient_name, "amount": amount},
         dedupe_key=f"quote.accepted:{quote_id}",
     )
     await _push_case_updated(db, case, {"quote_id": str(quote_id)})
@@ -464,28 +452,41 @@ async def on_booking_confirmed(db: AsyncSession, payload: dict[str, Any]) -> Non
     if booking is None:
         return
     hospital = await _hospital_name(db, booking.hospital_id)
-    admission = f" Admission: {booking.admission_date.isoformat()}." if booking.admission_date else ""
+    admission = booking.admission_date.isoformat() if booking.admission_date else ""
+    admission_key = "notifications.booking_confirmed.admission" if admission else None
     data = {"booking_id": str(booking.id), "case_id": str(booking.case_id), "link": f"/bookings/{booking.id}"}
     patient_side = await _patient_side(db, case) if case else []
+    patient_name = await _patient_name(db, booking.patient_id)
+    params = {
+        "booking_number": booking.booking_number,
+        "hospital": hospital,
+        "patient": patient_name,
+        "date": admission,
+    }
     await notify_many(
         db,
         patient_side,
         "booking.confirmed",
-        f"Booking {booking.booking_number} confirmed",
-        f"Your treatment at {hospital} is confirmed.{admission} Next: visa, flights and accommodation.",
-        data,
+        data=data,
         dedupe_key=f"booking.confirmed:{booking.id}",
+        title_key="notifications.booking_confirmed.title",
+        body_key=[
+            "notifications.booking_confirmed.body",
+            admission_key,
+            "notifications.booking_confirmed.next",
+        ],
+        params=params,
     )
-    patient_name = await _patient_name(db, booking.patient_id)
     await notify_many(
         db,
         await policies.hospital_member_user_ids(db, booking.hospital_id)
         + (await _coordinator(case) if case else []),
         "booking.confirmed",
-        f"New confirmed booking {booking.booking_number}",
-        f"{patient_name}'s booking is confirmed (deposit received).{admission}",
-        data,
+        data=data,
         dedupe_key=f"booking.confirmed:{booking.id}",
+        title_key="notifications.booking_confirmed.hospital_title",
+        body_key=["notifications.booking_confirmed.hospital_body", admission_key],
+        params=params,
     )
     await _push_booking_updated(db, booking, case)
     if case is not None:
@@ -503,10 +504,14 @@ async def on_booking_admitted(db: AsyncSession, payload: dict[str, Any]) -> None
         db,
         recipients,
         "booking.admitted",
-        f"Admitted at {hospital}",
-        f"Admission for booking {booking.booking_number} is confirmed. "
-        "Wishing you a smooth treatment and recovery.",
-        {"booking_id": str(booking.id), "case_id": str(booking.case_id), "link": f"/bookings/{booking.id}"},
+        data={
+            "booking_id": str(booking.id),
+            "case_id": str(booking.case_id),
+            "link": f"/bookings/{booking.id}",
+        },
+        title_key="notifications.booking_admitted.title",
+        body_key="notifications.booking_admitted.body",
+        params={"hospital": hospital, "booking_number": booking.booking_number},
         dedupe_key=f"booking.admitted:{booking.id}",
     )
     await _push_booking_updated(db, booking, case)
@@ -525,22 +530,22 @@ async def on_booking_completed(db: AsyncSession, payload: dict[str, Any]) -> Non
         db,
         (await _patient_side(db, case) + await _coordinator(case)) if case else [],
         "booking.completed",
-        "Treatment completed",
-        f"Your treatment at {hospital} (booking {booking.booking_number}) is complete. "
-        "We wish you a speedy recovery - please share a review of your experience.",
-        data,
+        data=data,
         dedupe_key=f"booking.completed:{booking.id}",
+        title_key="notifications.booking_completed.title",
+        body_key="notifications.booking_completed.body",
+        params={"hospital": hospital, "booking_number": booking.booking_number},
     )
     await notify_many(
         db,
         await policies.hospital_member_user_ids(db, booking.hospital_id, FINANCE_MEMBER_ROLES),
         "booking.completed",
-        f"Booking {booking.booking_number} completed",
-        "The patient has been discharged. The settlement for this booking will be scheduled "
-        "after the hold period.",
-        data,
+        data=data,
         dedupe_key=f"booking.completed:{booking.id}",
         email=False,
+        title_key="notifications.booking_completed.hospital_title",
+        body_key="notifications.booking_completed.hospital_body",
+        params={"booking_number": booking.booking_number},
     )
     await _push_booking_updated(db, booking, case)
     if case is not None:
@@ -554,21 +559,25 @@ async def on_booking_cancelled(db: AsyncSession, payload: dict[str, Any]) -> Non
         return
     reason = str(payload.get("reason") or "").strip()
     refundable = payload.get("refundable_minor")
-    body = f"Booking {booking.booking_number} has been cancelled."
-    if reason:
-        body += f" Reason: {reason}."
-    if isinstance(refundable, int | float) and int(refundable) > 0:
-        refund_text = _money(int(refundable), booking.currency)
-        body += f" A refund of {refund_text} will be processed to the original payment method."
+    refund_text = (
+        _money(int(refundable), booking.currency)
+        if isinstance(refundable, int | float) and int(refundable) > 0
+        else ""
+    )
     recipients = (await _patient_side(db, case) + await _coordinator(case)) if case else []
     recipients += await policies.hospital_member_user_ids(db, booking.hospital_id)
     await notify_many(
         db,
         recipients,
         "booking.cancelled",
-        f"Booking {booking.booking_number} cancelled",
-        body,
-        {
+        title_key="notifications.booking_cancelled.title",
+        body_key=[
+            "notifications.booking_cancelled.body",
+            "common.reason" if reason else None,
+            "notifications.booking_cancelled.refund" if refund_text else None,
+        ],
+        params={"booking_number": booking.booking_number, "reason": reason, "amount": refund_text},
+        data={
             "booking_id": str(booking.id),
             "case_id": str(booking.case_id),
             "refundable_minor": int(refundable) if isinstance(refundable, int | float) else None,
@@ -607,15 +616,23 @@ async def on_payment_captured(db: AsyncSession, payload: dict[str, Any]) -> None
             recipients.append(pu)
     if case is not None:
         recipients += await _patient_side(db, case)
-    what = f" for booking {booking.booking_number}" if booking is not None else ""
-    amount_text = _money(amount, currency) if amount is not None else "your payment"
+    if amount is None:
+        received = "notifications.payment_captured.body_no_amount"
+    elif booking is not None:
+        received = "notifications.payment_captured.body_booking"
+    else:
+        received = "notifications.payment_captured.body"
     await notify_many(
         db,
         recipients,
         "payment.captured",
-        "Payment received",
-        f"We received {amount_text}{what}. Thank you - a receipt is available in your account.",
-        {
+        title_key="notifications.payment_captured.title",
+        body_key=[received, "notifications.payment_captured.thanks"],
+        params={
+            "amount": _money(amount, currency) if amount is not None else "",
+            "booking_number": booking.booking_number if booking is not None else "",
+        },
+        data={
             "payment_id": str(payment_id) if payment_id else None,
             "order_id": str(order_id) if order_id else None,
             "booking_id": str(booking_id) if booking_id else None,
@@ -639,11 +656,10 @@ async def on_payment_failed(db: AsyncSession, payload: dict[str, Any]) -> None:
         db,
         order.payer_user_id,
         "payment.failed",
-        "Payment failed",
-        f"Your payment of {_money(order.amount_minor, order.currency)} (order {order.order_number}) "
-        "did not go "
-        "through. No money was taken; please try again or choose another payment method.",
-        {
+        title_key="notifications.payment_failed.title",
+        body_key="notifications.payment_failed.body",
+        params={"amount": _money(order.amount_minor, order.currency), "order_number": order.order_number},
+        data={
             "order_id": str(order.id),
             "booking_id": str(order.booking_id) if order.booking_id else None,
             "link": f"/pay/{order.booking_id}" if order.booking_id else "/payments",
@@ -670,15 +686,22 @@ async def on_refund_processed(db: AsyncSession, payload: dict[str, Any]) -> None
             recipients.append(pu)
     if case is not None:
         recipients += await _patient_side(db, case)
-    what = f" for booking {booking.booking_number}" if booking is not None else ""
     await notify_many(
         db,
         recipients,
         "refund.processed",
-        "Refund processed",
-        f"A refund of {_money(refund.amount_minor, refund.currency)}{what} has been processed. "
-        "It may take 5-10 business days to appear on your statement.",
-        {
+        title_key="notifications.refund_processed.title",
+        body_key=[
+            "notifications.refund_processed.body_booking"
+            if booking is not None
+            else "notifications.refund_processed.body",
+            "notifications.refund_processed.timing",
+        ],
+        params={
+            "amount": _money(refund.amount_minor, refund.currency),
+            "booking_number": booking.booking_number if booking is not None else "",
+        },
+        data={
             "refund_id": str(refund.id),
             "booking_id": str(booking_id) if booking_id else None,
             "amount_minor": refund.amount_minor,
@@ -706,15 +729,17 @@ async def on_payout_processed(db: AsyncSession, payload: dict[str, Any]) -> None
     payout = await db.get(Payout, payout_id) if payout_id else None
     if payout is None:
         return
-    utr = f" (UTR {payout.utr})" if payout.utr else ""
     await notify_many(
         db,
         await _payee_user_ids(db, _status(payout.payee_type), payout.payee_id),
         "payout.processed",
-        "Payout sent",
-        f"A payout of {_money(payout.amount_minor, payout.currency)} has been sent to your bank "
-        f"account{utr}.",
-        {
+        title_key="notifications.payout_processed.title",
+        body_key=[
+            "notifications.payout_processed.body",
+            "notifications.payout_processed.utr" if payout.utr else None,
+        ],
+        params={"amount": _money(payout.amount_minor, payout.currency), "utr": payout.utr or ""},
+        data={
             "payout_id": str(payout.id),
             "amount_minor": payout.amount_minor,
             "currency": payout.currency,
@@ -733,26 +758,33 @@ async def on_payout_failed(db: AsyncSession, payload: dict[str, Any]) -> None:
     reason = (payout.failure_reason or "").strip()
     amount = _money(payout.amount_minor, payout.currency)
     data = {"payout_id": str(payout.id), "amount_minor": payout.amount_minor, "currency": payout.currency}
+    params = {
+        "amount": amount,
+        "reason": reason,
+        "payout_id": str(payout.id),
+        "payee_type": _status(payout.payee_type),
+    }
+    reason_key = "common.reason" if reason else None
     await notify_many(
         db,
         await _payee_user_ids(db, _status(payout.payee_type), payout.payee_id),
         "payout.failed",
-        "Payout failed",
-        f"Your payout of {amount} could not be completed{': ' + reason if reason else ''}. "
-        "Please check your payout account details; our finance team will retry.",
-        {**data, "link": "/finance"},
+        data={**data, "link": "/finance"},
         dedupe_key=f"payout.failed:{payout.id}",
+        title_key="notifications.payout_failed.title",
+        body_key=["notifications.payout_failed.body", reason_key, "notifications.payout_failed.next"],
+        params=params,
     )
     await notify_many(
         db,
         await policies.staff_user_ids(db, [UserRole.FINANCE]),
         "payout.failed",
-        "Payout failed",
-        f"Payout {payout.id} of {amount} to {_status(payout.payee_type)} "
-        f"failed{': ' + reason if reason else ''}.",
-        {**data, "link": f"/finance/settlements/batches/{payout.batch_id}"},
+        data={**data, "link": f"/finance/settlements/batches/{payout.batch_id}"},
         dedupe_key=f"payout.failed:{payout.id}",
         email=False,
+        title_key="notifications.payout_failed.title",
+        body_key=["notifications.payout_failed.staff_body", reason_key],
+        params=params,
     )
 
 
@@ -790,19 +822,25 @@ async def on_sos_created(db: AsyncSession, payload: dict[str, Any]) -> None:
         recipients.append(explicit_coordinator)
     recipients += await policies.staff_user_ids(db, [UserRole.SUPPORT])
     patient_name = await _patient_name(db, patient_id)
-    location = (
-        f" Location: {lat:.5f}, {lng:.5f}."
-        if isinstance(lat, int | float) and isinstance(lng, int | float)
-        else ""
-    )
+    has_location = isinstance(lat, int | float) and isinstance(lng, int | float)
     await notify_many(
         db,
         recipients,
         "sos.created",
-        f"SOS alert from {patient_name}",
-        f"{patient_name} raised an emergency alert.{location}{' Message: ' + message if message else ''} "
-        "Please respond immediately.",
-        {
+        title_key="notifications.sos_created.title",
+        body_key=[
+            "notifications.sos_created.body",
+            "notifications.sos_created.location" if has_location else None,
+            "common.message" if message else None,
+            "notifications.sos_created.cta",
+        ],
+        params={
+            "patient": patient_name,
+            "lat": f"{lat:.5f}" if has_location else "",
+            "lng": f"{lng:.5f}" if has_location else "",
+            "message": message,
+        },
+        data={
             "sos_id": str(sos_id) if sos_id else None,
             "patient_id": str(patient_id) if patient_id else None,
             "case_id": str(case_id) if case_id else None,
@@ -829,27 +867,21 @@ async def on_sos_updated(db: AsyncSession, payload: dict[str, Any]) -> None:
         return
     responder_id = _uuid(payload, "responder_user_id")
     responder = await db.get(User, responder_id) if responder_id else None
+    named = responder is not None and bool(responder.full_name)
     if status == "acknowledged":
-        who = (
-            f"{responder.full_name} from our support team"
-            if responder and responder.full_name
-            else "Our support team"
-        )
-        title = "Help is on the way"
-        body = f"{who} has seen your SOS and is handling it. Keep your phone with you."
+        title_key = "notifications.sos_updated.acknowledged_title"
+        body_key = f"notifications.sos_updated.acknowledged_body{'_named' if named else ''}"
     else:
-        title = "Your SOS has been closed"
-        body = (
-            "Our support team marked your emergency alert as resolved. "
-            "If you still need help, send a new SOS or call the 24/7 helpline."
-        )
+        title_key = "notifications.sos_updated.resolved_title"
+        body_key = "notifications.sos_updated.resolved_body"
     await notify(
         db,
         patient_user,
         "sos.updated",
-        title,
-        body,
-        {"sos_id": str(sos_id), "status": status, "link": "/support"},
+        data={"sos_id": str(sos_id), "status": status, "link": "/support"},
+        title_key=title_key,
+        body_key=body_key,
+        params={"name": responder.full_name if responder is not None and named else ""},
         dedupe_key=f"sos.updated:{sos_id}:{status}",
     )
 
@@ -1205,9 +1237,8 @@ async def on_message_created(db: AsyncSession, payload: dict[str, Any]) -> None:
     queue_realtime(db, others, "message.created", message_out(message, sender).model_dump(mode="json"))
     sender_name = (sender.full_name if sender else "") or "Heal India Global"
     preview = message.body if len(message.body) <= 140 else message.body[:137] + "..."
-    if not preview and message.attachment_document_ids:
-        preview = "Sent an attachment"
-    title = f"New message from {sender_name}"
+    attachment_only = not preview and bool(message.attachment_document_ids)
+    await i18n_runtime.ensure_fresh()
     data = {
         "conversation_id": str(conversation.id),
         "case_id": str(conversation.case_id) if conversation.case_id else None,
@@ -1215,6 +1246,10 @@ async def on_message_created(db: AsyncSession, payload: dict[str, Any]) -> None:
         "link": f"/messages/{conversation.id}",
     }
     for uid in others:
+        # Rendered in each recipient's language.
+        locale = recipient_locale(await db.get(User, uid))
+        title = t("notifications.message_created.title", locale, sender=sender_name)
+        body = t("notifications.message_created.attachment", locale) if attachment_only else preview
         # Collapse: one unread message notification per conversation per user.
         existing = (
             await db.execute(
@@ -1233,7 +1268,7 @@ async def on_message_created(db: AsyncSession, payload: dict[str, Any]) -> None:
             if (existing.data or {}).get("message_id") == str(message.id):
                 continue
             existing.title = title
-            existing.body = preview
+            existing.body = body
             existing.data = {**(existing.data or {}), **{k: v for k, v in data.items() if v is not None}}
             await db.flush()
             queue_realtime(
@@ -1245,7 +1280,7 @@ async def on_message_created(db: AsyncSession, payload: dict[str, Any]) -> None:
             uid,
             "message.created",
             title,
-            preview,
+            body,
             data,
             dedupe_key=f"message.created:{message.id}",
             email=False,

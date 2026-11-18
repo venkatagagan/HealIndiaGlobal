@@ -1,5 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { ArrowDownRight, ArrowUpRight, Info, Minus } from 'lucide-react';
+import { formatNumber, i18n } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../../i18n';
 import { cn } from '../../lib/format';
 
 /** Section heading used between dashboard blocks. */
@@ -74,13 +76,14 @@ export function Panel({
 }
 
 /** Small info icon that reveals an explanation on hover and keyboard focus. */
-export function InfoTip({ text, label = 'About this metric' }: { text: string; label?: string }) {
+export function InfoTip({ text, label }: { text: string; label?: string }) {
+  const { t } = useAppTranslation();
   const id = useId();
   return (
     <span className="group/tip relative inline-flex">
       <button
         type="button"
-        aria-label={label}
+        aria-label={label ?? t('dashboard.infoTip')}
         aria-describedby={id}
         className="rounded-full text-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
@@ -112,19 +115,34 @@ export function Delta({
   upIsGood?: boolean;
   suffix?: string;
 }) {
+  const { t } = useAppTranslation();
   let text: string;
   let dir: 1 | 0 | -1;
   if (kind === 'points') {
     const diff = (current - previous) * 100;
     dir = Math.abs(diff) < 0.05 ? 0 : diff > 0 ? 1 : -1;
-    text = dir === 0 ? 'No change' : `${diff > 0 ? '+' : ''}${diff.toFixed(1)} pts`;
+    text =
+      dir === 0
+        ? t('dashboard.delta.noChange')
+        : t('dashboard.delta.points', {
+            value: formatNumber(diff, { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'exceptZero' }),
+          });
   } else if (previous === 0) {
     dir = current > 0 ? 1 : 0;
-    text = current > 0 ? 'New' : 'No change';
+    text = current > 0 ? t('dashboard.delta.new') : t('dashboard.delta.noChange');
   } else {
     const pct = ((current - previous) / Math.abs(previous)) * 100;
     dir = Math.abs(pct) < 0.5 ? 0 : pct > 0 ? 1 : -1;
-    text = dir === 0 ? 'No change' : `${pct > 0 ? '+' : ''}${Math.abs(pct) >= 100 ? Math.round(pct) : pct.toFixed(1)}%`;
+    const digits = Math.abs(pct) >= 100 ? 0 : 1;
+    text =
+      dir === 0
+        ? t('dashboard.delta.noChange')
+        : formatNumber(pct / 100, {
+            style: 'percent',
+            minimumFractionDigits: digits,
+            maximumFractionDigits: digits,
+            signDisplay: 'exceptZero',
+          });
   }
   const good = dir === 0 ? null : (dir === 1) === upIsGood;
   const Icon = dir === 1 ? ArrowUpRight : dir === -1 ? ArrowDownRight : Minus;
@@ -152,10 +170,10 @@ export function ageText(iso: string | null | undefined, now = Date.now()): strin
   const ms = now - new Date(iso).getTime();
   if (!Number.isFinite(ms)) return null;
   const min = Math.max(0, Math.round(ms / 60_000));
-  if (min < 60) return `${min} min`;
+  if (min < 60) return i18n.t('admin:dashboard.age.minutes', { value: formatNumber(min) });
   const h = Math.round(min / 60);
-  if (h < 48) return `${h} h`;
-  return `${Math.round(h / 24)} d`;
+  if (h < 48) return i18n.t('admin:dashboard.age.hours', { value: formatNumber(h) });
+  return i18n.t('admin:dashboard.age.days', { value: formatNumber(Math.round(h / 24)) });
 }
 
 export function hoursSince(iso: string | null | undefined, now = Date.now()): number {

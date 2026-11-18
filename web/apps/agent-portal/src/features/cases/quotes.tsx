@@ -12,7 +12,9 @@ import {
 } from '@hig/shared/api';
 import { DataTable, MoneyCell, TextCell, isEmergencyAckError, isGuestUpgradeError, type DataTableColumn } from '@hig/shared/ui';
 import { Button, Checkbox, ConfirmDialog, Modal, Money, StatusBadge } from '../../components/ui';
-import { daysUntil, formatDate } from '../../lib/shared';
+import { Trans } from 'react-i18next';
+import { daysUntil, formatDate, formatNumber, i18n } from '../../lib/shared';
+import { useAppTranslation, type AppT } from '../../i18n';
 
 export function isQuoteActionable(caseStatus: CaseOut['status'], quote: QuoteOut): boolean {
   if (quote.status !== 'sent' || caseStatus !== 'quoted') return false;
@@ -22,18 +24,18 @@ export function isQuoteActionable(caseStatus: CaseOut['status'], quote: QuoteOut
 
 type LineRow = QuoteLineItem & { id: string };
 
-function lineColumns(quote: QuoteOut): DataTableColumn<LineRow>[] {
+function lineColumns(t: AppT, quote: QuoteOut): DataTableColumn<LineRow>[] {
   return [
     {
       key: 'item',
-      header: 'Item',
+      header: t('quotes.columns.item'),
       sortable: true,
       sortValue: (item) => QUOTE_LINE_CATEGORY_LABELS[item.category] ?? item.category,
       cell: (item) => <TextCell primary={QUOTE_LINE_CATEGORY_LABELS[item.category] ?? item.category} secondary={item.description ?? undefined} />,
     },
     {
       key: 'share',
-      header: 'Share',
+      header: t('quotes.columns.share'),
       sortable: true,
       sortValue: (item) => item.amount_minor,
       cell: (item) => {
@@ -43,14 +45,14 @@ function lineColumns(quote: QuoteOut): DataTableColumn<LineRow>[] {
             <span className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-2" aria-hidden>
               <span className="block h-full rounded-full bg-primary" style={{ width: `${Math.min(100, share)}%` }} />
             </span>
-            {share}%
+            {formatNumber(share / 100, { style: 'percent' })}
           </span>
         );
       },
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('quotes.columns.amount'),
       align: 'end',
       sortable: true,
       sortDescFirst: true,
@@ -61,26 +63,28 @@ function lineColumns(quote: QuoteOut): DataTableColumn<LineRow>[] {
 }
 
 export function QuoteDetails({ quote }: { quote: QuoteOut }) {
+  const { t } = useAppTranslation();
   const left = daysUntil(quote.valid_until);
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <StatusBadge kind="quote" status={quote.status} />
         <span className="text-muted">
-          Sent {formatDate(quote.created_at)}
-          {quote.prepared_by_name ? ` by ${quote.prepared_by_name}` : ''}
+          {quote.prepared_by_name
+            ? t('quotes.sentOnBy', { date: formatDate(quote.created_at), name: quote.prepared_by_name })
+            : t('quotes.sentOn', { date: formatDate(quote.created_at) })}
         </span>
         {quote.valid_until && (
           <span className={left !== null && left < 0 ? 'text-danger' : left !== null && left <= 3 ? 'text-warning' : 'text-muted'}>
-            · Valid until {formatDate(quote.valid_until)}
-            {left !== null && left >= 0 ? ` (${left} day${left === 1 ? '' : 's'} left)` : left !== null ? ' (expired)' : ''}
+            · {t('quotes.validUntil', { date: formatDate(quote.valid_until) })}
+            {left !== null && left >= 0 ? ` (${t('quotes.daysLeft', { count: left })})` : left !== null ? ` (${t('quotes.expired')})` : ''}
           </span>
         )}
       </div>
       {quote.treatment_plan && <p className="text-sm whitespace-pre-line">{quote.treatment_plan}</p>}
       <DataTable
-        caption="Quote line items"
-        columns={lineColumns(quote)}
+        caption={t('quotes.lineItems')}
+        columns={lineColumns(t, quote)}
         rows={quote.line_items.map((item, i) => ({ ...item, id: `${item.category}-${i}` }))}
         defaultSort={null}
         density="compact"
@@ -88,8 +92,8 @@ export function QuoteDetails({ quote }: { quote: QuoteOut }) {
       />
       <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg bg-surface-2 px-4 py-3">
         <span className="text-sm font-semibold">
-          Total
-          {quote.estimated_stay_days ? <span className="ml-1 font-normal text-muted">· {quote.estimated_stay_days} days in hospital</span> : null}
+          {t('quotes.total')}
+          {quote.estimated_stay_days ? <span className="ms-1 font-normal text-muted">· {t('quotes.stayDays', { count: quote.estimated_stay_days })}</span> : null}
         </span>
         <Money minor={quote.total_minor} currency={quote.currency} className="text-lg font-bold tabular-nums" />
       </div>
@@ -110,10 +114,10 @@ export function careGateOf(error: unknown): CareGate | null {
   return null;
 }
 
-export const CARE_GATE_MESSAGES: Record<CareGate, string> = {
-  emergency: 'This case was screened as a possible emergency. Review and acknowledge the emergency guidance first.',
-  guest: 'The patient is on a guest account and must create a full account before quotes can be accepted or booked.',
-};
+/** Why a quote cannot be accepted / booked yet (in the UI language). */
+export function careGateMessage(gate: CareGate): string {
+  return gate === 'emergency' ? i18n.t('agent:quotes.gate.emergency') : i18n.t('agent:quotes.gate.guest');
+}
 
 export function AcceptQuoteDialog({
   open,
@@ -131,6 +135,7 @@ export function AcceptQuoteDialog({
   /** 409 `emergency_ack_required` / 403 `guest_upgrade_required`; defaults to opening the case page */
   onBlocked?: (gate: CareGate) => void;
 }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const openSiblings = siblings.filter((s) => s.id !== caseItem.id && ['enquiry', 'quoted'].includes(s.status));
@@ -141,7 +146,7 @@ export function AcceptQuoteDialog({
 
   const accept = useMutation({
     mutationFn: async () => {
-      if (!quote) throw new Error('No quote selected');
+      if (!quote) throw new Error(t('quotes.noQuoteSelected'));
       const accepted = await casesApi.acceptQuote(caseItem.id, quote.id);
       const failures: string[] = [];
       if (cancelOthers) {
@@ -161,8 +166,8 @@ export function AcceptQuoteDialog({
     onSuccess: ({ failures }) => {
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       void queryClient.invalidateQueries({ queryKey: ['agent-dashboard'] });
-      if (failures.length) toast.warning(`Quote accepted. Could not cancel: ${failures.join(', ')}`);
-      else toast.success('Quote accepted — you can now book the treatment');
+      if (failures.length) toast.warning(t('quotes.acceptedPartial', { cases: failures.join(', ') }));
+      else toast.success(t('quotes.accepted'));
       onClose();
       navigate(`/cases/${caseItem.id}/book`);
     },
@@ -172,7 +177,7 @@ export function AcceptQuoteDialog({
         toast.error(errorMessage(error));
         return;
       }
-      toast.error(CARE_GATE_MESSAGES[gate]);
+      toast.error(careGateMessage(gate));
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       onClose();
       if (onBlocked) onBlocked(gate);
@@ -185,34 +190,33 @@ export function AcceptQuoteDialog({
       open={open}
       onClose={onClose}
       size="sm"
-      title="Accept this quote?"
+      title={t('quotes.acceptTitle')}
       description={caseItem.hospital.name}
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={accept.isPending}>
-            Cancel
+            {t('quotes.cancel')}
           </Button>
           <Button loading={accept.isPending} onClick={() => accept.mutate()}>
-            Accept quote
+            {t('quotes.acceptQuote')}
           </Button>
         </>
       }
     >
       <div className="space-y-4 text-sm">
         <p className="text-muted">
-          The hospital is notified and the case moves to <strong>accepted</strong>. Next you choose the admission date and
-          payment option to create the booking.
+          <Trans t={t} i18nKey="quotes.acceptBody" components={{ 0: <strong /> }} />
         </p>
         {quote && (
           <p>
-            Total: <Money minor={quote.total_minor} currency={quote.currency} className="font-semibold" />
+            <Trans t={t} i18nKey="quotes.totalLine" components={{ 0: <Money minor={quote.total_minor} currency={quote.currency} className="font-semibold" /> }} />
           </p>
         )}
         {openSiblings.length > 0 && (
           <Checkbox
             checked={cancelOthers}
             onChange={(e) => setCancelOthers(e.target.checked)}
-            label={`Cancel the ${openSiblings.length} other open enquir${openSiblings.length === 1 ? 'y' : 'ies'}`}
+            label={t('quotes.cancelOthers', { count: openSiblings.length })}
             description={openSiblings.map((s) => `${s.hospital.name} (${s.case_number})`).join(', ')}
           />
         )}
@@ -232,14 +236,15 @@ export function RejectQuoteDialog({
   caseId: string;
   quote: QuoteOut | null;
 }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const reject = useMutation({
     mutationFn: (reason: string) => {
-      if (!quote) throw new Error('No quote selected');
+      if (!quote) throw new Error(t('quotes.noQuoteSelected'));
       return casesApi.rejectQuote(caseId, quote.id, reason ? { reason } : {});
     },
     onSuccess: () => {
-      toast.success('Quote declined');
+      toast.success(t('quotes.declined'));
       void queryClient.invalidateQueries({ queryKey: ['cases'] });
       onClose();
     },
@@ -250,12 +255,12 @@ export function RejectQuoteDialog({
       open={open}
       onClose={onClose}
       onConfirm={(reason) => reject.mutate(reason)}
-      title="Decline this quote?"
-      description="The hospital can send a revised quote."
-      confirmLabel="Decline quote"
+      title={t('quotes.declineTitle')}
+      description={t('quotes.declineDescription')}
+      confirmLabel={t('quotes.declineQuote')}
       tone="danger"
       loading={reject.isPending}
-      reason={{ label: 'Reason (shared with the hospital)', placeholder: 'e.g. Budget too high, prefer shorter stay' }}
+      reason={{ label: t('quotes.declineReason'), placeholder: t('quotes.declinePlaceholder') }}
     />
   );
 }

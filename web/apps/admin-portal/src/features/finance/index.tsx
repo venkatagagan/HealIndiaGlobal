@@ -27,6 +27,7 @@ import {
 import type { UserRole } from '@hig/shared/api';
 import { Card, EmptyState, ErrorState, LoadingState } from './components/ui';
 import { FINANCE_OR_ADMIN_ROLES, FINANCE_PORTAL_ROLES, FINANCE_ROLES, useCurrentUser } from './lib/permissions';
+import { ft, useFinanceTranslation } from './lib/i18n';
 import { FINANCE_BASE, financePath } from './paths';
 
 export { FINANCE_BASE, financePath } from './paths';
@@ -53,6 +54,7 @@ const ReportsPage = lazy(() => import('./pages/ReportsPage'));
 
 /** Renders children only for the allowed roles (waits for /auth/me). */
 export function FinanceGuard({ roles, children }: { roles: readonly UserRole[]; children: ReactNode }) {
+  const { t } = useFinanceTranslation();
   const me = useCurrentUser();
   if (me.isLoading) return <LoadingState />;
   if (me.isError || !me.data)
@@ -65,8 +67,8 @@ export function FinanceGuard({ roles, children }: { roles: readonly UserRole[]; 
     return (
       <Card>
         <EmptyState
-          title="You don't have access to this page"
-          description="This finance page is limited to finance staff. Ask a super admin if you need access."
+          title={t('guard.noAccessTitle')}
+          description={t('guard.noAccessDescription')}
         />
       </Card>
     );
@@ -116,7 +118,10 @@ export const financeRoutes: RouteObject[] = [
 ];
 
 export interface FinanceNavItem {
+  /** English label (stable; use `labelKey` / `financeNavLabel()` to show it in the UI language) */
   label: string;
+  /** i18n key, namespace-qualified: `t(item.labelKey)` / `i18n.t(item.labelKey)` */
+  labelKey: string;
   to: string;
   icon: LucideIcon;
   /** roles that see the item (filter with the signed-in user's role) */
@@ -127,28 +132,36 @@ export interface FinanceNavItem {
   group: FinanceNavGroup;
 }
 
-/** Sidebar sections of the finance console, in display order. */
+/**
+ * Sidebar sections of the finance console, in display order. `label` is the English text; build the sidebar
+ * with `financeNavLabel(group)` (or `t(group.labelKey)`) at render time so it follows the UI language.
+ */
 export const FINANCE_NAV_GROUPS = [
-  { id: 'finance', label: 'Payments', icon: Landmark },
-  { id: 'settlements', label: 'Settlements', icon: ArrowLeftRight },
-  { id: 'accounting', label: 'Accounting & reports', icon: BookOpenCheck },
-] as const satisfies readonly { id: string; label: string; icon: LucideIcon }[];
+  { id: 'finance', label: 'Payments', labelKey: 'finance:nav.groups.payments', icon: Landmark },
+  { id: 'settlements', label: 'Settlements', labelKey: 'finance:nav.groups.settlements', icon: ArrowLeftRight },
+  { id: 'accounting', label: 'Accounting & reports', labelKey: 'finance:nav.groups.accounting', icon: BookOpenCheck },
+] as const satisfies readonly { id: string; label: string; labelKey: string; icon: LucideIcon }[];
 export type FinanceNavGroup = (typeof FINANCE_NAV_GROUPS)[number]['id'];
 
 export const financeNav: FinanceNavItem[] = [
-  { label: 'Finance overview', to: financePath(), icon: LayoutDashboard, roles: S, end: true, group: 'finance' },
-  { label: 'Payment orders', to: financePath('orders'), icon: ReceiptText, roles: S, group: 'finance' },
-  { label: 'Bank reconciliation', to: financePath('reconciliation'), icon: Landmark, roles: F, group: 'finance' },
-  { label: 'Refunds', to: financePath('refunds'), icon: Undo2, roles: F_AD, group: 'finance' },
-  { label: 'Settlement items', to: financePath('settlements'), icon: ArrowLeftRight, roles: F, end: true, group: 'settlements' },
-  { label: 'Batches', to: financePath('settlements/batches'), icon: Layers, roles: F, group: 'settlements' },
-  { label: 'Payouts', to: financePath('settlements/payouts'), icon: Wallet, roles: F, group: 'settlements' },
-  { label: 'Invoices & credit notes', to: financePath('settlements/documents'), icon: FileText, roles: F, group: 'settlements' },
-  { label: 'Payout accounts', to: financePath('payout-accounts'), icon: Building, roles: F, group: 'settlements' },
-  { label: 'Commission rules', to: financePath('commission-rules'), icon: Percent, roles: F_AD, group: 'settlements' },
-  { label: 'Ledger', to: financePath('ledger'), icon: BookOpenCheck, roles: F, group: 'accounting' },
-  { label: 'Reports', to: financePath('reports'), icon: BarChart3, roles: S, group: 'accounting' },
+  { label: 'Finance overview', labelKey: 'finance:nav.items.overview', to: financePath(), icon: LayoutDashboard, roles: S, end: true, group: 'finance' },
+  { label: 'Payment orders', labelKey: 'finance:nav.items.orders', to: financePath('orders'), icon: ReceiptText, roles: S, group: 'finance' },
+  { label: 'Bank reconciliation', labelKey: 'finance:nav.items.reconciliation', to: financePath('reconciliation'), icon: Landmark, roles: F, group: 'finance' },
+  { label: 'Refunds', labelKey: 'finance:nav.items.refunds', to: financePath('refunds'), icon: Undo2, roles: F_AD, group: 'finance' },
+  { label: 'Settlement items', labelKey: 'finance:nav.items.settlementItems', to: financePath('settlements'), icon: ArrowLeftRight, roles: F, end: true, group: 'settlements' },
+  { label: 'Batches', labelKey: 'finance:nav.items.batches', to: financePath('settlements/batches'), icon: Layers, roles: F, group: 'settlements' },
+  { label: 'Payouts', labelKey: 'finance:nav.items.payouts', to: financePath('settlements/payouts'), icon: Wallet, roles: F, group: 'settlements' },
+  { label: 'Invoices & credit notes', labelKey: 'finance:nav.items.documents', to: financePath('settlements/documents'), icon: FileText, roles: F, group: 'settlements' },
+  { label: 'Payout accounts', labelKey: 'finance:nav.items.payoutAccounts', to: financePath('payout-accounts'), icon: Building, roles: F, group: 'settlements' },
+  { label: 'Commission rules', labelKey: 'finance:nav.items.commissionRules', to: financePath('commission-rules'), icon: Percent, roles: F_AD, group: 'settlements' },
+  { label: 'Ledger', labelKey: 'finance:nav.items.ledger', to: financePath('ledger'), icon: BookOpenCheck, roles: F, group: 'accounting' },
+  { label: 'Reports', labelKey: 'finance:nav.items.reports', to: financePath('reports'), icon: BarChart3, roles: S, group: 'accounting' },
 ];
+
+/** Sidebar label of a nav item or group in the current UI language (call at render time). */
+export function financeNavLabel(item: { label: string; labelKey: string }): string {
+  return ft(item.labelKey, { defaultValue: item.label });
+}
 
 /** Nav items visible to a role. */
 export function financeNavFor(role: UserRole | null | undefined): FinanceNavItem[] {

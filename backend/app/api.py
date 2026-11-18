@@ -19,6 +19,7 @@ from app.modules.docai.router import router as docai_router
 from app.modules.documents.router import router as documents_router
 from app.modules.guests.router import router as guests_router
 from app.modules.hospitals.router import router as hospitals_router
+from app.modules.i18n.router import router as i18n_router
 from app.modules.ledger.router import router as ledger_router
 from app.modules.messaging.router import router as messaging_router
 from app.modules.moderation.router import router as moderation_router
@@ -55,5 +56,6 @@ for _router in (
     privacy_router,
     trust_router,
     guests_router,
+    i18n_router,
 ):
     api_router.include_router(_router)

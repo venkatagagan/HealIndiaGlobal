@@ -20,7 +20,18 @@ import {
   type ItineraryItemOut,
   type ItineraryKind,
 } from '@hig/shared/api';
-import { fetchAllPages, filterParam, formatMoney as formatMoneyShared, fromMinor, toMinor, useTableState, type FilterValues } from '@hig/shared/lib';
+import type { TFunction } from 'i18next';
+import { Trans } from 'react-i18next';
+import {
+  fetchAllPages,
+  filterParam,
+  formatMoney as formatMoneyShared,
+  formatNumber,
+  fromMinor,
+  toMinor,
+  useTableState,
+  type FilterValues,
+} from '@hig/shared/lib';
 import {
   AmountRangeFilter,
   Badge as UiBadge,
@@ -71,12 +82,14 @@ import { opsPaths } from '../lib/paths';
 import { useOpsPermissions } from '../lib/session';
 import { DrawerSummary, StatTiles } from '../components/DrawerSummary';
 import { Banner, FieldGrid, Panel, StatusTrack, type TrackStep } from '../ui/detail';
+import { useAppTranslation } from '../../../i18n';
 
 // ---------------------------------------------------------------------------------------------------------
 // URL state
 // ---------------------------------------------------------------------------------------------------------
 const PAYMENT_STATES = ['paid', 'partial', 'unpaid'] as const satisfies readonly BookingPaymentState[];
-const PAYMENT_LABELS: Record<BookingPaymentState, string> = { paid: 'Paid in full', partial: 'Partially paid', unpaid: 'Unpaid' };
+/** "Paid in full" / "Partially paid" / "Unpaid" */
+const paymentLabel = (t: TFunction, state: BookingPaymentState): string => t(`bookings.payment.${state}`);
 const DATE_FIELDS = ['admission', 'created'] as const;
 
 const FILTERS = {
@@ -117,21 +130,21 @@ function paymentState(b: BookingOut): BookingPaymentState {
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-const COLUMNS: DataTableColumn<BookingOut>[] = [
+const bookingColumns = (t: TFunction): DataTableColumn<BookingOut>[] => [
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('bookings.columns.booking'),
     sortable: true,
     sortKey: 'booking_number',
     sticky: true,
     mobile: 'secondary',
-    cell: (b) => <IdCell value={b.booking_number} secondary={`Booked ${formatDate(b.created_at)}`} />,
+    cell: (b) => <IdCell value={b.booking_number} secondary={t('bookings.bookedOn', { date: formatDate(b.created_at) })} />,
     mobileCell: (b) => <span className="font-mono text-xs">{b.booking_number}</span>,
     exportValue: (b) => b.booking_number,
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('bookings.columns.patient'),
     mobile: 'primary',
     className: 'max-w-56',
     cell: (b) => <PersonCell name={b.patient.full_name} secondary={b.procedure?.name ?? b.package?.name ?? undefined} />,
@@ -139,25 +152,25 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'hospital',
-    header: 'Hospital',
+    header: t('bookings.columns.hospital'),
     className: 'max-w-52',
     cell: (b) => <TextCell primary={b.hospital.name} secondary={b.hospital.city} />,
     exportValue: (b) => b.hospital.name,
   },
   {
     key: 'admission',
-    header: 'Admission',
+    header: t('bookings.columns.admission'),
     sortable: true,
     sortKey: 'admission_date',
     sortDescFirst: true,
     cell: (b) => (
-      <DateCell value={b.admission_date} display="date" secondary={b.duration_days != null ? `${b.duration_days} days` : undefined} />
+      <DateCell value={b.admission_date} display="date" secondary={b.duration_days != null ? t('bookings.days', { count: b.duration_days }) : undefined} />
     ),
     exportValue: (b) => b.admission_date ?? '',
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('bookings.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (b) => <StatusBadgeCell status={b.status} kind="booking" />,
@@ -165,17 +178,27 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'total',
-    header: 'Total',
+    header: t('bookings.columns.total'),
     align: 'end',
     sortable: true,
     sortKey: 'total_minor',
     sortDescFirst: true,
-    cell: (b) => <MoneyCell minor={b.total_minor} currency={b.currency} secondary={b.installment_months ? <span className="whitespace-nowrap">{b.installment_months} installments</span> : undefined} />,
+    cell: (b) => (
+      <MoneyCell
+        minor={b.total_minor}
+        currency={b.currency}
+        secondary={
+          b.installment_months ? (
+            <span className="whitespace-nowrap">{t('bookings.installments', { count: b.installment_months })}</span>
+          ) : undefined
+        }
+      />
+    ),
     exportValue: (b) => `${b.currency} ${fromMinor(b.total_minor, b.currency)}`,
   },
   {
     key: 'paid',
-    header: 'Paid',
+    header: t('bookings.columns.paid'),
     align: 'end',
     cell: (b) => {
       const state = paymentState(b);
@@ -184,7 +207,11 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
           minor={b.amount_paid_minor}
           currency={b.currency}
           className={state === 'paid' ? 'text-success-ink' : state === 'partial' ? 'text-warning-ink' : undefined}
-          secondary={<span className="whitespace-nowrap">{state === 'paid' ? 'Paid in full' : `Due ${formatMoneyShared(b.balance_due_minor, b.currency)}`}</span>}
+          secondary={
+            <span className="whitespace-nowrap">
+              {state === 'paid' ? paymentLabel(t, 'paid') : t('bookings.due', { amount: formatMoneyShared(b.balance_due_minor, b.currency) })}
+            </span>
+          }
         />
       );
     },
@@ -192,7 +219,7 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
   },
   {
     key: 'created',
-    header: 'Booked',
+    header: t('bookings.columns.booked'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -206,7 +233,9 @@ const COLUMNS: DataTableColumn<BookingOut>[] = [
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function BookingsPage() {
-  useDocumentTitle('Bookings');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('bookings.title'));
+  const columns = useMemo(() => bookingColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-created_at', sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -232,19 +261,19 @@ export default function BookingsPage() {
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<BookingStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
+    { value: '', label: t('bookings.quickAll'), count: counts.data?.total },
     ...BOOKING_STATUSES.map((s) => ({ value: s, label: BOOKING_STATUS_LABELS[s], count: counts.data?.counts[s] })),
   ];
   const quickValue = filters.status.length === 0 ? '' : filters.status.length === 1 ? filters.status[0]! : null;
 
   return (
     <div>
-      <PageHeader title="Bookings" description="Confirmed treatments — payment progress, admissions and discharges across every hospital." />
+      <PageHeader title={t('bookings.title')} description={t('bookings.description')} />
       <DataTable
         id="admin.bookings"
-        caption="Bookings"
+        caption={t('bookings.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={list.data?.items}
         total={list.data?.total}
         loading={list.isLoading}
@@ -252,7 +281,7 @@ export default function BookingsPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         onRowClick={(b) => setSelected(b.id)}
-        rowLabel={(b) => `Open booking ${b.booking_number}`}
+        rowLabel={(b) => t('bookings.openRow', { number: b.booking_number })}
         selectable
         bulkActions={(rows, clear) => (
           <UiButton
@@ -260,28 +289,28 @@ export default function BookingsPage() {
             variant="outline"
             leftIcon={<Download className="size-4" aria-hidden />}
             onClick={() => {
-              exportCsv(rows, COLUMNS, `bookings-selected-${new Date().toISOString().slice(0, 10)}`);
+              exportCsv(rows, columns, `bookings-selected-${new Date().toISOString().slice(0, 10)}`);
               clear();
             }}
           >
-            Export selected
+            {t('bookings.exportSelected')}
           </UiButton>
         )}
-        emptyTitle="No bookings yet"
-        emptyDescription="Bookings appear here once a patient accepts a quote and books an admission date."
+        emptyTitle={t('bookings.emptyTitle')}
+        emptyDescription={t('bookings.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
-            <QuickFilters label="Booking status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+            <QuickFilters label={t('bookings.quickLabel')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           </div>
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Booking number or patient…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('bookings.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="bookings"
-                columns={COLUMNS}
+                columns={columns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() => fetchAllPages((page, size) => bookingsApi.list({ ...apiFilters, sort: table.sortParam, page, page_size: size }))}
@@ -289,16 +318,16 @@ export default function BookingsPage() {
             }
             more={
               <AmountRangeFilter
-                label="Total"
+                label={t('bookings.filters.total')}
                 currency="INR"
                 value={{ min: filters.min_total, max: filters.max_total }}
                 onChange={({ min, max }) => setFilters({ min_total: min, max_total: max })}
               />
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('bookings.filters.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <SelectFilter
-              label="Hospital"
+              label={t('bookings.filters.hospital')}
               icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.hospital_id}
               onChange={(v) => setFilter('hospital_id', v)}
@@ -307,23 +336,23 @@ export default function BookingsPage() {
               searchable
             />
             <MultiSelectFilter
-              label="Payment"
+              label={t('bookings.filters.payment')}
               icon={<Wallet className="size-3.5 opacity-70" aria-hidden />}
               value={filters.payment}
               onChange={(v) => setFilter('payment', v)}
               options={PAYMENT_STATES.map((p) => ({
                 value: p,
-                label: PAYMENT_LABELS[p],
+                label: paymentLabel(t, p),
                 tone: p === 'paid' ? 'success' : p === 'partial' ? 'warning' : 'neutral',
               }))}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('bookings.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'admission', label: 'Admission' },
-                { value: 'created', label: 'Booked' },
+                { value: 'admission', label: t('bookings.filters.dateAdmission') },
+                { value: 'created', label: t('bookings.filters.dateBooked') },
               ]}
               field={filters.date_field || 'admission'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}
@@ -336,20 +365,25 @@ export default function BookingsPage() {
   );
 }
 
-function bookingTrack(b: BookingOut): { steps: TrackStep[]; current: number; terminal: { label: string; at?: string | null } | null } {
+function bookingTrack(
+  t: TFunction,
+  b: BookingOut,
+): { steps: TrackStep[]; current: number; terminal: { label: string; at?: string | null } | null } {
   const steps: TrackStep[] = [
-    { key: 'booked', label: 'Booked', at: formatDate(b.created_at, 'd MMM') },
-    { key: 'confirmed', label: 'Deposit paid', at: b.confirmed_at ? formatDate(b.confirmed_at, 'd MMM') : null },
-    { key: 'admitted', label: 'Admitted', at: b.admitted_at ? formatDate(b.admitted_at, 'd MMM') : null },
-    { key: 'completed', label: 'Completed', at: b.completed_at ? formatDate(b.completed_at, 'd MMM') : null },
+    { key: 'booked', label: t('bookings.track.booked'), at: formatDate(b.created_at, 'd MMM') },
+    { key: 'confirmed', label: t('bookings.track.depositPaid'), at: b.confirmed_at ? formatDate(b.confirmed_at, 'd MMM') : null },
+    { key: 'admitted', label: t('bookings.track.admitted'), at: b.admitted_at ? formatDate(b.admitted_at, 'd MMM') : null },
+    { key: 'completed', label: t('bookings.track.completed'), at: b.completed_at ? formatDate(b.completed_at, 'd MMM') : null },
   ];
   const reached = b.completed_at ? 3 : b.admitted_at ? 2 : b.confirmed_at ? 1 : 0;
   const current = b.status === 'completed' ? 3 : b.status === 'admitted' ? 2 : b.status === 'confirmed' ? 1 : b.status === 'pending_payment' ? 0 : reached;
-  const terminal = b.status === 'cancelled' ? { label: 'Cancelled', at: b.cancelled_at ? formatDate(b.cancelled_at, 'd MMM') : null } : null;
+  const terminal =
+    b.status === 'cancelled' ? { label: t('bookings.track.cancelled'), at: b.cancelled_at ? formatDate(b.cancelled_at, 'd MMM') : null } : null;
   return { steps, current, terminal };
 }
 
 function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClose: () => void }) {
+  const { t } = useAppTranslation();
   const perms = useOpsPermissions();
   const q = useQuery({
     queryKey: [...opsKeys.bookings, 'detail', bookingId],
@@ -362,7 +396,7 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
 
   const cancel = useOpsMutation({
     mutationFn: (reason: string) => bookingsApi.cancel(bookingId!, { reason }),
-    success: 'Booking cancelled; refundable amount computed per refund policy',
+    success: t('bookings.drawer.cancelSuccess'),
     invalidate,
     onSuccess: () => setDialog(null),
   });
@@ -372,22 +406,22 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
       <>
         {b.status === 'confirmed' && (
           <Button size="sm" icon={<BedDouble className="size-4" />} onClick={() => setDialog('admit')}>
-            Mark admitted
+            {t('bookings.drawer.markAdmitted')}
           </Button>
         )}
         {b.status === 'admitted' && (
           <Button size="sm" icon={<CheckCircle2 className="size-4" />} onClick={() => setDialog('complete')}>
-            Mark completed
+            {t('bookings.drawer.markCompleted')}
           </Button>
         )}
         {(b.status === 'pending_payment' || b.status === 'confirmed') && (
           <Button size="sm" variant="outline" className="text-red-600 dark:text-red-400" icon={<XCircle className="size-4" />} onClick={() => setDialog('cancel')}>
-            Cancel booking
+            {t('bookings.drawer.cancelBooking')}
           </Button>
         )}
       </>
     ) : null;
-  const track = b ? bookingTrack(b) : null;
+  const track = b ? bookingTrack(t, b) : null;
   const paidPct = b && b.total_minor > 0 ? Math.min(100, Math.round((b.amount_paid_minor / b.total_minor) * 100)) : 0;
 
   return (
@@ -395,7 +429,7 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
       open={!!bookingId}
       onClose={onClose}
       width="xl"
-      title={b ? `Booking ${b.booking_number}` : 'Booking'}
+      title={b ? t('bookings.drawer.titleWithNumber', { number: b.booking_number }) : t('bookings.drawer.title')}
       subtitle={b ? `${b.patient.full_name} · ${b.hospital.name}, ${b.hospital.city}` : undefined}
     >
       {q.isLoading ? (
@@ -409,17 +443,31 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
               <>
                 <StatusBadgeCell status={b.status} kind="booking" />
                 <PaymentBadge b={b} />
-                {b.insurance_claim_requested && <UiBadge tone="info">Insurance claim</UiBadge>}
+                {b.insurance_claim_requested && <UiBadge tone="info">{t('bookings.drawer.insuranceClaim')}</UiBadge>}
               </>
             }
             meta={
               <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span>
-                  Admission <strong className="font-medium text-fg">{formatDate(b.admission_date)}</strong>
-                  {b.duration_days != null ? ` · ${b.duration_days} days` : ''}
+                  {b.duration_days != null ? (
+                    <Trans
+                      t={t}
+                      i18nKey="bookings.drawer.admissionWithDuration"
+                      count={b.duration_days}
+                      values={{ date: formatDate(b.admission_date) }}
+                      components={{ 0: <strong className="font-medium text-fg" /> }}
+                    />
+                  ) : (
+                    <Trans
+                      t={t}
+                      i18nKey="bookings.drawer.admission"
+                      values={{ date: formatDate(b.admission_date) }}
+                      components={{ 0: <strong className="font-medium text-fg" /> }}
+                    />
+                  )}
                 </span>
                 <Link to={opsPaths.case(b.case_id)} className="font-medium text-primary-ink hover:underline">
-                  Open case →
+                  {t('bookings.drawer.openCase')}
                 </Link>
               </span>
             }
@@ -429,50 +477,73 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
           </DrawerSummary>
 
           {b.status === 'cancelled' && (
-            <Banner tone="danger" icon={<XCircle className="size-4" aria-hidden />} title={`Cancelled ${formatDateTime(b.cancelled_at)}`}>
-              {b.cancel_reason ?? 'No reason recorded.'}
+            <Banner
+              tone="danger"
+              icon={<XCircle className="size-4" aria-hidden />}
+              title={t('bookings.drawer.cancelledAt', { date: formatDateTime(b.cancelled_at) })}
+            >
+              {b.cancel_reason ?? t('bookings.drawer.noReason')}
             </Banner>
           )}
 
-          <Panel title="Payment" description={`${PAYMENT_OPTION_LABELS[b.payment_option]}${b.installment_months ? ` · ${b.installment_months} monthly installments` : ''}`}>
+          <Panel
+            title={t('bookings.drawer.payment')}
+            description={
+              b.installment_months
+                ? t('bookings.drawer.paymentOptionWithInstallments', { option: PAYMENT_OPTION_LABELS[b.payment_option], count: b.installment_months })
+                : PAYMENT_OPTION_LABELS[b.payment_option]
+            }
+          >
             <StatTiles
               items={[
-                { label: 'Total', value: formatMoney(b.total_minor, b.currency) },
-                { label: 'Paid', value: formatMoney(b.amount_paid_minor, b.currency), tone: paidPct >= 100 ? 'success' : undefined, hint: `${paidPct}% of total` },
-                { label: 'Balance due', value: formatMoney(b.balance_due_minor, b.currency), tone: b.balance_due_minor > 0 ? 'warning' : 'success' },
-                { label: 'Refunded', value: formatMoney(b.amount_refunded_minor, b.currency), tone: b.amount_refunded_minor > 0 ? 'danger' : undefined },
+                { label: t('bookings.drawer.total'), value: formatMoney(b.total_minor, b.currency) },
+                {
+                  label: t('bookings.drawer.paid'),
+                  value: formatMoney(b.amount_paid_minor, b.currency),
+                  tone: paidPct >= 100 ? 'success' : undefined,
+                  hint: t('bookings.drawer.paidPct', { pct: formatNumber(paidPct) }),
+                },
+                { label: t('bookings.drawer.balanceDue'), value: formatMoney(b.balance_due_minor, b.currency), tone: b.balance_due_minor > 0 ? 'warning' : 'success' },
+                { label: t('bookings.drawer.refunded'), value: formatMoney(b.amount_refunded_minor, b.currency), tone: b.amount_refunded_minor > 0 ? 'danger' : undefined },
               ]}
             />
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-label="Paid" aria-valuenow={paidPct} aria-valuemin={0} aria-valuemax={100}>
+            <div
+              className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2"
+              role="progressbar"
+              aria-label={t('bookings.drawer.paid')}
+              aria-valuenow={paidPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div className={paidPct >= 100 ? 'h-full bg-success' : 'h-full bg-primary'} style={{ width: `${paidPct}%` }} />
             </div>
             <div className="mt-4">
               <FieldGrid
                 columns={3}
                 items={[
-                  { label: 'Subtotal', value: formatMoney(b.subtotal_minor, b.currency) },
-                  { label: 'Discount', value: b.discount_minor ? `− ${formatMoney(b.discount_minor, b.currency)}` : '—' },
-                  { label: 'Service fee', value: formatMoney(b.service_fee_minor, b.currency) },
-                  { label: 'Tax', value: formatMoney(b.tax_minor, b.currency) },
-                  { label: 'Deposit', value: formatMoney(b.deposit_minor, b.currency) },
+                  { label: t('bookings.drawer.subtotal'), value: formatMoney(b.subtotal_minor, b.currency) },
+                  { label: t('bookings.drawer.discount'), value: b.discount_minor ? `− ${formatMoney(b.discount_minor, b.currency)}` : '—' },
+                  { label: t('bookings.drawer.serviceFee'), value: formatMoney(b.service_fee_minor, b.currency) },
+                  { label: t('bookings.drawer.tax'), value: formatMoney(b.tax_minor, b.currency) },
+                  { label: t('bookings.drawer.deposit'), value: formatMoney(b.deposit_minor, b.currency) },
                 ]}
               />
             </div>
           </Panel>
 
-          <Panel title="Treatment">
+          <Panel title={t('bookings.drawer.treatment')}>
             <FieldGrid
               columns={3}
               items={[
-                { label: 'Procedure', value: b.procedure?.name ?? '—' },
-                { label: 'Package', value: b.package?.name ?? '—' },
-                { label: 'Doctor', value: b.doctor?.full_name ?? '—' },
-                { label: 'Admission', value: formatDate(b.admission_date) },
-                { label: 'Discharge', value: formatDate(b.discharge_date) },
-                { label: 'Duration', value: b.duration_days != null ? `${b.duration_days} days` : '—' },
-                { label: 'Confirmed', value: formatDateTime(b.confirmed_at) },
-                { label: 'Admitted', value: formatDateTime(b.admitted_at) },
-                { label: 'Completed', value: formatDateTime(b.completed_at) },
+                { label: t('bookings.drawer.procedure'), value: b.procedure?.name ?? '—' },
+                { label: t('bookings.drawer.package'), value: b.package?.name ?? '—' },
+                { label: t('bookings.drawer.doctor'), value: b.doctor?.full_name ?? '—' },
+                { label: t('bookings.drawer.admissionDate'), value: formatDate(b.admission_date) },
+                { label: t('bookings.drawer.discharge'), value: formatDate(b.discharge_date) },
+                { label: t('bookings.drawer.duration'), value: b.duration_days != null ? t('bookings.days', { count: b.duration_days }) : '—' },
+                { label: t('bookings.drawer.confirmed'), value: formatDateTime(b.confirmed_at) },
+                { label: t('bookings.drawer.admitted'), value: formatDateTime(b.admitted_at) },
+                { label: t('bookings.drawer.completed'), value: formatDateTime(b.completed_at) },
               ]}
             />
           </Panel>
@@ -487,9 +558,9 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
       )}
       <ReasonDialog
         open={dialog === 'cancel'}
-        title="Cancel booking"
-        description="Refunds are calculated by the server from the refund policy and processed by Finance."
-        confirmLabel="Cancel booking"
+        title={t('bookings.drawer.cancelBooking')}
+        description={t('bookings.drawer.cancelDescription')}
+        confirmLabel={t('bookings.drawer.cancelBooking')}
         loading={cancel.isPending}
         onClose={() => setDialog(null)}
         onConfirm={(reason) => cancel.mutate(reason)}
@@ -507,10 +578,11 @@ function BookingDrawer({ bookingId, onClose }: { bookingId: string | null; onClo
 }
 
 function PaymentBadge({ b }: { b: BookingOut }) {
+  const { t } = useAppTranslation();
   const state = paymentState(b);
   return (
     <UiBadge tone={state === 'paid' ? 'success' : state === 'partial' ? 'warning' : 'neutral'} dot>
-      {PAYMENT_LABELS[state]}
+      {paymentLabel(t, state)}
     </UiBadge>
   );
 }
@@ -526,6 +598,7 @@ function TransitionModal({
   bookingId: string;
   onClose: () => void;
 }) {
+  const { t } = useAppTranslation();
   const [note, setNote] = useState('');
   const [discharge, setDischarge] = useState('');
   useEffect(() => {
@@ -539,7 +612,7 @@ function TransitionModal({
       kind === 'admit'
         ? bookingsApi.admit(bookingId, { note: note.trim() || undefined })
         : bookingsApi.complete(bookingId, { note: note.trim() || undefined, discharge_date: discharge || undefined }),
-    success: kind === 'admit' ? 'Patient marked as admitted' : 'Treatment marked completed; settlement items will be created',
+    success: kind === 'admit' ? t('bookings.transition.admitSuccess') : t('bookings.transition.completeSuccess'),
     invalidate: [opsKeys.bookings, opsKeys.cases, opsKeys.dashboard],
     onSuccess: onClose,
   });
@@ -548,30 +621,28 @@ function TransitionModal({
       open={open}
       onClose={onClose}
       size="sm"
-      title={kind === 'admit' ? 'Mark patient admitted' : 'Mark treatment completed'}
+      title={kind === 'admit' ? t('bookings.transition.admitTitle') : t('bookings.transition.completeTitle')}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('bookings.transition.cancel')}
           </Button>
           <Button loading={run.isPending} onClick={() => run.mutate()}>
-            Confirm
+            {t('bookings.transition.confirm')}
           </Button>
         </>
       }
     >
       <div className="space-y-3">
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          {kind === 'admit'
-            ? 'Normally done by the hospital. Use this when the hospital confirms admission by phone.'
-            : 'Completing recognises revenue and creates hospital/agent settlement items. This cannot be undone.'}
+          {kind === 'admit' ? t('bookings.transition.admitHelp') : t('bookings.transition.completeHelp')}
         </p>
         {kind === 'complete' && (
-          <Field label="Discharge date">
+          <Field label={t('bookings.transition.dischargeDate')}>
             {(id) => <Input id={id} type="date" value={discharge} onChange={(e) => setDischarge(e.target.value)} />}
           </Field>
         )}
-        <Field label="Note">
+        <Field label={t('bookings.transition.note')}>
           {(id) => <Textarea id={id} value={note} maxLength={1000} onChange={(e) => setNote(e.target.value)} />}
         </Field>
       </div>
@@ -580,6 +651,7 @@ function TransitionModal({
 }
 
 function Checklist({ bookingId, canEdit }: { bookingId: string; canEdit: boolean }) {
+  const { t } = useAppTranslation();
   const q = useQuery({
     queryKey: [...opsKeys.bookings, 'checklist', bookingId],
     queryFn: () => bookingsApi.checklist(bookingId),
@@ -587,15 +659,15 @@ function Checklist({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
   const update = useOpsMutation({
     mutationFn: (v: { itemId: string; status: ChecklistStatus }) =>
       bookingsApi.updateChecklistItem(bookingId, v.itemId, { status: v.status }),
-    success: 'Checklist updated',
+    success: t('bookings.checklist.updated'),
     invalidate: [[...opsKeys.bookings, 'checklist', bookingId]],
   });
   const items = [...(q.data ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const done = items.filter((i) => i.status === 'done').length;
   return (
     <Panel
-      title="Pre-arrival checklist"
-      description={items.length ? `${done} of ${items.length} done` : undefined}
+      title={t('bookings.checklist.title')}
+      description={items.length ? t('bookings.checklist.progress', { done, total: items.length }) : undefined}
       actions={
         items.length > 0 ? (
           <span className="mt-1 block h-1.5 w-28 overflow-hidden rounded-full bg-surface-2" aria-hidden>
@@ -609,7 +681,7 @@ function Checklist({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
       ) : q.error ? (
         <ErrorState error={q.error} onRetry={() => void q.refetch()} />
       ) : items.length === 0 ? (
-        <p className="text-sm text-muted">No checklist yet.</p>
+        <p className="text-sm text-muted">{t('bookings.checklist.empty')}</p>
       ) : (
         <ul className="-my-2 divide-y divide-border">
           {items.map((item) => (
@@ -620,7 +692,7 @@ function Checklist({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
               </span>
               {canEdit ? (
                 <Select
-                  aria-label={`Status of ${item.label}`}
+                  aria-label={t('bookings.checklist.statusOf', { label: item.label })}
                   className="h-8 w-36 text-xs"
                   value={item.status}
                   disabled={update.isPending}
@@ -639,6 +711,7 @@ function Checklist({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
 }
 
 function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean }) {
+  const { t } = useAppTranslation();
   const key = [...opsKeys.bookings, 'itinerary', bookingId];
   const q = useQuery({ queryKey: key, queryFn: () => bookingsApi.itinerary(bookingId) });
   const [adding, setAdding] = useState(false);
@@ -652,7 +725,7 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
         location: form.location.trim() || null,
         description: form.description.trim() || null,
       }),
-    success: 'Itinerary item added',
+    success: t('bookings.itinerary.added'),
     invalidate: [key],
     onSuccess: () => {
       setAdding(false);
@@ -661,7 +734,7 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
   });
   const remove = useOpsMutation({
     mutationFn: (itemId: string) => bookingsApi.deleteItineraryItem(bookingId, itemId),
-    success: 'Itinerary item removed',
+    success: t('bookings.itinerary.removed'),
     invalidate: [key],
   });
   const submit = (e: FormEvent) => {
@@ -672,33 +745,33 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
   const columns: DataTableColumn<ItineraryItemOut>[] = [
     {
       key: 'starts_at',
-      header: 'When',
+      header: t('bookings.itinerary.when'),
       sortable: true,
       mobile: 'secondary',
       cell: (it) => <DateCell value={it.starts_at} display="datetime" />,
     },
     {
       key: 'title',
-      header: 'Item',
+      header: t('bookings.itinerary.item'),
       sortable: true,
       mobile: 'primary',
       className: 'max-w-64',
       cell: (it) => <TextCell primary={<span className="font-medium">{it.title}</span>} secondary={[ITINERARY_KIND_LABELS[it.kind], it.location].filter(Boolean).join(' · ')} />,
     },
-    { key: 'status', header: 'Status', mobile: 'badge', cell: (it) => <StatusBadgeCell status={it.status} kind="itinerary" /> },
+    { key: 'status', header: t('bookings.itinerary.status'), mobile: 'badge', cell: (it) => <StatusBadgeCell status={it.status} kind="itinerary" /> },
     ...(canEdit
       ? [
           {
             key: '_remove',
-            header: <span className="sr-only">Remove</span>,
-            title: 'Remove',
+            header: <span className="sr-only">{t('bookings.itinerary.remove')}</span>,
+            title: t('bookings.itinerary.remove'),
             align: 'end' as const,
             hideable: false,
             cell: (it: ItineraryItemOut) => (
               <Button
                 size="sm"
                 variant="ghost"
-                aria-label={`Remove ${it.title}`}
+                aria-label={t('bookings.itinerary.removeItem', { title: it.title })}
                 icon={<Trash2 className="size-3.5" />}
                 disabled={remove.isPending}
                 onClick={() => remove.mutate(it.id)}
@@ -711,18 +784,18 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
 
   return (
     <Panel
-      title="Itinerary"
+      title={t('bookings.itinerary.title')}
       bodyClassName="p-0"
       actions={
         canEdit && (
           <Button size="sm" variant="ghost" icon={<CalendarPlus className="size-3.5" />} onClick={() => setAdding(true)}>
-            Add item
+            {t('bookings.itinerary.addItem')}
           </Button>
         )
       }
     >
       <DataTable
-        caption="Itinerary"
+        caption={t('bookings.itinerary.title')}
         columns={columns}
         rows={q.data}
         loading={q.isLoading}
@@ -732,17 +805,17 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
         density="compact"
         responsive="cards"
         className="rounded-none border-0 shadow-none"
-        emptyTitle="No itinerary items"
-        emptyDescription="Appointments, transfers and check-ins planned for this stay appear here."
+        emptyTitle={t('bookings.itinerary.emptyTitle')}
+        emptyDescription={t('bookings.itinerary.emptyDescription')}
       />
       <Modal
         open={adding}
         onClose={() => setAdding(false)}
-        title="Add itinerary item"
+        title={t('bookings.itinerary.addTitle')}
         footer={
           <>
             <Button variant="outline" onClick={() => setAdding(false)}>
-              Cancel
+              {t('bookings.itinerary.cancel')}
             </Button>
             <Button
               type="submit"
@@ -750,13 +823,13 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
               loading={add.isPending}
               disabled={!form.title.trim() || !form.starts_at}
             >
-              Add
+              {t('bookings.itinerary.add')}
             </Button>
           </>
         }
       >
         <form id="itinerary-form" onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
-          <Field label="Kind" required>
+          <Field label={t('bookings.itinerary.kind')} required>
             {(id) => (
               <Select
                 id={id}
@@ -766,18 +839,18 @@ function Itinerary({ bookingId, canEdit }: { bookingId: string; canEdit: boolean
               />
             )}
           </Field>
-          <Field label="Starts at" required>
+          <Field label={t('bookings.itinerary.startsAt')} required>
             {(id) => (
               <Input id={id} type="datetime-local" value={form.starts_at} onChange={(e) => setForm({ ...form, starts_at: e.target.value })} />
             )}
           </Field>
-          <Field label="Title" required className="sm:col-span-2">
+          <Field label={t('bookings.itinerary.titleField')} required className="sm:col-span-2">
             {(id) => <Input id={id} value={form.title} maxLength={200} onChange={(e) => setForm({ ...form, title: e.target.value })} />}
           </Field>
-          <Field label="Location" className="sm:col-span-2">
+          <Field label={t('bookings.itinerary.location')} className="sm:col-span-2">
             {(id) => <Input id={id} value={form.location} maxLength={300} onChange={(e) => setForm({ ...form, location: e.target.value })} />}
           </Field>
-          <Field label="Description" className="sm:col-span-2">
+          <Field label={t('bookings.itinerary.description')} className="sm:col-span-2">
             {(id) => (
               <Textarea id={id} value={form.description} maxLength={2000} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             )}

@@ -4,6 +4,7 @@ import { cn } from '../lib/cn';
 import { useCommonTranslation } from '../lib/i18n';
 import { BRAND, BrandLogo } from './Brand';
 import { ThemeToggle } from './controls';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export interface AuthLayoutProps {
   children?: ReactNode;
@@ -38,6 +39,7 @@ export function AuthLayout({
         <div className="flex items-center justify-between gap-2">
           {brand ?? <BrandLogo tagline />}
           <div className="flex items-center gap-1">
+            <LanguageSwitcher />
             {showThemeToggle && <ThemeToggle />}
           </div>
         </div>

@@ -5,32 +5,30 @@ import {
   DURATION_UNIT_LABELS,
   PREVIOUS_TREATMENTS,
   PREVIOUS_TREATMENT_LABELS,
+  SEVERITY_LEVEL_LABELS,
   type DurationUnit,
   type PreviousTreatment,
   type ScreeningSeverity,
   type SeverityLevel,
 } from '@hig/shared/api';
 import { DocumentAiStatus, REPORT_DOCUMENT_KINDS, ReportAiPanel } from '@hig/shared/docai';
+import { useAppTranslation } from '../../../../i18n';
 import { useDocuments } from '../../api/queries';
 import { cn, formatDate } from '../../lib/shared';
 import { Checkbox, Chip, Field, Input, Skeleton } from '../../ui/primitives';
 
-const SEVERITY_OPTIONS: { value: SeverityLevel; label: string; dot: string }[] = [
-  { value: 'none', label: 'None', dot: 'bg-slate-400' },
-  { value: 'mild', label: 'Mild', dot: 'bg-yellow-400' },
-  { value: 'moderate', label: 'Moderate', dot: 'bg-orange-500' },
-  { value: 'severe', label: 'Severe', dot: 'bg-red-500' },
+const SEVERITY_OPTIONS: { value: SeverityLevel; dot: string }[] = [
+  { value: 'none', dot: 'bg-slate-400' },
+  { value: 'mild', dot: 'bg-yellow-400' },
+  { value: 'moderate', dot: 'bg-orange-500' },
+  { value: 'severe', dot: 'bg-red-500' },
 ];
 
-const SEVERITY_ROWS: { key: keyof ScreeningSeverity; title: string; question: string; icon: ReactNode }[] = [
-  { key: 'work', title: 'Work', question: 'How much does it affect your work?', icon: <Briefcase className="h-5 w-5" aria-hidden /> },
-  { key: 'sleep', title: 'Sleep', question: 'How much does it affect your sleep?', icon: <Bed className="h-5 w-5" aria-hidden /> },
-  {
-    key: 'mobility',
-    title: 'Mobility',
-    question: 'How much does it affect your mobility?',
-    icon: <Accessibility className="h-5 w-5" aria-hidden />,
-  },
+/** Daily-impact rows; title/question come from screening.duration.impact.<key>.{title,question}. */
+const SEVERITY_ROWS: { key: keyof ScreeningSeverity; icon: ReactNode }[] = [
+  { key: 'work', icon: <Briefcase className="h-5 w-5" aria-hidden /> },
+  { key: 'sleep', icon: <Bed className="h-5 w-5" aria-hidden /> },
+  { key: 'mobility', icon: <Accessibility className="h-5 w-5" aria-hidden /> },
 ];
 
 export function StepDuration({
@@ -56,13 +54,14 @@ export function StepDuration({
   onTreatments: (t: PreviousTreatment[]) => void;
   onReportIds: (ids: string[]) => void;
 }) {
+  const { t } = useAppTranslation();
   const allDocuments = useDocuments();
   const reportKinds: readonly string[] = REPORT_DOCUMENT_KINDS;
   const reports = { ...allDocuments, data: allDocuments.data?.filter((d) => reportKinds.includes(d.kind)) };
   const attached = new Set(reportIds);
 
-  function toggleTreatment(t: PreviousTreatment) {
-    onTreatments(treatments.includes(t) ? treatments.filter((x) => x !== t) : [...treatments, t]);
+  function toggleTreatment(treatment: PreviousTreatment) {
+    onTreatments(treatments.includes(treatment) ? treatments.filter((x) => x !== treatment) : [...treatments, treatment]);
   }
 
   function toggleReport(id: string) {
@@ -72,14 +71,14 @@ export function StepDuration({
   return (
     <div className="space-y-8">
       <section>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Duration unit">
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('screening.duration.unitLabel')}>
           {DURATION_UNITS.map((u) => (
             <Chip key={u} selected={durationUnit === u} onClick={() => onDurationUnit(u)}>
               {DURATION_UNIT_LABELS[u]}
             </Chip>
           ))}
         </div>
-        <Field label={`Number of ${DURATION_UNIT_LABELS[durationUnit].toLowerCase()}`} htmlFor="duration-value" className="mt-4 max-w-xs">
+        <Field label={t(`screening.duration.numberOf.${durationUnit}`)} htmlFor="duration-value" className="mt-4 max-w-xs">
           <Input
             id="duration-value"
             type="number"
@@ -88,14 +87,14 @@ export function StepDuration({
             max={1000}
             value={durationValue}
             onChange={(e) => onDurationValue(e.target.value)}
-            placeholder="e.g. 3"
+            placeholder={t('screening.duration.valuePlaceholder')}
           />
         </Field>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold">Severity</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Daily impact</p>
+        <h3 className="text-lg font-semibold">{t('screening.duration.severity')}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.duration.dailyImpact')}</p>
         <div className="mt-3 space-y-3">
           {SEVERITY_ROWS.map((row) => (
             <div
@@ -107,11 +106,15 @@ export function StepDuration({
                   {row.icon}
                 </span>
                 <div>
-                  <p className="font-medium">{row.title}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{row.question}</p>
+                  <p className="font-medium">{t(`screening.duration.impact.${row.key}.title`)}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t(`screening.duration.impact.${row.key}.question`)}</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={`${row.title} impact`}>
+              <div
+                className="flex flex-wrap gap-1.5"
+                role="radiogroup"
+                aria-label={t(`screening.duration.impact.${row.key}.groupLabel`)}
+              >
                 {SEVERITY_OPTIONS.map((opt) => {
                   const active = severity[row.key] === opt.value;
                   return (
@@ -129,7 +132,7 @@ export function StepDuration({
                       )}
                     >
                       <span className={cn('h-2 w-2 rounded-full', opt.dot)} aria-hidden />
-                      {opt.label}
+                      {SEVERITY_LEVEL_LABELS[opt.value]}
                     </button>
                   );
                 })}
@@ -140,14 +143,14 @@ export function StepDuration({
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold">Previous treatments</h3>
+        <h3 className="text-lg font-semibold">{t('screening.duration.previousTreatments')}</h3>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {PREVIOUS_TREATMENTS.map((t) => (
-            <div key={t} className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-800">
+          {PREVIOUS_TREATMENTS.map((treatment) => (
+            <div key={treatment} className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-800">
               <Checkbox
-                label={PREVIOUS_TREATMENT_LABELS[t]}
-                checked={treatments.includes(t)}
-                onChange={() => toggleTreatment(t)}
+                label={PREVIOUS_TREATMENT_LABELS[treatment]}
+                checked={treatments.includes(treatment)}
+                onChange={() => toggleTreatment(treatment)}
               />
             </div>
           ))}
@@ -158,12 +161,10 @@ export function StepDuration({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-semibold">
-              Previous reports <span className="font-normal text-slate-500">(optional)</span>
+              {t('screening.duration.previousReports')}{' '}
+              <span className="font-normal text-slate-500">{t('screening.duration.optionalParen')}</span>
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Scans, lab results or doctor letters help hospitals give an accurate quote. Upload a PDF or take photos
-              of the pages - our AI can read the report, and you check and confirm what it found.
-            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('screening.duration.reportsHelp')}</p>
           </div>
         </div>
         <ReportAiPanel
@@ -194,7 +195,7 @@ export function StepDuration({
                         {doc.file_name}
                       </span>
                     }
-                    description={`Uploaded ${formatDate(doc.created_at)}`}
+                    description={t('screening.duration.uploadedOn', { date: formatDate(doc.created_at) })}
                     checked={attached.has(doc.id)}
                     onChange={() => toggleReport(doc.id)}
                   />
@@ -204,14 +205,14 @@ export function StepDuration({
             </ul>
           ) : reportIds.length ? (
             <p className="flex items-center gap-2 text-sm text-slate-500">
-              {reportIds.length} report(s) attached
-              <button type="button" onClick={() => onReportIds([])} aria-label="Detach all reports">
+              {t('screening.duration.reportsAttached', { count: reportIds.length })}
+              <button type="button" onClick={() => onReportIds([])} aria-label={t('screening.duration.detachAll')}>
                 <X className="h-4 w-4" />
               </button>
             </p>
           ) : (
             <p className="rounded-xl border border-dashed border-slate-300 p-4 text-center text-sm text-slate-500 dark:border-slate-700">
-              No reports uploaded yet.
+              {t('screening.duration.noReports')}
             </p>
           )}
         </div>

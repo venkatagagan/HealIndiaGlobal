@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { catalogApi } from '@hig/shared/api';
-import { isoDateFromToday } from '@hig/shared/lib';
+import { i18n, intlLocale, isoDateFromToday } from '@hig/shared/lib';
 import type { DatePreset, FilterOption } from '@hig/shared/ui';
 
 /** Hospital options for list filters (the public directory; small). */
@@ -11,7 +11,7 @@ export function useHospitalOptions() {
     select: (page): FilterOption[] =>
       page.items
         .map((h) => ({ value: h.id, label: h.name, description: h.city }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
+        .sort((a, b) => a.label.localeCompare(b.label, intlLocale())),
     staleTime: 10 * 60_000,
   });
 }
@@ -26,7 +26,7 @@ export function optionsFromRows<T>(rows: readonly T[], pick: (row: T) => { value
     if (cur) cur.count += 1;
     else map.set(o.value, { ...o, count: 1 });
   }
-  return [...map.values()].sort((a, b) => a.label.localeCompare(b.label));
+  return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, intlLocale()));
 }
 
 /** Inclusive "YYYY-MM-DD" range test on an ISO date / datetime (local calendar date). */
@@ -44,9 +44,9 @@ function localIsoDate(d: Date): string {
 
 /** Date presets for future-facing dates (admissions, travel). */
 export const UPCOMING_DATE_PRESETS: readonly DatePreset[] = [
-  { id: 'next-7d', label: 'Next 7 days', range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(6) }) },
-  { id: 'next-30d', label: 'Next 30 days', range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(29) }) },
-  { id: 'next-90d', label: 'Next 90 days', range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(89) }) },
-  { id: 'past-30d', label: 'Last 30 days', range: () => ({ from: isoDateFromToday(-29), to: isoDateFromToday(0) }) },
-  { id: 'past', label: 'Before today', range: () => ({ from: '', to: isoDateFromToday(-1) }) },
+  { id: 'next-7d', get label() { return i18n.t('agent:datePresets.next7d'); }, range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(6) }) },
+  { id: 'next-30d', get label() { return i18n.t('agent:datePresets.next30d'); }, range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(29) }) },
+  { id: 'next-90d', get label() { return i18n.t('agent:datePresets.next90d'); }, range: () => ({ from: isoDateFromToday(0), to: isoDateFromToday(89) }) },
+  { id: 'past-30d', get label() { return i18n.t('agent:datePresets.past30d'); }, range: () => ({ from: isoDateFromToday(-29), to: isoDateFromToday(0) }) },
+  { id: 'past', get label() { return i18n.t('agent:datePresets.beforeToday'); }, range: () => ({ from: '', to: isoDateFromToday(-1) }) },
 ];

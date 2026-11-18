@@ -10,7 +10,8 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
-import { cn } from '../lib/shared';
+import { useAppTranslation } from '../../../i18n';
+import { cn, dateLocale, formatNumber } from '../lib/shared';
 
 /**
  * Month calendar where only `available` dates (YYYY-MM-DD) can be picked. Keyboard: Tab to a day, Enter to pick.
@@ -42,6 +43,8 @@ export function AvailabilityCalendar({
       }),
     [month],
   );
+  const { t } = useAppTranslation();
+  const locale = dateLocale(); // date-fns locale of the UI language (the hook above re-renders on a switch)
   const canPrev = startOfMonth(month) > startOfMonth(minMonth);
   const canNext = startOfMonth(month) < startOfMonth(maxMonth);
 
@@ -53,29 +56,29 @@ export function AvailabilityCalendar({
           onClick={() => onMonth(addMonths(month, -1))}
           disabled={!canPrev}
           className="rounded-full p-1.5 hover:bg-white/10 disabled:opacity-30"
-          aria-label="Previous month"
+          aria-label={t('calendar.previousMonth')}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5 rtl:-scale-x-100" />
         </button>
         <p className="font-semibold" aria-live="polite">
-          {format(month, 'MMMM yyyy')}
+          {format(month, 'LLLL yyyy', { locale })}
         </p>
         <button
           type="button"
           onClick={() => onMonth(addMonths(month, 1))}
           disabled={!canNext}
           className="rounded-full p-1.5 hover:bg-white/10 disabled:opacity-30"
-          aria-label="Next month"
+          aria-label={t('calendar.nextMonth')}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-5 w-5 rtl:-scale-x-100" />
         </button>
       </div>
       <div className="grid grid-cols-7 gap-1.5 text-center text-xs text-slate-400" aria-hidden>
-        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <span key={i}>{d}</span>
+        {days.slice(0, 7).map((d) => (
+          <span key={d.getDay()}>{format(d, 'EEEEE', { locale })}</span>
         ))}
       </div>
-      <div className="mt-2 grid grid-cols-7 gap-1.5" role="grid" aria-label="Admission dates">
+      <div className="mt-2 grid grid-cols-7 gap-1.5" role="grid" aria-label={t('calendar.admissionDates')}>
         {days.map((day) => {
           const iso = format(day, 'yyyy-MM-dd');
           const inMonth = isSameMonth(day, month);
@@ -89,7 +92,11 @@ export function AvailabilityCalendar({
               role="gridcell"
               disabled={!selectable}
               aria-selected={selected}
-              aria-label={`${format(day, 'EEEE d MMMM')}${selectable ? `, ${free} slot${free === 1 ? '' : 's'} available` : ', not available'}`}
+              aria-label={
+                selectable
+                  ? t('calendar.dayAvailable', { day: format(day, 'EEEE d MMMM', { locale }), count: free })
+                  : t('calendar.dayNotAvailable', { day: format(day, 'EEEE d MMMM', { locale }) })
+              }
               onClick={() => onChange(iso)}
               className={cn(
                 'flex aspect-square items-center justify-center rounded-full text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400',
@@ -101,17 +108,17 @@ export function AvailabilityCalendar({
                     : 'bg-slate-800/60 text-slate-600',
               )}
             >
-              {format(day, 'd')}
+              {formatNumber(day.getDate())}
             </button>
           );
         })}
       </div>
       <div className="mt-3 flex gap-4 text-xs text-slate-400">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full bg-green-900/60 ring-1 ring-green-400" aria-hidden /> Available
+          <span className="h-3 w-3 rounded-full bg-green-900/60 ring-1 ring-green-400" aria-hidden /> {t('calendar.available')}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full bg-violet-600" aria-hidden /> Selected
+          <span className="h-3 w-3 rounded-full bg-violet-600" aria-hidden /> {t('calendar.selected')}
         </span>
       </div>
     </div>

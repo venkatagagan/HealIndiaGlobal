@@ -126,6 +126,8 @@ class DocumentAnalysis(UUIDPkMixin, TimestampMixin, Base):
     facility_name: Mapped[str | None] = mapped_column(String(300))
     # AI-analysis text and JSON: encrypted at rest
     summary_patient: Mapped[str | None] = mapped_column(EncryptedText())
+    #: English copy of ``summary_patient`` for hospitals/agents/staff (equal to it when it is in English)
+    summary_patient_en: Mapped[str | None] = mapped_column(EncryptedText())
     summary_clinical: Mapped[str | None] = mapped_column(EncryptedText())
     key_findings: Mapped[list[dict[str, Any]]] = json_list_col()
     lab_values: Mapped[list[dict[str, Any]]] = json_list_col()

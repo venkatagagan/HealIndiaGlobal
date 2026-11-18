@@ -10,7 +10,8 @@ import {
 import { Link } from 'react-router';
 import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, ChevronsUpDown, Minus, Rows3, Rows4, Settings2, X } from 'lucide-react';
 import { cn } from '../lib/cn';
-import { useCommonTranslation } from '../lib/i18n';
+import { formatNumber, useCommonTranslation } from '../lib/i18n';
+import { formatDate } from '../lib/dates';
 import { prefs } from '../lib/storage';
 import type { TableStateLike } from '../lib/tableState';
 import { Button } from './Button';
@@ -135,9 +136,9 @@ export function Pagination({
   const summary =
     total !== undefined && pageSize
       ? t('pagination.summary', {
-          from: Math.min((page - 1) * pageSize + 1, total).toLocaleString(),
-          to: Math.min(page * pageSize, total).toLocaleString(),
-          total: total.toLocaleString(),
+          from: formatNumber(Math.min((page - 1) * pageSize + 1, total)),
+          to: formatNumber(Math.min(page * pageSize, total)),
+          total: formatNumber(total),
         })
       : t('pagination.page', { page, pages: pageCount });
   const navButton =
@@ -146,7 +147,7 @@ export function Pagination({
     'disabled:pointer-events-none disabled:opacity-40';
   const sizeSelect = onPageSizeChange && pageSize && (
     <label className="hidden items-center gap-2 text-sm text-muted sm:flex">
-      Rows per page
+      {t('table.rowsPerPage')}
       <select
         value={pageSize}
         onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -169,7 +170,7 @@ export function Pagination({
           <ul className="flex items-center gap-1">
             <li>
               <button type="button" className={navButton} onClick={() => go(page - 1)} disabled={page <= 1} aria-label={t('pagination.previous')}>
-                <ChevronLeft className="size-4" aria-hidden />
+                <ChevronLeft className="size-4 rtl:-scale-x-100" aria-hidden />
               </button>
             </li>
             {pageTokens(page, pageCount, siblingCount).map((token) =>
@@ -196,7 +197,7 @@ export function Pagination({
             </li>
             <li>
               <button type="button" className={navButton} onClick={() => go(page + 1)} disabled={page >= pageCount} aria-label={t('pagination.next')}>
-                <ChevronRight className="size-4" aria-hidden />
+                <ChevronRight className="size-4 rtl:-scale-x-100" aria-hidden />
               </button>
             </li>
           </ul>
@@ -377,7 +378,7 @@ function renderDefault(value: unknown): ReactNode {
   if (value === null || value === undefined || value === '') return <span className="text-muted">—</span>;
   if (typeof value === 'string' || typeof value === 'number') return value;
   if (typeof value === 'boolean') return value ? '✓' : '—';
-  if (value instanceof Date) return value.toLocaleDateString();
+  if (value instanceof Date) return formatDate(value);
   return String(value);
 }
 
@@ -485,6 +486,7 @@ function ViewOptionsMenu<T>({
   onDensity: (d: TableDensity) => void;
   onReset: () => void;
 }) {
+  const { t } = useCommonTranslation();
   const popover = usePopover();
   const hideable = columns.filter((c, i) => i > 0 && c.hideable !== false);
   return (
@@ -494,8 +496,8 @@ function ViewOptionsMenu<T>({
         variant="outline"
         size="icon-sm"
         className="size-9 rounded-full"
-        title="Table view options"
-        aria-label="Table view options"
+        title={t('table.viewOptions')}
+        aria-label={t('table.viewOptions')}
         aria-expanded={popover.open}
         aria-controls={popover.popoverProps.id}
         aria-haspopup="dialog"
@@ -503,14 +505,14 @@ function ViewOptionsMenu<T>({
       >
         <Settings2 className="size-4" aria-hidden />
       </Button>
-      <Popover {...popover.popoverProps} align="end" label="Table view options" className="w-64">
+      <Popover {...popover.popoverProps} align="end" label={t('table.viewOptions')} className="w-64">
         <div className="border-b border-border p-3">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Density</p>
-          <div role="radiogroup" aria-label="Density" className="grid grid-cols-2 gap-1 rounded-lg bg-surface-2 p-1">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{t('table.density')}</p>
+          <div role="radiogroup" aria-label={t('table.density')} className="grid grid-cols-2 gap-1 rounded-lg bg-surface-2 p-1">
             {(
               [
-                ['comfortable', 'Comfortable', Rows3],
-                ['compact', 'Compact', Rows4],
+                ['comfortable', t('table.comfortable'), Rows3],
+                ['compact', t('table.compact'), Rows4],
               ] as const
             ).map(([value, label, Icon]) => (
               <button
@@ -532,7 +534,7 @@ function ViewOptionsMenu<T>({
         </div>
         {hideable.length > 0 && (
           <div className="flex min-h-0 flex-col">
-            <p className="px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted">Columns</p>
+            <p className="px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted">{t('table.columns')}</p>
             <div className="min-h-0 overflow-y-auto px-1.5 pb-1.5">
               {hideable.map((c) => {
                 const visible = !hidden.has(c.key);
@@ -552,7 +554,7 @@ function ViewOptionsMenu<T>({
             onClick={onReset}
             className="rounded text-xs font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Reset view
+            {t('table.resetView')}
           </button>
         </div>
       </Popover>
@@ -743,7 +745,7 @@ export function DataTable<T>({
     if (!href) return null;
     return (
       <Link to={href} data-row-link="" className="sr-only" onClick={(e) => e.stopPropagation()}>
-        {rowLabel?.(row) ?? 'Open'}
+        {rowLabel?.(row) ?? t('table.open')}
       </Link>
     );
   };
@@ -773,12 +775,12 @@ export function DataTable<T>({
     empty ??
     (isFiltered ? (
       <EmptyState
-        title="No matching results"
-        description="Try a different search or remove some filters."
+        title={t('table.noMatchTitle')}
+        description={t('table.noMatchDescription')}
         action={
           resetFilters && (
             <Button variant="outline" size="sm" onClick={resetFilters} leftIcon={<X className="size-4" aria-hidden />}>
-              Reset filters
+              {t('table.resetFilters')}
             </Button>
           )
         }
@@ -816,15 +818,15 @@ export function DataTable<T>({
         </div>
       )}
       {selectable && selection.size > 0 && (
-        <div className="flex flex-wrap items-center gap-3 border-b border-border bg-primary-soft/50 px-4 py-2 text-sm animate-fade-in" role="region" aria-label="Bulk actions">
-          <span className="font-semibold text-fg tabular-nums">{selection.size.toLocaleString()} selected</span>
+        <div className="flex flex-wrap items-center gap-3 border-b border-border bg-primary-soft/50 px-4 py-2 text-sm animate-fade-in" role="region" aria-label={t('table.bulkActions')}>
+          <span className="font-semibold text-fg tabular-nums">{t('table.selected', { count: selection.size, n: formatNumber(selection.size) })}</span>
           <div className="flex flex-wrap items-center gap-2">{bulkActions?.([...selection.values()], clearSelection)}</div>
           <button
             type="button"
             onClick={clearSelection}
             className="ms-auto rounded text-sm font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Clear selection
+            {t('table.clearSelection')}
           </button>
         </div>
       )}
@@ -844,7 +846,7 @@ export function DataTable<T>({
                         checked={allOnPage}
                         indeterminate={!allOnPage && selectedOnPage > 0}
                         onChange={togglePage}
-                        label={allOnPage ? 'Deselect all rows on this page' : 'Select all rows on this page'}
+                        label={allOnPage ? t('table.deselectPage') : t('table.selectPage')}
                       />
                     </th>
                   )}
@@ -935,7 +937,7 @@ export function DataTable<T>({
                       >
                         {selectable && (
                           <td className={cn(compact ? 'py-2' : 'py-3.5', 'w-11 ps-4 pe-1', stickyCell, isSelected ? stickySelected : stickyHover)}>
-                            <SelectBox checked={isSelected} onChange={() => toggleRow(row, key)} label={isSelected ? 'Deselect row' : 'Select row'} />
+                            <SelectBox checked={isSelected} onChange={() => toggleRow(row, key)} label={isSelected ? t('table.deselectRow') : t('table.selectRow')} />
                           </td>
                         )}
                         {visibleColumns.map((column, ci) => (
@@ -966,8 +968,8 @@ export function DataTable<T>({
             <div className="md:hidden">
               {selectable && visible.length > 0 && (
                 <div className="flex items-center gap-2 border-b border-border px-4 py-2 text-xs text-muted">
-                  <SelectBox checked={allOnPage} indeterminate={!allOnPage && selectedOnPage > 0} onChange={togglePage} label="Select all rows on this page" />
-                  Select page
+                  <SelectBox checked={allOnPage} indeterminate={!allOnPage && selectedOnPage > 0} onChange={togglePage} label={t('table.selectPage')} />
+                  {t('table.selectPageShort')}
                 </div>
               )}
               {showSkeleton && (
@@ -1008,7 +1010,7 @@ export function DataTable<T>({
                       >
                         {selectable && (
                           <div className="pt-0.5">
-                            <SelectBox checked={isSelected} onChange={() => toggleRow(row, key)} label={isSelected ? 'Deselect row' : 'Select row'} />
+                            <SelectBox checked={isSelected} onChange={() => toggleRow(row, key)} label={isSelected ? t('table.deselectRow') : t('table.selectRow')} />
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
@@ -1028,7 +1030,7 @@ export function DataTable<T>({
                                 ))}
                               </div>
                             )}
-                            {clickable && badges.length === 0 && <ChevronRight className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />}
+                            {clickable && badges.length === 0 && <ChevronRight className="mt-0.5 size-4 shrink-0 text-muted rtl:-scale-x-100" aria-hidden />}
                           </div>
                           {secondary.map((c) => (
                             <div key={c.key} className="mt-1 min-w-0 text-sm text-muted">

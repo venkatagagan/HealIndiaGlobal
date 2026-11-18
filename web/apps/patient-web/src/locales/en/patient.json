@@ -1,0 +1,1643 @@
+{
+  "book": {
+    "acceptedQuote": "Your accepted quote",
+    "admissionDate": "Admission date",
+    "admissionDateHint": "Green dates have admission slots available.",
+    "admissionOn": "Admission on <0>{{date}}</0>",
+    "backToCase": "Back to case",
+    "created": "Booking {{number}} created",
+    "errors": {
+      "chooseDate": "Choose your admission date.",
+      "chooseSource": "Choose a package or your accepted quote.",
+      "createFailed": "The booking could not be created."
+    },
+    "formTitle": "Select dates & package",
+    "guestAction": "book your treatment",
+    "includes": {
+      "airportPickup": "airport pickup",
+      "localTransport": "local transport",
+      "meals": "meals",
+      "nights_one": "{{count}} night stay",
+      "nights_other": "{{count}} nights stay",
+      "teleconsults_one": "{{count}} follow-up teleconsult",
+      "teleconsults_other": "{{count}} follow-up teleconsults",
+      "text": "Includes {{list}}",
+      "translator": "translator"
+    },
+    "insuranceHint": "We will prepare the documents your insurer needs. Payment is still due as scheduled.",
+    "insuranceLabel": "I want to claim insurance",
+    "itemizedQuote": "Itemized quote from the hospital",
+    "monthsLabel": "Number of monthly instalments",
+    "noDate": "No date selected yet.",
+    "noPackages": "This hospital has no standard packages for this treatment. Please wait for, and accept, the hospital's quote to book.",
+    "options": {
+      "depositText": "Secure your date with a deposit; pay the balance before admission.",
+      "depositTitle": "Pay a deposit now",
+      "fullText": "One payment now.",
+      "fullTitle": "Pay in full",
+      "planText": "Deposit now, then monthly instalments.",
+      "planTitle": "Payment plan"
+    },
+    "paymentOption": "Payment option",
+    "plan": "Plan",
+    "planValue_one": "Deposit + {{count}} monthly payment",
+    "planValue_other": "Deposit + {{count}} monthly payments",
+    "preferredDate": "Preferred admission date",
+    "preferredDateHint": "The hospital has not published slots for this month. Pick a preferred date - they will confirm it.",
+    "proceed": "Proceed to payment",
+    "quoteWaitingText": "Accept the hospital's quote on the case page to book at the quoted price, or choose a standard package below.",
+    "quoteWaitingTitle": "You have a quote waiting",
+    "reviewQuote": "Review quote",
+    "save": "Save <0/>",
+    "selectPackage": "Select package",
+    "stayDuration_one": "Treatment duration: about {{count}} day in hospital",
+    "stayDuration_other": "Treatment duration: about {{count}} days in hospital",
+    "taxesNote": "Taxes, service fees and the exact deposit are calculated on the next step, before you pay. You can pay in your own currency.",
+    "title": "Book treatment"
+  },
+  "bookings": {
+    "cancel": {
+      "button": "Cancel booking",
+      "estimate": "Estimated refund: <0>{{amount}}</0> ({{pct}}% of the amount paid)",
+      "estimateWithDays_one": "{{count}} day before admission. Estimated refund: <0>{{amount}}</0> ({{pct}}% of the amount paid)",
+      "estimateWithDays_other": "{{count}} days before admission. Estimated refund: <0>{{amount}}</0> ({{pct}}% of the amount paid)",
+      "finalAmountNote": "The final amount is confirmed by our team according to the policy in force.",
+      "keep": "Keep booking",
+      "reason": "Reason for cancelling",
+      "success": "Booking cancelled. Any refund is processed to your original payment method.",
+      "title": "Cancel this booking?"
+    },
+    "detail": {
+      "acceptedQuote": "Accepted quote",
+      "admission": "Admission",
+      "allPayments": "All payments",
+      "booked": "Booked",
+      "cancelledOn": "Cancelled {{date}}",
+      "cancelledText": "This booking was cancelled.",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "discharge": "Discharge",
+      "doctor": "Doctor",
+      "documentTitle": "Booking {{number}}",
+      "documentTitleFallback": "Booking",
+      "duration": "Duration",
+      "hospital": "Hospital",
+      "installments": {
+        "amount": "Amount",
+        "due": "Due",
+        "emptyDescription": "The schedule is created once your booking is confirmed.",
+        "emptyTitle": "No schedule yet",
+        "instalment": "Instalment",
+        "instalmentNumber": "Instalment {{seq}}",
+        "paidOn": "Paid on",
+        "pay": "Pay",
+        "status": "Status",
+        "title": "Instalment plan"
+      },
+      "insuranceClaim": "Insurance claim",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months",
+      "no": "No",
+      "package": "Package",
+      "payDeposit": "Pay deposit",
+      "payNow": "Pay now",
+      "paymentNeededText": "Your admission date is held once the deposit is paid.",
+      "paymentNeededTitle": "Payment needed to confirm",
+      "paymentOption": "Payment option",
+      "paymentsDescription": "Every payment for this booking. Download a receipt as a PDF.",
+      "refundedSoFar": "Refunded so far: <0/>.",
+      "requested": "Requested",
+      "treatmentCard": "Treatment",
+      "tripHub": "Trip hub",
+      "viewCase": "View case"
+    },
+    "list": {
+      "all": "All",
+      "amountLeftToPay": "<0/> left to pay",
+      "cancelled": "Cancelled",
+      "columns": {
+        "admission": "Admission",
+        "bookedOn": "Booked on",
+        "hospital": "Hospital",
+        "leftToPay": "Left to pay",
+        "payment": "Payment",
+        "status": "Status",
+        "treatment": "Treatment"
+      },
+      "description": "Your confirmed treatments, admission dates and what is left to pay.",
+      "discharge": "Discharge {{date}}",
+      "emptyDescription": "Once you accept a quote and choose your dates, your booking appears here.",
+      "emptyTitle": "No bookings yet",
+      "goToCases": "Go to my cases",
+      "inDays_one": "In {{count}} day",
+      "inDays_other": "In {{count}} days",
+      "leftToPayCount": "Left to pay ({{n}})",
+      "openBooking": "Open booking {{number}}",
+      "paidInFull": "Paid in full",
+      "paymentsLink": "Payments & receipts",
+      "searchPlaceholder": "Treatment or booking no…",
+      "statusTabs": "Booking status",
+      "title": "Bookings",
+      "today": "Today"
+    },
+    "refund": {
+      "anyTime": "Any time before admission",
+      "daysOrMore_one": "{{count}}+ day before admission",
+      "daysOrMore_other": "{{count}}+ days before admission",
+      "fullRefundNote": "If the hospital or Heal India Global cancels, you get a 100% refund.",
+      "lessThanDays_one": "Less than {{count}} day before admission",
+      "lessThanDays_other": "Less than {{count}} days before admission",
+      "policyTitle": "Cancellation policy",
+      "snapshotNote": "This policy was fixed when your booking was confirmed.",
+      "standardNote": "Standard policy - it is fixed for your booking when the booking is confirmed.",
+      "tierLine": "{{tier}}: {{pct}}% refund"
+    },
+    "summary": {
+      "balanceDue": "Balance due",
+      "deposit": "Deposit",
+      "discount": "Discount",
+      "paid": "Paid",
+      "refunded": "Refunded",
+      "serviceFee": "Service fee",
+      "subtotal": "Subtotal",
+      "taxes": "Taxes",
+      "title": "Price summary",
+      "total": "Total"
+    },
+    "treatment": "Treatment"
+  },
+  "calendar": {
+    "admissionDates": "Admission dates",
+    "available": "Available",
+    "dayAvailable_one": "{{day}}, {{count}} slot available",
+    "dayAvailable_other": "{{day}}, {{count}} slots available",
+    "dayNotAvailable": "{{day}}, not available",
+    "nextMonth": "Next month",
+    "previousMonth": "Previous month",
+    "selected": "Selected"
+  },
+  "careGates": {
+    "guest": {
+      "createAccount": "Create account",
+      "description": "Guest sessions can explore and run a screening. To request quotes, book and pay, hospitals need a verified account. Everything you did as a guest is kept.",
+      "title": "Create your free account to {{action}}"
+    }
+  },
+  "cases": {
+    "detail": {
+      "acceptBody": "You are accepting a quote of <0>{{amount}}</0>. Next, you will choose your admission date and payment option. Nothing is charged yet.",
+      "acceptQuote": "Accept quote",
+      "acceptTitle": "Accept this quote?",
+      "acceptedToast": "Quote accepted. Choose your admission date to book.",
+      "admission": "Admission {{date}}",
+      "agent": "Agent",
+      "allPayments": "All payments",
+      "back": "Back",
+      "balance": "Balance",
+      "bookTreatment": "Book treatment",
+      "bookingDetails": "Booking details",
+      "bookingTitle": "Booking {{number}}",
+      "cancelBody": "The hospital will be told you no longer need this quote.",
+      "cancelCase": "Cancel this case",
+      "cancelConfirm": "Cancel case",
+      "cancelReason": "Reason (optional)",
+      "cancelTitle": "Cancel this case?",
+      "cancelledToast": "Case cancelled",
+      "conversationFailed": "Could not open the conversation.",
+      "coordinator": "Coordinator",
+      "declineQuote": "Decline quote",
+      "declineReason": "Reason (optional, shared with the hospital)",
+      "declineTitle": "Decline this quote",
+      "declinedBody": "Please check your messages for details, or request a quote from another matched hospital.",
+      "declinedTitle": "The hospital could not take this case",
+      "declinedToast": "Quote declined",
+      "details": "Details",
+      "docTitle": "Case {{number}}",
+      "docTitleFallback": "Case",
+      "doctor": "Doctor",
+      "documentsCaption": "Case documents",
+      "documentsDescription": "Shared with the hospital handling this case.",
+      "documentsEmptyDescription": "Upload recent reports so the hospital can prepare an accurate quote.",
+      "documentsEmptyTitle": "No documents shared on this case yet",
+      "documentsTitle": "Documents",
+      "earlierQuotes": "Earlier quotes",
+      "hospital": "Hospital",
+      "itineraryDescription": "Appointments, admission and transfers for this treatment.",
+      "itineraryTitle": "Itinerary",
+      "medicalSummary": "Medical summary",
+      "messages": "Messages",
+      "messagesUnread": "Messages ({{n}})",
+      "noQuotes": "No quotes yet.",
+      "openTripHub": "Open trip hub",
+      "paid": "Paid",
+      "payNow": "Pay now",
+      "payment": "Payment",
+      "paymentOption": {
+        "deposit": "deposit",
+        "full": "full",
+        "installments": "installments"
+      },
+      "paymentsDescription": "Deposits and balance payments for this booking, with receipts.",
+      "paymentsTitle": "Payments",
+      "quoteDetails": "Quote details",
+      "quotesDescription": "Itemized treatment quotes from the hospital.",
+      "quotesTitle": "Quotes",
+      "readReportAi": "Read a report with AI",
+      "screening": "Screening",
+      "timeline": "Timeline",
+      "total": "Total",
+      "tripHub": "Trip hub",
+      "upload": "Upload",
+      "viewQuoteSent": "View quote sent {{date}}",
+      "viewScreening": "View screening",
+      "waitingBody": "{{hospital}} is reviewing your case. You will be notified as soon as an itemized quote is ready - usually within 48 hours.",
+      "waitingTitle": "Waiting for the hospital's quote",
+      "yourNote": "Your note"
+    },
+    "list": {
+      "all": "All",
+      "columns": {
+        "caseNumber": "Case number",
+        "hospital": "Hospital",
+        "lastUpdate": "Last update",
+        "latestQuote": "Latest quote",
+        "opened": "Opened",
+        "status": "Status",
+        "treatment": "Treatment"
+      },
+      "description": "Each quote request to a hospital is a case. Follow quotes, bookings and messages here.",
+      "emptyDescription": "Complete an AI screening and request a quote from a matched hospital to open a case.",
+      "emptyTitle": "No cases yet",
+      "filters": {
+        "date": "Date",
+        "hospital": "Hospital",
+        "status": "Status"
+      },
+      "findHospital": "Find a hospital",
+      "notYet": "Not yet",
+      "openCase": "Open case {{number}}",
+      "openedOn": "Opened {{date}}",
+      "searchPlaceholder": "Search by case number…",
+      "startScreening": "Start AI screening",
+      "statusTabs": "Case status",
+      "title": "My cases",
+      "treatmentEnquiry": "Treatment enquiry"
+    },
+    "new": {
+      "chooseFirstDescription": "Browse hospitals and doctors, or let our AI screening find the best match for you.",
+      "chooseFirstTitle": "Choose a hospital or doctor first",
+      "consentDescription": "Required so the hospital's doctors can assess your case.",
+      "consentLabel": "I agree to share my profile, screening answers and medical reports with this hospital",
+      "consentRequired": "You need to agree before we can send your case to the hospital",
+      "fullAccountRequired": "Please create a full account before requesting quotes.",
+      "generalScreening": "General screening",
+      "guestAction": "request a quote",
+      "intro": "The hospital reviews your information and sends an itemized quote, usually within 48 hours. Free and without obligation.",
+      "noScreening": "No screening",
+      "notesHint": "Diagnosis so far, preferred dates, questions for the doctor.",
+      "notesLabel": "Describe your condition and what you need",
+      "requested": "Quote requested. Case {{number}} created.",
+      "screeningFirst": "Take AI screening first",
+      "screeningHint": "Gives the doctors your symptoms, history and reports up front.",
+      "screeningLabel": "Attach a screening (recommended)",
+      "send": "Send request",
+      "sendFailed": "Your request could not be sent.",
+      "startScreening": "Start AI screening",
+      "title": "Request a quote"
+    },
+    "quote": {
+      "amount": "Amount",
+      "byName": "by {{name}}",
+      "columns": {
+        "hospitalStay": "Hospital stay",
+        "sent": "Sent",
+        "status": "Status",
+        "validUntil": "Valid until"
+      },
+      "decline": "Decline",
+      "expired": "This quote has expired. Message the hospital for an update.",
+      "included": "What is included",
+      "lineItems": "Quote line items",
+      "reason": "Reason: {{reason}}",
+      "sent": "Sent {{date}}",
+      "sentBy": "Sent {{date}} by {{name}}",
+      "share": "Share of total",
+      "stayDaysShort_one": "~1 day",
+      "stayDaysShort_other": "~{{n}} days",
+      "stayDays_one": "~1 day in hospital",
+      "stayDays_other": "~{{n}} days in hospital",
+      "total": "Total",
+      "validUntil": "valid until {{date}}"
+    }
+  },
+  "costComparison": {
+    "cost": "Cost",
+    "description": "{{country}} vs India, in {{currency}}",
+    "disclaimer": "Indicative ranges based on published benchmarks; your final price comes from the hospital's quote.",
+    "itemized": "Itemized cost breakdown (India)",
+    "noCountry": "Add your country of residence in your profile to see how much you could save.",
+    "noProcedure": "No procedure was suggested yet, so a comparison is not available.",
+    "procedure": "Procedure",
+    "savings": "Savings",
+    "savingsValue": "{{range}} ({{min}}-{{max}}%)",
+    "setCountry": "Set your home country to compare costs",
+    "title": "Treatment cost comparison",
+    "treatmentIn": "Treatment in {{country}}",
+    "treatmentInIndia": "Treatment in India",
+    "unavailable": "Comparison unavailable",
+    "varies": "Varies",
+    "waitTime": "Wait time"
+  },
+  "dashboard": {
+    "checklist": {
+      "empty": "Visa, flights, insurance, airport pickup and accommodation tasks will be tracked here.",
+      "pending": "Appears once a booking is confirmed",
+      "progress": "{{done}} of {{total}} completed",
+      "title": "Your checklist"
+    },
+    "countdown": {
+      "admission": "Admission {{date}}",
+      "dateTbc": "Date to be confirmed",
+      "dayUnit_one": "day",
+      "dayUnit_other": "days",
+      "inTreatment": "In treatment",
+      "untilTreatment": "Until treatment"
+    },
+    "description": "Your treatment journey at a glance.",
+    "journey": {
+      "activeCases": "Active cases",
+      "coordinator": "Your coordinator",
+      "title": "Your journey",
+      "unreadNotifications": "Unread notifications"
+    },
+    "messageCoordinator": "Message coordinator",
+    "newScreening": "New AI screening",
+    "nextBooking": {
+      "completePayment": "Complete payment",
+      "details": "Booking details",
+      "number": "Booking {{number}}",
+      "openTrip": "Open trip hub",
+      "title": "Next booking",
+      "treatment": "Treatment"
+    },
+    "noBooking": {
+      "description": "Tell us about your condition - our AI screening matches you with accredited Indian hospitals and doctors in minutes.",
+      "start": "Start AI screening",
+      "title": "No upcoming treatment yet"
+    },
+    "quick": {
+      "chat": "Chat with coordinator",
+      "chatHint": "Usually replies within hours",
+      "emergency": "Emergency contacts",
+      "emergencyHint": "24/7 help in India",
+      "guide": "Pre-arrival guide",
+      "guideHint": "Visa, travel and stay tips",
+      "title": "Quick actions",
+      "upload": "Upload documents",
+      "uploadHint": "Reports, scans, passport"
+    },
+    "screenings": {
+      "empty": "You have not completed a screening yet.",
+      "general": "General screening",
+      "started": "Started {{when}}",
+      "title": "Recent screenings",
+      "viewAll": "View all"
+    },
+    "stats": {
+      "activeCases": "Active cases",
+      "daysToTreatment": "Days to treatment",
+      "unreadAlerts": "Unread alerts"
+    },
+    "title": "Dashboard",
+    "today": {
+      "empty": "Nothing scheduled for today.",
+      "title": "Today's schedule"
+    },
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome back, {{name}}"
+  },
+  "documents": {
+    "ai": {
+      "description": "Our AI extracts the key results; you check and confirm them. Only confirmed information is shared with hospitals.",
+      "hide": "Hide",
+      "notShared": "Nothing is shared until you confirm",
+      "start": "Start",
+      "title": "Read a medical report with AI"
+    },
+    "aiReading": {
+      "confirmed": "Confirmed",
+      "failed": "Could not read",
+      "notRead": "Not read yet",
+      "reading": "Reading…",
+      "review": "Ready for your check"
+    },
+    "description": "Passport, visa, medical reports and receipts in one secure place. Only you, your care team and the hospitals handling your cases can open them.",
+    "files": {
+      "emptyDescription": "Upload your passport and recent medical reports - hospitals need them to prepare an accurate quote.",
+      "emptyTitle": "No documents yet",
+      "title": "Your files"
+    },
+    "filters": {
+      "aiReading": "AI reading",
+      "checked": "Checked by team",
+      "search": "File name, type or case…",
+      "type": "Type",
+      "uploaded": "Uploaded"
+    },
+    "groups": {
+      "all": "All",
+      "label": "Document group",
+      "medical": "Medical",
+      "other": "Other",
+      "payments": "Payments",
+      "travel": "Passport & visa"
+    },
+    "table": {
+      "actions": "Actions",
+      "aiReading": "AI reading",
+      "case": "Case",
+      "checked": "Checked by team",
+      "delete": "Delete",
+      "deleteBody": "\"{{name}}\" will be removed. Hospitals linked to your cases will no longer see it.",
+      "deleteFile": "Delete {{name}}",
+      "deleteTitle": "Delete document?",
+      "deleted": "Document deleted",
+      "download": "Download",
+      "downloadFailed": "Download failed.",
+      "downloadFile": "Download {{name}}",
+      "file": "File",
+      "notNeeded": "Not needed",
+      "personalFile": "Personal file",
+      "type": "Type",
+      "uploaded": "Uploaded",
+      "uploadedBy": "by {{name}}",
+      "viewCase": "View case"
+    },
+    "title": "Documents",
+    "upload": {
+      "button": "Upload files",
+      "hint": "PDF, JPG, PNG, WEBP, HEIC or DICOM · up to 20 MB per file.",
+      "title": "Upload documents",
+      "type": "Document type"
+    }
+  },
+  "itinerary": {
+    "caption": "Itinerary",
+    "emptyDescription": "Your coordinator and the hospital will add appointments, admission and transfers here.",
+    "emptyTitle": "No schedule yet",
+    "status": "Status",
+    "until": "until {{time}}",
+    "what": "What",
+    "when": "When",
+    "where": "Where"
+  },
+  "languages": {
+    "amharic": "Amharic",
+    "arabic": "Arabic",
+    "bengali": "Bengali",
+    "dari": "Dari",
+    "english": "English",
+    "french": "French",
+    "hindi": "Hindi",
+    "pashto": "Pashto",
+    "portuguese": "Portuguese",
+    "russian": "Russian",
+    "spanish": "Spanish",
+    "swahili": "Swahili",
+    "uzbek": "Uzbek"
+  },
+  "listing": {
+    "noMatches": {
+      "description": "Try a different search or remove a filter.",
+      "reset": "Reset filters",
+      "title": "No matching results"
+    },
+    "sort": "Sort",
+    "sortLabel": "{{label}}:",
+    "sortValue": "{{label}}: {{value}}",
+    "status": {
+      "booking": {
+        "admitted": "Admitted",
+        "cancelled": "Cancelled",
+        "completed": "Completed",
+        "confirmed": "Confirmed",
+        "pending_payment": "Awaiting payment"
+      },
+      "case": {
+        "accepted": "Quote accepted",
+        "booked": "Booked",
+        "cancelled": "Cancelled",
+        "completed": "Completed",
+        "declined": "Declined by hospital",
+        "enquiry": "Waiting for quote",
+        "in_treatment": "In treatment",
+        "quoted": "Quote received"
+      },
+      "document": {
+        "rejected": "Needs a new copy",
+        "uploaded": "Uploaded",
+        "verified": "Verified"
+      },
+      "order": {
+        "cancelled": "Cancelled",
+        "created": "Not completed",
+        "expired": "Expired",
+        "failed": "Failed",
+        "paid": "Paid",
+        "partially_refunded": "Partly refunded",
+        "pending": "Processing",
+        "refunded": "Refunded"
+      },
+      "quote": {
+        "accepted": "Accepted",
+        "expired": "Expired",
+        "rejected": "Declined",
+        "sent": "Awaiting your decision",
+        "withdrawn": "Withdrawn"
+      },
+      "screening": {
+        "completed": "Matches ready",
+        "draft": "Not finished",
+        "failed": "Failed",
+        "processing": "Analysing"
+      }
+    }
+  },
+  "notifications": {
+    "category": {
+      "booking": "Booking",
+      "case": "Case",
+      "document": "Document",
+      "message": "Message",
+      "payment": "Payment",
+      "quote": "Quote",
+      "screening": "Screening",
+      "trip": "Trip",
+      "update": "Update"
+    },
+    "caughtUp": {
+      "description": "There are no unread notifications.",
+      "title": "You are all caught up"
+    },
+    "columns": {
+      "about": "About",
+      "notification": "Notification",
+      "received": "Received"
+    },
+    "description": "Updates about your cases, bookings, payments and messages.",
+    "empty": {
+      "description": "We will let you know here when a hospital sends a quote, a payment is received or your trip is updated.",
+      "title": "No notifications yet"
+    },
+    "markAll": "Mark all as read",
+    "markedAll": "All notifications marked as read",
+    "openRow": "Open notification: {{title}}",
+    "tabs": {
+      "all": "All",
+      "label": "Show",
+      "unread": "Unread"
+    },
+    "title": "Notifications",
+    "unreadSr": "(unread)"
+  },
+  "pay": {
+    "backToBooking": "Booking {{number}}",
+    "bank": {
+      "accountNumber": "Account number",
+      "amount": "Amount to transfer",
+      "bank": "Bank",
+      "beneficiary": "Beneficiary",
+      "description": "Transfer the exact amount and include the payment reference so we can match your payment.",
+      "errors": {
+        "noFile": "Attach your transfer receipt (PDF or image).",
+        "noReference": "Enter the transfer reference from your bank (UTR / SWIFT reference).",
+        "submitFailed": "The proof could not be submitted.",
+        "tooLarge": "The file is larger than {{size}}."
+      },
+      "feesNote": "Your bank may charge transfer fees; please choose \"OUR\" charges so the hospital receives the full amount.",
+      "iban": "IBAN",
+      "ifsc": "IFSC",
+      "receipt": "Transfer receipt",
+      "receiptHint": "PDF or image",
+      "reference": "Payment reference",
+      "referencePlaceholder": "e.g. UTR or SWIFT ref",
+      "submit": "Submit payment proof",
+      "submitted": "Thank you - we will confirm your payment once the funds arrive (usually 1-3 business days).",
+      "swift": "SWIFT / BIC",
+      "title": "Bank transfer details",
+      "yourReference": "Your transfer reference"
+    },
+    "copy": {
+      "copied": "{{label}} copied",
+      "failed": "Copy failed",
+      "label": "Copy {{label}}"
+    },
+    "createTestOrder": "Create test order",
+    "description": "{{treatment}} at {{hospital}} · admission {{date}}",
+    "due": {
+      "balance": "Remaining balance",
+      "deposit": "Deposit to confirm your booking",
+      "full": "Full payment",
+      "fullNow": "Pay the full amount now",
+      "instalment": "Instalment {{seq}} (due {{date}})"
+    },
+    "dueNow": "Due now",
+    "errors": {
+      "cardUnavailable": "Card payments are not available right now. Please choose another method.",
+      "fxUnavailable": "Payments in your currency are temporarily unavailable — please try again shortly or pay in INR/USD.",
+      "startFailed": "The payment could not be started."
+    },
+    "exactAmountNote": "The exact amount in {{currency}} is shown before you confirm.",
+    "fxLine": "= <0/> at 1 {{currency}} = {{rate}} {{baseCurrency}}",
+    "getBankDetails": "Get bank details",
+    "insuranceNote": "Insurance claim requested - we will send you the claim documents.",
+    "method": "Payment method",
+    "methods": {
+      "bankText": "SWIFT / wire transfer. Your booking is confirmed once the funds arrive.",
+      "bankTitle": "International bank transfer",
+      "cardText": "Visa, MasterCard, Amex, RuPay, UPI - secure checkout by Razorpay",
+      "cardTitle": "Credit / debit card or UPI",
+      "mockText": "Simulates a gateway success or failure. Never available in production.",
+      "mockTitle": "Test payment (development only)"
+    },
+    "mock": {
+      "disabled": "The test gateway is not enabled on this server.",
+      "failure": "Simulate failure",
+      "success": "Simulate success",
+      "title": "Test payment"
+    },
+    "orderNumber": "Order {{number}}",
+    "payIn": "Pay in",
+    "paySecurely": "Pay securely",
+    "result": {
+      "amount": "Amount",
+      "bankText": "We will confirm as soon as the funds arrive - usually 1-3 business days.",
+      "bankTitle": "Awaiting your bank transfer",
+      "confirmingText": "This usually takes a few seconds.",
+      "confirmingTitle": "Confirming your payment...",
+      "created": "Created",
+      "documentTitle": "Payment status",
+      "downloadReceipt": "Download receipt",
+      "failedText": "You have not been charged. You can try again with the same or another method.",
+      "failedTitle": "Payment not completed",
+      "for": "For",
+      "inInr": "In INR",
+      "missingReference": "Missing payment reference",
+      "order": "Order",
+      "paidOn": "Paid on",
+      "planTrip": "Plan your trip",
+      "refreshStatus": "Refresh status",
+      "status": "Status",
+      "successText": "Thank you. Your booking has been updated and a receipt is on its way to your email.",
+      "successTitle": "Payment successful",
+      "tryAgain": "Try again",
+      "viewBooking": "View booking"
+    },
+    "secureNote": "Secure payment - card details are entered on the payment provider's page and never stored by Heal India Global.",
+    "title": "Payment",
+    "toast": {
+      "cancelled": "Payment cancelled. You have not been charged.",
+      "failed": "Payment failed: {{message}}",
+      "received": "Payment received"
+    },
+    "whatToPay": "What would you like to pay?",
+    "willBeCharged": "You will be charged"
+  },
+  "payments": {
+    "columns": {
+      "amount": "Amount",
+      "approx": "≈ {{amount}}",
+      "date": "Date",
+      "description": "Description",
+      "method": "Method",
+      "receipt": "Receipt",
+      "reference": "Reference",
+      "started": "Started",
+      "status": "Status"
+    },
+    "groups": {
+      "paid": "Paid",
+      "processing": "In progress",
+      "refunded": "Refunded",
+      "unsuccessful": "Unsuccessful"
+    },
+    "page": {
+      "acrossBookings_one": "Across {{count}} booking",
+      "acrossBookings_other": "Across {{count}} bookings",
+      "all": "All",
+      "allPaid": "All bookings are paid",
+      "description": "Every payment you made for your treatment, with downloadable receipts.",
+      "emptyDescription": "When you pay a deposit or balance for a booking, it appears here with its receipt.",
+      "emptyTitle": "No payments yet",
+      "goToBookings": "Go to bookings",
+      "leftToPay": "Left to pay",
+      "nothingDue": "Nothing due",
+      "openBookingFor": "Open booking for {{description}}",
+      "paidSoFar": "Paid so far",
+      "payBalance": "Pay balance",
+      "receipts": "Receipts",
+      "receiptsHint": "Download any receipt as a PDF",
+      "searchPlaceholder": "Search payments…",
+      "seeLeftToPay": "See what is left to pay",
+      "statusTabs": "Payment status",
+      "successfulPayments_one": "{{count}} successful payment",
+      "successfulPayments_other": "{{count}} successful payments",
+      "title": "Payments & receipts",
+      "withReceipt": "With receipt"
+    },
+    "receipt": {
+      "button": "Receipt",
+      "downloadFailed": "Download failed.",
+      "downloadLabel": "Download receipt {{number}}",
+      "pdf": "PDF"
+    },
+    "table": {
+      "caption": "Payments",
+      "emptyDescription": "Receipts appear here after each successful payment.",
+      "emptyTitle": "No payments yet."
+    }
+  },
+  "profile": {
+    "address": {
+      "city": "City",
+      "line1": "Address line 1",
+      "line2": "Address line 2",
+      "postalCode": "Postal code",
+      "state": "State / region",
+      "title": "Home address"
+    },
+    "cancel": "Cancel",
+    "companions": {
+      "add": "Add",
+      "addTitle": "Add a travelling companion",
+      "added": "Companion added",
+      "born": "born {{date}}",
+      "description": "Family or friends travelling with you.",
+      "dialogDescription": "Companions can apply for an e-Medical Attendant visa with your invitation letter.",
+      "dob": "Date of birth",
+      "editName": "Edit {{name}}",
+      "editTitle": "Edit companion",
+      "empty": "No companions added",
+      "fullName": "Full name (as in passport)",
+      "nationality": "Nationality",
+      "noNationality": "Nationality not set",
+      "passport": "Passport number",
+      "passportLast4": "passport •••• {{last4}}",
+      "relationship": "Relationship",
+      "relationshipPlaceholder": "e.g. spouse, son",
+      "remove": "Remove",
+      "removeBody": "{{name}} will be removed from your profile.",
+      "removeName": "Remove {{name}}",
+      "removeTitle": "Remove companion?",
+      "removed": "Companion removed",
+      "storedEncrypted": "Stored encrypted",
+      "title": "Travelling companions",
+      "updated": "Companion updated"
+    },
+    "consents": {
+      "copy": {
+        "ai_processing": "Allow AI to analyse your screening answers and reports to suggest specialists. Not a diagnosis.",
+        "marketing": "Occasional news and offers by email. You can unsubscribe at any time.",
+        "privacy": "How we collect, store and protect your personal and health data.",
+        "share_with_hospitals": "Allow us to share your case with hospitals you request quotes from.",
+        "terms": "Terms of service of Heal India Global.",
+        "share_with_agent": "Let the agent who helps you see the documents you upload and those on your cases. Turn it off at any time."
+      },
+      "description": "Every change is recorded with the date, for your protection.",
+      "granted": "{{label}} granted",
+      "lastUpdated": "Last updated {{date}}",
+      "required": "Required to use the service. Contact support to close your account.",
+      "title": "Privacy & consents",
+      "withdrawn": "{{label}} withdrawn"
+    },
+    "description": "Manage your details, travel documents and privacy.",
+    "emergency": {
+      "description": "Someone we can call if we cannot reach you during your trip.",
+      "name": "Full name",
+      "phone": "Phone",
+      "relationship": "Relationship",
+      "relationshipPlaceholder": "e.g. spouse",
+      "save": "Save contact",
+      "saved": "Emergency contact saved",
+      "title": "Emergency contact"
+    },
+    "guestSecurity": {
+      "description": "Guest sessions have no password. Create your account to set a password and two-step verification.",
+      "title": "Create an account first"
+    },
+    "medical": {
+      "allergies": "Allergies",
+      "allergiesPlaceholder": "e.g. penicillin",
+      "bloodGroup": "Blood group",
+      "description": "Shared only with hospitals handling your cases.",
+      "history": "Medical history",
+      "insuranceProvider": "Insurance provider",
+      "policyEncrypted": "Stored encrypted.",
+      "policyNumber": "Policy number",
+      "policySaved": "Saved: •••• {{last4}}. Enter a new number to replace it.",
+      "title": "Medical & insurance",
+      "unknown": "Unknown"
+    },
+    "passport": {
+      "description": "Needed for your visa invitation letter. Stored encrypted; only the last 4 characters are shown.",
+      "expiry": "Expiry date",
+      "notAdded": "Not added yet",
+      "number": "Passport number",
+      "onFile": "On file: •••• {{last4}}",
+      "replacePlaceholder": "Enter to replace",
+      "save": "Save passport",
+      "saved": "Passport details saved",
+      "title": "Passport"
+    },
+    "personal": {
+      "description": "As shown in your passport.",
+      "dob": "Date of birth",
+      "firstName": "First name",
+      "gender": "Gender",
+      "lastName": "Last name",
+      "nationality": "Nationality",
+      "phone": "Phone",
+      "residence": "Country of residence",
+      "save": "Save changes",
+      "saved": "Profile saved",
+      "title": "Personal information",
+      "whatsapp": "WhatsApp"
+    },
+    "preferences": {
+      "currency": "Preferred currency",
+      "description": "Prices and payments are shown in your preferred currency.",
+      "languagesNote": "Doctor language preferences ({{examples}}, ...) are set per screening.",
+      "save": "Save preferences",
+      "saved": "Preferences saved",
+      "title": "Preferences"
+    },
+    "save": "Save",
+    "saveFailed": "Could not save your changes.",
+    "security": {
+      "changePassword": "Change password",
+      "code": "6-digit code",
+      "confirmPassword": "Confirm new password",
+      "currentPassword": "Current password",
+      "invalidCode": "Invalid code",
+      "mfaDescription": "Protect your account with a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password...).",
+      "mfaTitle": "Two-step verification",
+      "mfaTurnedOff": "Two-step verification turned off",
+      "mfaTurnedOn": "Two-step verification is on",
+      "newPassword": "New password",
+      "off": "Off",
+      "on": "On",
+      "passwordChanged": "Password changed. Other devices have been signed out.",
+      "passwordHint": "At least 10 characters with a letter and a number.",
+      "setUp": "Set up two-step verification",
+      "step1": "1. In your authenticator app, add an account using this key <0>(or open it on this device)</0>:",
+      "step2": "2. Enter the 6-digit code it shows to finish.",
+      "turnOff": "Turn off",
+      "updatePassword": "Update password",
+      "verify": "Verify"
+    },
+    "select": "Select",
+    "signedInAs": "Signed in as {{email}}",
+    "tabs": {
+      "companions": "Companions",
+      "personal": "Personal info",
+      "preferences": "Preferences",
+      "privacy": "Privacy & account",
+      "security": "Security",
+      "travel": "Passport & emergency"
+    },
+    "title": "Profile",
+    "validation": {
+      "code": "Enter the 6-digit code",
+      "datePicker": "Use the date picker",
+      "dobFuture": "Date of birth cannot be in the future",
+      "notFuture": "Cannot be in the future",
+      "passport": "Letters and numbers only (6-20 characters)",
+      "passwordLength": "At least 10 characters",
+      "passwordLetter": "Include at least one letter",
+      "passwordMismatch": "Passwords do not match",
+      "passwordNumber": "Include at least one number",
+      "passwordSame": "Choose a different password",
+      "phone": "Enter a valid phone number with country code",
+      "required": "Required"
+    }
+  },
+  "razorpay": {
+    "declined": "The payment was declined.",
+    "initFailed": "Razorpay Checkout failed to initialise.",
+    "loadFailed": "Could not load Razorpay Checkout. Check your connection and try again."
+  },
+  "saved": {
+    "all": "All",
+    "description": "Hospitals, doctors and procedures you bookmarked to compare later.",
+    "empty": {
+      "browse": "Browse hospitals",
+      "description": "Tap the bookmark on a doctor in your matches, or browse hospitals to save them for later.",
+      "title": "Nothing saved yet"
+    },
+    "filters": {
+      "accreditation": "Accreditation",
+      "city": "City",
+      "search": "Name, city or specialty…",
+      "specialty": "Specialty"
+    },
+    "findMore": "Find more specialists",
+    "footer": "{{shown}} of {{total}} saved",
+    "fromInIndia": "From <0></0> in India",
+    "item": "Saved item",
+    "listLabel": "Saved items",
+    "remove": "Remove {{name}} from saved",
+    "removed": "Removed from saved",
+    "savedOn": "Saved {{date}}",
+    "sort": {
+      "name": "Name (A–Z)",
+      "rating": "Highest rated",
+      "recent": "Recently saved"
+    },
+    "tabsLabel": "Saved type",
+    "title": "Saved",
+    "typeSingular": {
+      "doctor": "Doctor",
+      "hospital": "Hospital",
+      "procedure": "Procedure"
+    },
+    "types": {
+      "doctor": "Doctors",
+      "hospital": "Hospitals",
+      "procedure": "Procedures"
+    },
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
+  },
+  "screening": {
+    "bodyMap": {
+      "areaSelected": "{{area}} (selected)",
+      "back": "Back",
+      "chooseFromList": "Or choose from the list",
+      "clear": "Clear",
+      "front": "Front",
+      "frontFacing": "Front (facing you)",
+      "mapLabelBack": "Body map, back view. Select the areas where you have symptoms.",
+      "mapLabelFront": "Body map, front view. Select the areas where you have symptoms.",
+      "removeArea": "Remove {{area}}",
+      "selectedAreas": "Selected areas",
+      "tapHint": "Tap on the body to select an area.",
+      "viewLabel": "Body view"
+    },
+    "compare": {
+      "about": "about {{amount}}",
+      "backToMatches": "Back to matches",
+      "best": "Best",
+      "bestMatch": "Best match",
+      "calls_one": "{{value}} call",
+      "calls_other": "{{value}} calls",
+      "caption": "Comparison of selected matches",
+      "description": "Side by side: price, what is included, the doctor and the hospital. The best value in each row is highlighted.",
+      "documentTitle": "Compare matches",
+      "freeNoObligation": "Free, no obligation",
+      "goBack": "Go back",
+      "groups": {
+        "cost": "Cost",
+        "doctor": "Doctor",
+        "hospital": "Hospital"
+      },
+      "inCountry": "in {{country}}",
+      "included": "Included",
+      "lowestEstimate": "<0>{{name}}</0> is the lowest estimate - {{amount}} less than the highest.",
+      "lowestPrice": "Lowest price",
+      "nights_one": "{{value}} night",
+      "nights_other": "{{value}} nights",
+      "notIncluded": "Not included",
+      "onRequest": "On request",
+      "onlyDifferences": "Only show differences",
+      "options_one": "{{count}} option",
+      "options_other": "{{count}} options",
+      "pctRange": "{{min}}–{{max}}%",
+      "percent": "{{value}}%",
+      "reasons": "Reasons",
+      "rows": {
+        "accreditation": "Accreditation",
+        "airportPickup": "Airport pickup",
+        "consultFee": "Consultation fee",
+        "estimatedTotal": "Estimated total",
+        "estimatedTotalHint": "Treatment package; final price comes with the hospital quote",
+        "experience": "Experience",
+        "followupCalls": "Follow-up video calls",
+        "homeCost": "Same treatment at home",
+        "hospital": "Hospital",
+        "hotelNights": "Hotel nights",
+        "intlDesk": "International patient desk",
+        "languages": "Languages",
+        "localTransport": "Local transport",
+        "meals": "Meals",
+        "package": "Package",
+        "rating": "Patient rating",
+        "specialty": "Specialty",
+        "successRate": "Success rate",
+        "translator": "Translator",
+        "videoConsult": "Video consultation",
+        "youSave": "You save"
+      },
+      "selectTwo": "Select at least two matches to compare",
+      "title": "Compare your matches",
+      "vsLowest": "+{{amount}} vs lowest",
+      "whyMatches": "Why it matches you",
+      "years_one": "{{value}} year",
+      "years_other": "{{value}} years"
+    },
+    "duration": {
+      "dailyImpact": "Daily impact",
+      "detachAll": "Detach all reports",
+      "impact": {
+        "mobility": {
+          "groupLabel": "Mobility impact",
+          "question": "How much does it affect your mobility?",
+          "title": "Mobility"
+        },
+        "sleep": {
+          "groupLabel": "Sleep impact",
+          "question": "How much does it affect your sleep?",
+          "title": "Sleep"
+        },
+        "work": {
+          "groupLabel": "Work impact",
+          "question": "How much does it affect your work?",
+          "title": "Work"
+        }
+      },
+      "noReports": "No reports uploaded yet.",
+      "numberOf": {
+        "days": "Number of days",
+        "months": "Number of months",
+        "weeks": "Number of weeks",
+        "years": "Number of years"
+      },
+      "optionalParen": "(optional)",
+      "previousReports": "Previous reports",
+      "previousTreatments": "Previous treatments",
+      "reportsAttached_one": "{{count}} report(s) attached",
+      "reportsAttached_other": "{{count}} report(s) attached",
+      "reportsHelp": "Scans, lab results or doctor letters help hospitals give an accurate quote. Upload a PDF or take photos of the pages - our AI can read the report, and you check and confirm what it found.",
+      "severity": "Severity",
+      "unitLabel": "Duration unit",
+      "uploadedOn": "Uploaded {{date}}",
+      "valuePlaceholder": "e.g. 3"
+    },
+    "generalScreening": "General screening",
+    "list": {
+      "all": "All",
+      "areasSummary": "Areas: {{areas}}",
+      "columns": {
+        "completed": "Completed",
+        "nextStep": "Next step",
+        "screening": "Screening",
+        "started": "Started",
+        "status": "Status",
+        "urgency": "Urgency"
+      },
+      "description": "Your AI screenings and their matched doctors and hospitals.",
+      "emptyDescription": "Answer a few questions and get matched with specialists in minutes.",
+      "emptyTitle": "No screenings yet",
+      "newScreening": "New screening",
+      "next": {
+        "completed": "View matches",
+        "draft": "Continue answering",
+        "failed": "See details",
+        "processing": "Check progress"
+      },
+      "rowLabel": "{{action}}: {{title}}",
+      "searchPlaceholder": "Specialty, symptom or summary…",
+      "startAiScreening": "Start AI screening",
+      "statusTabs": "Screening status",
+      "symptomsSummary_one": "{{count}} symptom",
+      "symptomsSummary_other": "{{count}} symptoms",
+      "title": "My screenings"
+    },
+    "match": {
+      "compare": "Compare",
+      "estimatedTotal": "Estimated total cost",
+      "experience_one": "{{years}} year of experience",
+      "experience_other": "{{years}} years of experience",
+      "onRequest": "On request",
+      "package": "Package: {{name}}",
+      "requestQuote": "Request quote",
+      "saveDoctor": "Save doctor",
+      "savingsVsHome": "Save {{min}}-{{max}}% vs {{range}} at home",
+      "score": "{{score}}% match",
+      "success": "{{pct}}% success",
+      "unsaveDoctor": "Remove doctor from saved",
+      "viewDetails": "View details",
+      "viewHospital": "View hospital"
+    },
+    "new": {
+      "aboutMinutes": "About 3 minutes",
+      "accreditedOnly": "Accredited hospitals only",
+      "answersSaved": "Your answers are saved",
+      "badge": "AI screening",
+      "chooseSpecialty": "Choose a specialty",
+      "continueTitle": "Continue where you left off",
+      "countOf": "{{shown}} of {{total}}",
+      "documentTitle": "New AI screening",
+      "freeNoObligation": "Free, no obligation",
+      "intro": "Select your medical need. Our AI screening takes about 3 minutes and matches you with accredited hospitals.",
+      "noMatchDescription": "Try another term, or start a general screening.",
+      "noMatchTitle": "No specialty matches your search",
+      "notSureDescription": "Start a general screening - we will suggest the right specialists.",
+      "notSureTitle": "Not sure which specialty?",
+      "savePct": "Save {{min}}-{{max}}%",
+      "searchLabel": "Search specialties",
+      "searchPlaceholder": "Search for a condition or specialty",
+      "startFailed": "Could not start a screening.",
+      "startScreening": "Start screening",
+      "startedAgo": "Started {{when}}",
+      "title": "What brings you to India?"
+    },
+    "pain": {
+      "label": "Pain intensity",
+      "levels": {
+        "mild": "Mild",
+        "moderate": "Moderate",
+        "none": "No pain",
+        "severe": "Severe",
+        "worst": "Worst imaginable"
+      },
+      "scaleModerate": "Moderate",
+      "scaleNone": "None",
+      "scaleWorst": "Worst",
+      "score": "{{value}}/10",
+      "valueText": "{{value}} out of 10, {{label}}"
+    },
+    "preferences": {
+      "aiConsent": "I agree to AI processing of my health information for this screening",
+      "aiInfo": {
+        "hospitals": "Hospitals only see your information after you request a quote and agree to share it.",
+        "notDiagnosis": "It is not a diagnosis. A doctor always reviews your case before any treatment.",
+        "sent": "Your answers (and any reports you attached) are sent securely to our AI provider to prepare a triage summary.",
+        "withdraw": "You can withdraw this consent at any time in your profile."
+      },
+      "aiInfoTitle": "How your information is used",
+      "budget": "Budget range",
+      "budgetBetween": "{{min}} – {{max}}",
+      "budgetHint": "Total treatment budget, including the hospital stay.",
+      "budgetOver": "{{amount}}+",
+      "budgetUnder": "Under {{amount}}",
+      "currency": "Currency",
+      "doctorGender": "Doctor gender",
+      "doctorGenderLabel": "Doctor gender preference",
+      "earliest": "Earliest",
+      "homeCountry": "Your home country",
+      "homeCountryHint": "Used to compare treatment costs and waiting times with your country.",
+      "language": "Language",
+      "languageHint": "We prefer doctors and staff who speak these languages.",
+      "latest": "Latest",
+      "maximum": "Maximum ({{symbol}})",
+      "minimum": "Minimum ({{symbol}})",
+      "noMaximum": "No maximum",
+      "noMinimum": "No minimum",
+      "selectCountry": "Select a country",
+      "travelWindow": "Travel window",
+      "travelWindowHint": "When could you travel to India?",
+      "useAi": "Use AI recommendations",
+      "useAiHint": "An AI model reviews your answers to suggest specialties and procedures. Turn off to use our rule-based matching only."
+    },
+    "processing": {
+      "backToDashboard": "Back to dashboard",
+      "documentTitle": "Finding your match",
+      "doneTitle": "Your matches are ready",
+      "failedRetry": "Your answers are saved - you can try again.",
+      "failedTitle": "We hit a problem",
+      "failedWithError": "The analysis could not be completed. Your answers are saved - you can try again.",
+      "footer": "This usually takes under a minute. You can leave this page - we will notify you when your matches are ready.",
+      "stepDone": "done",
+      "stepInProgress": "in progress",
+      "steps": {
+        "analyzing": "Analyzing your condition",
+        "matching": "Matching with specialists",
+        "savings": "Calculating savings"
+      },
+      "tryAgain": "Try again",
+      "workingTitle": "Finding your perfect match..."
+    },
+    "requestQuote": {
+      "cancel": "Cancel",
+      "consentHint": "Required so the hospital's doctors can assess your case. You can request quotes from several hospitals.",
+      "consentLabel": "I agree to share my screening answers, AI summary and attached reports with this hospital",
+      "errors": {
+        "consentRequired": "You need to agree before we can send your case to the hospital",
+        "noteTooLong": "Please keep your note under 4000 characters"
+      },
+      "guestAction": "request a quote",
+      "guestError": "Please create a full account before requesting quotes.",
+      "info": "The hospital reviews your screening and sends an itemized quote, usually within 48 hours. Requesting a quote is free and does not commit you to anything.",
+      "messageHint": "Preferred dates, questions, or anything the doctor should know.",
+      "messageLabel": "Message for the hospital (optional)",
+      "send": "Send request",
+      "sendFailed": "Your request could not be sent.",
+      "success": "Quote requested from {{hospital}}. Case {{caseNumber}} created.",
+      "title": "Request a quote"
+    },
+    "symptoms": {
+      "add": "Add",
+      "addLabel": "Add another symptom",
+      "addMoreBelow": "Add anything else below.",
+      "addPlaceholder": "Add another symptom (e.g. knee stiffness)",
+      "allAnswered": "All suggestions answered",
+      "answerMaybe": "Maybe {{symptom}}",
+      "answerNo": "No, I do not have {{symptom}}",
+      "answerYes": "Yes, I have {{symptom}}",
+      "changeAnswer": "Change answer for {{symptom}}",
+      "empty": "Answer the cards or add your own symptoms.",
+      "fallback": {
+        "dizziness": "Dizziness",
+        "fatigue": "Fatigue",
+        "fever": "Fever",
+        "headaches": "Headaches",
+        "pain": "Pain",
+        "shortnessOfBreath": "Shortness of breath",
+        "swelling": "Swelling",
+        "weightLoss": "Weight loss"
+      },
+      "notesHint": "When did it start, what makes it better or worse, any diagnosis you already have.",
+      "notesLabel": "Describe it in your own words (optional)",
+      "question": "Do you have this symptom?",
+      "quickSelect": "Quick select",
+      "remove": "Remove {{symptom}}",
+      "suggestionsLeft_one": "{{count}} suggestion left",
+      "suggestionsLeft_other": "{{count}} suggestions left",
+      "yours": "Your symptoms"
+    },
+    "wizard": {
+      "disclaimer": "This questionnaire does not provide a diagnosis. If you have severe chest pain, difficulty breathing or signs of a stroke, call your local emergency number now.",
+      "documentTitle": "Screening · step {{step}}",
+      "errors": {
+        "aiConsent": "Please agree to AI processing, or turn off \"Use AI recommendations\".",
+        "answerSymptom": "Answer \"Yes\" or \"Maybe\" to at least one symptom, or describe your symptoms in your own words.",
+        "budgetMinMax": "The minimum budget is higher than the maximum.",
+        "budgetNumber": "Enter the budget as a number.",
+        "durationMissing": "Tell us how long you have had this condition.",
+        "durationUnrealistic": "Please enter a realistic duration.",
+        "selectArea": "Select at least one area on the body map (or \"Whole body / general\").",
+        "travelWindow": "The travel window ends before it starts."
+      },
+      "findDoctors": "Find my doctors",
+      "next": "Next",
+      "optional": "Optional",
+      "previous": "Previous",
+      "saveAndExit": "Save & exit",
+      "skipDefaults": "Skip & use defaults",
+      "stepOf": "Step {{step}} of {{total}}",
+      "steps": {
+        "areas": {
+          "subtitle": "Tap on the body to select the area. You can select more than one.",
+          "title": "Where are you experiencing issues?"
+        },
+        "duration": {
+          "subtitle": "Duration, daily impact and what you have tried so far.",
+          "title": "How long have you had this condition?"
+        },
+        "preferences": {
+          "subtitle": "Optional - helps us rank hospitals and doctors for you.",
+          "title": "Personalize your matches"
+        },
+        "symptoms": {
+          "subtitle": "Answer each card, or add your own symptoms.",
+          "title": "Which symptoms are you experiencing?"
+        }
+      },
+      "toast": {
+        "analysisFailed": "We could not start the analysis. Please try again.",
+        "progressSaved": "Progress saved. You can continue from your dashboard.",
+        "saveFailed": "Your answers could not be saved."
+      },
+      "voicePrompt": "<0>Prefer to talk?</0> Describe your problem by voice in your own language - we fill in the answers and you check them before anything is saved."
+    }
+  },
+  "shell": {
+    "bottomNav": {
+      "home": "Home",
+      "label": "Quick navigation",
+      "messages": "Messages",
+      "profile": "Profile",
+      "screening": "Screening",
+      "trip": "Trip"
+    },
+    "guest": "Guest",
+    "loadingPage": "Loading page",
+    "loadingPortal": "Loading your portal",
+    "menu": {
+      "profile": "Profile",
+      "saved": "Saved hospitals & doctors"
+    },
+    "nav": {
+      "account": "Account",
+      "bookings": "Bookings",
+      "bookingsPayments": "Bookings & payments",
+      "care": "Care",
+      "cases": "My cases",
+      "dashboard": "Dashboard",
+      "documents": "Documents",
+      "inbox": "Messages & alerts",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "payments": "Payments",
+      "profile": "Profile",
+      "saved": "Saved",
+      "screenings": "AI screenings",
+      "trip": "Trip",
+      "tripDocuments": "Trip & documents"
+    },
+    "pageError": {
+      "description": "Please reload the page. If it keeps happening, contact support.",
+      "title": "This page could not be displayed"
+    },
+    "roles": {
+      "admin": "admin",
+      "agent": "agent",
+      "finance": "finance",
+      "hospital": "hospital",
+      "patient": "patient",
+      "super_admin": "super admin",
+      "support": "support"
+    },
+    "signOut": "Sign out",
+    "startScreening": "Start AI screening",
+    "subtitle": "Patient portal",
+    "wrongRole": {
+      "description": "You are signed in as a {{role}} account. Please use your own portal, or sign out and sign in with a patient account.",
+      "home": "Home",
+      "title": "This portal is for patients"
+    }
+  },
+  "status": {
+    "accepted": "Accepted",
+    "admitted": "Admitted",
+    "applied": "Applied",
+    "approved": "Approved",
+    "booked": "Booked",
+    "cancelled": "Cancelled",
+    "captured": "Captured",
+    "completed": "Completed",
+    "confirmed": "Confirmed",
+    "created": "Created",
+    "declined": "Declined",
+    "documents_pending": "Documents pending",
+    "done": "Done",
+    "draft": "Draft",
+    "due": "Due",
+    "emergency": "Emergency",
+    "enquiry": "Enquiry sent",
+    "expired": "Expired",
+    "failed": "Failed",
+    "in_progress": "In progress",
+    "in_treatment": "In treatment",
+    "invitation_issued": "Invitation issued",
+    "not_started": "Not started",
+    "overdue": "Overdue",
+    "paid": "Paid",
+    "partially_refunded": "Partially refunded",
+    "pending": "Pending",
+    "pending_payment": "Awaiting payment",
+    "processing": "Processing",
+    "quoted": "Quoted",
+    "refunded": "Refunded",
+    "rejected": "Rejected",
+    "requested": "Requested",
+    "routine": "Routine",
+    "scheduled": "Scheduled",
+    "sent": "Sent",
+    "soon": "Soon",
+    "uploaded": "Uploaded",
+    "urgent": "Urgent",
+    "verified": "Verified",
+    "withdrawn": "Withdrawn"
+  },
+  "support": {
+    "call": "Call",
+    "chat": "Chat",
+    "coordinator": "Your coordinator · {{name}}",
+    "emergencyContact": "Your emergency contact · {{phone}}",
+    "emergencyDialog": {
+      "description": "Tap to call. Calls use your phone's dialer.",
+      "outsideIndia": "If you are outside India and need urgent medical help, call your local emergency number.",
+      "title": "Emergency contacts"
+    },
+    "guide": {
+      "arrival": {
+        "item1": "Your airport pickup driver will hold a sign with your name at the arrivals exit",
+        "item2": "Share your live location with your coordinator when you land",
+        "item3": "Save the 24/7 helpline number on your phone",
+        "title": "On arrival"
+      },
+      "culturalTips": "Cultural tips",
+      "description": "Everything to prepare before you travel to India.",
+      "documents": {
+        "item1": "Passport valid for at least 6 months, plus 2 photocopies",
+        "item2": "Printed e-Medical visa (and e-Medical Attendant visa for companions)",
+        "item3": "Hospital invitation letter and your booking confirmation",
+        "item4": "All previous medical reports, scans and prescriptions",
+        "item5": "Travel insurance policy and emergency contact details",
+        "title": "Documents to carry"
+      },
+      "health": {
+        "item1": "Carry enough regular medication for the whole stay, in original packaging, with prescriptions",
+        "item2": "Tell your coordinator about allergies and current medicines before you fly",
+        "item3": "Drink bottled or filtered water and avoid uncooked street food before your procedure",
+        "title": "Health & medication"
+      },
+      "money": {
+        "item1": "Cards are widely accepted; keep some Indian Rupees for small purchases",
+        "item2": "Your coordinator can help you get a local SIM card on arrival",
+        "item3": "Keep receipts - your insurer may ask for them",
+        "title": "Money & connectivity"
+      },
+      "title": "Pre-arrival guide"
+    },
+    "helplines": {
+      "emergency": "Emergency services (India)",
+      "loadError": "Helplines could not be loaded. In an emergency in India dial 112.",
+      "patient": "24/7 patient helpline",
+      "whatsapp": "WhatsApp support"
+    },
+    "message": "Message",
+    "reachViaMessages": "Reach out via Messages",
+    "sos": {
+      "body": "Your coordinator and the 24/7 support team will be alerted immediately with your location (if you allow it). For a life-threatening emergency also call <0>112</0>.",
+      "button": "SOS",
+      "confirm": "Send SOS now",
+      "confirmTitle": "Send an SOS alert?",
+      "failed": "SOS could not be sent: {{error}}. Please call the helpline or 112.",
+      "messageLabel": "What is happening? (optional)",
+      "messagePlaceholder": "e.g. severe pain at the hotel, need help",
+      "sent": "SOS sent. Your coordinator and our support team have been alerted and will call you now."
+    }
+  },
+  "trip": {
+    "hub": {
+      "accommodationEmpty": "No accommodation requested yet.",
+      "accommodationTitle": "Accommodation",
+      "addVisaRequest": "+ Add a visa request (e.g. for a companion)",
+      "admission": "Admission {{date}}",
+      "airportDistance": "{{km}} km from the airport",
+      "arrives": "Arrives {{date}}",
+      "backToBooking": "Booking {{number}}",
+      "callHelpline": "Call 24/7 helpline",
+      "checklistEmpty": "Your checklist is created when the booking is confirmed.",
+      "checklistProgress": "{{done}} of {{total}} done",
+      "checklistTitle": "Pre-arrival checklist",
+      "checklistUpdateFailed": "Could not update the checklist.",
+      "confirmation": "Confirmation {{code}}",
+      "daysUnit_one": "day",
+      "daysUnit_other": "days",
+      "departs": "Departs {{date}}",
+      "downloadFailed": "Download failed.",
+      "flightsEmpty": "No flight or transfer requests yet.",
+      "flightsTitle": "Flights & transfers",
+      "getTranslator": "Get translator",
+      "guests_one": "1 guest",
+      "guests_other": "{{n}} guests",
+      "helpTitle": "Help, 24/7",
+      "inTreatment": "In treatment",
+      "invitationLetter": "Invitation letter",
+      "itineraryDescription": "Appointments, admission and transfers, in order.",
+      "itineraryEmpty": "Your coordinator and the hospital will add your schedule here.",
+      "itineraryTitle": "Itinerary",
+      "loadFailed": "Could not load. Please refresh.",
+      "markDone": "Mark done",
+      "openMap": "Open map",
+      "pnr": "PNR {{pnr}}",
+      "reference": "Ref. {{ref}}",
+      "requestVisa": "Request visa support",
+      "routeSeparator": " → ",
+      "servicesEmpty": "No translator or guide requested yet.",
+      "servicesTitle": "Translator & local guide",
+      "tipsDescription": "A few things that make your stay in India easier.",
+      "tipsEmpty": "No tips yet.",
+      "tipsTitle": "Cultural tips",
+      "title": "Trip hub",
+      "travelDescription": "Request services - your coordinator confirms details and prices.",
+      "travelTitle": "Travel & stay",
+      "treatment": "Treatment",
+      "underway": "Underway",
+      "undo": "Undo",
+      "untilTreatment": "Until treatment",
+      "visa": "Visa",
+      "visaIntro": "Most international patients need an India e-Medical visa. We provide the hospital invitation letter."
+    },
+    "index": {
+      "docTitle": "Trip",
+      "emptyDescription": "When you book treatment, your visa, flights, pickup, stay and itinerary are organised here.",
+      "emptyTitle": "No upcoming trip",
+      "goToCases": "Go to my cases",
+      "title": "Your trip"
+    },
+    "request": {
+      "accommodation": {
+        "description": "Hotels and guest houses close to your hospital.",
+        "title": "Request accommodation"
+      },
+      "airportDrop": {
+        "description": "Transport from your hotel or hospital to the airport.",
+        "title": "Request airport drop"
+      },
+      "airportPickup": {
+        "description": "A driver meets you at arrivals and takes you to your hotel or hospital.",
+        "title": "Request airport pickup"
+      },
+      "cancel": "Cancel",
+      "errors": {
+        "checkOutAfterCheckIn": "Check-out must be after check-in",
+        "dateTimeRequired": "Date and time are required",
+        "departureRequired": "Departure city and date are required",
+        "endAfterStart": "Must be after the start",
+        "number": "Enter a number",
+        "stayRequired": "Choose a place to stay and your dates"
+      },
+      "fields": {
+        "airport": "Airport",
+        "arrival": "Arrival date & time",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "cityOrAirport": "City or airport",
+        "distanceKm": "{{km}} km",
+        "dropOff": "Drop-off (hotel / hospital)",
+        "flightDeparture": "Flight departure date & time",
+        "flightNumber": "Flight number",
+        "flightNumberPlaceholder": "e.g. AI 102",
+        "flyingFrom": "Flying from",
+        "flyingTo": "Flying to",
+        "from": "From",
+        "guests": "Guests",
+        "languageNotes": "Language needed & notes",
+        "loadingOptions": "Loading options...",
+        "nightlyRate": "From <0>{{amount}}</0> per night",
+        "notes": "Notes",
+        "passengers": "Passengers",
+        "pickupAddress": "Pickup address",
+        "placeToStay": "Place to stay",
+        "preferredDeparture": "Preferred departure",
+        "roomType": "Room type",
+        "roomTypePlaceholder": "e.g. twin room",
+        "selectAccommodation": "Select accommodation",
+        "until": "Until",
+        "visaCompanion": "e-Medical Attendant visa (companion)",
+        "visaPatient": "e-Medical visa (patient)",
+        "visaType": "Visa type"
+      },
+      "flight": {
+        "description": "Our travel desk sends you flight options and prices.",
+        "title": "Request flight booking"
+      },
+      "localGuide": {
+        "description": "Help with shopping, sightseeing and getting around.",
+        "title": "Request a local guide"
+      },
+      "send": "Send request",
+      "sendFailed": "The request could not be sent.",
+      "sent": "Request sent. Your coordinator will confirm the details.",
+      "translator": {
+        "description": "A medical interpreter for consultations and admission.",
+        "title": "Request a translator"
+      },
+      "visa": {
+        "description": "We arrange the hospital invitation letter and guide your application.",
+        "title": "Request e-Medical visa support"
+      }
+    },
+    "requests": {
+      "accommodation": "Accommodation",
+      "airportDrop": "Airport drop",
+      "airportPickup": "Airport pickup",
+      "flight": "Flight",
+      "localGuide": "Local guide",
+      "translator": "Translator"
+    }
+  },
+  "ui": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "error": {
+      "description": "We could not load this right now. Please try again.",
+      "retry": "Try again",
+      "title": "Something went wrong"
+    },
+    "loading": "Loading",
+    "pagination": {
+      "label": "Pagination",
+      "next": "Next",
+      "page": "Page {{page}} of {{pages}}",
+      "previous": "Previous"
+    },
+    "rating": {
+      "none": "No ratings yet",
+      "reviews_one": "({{formatted}} review)",
+      "reviews_other": "({{formatted}} reviews)"
+    },
+    "upload": {
+      "attach": "Attach a file",
+      "button": "Upload",
+      "failed": "{{name}}: {{error}}",
+      "tooLarge": "{{name}} is larger than {{size}}.",
+      "uploaded": "{{name}} uploaded"
+    }
+  }
+}

@@ -1,10 +1,12 @@
 /**
  * Formatting helpers (money in integer minor units, dates). Mirrors the contract of @hig/shared's
- * lib/money.ts + lib/dates.ts, which the shared package does not export yet (no `src/lib/index.ts`).
+ * lib/money.ts + lib/dates.ts. Month names, relative times, digits and grouping follow the UI language
+ * (`intlLocale()` / `dateLocale()` from @hig/shared/lib).
  */
 import { addDays, format, formatDistanceToNowStrict, isValid, parseISO } from 'date-fns';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { currentLanguage, dateLocale, formatNumber, intlLocale } from '@hig/shared/lib';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -71,11 +73,13 @@ export function formatMoney(
   const exp = currencyExponent(ccy);
   const major = minor / 10 ** exp;
   const digits = options.compact ? 0 : options.trimZeros && Number.isInteger(major) ? 0 : exp;
-  const key = `${ccy}|${digits}|${options.compact ? 1 : 0}`;
+  // English keeps Indian digit grouping for rupees ("₹1,00,000.00"); other languages use their own conventions.
+  const locale = currentLanguage() === 'en' && ccy === 'INR' ? 'en-IN' : intlLocale();
+  const key = `${locale}|${ccy}|${digits}|${options.compact ? 1 : 0}`;
   let fmt = formatters.get(key);
   if (!fmt) {
     try {
-      fmt = new Intl.NumberFormat(ccy === 'INR' ? 'en-IN' : undefined, {
+      fmt = new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: ccy,
         minimumFractionDigits: digits,
@@ -112,7 +116,7 @@ export function toDate(value: DateInput): Date | null {
 
 export function formatDate(value: DateInput, pattern = 'd MMM yyyy', fallback = '—'): string {
   const d = toDate(value);
-  return d ? format(d, pattern) : fallback;
+  return d ? format(d, pattern, { locale: dateLocale() }) : fallback;
 }
 
 export function formatDateTime(value: DateInput, fallback = '—'): string {
@@ -121,7 +125,7 @@ export function formatDateTime(value: DateInput, fallback = '—'): string {
 
 export function formatRelative(value: DateInput, fallback = '—'): string {
   const d = toDate(value);
-  return d ? formatDistanceToNowStrict(d, { addSuffix: true }) : fallback;
+  return d ? formatDistanceToNowStrict(d, { addSuffix: true, locale: dateLocale() }) : fallback;
 }
 
 /** Date -> "YYYY-MM-DD" (local calendar date). */
@@ -150,20 +154,21 @@ export function fromDateTimeLocal(value: string): string | null {
 /** "2026-10" -> "Oct 26" */
 export function formatMonth(month: string): string {
   const d = toDate(/^\d{4}-\d{2}$/.test(month) ? `${month}-01` : month);
-  return d ? format(d, 'MMM yy') : month;
+  return d ? format(d, 'MMM yy', { locale: dateLocale() }) : month;
 }
 
 export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  const one = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
+  if (bytes < 1024) return `${formatNumber(bytes)} B`;
+  if (bytes < 1024 * 1024) return `${formatNumber(bytes / 1024, one)} KB`;
+  return `${formatNumber(bytes / (1024 * 1024), one)} MB`;
 }
 
 /** ISO-3166 alpha-2 -> country name ("NG" -> "Nigeria"). */
 export function countryName(code: string | null | undefined): string {
   if (!code) return '—';
   try {
-    return new Intl.DisplayNames(undefined, { type: 'region' }).of(code.toUpperCase()) ?? code;
+    return new Intl.DisplayNames(intlLocale(), { type: 'region' }).of(code.toUpperCase()) ?? code;
   } catch {
     return code;
   }

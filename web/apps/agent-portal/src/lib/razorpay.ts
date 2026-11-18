@@ -1,4 +1,5 @@
 import type { CheckoutOut, RazorpayVerifyIn } from '@hig/shared/api';
+import { i18n } from '@hig/shared/lib';
 
 const SCRIPT_URL = 'https://checkout.razorpay.com/v1/checkout.js';
 
@@ -26,12 +27,12 @@ export function loadRazorpay(): Promise<RazorpayConstructor> {
     script.async = true;
     script.onload = () => {
       if (window.Razorpay) resolve(window.Razorpay);
-      else reject(new Error('Razorpay Checkout failed to initialise.'));
+      else reject(new Error(i18n.t('agent:razorpay.initFailed')));
     };
     script.onerror = () => {
       loader = null;
       script.remove();
-      reject(new Error('Could not load Razorpay Checkout. Check your connection and try again.'));
+      reject(new Error(i18n.t('agent:razorpay.loadFailed')));
     };
     document.head.appendChild(script);
   });
@@ -44,7 +45,7 @@ export function loadRazorpay(): Promise<RazorpayConstructor> {
  */
 export async function openRazorpayCheckout(checkout: CheckoutOut): Promise<RazorpayVerifyIn> {
   const rz = checkout.razorpay;
-  if (!rz) throw new Error('This order has no Razorpay checkout details.');
+  if (!rz) throw new Error(i18n.t('agent:razorpay.noCheckout'));
   const Razorpay = await loadRazorpay();
   return new Promise<RazorpayVerifyIn>((resolve, reject) => {
     const instance = new Razorpay({
@@ -57,10 +58,10 @@ export async function openRazorpayCheckout(checkout: CheckoutOut): Promise<Razor
       prefill: rz.prefill,
       theme: { color: '#22C55E' },
       handler: (response: RazorpayVerifyIn) => resolve(response),
-      modal: { ondismiss: () => reject(new Error('Payment window closed before completion.')) },
+      modal: { ondismiss: () => reject(new Error(i18n.t('agent:razorpay.dismissed'))) },
     });
     instance.on('payment.failed', (response) =>
-      reject(new Error(response.error?.description ?? 'Payment failed. Please try another method.')),
+      reject(new Error(response.error?.description ?? i18n.t('agent:razorpay.failed'))),
     );
     instance.open();
   });

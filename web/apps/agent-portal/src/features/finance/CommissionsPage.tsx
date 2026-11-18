@@ -39,6 +39,8 @@ import {
 } from '@hig/shared/ui';
 import { Card, ErrorState, Money, PageHeader, Skeleton, StatCard, Tabs } from '../../components/ui';
 import { fetchStatement, type StatementLine } from '../../lib/financeAdapters';
+import { Trans } from 'react-i18next';
+import { useAppTranslation, type AppT } from '../../i18n';
 import { inDateRange, optionsFromRows, useHospitalOptions } from '../../lib/lookups';
 import { qk } from '../../lib/queries';
 import {
@@ -46,6 +48,7 @@ import {
   filterParam,
   formatDate,
   formatMoney,
+  formatNumber,
   fromMinor,
   isoDateFromToday,
   matchesSearch,
@@ -59,19 +62,20 @@ type Tab = 'items' | 'payouts' | 'statements';
 const TABS: Tab[] = ['items', 'payouts', 'statements'];
 
 export function CommissionsPage() {
-  useDocumentTitle('Commissions');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('commissions.title'));
   const [params, setParams] = useSearchParams();
   const tab: Tab = TABS.includes(params.get('tab') as Tab) ? (params.get('tab') as Tab) : 'items';
   // switching tabs drops the other tabs' filters (each tab has its own URL state)
-  const setTab = (t: Tab) => setParams(t === 'items' ? {} : { tab: t }, { replace: true });
+  const setTab = (next: Tab) => setParams(next === 'items' ? {} : { tab: next }, { replace: true });
   const summary = useQuery({ queryKey: qk.financeSummary, queryFn: financeApi.payeeSummary });
   const s = summary.data;
 
   return (
     <div>
       <PageHeader
-        title="Commissions"
-        description="Commission is earned when a treatment you facilitated is completed, then paid out after the holding period."
+        title={t('commissions.title')}
+        description={t('commissions.description')}
       />
       {summary.isError ? (
         <Card className="mb-6">
@@ -83,18 +87,18 @@ export function CommissionsPage() {
             Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-28" />)
           ) : (
             <>
-              <StatCard label="Pending" value={formatMoney(s.pending_minor, s.currency)} icon={<Clock className="h-4 w-4" />} tone="warning" hint="In holding period" />
-              <StatCard label="Eligible" value={formatMoney(s.eligible_minor, s.currency)} icon={<Wallet className="h-4 w-4" />} tone="info" hint="Included in the next payout" />
-              <StatCard label="On hold" value={formatMoney(s.on_hold_minor, s.currency)} icon={<PauseCircle className="h-4 w-4" />} tone="accent" />
-              <StatCard label="Paid out" value={formatMoney(s.paid_minor, s.currency)} icon={<CheckCircle2 className="h-4 w-4" />} />
+              <StatCard label={t('commissions.stats.pending')} value={formatMoney(s.pending_minor, s.currency)} icon={<Clock className="h-4 w-4" />} tone="warning" hint={t('commissions.stats.pendingHint')} />
+              <StatCard label={t('commissions.stats.eligible')} value={formatMoney(s.eligible_minor, s.currency)} icon={<Wallet className="h-4 w-4" />} tone="info" hint={t('commissions.stats.eligibleHint')} />
+              <StatCard label={t('commissions.stats.onHold')} value={formatMoney(s.on_hold_minor, s.currency)} icon={<PauseCircle className="h-4 w-4" />} tone="accent" />
+              <StatCard label={t('commissions.stats.paidOut')} value={formatMoney(s.paid_minor, s.currency)} icon={<CheckCircle2 className="h-4 w-4" />} />
               <StatCard
-                label="Next payout"
+                label={t('commissions.stats.nextPayout')}
                 value={s.next_payout_date ? formatDate(s.next_payout_date) : '—'}
                 icon={<CalendarClock className="h-4 w-4" />}
                 hint={
                   s.last_payout
-                    ? `Last: ${formatMoney(s.last_payout.amount_minor, s.last_payout.currency)} on ${formatDate(s.last_payout.processed_at ?? s.last_payout.created_at)}`
-                    : 'No payouts yet'
+                    ? t('commissions.stats.lastPayout', { amount: formatMoney(s.last_payout.amount_minor, s.last_payout.currency), date: formatDate(s.last_payout.processed_at ?? s.last_payout.created_at) })
+                    : t('commissions.stats.noPayouts')
                 }
               />
             </>
@@ -102,11 +106,7 @@ export function CommissionsPage() {
         </div>
       )}
       <p className="mb-4 text-sm text-muted">
-        Payouts go to your{' '}
-        <Link to="/payout-account" className="font-medium text-primary-ink hover:underline">
-          verified payout account
-        </Link>
-        .
+        <Trans t={t} i18nKey="commissions.payoutsGoTo" components={{ 0: <Link to="/payout-account" className="font-medium text-primary-ink hover:underline" /> }} />
       </p>
 
       <Tabs<Tab>
@@ -114,9 +114,9 @@ export function CommissionsPage() {
         value={tab}
         onChange={setTab}
         tabs={[
-          { value: 'items', label: 'Commission items' },
-          { value: 'payouts', label: 'Payouts' },
-          { value: 'statements', label: 'Statement' },
+          { value: 'items', label: t('commissions.tabs.items') },
+          { value: 'payouts', label: t('commissions.tabs.payouts') },
+          { value: 'statements', label: t('commissions.tabs.statement') },
         ]}
       />
       {tab === 'items' && <ItemsTab />}
@@ -129,14 +129,15 @@ export function CommissionsPage() {
 // =========================================================================================================
 // Commission items (server-side)
 // =========================================================================================================
-const ITEM_LABELS: Record<SettlementItemStatus, string> = {
-  pending: 'Pending',
-  eligible: 'Eligible',
-  on_hold: 'On hold',
-  batched: 'In payout batch',
-  paid: 'Paid',
-  reversed: 'Clawed back',
-};
+const itemLabel = (t: AppT, s: SettlementItemStatus): string =>
+  ({
+    pending: t('commissions.itemStatus.pending'),
+    eligible: t('commissions.itemStatus.eligible'),
+    on_hold: t('commissions.itemStatus.onHold'),
+    batched: t('commissions.itemStatus.batched'),
+    paid: t('commissions.itemStatus.paid'),
+    reversed: t('commissions.itemStatus.reversed'),
+  })[s];
 const QUICK_ITEM_STATUSES: SettlementItemStatus[] = ['pending', 'eligible', 'on_hold', 'paid', 'reversed'];
 const CURRENCY = 'INR';
 
@@ -166,10 +167,10 @@ function toItemApiFilters(f: ItemFilters): Omit<AgentCommissionListParams, 'page
 
 const moneyText = (minor: number, currency: string) => `${currency} ${fromMinor(minor, currency)}`;
 
-const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
+const itemColumns = (t: AppT): DataTableColumn<AgentCommissionOut>[] => [
   {
     key: 'booking',
-    header: 'Booking',
+    header: t('commissions.columns.booking'),
     sortable: true,
     sortKey: 'booking_number',
     sticky: true,
@@ -179,36 +180,36 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
   },
   {
     key: 'patient',
-    header: 'Patient',
+    header: t('commissions.columns.patient'),
     mobile: 'primary',
     className: 'max-w-52',
-    cell: (r) => <PersonCell name={r.patient_name ?? 'Patient'} />,
+    cell: (r) => <PersonCell name={r.patient_name ?? t('commissions.fallbackPatient')} />,
     exportValue: (r) => r.patient_name ?? '',
   },
   {
     key: 'hospital',
-    header: 'Hospital',
+    header: t('commissions.columns.hospital'),
     className: 'max-w-56',
     cell: (r) => <TextCell primary={r.hospital_name ?? '—'} />,
     exportValue: (r) => r.hospital_name ?? '',
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('commissions.columns.status'),
     sortable: true,
     mobile: 'badge',
     cell: (r) => (
       <span className="flex flex-col items-start gap-1">
-        <StatusBadgeCell status={r.status} kind="settlementItem" label={ITEM_LABELS[r.status]} />
+        <StatusBadgeCell status={r.status} kind="settlementItem" label={itemLabel(t, r.status)} />
         {r.hold_reason && <span className="max-w-48 truncate text-xs text-muted">{r.hold_reason}</span>}
       </span>
     ),
-    mobileCell: (r) => <StatusBadgeCell status={r.status} kind="settlementItem" label={ITEM_LABELS[r.status]} />,
-    exportValue: (r) => ITEM_LABELS[r.status],
+    mobileCell: (r) => <StatusBadgeCell status={r.status} kind="settlementItem" label={itemLabel(t, r.status)} />,
+    exportValue: (r) => itemLabel(t, r.status),
   },
   {
     key: 'eligible',
-    header: 'Eligible from',
+    header: t('commissions.columns.eligibleFrom'),
     sortable: true,
     sortKey: 'eligible_at',
     sortDescFirst: true,
@@ -217,7 +218,7 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
   },
   {
     key: 'gross',
-    header: 'Gross',
+    header: t('commissions.columns.gross'),
     align: 'end',
     sortable: true,
     sortKey: 'gross_minor',
@@ -227,7 +228,7 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
   },
   {
     key: 'deductions',
-    header: 'Tax & TDS',
+    header: t('commissions.columns.taxTds'),
     align: 'end',
     defaultHidden: true,
     cell: (r) => <MoneyCell minor={r.tax_minor + r.tds_minor} currency={r.currency} className="text-muted" />,
@@ -235,7 +236,7 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
   },
   {
     key: 'net',
-    header: 'Net',
+    header: t('commissions.columns.net'),
     align: 'end',
     sortable: true,
     sortKey: 'net_minor',
@@ -245,7 +246,7 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
   },
   {
     key: 'created',
-    header: 'Earned',
+    header: t('commissions.columns.earned'),
     sortable: true,
     sortKey: 'created_at',
     sortDescFirst: true,
@@ -255,6 +256,8 @@ const ITEM_COLUMNS: DataTableColumn<AgentCommissionOut>[] = [
 ];
 
 function ItemsTab() {
+  const { t } = useAppTranslation();
+  const ITEM_COLUMNS = useMemo(() => itemColumns(t), [t]);
   const table = useTableState({ filters: ITEM_FILTERS, defaultSort: '-created_at', sortKeys: ITEM_SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toItemApiFilters(filters), [filters]);
@@ -274,13 +277,13 @@ function ItemsTab() {
 
   const statusOptions: FilterOption<SettlementItemStatus>[] = SETTLEMENT_ITEM_STATUSES.map((s) => ({
     value: s,
-    label: ITEM_LABELS[s],
+    label: itemLabel(t, s),
     tone: statusTone(s, 'settlementItem'),
     count: counts.data?.counts[s],
   }));
   const quickItems: QuickFilterItem<SettlementItemStatus>[] = [
-    { value: '', label: 'All', count: counts.data?.total },
-    ...QUICK_ITEM_STATUSES.map((s) => ({ value: s, label: ITEM_LABELS[s], count: counts.data?.counts[s] })),
+    { value: '', label: t('commissions.quick.all'), count: counts.data?.total },
+    ...QUICK_ITEM_STATUSES.map((s) => ({ value: s, label: itemLabel(t, s), count: counts.data?.counts[s] })),
   ];
   const quickValue =
     filters.status.length === 0 ? '' : filters.status.length === 1 && QUICK_ITEM_STATUSES.includes(filters.status[0]!) ? filters.status[0]! : null;
@@ -291,7 +294,7 @@ function ItemsTab() {
   return (
     <DataTable
       id="agent.commissions"
-      caption="Commission items"
+      caption={t('commissions.tabs.items')}
       table={table}
       columns={ITEM_COLUMNS}
       rows={list.data?.items}
@@ -301,23 +304,23 @@ function ItemsTab() {
       error={list.error}
       onRetry={() => void list.refetch()}
       rowHref={(r) => (r.case_id ? `/cases/${r.case_id}` : null)}
-      rowLabel={(r) => `Open case for booking ${r.booking_number ?? ''}`}
+      rowLabel={(r) => t('commissions.openRow', { number: r.booking_number ?? '' })}
       emptyIcon={<Wallet className="size-6" aria-hidden />}
-      emptyTitle="No commission yet"
-      emptyDescription="Commission items appear after a booked treatment is completed."
+      emptyTitle={t('commissions.emptyTitle')}
+      emptyDescription={t('commissions.emptyDescription')}
       header={
         <div className="flex flex-wrap items-end justify-between gap-x-4 border-b border-border px-2 sm:px-3">
-          <QuickFilters label="Commission status" items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
+          <QuickFilters label={t('commissions.filters.status')} items={quickItems} value={quickValue} onChange={(s) => setFilter('status', s ? [s] : [])} />
           {selectedNet !== null && (
             <p className="py-2 text-sm text-muted">
-              Net in view: <Money minor={selectedNet} currency={CURRENCY} className="font-semibold text-fg" />
+              <Trans t={t} i18nKey="commissions.netInView" components={{ 0: <Money minor={selectedNet} currency={CURRENCY} className="font-semibold text-fg" /> }} />
             </p>
           )}
         </div>
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Booking, case, patient or hospital…', label: 'Search commission' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('commissions.filters.searchPlaceholder'), label: t('commissions.filters.searchLabel') }}
           onReset={table.resetFilters}
           actions={
             <ExportButton
@@ -329,9 +332,9 @@ function ItemsTab() {
             />
           }
         >
-          <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+          <MultiSelectFilter label={t('commissions.filters.statusShort')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
           <SelectFilter
-            label="Hospital"
+            label={t('commissions.filters.hospital')}
             icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
             value={filters.hospital_id}
             onChange={(v) => setFilter('hospital_id', v)}
@@ -339,9 +342,9 @@ function ItemsTab() {
             loading={hospitals.isLoading}
             searchable
           />
-          <DateRangeFilter label="Earned" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+          <DateRangeFilter label={t('commissions.filters.earned')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
           <AmountRangeFilter
-            label="Net amount"
+            label={t('commissions.filters.netAmount')}
             currency={CURRENCY}
             value={{ min: filters.min, max: filters.max }}
             onChange={({ min, max }) => setFilters({ min, max })}
@@ -362,35 +365,35 @@ const PAYOUT_FILTERS = {
   from: filterParam.date(),
   to: filterParam.date(),
 };
-const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
+const payoutColumns = (t: AppT): DataTableColumn<PayoutOut>[] => [
   {
     key: 'date',
-    header: 'Date',
+    header: t('commissions.payouts.date'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (p) => p.processed_at ?? p.created_at,
     sticky: true,
     mobile: 'secondary',
-    cell: (p) => <DateCell value={p.processed_at ?? p.created_at} display="datetime" secondary={p.processed_at ? 'Processed' : 'Created'} />,
+    cell: (p) => <DateCell value={p.processed_at ?? p.created_at} display="datetime" secondary={p.processed_at ? t('commissions.payouts.processed') : t('commissions.payouts.created')} />,
     exportValue: (p) => p.processed_at ?? p.created_at,
   },
   {
     key: 'reference',
-    header: 'Reference (UTR)',
+    header: t('commissions.payouts.reference'),
     mobile: 'primary',
-    cell: (p) => (p.utr ? <IdCell value={p.utr} secondary={p.batch_number ?? undefined} /> : <TextCell primary={<span className="text-muted">Pending</span>} secondary={p.batch_number ?? undefined} />),
-    mobileCell: (p) => p.utr ?? p.batch_number ?? 'Payout',
+    cell: (p) => (p.utr ? <IdCell value={p.utr} secondary={p.batch_number ?? undefined} /> : <TextCell primary={<span className="text-muted">{t('commissions.payouts.pending')}</span>} secondary={p.batch_number ?? undefined} />),
+    mobileCell: (p) => p.utr ?? p.batch_number ?? t('commissions.payouts.payout'),
     exportValue: (p) => p.utr ?? '',
   },
   {
     key: 'method',
-    header: 'Method',
+    header: t('commissions.payouts.method'),
     cell: (p) => PAYOUT_METHOD_LABELS[p.method] ?? humanize(p.method),
     exportValue: (p) => PAYOUT_METHOD_LABELS[p.method] ?? p.method,
   },
   {
     key: 'status',
-    header: 'Status',
+    header: t('commissions.payouts.status'),
     sortable: true,
     sortValue: (p) => p.status,
     mobile: 'badge',
@@ -405,7 +408,7 @@ const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('commissions.payouts.amount'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -416,6 +419,8 @@ const PAYOUT_COLUMNS: DataTableColumn<PayoutOut>[] = [
 ];
 
 function PayoutsTab() {
+  const { t } = useAppTranslation();
+  const PAYOUT_COLUMNS = useMemo(() => payoutColumns(t), [t]);
   const table = useTableState({
     filters: PAYOUT_FILTERS,
     prefix: 'po_',
@@ -452,31 +457,31 @@ function PayoutsTab() {
   return (
     <DataTable
       id="agent.payouts"
-      caption="Payouts"
+      caption={t('commissions.tabs.payouts')}
       table={table}
       columns={PAYOUT_COLUMNS}
       rows={rows}
       loading={query.isLoading}
       error={query.error}
       onRetry={() => void query.refetch()}
-      emptyTitle="No payouts yet"
-      emptyDescription="Eligible commission is paid out on the settlement cycle."
+      emptyTitle={t('commissions.payouts.emptyTitle')}
+      emptyDescription={t('commissions.payouts.emptyDescription')}
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'UTR or batch…', label: 'Search payouts' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('commissions.payouts.searchPlaceholder'), label: t('commissions.payouts.searchLabel') }}
           onReset={table.resetFilters}
           resultCount={query.data ? rows.length : undefined}
-          resultLabel={(n) => `${n} payout${n === 1 ? '' : 's'}`}
+          resultLabel={(n) => t('commissions.payouts.resultCount', { count: n, n: formatNumber(n) })}
           actions={<ExportButton filename="payouts" columns={PAYOUT_COLUMNS} rows={rows} />}
         >
-          <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+          <MultiSelectFilter label={t('commissions.payouts.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
           <SelectFilter
-            label="Method"
+            label={t('commissions.payouts.method')}
             value={filters.method}
             onChange={(v) => setFilter('method', v)}
             options={methodOptions.length ? methodOptions : PAYOUT_METHODS.map((m) => ({ value: m, label: PAYOUT_METHOD_LABELS[m] ?? m }))}
           />
-          <DateRangeFilter label="Date" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+          <DateRangeFilter label={t('commissions.payouts.date')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
         </FilterBar>
       }
     />
@@ -492,10 +497,10 @@ const STATEMENT_FILTERS = {
   type: filterParam.list(),
   q: filterParam.text(),
 };
-const STATEMENT_COLUMNS: DataTableColumn<StatementLine>[] = [
+const statementColumns = (t: AppT): DataTableColumn<StatementLine>[] => [
   {
     key: 'date',
-    header: 'Date',
+    header: t('commissions.statement.date'),
     sortable: true,
     sortDescFirst: true,
     sortValue: (r) => r.date,
@@ -506,7 +511,7 @@ const STATEMENT_COLUMNS: DataTableColumn<StatementLine>[] = [
   },
   {
     key: 'type',
-    header: 'Type',
+    header: t('commissions.statement.type'),
     sortable: true,
     sortValue: (r) => r.type,
     mobile: 'primary',
@@ -516,20 +521,20 @@ const STATEMENT_COLUMNS: DataTableColumn<StatementLine>[] = [
   },
   {
     key: 'reference',
-    header: 'Reference',
+    header: t('commissions.statement.reference'),
     cell: (r) => (r.booking_number ?? r.reference ? <IdCell value={r.booking_number ?? r.reference} /> : <span className="text-muted">—</span>),
     exportValue: (r) => r.booking_number ?? r.reference ?? '',
   },
   {
     key: 'description',
-    header: 'Description',
+    header: t('commissions.statement.description'),
     className: 'max-w-80',
     cell: (r) => <TextCell primary={r.description ?? '—'} />,
     exportValue: (r) => r.description ?? '',
   },
   {
     key: 'amount',
-    header: 'Amount',
+    header: t('commissions.statement.amount'),
     align: 'end',
     sortable: true,
     sortDescFirst: true,
@@ -542,7 +547,7 @@ const STATEMENT_COLUMNS: DataTableColumn<StatementLine>[] = [
   },
   {
     key: 'balance',
-    header: 'Balance',
+    header: t('commissions.statement.balance'),
     align: 'end',
     cell: (r) => (r.balance_minor !== null ? <MoneyCell minor={r.balance_minor} currency={r.currency} /> : <span className="text-muted">—</span>),
     exportValue: (r) => (r.balance_minor !== null ? moneyText(r.balance_minor, r.currency) : ''),
@@ -550,6 +555,8 @@ const STATEMENT_COLUMNS: DataTableColumn<StatementLine>[] = [
 ];
 
 function StatementsTab() {
+  const { t } = useAppTranslation();
+  const STATEMENT_COLUMNS = useMemo(() => statementColumns(t), [t]);
   const table = useTableState({ filters: STATEMENT_FILTERS, prefix: 'st_', defaultSort: 'date', sortKeys: ['date', 'type', 'amount'], defaultPageSize: 50 });
   const { filters, setFilter, setFilters } = table;
   const valid = !filters.from || !filters.to || filters.from <= filters.to;
@@ -572,36 +579,36 @@ function StatementsTab() {
   return (
     <DataTable
       id="agent.statement"
-      caption="Statement"
+      caption={t('commissions.tabs.statement')}
       table={table}
       columns={STATEMENT_COLUMNS}
       rows={valid ? rows : []}
       loading={valid && query.isLoading}
-      error={valid ? query.error : new Error('Choose a valid date range: the start must be before the end.')}
+      error={valid ? query.error : new Error(t('commissions.statement.invalidRange'))}
       onRetry={() => void query.refetch()}
-      emptyTitle="No activity in this period"
-      emptyDescription="Earned commission, payouts and adjustments for the chosen dates appear here."
+      emptyTitle={t('commissions.statement.emptyTitle')}
+      emptyDescription={t('commissions.statement.emptyDescription')}
       header={
         st && st.opening_balance_minor !== null ? (
           <dl className="grid grid-cols-2 gap-4 border-b border-border p-4 text-sm sm:grid-cols-4">
-            <SummaryItem label="Opening balance" minor={st.opening_balance_minor} currency={st.currency} />
-            <SummaryItem label="Earned" minor={st.total_earned_minor} currency={st.currency} tone="text-primary-ink" />
-            <SummaryItem label="Paid out" minor={st.total_paid_minor} currency={st.currency} />
-            <SummaryItem label="Closing balance" minor={st.closing_balance_minor} currency={st.currency} />
+            <SummaryItem label={t('commissions.statement.opening')} minor={st.opening_balance_minor} currency={st.currency} />
+            <SummaryItem label={t('commissions.statement.earned')} minor={st.total_earned_minor} currency={st.currency} tone="text-primary-ink" />
+            <SummaryItem label={t('commissions.statement.paidOut')} minor={st.total_paid_minor} currency={st.currency} />
+            <SummaryItem label={t('commissions.statement.closing')} minor={st.closing_balance_minor} currency={st.currency} />
           </dl>
         ) : undefined
       }
       toolbar={
         <FilterBar
-          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Reference or description…', label: 'Search statement' }}
+          search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('commissions.statement.searchPlaceholder'), label: t('commissions.statement.searchLabel') }}
           onReset={table.resetFilters}
           resultCount={st ? rows.length : undefined}
-          resultLabel={(n) => `${n} entr${n === 1 ? 'y' : 'ies'}`}
+          resultLabel={(n) => t('commissions.statement.resultCount', { count: n, n: formatNumber(n) })}
           showChips={table.isFiltered}
           actions={<ExportButton filename={`statement-${filters.from || 'start'}-to-${filters.to || 'today'}`} columns={STATEMENT_COLUMNS} rows={rows} />}
         >
-          <DateRangeFilter label="Period" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
-          <MultiSelectFilter label="Type" value={filters.type} onChange={(v) => setFilter('type', v)} options={typeOptions} />
+          <DateRangeFilter label={t('commissions.statement.period')} value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+          <MultiSelectFilter label={t('commissions.statement.type')} value={filters.type} onChange={(v) => setFilter('type', v)} options={typeOptions} />
         </FilterBar>
       }
     />

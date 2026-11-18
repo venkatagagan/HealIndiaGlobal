@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,30 +8,35 @@ import { BadgeCheck, Landmark, Pencil } from 'lucide-react';
 import { errorMessage, fieldErrors, financeApi, type PayoutAccountOut } from '@hig/shared/api';
 import { Badge, Button, ErrorState, FormField, Input, Skeleton } from '../../components/ui';
 import { qk } from '../../lib/queries';
+import { useAppTranslation } from '../../i18n';
 
-const schema = z
-  .object({
-    account_holder_name: z.string().trim().min(2, 'Enter the account holder name').max(200),
-    account_number: z.string().trim().regex(/^[0-9]{6,20}$/, 'Account number must be 6–20 digits'),
-    confirm_account_number: z.string().trim(),
-    ifsc: z
-      .string()
-      .trim()
-      .regex(/^[A-Za-z]{4}0[A-Za-z0-9]{6}$/, 'IFSC looks like HDFC0001234'),
-    bank_name: z.string().trim().min(2, 'Enter the bank name').max(120),
-    swift: z
-      .string()
-      .trim()
-      .regex(/^([A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?)?$/, 'SWIFT/BIC is 8 or 11 characters'),
-  })
-  .refine((v) => v.account_number === v.confirm_account_number, {
-    path: ['confirm_account_number'],
-    message: 'Account numbers do not match',
-  });
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
-type FormValues = z.infer<typeof schema>;
+const makeSchema = (t: TFn) =>
+  z
+    .object({
+      account_holder_name: z.string().trim().min(2, t('finance.payoutAccount.errHolder')).max(200),
+      account_number: z.string().trim().regex(/^[0-9]{6,20}$/, t('finance.payoutAccount.errAccountNumber')),
+      confirm_account_number: z.string().trim(),
+      ifsc: z
+        .string()
+        .trim()
+        .regex(/^[A-Za-z]{4}0[A-Za-z0-9]{6}$/, t('finance.payoutAccount.errIfsc')),
+      bank_name: z.string().trim().min(2, t('finance.payoutAccount.errBankName')).max(120),
+      swift: z
+        .string()
+        .trim()
+        .regex(/^([A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?)?$/, t('finance.payoutAccount.errSwift')),
+    })
+    .refine((v) => v.account_number === v.confirm_account_number, {
+      path: ['confirm_account_number'],
+      message: t('finance.payoutAccount.errMismatch'),
+    });
+
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
 function AccountSummary({ account }: { account: PayoutAccountOut }) {
+  const { t } = useAppTranslation();
   return (
     <div className="flex flex-wrap items-start gap-4 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
       <div className="rounded-lg bg-brand-50 p-2.5 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
@@ -40,21 +45,21 @@ function AccountSummary({ account }: { account: PayoutAccountOut }) {
       <div className="min-w-0 flex-1">
         <p className="font-semibold text-slate-900 dark:text-white">{account.account_holder_name}</p>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          {account.bank_name ?? 'Bank'} · {account.account_number_masked}
-          {account.ifsc ? ` · IFSC ${account.ifsc}` : ''}
-          {account.swift ? ` · SWIFT ${account.swift}` : ''}
+          {account.bank_name ?? t('finance.payoutAccount.bank')} · <span dir="ltr">{account.account_number_masked}</span>
+          {account.ifsc ? ` · ${t('finance.payoutAccount.ifscValue', { code: account.ifsc })}` : ''}
+          {account.swift ? ` · ${t('finance.payoutAccount.swiftValue', { code: account.swift })}` : ''}
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {account.is_verified ? (
             <Badge tone="green">
-              <BadgeCheck className="mr-1 h-3.5 w-3.5" aria-hidden />
-              Verified
+              <BadgeCheck className="me-1 h-3.5 w-3.5" aria-hidden />
+              {t('finance.payoutAccount.verified')}
             </Badge>
           ) : (
-            <Badge tone="amber">Pending verification</Badge>
+            <Badge tone="amber">{t('finance.payoutAccount.pendingVerification')}</Badge>
           )}
-          {account.is_primary && <Badge tone="blue">Primary</Badge>}
-          {account.status === 'disabled' && <Badge tone="red">Disabled</Badge>}
+          {account.is_primary && <Badge tone="blue">{t('finance.payoutAccount.primary')}</Badge>}
+          {account.status === 'disabled' && <Badge tone="red">{t('finance.payoutAccount.disabled')}</Badge>}
         </div>
       </div>
     </div>
@@ -66,6 +71,7 @@ function AccountSummary({ account }: { account: PayoutAccountOut }) {
  * editing requires re-entering it. Changing details resets verification server-side.
  */
 export function PayoutAccountSection({ onSaved }: { onSaved?: () => void }) {
+  const { t } = useAppTranslation();
   const queryClient = useQueryClient();
   const accounts = useQuery({ queryKey: qk.payoutAccounts, queryFn: async () => (await financeApi.listPayoutAccountsPage({ page_size: 100 })).items });
   const [editing, setEditing] = useState(false);
@@ -81,7 +87,7 @@ export function PayoutAccountSection({ onSaved }: { onSaved?: () => void }) {
       <div className="space-y-3">
         <AccountSummary account={primary} />
         <Button variant="outline" size="sm" icon={<Pencil className="h-4 w-4" aria-hidden />} onClick={() => setEditing(true)}>
-          Change bank account
+          {t('finance.payoutAccount.change')}
         </Button>
       </div>
     );
@@ -110,6 +116,8 @@ function PayoutAccountForm({
   onCancel?: () => void;
 }) {
   const ids = useId();
+  const { t } = useAppTranslation();
+  const schema = useMemo(() => makeSchema(t), [t]);
   const {
     register,
     handleSubmit,
@@ -141,7 +149,7 @@ function PayoutAccountForm({
         : financeApi.createPayoutAccount({ ...body, is_primary: true });
     },
     onSuccess: () => {
-      toast.success('Payout account saved. It will be verified by our finance team.');
+      toast.success(t('finance.payoutAccount.saved'));
       onSaved();
     },
     onError: (error) => {
@@ -156,18 +164,18 @@ function PayoutAccountForm({
   return (
     <form className="space-y-4" noValidate onSubmit={handleSubmit((v) => save.mutate(v))}>
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Account holder name" htmlFor={`${ids}-holder`} required error={errors.account_holder_name?.message}>
+        <FormField label={t('finance.payoutAccount.holderName')} htmlFor={`${ids}-holder`} required error={errors.account_holder_name?.message}>
           <Input id={`${ids}-holder`} autoComplete="off" {...register('account_holder_name')} aria-invalid={!!errors.account_holder_name} />
         </FormField>
-        <FormField label="Bank name" htmlFor={`${ids}-bank`} required error={errors.bank_name?.message}>
+        <FormField label={t('finance.payoutAccount.bankName')} htmlFor={`${ids}-bank`} required error={errors.bank_name?.message}>
           <Input id={`${ids}-bank`} {...register('bank_name')} aria-invalid={!!errors.bank_name} />
         </FormField>
         <FormField
-          label="Account number"
+          label={t('finance.payoutAccount.accountNumber')}
           htmlFor={`${ids}-acc`}
           required
           error={errors.account_number?.message}
-          hint={existing ? `Current: ${existing.account_number_masked}. Re-enter to change.` : undefined}
+          hint={existing ? t('finance.payoutAccount.currentHint', { masked: existing.account_number_masked }) : undefined}
         >
           <Input
             id={`${ids}-acc`}
@@ -177,7 +185,7 @@ function PayoutAccountForm({
             aria-invalid={!!errors.account_number}
           />
         </FormField>
-        <FormField label="Confirm account number" htmlFor={`${ids}-acc2`} required error={errors.confirm_account_number?.message}>
+        <FormField label={t('finance.payoutAccount.confirmAccountNumber')} htmlFor={`${ids}-acc2`} required error={errors.confirm_account_number?.message}>
           <Input
             id={`${ids}-acc2`}
             inputMode="numeric"
@@ -187,23 +195,23 @@ function PayoutAccountForm({
             aria-invalid={!!errors.confirm_account_number}
           />
         </FormField>
-        <FormField label="IFSC" htmlFor={`${ids}-ifsc`} required error={errors.ifsc?.message}>
+        <FormField label={t('finance.payoutAccount.ifsc')} htmlFor={`${ids}-ifsc`} required error={errors.ifsc?.message}>
           <Input id={`${ids}-ifsc`} className="uppercase" {...register('ifsc')} aria-invalid={!!errors.ifsc} />
         </FormField>
-        <FormField label="SWIFT / BIC (optional)" htmlFor={`${ids}-swift`} error={errors.swift?.message}>
+        <FormField label={t('finance.payoutAccount.swift')} htmlFor={`${ids}-swift`} error={errors.swift?.message}>
           <Input id={`${ids}-swift`} className="uppercase" {...register('swift')} aria-invalid={!!errors.swift} />
         </FormField>
       </div>
       <p className="text-xs text-slate-500 dark:text-slate-400">
-        Bank details are encrypted at rest and only the last 4 digits are ever shown again.
+        {t('finance.payoutAccount.encryptedNote')}
       </p>
       <div className="flex gap-2">
         <Button type="submit" loading={save.isPending}>
-          Save payout account
+          {t('finance.payoutAccount.save')}
         </Button>
         {onCancel && (
           <Button variant="outline" onClick={onCancel} disabled={save.isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
         )}
       </div>

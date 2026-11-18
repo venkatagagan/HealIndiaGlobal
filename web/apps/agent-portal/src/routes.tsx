@@ -4,6 +4,7 @@ import { DoorRedirect, routerBasename } from '@hig/shared/auth';
 import { RequireAgent } from './auth/RequireAgent';
 import { AgentLayout } from './layout/AgentLayout';
 import { EmptyState, LoadingBlock } from './components/ui';
+import { useAppTranslation } from './i18n';
 
 function page<K extends string>(loader: () => Promise<Record<K, ComponentType>>, name: K): LazyExoticComponent<ComponentType> {
   return lazy(() => loader().then((m) => ({ default: m[name] })));
@@ -41,13 +42,14 @@ const NotificationsPage = page(() => import('./features/notifications/Notificati
 const ProfilePage = page(() => import('./features/profile/ProfilePage'), 'ProfilePage');
 
 function NotFound() {
+  const { t } = useAppTranslation();
   return (
     <EmptyState
-      title="Page not found"
-      description="The page you are looking for does not exist or was moved."
+      title={t('notFound.title')}
+      description={t('notFound.description')}
       action={
         <Link to="/" className="font-semibold text-primary-ink hover:underline">
-          Back to dashboard
+          {t('notFound.back')}
         </Link>
       }
     />

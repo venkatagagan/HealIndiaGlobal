@@ -21,12 +21,15 @@ import {
 import { MAX_ENQUIRY_HOSPITALS } from '../../lib/constants';
 import { patientName } from '../../lib/format';
 import { qk, useSpecialties } from '../../lib/queries';
-import { formatDate, formatMoney, useDebouncedValue, useDocumentTitle } from '../../lib/shared';
+import { formatDate, formatMoney, formatNumber, useDebouncedValue, useDocumentTitle } from '../../lib/shared';
+import { Trans } from 'react-i18next';
+import { useAppTranslation } from '../../i18n';
 import { PatientPicker } from '../patients/PatientPicker';
 import { EnquiryDialog, type EnquiryTarget } from './EnquiryDialog';
 
 export function NewEnquiryPage() {
-  useDocumentTitle('New enquiry');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('newEnquiry.title'));
   const [params] = useSearchParams();
   const initialPatientId = params.get('patient');
   const initialPatient = useQuery({
@@ -75,7 +78,7 @@ export function NewEnquiryPage() {
   const add = (h: HospitalCard) => {
     if (chosen.some((c) => c.id === h.id)) return;
     if (chosen.length >= MAX_ENQUIRY_HOSPITALS) {
-      toast.info(`You can send one enquiry to up to ${MAX_ENQUIRY_HOSPITALS} hospitals`);
+      toast.info(t('newEnquiry.maxHospitals', { max: MAX_ENQUIRY_HOSPITALS }));
       return;
     }
     setChosen([...chosen, h]);
@@ -96,34 +99,34 @@ export function NewEnquiryPage() {
       <PageHeader
         back={
           <Link to="/cases" className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
-            <ArrowLeft className="h-4 w-4" aria-hidden /> Cases
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden /> {t('newEnquiry.back')}
           </Link>
         }
-        title="New enquiry"
-        description={`Send the same enquiry to up to ${MAX_ENQUIRY_HOSPITALS} hospitals. Each hospital gets its own case and replies with an itemised quote.`}
+        title={t('newEnquiry.title')}
+        description={t('newEnquiry.description', { max: MAX_ENQUIRY_HOSPITALS })}
       />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-1">
           <Card>
-            <CardHeader title="1. Patient" />
+            <CardHeader title={t('newEnquiry.step1')} />
             <div className="space-y-4 p-5">
               {fromUrl ? (
                 <div className="flex items-center justify-between gap-2 text-sm">
                   <span className="font-medium">{patientName(fromUrl)}</span>
                   <Button size="sm" variant="ghost" onClick={() => setInitialCleared(true)}>
-                    Change
+                    {t('newEnquiry.change')}
                   </Button>
                 </div>
               ) : (
                 <PatientPicker value={currentPatient} onChange={(p) => { setPatient(p); setScreeningId(''); }} />
               )}
               {currentPatient && (
-                <FormField label="Link a screening (optional)" htmlFor="enq-screening" hint="Hospitals see the screening summary and attached reports.">
+                <FormField label={t('newEnquiry.linkScreening')} htmlFor="enq-screening" hint={t('newEnquiry.linkScreeningHint')}>
                   <Select id="enq-screening" value={screeningId} onChange={(e) => setScreeningId(e.target.value)} disabled={screenings.isPending}>
-                    <option value="">No screening</option>
+                    <option value="">{t('newEnquiry.noScreening')}</option>
                     {(screenings.data?.items ?? []).map((s) => (
                       <option key={s.id} value={s.id}>
-                        {(s.specialty?.name ?? s.ai_result?.suggested_specialties[0]?.name ?? 'Screening') + ' · ' + formatDate(s.completed_at ?? s.created_at)}
+                        {(s.specialty?.name ?? s.ai_result?.suggested_specialties[0]?.name ?? t('newEnquiry.screening')) + ' · ' + formatDate(s.completed_at ?? s.created_at)}
                       </option>
                     ))}
                   </Select>
@@ -131,19 +134,19 @@ export function NewEnquiryPage() {
               )}
               {screeningId && (
                 <p className="text-xs text-muted">
-                  Tip: the{' '}
-                  <Link to={`/screenings/${screeningId}`} className="font-medium text-primary-ink hover:underline">
-                    screening results
-                  </Link>{' '}
-                  list AI-matched hospitals you can select directly.
+                  <Trans
+                    t={t}
+                    i18nKey="newEnquiry.screeningTip"
+                    components={{ 0: <Link to={`/screenings/${screeningId}`} className="font-medium text-primary-ink hover:underline" /> }}
+                  />
                 </p>
               )}
             </div>
           </Card>
           <Card>
-            <CardHeader title="2. Treatment" description="Optional — helps hospitals quote accurately" />
+            <CardHeader title={t('newEnquiry.step2')} description={t('newEnquiry.step2Hint')} />
             <div className="space-y-4 p-5">
-              <FormField label="Specialty" htmlFor="enq-specialty">
+              <FormField label={t('newEnquiry.specialty')} htmlFor="enq-specialty">
                 <Select
                   id="enq-specialty"
                   value={specialty}
@@ -152,7 +155,7 @@ export function NewEnquiryPage() {
                     setProcedureSlug('');
                   }}
                 >
-                  <option value="">Any specialty</option>
+                  <option value="">{t('newEnquiry.anySpecialty')}</option>
                   {(specialties.data ?? []).map((s) => (
                     <option key={s.slug} value={s.slug}>
                       {s.name}
@@ -160,9 +163,9 @@ export function NewEnquiryPage() {
                   ))}
                 </Select>
               </FormField>
-              <FormField label="Procedure" htmlFor="enq-procedure">
+              <FormField label={t('newEnquiry.procedure')} htmlFor="enq-procedure">
                 <Select id="enq-procedure" value={procedureSlug} onChange={(e) => setProcedureSlug(e.target.value)} disabled={!specialty}>
-                  <option value="">{specialty ? 'Not sure yet' : 'Choose a specialty first'}</option>
+                  <option value="">{specialty ? t('newEnquiry.notSure') : t('newEnquiry.chooseSpecialtyFirst')}</option>
                   {(procedures.data ?? []).map((p) => (
                     <option key={p.slug} value={p.slug}>
                       {p.name}
@@ -173,9 +176,9 @@ export function NewEnquiryPage() {
             </div>
           </Card>
           <Card>
-            <CardHeader title={`3. Selected hospitals (${chosen.length}/${MAX_ENQUIRY_HOSPITALS})`} />
+            <CardHeader title={t('newEnquiry.step3', { count: chosen.length, max: MAX_ENQUIRY_HOSPITALS })} />
             <div className="space-y-2 p-5">
-              {chosen.length === 0 && <p className="text-sm text-muted">Add hospitals from the list.</p>}
+              {chosen.length === 0 && <p className="text-sm text-muted">{t('newEnquiry.addFromList')}</p>}
               {chosen.map((h) => (
                 <div key={h.id} className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
                   <Building2 className="h-4 w-4 text-muted" aria-hidden />
@@ -183,7 +186,7 @@ export function NewEnquiryPage() {
                   <button
                     type="button"
                     className="rounded p-1 text-muted hover:text-fg"
-                    aria-label={`Remove ${h.name}`}
+                    aria-label={t('newEnquiry.remove', { name: h.name })}
                     onClick={() => setChosen(chosen.filter((c) => c.id !== h.id))}
                   >
                     <X className="h-4 w-4" aria-hidden />
@@ -196,18 +199,18 @@ export function NewEnquiryPage() {
                 disabled={!currentPatient || chosen.length === 0}
                 onClick={() => setDialogOpen(true)}
               >
-                Review & send
+                {t('newEnquiry.reviewSend')}
               </Button>
             </div>
           </Card>
         </div>
 
         <Card className="lg:col-span-2">
-          <CardHeader title="Find hospitals" description="Only verified, active hospitals are listed" />
+          <CardHeader title={t('newEnquiry.findHospitals')} description={t('newEnquiry.findHospitalsHint')} />
           <div className="border-b border-border p-4">
             <div className="relative">
-              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden />
-              <Input type="search" aria-label="Search hospitals" placeholder="Hospital name or city" className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Search className="pointer-events-none absolute top-1/2 start-3 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden />
+              <Input type="search" aria-label={t('newEnquiry.searchLabel')} placeholder={t('newEnquiry.searchPlaceholder')} className="ps-9" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
           </div>
           {hospitals.isPending ? (
@@ -215,9 +218,9 @@ export function NewEnquiryPage() {
               <Spinner />
             </div>
           ) : hospitals.isError ? (
-            <EmptyState title="Could not load hospitals" description="Check your connection and try again." />
+            <EmptyState title={t('newEnquiry.loadError')} description={t('newEnquiry.loadErrorHint')} />
           ) : hospitals.data.items.length === 0 ? (
-            <EmptyState title="No hospitals match" description="Try another name, or clear the specialty and procedure filters." />
+            <EmptyState title={t('newEnquiry.noMatch')} description={t('newEnquiry.noMatchHint')} />
           ) : (
             <ul className="divide-y divide-border">
               {hospitals.data.items.map((h) => {
@@ -231,7 +234,7 @@ export function NewEnquiryPage() {
                       <p className="text-xs text-muted">
                         {h.city}
                         {h.state ? `, ${h.state}` : ''}
-                        {h.starting_price_minor != null ? ` · from ${formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true })}` : ''}
+                        {h.starting_price_minor != null ? ` · ${t('newEnquiry.fromPrice', { price: formatMoney(h.starting_price_minor, h.currency, undefined, { trimZeros: true }) })}` : ''}
                       </p>
                       <div className="mt-1 flex flex-wrap gap-1">
                         {h.accreditations.map((a) => (
@@ -241,7 +244,7 @@ export function NewEnquiryPage() {
                         ))}
                         {h.rating_avg != null && (
                           <Badge>
-                            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {Number(h.rating_avg).toFixed(1)} ({h.rating_count})
+                            <Star className="h-3 w-3 fill-current text-amber-500" aria-hidden /> {formatNumber(Number(h.rating_avg), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({formatNumber(h.rating_count)})
                           </Badge>
                         )}
                       </div>
@@ -252,16 +255,16 @@ export function NewEnquiryPage() {
                       icon={isChosen ? undefined : <Plus className="h-4 w-4" aria-hidden />}
                       onClick={() => (isChosen ? setChosen(chosen.filter((c) => c.id !== h.id)) : add(h))}
                     >
-                      {isChosen ? 'Added' : 'Add'}
+                      {isChosen ? t('newEnquiry.added') : t('newEnquiry.add')}
                     </Button>
                   </li>
                 );
               })}
             </ul>
           )}
-          <div className="border-t border-border px-5 py-3 text-right">
+          <div className="border-t border-border px-5 py-3 text-end">
             <ButtonLink to="/hospitals" variant="ghost" size="sm">
-              Open full directory
+              {t('newEnquiry.openDirectory')}
             </ButtonLink>
           </div>
         </Card>

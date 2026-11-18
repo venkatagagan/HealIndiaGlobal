@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { formatNumber } from '@hig/shared/lib';
+import { useAppTranslation } from '../../../i18n';
 import { cn } from '../lib/format';
 import { Checkbox } from '../ui';
 
@@ -56,10 +58,15 @@ const ROW_CLASS: Record<Change, string> = {
   same: '',
 };
 
-const CHANGE_LABEL: Record<Change, string> = { added: 'added', removed: 'removed', changed: 'changed', same: '' };
-
 /** Side-by-side field diff of an audit log's before/after JSON, with a raw JSON view. */
 export function JsonDiff({ before, after }: { before: unknown; after: unknown }) {
+  const { t } = useAppTranslation();
+  const changeLabel: Record<Change, string> = {
+    added: t('components.jsonDiff.added'),
+    removed: t('components.jsonDiff.removed'),
+    changed: t('components.jsonDiff.changed'),
+    same: '',
+  };
   const rows = useMemo(() => diffJson(before, after), [before, after]);
   const [showSame, setShowSame] = useState(false);
   const [raw, setRaw] = useState(false);
@@ -69,18 +76,16 @@ export function JsonDiff({ before, after }: { before: unknown; after: unknown })
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center gap-4 text-xs text-slate-500">
-        <span>
-          {changed} changed field{changed === 1 ? '' : 's'}
-        </span>
-        <Checkbox label="Show unchanged" checked={showSame} onChange={setShowSame} />
-        <Checkbox label="Raw JSON" checked={raw} onChange={setRaw} />
+        <span>{t('components.jsonDiff.changedFields', { count: changed, value: formatNumber(changed) })}</span>
+        <Checkbox label={t('components.jsonDiff.showUnchanged')} checked={showSame} onChange={setShowSame} />
+        <Checkbox label={t('components.jsonDiff.rawJson')} checked={raw} onChange={setRaw} />
       </div>
       {raw ? (
         <div className="grid gap-3 md:grid-cols-2">
           {(
             [
-              ['Before', before],
-              ['After', after],
+              [t('components.jsonDiff.before'), before],
+              [t('components.jsonDiff.after'), after],
             ] as const
           ).map(([label, v]) => (
             <div key={label}>
@@ -93,16 +98,16 @@ export function JsonDiff({ before, after }: { before: unknown; after: unknown })
         </div>
       ) : visible.length === 0 ? (
         <p className="py-4 text-sm text-slate-500">
-          {rows.length === 0 ? 'No before/after data recorded for this event.' : 'No field changes.'}
+          {rows.length === 0 ? t('components.jsonDiff.noData') : t('components.jsonDiff.noChanges')}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
           <table className="min-w-full text-xs">
-            <thead className="bg-slate-50 text-left uppercase text-slate-500 dark:bg-[#0B0F14]">
+            <thead className="bg-slate-50 text-start uppercase text-slate-500 dark:bg-[#0B0F14]">
               <tr>
-                <th className="px-3 py-2">Field</th>
-                <th className="px-3 py-2">Before</th>
-                <th className="px-3 py-2">After</th>
+                <th className="px-3 py-2 text-start">{t('components.jsonDiff.field')}</th>
+                <th className="px-3 py-2 text-start">{t('components.jsonDiff.before')}</th>
+                <th className="px-3 py-2 text-start">{t('components.jsonDiff.after')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -110,7 +115,7 @@ export function JsonDiff({ before, after }: { before: unknown; after: unknown })
                 <tr key={r.path} className={ROW_CLASS[r.change]}>
                   <td className="whitespace-nowrap px-3 py-1.5 align-top font-mono">
                     {r.path}
-                    {r.change !== 'same' && <span className="ml-1 text-[10px] uppercase text-slate-500">{CHANGE_LABEL[r.change]}</span>}
+                    {r.change !== 'same' && <span className="ms-1 text-[10px] uppercase text-slate-500">{changeLabel[r.change]}</span>}
                   </td>
                   <td className={cn('break-all px-3 py-1.5 align-top font-mono', r.change !== 'same' && 'text-red-700 line-through decoration-red-300 dark:text-red-300')}>
                     {show(r.before)}

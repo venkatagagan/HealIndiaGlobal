@@ -1,6 +1,8 @@
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
+import { localizePath } from '@/i18n/config';
+import { requestLocale } from '@/i18n/request';
 
 /**
  * Safe Markdown rendering: raw HTML is skipped (never injected), images are dropped (the content pack forbids
@@ -88,12 +90,19 @@ export function MarkdownContent({
   shiftHeadings?: number;
   className?: string;
 }) {
+  // Long-form content (content/en, docs/legal) is English only: the block is marked lang="en" (and left-to-right)
+  // so translated pages announce and lay it out correctly. Site links inside it keep the page language.
+  const locale = requestLocale();
+  const localizedHref = (h: string) => {
+    const resolved = resolveHref(h);
+    return resolved && resolved.startsWith('/') && !resolved.startsWith('/#') ? localizePath(resolved, locale) : resolved;
+  };
   return (
-    <div className={`prose-hig ${className}`}>
+    <div lang="en" dir="ltr" className={`prose-hig ${className}`}>
       <Markdown
         skipHtml
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeSlug, [rehypeSite, { resolveHref, shiftHeadings }]]}
+        rehypePlugins={[rehypeSlug, [rehypeSite, { resolveHref: localizedHref, shiftHeadings }]]}
       >
         {children}
       </Markdown>

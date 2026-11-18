@@ -4,7 +4,6 @@ import { BadgeCheck, Route, ShieldAlert, ShieldCheck, Users } from 'lucide-react
 import {
   financeApi,
   isMakerChecker,
-  PAYEE_TYPE_LABELS,
   type PayeeType,
   type PayoutAccountListParams,
   type PayoutAccountOut,
@@ -25,9 +24,10 @@ import {
   type QuickFilterItem,
 } from '@hig/shared/ui';
 import { formatDateTime } from '../lib/shared';
+import { enumLabel, ft, useFinanceTranslation, type FinanceT } from '../lib/i18n';
 import { financeKeys, useVerifyPayoutAccount } from '../api/queries';
 import { Mono, notifyError, notifySuccess } from '../components/finance';
-import { PAYEE_TYPE_OPTIONS, PayeeFilter, parsePayee } from '../components/settlements';
+import { payeeTypeOptions, PayeeFilter, parsePayee } from '../components/settlements';
 import { useStaffName } from '../components/reviews';
 import { useFinancePermissions } from '../lib/permissions';
 import { Button as DialogButton, Callout, DescriptionList, Modal } from '../components/ui';
@@ -79,30 +79,33 @@ function toApiFilters(f: AccountFilters): { list: ApiFilters; counts: ApiFilters
   return { list: { ...base, ...state }, counts: base };
 }
 
-const ROUTE_OPTIONS = [
-  { value: 'razorpay_route' as const, label: 'Razorpay Route (automatic)' },
-  { value: 'manual' as const, label: 'Manual bank transfer' },
+const routeOptions = (t: FinanceT) => [
+  { value: 'razorpay_route' as const, label: t('payoutAccounts.routeAutomatic') },
+  { value: 'manual' as const, label: enumLabel('payoutMethod', 'manual_bank_transfer') },
 ];
+
+const verificationLabel = (t: FinanceT, a: PayoutAccountOut) =>
+  a.status !== 'active' ? enumLabel('status', 'disabled') : a.is_verified ? t('payoutAccounts.verified') : t('payoutAccounts.awaitingVerification');
 
 // ---------------------------------------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------------------------------------
-function baseColumns(): DataTableColumn<PayoutAccountOut>[] {
+function baseColumns(t: FinanceT): DataTableColumn<PayoutAccountOut>[] {
   return [
     {
       key: 'owner',
-      header: 'Owner',
+      header: t('ledgerAccounts.columns.owner'),
       sticky: true,
       mobile: 'primary',
       className: 'max-w-60',
       cell: (a) => (
-        <TextCell primary={<span className="font-medium">{a.owner_name ?? `${a.owner_id.slice(0, 8)}…`}</span>} secondary={PAYEE_TYPE_LABELS[a.owner_type]} />
+        <TextCell primary={<span className="font-medium">{a.owner_name ?? `${a.owner_id.slice(0, 8)}…`}</span>} secondary={enumLabel('payeeType', a.owner_type)} />
       ),
       exportValue: (a) => a.owner_name ?? a.owner_id,
     },
     {
       key: 'account',
-      header: 'Account',
+      header: t('ledger.entries.account'),
       sortable: true,
       sortKey: 'account_holder_name',
       mobile: 'secondary',
@@ -112,7 +115,7 @@ function baseColumns(): DataTableColumn<PayoutAccountOut>[] {
     },
     {
       key: 'bank',
-      header: 'Bank',
+      header: t('overview.stats.bank'),
       className: 'max-w-56',
       cell: (a) => (
         <TextCell
@@ -124,37 +127,32 @@ function baseColumns(): DataTableColumn<PayoutAccountOut>[] {
     },
     {
       key: 'route',
-      header: 'Payout route',
-      cell: (a) => (a.razorpay_linked_account_id ? <Badge tone="accent">Razorpay Route</Badge> : <Badge tone="neutral">Manual transfer</Badge>),
-      exportValue: (a) => (a.razorpay_linked_account_id ? 'Razorpay Route' : 'Manual transfer'),
+      header: t('payoutAccounts.payoutRoute'),
+      cell: (a) =>
+        a.razorpay_linked_account_id ? (
+          <Badge tone="accent">{enumLabel('payoutMethod', 'razorpay_route')}</Badge>
+        ) : (
+          <Badge tone="neutral">{t('payoutAccounts.manualTransfer')}</Badge>
+        ),
+      exportValue: (a) => (a.razorpay_linked_account_id ? enumLabel('payoutMethod', 'razorpay_route') : t('payoutAccounts.manualTransfer')),
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('orders.columns.status'),
       mobile: 'badge',
       cell: (a) => (
         <span className="flex flex-wrap gap-1">
-          {a.status !== 'active' ? (
-            <Badge tone="neutral" dot>
-              Disabled
-            </Badge>
-          ) : a.is_verified ? (
-            <Badge tone="success" dot>
-              Verified
-            </Badge>
-          ) : (
-            <Badge tone="warning" dot>
-              Awaiting verification
-            </Badge>
-          )}
-          {a.is_primary && <Badge tone="info">Primary</Badge>}
+          <Badge tone={a.status !== 'active' ? 'neutral' : a.is_verified ? 'success' : 'warning'} dot>
+            {verificationLabel(t, a)}
+          </Badge>
+          {a.is_primary && <Badge tone="info">{t('payoutAccounts.primary')}</Badge>}
         </span>
       ),
-      exportValue: (a) => (a.status !== 'active' ? 'Disabled' : a.is_verified ? 'Verified' : 'Awaiting verification'),
+      exportValue: (a) => verificationLabel(t, a),
     },
     {
       key: 'created',
-      header: 'Added',
+      header: t('payoutAccounts.added'),
       defaultHidden: true,
       sortable: true,
       sortKey: 'created_at',
@@ -166,13 +164,12 @@ function baseColumns(): DataTableColumn<PayoutAccountOut>[] {
   ];
 }
 
-const EXPORT_COLUMNS = baseColumns();
-
 // ---------------------------------------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------------------------------------
 export default function PayoutAccountsPage() {
-  useDocumentTitle('Payout accounts');
+  const { t } = useFinanceTranslation();
+  useDocumentTitle(t('nav.items.payoutAccounts'));
   const perms = useFinancePermissions();
   const table = useTableState({ filters: FILTERS, sortKeys: SORT_KEYS, defaultPageSize: 25 });
   const { filters, setFilter, setFilters } = table;
@@ -200,12 +197,13 @@ export default function PayoutAccountsPage() {
     setBlocked(false);
   };
 
+  const exportColumns = useMemo(() => baseColumns(t), [t]);
   const columns: DataTableColumn<PayoutAccountOut>[] = [
-    ...baseColumns(),
+    ...exportColumns,
     {
       key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      title: 'Actions',
+      header: <span className="sr-only">{t('orderDetail.actions')}</span>,
+      title: t('orderDetail.actions'),
       align: 'end',
       hideable: false,
       exportable: false,
@@ -214,9 +212,9 @@ export default function PayoutAccountsPage() {
         perms.finance && !a.is_verified && a.status === 'active' ? (
           <span className="flex flex-col items-end gap-0.5">
             <Button size="xs" onClick={() => setVerifying(a)} leftIcon={<ShieldCheck className="size-3.5" aria-hidden />}>
-              Verify
+              {t('payoutAccounts.verify')}
             </Button>
-            {isSubmitter(a) && <span className="text-xs text-warning-ink">You submitted these details</span>}
+            {isSubmitter(a) && <span className="text-xs text-warning-ink">{t('payoutAccounts.youSubmitted')}</span>}
           </span>
         ) : null,
     },
@@ -224,22 +222,19 @@ export default function PayoutAccountsPage() {
 
   const c = counts.data;
   const quickItems: QuickFilterItem<Verification>[] = [
-    { value: '', label: 'All', count: c?.total },
-    { value: 'unverified', label: 'Awaiting verification', count: c?.counts.unverified, tone: 'warning' },
-    { value: 'verified', label: 'Verified', count: c?.counts.verified, tone: 'success' },
-    { value: 'disabled', label: 'Disabled', count: c?.counts.disabled },
+    { value: '', label: t('common.all'), count: c?.total },
+    { value: 'unverified', label: t('payoutAccounts.awaitingVerification'), count: c?.counts.unverified, tone: 'warning' },
+    { value: 'verified', label: t('payoutAccounts.verified'), count: c?.counts.verified, tone: 'success' },
+    { value: 'disabled', label: enumLabel('status', 'disabled'), count: c?.counts.disabled },
   ];
   const quickValue = effectiveVerification(filters);
 
   return (
     <div>
-      <PageHeader
-        title="Payout accounts"
-        description="Bank accounts hospitals and agents registered for settlements (account numbers encrypted and masked). Verify each against the bank proof before it receives payouts."
-      />
+      <PageHeader title={t('nav.items.payoutAccounts')} description={t('payoutAccounts.description')} />
       <DataTable
         id="admin.finance.payout-accounts"
-        caption="Payout accounts"
+        caption={t('nav.items.payoutAccounts')}
         table={table}
         columns={columns}
         rows={list.data?.items}
@@ -248,12 +243,12 @@ export default function PayoutAccountsPage() {
         fetching={list.isFetching && !list.isLoading}
         error={list.error}
         onRetry={() => void list.refetch()}
-        emptyTitle="No payout accounts yet"
-        emptyDescription="Hospitals and agents add payout accounts from their portals."
+        emptyTitle={t('payoutAccounts.emptyTitle')}
+        emptyDescription={t('payoutAccounts.emptyDescription')}
         header={
           <div className="border-b border-border px-2 sm:px-3">
             <QuickFilters
-              label="Verification"
+              label={t('payoutAccounts.verification')}
               items={quickItems}
               value={quickValue}
               onChange={(v) => setFilters({ verification: v, verified: undefined })}
@@ -262,12 +257,12 @@ export default function PayoutAccountsPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Holder, bank, IFSC, last 4 digits or owner…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('payoutAccounts.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
                 filename="payout-accounts"
-                columns={EXPORT_COLUMNS}
+                columns={exportColumns}
                 rows={list.data?.items}
                 total={list.data?.total}
                 fetchAll={() =>
@@ -277,19 +272,19 @@ export default function PayoutAccountsPage() {
             }
           >
             <SelectFilter
-              label="Owner type"
+              label={t('payoutAccounts.ownerType')}
               icon={<Users className="size-3.5 opacity-70" aria-hidden />}
               value={filters.owner_type}
               onChange={(v) => setFilters({ owner_type: v, owner: '' })}
-              options={PAYEE_TYPE_OPTIONS}
+              options={payeeTypeOptions()}
             />
-            <PayeeFilter label="Owner" value={filters.owner} onChange={(v) => setFilter('owner', v)} payeeType={filters.owner_type} />
+            <PayeeFilter label={t('ledgerAccounts.columns.owner')} value={filters.owner} onChange={(v) => setFilter('owner', v)} payeeType={filters.owner_type} />
             <SelectFilter
-              label="Payout route"
+              label={t('payoutAccounts.payoutRoute')}
               icon={<Route className="size-3.5 opacity-70" aria-hidden />}
               value={filters.route}
               onChange={(v) => setFilter('route', v)}
-              options={ROUTE_OPTIONS}
+              options={routeOptions(t)}
             />
           </FilterBar>
         }
@@ -298,23 +293,23 @@ export default function PayoutAccountsPage() {
       <Modal
         open={verifying !== null}
         onClose={closeVerify}
-        title="Verify payout account"
-        description="Confirm the account details match the owner's bank proof document."
+        title={t('payoutAccounts.verifyTitle')}
+        description={t('payoutAccounts.verifyDescription')}
         footer={
           <>
             <DialogButton variant="secondary" onClick={closeVerify} disabled={verify.isPending}>
-              Cancel
+              {t('common.cancel')}
             </DialogButton>
             <DialogButton
               loading={verify.isPending}
               disabled={blocked || (verifying ? isSubmitter(verifying) : false)}
-              title={verifying && isSubmitter(verifying) ? 'You submitted these bank details; a different finance user must verify them' : undefined}
+              title={verifying && isSubmitter(verifying) ? t('payoutAccounts.submitterTitle') : undefined}
               icon={<BadgeCheck className="size-4" aria-hidden />}
               onClick={() =>
                 verifying &&
                 verify.mutate(verifying.id, {
                   onSuccess: () => {
-                    notifySuccess('Payout account verified');
+                    notifySuccess(ft('payoutAccounts.verifiedToast'));
                     closeVerify();
                   },
                   onError: (e) => {
@@ -322,25 +317,22 @@ export default function PayoutAccountsPage() {
                       setBlocked(true);
                       return;
                     }
-                    notifyError(e, 'Could not verify the account');
+                    notifyError(e, ft('payoutAccounts.verifyFailed'));
                   },
                 })
               }
             >
-              Mark verified
+              {t('payoutAccounts.markVerified')}
             </DialogButton>
           </>
         }
       >
         {verifying && (blocked || isSubmitter(verifying)) && (
           <div className="mb-3">
-            <Callout tone="warning" title="Maker-checker: you cannot verify this account">
+            <Callout tone="warning" title={t('payoutAccounts.makerCheckerTitle')}>
               <span className="inline-flex items-start gap-1.5">
                 <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
-                <span>
-                  These bank details were submitted by {nameOf(verifying.submitted_by)}. The person who submits payout
-                  details cannot also verify them: ask a different finance user to check the bank proof and verify.
-                </span>
+                <span>{t('payoutAccounts.makerCheckerBody', { name: nameOf(verifying.submitted_by) })}</span>
               </span>
             </Callout>
           </div>
@@ -348,14 +340,17 @@ export default function PayoutAccountsPage() {
         {verifying && (
           <DescriptionList
             items={[
-              { label: 'Owner', value: `${verifying.owner_name ?? verifying.owner_id} (${PAYEE_TYPE_LABELS[verifying.owner_type]})` },
-              { label: 'Account holder', value: verifying.account_holder_name },
-              { label: 'Account number', value: <Mono>{verifying.account_number_masked}</Mono> },
+              {
+                label: t('ledgerAccounts.columns.owner'),
+                value: `${verifying.owner_name ?? verifying.owner_id} (${enumLabel('payeeType', verifying.owner_type)})`,
+              },
+              { label: t('payoutAccounts.accountHolder'), value: verifying.account_holder_name },
+              { label: t('payoutAccounts.accountNumber'), value: <Mono>{verifying.account_number_masked}</Mono> },
               { label: 'IFSC', value: <Mono>{verifying.ifsc ?? '—'}</Mono> },
-              { label: 'Bank', value: verifying.bank_name ?? '—' },
+              { label: t('overview.stats.bank'), value: verifying.bank_name ?? '—' },
               { label: 'SWIFT', value: <Mono>{verifying.swift ?? '—'}</Mono> },
-              { label: 'Added', value: formatDateTime(verifying.created_at) },
-              { label: 'Details submitted by', value: nameOf(verifying.submitted_by) },
+              { label: t('payoutAccounts.added'), value: formatDateTime(verifying.created_at) },
+              { label: t('payoutAccounts.submittedBy'), value: nameOf(verifying.submitted_by) },
             ]}
           />
         )}

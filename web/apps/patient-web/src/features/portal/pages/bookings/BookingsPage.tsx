@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+import { Trans } from 'react-i18next';
 import { CalendarCheck, Wallet } from 'lucide-react';
 import { BOOKING_STATUSES, type BookingOut, type BookingStatus } from '@hig/shared/api';
-import { daysUntil, filterParam, formatDate, fromMinor, matchesSearch, useDocumentTitle, useTableState } from '@hig/shared/lib';
+import { daysUntil, filterParam, formatDate, fromMinor, i18n, matchesSearch, useDocumentTitle, useTableState } from '@hig/shared/lib';
 import {
   DataTable,
   DateCell,
@@ -15,12 +16,15 @@ import {
   statusTone,
   type DataTableColumn,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../../i18n';
 import { useBookings } from '../../api/queries';
 import { Money } from '../../components/common';
 import { PatientStatus, TableTabs, countBy, inDateRange, patientStatusLabel, quickValue } from '../../components/listing';
 import { paths } from '../../lib/paths';
 import { cn } from '../../lib/shared';
 import { ButtonLink, PageHeader } from '../../ui/primitives';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 const FILTERS = {
   q: filterParam.text(),
@@ -31,10 +35,11 @@ const FILTERS = {
 };
 const TABS: BookingStatus[] = ['pending_payment', 'confirmed', 'admitted', 'completed', 'cancelled'];
 const label = (s: BookingStatus) => patientStatusLabel(s, 'booking') ?? s;
-const treatmentOf = (b: BookingOut) => b.procedure?.name ?? b.package?.name ?? 'Treatment';
+const treatmentOf = (b: BookingOut) => b.procedure?.name ?? b.package?.name ?? i18n.t('patient:bookings.treatment');
 const hasBalance = (b: BookingOut) => b.balance_due_minor > 0 && b.status !== 'cancelled';
 
 function PaymentProgress({ b }: { b: BookingOut }) {
+  const { t } = useAppTranslation();
   const pct = b.total_minor > 0 ? Math.min(100, Math.round((b.amount_paid_minor / b.total_minor) * 100)) : 0;
   return (
     <span className="block min-w-36 text-end">
@@ -46,107 +51,121 @@ function PaymentProgress({ b }: { b: BookingOut }) {
       </span>
       <span className={cn('mt-0.5 block text-xs', hasBalance(b) ? 'text-warning-ink' : 'text-success-ink')}>
         {b.status === 'cancelled' ? (
-          <span className="text-muted">Cancelled</span>
+          <span className="text-muted">{t('bookings.list.cancelled')}</span>
         ) : hasBalance(b) ? (
-          <>
-            <Money minor={b.balance_due_minor} currency={b.currency} /> left to pay
-          </>
+          <Trans
+            t={t}
+            i18nKey="bookings.list.amountLeftToPay"
+            components={{ 0: <Money minor={b.balance_due_minor} currency={b.currency} /> }}
+          />
         ) : (
-          'Paid in full'
+          t('bookings.list.paidInFull')
         )}
       </span>
     </span>
   );
 }
 
-const COLUMNS: DataTableColumn<BookingOut>[] = [
-  {
-    key: 'treatment',
-    header: 'Treatment',
-    sticky: true,
-    mobile: 'primary',
-    className: 'max-w-64',
-    sortValue: treatmentOf,
-    sortable: true,
-    cell: (b) => (
-      <span className="block min-w-0">
-        <span className="block truncate font-medium text-fg">{treatmentOf(b)}</span>
-        <span className="block truncate font-mono text-xs text-muted">{b.booking_number}</span>
-      </span>
-    ),
-    mobileCell: (b) => (
-      <span className="block">
-        <span className="block font-semibold">{treatmentOf(b)}</span>
-        <span className="block font-mono text-xs font-normal text-muted">{b.booking_number}</span>
-      </span>
-    ),
-    exportValue: treatmentOf,
-  },
-  {
-    key: 'hospital',
-    header: 'Hospital',
-    className: 'max-w-60',
-    cell: (b) => <TextCell primary={b.hospital.name} secondary={[b.hospital.city, b.doctor?.full_name].filter(Boolean).join(' · ')} />,
-    exportValue: (b) => `${b.hospital.name}, ${b.hospital.city}`,
-  },
-  {
-    key: 'admission_date',
-    header: 'Admission',
-    sortable: true,
-    sortDescFirst: true,
-    cell: (b) => {
-      const days = daysUntil(b.admission_date);
-      const upcoming = days !== null && days >= 0 && (b.status === 'confirmed' || b.status === 'pending_payment');
-      return (
-        <DateCell
-          value={b.admission_date}
-          display="date"
-          secondary={upcoming ? (days === 0 ? 'Today' : `In ${days} day${days === 1 ? '' : 's'}`) : b.discharge_date ? `Discharge ${formatDate(b.discharge_date)}` : undefined}
-        />
-      );
+function bookingColumns(t: TFn): DataTableColumn<BookingOut>[] {
+  return [
+    {
+      key: 'treatment',
+      header: t('bookings.list.columns.treatment'),
+      sticky: true,
+      mobile: 'primary',
+      className: 'max-w-64',
+      sortValue: treatmentOf,
+      sortable: true,
+      cell: (b) => (
+        <span className="block min-w-0">
+          <span className="block truncate font-medium text-fg">{treatmentOf(b)}</span>
+          <span className="block truncate font-mono text-xs text-muted">{b.booking_number}</span>
+        </span>
+      ),
+      mobileCell: (b) => (
+        <span className="block">
+          <span className="block font-semibold">{treatmentOf(b)}</span>
+          <span className="block font-mono text-xs font-normal text-muted">{b.booking_number}</span>
+        </span>
+      ),
+      exportValue: treatmentOf,
     },
-    exportValue: (b) => b.admission_date,
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    sortable: true,
-    mobile: 'badge',
-    cell: (b) => <PatientStatus status={b.status} kind="booking" />,
-    exportValue: (b) => label(b.status),
-  },
-  {
-    key: 'total',
-    header: 'Payment',
-    align: 'end',
-    sortable: true,
-    sortValue: (b) => b.total_minor,
-    cell: (b) => <PaymentProgress b={b} />,
-    exportValue: (b) => `${b.currency} ${fromMinor(b.total_minor, b.currency)}`,
-  },
-  {
-    key: 'balance',
-    header: 'Left to pay',
-    align: 'end',
-    defaultHidden: true,
-    sortable: true,
-    sortValue: (b) => (hasBalance(b) ? b.balance_due_minor : 0),
-    cell: (b) => <MoneyCell minor={hasBalance(b) ? b.balance_due_minor : 0} currency={b.currency} />,
-    exportValue: (b) => `${b.currency} ${fromMinor(hasBalance(b) ? b.balance_due_minor : 0, b.currency)}`,
-  },
-  {
-    key: 'created_at',
-    header: 'Booked on',
-    sortable: true,
-    sortDescFirst: true,
-    defaultHidden: true,
-    cell: (b) => <DateCell value={b.created_at} display="date" />,
-    exportValue: (b) => b.created_at,
-  },
-];
+    {
+      key: 'hospital',
+      header: t('bookings.list.columns.hospital'),
+      className: 'max-w-60',
+      cell: (b) => <TextCell primary={b.hospital.name} secondary={[b.hospital.city, b.doctor?.full_name].filter(Boolean).join(' · ')} />,
+      exportValue: (b) => `${b.hospital.name}, ${b.hospital.city}`,
+    },
+    {
+      key: 'admission_date',
+      header: t('bookings.list.columns.admission'),
+      sortable: true,
+      sortDescFirst: true,
+      cell: (b) => {
+        const days = daysUntil(b.admission_date);
+        const upcoming = days !== null && days >= 0 && (b.status === 'confirmed' || b.status === 'pending_payment');
+        return (
+          <DateCell
+            value={b.admission_date}
+            display="date"
+            secondary={
+              upcoming
+                ? days === 0
+                  ? t('bookings.list.today')
+                  : t('bookings.list.inDays', { count: days })
+                : b.discharge_date
+                  ? t('bookings.list.discharge', { date: formatDate(b.discharge_date) })
+                  : undefined
+            }
+          />
+        );
+      },
+      exportValue: (b) => b.admission_date,
+    },
+    {
+      key: 'status',
+      header: t('bookings.list.columns.status'),
+      sortable: true,
+      mobile: 'badge',
+      cell: (b) => <PatientStatus status={b.status} kind="booking" />,
+      exportValue: (b) => label(b.status),
+    },
+    {
+      key: 'total',
+      header: t('bookings.list.columns.payment'),
+      align: 'end',
+      sortable: true,
+      sortValue: (b) => b.total_minor,
+      cell: (b) => <PaymentProgress b={b} />,
+      exportValue: (b) => `${b.currency} ${fromMinor(b.total_minor, b.currency)}`,
+    },
+    {
+      key: 'balance',
+      header: t('bookings.list.columns.leftToPay'),
+      align: 'end',
+      defaultHidden: true,
+      sortable: true,
+      sortValue: (b) => (hasBalance(b) ? b.balance_due_minor : 0),
+      cell: (b) => <MoneyCell minor={hasBalance(b) ? b.balance_due_minor : 0} currency={b.currency} />,
+      exportValue: (b) => `${b.currency} ${fromMinor(hasBalance(b) ? b.balance_due_minor : 0, b.currency)}`,
+    },
+    {
+      key: 'created_at',
+      header: t('bookings.list.columns.bookedOn'),
+      sortable: true,
+      sortDescFirst: true,
+      defaultHidden: true,
+      cell: (b) => <DateCell value={b.created_at} display="date" />,
+      exportValue: (b) => b.created_at,
+    },
+  ];
+}
 
 export function BookingsPage() {
-  useDocumentTitle('Bookings');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('bookings.list.title'));
+  const columns = useMemo(() => bookingColumns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-admission_date', defaultPageSize: 10 });
   const { filters, setFilter, setFilters } = table;
   // a patient has a handful of bookings: one request, filtered/sorted/paginated in the browser
@@ -169,53 +188,57 @@ export function BookingsPage() {
   return (
     <div>
       <PageHeader
-        title="Bookings"
-        description="Your confirmed treatments, admission dates and what is left to pay."
+        title={t('bookings.list.title')}
+        description={t('bookings.list.description')}
         actions={
           <ButtonLink to={paths.payments} variant="outline" icon={<Wallet className="h-4 w-4" aria-hidden />}>
-            Payments & receipts
+            {t('bookings.list.paymentsLink')}
           </ButtonLink>
         }
       />
       <DataTable
         id="patient.bookings"
-        caption="Bookings"
+        caption={t('bookings.list.title')}
         table={table}
-        columns={COLUMNS}
+        columns={columns}
         rows={bookings.data ? rows : undefined}
         loading={bookings.isLoading}
         fetching={bookings.isFetching && !bookings.isLoading}
         error={bookings.error}
         onRetry={() => void bookings.refetch()}
         rowHref={(b) => paths.booking(b.id)}
-        rowLabel={(b) => `Open booking ${b.booking_number}`}
+        rowLabel={(b) => t('bookings.list.openBooking', { number: b.booking_number })}
         emptyIcon={<CalendarCheck className="size-8" aria-hidden />}
-        emptyTitle="No bookings yet"
-        emptyDescription="Once you accept a quote and choose your dates, your booking appears here."
-        emptyAction={<ButtonLink to={paths.cases}>Go to my cases</ButtonLink>}
+        emptyTitle={t('bookings.list.emptyTitle')}
+        emptyDescription={t('bookings.list.emptyDescription')}
+        emptyAction={<ButtonLink to={paths.cases}>{t('bookings.list.goToCases')}</ButtonLink>}
         header={
           <TableTabs
-            label="Booking status"
-            items={[{ value: '', label: 'All', count: base.length }, ...TABS.map((s) => ({ value: s, label: label(s), count: counts[s] ?? 0 }))]}
+            label={t('bookings.list.statusTabs')}
+            items={[{ value: '', label: t('bookings.list.all'), count: base.length }, ...TABS.map((s) => ({ value: s, label: label(s), count: counts[s] ?? 0 }))]}
             value={quickValue(filters.status, TABS)}
             onChange={(s) => setFilter('status', s ? [s] : [])}
           />
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Treatment or booking no…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('bookings.list.searchPlaceholder') }}
             onReset={table.resetFilters}
-            actions={<ExportButton filename="my-bookings" columns={COLUMNS} rows={rows} />}
+            actions={<ExportButton filename="my-bookings" columns={columns} rows={rows} />}
           >
             <MultiSelectFilter
-              label="Status"
+              label={t('bookings.list.columns.status')}
               value={filters.status}
               onChange={(v) => setFilter('status', v)}
               options={BOOKING_STATUSES.map((s) => ({ value: s, label: label(s), tone: statusTone(s, 'booking'), count: counts[s] ?? 0 }))}
             />
-            <DateRangeFilter label="Admission" value={{ from: filters.from, to: filters.to }} onChange={({ from, to }) => setFilters({ from, to })} />
+            <DateRangeFilter
+              label={t('bookings.list.columns.admission')}
+              value={{ from: filters.from, to: filters.to }}
+              onChange={({ from, to }) => setFilters({ from, to })}
+            />
             <ToggleFilter
-              label={dueCount ? `Left to pay (${dueCount})` : 'Left to pay'}
+              label={dueCount ? t('bookings.list.leftToPayCount', { n: dueCount }) : t('bookings.list.columns.leftToPay')}
               pressed={!!filters.due}
               onChange={(on) => setFilter('due', on || undefined)}
               icon={<Wallet className="size-3.5 opacity-70" aria-hidden />}

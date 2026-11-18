@@ -18,9 +18,12 @@ import {
   type DataTableColumn,
   type FilterOption,
 } from '@hig/shared/ui';
+import { useAppTranslation } from '../../../../i18n';
 import { PatientStatus, TableTabs, patientStatusLabel, quickValue } from '../../components/listing';
 import { paths } from '../../lib/paths';
 import { ButtonLink, PageHeader } from '../../ui/primitives';
+
+type TFn = ReturnType<typeof useAppTranslation>['t'];
 
 const DATE_FIELDS = ['created', 'updated'] as const;
 const FILTERS = {
@@ -46,92 +49,96 @@ function toApiFilters(f: FilterValues<typeof FILTERS>): Omit<CaseListParams, 'pa
 }
 
 const caseLabel = (s: CaseStatus) => patientStatusLabel(s, 'case') ?? s;
-const treatmentOf = (c: CaseOut) => c.procedure?.name ?? c.specialty?.name ?? 'Treatment enquiry';
 
-const COLUMNS: DataTableColumn<CaseOut>[] = [
-  {
-    key: 'treatment',
-    header: 'Treatment',
-    sticky: true,
-    mobile: 'primary',
-    className: 'max-w-64',
-    cell: (c) => (
-      <span className="block min-w-0">
-        <span className="block truncate font-medium text-fg">{treatmentOf(c)}</span>
-        <span className="block truncate font-mono text-xs text-muted">{c.case_number}</span>
-      </span>
-    ),
-    mobileCell: (c) => (
-      <span className="block">
-        <span className="block font-semibold">{treatmentOf(c)}</span>
-        <span className="block font-mono text-xs font-normal text-muted">{c.case_number}</span>
-      </span>
-    ),
-    exportValue: treatmentOf,
-  },
-  {
-    key: 'hospital',
-    header: 'Hospital',
-    className: 'max-w-60',
-    cell: (c) => <TextCell primary={c.hospital.name} secondary={[c.hospital.city, c.doctor?.full_name].filter(Boolean).join(' · ')} />,
-    exportValue: (c) => `${c.hospital.name}, ${c.hospital.city}`,
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    sortable: true,
-    mobile: 'badge',
-    cell: (c) => <PatientStatus status={c.status} kind="case" />,
-    exportValue: (c) => caseLabel(c.status),
-  },
-  {
-    key: 'quote',
-    header: 'Latest quote',
-    align: 'end',
-    cell: (c) =>
-      c.latest_quote ? (
-        <MoneyCell
-          minor={c.latest_quote.total_minor}
-          currency={c.latest_quote.currency}
-          secondary={patientStatusLabel(c.latest_quote.status, 'quote')}
-        />
-      ) : (
-        <span className="block text-end text-xs text-muted">Not yet</span>
+function columns(t: TFn): DataTableColumn<CaseOut>[] {
+  const treatmentOf = (c: CaseOut) => c.procedure?.name ?? c.specialty?.name ?? t('cases.list.treatmentEnquiry');
+  return [
+    {
+      key: 'treatment',
+      header: t('cases.list.columns.treatment'),
+      sticky: true,
+      mobile: 'primary',
+      className: 'max-w-64',
+      cell: (c) => (
+        <span className="block min-w-0">
+          <span className="block truncate font-medium text-fg">{treatmentOf(c)}</span>
+          <span className="block truncate font-mono text-xs text-muted">{c.case_number}</span>
+        </span>
       ),
-    exportValue: (c) => (c.latest_quote ? `${c.latest_quote.currency} ${fromMinor(c.latest_quote.total_minor, c.latest_quote.currency)}` : ''),
-  },
-  {
-    key: 'updated',
-    header: 'Last update',
-    sortable: true,
-    sortKey: 'updated_at',
-    sortDescFirst: true,
-    cell: (c) => <DateCell value={c.updated_at} display="relative" className="text-muted" />,
-    exportValue: (c) => c.updated_at,
-  },
-  {
-    key: 'created',
-    header: 'Opened',
-    sortable: true,
-    sortKey: 'created_at',
-    sortDescFirst: true,
-    defaultHidden: true,
-    cell: (c) => <DateCell value={c.created_at} display="date" />,
-    exportValue: (c) => c.created_at,
-  },
-  {
-    key: 'case_number',
-    header: 'Case number',
-    sortable: true,
-    defaultHidden: true,
-    mobile: 'hidden',
-    cell: (c) => <IdCell value={c.case_number} secondary={`Opened ${formatDate(c.created_at)}`} />,
-    exportValue: (c) => c.case_number,
-  },
-];
+      mobileCell: (c) => (
+        <span className="block">
+          <span className="block font-semibold">{treatmentOf(c)}</span>
+          <span className="block font-mono text-xs font-normal text-muted">{c.case_number}</span>
+        </span>
+      ),
+      exportValue: treatmentOf,
+    },
+    {
+      key: 'hospital',
+      header: t('cases.list.columns.hospital'),
+      className: 'max-w-60',
+      cell: (c) => <TextCell primary={c.hospital.name} secondary={[c.hospital.city, c.doctor?.full_name].filter(Boolean).join(' · ')} />,
+      exportValue: (c) => `${c.hospital.name}, ${c.hospital.city}`,
+    },
+    {
+      key: 'status',
+      header: t('cases.list.columns.status'),
+      sortable: true,
+      mobile: 'badge',
+      cell: (c) => <PatientStatus status={c.status} kind="case" />,
+      exportValue: (c) => caseLabel(c.status),
+    },
+    {
+      key: 'quote',
+      header: t('cases.list.columns.latestQuote'),
+      align: 'end',
+      cell: (c) =>
+        c.latest_quote ? (
+          <MoneyCell
+            minor={c.latest_quote.total_minor}
+            currency={c.latest_quote.currency}
+            secondary={patientStatusLabel(c.latest_quote.status, 'quote')}
+          />
+        ) : (
+          <span className="block text-end text-xs text-muted">{t('cases.list.notYet')}</span>
+        ),
+      exportValue: (c) => (c.latest_quote ? `${c.latest_quote.currency} ${fromMinor(c.latest_quote.total_minor, c.latest_quote.currency)}` : ''),
+    },
+    {
+      key: 'updated',
+      header: t('cases.list.columns.lastUpdate'),
+      sortable: true,
+      sortKey: 'updated_at',
+      sortDescFirst: true,
+      cell: (c) => <DateCell value={c.updated_at} display="relative" className="text-muted" />,
+      exportValue: (c) => c.updated_at,
+    },
+    {
+      key: 'created',
+      header: t('cases.list.columns.opened'),
+      sortable: true,
+      sortKey: 'created_at',
+      sortDescFirst: true,
+      defaultHidden: true,
+      cell: (c) => <DateCell value={c.created_at} display="date" />,
+      exportValue: (c) => c.created_at,
+    },
+    {
+      key: 'case_number',
+      header: t('cases.list.columns.caseNumber'),
+      sortable: true,
+      defaultHidden: true,
+      mobile: 'hidden',
+      cell: (c) => <IdCell value={c.case_number} secondary={t('cases.list.openedOn', { date: formatDate(c.created_at) })} />,
+      exportValue: (c) => c.case_number,
+    },
+  ];
+}
 
 export function CasesPage() {
-  useDocumentTitle('My cases');
+  const { t } = useAppTranslation();
+  useDocumentTitle(t('cases.list.title'));
+  const COLUMNS = useMemo(() => columns(t), [t]);
   const table = useTableState({ filters: FILTERS, defaultSort: '-updated_at', sortKeys: SORT_KEYS, defaultPageSize: 10 });
   const { filters, setFilter, setFilters } = table;
   const apiFilters = useMemo(() => toApiFilters(filters), [filters]);
@@ -165,13 +172,13 @@ export function CasesPage() {
   return (
     <div>
       <PageHeader
-        title="My cases"
-        description="Each quote request to a hospital is a case. Follow quotes, bookings and messages here."
-        actions={<ButtonLink to={paths.newScreening()}>Find a hospital</ButtonLink>}
+        title={t('cases.list.title')}
+        description={t('cases.list.description')}
+        actions={<ButtonLink to={paths.newScreening()}>{t('cases.list.findHospital')}</ButtonLink>}
       />
       <DataTable
         id="patient.cases"
-        caption="My cases"
+        caption={t('cases.list.title')}
         table={table}
         columns={COLUMNS}
         rows={list.data?.items}
@@ -181,16 +188,16 @@ export function CasesPage() {
         error={list.error}
         onRetry={() => void list.refetch()}
         rowHref={(c) => paths.case(c.id)}
-        rowLabel={(c) => `Open case ${c.case_number}`}
+        rowLabel={(c) => t('cases.list.openCase', { number: c.case_number })}
         emptyIcon={<BriefcaseMedical className="size-8" aria-hidden />}
-        emptyTitle="No cases yet"
-        emptyDescription="Complete an AI screening and request a quote from a matched hospital to open a case."
-        emptyAction={<ButtonLink to={paths.newScreening()}>Start AI screening</ButtonLink>}
+        emptyTitle={t('cases.list.emptyTitle')}
+        emptyDescription={t('cases.list.emptyDescription')}
+        emptyAction={<ButtonLink to={paths.newScreening()}>{t('cases.list.startScreening')}</ButtonLink>}
         header={
           <TableTabs
-            label="Case status"
+            label={t('cases.list.statusTabs')}
             items={[
-              { value: '', label: 'All', count: counts.data?.total },
+              { value: '', label: t('cases.list.all'), count: counts.data?.total },
               ...TABS.map((s) => ({ value: s, label: caseLabel(s), count: counts.data?.counts[s] })),
             ]}
             value={quickValue(filters.status, TABS)}
@@ -199,7 +206,7 @@ export function CasesPage() {
         }
         toolbar={
           <FilterBar
-            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: 'Search by case number…' }}
+            search={{ value: filters.q, onChange: (q) => setFilter('q', q), placeholder: t('cases.list.searchPlaceholder') }}
             onReset={table.resetFilters}
             actions={
               <ExportButton
@@ -211,9 +218,9 @@ export function CasesPage() {
               />
             }
           >
-            <MultiSelectFilter label="Status" value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
+            <MultiSelectFilter label={t('cases.list.filters.status')} value={filters.status} onChange={(v) => setFilter('status', v)} options={statusOptions} />
             <SelectFilter
-              label="Hospital"
+              label={t('cases.list.filters.hospital')}
               icon={<Building2 className="size-3.5 opacity-70" aria-hidden />}
               value={filters.hospital_id}
               onChange={(v) => setFilter('hospital_id', v)}
@@ -221,12 +228,12 @@ export function CasesPage() {
               loading={hospitals.isLoading}
             />
             <DateRangeFilter
-              label="Date"
+              label={t('cases.list.filters.date')}
               value={{ from: filters.from, to: filters.to }}
               onChange={({ from, to }) => setFilters({ from, to })}
               fieldOptions={[
-                { value: 'created', label: 'Opened' },
-                { value: 'updated', label: 'Last update' },
+                { value: 'created', label: t('cases.list.columns.opened') },
+                { value: 'updated', label: t('cases.list.columns.lastUpdate') },
               ]}
               field={filters.date_field || 'created'}
               onFieldChange={(date_field) => setFilter('date_field', date_field)}

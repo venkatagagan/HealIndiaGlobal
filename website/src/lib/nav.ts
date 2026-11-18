@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import type { Dictionary } from '@/i18n';
-import { fmt, plural } from '@/i18n/format';
+import { fmt, plural, intlLocale } from '@/i18n/format';
 import { featuredOrder, getCities, getDoctors, getHospitals, getProcedures, getSpecialties } from '@/lib/data/catalog';
 import { getDestinations } from '@/lib/destinations';
 import { formatMoneyCompact, toNumber } from '@/lib/money';
@@ -183,7 +183,7 @@ export const getNavData = cache(async (t: Dictionary): Promise<NavData> => {
     safe(getDestinations(), empty),
     getSiteConfig(),
   ]);
-  const intl = 'en';
+  const intl = intlLocale();
 
   const tintOf = new Map(specialties.data.map((s, i) => [s.slug, i]));
   const navSpecialty = (s: (typeof specialties.data)[number], linkHref: string, meta?: string): NavSpecialty => ({
