@@ -2256,6 +2256,24 @@ class OverridableLocalizations extends AppLocalizations {
     'orgSuspendedWhatsAppSupport' => orgSuspendedWhatsAppSupport,
     'orgSuspendedNoContact' => orgSuspendedNoContact,
     'orgSuspendedCheckAgain' => orgSuspendedCheckAgain,
+    'hpAvailabilityTitle' => hpAvailabilityTitle,
+    'hpMoreAvailabilitySubtitle' => hpMoreAvailabilitySubtitle,
+    'hpAvailabilityIntroDoctor' => hpAvailabilityIntroDoctor,
+    'hpAvailabilityIntroHospital' => hpAvailabilityIntroHospital,
+    'hpAvailabilityConsultShort' => hpAvailabilityConsultShort,
+    'hpAvailabilityAdmitShort' => hpAvailabilityAdmitShort,
+    'hpAvailabilityInvalidNumber' => hpAvailabilityInvalidNumber,
+    'hpAvailabilityQuickFill' => hpAvailabilityQuickFill,
+    'hpAvailabilityWeekdaysOnly' => hpAvailabilityWeekdaysOnly,
+    'hpAvailabilityApply' => hpAvailabilityApply,
+    'hpAvailabilitySaved' => hpAvailabilitySaved,
+    'hpAvailabilityFixErrors' => hpAvailabilityFixErrors,
+    'hpAvailabilityBelowBookedError' => hpAvailabilityBelowBookedError,
+    'hpAvailabilityDiscardTitle' => hpAvailabilityDiscardTitle,
+    'hpAvailabilityDiscard' => hpAvailabilityDiscard,
+    'hpAvailabilityKeepEditing' => hpAvailabilityKeepEditing,
+    'hpAvailabilityEditButton' => hpAvailabilityEditButton,
+    'hpAvailabilityPastDay' => hpAvailabilityPastDay,
     _ => null,
   };
 
@@ -9926,6 +9944,72 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => _t('orgSuspendedCheckAgain') ?? base.orgSuspendedCheckAgain;
+
+  @override
+  String get hpAvailabilityTitle => _t('hpAvailabilityTitle') ?? base.hpAvailabilityTitle;
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) => _f('hpAvailabilityDoctorTitle', {'name': name}) ?? base.hpAvailabilityDoctorTitle(name);
+
+  @override
+  String get hpMoreAvailabilitySubtitle => _t('hpMoreAvailabilitySubtitle') ?? base.hpMoreAvailabilitySubtitle;
+
+  @override
+  String get hpAvailabilityIntroDoctor => _t('hpAvailabilityIntroDoctor') ?? base.hpAvailabilityIntroDoctor;
+
+  @override
+  String get hpAvailabilityIntroHospital => _t('hpAvailabilityIntroHospital') ?? base.hpAvailabilityIntroHospital;
+
+  @override
+  String get hpAvailabilityConsultShort => _t('hpAvailabilityConsultShort') ?? base.hpAvailabilityConsultShort;
+
+  @override
+  String get hpAvailabilityAdmitShort => _t('hpAvailabilityAdmitShort') ?? base.hpAvailabilityAdmitShort;
+
+  @override
+  String hpAvailabilityBooked(int count) => _f('hpAvailabilityBooked', {'count': count}) ?? base.hpAvailabilityBooked(count);
+
+  @override
+  String hpAvailabilityBelowBooked(int count) => _f('hpAvailabilityBelowBooked', {'count': count}) ?? base.hpAvailabilityBelowBooked(count);
+
+  @override
+  String get hpAvailabilityInvalidNumber => _t('hpAvailabilityInvalidNumber') ?? base.hpAvailabilityInvalidNumber;
+
+  @override
+  String get hpAvailabilityQuickFill => _t('hpAvailabilityQuickFill') ?? base.hpAvailabilityQuickFill;
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) => _f('hpAvailabilityQuickFillHint', {'month': month}) ?? base.hpAvailabilityQuickFillHint(month);
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => _t('hpAvailabilityWeekdaysOnly') ?? base.hpAvailabilityWeekdaysOnly;
+
+  @override
+  String get hpAvailabilityApply => _t('hpAvailabilityApply') ?? base.hpAvailabilityApply;
+
+  @override
+  String get hpAvailabilitySaved => _t('hpAvailabilitySaved') ?? base.hpAvailabilitySaved;
+
+  @override
+  String get hpAvailabilityFixErrors => _t('hpAvailabilityFixErrors') ?? base.hpAvailabilityFixErrors;
+
+  @override
+  String get hpAvailabilityBelowBookedError => _t('hpAvailabilityBelowBookedError') ?? base.hpAvailabilityBelowBookedError;
+
+  @override
+  String get hpAvailabilityDiscardTitle => _t('hpAvailabilityDiscardTitle') ?? base.hpAvailabilityDiscardTitle;
+
+  @override
+  String get hpAvailabilityDiscard => _t('hpAvailabilityDiscard') ?? base.hpAvailabilityDiscard;
+
+  @override
+  String get hpAvailabilityKeepEditing => _t('hpAvailabilityKeepEditing') ?? base.hpAvailabilityKeepEditing;
+
+  @override
+  String get hpAvailabilityEditButton => _t('hpAvailabilityEditButton') ?? base.hpAvailabilityEditButton;
+
+  @override
+  String get hpAvailabilityPastDay => _t('hpAvailabilityPastDay') ?? base.hpAvailabilityPastDay;
 }
 
 /// Every ARB key, in template order.
@@ -12486,4 +12570,26 @@ const List<String> kL10nKeys = [
   'orgSuspendedWhatsAppSupport',
   'orgSuspendedNoContact',
   'orgSuspendedCheckAgain',
+  'hpAvailabilityTitle',
+  'hpAvailabilityDoctorTitle',
+  'hpMoreAvailabilitySubtitle',
+  'hpAvailabilityIntroDoctor',
+  'hpAvailabilityIntroHospital',
+  'hpAvailabilityConsultShort',
+  'hpAvailabilityAdmitShort',
+  'hpAvailabilityBooked',
+  'hpAvailabilityBelowBooked',
+  'hpAvailabilityInvalidNumber',
+  'hpAvailabilityQuickFill',
+  'hpAvailabilityQuickFillHint',
+  'hpAvailabilityWeekdaysOnly',
+  'hpAvailabilityApply',
+  'hpAvailabilitySaved',
+  'hpAvailabilityFixErrors',
+  'hpAvailabilityBelowBookedError',
+  'hpAvailabilityDiscardTitle',
+  'hpAvailabilityDiscard',
+  'hpAvailabilityKeepEditing',
+  'hpAvailabilityEditButton',
+  'hpAvailabilityPastDay',
 ];

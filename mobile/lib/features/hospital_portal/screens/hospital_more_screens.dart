@@ -91,6 +91,13 @@ class HospitalMoreScreen extends ConsumerWidget {
           ),
           link(Icons.badge_outlined, l10n.hpDoctorsTitle, l10n.hpMoreDoctorsSubtitle, HospitalRoutes.doctors),
           link(
+            Icons.event_available_outlined,
+            l10n.hpAvailabilityTitle,
+            l10n.hpMoreAvailabilitySubtitle,
+            HospitalRoutes.availability,
+            key: const ValueKey('hospital-more-availability'),
+          ),
+          link(
             Icons.price_change_outlined,
             l10n.priceListTitle,
             l10n.hpMorePriceListSubtitle,
@@ -446,6 +453,16 @@ class HospitalDoctorsScreen extends ConsumerWidget {
                                         color: AppColors.violet,
                                       ),
                                   ],
+                                ),
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: TextButton.icon(
+                                    key: ValueKey('doctor-availability-${d.id}'),
+                                    icon: const Icon(Icons.event_available_outlined, size: 18),
+                                    label: Text(l10n.hpAvailabilityEditButton),
+                                    onPressed: () =>
+                                        context.push(HospitalRoutes.doctorAvailability(d.id, name: d.fullName)),
+                                  ),
                                 ),
                               ],
                             ),

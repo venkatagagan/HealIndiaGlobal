@@ -6765,7 +6765,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hpActingFor => 'Действовать от имени';
 
   @override
-  String get hpWebPortalNote => 'Профиль, участников, доступность и цены можно изменить на веб-портале больницы.';
+  String get hpWebPortalNote => 'Профиль, участников и цены можно изменить на веб-портале больницы.';
 
   @override
   String get hpNoVisaRequests => 'Запросов на визу нет';
@@ -8971,4 +8971,81 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => 'Проверить снова';
+
+  @override
+  String get hpAvailabilityTitle => 'Доступность больницы';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'Доступность: $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'Количество госпитализаций и консультаций в день';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'Укажите, сколько видеоконсультаций и госпитализаций этот врач может принять в день. Пациенты видят только дни со свободными местами; ёмкость не может быть меньше уже забронированного.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'Ёмкость больницы в целом, без привязки к врачу (например, койки для госпитализации). Пациенты видят только дни со свободными местами; ёмкость не может быть меньше уже забронированного.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'Консультации';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'Госпитализации';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return 'Занято: $count';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return 'Не меньше $count';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => 'От 0 до 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'Быстрое заполнение';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'Задаёт одинаковую ёмкость для всех оставшихся дней месяца ($month). Проверьте дни и сохраните.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'Только будни (без субботы и воскресенья)';
+
+  @override
+  String get hpAvailabilityApply => 'Заполнить месяц';
+
+  @override
+  String get hpAvailabilitySaved => 'Доступность сохранена';
+
+  @override
+  String get hpAvailabilityFixErrors => 'Исправьте отмеченные дни перед сохранением.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'Ёмкость меньше числа уже забронированных мест в этот день. Увеличьте её и сохраните снова.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'Отменить несохранённые изменения?';
+
+  @override
+  String get hpAvailabilityDiscard => 'Отменить';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'Продолжить редактирование';
+
+  @override
+  String get hpAvailabilityEditButton => 'Доступность';
+
+  @override
+  String get hpAvailabilityPastDay => 'Прошедший день';
 }

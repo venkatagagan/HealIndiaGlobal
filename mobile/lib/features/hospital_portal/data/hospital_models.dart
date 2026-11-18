@@ -188,3 +188,14 @@ class ItineraryDraft {
     'description': description?.trim(),
   }, dropEmptyStrings: true);
 }
+
+/// One `PUT /hospital-portal/.../availability` entry: capacity of [kind] on [date].
+class SlotCapacity {
+  const SlotCapacity({required this.date, required this.kind, required this.capacity});
+
+  final DateTime date;
+  final SlotKind kind;
+  final int capacity;
+
+  Map<String, dynamic> toJson() => {'date': toApiDate(date), 'slot_kind': kind.json, 'capacity': capacity};
+}

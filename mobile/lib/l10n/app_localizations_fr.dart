@@ -6638,7 +6638,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hpWebPortalNote =>
-      'Les modifications du profil, des membres, des disponibilités et des prix se font sur le portail web de l’hôpital.';
+      'Les modifications du profil, des membres et des prix se font sur le portail web de l’hôpital.';
 
   @override
   String get hpNoVisaRequests => 'Aucune demande de visa';
@@ -8819,4 +8819,81 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => 'Vérifier à nouveau';
+
+  @override
+  String get hpAvailabilityTitle => 'Disponibilités de l’hôpital';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'Disponibilités : $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'Capacité d’admissions et de consultations par jour';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'Indiquez combien de téléconsultations et d’admissions ce médecin peut assurer chaque jour. Les patients ne voient que les jours avec des places libres ; une capacité ne peut pas être inférieure à ce qui est déjà réservé.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'Capacité de l’hôpital dans son ensemble, sans lien avec un médecin (par exemple les lits pour les admissions). Les patients ne voient que les jours avec des places libres ; une capacité ne peut pas être inférieure à ce qui est déjà réservé.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'Consultations';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'Admissions';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return 'Réservé(s) : $count';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return 'Au moins $count';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => 'De 0 à 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'Remplissage rapide';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'Applique la même capacité à tous les jours restants du mois ($month). Vérifiez les jours, puis enregistrez.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'Jours de semaine uniquement (sans samedi ni dimanche)';
+
+  @override
+  String get hpAvailabilityApply => 'Remplir le mois';
+
+  @override
+  String get hpAvailabilitySaved => 'Disponibilités enregistrées';
+
+  @override
+  String get hpAvailabilityFixErrors => 'Corrigez les jours signalés avant d’enregistrer.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'Une capacité est inférieure aux places déjà réservées ce jour-là. Augmentez-la et enregistrez à nouveau.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'Abandonner les modifications non enregistrées ?';
+
+  @override
+  String get hpAvailabilityDiscard => 'Abandonner';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'Continuer la modification';
+
+  @override
+  String get hpAvailabilityEditButton => 'Disponibilités';
+
+  @override
+  String get hpAvailabilityPastDay => 'Jour passé';
 }

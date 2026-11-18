@@ -6547,7 +6547,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get hpActingFor => 'যার পক্ষে কাজ করছেন';
 
   @override
-  String get hpWebPortalNote => 'প্রোফাইল, সদস্য, প্রাপ্যতা ও মূল্য সম্পাদনা হাসপাতালের ওয়েব পোর্টালে করা যায়।';
+  String get hpWebPortalNote => 'প্রোফাইল, সদস্য ও মূল্য সম্পাদনা হাসপাতালের ওয়েব পোর্টালে করা যায়।';
 
   @override
   String get hpNoVisaRequests => 'কোনো ভিসার অনুরোধ নেই';
@@ -8707,4 +8707,81 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => 'আবার যাচাই করুন';
+
+  @override
+  String get hpAvailabilityTitle => 'হাসপাতালের প্রাপ্যতা';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'প্রাপ্যতা: $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'প্রতিদিনের ভর্তি ও পরামর্শের সক্ষমতা';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'এই ডাক্তার প্রতিদিন কতগুলি ভিডিও পরামর্শ ও ভর্তি নিতে পারবেন তা ঠিক করুন। রোগীরা শুধু খালি জায়গা থাকা দিনগুলি দেখেন; সক্ষমতা ইতিমধ্যে বুক হওয়া সংখ্যার চেয়ে কম হতে পারে না।';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'কোনো নির্দিষ্ট ডাক্তারের সঙ্গে যুক্ত নয়, পুরো হাসপাতালের সক্ষমতা (যেমন ভর্তির জন্য শয্যা)। রোগীরা শুধু খালি জায়গা থাকা দিনগুলি দেখেন; সক্ষমতা ইতিমধ্যে বুক হওয়া সংখ্যার চেয়ে কম হতে পারে না।';
+
+  @override
+  String get hpAvailabilityConsultShort => 'পরামর্শ';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'ভর্তি';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return '$countটি বুক করা';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return 'কমপক্ষে $count';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => '0 থেকে 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'দ্রুত পূরণ';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return '$month-এর বাকি প্রতিটি দিনের জন্য একই সক্ষমতা সেট করে। দিনগুলি দেখে নিয়ে সংরক্ষণ করুন।';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'শুধু সপ্তাহের কাজের দিন (শনি ও রবিবার বাদে)';
+
+  @override
+  String get hpAvailabilityApply => 'মাস পূরণ করুন';
+
+  @override
+  String get hpAvailabilitySaved => 'প্রাপ্যতা সংরক্ষিত হয়েছে';
+
+  @override
+  String get hpAvailabilityFixErrors => 'সংরক্ষণের আগে চিহ্নিত দিনগুলি ঠিক করুন।';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'একটি সক্ষমতা সেই দিনের ইতিমধ্যে বুক হওয়া জায়গার চেয়ে কম। এটি বাড়িয়ে আবার সংরক্ষণ করুন।';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'অসংরক্ষিত পরিবর্তন বাতিল করবেন?';
+
+  @override
+  String get hpAvailabilityDiscard => 'বাতিল করুন';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'সম্পাদনা চালিয়ে যান';
+
+  @override
+  String get hpAvailabilityEditButton => 'প্রাপ্যতা';
+
+  @override
+  String get hpAvailabilityPastDay => 'অতীত দিন';
 }

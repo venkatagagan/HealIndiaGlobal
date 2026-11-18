@@ -6807,7 +6807,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hpActingFor => 'العمل لصالح';
 
   @override
-  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والتوفر والأسعار متاح على بوابة المستشفى على الويب.';
+  String get hpWebPortalNote => 'تعديل الملف الشخصي والأعضاء والأسعار متاح على بوابة المستشفى على الويب.';
 
   @override
   String get hpNoVisaRequests => 'لا توجد طلبات تأشيرة';
@@ -8994,4 +8994,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => 'التحقق مرة أخرى';
+
+  @override
+  String get hpAvailabilityTitle => 'توفّر المستشفى';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'التوفّر: $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'سعة الدخول والاستشارات لكل يوم';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'حدّد عدد الاستشارات بالفيديو وحالات الدخول التي يمكن لهذا الطبيب استقبالها كل يوم. يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'سعة المستشفى ككل، غير مرتبطة بطبيب محدد (مثل الأسرّة لحالات الدخول). يرى المرضى الأيام التي فيها أماكن متاحة فقط، ولا يمكن أن تقل السعة عن عدد الحجوزات الحالية.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'الاستشارات';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'حالات الدخول';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return 'المحجوز: $count';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return '$count على الأقل';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => 'من 0 إلى 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'تعبئة سريعة';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'يضبط السعة نفسها لكل الأيام المتبقية من $month. راجع الأيام ثم احفظ.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'أيام العمل فقط (باستثناء السبت والأحد)';
+
+  @override
+  String get hpAvailabilityApply => 'تعبئة الشهر';
+
+  @override
+  String get hpAvailabilitySaved => 'تم حفظ التوفّر';
+
+  @override
+  String get hpAvailabilityFixErrors => 'صحّح الأيام المميّزة قبل الحفظ.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'إحدى السعات أقل من عدد الأماكن المحجوزة في ذلك اليوم. ارفعها واحفظ مرة أخرى.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'تجاهل التغييرات غير المحفوظة؟';
+
+  @override
+  String get hpAvailabilityDiscard => 'تجاهل';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'متابعة التعديل';
+
+  @override
+  String get hpAvailabilityEditButton => 'التوفّر';
+
+  @override
+  String get hpAvailabilityPastDay => 'يوم مضى';
 }

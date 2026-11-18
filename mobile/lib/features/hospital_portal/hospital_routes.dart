@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/routes.dart';
 import 'hospital_shell.dart';
+import 'screens/hospital_availability_screen.dart';
 import 'screens/hospital_bookings_screens.dart';
 import 'screens/hospital_cases_screens.dart';
 import 'screens/hospital_more_screens.dart';
@@ -28,6 +29,15 @@ abstract final class HospitalRoutes {
   static const visas = '$home/visas';
   static const doctors = '$home/doctors';
   static const priceList = '$home/price-list';
+
+  /// Hospital-level capacity (admission beds etc., not tied to a doctor).
+  static const availability = '$home/availability';
+
+  /// A doctor's consultation / admission capacity (`?name=` for the title).
+  static String doctorAvailability(String doctorId, {String? name}) => Uri(
+    path: '$home/doctors/${Uri.encodeComponent(doctorId)}/availability',
+    queryParameters: name == null || name.isEmpty ? null : {'name': name},
+  ).toString();
 }
 
 /// Route tree of the hospital shell, mounted by `core/router/app_router.dart` under [Routes.hospitalHome].
@@ -53,7 +63,20 @@ List<RouteBase> hospitalPortalRoutes() => [
       ),
       GoRoute(path: 'itineraries', builder: (_, _) => const ItinerariesScreen()),
       GoRoute(path: 'visas', builder: (_, _) => const VisaRequestsScreen()),
-      GoRoute(path: 'doctors', builder: (_, _) => const HospitalDoctorsScreen()),
+      GoRoute(
+        path: 'doctors',
+        builder: (_, _) => const HospitalDoctorsScreen(),
+        routes: [
+          GoRoute(
+            path: ':id/availability',
+            builder: (_, s) => HospitalAvailabilityScreen(
+              doctorId: s.pathParameters['id']!,
+              doctorName: s.uri.queryParameters['name'],
+            ),
+          ),
+        ],
+      ),
+      GoRoute(path: 'availability', builder: (_, _) => const HospitalAvailabilityScreen()),
       GoRoute(path: 'price-list', builder: (_, _) => const PriceListScreen()),
     ],
   ),

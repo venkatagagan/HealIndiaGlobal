@@ -6487,8 +6487,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hpActingFor => 'Acting for';
 
   @override
-  String get hpWebPortalNote =>
-      'Profile, members, availability and price edits are available on the hospital web portal.';
+  String get hpWebPortalNote => 'Profile, members and price edits are available on the hospital web portal.';
 
   @override
   String get hpNoVisaRequests => 'No visa requests';
@@ -8631,4 +8630,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgSuspendedCheckAgain => 'Check again';
+
+  @override
+  String get hpAvailabilityTitle => 'Hospital availability';
+
+  @override
+  String hpAvailabilityDoctorTitle(String name) {
+    return 'Availability: $name';
+  }
+
+  @override
+  String get hpMoreAvailabilitySubtitle => 'Admission and consultation capacity per day';
+
+  @override
+  String get hpAvailabilityIntroDoctor =>
+      'Set how many video consultations and admissions this doctor can take each day. Patients only see days with free places; a capacity cannot go below what is already booked.';
+
+  @override
+  String get hpAvailabilityIntroHospital =>
+      'Capacity for the hospital as a whole, not tied to one doctor (for example beds for admissions). Patients only see days with free places; a capacity cannot go below what is already booked.';
+
+  @override
+  String get hpAvailabilityConsultShort => 'Consultations';
+
+  @override
+  String get hpAvailabilityAdmitShort => 'Admissions';
+
+  @override
+  String hpAvailabilityBooked(int count) {
+    return '$count booked';
+  }
+
+  @override
+  String hpAvailabilityBelowBooked(int count) {
+    return 'At least $count';
+  }
+
+  @override
+  String get hpAvailabilityInvalidNumber => '0 to 1000';
+
+  @override
+  String get hpAvailabilityQuickFill => 'Quick fill';
+
+  @override
+  String hpAvailabilityQuickFillHint(String month) {
+    return 'Sets the same capacity for every remaining day of $month. Review the days, then save.';
+  }
+
+  @override
+  String get hpAvailabilityWeekdaysOnly => 'Weekdays only (skip Saturday and Sunday)';
+
+  @override
+  String get hpAvailabilityApply => 'Fill the month';
+
+  @override
+  String get hpAvailabilitySaved => 'Availability saved';
+
+  @override
+  String get hpAvailabilityFixErrors => 'Fix the highlighted days before saving.';
+
+  @override
+  String get hpAvailabilityBelowBookedError =>
+      'A capacity is lower than the places already booked that day. Raise it and save again.';
+
+  @override
+  String get hpAvailabilityDiscardTitle => 'Discard unsaved changes?';
+
+  @override
+  String get hpAvailabilityDiscard => 'Discard';
+
+  @override
+  String get hpAvailabilityKeepEditing => 'Keep editing';
+
+  @override
+  String get hpAvailabilityEditButton => 'Availability';
+
+  @override
+  String get hpAvailabilityPastDay => 'Past day';
 }

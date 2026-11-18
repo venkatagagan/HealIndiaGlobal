@@ -9346,9 +9346,9 @@
   "@hpActingFor": {
     "description": "Section title: choose which hospital the user is working for."
   },
-  "hpWebPortalNote": "Profile, members, availability and price edits are available on the hospital web portal.",
+  "hpWebPortalNote": "Profile, members and price edits are available on the hospital web portal.",
   "@hpWebPortalNote": {
-    "description": "Note on the More screen."
+    "description": "Footer note on the hospital More tab: what can only be edited on the web portal"
   },
   "hpNoVisaRequests": "No visa requests",
   "@hpNoVisaRequests": {
@@ -12433,5 +12433,115 @@
   "orgSuspendedCheckAgain": "Check again",
   "@orgSuspendedCheckAgain": {
     "description": "Button on the suspended-account screen: try loading the app again (e.g. after support re-activated the account)"
+  },
+  "hpAvailabilityTitle": "Hospital availability",
+  "@hpAvailabilityTitle": {
+    "description": "Title of the hospital-level (not tied to a doctor) availability calendar"
+  },
+  "hpAvailabilityDoctorTitle": "Availability: {name}",
+  "@hpAvailabilityDoctorTitle": {
+    "description": "Title of a doctor's availability calendar in the hospital app",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Dr. Rao"
+      }
+    }
+  },
+  "hpMoreAvailabilitySubtitle": "Admission and consultation capacity per day",
+  "@hpMoreAvailabilitySubtitle": {
+    "description": "Subtitle of the More-tab link to the hospital-level availability calendar"
+  },
+  "hpAvailabilityIntroDoctor": "Set how many video consultations and admissions this doctor can take each day. Patients only see days with free places; a capacity cannot go below what is already booked.",
+  "@hpAvailabilityIntroDoctor": {
+    "description": "Intro of a doctor's availability calendar"
+  },
+  "hpAvailabilityIntroHospital": "Capacity for the hospital as a whole, not tied to one doctor (for example beds for admissions). Patients only see days with free places; a capacity cannot go below what is already booked.",
+  "@hpAvailabilityIntroHospital": {
+    "description": "Intro of the hospital-level availability calendar"
+  },
+  "hpAvailabilityConsultShort": "Consultations",
+  "@hpAvailabilityConsultShort": {
+    "description": "Short label of the consultations-per-day field in a calendar row"
+  },
+  "hpAvailabilityAdmitShort": "Admissions",
+  "@hpAvailabilityAdmitShort": {
+    "description": "Short label of the admissions-per-day field in a calendar row"
+  },
+  "hpAvailabilityBooked": "{count} booked",
+  "@hpAvailabilityBooked": {
+    "description": "Helper under a capacity field: how many places are already booked that day",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hpAvailabilityBelowBooked": "At least {count}",
+  "@hpAvailabilityBelowBooked": {
+    "description": "Validation error: capacity lower than already booked places",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hpAvailabilityInvalidNumber": "0 to 1000",
+  "@hpAvailabilityInvalidNumber": {
+    "description": "Validation error: capacity must be a whole number 0 to 1000"
+  },
+  "hpAvailabilityQuickFill": "Quick fill",
+  "@hpAvailabilityQuickFill": {
+    "description": "Card title: fill the whole month with the same capacity"
+  },
+  "hpAvailabilityQuickFillHint": "Sets the same capacity for every remaining day of {month}. Review the days, then save.",
+  "@hpAvailabilityQuickFillHint": {
+    "description": "Explanation of the quick-fill card",
+    "placeholders": {
+      "month": {
+        "type": "String",
+        "example": "November 2026"
+      }
+    }
+  },
+  "hpAvailabilityWeekdaysOnly": "Weekdays only (skip Saturday and Sunday)",
+  "@hpAvailabilityWeekdaysOnly": {
+    "description": "Quick-fill switch: skip Saturdays and Sundays"
+  },
+  "hpAvailabilityApply": "Fill the month",
+  "@hpAvailabilityApply": {
+    "description": "Quick-fill button"
+  },
+  "hpAvailabilitySaved": "Availability saved",
+  "@hpAvailabilitySaved": {
+    "description": "Snackbar after the availability was saved"
+  },
+  "hpAvailabilityFixErrors": "Fix the highlighted days before saving.",
+  "@hpAvailabilityFixErrors": {
+    "description": "Error when saving with invalid capacity fields"
+  },
+  "hpAvailabilityBelowBookedError": "A capacity is lower than the places already booked that day. Raise it and save again.",
+  "@hpAvailabilityBelowBookedError": {
+    "description": "Server error capacity_below_booked when saving availability"
+  },
+  "hpAvailabilityDiscardTitle": "Discard unsaved changes?",
+  "@hpAvailabilityDiscardTitle": {
+    "description": "Dialog title when leaving or changing month with unsaved availability edits"
+  },
+  "hpAvailabilityDiscard": "Discard",
+  "@hpAvailabilityDiscard": {
+    "description": "Dialog button: discard unsaved availability edits"
+  },
+  "hpAvailabilityKeepEditing": "Keep editing",
+  "@hpAvailabilityKeepEditing": {
+    "description": "Dialog button: keep editing availability"
+  },
+  "hpAvailabilityEditButton": "Availability",
+  "@hpAvailabilityEditButton": {
+    "description": "Button on a doctor card in the hospital app: open the doctor's availability calendar"
+  },
+  "hpAvailabilityPastDay": "Past day",
+  "@hpAvailabilityPastDay": {
+    "description": "Shown instead of editable fields for a day in the past"
   }
 }

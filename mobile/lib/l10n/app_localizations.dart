@@ -11795,10 +11795,10 @@ abstract class AppLocalizations {
   /// **'Acting for'**
   String get hpActingFor;
 
-  /// Note on the More screen.
+  /// Footer note on the hospital More tab: what can only be edited on the web portal
   ///
   /// In en, this message translates to:
-  /// **'Profile, members, availability and price edits are available on the hospital web portal.'**
+  /// **'Profile, members and price edits are available on the hospital web portal.'**
   String get hpWebPortalNote;
 
   /// Visa screen empty state.
@@ -15436,6 +15436,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check again'**
   String get orgSuspendedCheckAgain;
+
+  /// Title of the hospital-level (not tied to a doctor) availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital availability'**
+  String get hpAvailabilityTitle;
+
+  /// Title of a doctor's availability calendar in the hospital app
+  ///
+  /// In en, this message translates to:
+  /// **'Availability: {name}'**
+  String hpAvailabilityDoctorTitle(String name);
+
+  /// Subtitle of the More-tab link to the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Admission and consultation capacity per day'**
+  String get hpMoreAvailabilitySubtitle;
+
+  /// Intro of a doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Set how many video consultations and admissions this doctor can take each day. Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroDoctor;
+
+  /// Intro of the hospital-level availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity for the hospital as a whole, not tied to one doctor (for example beds for admissions). Patients only see days with free places; a capacity cannot go below what is already booked.'**
+  String get hpAvailabilityIntroHospital;
+
+  /// Short label of the consultations-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations'**
+  String get hpAvailabilityConsultShort;
+
+  /// Short label of the admissions-per-day field in a calendar row
+  ///
+  /// In en, this message translates to:
+  /// **'Admissions'**
+  String get hpAvailabilityAdmitShort;
+
+  /// Helper under a capacity field: how many places are already booked that day
+  ///
+  /// In en, this message translates to:
+  /// **'{count} booked'**
+  String hpAvailabilityBooked(int count);
+
+  /// Validation error: capacity lower than already booked places
+  ///
+  /// In en, this message translates to:
+  /// **'At least {count}'**
+  String hpAvailabilityBelowBooked(int count);
+
+  /// Validation error: capacity must be a whole number 0 to 1000
+  ///
+  /// In en, this message translates to:
+  /// **'0 to 1000'**
+  String get hpAvailabilityInvalidNumber;
+
+  /// Card title: fill the whole month with the same capacity
+  ///
+  /// In en, this message translates to:
+  /// **'Quick fill'**
+  String get hpAvailabilityQuickFill;
+
+  /// Explanation of the quick-fill card
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the same capacity for every remaining day of {month}. Review the days, then save.'**
+  String hpAvailabilityQuickFillHint(String month);
+
+  /// Quick-fill switch: skip Saturdays and Sundays
+  ///
+  /// In en, this message translates to:
+  /// **'Weekdays only (skip Saturday and Sunday)'**
+  String get hpAvailabilityWeekdaysOnly;
+
+  /// Quick-fill button
+  ///
+  /// In en, this message translates to:
+  /// **'Fill the month'**
+  String get hpAvailabilityApply;
+
+  /// Snackbar after the availability was saved
+  ///
+  /// In en, this message translates to:
+  /// **'Availability saved'**
+  String get hpAvailabilitySaved;
+
+  /// Error when saving with invalid capacity fields
+  ///
+  /// In en, this message translates to:
+  /// **'Fix the highlighted days before saving.'**
+  String get hpAvailabilityFixErrors;
+
+  /// Server error capacity_below_booked when saving availability
+  ///
+  /// In en, this message translates to:
+  /// **'A capacity is lower than the places already booked that day. Raise it and save again.'**
+  String get hpAvailabilityBelowBookedError;
+
+  /// Dialog title when leaving or changing month with unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard unsaved changes?'**
+  String get hpAvailabilityDiscardTitle;
+
+  /// Dialog button: discard unsaved availability edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get hpAvailabilityDiscard;
+
+  /// Dialog button: keep editing availability
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get hpAvailabilityKeepEditing;
+
+  /// Button on a doctor card in the hospital app: open the doctor's availability calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get hpAvailabilityEditButton;
+
+  /// Shown instead of editable fields for a day in the past
+  ///
+  /// In en, this message translates to:
+  /// **'Past day'**
+  String get hpAvailabilityPastDay;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
