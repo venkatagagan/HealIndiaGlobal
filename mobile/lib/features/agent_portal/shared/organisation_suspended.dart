@@ -58,7 +58,10 @@ class OrganisationSuspendedGate extends ConsumerWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Offstage(offstage: show, child: TickerMode(enabled: !show, child: child)),
+        Offstage(
+          offstage: show,
+          child: TickerMode(enabled: !show, child: child),
+        ),
         if (show) OrganisationSuspendedView(role: role!),
       ],
     );

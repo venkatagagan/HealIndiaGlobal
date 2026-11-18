@@ -8707,4 +8707,226 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => 'Past day';
+
+  @override
+  String get privacyRequestsTitle => 'Data-rights requests';
+
+  @override
+  String get privacyRequestsSubtitle => 'Ask for a copy, correction or deletion of your data, or raise a complaint';
+
+  @override
+  String get privacyRequestsEmpty => 'You have not made any data-rights requests yet.';
+
+  @override
+  String get privacyRequestNew => 'New request';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'We record your request and reply by the due date shown once it is sent. We may ask you to confirm your identity before we act on it.';
+
+  @override
+  String get privacyRequestKindLabel => 'What do you want to do?';
+
+  @override
+  String get privacyRequestKindAccess => 'Get a copy of my data';
+
+  @override
+  String get privacyRequestKindCorrection => 'Correct my data';
+
+  @override
+  String get privacyRequestKindErasure => 'Delete my data';
+
+  @override
+  String get privacyRequestKindNomination => 'Nominate someone for my data rights';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'Withdraw a consent';
+
+  @override
+  String get privacyRequestKindComplaint => 'Complaint (grievance)';
+
+  @override
+  String get privacyRequestKindOther => 'Something else';
+
+  @override
+  String get privacyRequestDetailsLabel => 'Details';
+
+  @override
+  String get privacyRequestDetailsHint =>
+      'Tell us what you need, for example which data is wrong and what it should say.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'Please write at least 10 characters.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'On behalf of (optional)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'Name of the person you act for, if not yourself';
+
+  @override
+  String get privacyRequestSubmit => 'Send request';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'Request $reference sent. Reply due by $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'Received';
+
+  @override
+  String get privacyRequestStatusInProgress => 'In progress';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'Waiting for you';
+
+  @override
+  String get privacyRequestStatusCompleted => 'Completed';
+
+  @override
+  String get privacyRequestStatusRejected => 'Rejected';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'Reply due by $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'Overdue';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'Sent on $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'Closed on $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'Your request';
+
+  @override
+  String get privacyRequestResolution => 'Our answer';
+
+  @override
+  String get privacyRequestNoAnswerYet => 'We have not answered yet. You will get a notification when we do.';
+
+  @override
+  String get privacyNomineeTitle => 'Nominee';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'Choose someone to use your data rights if you cannot';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'Under India\'s Digital Personal Data Protection Act you can nominate a person who may exercise your data rights if you die or become unable to act yourself. Give their email address or phone number.';
+
+  @override
+  String get privacyNomineeName => 'Full name';
+
+  @override
+  String get privacyNomineeRelationship => 'Relationship (for example spouse, son)';
+
+  @override
+  String get privacyNomineeEmail => 'Email';
+
+  @override
+  String get privacyNomineePhone => 'Phone';
+
+  @override
+  String get privacyNomineeContactRequired => 'Give an email address or a phone number.';
+
+  @override
+  String get privacyNomineeTooShort => 'Enter at least 2 characters.';
+
+  @override
+  String get privacyNomineeSave => 'Save nominee';
+
+  @override
+  String get privacyNomineeSaved => 'Nominee saved';
+
+  @override
+  String get privacyNomineeRemove => 'Remove nominee';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'Remove your nominee? They will no longer be able to act for you.';
+
+  @override
+  String get privacyNomineeRemoved => 'Nominee removed';
+
+  @override
+  String get privacyShareHospitalsTitle => 'Share my records with hospitals';
+
+  @override
+  String get privacyShareHospitalsOn => 'Hospitals you contact can open the reports you share with them';
+
+  @override
+  String get privacyShareHospitalsOff => 'Withdrawn: hospitals cannot open your shared reports';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'Stop sharing with hospitals?';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'Hospitals will no longer be able to open the reports and documents you shared with them, so quotes and consultations may be delayed until you share again. Records a hospital must keep by law are not affected.';
+
+  @override
+  String get privacyShareAgentTitle => 'Share my records with my agent';
+
+  @override
+  String get privacyShareAgentOn => 'Your agent or facilitator can open your documents';
+
+  @override
+  String get privacyShareAgentOff => 'Your agent or facilitator cannot open your documents';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'Stop sharing with your agent?';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'Your agent or facilitator will no longer be able to open your documents. You can share them again at any time.';
+
+  @override
+  String get privacyShareWithdraw => 'Stop sharing';
+
+  @override
+  String get privacyShareUpdated => 'Your sharing choice was saved';
+
+  @override
+  String get privacyContactTitle => 'Grievance Officer and DPO';
+
+  @override
+  String get privacyContactSubtitle => 'Who to contact about your personal data';
+
+  @override
+  String get privacyContactGrievance => 'Grievance Officer';
+
+  @override
+  String get privacyContactDpo => 'Data Protection Officer';
+
+  @override
+  String get privacyContactAddress => 'Postal address';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'We answer data-rights requests and grievances within $days days.';
+  }
+
+  @override
+  String get privacyContactBoard =>
+      'If you are not satisfied with our answer, you can complain to the Data Protection Board of India.';
+
+  @override
+  String get privacyContactBoardLink => 'Data Protection Board website';
+
+  @override
+  String get privacyContactNotPublished => 'Contact details not published yet';
 }

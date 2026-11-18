@@ -64,9 +64,6 @@ class HospitalShell extends StatelessWidget {
   static Widget _more(BuildContext _) => const HospitalMoreScreen();
 
   @override
-  Widget build(BuildContext context) => PortalShellScaffold(
-    key: ValueKey('hospital-shell-$initialTab'),
-    tabs: tabs,
-    initialIndex: initialTab,
-  );
+  Widget build(BuildContext context) =>
+      PortalShellScaffold(key: ValueKey('hospital-shell-$initialTab'), tabs: tabs, initialIndex: initialTab);
 }

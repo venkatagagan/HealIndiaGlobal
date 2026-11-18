@@ -12543,5 +12543,318 @@
   "hpAvailabilityPastDay": "Past day",
   "@hpAvailabilityPastDay": {
     "description": "Shown instead of editable fields for a day in the past"
+  },
+  "privacyRequestsTitle": "Data-rights requests",
+  "@privacyRequestsTitle": {
+    "description": "Profile > Privacy tile and screen title: the user's data-rights requests (DPDP / GDPR)"
+  },
+  "privacyRequestsSubtitle": "Ask for a copy, correction or deletion of your data, or raise a complaint",
+  "@privacyRequestsSubtitle": {
+    "description": "Subtitle of the data-rights requests tile"
+  },
+  "privacyRequestsEmpty": "You have not made any data-rights requests yet.",
+  "@privacyRequestsEmpty": {
+    "description": "Empty state of the data-rights requests list"
+  },
+  "privacyRequestNew": "New request",
+  "@privacyRequestNew": {
+    "description": "Button / screen title: file a new data-rights request"
+  },
+  "privacyRequestFormIntro": "We record your request and reply by the due date shown once it is sent. We may ask you to confirm your identity before we act on it.",
+  "@privacyRequestFormIntro": {
+    "description": "Intro of the data-rights request form (legal wording)"
+  },
+  "privacyRequestKindLabel": "What do you want to do?",
+  "@privacyRequestKindLabel": {
+    "description": "Label of the request type picker"
+  },
+  "privacyRequestKindAccess": "Get a copy of my data",
+  "@privacyRequestKindAccess": {
+    "description": "Data-rights request type access"
+  },
+  "privacyRequestKindCorrection": "Correct my data",
+  "@privacyRequestKindCorrection": {
+    "description": "Data-rights request type correction"
+  },
+  "privacyRequestKindErasure": "Delete my data",
+  "@privacyRequestKindErasure": {
+    "description": "Data-rights request type erasure"
+  },
+  "privacyRequestKindNomination": "Nominate someone for my data rights",
+  "@privacyRequestKindNomination": {
+    "description": "Data-rights request type nomination"
+  },
+  "privacyRequestKindWithdrawConsent": "Withdraw a consent",
+  "@privacyRequestKindWithdrawConsent": {
+    "description": "Data-rights request type withdraw_consent"
+  },
+  "privacyRequestKindComplaint": "Complaint (grievance)",
+  "@privacyRequestKindComplaint": {
+    "description": "Data-rights request type complaint (grievance)"
+  },
+  "privacyRequestKindOther": "Something else",
+  "@privacyRequestKindOther": {
+    "description": "Data-rights request type other"
+  },
+  "privacyRequestDetailsLabel": "Details",
+  "@privacyRequestDetailsLabel": {
+    "description": "Label of the request details field"
+  },
+  "privacyRequestDetailsHint": "Tell us what you need, for example which data is wrong and what it should say.",
+  "@privacyRequestDetailsHint": {
+    "description": "Hint of the request details field"
+  },
+  "privacyRequestDetailsTooShort": "Please write at least 10 characters.",
+  "@privacyRequestDetailsTooShort": {
+    "description": "Validation: request details need at least 10 characters"
+  },
+  "privacyRequestOnBehalfLabel": "On behalf of (optional)",
+  "@privacyRequestOnBehalfLabel": {
+    "description": "Optional field: the person the requester acts for"
+  },
+  "privacyRequestOnBehalfHint": "Name of the person you act for, if not yourself",
+  "@privacyRequestOnBehalfHint": {
+    "description": "Hint of the on-behalf-of field"
+  },
+  "privacyRequestSubmit": "Send request",
+  "@privacyRequestSubmit": {
+    "description": "Button: send the data-rights request"
+  },
+  "privacyRequestSent": "Request {reference} sent. Reply due by {date}.",
+  "@privacyRequestSent": {
+    "description": "Snackbar after a data-rights request was filed",
+    "placeholders": {
+      "reference": {
+        "type": "String",
+        "example": "DRR-2026-0001"
+      },
+      "date": {
+        "type": "String",
+        "example": "18 Dec 2026"
+      }
+    }
+  },
+  "privacyRequestStatusReceived": "Received",
+  "@privacyRequestStatusReceived": {
+    "description": "Data-rights request status received"
+  },
+  "privacyRequestStatusInProgress": "In progress",
+  "@privacyRequestStatusInProgress": {
+    "description": "Data-rights request status in_progress"
+  },
+  "privacyRequestStatusAwaitingRequester": "Waiting for you",
+  "@privacyRequestStatusAwaitingRequester": {
+    "description": "Data-rights request status awaiting_requester (we need something from the user)"
+  },
+  "privacyRequestStatusCompleted": "Completed",
+  "@privacyRequestStatusCompleted": {
+    "description": "Data-rights request status completed"
+  },
+  "privacyRequestStatusRejected": "Rejected",
+  "@privacyRequestStatusRejected": {
+    "description": "Data-rights request status rejected"
+  },
+  "privacyRequestDueBy": "Reply due by {date}",
+  "@privacyRequestDueBy": {
+    "description": "Line on a request: the date by which we must reply",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "18 Dec 2026"
+      }
+    }
+  },
+  "privacyRequestOverdue": "Overdue",
+  "@privacyRequestOverdue": {
+    "description": "Badge: our reply is past the due date"
+  },
+  "privacyRequestSentOn": "Sent on {date}",
+  "@privacyRequestSentOn": {
+    "description": "Line on a request: when it was sent",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "18 Nov 2026"
+      }
+    }
+  },
+  "privacyRequestClosedOn": "Closed on {date}",
+  "@privacyRequestClosedOn": {
+    "description": "Line on a request: when it was closed",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1 Dec 2026"
+      }
+    }
+  },
+  "privacyRequestYourRequest": "Your request",
+  "@privacyRequestYourRequest": {
+    "description": "Section title on the request detail: what the user wrote"
+  },
+  "privacyRequestResolution": "Our answer",
+  "@privacyRequestResolution": {
+    "description": "Section title on the request detail: our answer"
+  },
+  "privacyRequestNoAnswerYet": "We have not answered yet. You will get a notification when we do.",
+  "@privacyRequestNoAnswerYet": {
+    "description": "Request detail: no answer has been written yet"
+  },
+  "privacyNomineeTitle": "Nominee",
+  "@privacyNomineeTitle": {
+    "description": "Profile > Privacy tile and screen title: nominee who may exercise the user's data rights (DPDP s.14)"
+  },
+  "privacyNomineeSubtitleNone": "Choose someone to use your data rights if you cannot",
+  "@privacyNomineeSubtitleNone": {
+    "description": "Nominee tile subtitle when no nominee is set"
+  },
+  "privacyNomineeSubtitleSet": "{name} ({relationship})",
+  "@privacyNomineeSubtitleSet": {
+    "description": "Nominee tile subtitle: name and relationship of the nominee",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "relationship": {
+        "type": "String"
+      }
+    }
+  },
+  "privacyNomineeIntro": "Under India's Digital Personal Data Protection Act you can nominate a person who may exercise your data rights if you die or become unable to act yourself. Give their email address or phone number.",
+  "@privacyNomineeIntro": {
+    "description": "Nominee screen intro (legal: DPDP Act s.14)"
+  },
+  "privacyNomineeName": "Full name",
+  "@privacyNomineeName": {
+    "description": "Nominee form: full name"
+  },
+  "privacyNomineeRelationship": "Relationship (for example spouse, son)",
+  "@privacyNomineeRelationship": {
+    "description": "Nominee form: relationship to the user"
+  },
+  "privacyNomineeEmail": "Email",
+  "@privacyNomineeEmail": {
+    "description": "Nominee form: email"
+  },
+  "privacyNomineePhone": "Phone",
+  "@privacyNomineePhone": {
+    "description": "Nominee form: phone"
+  },
+  "privacyNomineeContactRequired": "Give an email address or a phone number.",
+  "@privacyNomineeContactRequired": {
+    "description": "Validation: nominee needs an email or phone"
+  },
+  "privacyNomineeTooShort": "Enter at least 2 characters.",
+  "@privacyNomineeTooShort": {
+    "description": "Validation: name / relationship need at least 2 characters"
+  },
+  "privacyNomineeSave": "Save nominee",
+  "@privacyNomineeSave": {
+    "description": "Button: save the nominee"
+  },
+  "privacyNomineeSaved": "Nominee saved",
+  "@privacyNomineeSaved": {
+    "description": "Snackbar: nominee saved"
+  },
+  "privacyNomineeRemove": "Remove nominee",
+  "@privacyNomineeRemove": {
+    "description": "Button: remove the nominee"
+  },
+  "privacyNomineeRemoveConfirm": "Remove your nominee? They will no longer be able to act for you.",
+  "@privacyNomineeRemoveConfirm": {
+    "description": "Confirm dialog body before removing the nominee"
+  },
+  "privacyNomineeRemoved": "Nominee removed",
+  "@privacyNomineeRemoved": {
+    "description": "Snackbar: nominee removed"
+  },
+  "privacyShareHospitalsTitle": "Share my records with hospitals",
+  "@privacyShareHospitalsTitle": {
+    "description": "Switch: share my records with hospitals (share_with_hospitals consent)"
+  },
+  "privacyShareHospitalsOn": "Hospitals you contact can open the reports you share with them",
+  "@privacyShareHospitalsOn": {
+    "description": "Subtitle when hospital sharing is on"
+  },
+  "privacyShareHospitalsOff": "Withdrawn: hospitals cannot open your shared reports",
+  "@privacyShareHospitalsOff": {
+    "description": "Subtitle when hospital sharing was withdrawn"
+  },
+  "privacyShareHospitalsWithdrawTitle": "Stop sharing with hospitals?",
+  "@privacyShareHospitalsWithdrawTitle": {
+    "description": "Confirm dialog title: withdraw hospital sharing"
+  },
+  "privacyShareHospitalsWithdrawBody": "Hospitals will no longer be able to open the reports and documents you shared with them, so quotes and consultations may be delayed until you share again. Records a hospital must keep by law are not affected.",
+  "@privacyShareHospitalsWithdrawBody": {
+    "description": "Confirm dialog body: consequences of withdrawing hospital sharing (legal wording)"
+  },
+  "privacyShareAgentTitle": "Share my records with my agent",
+  "@privacyShareAgentTitle": {
+    "description": "Switch: share my records with my agent (share_with_agent consent)"
+  },
+  "privacyShareAgentOn": "Your agent or facilitator can open your documents",
+  "@privacyShareAgentOn": {
+    "description": "Subtitle when agent sharing is on"
+  },
+  "privacyShareAgentOff": "Your agent or facilitator cannot open your documents",
+  "@privacyShareAgentOff": {
+    "description": "Subtitle when agent sharing is off"
+  },
+  "privacyShareAgentWithdrawTitle": "Stop sharing with your agent?",
+  "@privacyShareAgentWithdrawTitle": {
+    "description": "Confirm dialog title: withdraw agent sharing"
+  },
+  "privacyShareAgentWithdrawBody": "Your agent or facilitator will no longer be able to open your documents. You can share them again at any time.",
+  "@privacyShareAgentWithdrawBody": {
+    "description": "Confirm dialog body: consequences of withdrawing agent sharing"
+  },
+  "privacyShareWithdraw": "Stop sharing",
+  "@privacyShareWithdraw": {
+    "description": "Dialog button: confirm withdrawing a sharing consent"
+  },
+  "privacyShareUpdated": "Your sharing choice was saved",
+  "@privacyShareUpdated": {
+    "description": "Snackbar: a sharing consent was recorded"
+  },
+  "privacyContactTitle": "Grievance Officer and DPO",
+  "@privacyContactTitle": {
+    "description": "Profile > Privacy tile and screen title: Grievance Officer and Data Protection Officer contacts"
+  },
+  "privacyContactSubtitle": "Who to contact about your personal data",
+  "@privacyContactSubtitle": {
+    "description": "Subtitle of the privacy contact tile"
+  },
+  "privacyContactGrievance": "Grievance Officer",
+  "@privacyContactGrievance": {
+    "description": "Card title: Grievance Officer (DPDP)"
+  },
+  "privacyContactDpo": "Data Protection Officer",
+  "@privacyContactDpo": {
+    "description": "Card title: Data Protection Officer"
+  },
+  "privacyContactAddress": "Postal address",
+  "@privacyContactAddress": {
+    "description": "Card title: postal address for privacy requests"
+  },
+  "privacyContactResponse": "We answer data-rights requests and grievances within {days} days.",
+  "@privacyContactResponse": {
+    "description": "Line: how long we take to answer data-rights requests (legal promise)",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "privacyContactBoard": "If you are not satisfied with our answer, you can complain to the Data Protection Board of India.",
+  "@privacyContactBoard": {
+    "description": "Line: escalation to the Data Protection Board of India (legal)"
+  },
+  "privacyContactBoardLink": "Data Protection Board website",
+  "@privacyContactBoardLink": {
+    "description": "Link: Data Protection Board website"
+  },
+  "privacyContactNotPublished": "Contact details not published yet",
+  "@privacyContactNotPublished": {
+    "description": "Shown when a contact person has no details published yet"
   }
 }

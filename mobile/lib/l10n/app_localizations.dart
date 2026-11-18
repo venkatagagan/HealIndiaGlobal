@@ -15568,6 +15568,414 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Past day'**
   String get hpAvailabilityPastDay;
+
+  /// Profile > Privacy tile and screen title: the user's data-rights requests (DPDP / GDPR)
+  ///
+  /// In en, this message translates to:
+  /// **'Data-rights requests'**
+  String get privacyRequestsTitle;
+
+  /// Subtitle of the data-rights requests tile
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a copy, correction or deletion of your data, or raise a complaint'**
+  String get privacyRequestsSubtitle;
+
+  /// Empty state of the data-rights requests list
+  ///
+  /// In en, this message translates to:
+  /// **'You have not made any data-rights requests yet.'**
+  String get privacyRequestsEmpty;
+
+  /// Button / screen title: file a new data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get privacyRequestNew;
+
+  /// Intro of the data-rights request form (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'We record your request and reply by the due date shown once it is sent. We may ask you to confirm your identity before we act on it.'**
+  String get privacyRequestFormIntro;
+
+  /// Label of the request type picker
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do?'**
+  String get privacyRequestKindLabel;
+
+  /// Data-rights request type access
+  ///
+  /// In en, this message translates to:
+  /// **'Get a copy of my data'**
+  String get privacyRequestKindAccess;
+
+  /// Data-rights request type correction
+  ///
+  /// In en, this message translates to:
+  /// **'Correct my data'**
+  String get privacyRequestKindCorrection;
+
+  /// Data-rights request type erasure
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my data'**
+  String get privacyRequestKindErasure;
+
+  /// Data-rights request type nomination
+  ///
+  /// In en, this message translates to:
+  /// **'Nominate someone for my data rights'**
+  String get privacyRequestKindNomination;
+
+  /// Data-rights request type withdraw_consent
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw a consent'**
+  String get privacyRequestKindWithdrawConsent;
+
+  /// Data-rights request type complaint (grievance)
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint (grievance)'**
+  String get privacyRequestKindComplaint;
+
+  /// Data-rights request type other
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get privacyRequestKindOther;
+
+  /// Label of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get privacyRequestDetailsLabel;
+
+  /// Hint of the request details field
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what you need, for example which data is wrong and what it should say.'**
+  String get privacyRequestDetailsHint;
+
+  /// Validation: request details need at least 10 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Please write at least 10 characters.'**
+  String get privacyRequestDetailsTooShort;
+
+  /// Optional field: the person the requester acts for
+  ///
+  /// In en, this message translates to:
+  /// **'On behalf of (optional)'**
+  String get privacyRequestOnBehalfLabel;
+
+  /// Hint of the on-behalf-of field
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the person you act for, if not yourself'**
+  String get privacyRequestOnBehalfHint;
+
+  /// Button: send the data-rights request
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get privacyRequestSubmit;
+
+  /// Snackbar after a data-rights request was filed
+  ///
+  /// In en, this message translates to:
+  /// **'Request {reference} sent. Reply due by {date}.'**
+  String privacyRequestSent(String reference, String date);
+
+  /// Data-rights request status received
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get privacyRequestStatusReceived;
+
+  /// Data-rights request status in_progress
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get privacyRequestStatusInProgress;
+
+  /// Data-rights request status awaiting_requester (we need something from the user)
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get privacyRequestStatusAwaitingRequester;
+
+  /// Data-rights request status completed
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get privacyRequestStatusCompleted;
+
+  /// Data-rights request status rejected
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get privacyRequestStatusRejected;
+
+  /// Line on a request: the date by which we must reply
+  ///
+  /// In en, this message translates to:
+  /// **'Reply due by {date}'**
+  String privacyRequestDueBy(String date);
+
+  /// Badge: our reply is past the due date
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get privacyRequestOverdue;
+
+  /// Line on a request: when it was sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String privacyRequestSentOn(String date);
+
+  /// Line on a request: when it was closed
+  ///
+  /// In en, this message translates to:
+  /// **'Closed on {date}'**
+  String privacyRequestClosedOn(String date);
+
+  /// Section title on the request detail: what the user wrote
+  ///
+  /// In en, this message translates to:
+  /// **'Your request'**
+  String get privacyRequestYourRequest;
+
+  /// Section title on the request detail: our answer
+  ///
+  /// In en, this message translates to:
+  /// **'Our answer'**
+  String get privacyRequestResolution;
+
+  /// Request detail: no answer has been written yet
+  ///
+  /// In en, this message translates to:
+  /// **'We have not answered yet. You will get a notification when we do.'**
+  String get privacyRequestNoAnswerYet;
+
+  /// Profile > Privacy tile and screen title: nominee who may exercise the user's data rights (DPDP s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee'**
+  String get privacyNomineeTitle;
+
+  /// Nominee tile subtitle when no nominee is set
+  ///
+  /// In en, this message translates to:
+  /// **'Choose someone to use your data rights if you cannot'**
+  String get privacyNomineeSubtitleNone;
+
+  /// Nominee tile subtitle: name and relationship of the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({relationship})'**
+  String privacyNomineeSubtitleSet(String name, String relationship);
+
+  /// Nominee screen intro (legal: DPDP Act s.14)
+  ///
+  /// In en, this message translates to:
+  /// **'Under India\'s Digital Personal Data Protection Act you can nominate a person who may exercise your data rights if you die or become unable to act yourself. Give their email address or phone number.'**
+  String get privacyNomineeIntro;
+
+  /// Nominee form: full name
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get privacyNomineeName;
+
+  /// Nominee form: relationship to the user
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship (for example spouse, son)'**
+  String get privacyNomineeRelationship;
+
+  /// Nominee form: email
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get privacyNomineeEmail;
+
+  /// Nominee form: phone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get privacyNomineePhone;
+
+  /// Validation: nominee needs an email or phone
+  ///
+  /// In en, this message translates to:
+  /// **'Give an email address or a phone number.'**
+  String get privacyNomineeContactRequired;
+
+  /// Validation: name / relationship need at least 2 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 2 characters.'**
+  String get privacyNomineeTooShort;
+
+  /// Button: save the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Save nominee'**
+  String get privacyNomineeSave;
+
+  /// Snackbar: nominee saved
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee saved'**
+  String get privacyNomineeSaved;
+
+  /// Button: remove the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove nominee'**
+  String get privacyNomineeRemove;
+
+  /// Confirm dialog body before removing the nominee
+  ///
+  /// In en, this message translates to:
+  /// **'Remove your nominee? They will no longer be able to act for you.'**
+  String get privacyNomineeRemoveConfirm;
+
+  /// Snackbar: nominee removed
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee removed'**
+  String get privacyNomineeRemoved;
+
+  /// Switch: share my records with hospitals (share_with_hospitals consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with hospitals'**
+  String get privacyShareHospitalsTitle;
+
+  /// Subtitle when hospital sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals you contact can open the reports you share with them'**
+  String get privacyShareHospitalsOn;
+
+  /// Subtitle when hospital sharing was withdrawn
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn: hospitals cannot open your shared reports'**
+  String get privacyShareHospitalsOff;
+
+  /// Confirm dialog title: withdraw hospital sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with hospitals?'**
+  String get privacyShareHospitalsWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing hospital sharing (legal wording)
+  ///
+  /// In en, this message translates to:
+  /// **'Hospitals will no longer be able to open the reports and documents you shared with them, so quotes and consultations may be delayed until you share again. Records a hospital must keep by law are not affected.'**
+  String get privacyShareHospitalsWithdrawBody;
+
+  /// Switch: share my records with my agent (share_with_agent consent)
+  ///
+  /// In en, this message translates to:
+  /// **'Share my records with my agent'**
+  String get privacyShareAgentTitle;
+
+  /// Subtitle when agent sharing is on
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator can open your documents'**
+  String get privacyShareAgentOn;
+
+  /// Subtitle when agent sharing is off
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator cannot open your documents'**
+  String get privacyShareAgentOff;
+
+  /// Confirm dialog title: withdraw agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with your agent?'**
+  String get privacyShareAgentWithdrawTitle;
+
+  /// Confirm dialog body: consequences of withdrawing agent sharing
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent or facilitator will no longer be able to open your documents. You can share them again at any time.'**
+  String get privacyShareAgentWithdrawBody;
+
+  /// Dialog button: confirm withdrawing a sharing consent
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get privacyShareWithdraw;
+
+  /// Snackbar: a sharing consent was recorded
+  ///
+  /// In en, this message translates to:
+  /// **'Your sharing choice was saved'**
+  String get privacyShareUpdated;
+
+  /// Profile > Privacy tile and screen title: Grievance Officer and Data Protection Officer contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer and DPO'**
+  String get privacyContactTitle;
+
+  /// Subtitle of the privacy contact tile
+  ///
+  /// In en, this message translates to:
+  /// **'Who to contact about your personal data'**
+  String get privacyContactSubtitle;
+
+  /// Card title: Grievance Officer (DPDP)
+  ///
+  /// In en, this message translates to:
+  /// **'Grievance Officer'**
+  String get privacyContactGrievance;
+
+  /// Card title: Data Protection Officer
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Officer'**
+  String get privacyContactDpo;
+
+  /// Card title: postal address for privacy requests
+  ///
+  /// In en, this message translates to:
+  /// **'Postal address'**
+  String get privacyContactAddress;
+
+  /// Line: how long we take to answer data-rights requests (legal promise)
+  ///
+  /// In en, this message translates to:
+  /// **'We answer data-rights requests and grievances within {days} days.'**
+  String privacyContactResponse(int days);
+
+  /// Line: escalation to the Data Protection Board of India (legal)
+  ///
+  /// In en, this message translates to:
+  /// **'If you are not satisfied with our answer, you can complain to the Data Protection Board of India.'**
+  String get privacyContactBoard;
+
+  /// Link: Data Protection Board website
+  ///
+  /// In en, this message translates to:
+  /// **'Data Protection Board website'**
+  String get privacyContactBoardLink;
+
+  /// Shown when a contact person has no details published yet
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details not published yet'**
+  String get privacyContactNotPublished;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -9071,4 +9071,224 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => 'يوم مضى';
+
+  @override
+  String get privacyRequestsTitle => 'طلبات حقوق البيانات';
+
+  @override
+  String get privacyRequestsSubtitle => 'اطلب نسخة من بياناتك أو تصحيحها أو حذفها، أو قدّم شكوى';
+
+  @override
+  String get privacyRequestsEmpty => 'لم تقدّم أي طلبات تتعلق بحقوق البيانات بعد.';
+
+  @override
+  String get privacyRequestNew => 'طلب جديد';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'نسجّل طلبك ونردّ عليه قبل الموعد المحدد الذي يظهر بعد إرساله. قد نطلب منك تأكيد هويتك قبل تنفيذه.';
+
+  @override
+  String get privacyRequestKindLabel => 'ماذا تريد أن تفعل؟';
+
+  @override
+  String get privacyRequestKindAccess => 'الحصول على نسخة من بياناتي';
+
+  @override
+  String get privacyRequestKindCorrection => 'تصحيح بياناتي';
+
+  @override
+  String get privacyRequestKindErasure => 'حذف بياناتي';
+
+  @override
+  String get privacyRequestKindNomination => 'تعيين شخص لممارسة حقوقي في البيانات';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'سحب موافقة';
+
+  @override
+  String get privacyRequestKindComplaint => 'شكوى (تظلّم)';
+
+  @override
+  String get privacyRequestKindOther => 'أمر آخر';
+
+  @override
+  String get privacyRequestDetailsLabel => 'التفاصيل';
+
+  @override
+  String get privacyRequestDetailsHint => 'أخبرنا بما تحتاجه، مثلًا أي البيانات غير صحيحة وما الذي يجب أن تكون عليه.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'يُرجى كتابة 10 أحرف على الأقل.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'نيابةً عن (اختياري)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'اسم الشخص الذي تنوب عنه، إن لم يكن أنت';
+
+  @override
+  String get privacyRequestSubmit => 'إرسال الطلب';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'تم إرسال الطلب $reference. موعد الرد: $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'تم الاستلام';
+
+  @override
+  String get privacyRequestStatusInProgress => 'قيد المعالجة';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'بانتظار ردّك';
+
+  @override
+  String get privacyRequestStatusCompleted => 'مكتمل';
+
+  @override
+  String get privacyRequestStatusRejected => 'مرفوض';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'موعد الرد: $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'متأخر';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'أُرسل في $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'أُغلق في $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'طلبك';
+
+  @override
+  String get privacyRequestResolution => 'ردّنا';
+
+  @override
+  String get privacyRequestNoAnswerYet => 'لم نردّ بعد. ستتلقى إشعارًا عند الرد.';
+
+  @override
+  String get privacyNomineeTitle => 'الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'اختر شخصًا يمارس حقوقك في البيانات إذا لم تتمكن من ذلك';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'بموجب قانون حماية البيانات الشخصية الرقمية في الهند، يمكنك تعيين شخص يمارس حقوقك في البيانات في حال وفاتك أو عجزك عن التصرف بنفسك. أدخل بريده الإلكتروني أو رقم هاتفه.';
+
+  @override
+  String get privacyNomineeName => 'الاسم الكامل';
+
+  @override
+  String get privacyNomineeRelationship => 'صلة القرابة (مثل الزوج/الزوجة أو الابن)';
+
+  @override
+  String get privacyNomineeEmail => 'البريد الإلكتروني';
+
+  @override
+  String get privacyNomineePhone => 'الهاتف';
+
+  @override
+  String get privacyNomineeContactRequired => 'أدخل بريدًا إلكترونيًا أو رقم هاتف.';
+
+  @override
+  String get privacyNomineeTooShort => 'أدخل حرفين على الأقل.';
+
+  @override
+  String get privacyNomineeSave => 'حفظ الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeSaved => 'تم حفظ الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeRemove => 'إزالة الشخص المعيَّن';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'هل تريد إزالة الشخص المعيَّن؟ لن يتمكن بعد ذلك من التصرف نيابةً عنك.';
+
+  @override
+  String get privacyNomineeRemoved => 'تمت إزالة الشخص المعيَّن';
+
+  @override
+  String get privacyShareHospitalsTitle => 'مشاركة سجلاتي مع المستشفيات';
+
+  @override
+  String get privacyShareHospitalsOn => 'يمكن للمستشفيات التي تتواصل معها فتح التقارير التي تشاركها معها';
+
+  @override
+  String get privacyShareHospitalsOff => 'تم السحب: لا يمكن للمستشفيات فتح تقاريرك المشتركة';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'إيقاف المشاركة مع المستشفيات؟';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'لن تتمكن المستشفيات بعد الآن من فتح التقارير والمستندات التي شاركتها معها، لذا قد تتأخر عروض الأسعار والاستشارات حتى تشاركها مرة أخرى. لا يتأثر ما يلزم المستشفى قانونًا بالاحتفاظ به من سجلات.';
+
+  @override
+  String get privacyShareAgentTitle => 'مشاركة سجلاتي مع وكيلي';
+
+  @override
+  String get privacyShareAgentOn => 'يمكن لوكيلك أو الميسّر فتح مستنداتك';
+
+  @override
+  String get privacyShareAgentOff => 'لا يمكن لوكيلك أو الميسّر فتح مستنداتك';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'إيقاف المشاركة مع وكيلك؟';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'لن يتمكن وكيلك أو الميسّر بعد الآن من فتح مستنداتك. يمكنك مشاركتها مرة أخرى في أي وقت.';
+
+  @override
+  String get privacyShareWithdraw => 'إيقاف المشاركة';
+
+  @override
+  String get privacyShareUpdated => 'تم حفظ اختيارك بشأن المشاركة';
+
+  @override
+  String get privacyContactTitle => 'مسؤول التظلّمات ومسؤول حماية البيانات';
+
+  @override
+  String get privacyContactSubtitle => 'بمن تتواصل بشأن بياناتك الشخصية';
+
+  @override
+  String get privacyContactGrievance => 'مسؤول التظلّمات';
+
+  @override
+  String get privacyContactDpo => 'مسؤول حماية البيانات';
+
+  @override
+  String get privacyContactAddress => 'العنوان البريدي';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'نردّ على طلبات حقوق البيانات والتظلّمات خلال $days يومًا.';
+  }
+
+  @override
+  String get privacyContactBoard => 'إذا لم تكن راضيًا عن ردّنا، يمكنك تقديم شكوى إلى مجلس حماية البيانات في الهند.';
+
+  @override
+  String get privacyContactBoardLink => 'موقع مجلس حماية البيانات';
+
+  @override
+  String get privacyContactNotPublished => 'لم تُنشر بيانات الاتصال بعد';
 }

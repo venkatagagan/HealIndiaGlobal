@@ -79,7 +79,12 @@ void main() {
     final adapter = RoutedAdapter({'GET /x': (_) => (403, _suspended)});
     await pumpPortal(
       tester,
-      routes: [GoRoute(path: '/', builder: (_, _) => const Scaffold(body: Text('patient home')))],
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => const Scaffold(body: Text('patient home')),
+        ),
+      ],
       initialLocation: '/',
       user: const User(id: 'u-p', role: UserRole.patient, status: UserStatus.active, fullName: 'Amina'),
       adapter: adapter,

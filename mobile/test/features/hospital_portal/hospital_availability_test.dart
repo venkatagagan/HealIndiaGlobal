@@ -77,7 +77,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('availability-save')));
     await tester.pumpAndSettle();
-    final filled = (adapter.last('PUT', '/hospital-portal/doctors/d-1/availability')!.body! as List).cast<Map<String, dynamic>>();
+    final filled = (adapter.last('PUT', '/hospital-portal/doctors/d-1/availability')!.body! as List)
+        .cast<Map<String, dynamic>>();
     final last = DateTime(month.year, month.month + 1, 0).day;
     final weekdays = [
       for (var d = 1; d <= last; d++) DateTime(month.year, month.month, d),

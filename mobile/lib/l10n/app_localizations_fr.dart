@@ -8896,4 +8896,229 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => 'Jour passé';
+
+  @override
+  String get privacyRequestsTitle => 'Demandes relatives à vos données';
+
+  @override
+  String get privacyRequestsSubtitle =>
+      'Demandez une copie, une rectification ou la suppression de vos données, ou déposez une réclamation';
+
+  @override
+  String get privacyRequestsEmpty => 'Vous n’avez encore fait aucune demande relative à vos données.';
+
+  @override
+  String get privacyRequestNew => 'Nouvelle demande';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'Nous enregistrons votre demande et y répondons avant la date limite indiquée après l’envoi. Nous pouvons vous demander de confirmer votre identité avant d’y donner suite.';
+
+  @override
+  String get privacyRequestKindLabel => 'Que souhaitez-vous faire ?';
+
+  @override
+  String get privacyRequestKindAccess => 'Obtenir une copie de mes données';
+
+  @override
+  String get privacyRequestKindCorrection => 'Rectifier mes données';
+
+  @override
+  String get privacyRequestKindErasure => 'Supprimer mes données';
+
+  @override
+  String get privacyRequestKindNomination => 'Désigner une personne pour exercer mes droits';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'Retirer un consentement';
+
+  @override
+  String get privacyRequestKindComplaint => 'Réclamation';
+
+  @override
+  String get privacyRequestKindOther => 'Autre chose';
+
+  @override
+  String get privacyRequestDetailsLabel => 'Détails';
+
+  @override
+  String get privacyRequestDetailsHint =>
+      'Expliquez votre besoin, par exemple quelles données sont fausses et ce qu’elles devraient indiquer.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'Écrivez au moins 10 caractères.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'Au nom de (facultatif)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'Nom de la personne que vous représentez, si ce n’est pas vous';
+
+  @override
+  String get privacyRequestSubmit => 'Envoyer la demande';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'Demande $reference envoyée. Réponse attendue au plus tard le $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'Reçue';
+
+  @override
+  String get privacyRequestStatusInProgress => 'En cours';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'En attente de votre réponse';
+
+  @override
+  String get privacyRequestStatusCompleted => 'Traitée';
+
+  @override
+  String get privacyRequestStatusRejected => 'Refusée';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'Réponse attendue au plus tard le $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'En retard';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'Envoyée le $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'Clôturée le $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'Votre demande';
+
+  @override
+  String get privacyRequestResolution => 'Notre réponse';
+
+  @override
+  String get privacyRequestNoAnswerYet =>
+      'Nous n’avons pas encore répondu. Vous recevrez une notification dès que ce sera fait.';
+
+  @override
+  String get privacyNomineeTitle => 'Personne désignée';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'Choisissez une personne qui exercera vos droits si vous ne le pouvez plus';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'En vertu de la loi indienne sur la protection des données personnelles numériques (DPDP), vous pouvez désigner une personne qui exercera vos droits sur vos données en cas de décès ou d’incapacité. Indiquez son adresse e-mail ou son numéro de téléphone.';
+
+  @override
+  String get privacyNomineeName => 'Nom complet';
+
+  @override
+  String get privacyNomineeRelationship => 'Lien (par exemple conjoint, fils)';
+
+  @override
+  String get privacyNomineeEmail => 'E-mail';
+
+  @override
+  String get privacyNomineePhone => 'Téléphone';
+
+  @override
+  String get privacyNomineeContactRequired => 'Indiquez une adresse e-mail ou un numéro de téléphone.';
+
+  @override
+  String get privacyNomineeTooShort => 'Saisissez au moins 2 caractères.';
+
+  @override
+  String get privacyNomineeSave => 'Enregistrer la personne désignée';
+
+  @override
+  String get privacyNomineeSaved => 'Personne désignée enregistrée';
+
+  @override
+  String get privacyNomineeRemove => 'Retirer la personne désignée';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'Retirer la personne désignée ? Elle ne pourra plus agir en votre nom.';
+
+  @override
+  String get privacyNomineeRemoved => 'Personne désignée retirée';
+
+  @override
+  String get privacyShareHospitalsTitle => 'Partager mes dossiers avec les hôpitaux';
+
+  @override
+  String get privacyShareHospitalsOn =>
+      'Les hôpitaux que vous contactez peuvent ouvrir les comptes rendus que vous leur transmettez';
+
+  @override
+  String get privacyShareHospitalsOff => 'Retiré : les hôpitaux ne peuvent pas ouvrir vos comptes rendus partagés';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'Arrêter le partage avec les hôpitaux ?';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'Les hôpitaux ne pourront plus ouvrir les comptes rendus et documents que vous leur avez transmis ; les devis et consultations pourront donc être retardés jusqu’à un nouveau partage. Les dossiers qu’un hôpital doit conserver en vertu de la loi ne sont pas concernés.';
+
+  @override
+  String get privacyShareAgentTitle => 'Partager mes dossiers avec mon agent';
+
+  @override
+  String get privacyShareAgentOn => 'Votre agent ou facilitateur peut ouvrir vos documents';
+
+  @override
+  String get privacyShareAgentOff => 'Votre agent ou facilitateur ne peut pas ouvrir vos documents';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'Arrêter le partage avec votre agent ?';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'Votre agent ou facilitateur ne pourra plus ouvrir vos documents. Vous pouvez les partager à nouveau à tout moment.';
+
+  @override
+  String get privacyShareWithdraw => 'Arrêter le partage';
+
+  @override
+  String get privacyShareUpdated => 'Votre choix de partage a été enregistré';
+
+  @override
+  String get privacyContactTitle => 'Responsable des réclamations et DPO';
+
+  @override
+  String get privacyContactSubtitle => 'Qui contacter au sujet de vos données personnelles';
+
+  @override
+  String get privacyContactGrievance => 'Responsable des réclamations';
+
+  @override
+  String get privacyContactDpo => 'Délégué à la protection des données';
+
+  @override
+  String get privacyContactAddress => 'Adresse postale';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'Nous répondons aux demandes et réclamations sous $days jours.';
+  }
+
+  @override
+  String get privacyContactBoard =>
+      'Si notre réponse ne vous satisfait pas, vous pouvez saisir le Data Protection Board of India.';
+
+  @override
+  String get privacyContactBoardLink => 'Site du Data Protection Board';
+
+  @override
+  String get privacyContactNotPublished => 'Coordonnées pas encore publiées';
 }

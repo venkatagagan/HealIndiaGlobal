@@ -8784,4 +8784,224 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => 'অতীত দিন';
+
+  @override
+  String get privacyRequestsTitle => 'ডেটা-অধিকার অনুরোধ';
+
+  @override
+  String get privacyRequestsSubtitle => 'আপনার ডেটার একটি কপি, সংশোধন বা মুছে ফেলার অনুরোধ করুন, অথবা অভিযোগ জানান';
+
+  @override
+  String get privacyRequestsEmpty => 'আপনি এখনও কোনো ডেটা-অধিকার অনুরোধ করেননি।';
+
+  @override
+  String get privacyRequestNew => 'নতুন অনুরোধ';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'আমরা আপনার অনুরোধটি নথিভুক্ত করি এবং পাঠানোর পরে দেখানো নির্ধারিত তারিখের মধ্যে উত্তর দিই। ব্যবস্থা নেওয়ার আগে আমরা আপনার পরিচয় নিশ্চিত করতে বলতে পারি।';
+
+  @override
+  String get privacyRequestKindLabel => 'আপনি কী করতে চান?';
+
+  @override
+  String get privacyRequestKindAccess => 'আমার ডেটার একটি কপি পেতে';
+
+  @override
+  String get privacyRequestKindCorrection => 'আমার ডেটা সংশোধন করতে';
+
+  @override
+  String get privacyRequestKindErasure => 'আমার ডেটা মুছে ফেলতে';
+
+  @override
+  String get privacyRequestKindNomination => 'আমার ডেটা-অধিকারের জন্য কাউকে মনোনীত করতে';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'একটি সম্মতি প্রত্যাহার করতে';
+
+  @override
+  String get privacyRequestKindComplaint => 'অভিযোগ (গ্রিভ্যান্স)';
+
+  @override
+  String get privacyRequestKindOther => 'অন্য কিছু';
+
+  @override
+  String get privacyRequestDetailsLabel => 'বিস্তারিত';
+
+  @override
+  String get privacyRequestDetailsHint => 'আপনার কী প্রয়োজন তা লিখুন, যেমন কোন ডেটা ভুল এবং সেখানে কী থাকা উচিত।';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'অনুগ্রহ করে কমপক্ষে ১০টি অক্ষর লিখুন।';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'কার পক্ষে (ঐচ্ছিক)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'আপনি নিজে না হলে যাঁর পক্ষে কাজ করছেন তাঁর নাম';
+
+  @override
+  String get privacyRequestSubmit => 'অনুরোধ পাঠান';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'অনুরোধ $reference পাঠানো হয়েছে। উত্তরের শেষ তারিখ: $date।';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'গৃহীত';
+
+  @override
+  String get privacyRequestStatusInProgress => 'চলছে';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'আপনার উত্তরের অপেক্ষায়';
+
+  @override
+  String get privacyRequestStatusCompleted => 'সম্পন্ন';
+
+  @override
+  String get privacyRequestStatusRejected => 'প্রত্যাখ্যাত';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'উত্তরের শেষ তারিখ: $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'সময়সীমা পেরিয়েছে';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'পাঠানো হয়েছে: $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'বন্ধ হয়েছে: $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'আপনার অনুরোধ';
+
+  @override
+  String get privacyRequestResolution => 'আমাদের উত্তর';
+
+  @override
+  String get privacyRequestNoAnswerYet => 'আমরা এখনও উত্তর দিইনি। উত্তর দিলে আপনি একটি বিজ্ঞপ্তি পাবেন।';
+
+  @override
+  String get privacyNomineeTitle => 'মনোনীত ব্যক্তি';
+
+  @override
+  String get privacyNomineeSubtitleNone => 'আপনি না পারলে আপনার ডেটা-অধিকার ব্যবহারের জন্য কাউকে বেছে নিন';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'ভারতের ডিজিটাল ব্যক্তিগত ডেটা সুরক্ষা আইন অনুযায়ী, আপনার মৃত্যু হলে বা আপনি নিজে কাজ করতে অক্ষম হলে আপনার ডেটা-অধিকার ব্যবহারের জন্য একজনকে মনোনীত করতে পারেন। তাঁর ইমেল ঠিকানা বা ফোন নম্বর দিন।';
+
+  @override
+  String get privacyNomineeName => 'পূর্ণ নাম';
+
+  @override
+  String get privacyNomineeRelationship => 'সম্পর্ক (যেমন স্বামী/স্ত্রী, ছেলে)';
+
+  @override
+  String get privacyNomineeEmail => 'ইমেল';
+
+  @override
+  String get privacyNomineePhone => 'ফোন';
+
+  @override
+  String get privacyNomineeContactRequired => 'একটি ইমেল ঠিকানা বা ফোন নম্বর দিন।';
+
+  @override
+  String get privacyNomineeTooShort => 'কমপক্ষে ২টি অক্ষর লিখুন।';
+
+  @override
+  String get privacyNomineeSave => 'মনোনীত ব্যক্তি সংরক্ষণ করুন';
+
+  @override
+  String get privacyNomineeSaved => 'মনোনীত ব্যক্তি সংরক্ষিত হয়েছে';
+
+  @override
+  String get privacyNomineeRemove => 'মনোনীত ব্যক্তি সরান';
+
+  @override
+  String get privacyNomineeRemoveConfirm => 'আপনার মনোনীত ব্যক্তিকে সরাবেন? তিনি আর আপনার পক্ষে কাজ করতে পারবেন না।';
+
+  @override
+  String get privacyNomineeRemoved => 'মনোনীত ব্যক্তি সরানো হয়েছে';
+
+  @override
+  String get privacyShareHospitalsTitle => 'হাসপাতালের সঙ্গে আমার রেকর্ড শেয়ার করুন';
+
+  @override
+  String get privacyShareHospitalsOn => 'আপনি যে হাসপাতালগুলিতে যোগাযোগ করেন তারা আপনার শেয়ার করা রিপোর্ট খুলতে পারে';
+
+  @override
+  String get privacyShareHospitalsOff => 'প্রত্যাহার করা হয়েছে: হাসপাতালগুলি আপনার শেয়ার করা রিপোর্ট খুলতে পারে না';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'হাসপাতালের সঙ্গে শেয়ার করা বন্ধ করবেন?';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'হাসপাতালগুলি আর আপনার শেয়ার করা রিপোর্ট ও নথি খুলতে পারবে না, তাই আবার শেয়ার না করা পর্যন্ত কোটেশন ও পরামর্শে দেরি হতে পারে। আইন অনুযায়ী হাসপাতালকে যে রেকর্ড রাখতে হয় তাতে এর প্রভাব পড়ে না।';
+
+  @override
+  String get privacyShareAgentTitle => 'আমার এজেন্টের সঙ্গে আমার রেকর্ড শেয়ার করুন';
+
+  @override
+  String get privacyShareAgentOn => 'আপনার এজেন্ট বা ফ্যাসিলিটেটর আপনার নথি খুলতে পারেন';
+
+  @override
+  String get privacyShareAgentOff => 'আপনার এজেন্ট বা ফ্যাসিলিটেটর আপনার নথি খুলতে পারেন না';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'এজেন্টের সঙ্গে শেয়ার করা বন্ধ করবেন?';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'আপনার এজেন্ট বা ফ্যাসিলিটেটর আর আপনার নথি খুলতে পারবেন না। আপনি যেকোনো সময় আবার শেয়ার করতে পারেন।';
+
+  @override
+  String get privacyShareWithdraw => 'শেয়ার বন্ধ করুন';
+
+  @override
+  String get privacyShareUpdated => 'আপনার শেয়ার করার পছন্দ সংরক্ষিত হয়েছে';
+
+  @override
+  String get privacyContactTitle => 'গ্রিভ্যান্স অফিসার ও ডিপিও';
+
+  @override
+  String get privacyContactSubtitle => 'আপনার ব্যক্তিগত ডেটা নিয়ে কার সঙ্গে যোগাযোগ করবেন';
+
+  @override
+  String get privacyContactGrievance => 'গ্রিভ্যান্স অফিসার';
+
+  @override
+  String get privacyContactDpo => 'ডেটা সুরক্ষা কর্মকর্তা';
+
+  @override
+  String get privacyContactAddress => 'ডাক ঠিকানা';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'আমরা ডেটা-অধিকার অনুরোধ ও অভিযোগের উত্তর $days দিনের মধ্যে দিই।';
+  }
+
+  @override
+  String get privacyContactBoard => 'আমাদের উত্তরে সন্তুষ্ট না হলে আপনি ভারতের ডেটা সুরক্ষা বোর্ডে অভিযোগ করতে পারেন।';
+
+  @override
+  String get privacyContactBoardLink => 'ডেটা সুরক্ষা বোর্ডের ওয়েবসাইট';
+
+  @override
+  String get privacyContactNotPublished => 'যোগাযোগের তথ্য এখনও প্রকাশিত হয়নি';
 }

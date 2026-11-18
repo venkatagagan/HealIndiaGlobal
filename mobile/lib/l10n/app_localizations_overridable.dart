@@ -2274,6 +2274,68 @@ class OverridableLocalizations extends AppLocalizations {
     'hpAvailabilityKeepEditing' => hpAvailabilityKeepEditing,
     'hpAvailabilityEditButton' => hpAvailabilityEditButton,
     'hpAvailabilityPastDay' => hpAvailabilityPastDay,
+    'privacyRequestsTitle' => privacyRequestsTitle,
+    'privacyRequestsSubtitle' => privacyRequestsSubtitle,
+    'privacyRequestsEmpty' => privacyRequestsEmpty,
+    'privacyRequestNew' => privacyRequestNew,
+    'privacyRequestFormIntro' => privacyRequestFormIntro,
+    'privacyRequestKindLabel' => privacyRequestKindLabel,
+    'privacyRequestKindAccess' => privacyRequestKindAccess,
+    'privacyRequestKindCorrection' => privacyRequestKindCorrection,
+    'privacyRequestKindErasure' => privacyRequestKindErasure,
+    'privacyRequestKindNomination' => privacyRequestKindNomination,
+    'privacyRequestKindWithdrawConsent' => privacyRequestKindWithdrawConsent,
+    'privacyRequestKindComplaint' => privacyRequestKindComplaint,
+    'privacyRequestKindOther' => privacyRequestKindOther,
+    'privacyRequestDetailsLabel' => privacyRequestDetailsLabel,
+    'privacyRequestDetailsHint' => privacyRequestDetailsHint,
+    'privacyRequestDetailsTooShort' => privacyRequestDetailsTooShort,
+    'privacyRequestOnBehalfLabel' => privacyRequestOnBehalfLabel,
+    'privacyRequestOnBehalfHint' => privacyRequestOnBehalfHint,
+    'privacyRequestSubmit' => privacyRequestSubmit,
+    'privacyRequestStatusReceived' => privacyRequestStatusReceived,
+    'privacyRequestStatusInProgress' => privacyRequestStatusInProgress,
+    'privacyRequestStatusAwaitingRequester' => privacyRequestStatusAwaitingRequester,
+    'privacyRequestStatusCompleted' => privacyRequestStatusCompleted,
+    'privacyRequestStatusRejected' => privacyRequestStatusRejected,
+    'privacyRequestOverdue' => privacyRequestOverdue,
+    'privacyRequestYourRequest' => privacyRequestYourRequest,
+    'privacyRequestResolution' => privacyRequestResolution,
+    'privacyRequestNoAnswerYet' => privacyRequestNoAnswerYet,
+    'privacyNomineeTitle' => privacyNomineeTitle,
+    'privacyNomineeSubtitleNone' => privacyNomineeSubtitleNone,
+    'privacyNomineeIntro' => privacyNomineeIntro,
+    'privacyNomineeName' => privacyNomineeName,
+    'privacyNomineeRelationship' => privacyNomineeRelationship,
+    'privacyNomineeEmail' => privacyNomineeEmail,
+    'privacyNomineePhone' => privacyNomineePhone,
+    'privacyNomineeContactRequired' => privacyNomineeContactRequired,
+    'privacyNomineeTooShort' => privacyNomineeTooShort,
+    'privacyNomineeSave' => privacyNomineeSave,
+    'privacyNomineeSaved' => privacyNomineeSaved,
+    'privacyNomineeRemove' => privacyNomineeRemove,
+    'privacyNomineeRemoveConfirm' => privacyNomineeRemoveConfirm,
+    'privacyNomineeRemoved' => privacyNomineeRemoved,
+    'privacyShareHospitalsTitle' => privacyShareHospitalsTitle,
+    'privacyShareHospitalsOn' => privacyShareHospitalsOn,
+    'privacyShareHospitalsOff' => privacyShareHospitalsOff,
+    'privacyShareHospitalsWithdrawTitle' => privacyShareHospitalsWithdrawTitle,
+    'privacyShareHospitalsWithdrawBody' => privacyShareHospitalsWithdrawBody,
+    'privacyShareAgentTitle' => privacyShareAgentTitle,
+    'privacyShareAgentOn' => privacyShareAgentOn,
+    'privacyShareAgentOff' => privacyShareAgentOff,
+    'privacyShareAgentWithdrawTitle' => privacyShareAgentWithdrawTitle,
+    'privacyShareAgentWithdrawBody' => privacyShareAgentWithdrawBody,
+    'privacyShareWithdraw' => privacyShareWithdraw,
+    'privacyShareUpdated' => privacyShareUpdated,
+    'privacyContactTitle' => privacyContactTitle,
+    'privacyContactSubtitle' => privacyContactSubtitle,
+    'privacyContactGrievance' => privacyContactGrievance,
+    'privacyContactDpo' => privacyContactDpo,
+    'privacyContactAddress' => privacyContactAddress,
+    'privacyContactBoard' => privacyContactBoard,
+    'privacyContactBoardLink' => privacyContactBoardLink,
+    'privacyContactNotPublished' => privacyContactNotPublished,
     _ => null,
   };
 
@@ -10010,6 +10072,210 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => _t('hpAvailabilityPastDay') ?? base.hpAvailabilityPastDay;
+
+  @override
+  String get privacyRequestsTitle => _t('privacyRequestsTitle') ?? base.privacyRequestsTitle;
+
+  @override
+  String get privacyRequestsSubtitle => _t('privacyRequestsSubtitle') ?? base.privacyRequestsSubtitle;
+
+  @override
+  String get privacyRequestsEmpty => _t('privacyRequestsEmpty') ?? base.privacyRequestsEmpty;
+
+  @override
+  String get privacyRequestNew => _t('privacyRequestNew') ?? base.privacyRequestNew;
+
+  @override
+  String get privacyRequestFormIntro => _t('privacyRequestFormIntro') ?? base.privacyRequestFormIntro;
+
+  @override
+  String get privacyRequestKindLabel => _t('privacyRequestKindLabel') ?? base.privacyRequestKindLabel;
+
+  @override
+  String get privacyRequestKindAccess => _t('privacyRequestKindAccess') ?? base.privacyRequestKindAccess;
+
+  @override
+  String get privacyRequestKindCorrection => _t('privacyRequestKindCorrection') ?? base.privacyRequestKindCorrection;
+
+  @override
+  String get privacyRequestKindErasure => _t('privacyRequestKindErasure') ?? base.privacyRequestKindErasure;
+
+  @override
+  String get privacyRequestKindNomination => _t('privacyRequestKindNomination') ?? base.privacyRequestKindNomination;
+
+  @override
+  String get privacyRequestKindWithdrawConsent => _t('privacyRequestKindWithdrawConsent') ?? base.privacyRequestKindWithdrawConsent;
+
+  @override
+  String get privacyRequestKindComplaint => _t('privacyRequestKindComplaint') ?? base.privacyRequestKindComplaint;
+
+  @override
+  String get privacyRequestKindOther => _t('privacyRequestKindOther') ?? base.privacyRequestKindOther;
+
+  @override
+  String get privacyRequestDetailsLabel => _t('privacyRequestDetailsLabel') ?? base.privacyRequestDetailsLabel;
+
+  @override
+  String get privacyRequestDetailsHint => _t('privacyRequestDetailsHint') ?? base.privacyRequestDetailsHint;
+
+  @override
+  String get privacyRequestDetailsTooShort => _t('privacyRequestDetailsTooShort') ?? base.privacyRequestDetailsTooShort;
+
+  @override
+  String get privacyRequestOnBehalfLabel => _t('privacyRequestOnBehalfLabel') ?? base.privacyRequestOnBehalfLabel;
+
+  @override
+  String get privacyRequestOnBehalfHint => _t('privacyRequestOnBehalfHint') ?? base.privacyRequestOnBehalfHint;
+
+  @override
+  String get privacyRequestSubmit => _t('privacyRequestSubmit') ?? base.privacyRequestSubmit;
+
+  @override
+  String privacyRequestSent(String reference, String date) => _f('privacyRequestSent', {'reference': reference, 'date': date}) ?? base.privacyRequestSent(reference, date);
+
+  @override
+  String get privacyRequestStatusReceived => _t('privacyRequestStatusReceived') ?? base.privacyRequestStatusReceived;
+
+  @override
+  String get privacyRequestStatusInProgress => _t('privacyRequestStatusInProgress') ?? base.privacyRequestStatusInProgress;
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => _t('privacyRequestStatusAwaitingRequester') ?? base.privacyRequestStatusAwaitingRequester;
+
+  @override
+  String get privacyRequestStatusCompleted => _t('privacyRequestStatusCompleted') ?? base.privacyRequestStatusCompleted;
+
+  @override
+  String get privacyRequestStatusRejected => _t('privacyRequestStatusRejected') ?? base.privacyRequestStatusRejected;
+
+  @override
+  String privacyRequestDueBy(String date) => _f('privacyRequestDueBy', {'date': date}) ?? base.privacyRequestDueBy(date);
+
+  @override
+  String get privacyRequestOverdue => _t('privacyRequestOverdue') ?? base.privacyRequestOverdue;
+
+  @override
+  String privacyRequestSentOn(String date) => _f('privacyRequestSentOn', {'date': date}) ?? base.privacyRequestSentOn(date);
+
+  @override
+  String privacyRequestClosedOn(String date) => _f('privacyRequestClosedOn', {'date': date}) ?? base.privacyRequestClosedOn(date);
+
+  @override
+  String get privacyRequestYourRequest => _t('privacyRequestYourRequest') ?? base.privacyRequestYourRequest;
+
+  @override
+  String get privacyRequestResolution => _t('privacyRequestResolution') ?? base.privacyRequestResolution;
+
+  @override
+  String get privacyRequestNoAnswerYet => _t('privacyRequestNoAnswerYet') ?? base.privacyRequestNoAnswerYet;
+
+  @override
+  String get privacyNomineeTitle => _t('privacyNomineeTitle') ?? base.privacyNomineeTitle;
+
+  @override
+  String get privacyNomineeSubtitleNone => _t('privacyNomineeSubtitleNone') ?? base.privacyNomineeSubtitleNone;
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) => _f('privacyNomineeSubtitleSet', {'name': name, 'relationship': relationship}) ?? base.privacyNomineeSubtitleSet(name, relationship);
+
+  @override
+  String get privacyNomineeIntro => _t('privacyNomineeIntro') ?? base.privacyNomineeIntro;
+
+  @override
+  String get privacyNomineeName => _t('privacyNomineeName') ?? base.privacyNomineeName;
+
+  @override
+  String get privacyNomineeRelationship => _t('privacyNomineeRelationship') ?? base.privacyNomineeRelationship;
+
+  @override
+  String get privacyNomineeEmail => _t('privacyNomineeEmail') ?? base.privacyNomineeEmail;
+
+  @override
+  String get privacyNomineePhone => _t('privacyNomineePhone') ?? base.privacyNomineePhone;
+
+  @override
+  String get privacyNomineeContactRequired => _t('privacyNomineeContactRequired') ?? base.privacyNomineeContactRequired;
+
+  @override
+  String get privacyNomineeTooShort => _t('privacyNomineeTooShort') ?? base.privacyNomineeTooShort;
+
+  @override
+  String get privacyNomineeSave => _t('privacyNomineeSave') ?? base.privacyNomineeSave;
+
+  @override
+  String get privacyNomineeSaved => _t('privacyNomineeSaved') ?? base.privacyNomineeSaved;
+
+  @override
+  String get privacyNomineeRemove => _t('privacyNomineeRemove') ?? base.privacyNomineeRemove;
+
+  @override
+  String get privacyNomineeRemoveConfirm => _t('privacyNomineeRemoveConfirm') ?? base.privacyNomineeRemoveConfirm;
+
+  @override
+  String get privacyNomineeRemoved => _t('privacyNomineeRemoved') ?? base.privacyNomineeRemoved;
+
+  @override
+  String get privacyShareHospitalsTitle => _t('privacyShareHospitalsTitle') ?? base.privacyShareHospitalsTitle;
+
+  @override
+  String get privacyShareHospitalsOn => _t('privacyShareHospitalsOn') ?? base.privacyShareHospitalsOn;
+
+  @override
+  String get privacyShareHospitalsOff => _t('privacyShareHospitalsOff') ?? base.privacyShareHospitalsOff;
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => _t('privacyShareHospitalsWithdrawTitle') ?? base.privacyShareHospitalsWithdrawTitle;
+
+  @override
+  String get privacyShareHospitalsWithdrawBody => _t('privacyShareHospitalsWithdrawBody') ?? base.privacyShareHospitalsWithdrawBody;
+
+  @override
+  String get privacyShareAgentTitle => _t('privacyShareAgentTitle') ?? base.privacyShareAgentTitle;
+
+  @override
+  String get privacyShareAgentOn => _t('privacyShareAgentOn') ?? base.privacyShareAgentOn;
+
+  @override
+  String get privacyShareAgentOff => _t('privacyShareAgentOff') ?? base.privacyShareAgentOff;
+
+  @override
+  String get privacyShareAgentWithdrawTitle => _t('privacyShareAgentWithdrawTitle') ?? base.privacyShareAgentWithdrawTitle;
+
+  @override
+  String get privacyShareAgentWithdrawBody => _t('privacyShareAgentWithdrawBody') ?? base.privacyShareAgentWithdrawBody;
+
+  @override
+  String get privacyShareWithdraw => _t('privacyShareWithdraw') ?? base.privacyShareWithdraw;
+
+  @override
+  String get privacyShareUpdated => _t('privacyShareUpdated') ?? base.privacyShareUpdated;
+
+  @override
+  String get privacyContactTitle => _t('privacyContactTitle') ?? base.privacyContactTitle;
+
+  @override
+  String get privacyContactSubtitle => _t('privacyContactSubtitle') ?? base.privacyContactSubtitle;
+
+  @override
+  String get privacyContactGrievance => _t('privacyContactGrievance') ?? base.privacyContactGrievance;
+
+  @override
+  String get privacyContactDpo => _t('privacyContactDpo') ?? base.privacyContactDpo;
+
+  @override
+  String get privacyContactAddress => _t('privacyContactAddress') ?? base.privacyContactAddress;
+
+  @override
+  String privacyContactResponse(int days) => _f('privacyContactResponse', {'days': days}) ?? base.privacyContactResponse(days);
+
+  @override
+  String get privacyContactBoard => _t('privacyContactBoard') ?? base.privacyContactBoard;
+
+  @override
+  String get privacyContactBoardLink => _t('privacyContactBoardLink') ?? base.privacyContactBoardLink;
+
+  @override
+  String get privacyContactNotPublished => _t('privacyContactNotPublished') ?? base.privacyContactNotPublished;
 }
 
 /// Every ARB key, in template order.
@@ -12592,4 +12858,72 @@ const List<String> kL10nKeys = [
   'hpAvailabilityKeepEditing',
   'hpAvailabilityEditButton',
   'hpAvailabilityPastDay',
+  'privacyRequestsTitle',
+  'privacyRequestsSubtitle',
+  'privacyRequestsEmpty',
+  'privacyRequestNew',
+  'privacyRequestFormIntro',
+  'privacyRequestKindLabel',
+  'privacyRequestKindAccess',
+  'privacyRequestKindCorrection',
+  'privacyRequestKindErasure',
+  'privacyRequestKindNomination',
+  'privacyRequestKindWithdrawConsent',
+  'privacyRequestKindComplaint',
+  'privacyRequestKindOther',
+  'privacyRequestDetailsLabel',
+  'privacyRequestDetailsHint',
+  'privacyRequestDetailsTooShort',
+  'privacyRequestOnBehalfLabel',
+  'privacyRequestOnBehalfHint',
+  'privacyRequestSubmit',
+  'privacyRequestSent',
+  'privacyRequestStatusReceived',
+  'privacyRequestStatusInProgress',
+  'privacyRequestStatusAwaitingRequester',
+  'privacyRequestStatusCompleted',
+  'privacyRequestStatusRejected',
+  'privacyRequestDueBy',
+  'privacyRequestOverdue',
+  'privacyRequestSentOn',
+  'privacyRequestClosedOn',
+  'privacyRequestYourRequest',
+  'privacyRequestResolution',
+  'privacyRequestNoAnswerYet',
+  'privacyNomineeTitle',
+  'privacyNomineeSubtitleNone',
+  'privacyNomineeSubtitleSet',
+  'privacyNomineeIntro',
+  'privacyNomineeName',
+  'privacyNomineeRelationship',
+  'privacyNomineeEmail',
+  'privacyNomineePhone',
+  'privacyNomineeContactRequired',
+  'privacyNomineeTooShort',
+  'privacyNomineeSave',
+  'privacyNomineeSaved',
+  'privacyNomineeRemove',
+  'privacyNomineeRemoveConfirm',
+  'privacyNomineeRemoved',
+  'privacyShareHospitalsTitle',
+  'privacyShareHospitalsOn',
+  'privacyShareHospitalsOff',
+  'privacyShareHospitalsWithdrawTitle',
+  'privacyShareHospitalsWithdrawBody',
+  'privacyShareAgentTitle',
+  'privacyShareAgentOn',
+  'privacyShareAgentOff',
+  'privacyShareAgentWithdrawTitle',
+  'privacyShareAgentWithdrawBody',
+  'privacyShareWithdraw',
+  'privacyShareUpdated',
+  'privacyContactTitle',
+  'privacyContactSubtitle',
+  'privacyContactGrievance',
+  'privacyContactDpo',
+  'privacyContactAddress',
+  'privacyContactResponse',
+  'privacyContactBoard',
+  'privacyContactBoardLink',
+  'privacyContactNotPublished',
 ];

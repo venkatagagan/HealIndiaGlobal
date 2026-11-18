@@ -107,6 +107,17 @@ Notes: plural forms were written for every category (ar zero/one/two/few/many/ot
 `privacyAccessLine` assembles who / role / action / record and reads mechanically in fr and ru — a full-sentence rewrite
 per action may read better.
 
+## Data rights, sharing consents and moderation (added 2026-11-18)
+
+| Keys | Why |
+|---|---|
+| `privacyRequestFormIntro`, `privacyRequestKind*`, `privacyRequestStatus*`, `privacyRequestDueBy`, `privacyRequestSent`, `privacyRequestNoAnswerYet` | DPDP / GDPR data-rights requests and grievances (legal names of the rights, reply deadline) |
+| `privacyNomineeIntro`, `privacyNomineeRemoveConfirm` | Nomination under DPDP Act s.14 (legal wording) |
+| `privacyShareHospitals*`, `privacyShareAgent*` | Granting / withdrawing consent to share health records with hospitals and agents; consequences of withdrawal |
+| `privacyContactTitle`, `privacyContactGrievance`, `privacyContactDpo`, `privacyContactResponse`, `privacyContactBoard` | Grievance Officer, Data Protection Officer, statutory reply time, escalation to the Data Protection Board of India |
+| `reportSheetIntroReview` | Moderation promise (reporter not disclosed) |
+| `orgSuspendedBodyAgent`, `orgSuspendedBodyHospital` | Account suspension notice to partners |
+
 ## Politically sensitive names
 
 `countryTW`, `countryPS`, `countryIL`, `countryHK`, `countryCD` — check the naming conventions expected in each market.

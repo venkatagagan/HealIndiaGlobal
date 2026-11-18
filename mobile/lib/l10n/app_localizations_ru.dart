@@ -9048,4 +9048,229 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get hpAvailabilityPastDay => 'Прошедший день';
+
+  @override
+  String get privacyRequestsTitle => 'Запросы о персональных данных';
+
+  @override
+  String get privacyRequestsSubtitle => 'Запросите копию, исправление или удаление своих данных либо подайте жалобу';
+
+  @override
+  String get privacyRequestsEmpty => 'Вы ещё не отправляли запросов о персональных данных.';
+
+  @override
+  String get privacyRequestNew => 'Новый запрос';
+
+  @override
+  String get privacyRequestFormIntro =>
+      'Мы регистрируем ваш запрос и отвечаем до срока, указанного после отправки. Прежде чем выполнить запрос, мы можем попросить подтвердить вашу личность.';
+
+  @override
+  String get privacyRequestKindLabel => 'Что вы хотите сделать?';
+
+  @override
+  String get privacyRequestKindAccess => 'Получить копию моих данных';
+
+  @override
+  String get privacyRequestKindCorrection => 'Исправить мои данные';
+
+  @override
+  String get privacyRequestKindErasure => 'Удалить мои данные';
+
+  @override
+  String get privacyRequestKindNomination => 'Назначить доверенное лицо для моих прав на данные';
+
+  @override
+  String get privacyRequestKindWithdrawConsent => 'Отозвать согласие';
+
+  @override
+  String get privacyRequestKindComplaint => 'Жалоба';
+
+  @override
+  String get privacyRequestKindOther => 'Другое';
+
+  @override
+  String get privacyRequestDetailsLabel => 'Подробности';
+
+  @override
+  String get privacyRequestDetailsHint =>
+      'Опишите, что вам нужно: например, какие данные неверны и как они должны выглядеть.';
+
+  @override
+  String get privacyRequestDetailsTooShort => 'Напишите не менее 10 символов.';
+
+  @override
+  String get privacyRequestOnBehalfLabel => 'От имени (необязательно)';
+
+  @override
+  String get privacyRequestOnBehalfHint => 'Имя человека, которого вы представляете, если это не вы';
+
+  @override
+  String get privacyRequestSubmit => 'Отправить запрос';
+
+  @override
+  String privacyRequestSent(String reference, String date) {
+    return 'Запрос $reference отправлен. Срок ответа: $date.';
+  }
+
+  @override
+  String get privacyRequestStatusReceived => 'Получен';
+
+  @override
+  String get privacyRequestStatusInProgress => 'В работе';
+
+  @override
+  String get privacyRequestStatusAwaitingRequester => 'Ждём вашего ответа';
+
+  @override
+  String get privacyRequestStatusCompleted => 'Выполнен';
+
+  @override
+  String get privacyRequestStatusRejected => 'Отклонён';
+
+  @override
+  String privacyRequestDueBy(String date) {
+    return 'Срок ответа: $date';
+  }
+
+  @override
+  String get privacyRequestOverdue => 'Просрочен';
+
+  @override
+  String privacyRequestSentOn(String date) {
+    return 'Отправлен: $date';
+  }
+
+  @override
+  String privacyRequestClosedOn(String date) {
+    return 'Закрыт: $date';
+  }
+
+  @override
+  String get privacyRequestYourRequest => 'Ваш запрос';
+
+  @override
+  String get privacyRequestResolution => 'Наш ответ';
+
+  @override
+  String get privacyRequestNoAnswerYet => 'Ответа пока нет. Вы получите уведомление, когда мы ответим.';
+
+  @override
+  String get privacyNomineeTitle => 'Доверенное лицо';
+
+  @override
+  String get privacyNomineeSubtitleNone =>
+      'Выберите человека, который воспользуется вашими правами на данные, если вы не сможете';
+
+  @override
+  String privacyNomineeSubtitleSet(String name, String relationship) {
+    return '$name ($relationship)';
+  }
+
+  @override
+  String get privacyNomineeIntro =>
+      'Согласно индийскому Закону о защите цифровых персональных данных вы можете назначить человека, который будет осуществлять ваши права на данные в случае вашей смерти или недееспособности. Укажите его e-mail или номер телефона.';
+
+  @override
+  String get privacyNomineeName => 'Полное имя';
+
+  @override
+  String get privacyNomineeRelationship => 'Кем приходится (например, супруг, сын)';
+
+  @override
+  String get privacyNomineeEmail => 'E-mail';
+
+  @override
+  String get privacyNomineePhone => 'Телефон';
+
+  @override
+  String get privacyNomineeContactRequired => 'Укажите e-mail или номер телефона.';
+
+  @override
+  String get privacyNomineeTooShort => 'Введите не менее 2 символов.';
+
+  @override
+  String get privacyNomineeSave => 'Сохранить доверенное лицо';
+
+  @override
+  String get privacyNomineeSaved => 'Доверенное лицо сохранено';
+
+  @override
+  String get privacyNomineeRemove => 'Удалить доверенное лицо';
+
+  @override
+  String get privacyNomineeRemoveConfirm =>
+      'Удалить доверенное лицо? Оно больше не сможет действовать от вашего имени.';
+
+  @override
+  String get privacyNomineeRemoved => 'Доверенное лицо удалено';
+
+  @override
+  String get privacyShareHospitalsTitle => 'Делиться моими документами с больницами';
+
+  @override
+  String get privacyShareHospitalsOn =>
+      'Больницы, к которым вы обращаетесь, могут открывать документы, которыми вы с ними поделились';
+
+  @override
+  String get privacyShareHospitalsOff => 'Отозвано: больницы не могут открыть ваши документы';
+
+  @override
+  String get privacyShareHospitalsWithdrawTitle => 'Прекратить передачу документов больницам?';
+
+  @override
+  String get privacyShareHospitalsWithdrawBody =>
+      'Больницы больше не смогут открывать документы, которыми вы с ними поделились, поэтому расчёты стоимости и консультации могут задержаться, пока вы снова не откроете доступ. Записи, которые больница обязана хранить по закону, это не затрагивает.';
+
+  @override
+  String get privacyShareAgentTitle => 'Делиться моими документами с агентом';
+
+  @override
+  String get privacyShareAgentOn => 'Ваш агент или координатор может открывать ваши документы';
+
+  @override
+  String get privacyShareAgentOff => 'Ваш агент или координатор не может открывать ваши документы';
+
+  @override
+  String get privacyShareAgentWithdrawTitle => 'Прекратить передачу документов агенту?';
+
+  @override
+  String get privacyShareAgentWithdrawBody =>
+      'Ваш агент или координатор больше не сможет открывать ваши документы. Вы можете снова открыть доступ в любое время.';
+
+  @override
+  String get privacyShareWithdraw => 'Прекратить';
+
+  @override
+  String get privacyShareUpdated => 'Ваш выбор сохранён';
+
+  @override
+  String get privacyContactTitle => 'Ответственный по жалобам и DPO';
+
+  @override
+  String get privacyContactSubtitle => 'Куда обращаться по вопросам персональных данных';
+
+  @override
+  String get privacyContactGrievance => 'Ответственный по жалобам';
+
+  @override
+  String get privacyContactDpo => 'Специалист по защите данных';
+
+  @override
+  String get privacyContactAddress => 'Почтовый адрес';
+
+  @override
+  String privacyContactResponse(int days) {
+    return 'Мы отвечаем на запросы и жалобы в течение $days дн.';
+  }
+
+  @override
+  String get privacyContactBoard =>
+      'Если наш ответ вас не устроит, вы можете обратиться в Совет по защите данных Индии.';
+
+  @override
+  String get privacyContactBoardLink => 'Сайт Совета по защите данных';
+
+  @override
+  String get privacyContactNotPublished => 'Контакты пока не опубликованы';
 }
