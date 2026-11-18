@@ -248,3 +248,20 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
 - Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
 - Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
   currency), `quoteGroup.total`.
+
+## Privacy compliance screens (admin portal, added 2026-11-18)
+
+New sections `admin:privacyTools.*` (118 keys with `admin:breakGlass.*` and `nav.privacyTools`) for legal holds,
+the breach register and the PHI access log. All are legal texts; review them before switching a language on:
+
+- Legal holds: `privacyTools.holds.description`, `liftDescription` (what a hold does: erasure requests and retention
+  clean-ups skip held accounts/cases), `reasonHint`. Terms: fr "gel juridique", ar "الحجز القانوني",
+  ru "юридическая блокировка", bn "আইনি হোল্ড".
+- Breach register (DPDP Act / GDPR 72-hour rule): `privacyTools.breaches.description`, `clockHint`,
+  `overdueBanner`, `fields.detectedAtHint`, `fields.dpb_notified_at` ("Data Protection Board", kept as the DPDP
+  body's name in fr; ar "مجلس حماية البيانات", ru "Совет по защите данных", bn "ডেটা প্রোটেকশন বোর্ড"),
+  `fields.supervisory_authority_notified_at`, `status.*`, `severity.*`. `hoursLeft` uses an abbreviation
+  ("{{hours}} h", ar "س", ru "ч") to avoid plural forms; bn writes "ঘণ্টা".
+- PHI access log: `privacyTools.access.description`, `actions.*` (`break_glass` = emergency access).
+- Break-glass (support staff opening a document outside their cases): `breakGlass.warning` (the reason is
+  recorded, shown in the patient's access log and admins are notified), `breakGlass.reasonHint`.

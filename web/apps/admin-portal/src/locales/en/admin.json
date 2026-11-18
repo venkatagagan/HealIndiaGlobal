@@ -1529,7 +1529,8 @@
     "privacy": "Privacy requests",
     "reviews": "Reviews",
     "introCalls": "Free intro calls",
-    "visaRules": "Visa rules"
+    "visaRules": "Visa rules",
+    "privacyTools": "Privacy compliance"
   },
   "ui": {
     "loading": "Loading…",
@@ -2407,6 +2408,153 @@
       "markVerified": "Mark as verified",
       "verified": "Guardian consent verified"
     }
+  },
+  "privacyTools": {
+    "title": "Privacy compliance",
+    "description": "Legal holds, the personal-data breach register and who has read each patient's health records.",
+    "tabsLabel": "Privacy compliance sections",
+    "tabs": {
+      "holds": "Legal holds",
+      "breaches": "Breach register",
+      "access": "PHI access log"
+    },
+    "noAccessTitle": "Admins only",
+    "noAccessDescription": "Legal holds, the breach register and access logs are available to operations admins and super admins.",
+    "holds": {
+      "title": "Legal holds",
+      "description": "Accounts and cases on hold are kept: erasure requests and retention clean-ups skip them until the hold is lifted.",
+      "place": "Place hold",
+      "placeTitle": "Place a legal hold",
+      "lift": "Lift hold",
+      "liftTitle": "Lift legal hold",
+      "liftDescription": "{{label}} will again be covered by erasure requests and retention clean-ups.",
+      "liftReason": "Reason for lifting the hold",
+      "placed": "Legal hold placed on {{label}}",
+      "lifted": "Legal hold lifted for {{label}}",
+      "empty": "No legal holds in place",
+      "targetType": "Hold applies to",
+      "entity": {
+        "user": "Account",
+        "case": "Case"
+      },
+      "searchUser": "Find the account (name or email)",
+      "searchCase": "Find the case (case number or patient)",
+      "searchHint": "Type at least 2 characters, then pick a result.",
+      "noMatches": "No matches",
+      "change": "Change",
+      "reason": "Reason",
+      "reasonHint": "For example the legal matter, authority request or reference number.",
+      "reasonTooShort": "Give a reason of at least {{min}} characters.",
+      "columns": {
+        "type": "Type",
+        "target": "Account or case",
+        "reason": "Reason",
+        "since": "Since",
+        "actions": "Actions"
+      }
+    },
+    "breaches": {
+      "title": "Breach register",
+      "description": "Every personal-data breach, with the 72-hour deadline for notifying the Data Protection Board and the supervisory authority.",
+      "record": "Record breach",
+      "recordTitle": "Record a personal-data breach",
+      "clockHint": "Recording a breach starts the 72-hour notification clock from the time it was detected.",
+      "recorded": "Breach {{reference}} recorded",
+      "update": "Update",
+      "updateTitle": "Update breach {{reference}}",
+      "updated": "Breach {{reference}} updated",
+      "save": "Save changes",
+      "empty": "No breaches recorded",
+      "filterStatus": "Filter by status",
+      "allStatuses": "All statuses",
+      "overdue": "Notification overdue",
+      "overdueBanner": "Notification deadline passed for {{n}} breach(es): notify the Data Protection Board and the supervisory authority now and record the times.",
+      "authoritiesNotified": "Authorities notified",
+      "hoursLeft": "{{hours}} h left to notify",
+      "detectedOn": "Detected {{date}}",
+      "deadlineOn": "Notify by {{date}}",
+      "tooShort": "Enter at least {{min}} characters.",
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "status": {
+        "open": "Open",
+        "contained": "Contained",
+        "notified": "Notified",
+        "closed": "Closed"
+      },
+      "columns": {
+        "reference": "Breach",
+        "severity": "Severity",
+        "status": "Status",
+        "detected": "Detected",
+        "deadline": "Notification deadline",
+        "actions": "Actions"
+      },
+      "fields": {
+        "title": "Title",
+        "description": "What happened",
+        "severity": "Severity",
+        "status": "Status",
+        "estimate": "Estimated people affected",
+        "detectedAt": "Detected at",
+        "detectedAtHint": "The 72-hour deadline counts from this time (now if left empty).",
+        "occurredAt": "Occurred at (if known)",
+        "categories": "Data categories",
+        "categoriesHint": "Comma-separated, for example: passport, medical reports, contact details.",
+        "consequences": "Likely consequences",
+        "measures": "Measures taken or proposed",
+        "notes": "Internal notes",
+        "contained_at": "Contained at",
+        "dpb_notified_at": "Data Protection Board notified at",
+        "supervisory_authority_notified_at": "Supervisory authority notified at",
+        "subjects_notified_at": "Affected people notified at"
+      }
+    },
+    "access": {
+      "title": "PHI access log",
+      "description": "Every view, download or listing of a patient's health records by someone other than the patient, including emergency (break-glass) reads.",
+      "searchLabel": "Find the patient (name or email)",
+      "searchHint": "Type at least 2 characters, then pick the patient.",
+      "noPatients": "No patients match",
+      "pickPatient": "Search for a patient to see who accessed their records",
+      "changePatient": "Change patient",
+      "empty": "Nobody else has accessed this patient's records",
+      "unknownViewer": "Unknown user",
+      "actions": {
+        "view": "Viewed",
+        "download": "Downloaded",
+        "list": "Listed",
+        "break_glass": "Emergency access"
+      },
+      "resources": {
+        "document": "Document",
+        "case": "Case",
+        "patient": "Patient profile",
+        "screening": "Screening",
+        "booking": "Booking"
+      },
+      "columns": {
+        "at": "When",
+        "action": "Access",
+        "viewer": "By",
+        "resource": "Record",
+        "reason": "Reason"
+      }
+    }
+  },
+  "breakGlass": {
+    "title": "Emergency access",
+    "warning": "This document is outside your cases. You can open it in an emergency: your reason is recorded, shown in the patient's access log and the admins are notified.",
+    "reason": "Why do you need this document now?",
+    "reasonHint": "At least {{min}} characters, for example the patient's emergency and who asked.",
+    "reasonTooShort": "Give a reason of at least {{min}} characters.",
+    "confirm": "Open with emergency access",
+    "outOfScope": "This document is not part of your cases.",
+    "request": "Request emergency access"
   },
   "moderation": {
     "title": "Reports",

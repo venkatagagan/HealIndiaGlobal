@@ -44,7 +44,7 @@ export default function PrivacyToolsPage() {
         label={t('privacyTools.tabsLabel')}
         value={tab}
         onChange={setTab}
-        tabs={TABS.map((key) => ({ key, label: t(`privacyTools.tabs.${key}`) }))}
+        tabs={TABS.map((key) => ({ value: key, label: t(`privacyTools.tabs.${key}`) }))}
       />
       {tab === 'holds' && <LegalHoldsPanel />}
       {tab === 'breaches' && <BreachRegisterPanel />}
