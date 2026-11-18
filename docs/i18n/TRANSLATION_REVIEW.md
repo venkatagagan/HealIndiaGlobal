@@ -248,3 +248,10 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
 - Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
 - Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
   currency), `quoteGroup.total`.
+
+## SMS one-time codes (added 2026-11, AWS starter)
+
+- `sms.verification_code` (`backend/app/i18n/<lng>.json`): the guest phone-verification text sent through Amazon
+  SNS in the guest's language. Keep it short: one SMS segment is 160 GSM-7 characters but only 70 characters
+  in Arabic, Bengali or Russian (UCS-2), so the ar/bn/ru texts are sent as 2 segments (billed twice). Keep the
+  `{code}` placeholder early in the sentence (some phones show only the first line), and "do not share it".

@@ -180,16 +180,25 @@ class Settings(BaseSettings):
     S3_REGION: str = ""
     S3_ACCESS_KEY_ID: str = ""
     S3_SECRET_ACCESS_KEY: str = ""
+    # Server-side encryption sent with every PutObject: "AES256" (SSE-S3, works with MinIO), "aws:kms"
+    # (SSE-KMS with S3_SSE_KMS_KEY_ID, or the account's aws/s3 key when empty) or "bucket_default" (no header:
+    # the bucket's default encryption applies). On AWS leave S3_ACCESS_KEY_ID empty: boto3 uses the role.
+    S3_SSE: Literal["AES256", "aws:kms", "bucket_default"] = "AES256"
+    S3_SSE_KMS_KEY_ID: str = ""
     MAX_UPLOAD_MB: int = Field(default=15, ge=1, le=200)
 
     # --- email ---------------------------------------------------------------------------------------------
-    EMAIL_BACKEND: Literal["console", "smtp"] = "console"
+    # console: log + in-memory outbox (dev/tests); smtp: SMTP_* below; ses: Amazon SES API (SendEmail with
+    # raw MIME) through the instance/task role - no static credentials (SES_REGION, SES_CONFIGURATION_SET).
+    EMAIL_BACKEND: Literal["console", "smtp", "ses"] = "console"
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     SMTP_STARTTLS: bool = True
     EMAIL_FROM: str = "Heal India Global <no-reply@healindia.example>"
+    SES_REGION: str = ""
+    SES_CONFIGURATION_SET: str = ""
 
     # --- payments ------------------------------------------------------------------------------------------
     PAYMENT_GATEWAYS_ENABLED: StrList = Field(default_factory=lambda: ["mock", "bank_transfer"])
@@ -219,8 +228,18 @@ class Settings(BaseSettings):
     # Guests may run this many AI screenings/report scans per day (per guest account and per IP address).
     GUEST_AI_DAILY_LIMIT: int = Field(default=3, ge=0, le=100)
     # One-time codes for guest contact verification. "console" keeps SMS codes in an in-memory outbox (dev
-    # and tests only); "none" means phone codes cannot be sent (guests verify by email instead).
-    SMS_PROVIDER: Literal["console", "none"] = "console"
+    # and tests only); "none" means phone codes cannot be sent (guests verify by email instead); "sns" sends
+    # them with Amazon SNS (Publish to a phone number) through the instance/task role (app/core/sms.py).
+    SMS_PROVIDER: Literal["console", "none", "sns"] = "console"
+    SNS_REGION: str = ""
+    # Optional SNS SMS attributes: sender ID (alphanumeric, only where the destination country supports it),
+    # an origination number (E.164, e.g. a US toll-free number: required for US destinations) and the type.
+    SNS_SMS_SENDER_ID: str = Field(default="", pattern=r"^([A-Za-z0-9]{1,11})?$")
+    SNS_SMS_ORIGINATION_NUMBER: str = Field(default="", pattern=r"^(\+[1-9]\d{6,14})?$")
+    SNS_SMS_TYPE: Literal["Transactional", "Promotional"] = "Transactional"
+    # SMS pumping guard: E.164 country calling codes (without "+", e.g. "1,44,91,234") that may receive codes.
+    # Empty = every country. Numbers elsewhere get "use your email address instead".
+    SMS_ALLOWED_COUNTRY_CODES: StrList = Field(default_factory=list)
 
     # --- worker / ops --------------------------------------------------------------------------------------
     RUN_WORKER_IN_API: bool = True
@@ -263,6 +282,7 @@ class Settings(BaseSettings):
         "APPLE_CLIENT_IDS",
         "TRUSTED_HOSTS",
         "FIELD_ENCRYPTION_OLD_KEYS",
+        "SMS_ALLOWED_COUNTRY_CODES",
         mode="before",
     )
     @classmethod

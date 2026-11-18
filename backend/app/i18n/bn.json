@@ -487,5 +487,8 @@
     "unknown_locale": "এই ভাষাটি উপলব্ধ নয়।",
     "unknown_translation_key": "এই অনুবাদ কী-টির অস্তিত্ব নেই।",
     "default_language_required": "ইংরেজি ডিফল্ট ভাষা, তাই এটি বন্ধ করা যাবে না।"
+  },
+  "sms": {
+    "verification_code": "আপনার {app_name} কোড হলো {code}। এটি {minutes} মিনিটের মধ্যে মেয়াদোত্তীর্ণ হবে। কারও সাথে শেয়ার করবেন না।"
   }
 }

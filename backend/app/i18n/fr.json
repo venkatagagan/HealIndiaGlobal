@@ -487,5 +487,8 @@
     "unknown_locale": "Cette langue n'est pas disponible.",
     "unknown_translation_key": "Cette clé de traduction n'existe pas.",
     "default_language_required": "L'anglais est la langue par défaut et ne peut pas être désactivé."
+  },
+  "sms": {
+    "verification_code": "Votre code {app_name} est {code}. Il expire dans {minutes} minutes. Ne le communiquez à personne."
   }
 }

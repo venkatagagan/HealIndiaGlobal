@@ -138,6 +138,8 @@ class S3Storage:
         region: str | None = None,
         access_key_id: str | None = None,
         secret_access_key: str | None = None,
+        sse: str = "AES256",
+        sse_kms_key_id: str | None = None,
     ) -> None:
         import boto3
         from botocore.config import Config
@@ -145,6 +147,16 @@ class S3Storage:
         if not bucket:
             raise StorageError("S3_BUCKET is required for the s3 storage backend")
         self.bucket = bucket
+        # PutObject encryption headers (S3_SSE): SSE-S3, SSE-KMS (bucket key on) or the bucket default.
+        self._sse_args: dict[str, Any]
+        if sse == "aws:kms":
+            self._sse_args = {"ServerSideEncryption": "aws:kms", "BucketKeyEnabled": True}
+            if sse_kms_key_id:
+                self._sse_args["SSEKMSKeyId"] = sse_kms_key_id
+        elif sse == "bucket_default":
+            self._sse_args = {}
+        else:
+            self._sse_args = {"ServerSideEncryption": "AES256"}
         self._client: Any = boto3.client(
             "s3",
             endpoint_url=endpoint_url or None,
@@ -156,7 +168,7 @@ class S3Storage:
 
     async def save(self, key: str, data: bytes, content_type: str | None = None) -> str:
         validate_key(key)
-        extra: dict[str, Any] = {"ServerSideEncryption": "AES256"}
+        extra: dict[str, Any] = dict(self._sse_args)
         if content_type:
             extra["ContentType"] = content_type
         await run_in_threadpool(
@@ -211,6 +223,8 @@ def get_storage() -> Storage:
                 region=settings.S3_REGION,
                 access_key_id=settings.S3_ACCESS_KEY_ID,
                 secret_access_key=settings.S3_SECRET_ACCESS_KEY,
+                sse=settings.S3_SSE,
+                sse_kms_key_id=settings.S3_SSE_KMS_KEY_ID,
             )
         else:
             _storage = LocalStorage(settings.STORAGE_LOCAL_DIR)
