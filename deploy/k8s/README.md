@@ -47,7 +47,7 @@ k8s/
 
 ## Configure
 
-1. Replace `healindia.example`, `123456789012` and the VPC CIDRs in `overlays/<env>/` (config.env,
+1. Replace `healindiaglobal.ai` (the production domain; staging uses `staging.healindiaglobal.ai`), `123456789012` and the VPC CIDRs in `overlays/<env>/` (config.env,
    ingress.yaml, certificate.yaml, kustomization.yaml patches).
 2. Create the IAM roles referenced by the ServiceAccount annotations with the same policy as the ECS task
    roles (`deploy/terraform/aws/iam.tf`, `task_app`: documents bucket + documents KMS key via S3), trusted by

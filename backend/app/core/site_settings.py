@@ -222,7 +222,7 @@ def _validate_analytics(value: Any) -> dict[str, Any]:
         raise _bad(f"Analytics provider must be one of: {', '.join(ANALYTICS_PROVIDERS)}")
     domain = _text("Plausible domain", v.get("plausible_domain"), 253).lower()
     if domain and not _HOST_RE.match(domain):
-        raise _bad("Plausible domain must be a host name such as healindiaglobal.com")
+        raise _bad("Plausible domain must be a host name such as healindiaglobal.ai")
     script = _https_url("Plausible script URL", v.get("plausible_script_url"), max_len=300)
     ga4 = _text("GA4 measurement ID", v.get("ga4_measurement_id"), 30).upper()
     if ga4 and not _GA4_RE.match(ga4):

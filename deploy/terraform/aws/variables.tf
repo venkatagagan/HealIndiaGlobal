@@ -92,12 +92,12 @@ variable "enable_interface_endpoints" {
 # DNS / TLS
 # =====================================================================================================
 variable "domain_name" {
-  description = "Base domain, e.g. healindia.example. Production uses it directly (patient site at the apex); other environments use <environment>.<domain_name>."
+  description = "Base domain, e.g. healindiaglobal.ai. Production uses it directly (patient site at the apex); other environments use <environment>.<domain_name>."
   type        = string
 }
 
 variable "hostnames" {
-  description = "Optional explicit hostnames. Defaults: production -> <domain>, agent.<domain>, hospital.<domain>, admin.<domain>, api.<domain>, origin-api.<domain>; other environments insert the environment name (staging.<domain>, agent.staging.<domain>, ...). api_origin is the ALB name used only by CloudFront."
+  description = "Optional explicit hostnames. Defaults: production -> <domain>, agent.<domain>, hospital.<domain>, ops.<domain> (staff console), api.<domain>, origin-api.<domain>; other environments insert the environment name (staging.<domain>, agent.staging.<domain>, ...). api_origin is the ALB name used only by CloudFront."
   type = object({
     patient    = optional(string)
     agent      = optional(string)
@@ -431,7 +431,7 @@ variable "smtp_starttls" {
 variable "email_from" {
   description = "EMAIL_FROM (verified sender identity)."
   type        = string
-  default     = "Heal India Global <no-reply@healindia.example>"
+  default     = "Heal India Global <no-reply@healindiaglobal.ai>"
 }
 
 variable "google_client_ids" {

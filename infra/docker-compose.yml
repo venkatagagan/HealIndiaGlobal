@@ -99,7 +99,7 @@ x-backend-env: &backend-env
   SMTP_USER: ${SMTP_USER:-}
   SMTP_PASSWORD: ${SMTP_PASSWORD:-}
   SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
-  EMAIL_FROM: ${EMAIL_FROM:-Heal India Global <no-reply@healindia.example>}
+  EMAIL_FROM: ${EMAIL_FROM:-Heal India Global <no-reply@healindiaglobal.ai>}
   SES_REGION: ${SES_REGION:-}
   SES_CONFIGURATION_SET: ${SES_CONFIGURATION_SET:-}
   # Guest phone-verification codes: none | sns (Amazon SNS; console is for development only).

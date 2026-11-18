@@ -206,7 +206,7 @@ class Settings(BaseSettings):
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     SMTP_STARTTLS: bool = True
-    EMAIL_FROM: str = "Heal India Global <no-reply@healindia.example>"
+    EMAIL_FROM: str = "Heal India Global <no-reply@healindiaglobal.ai>"
     SES_REGION: str = ""
     SES_CONFIGURATION_SET: str = ""
 

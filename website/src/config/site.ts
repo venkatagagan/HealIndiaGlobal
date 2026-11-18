@@ -20,7 +20,7 @@ export const SITE_URL = env(process.env.NEXT_PUBLIC_SITE_URL, 'http://localhost:
 
 /**
  * Portal base URLs (PLAN §3.1). In production these are same-origin paths on one domain
- * (e.g. https://healindiaglobal.com/app/); in dev each SPA runs on its own port.
+ * (e.g. https://healindiaglobal.ai/app/); in dev each SPA runs on its own port.
  */
 export const PORTALS = {
   patient: withTrailingSlash(env(process.env.NEXT_PUBLIC_PATIENT_APP_URL, 'http://localhost:5173/app/')),
@@ -37,8 +37,8 @@ export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim()
  * (System -> Website & contact) and read through src/lib/site-config.ts; the values below apply only when the API is
  * unreachable or the setting is unset (empty).
  */
-/** Public contact email. The default is a placeholder on the reserved .example domain. */
-export const CONTACT_EMAIL = env(process.env.NEXT_PUBLIC_CONTACT_EMAIL, 'care@healindiaglobal.example');
+/** Public contact email (fallback when the site setting is empty). */
+export const CONTACT_EMAIL = env(process.env.NEXT_PUBLIC_CONTACT_EMAIL, 'contact@healindiaglobal.ai');
 /** Helpline numbers for the floating WhatsApp / Call buttons and the footer (international format, e.g. +91 90000 00000). */
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || '';
 export const PHONE_NUMBER = process.env.NEXT_PUBLIC_PHONE_NUMBER?.trim() || '';
