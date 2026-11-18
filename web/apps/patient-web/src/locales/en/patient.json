@@ -1351,7 +1351,8 @@
       "tripDocuments": "Trip & documents",
       "browse": "Hospitals & doctors",
       "aftercare": "Aftercare",
-      "reviews": "My reviews"
+      "reviews": "My reviews",
+      "consultations": "Video consultations"
     },
     "pageError": {
       "description": "Please reload the page. If it keeps happening, contact support.",
@@ -2138,6 +2139,112 @@
       "passwordNumber": "Include at least one number",
       "age": "Please confirm your age",
       "mismatch": "Passwords do not match"
+    }
+  },
+  "consult": {
+    "title": "Video consultation",
+    "bookVideo": "Book video consultation",
+    "kind": {
+      "followup": "Aftercare follow-up"
+    },
+    "mode": {
+      "video": "Video call",
+      "phone": "Phone call"
+    },
+    "fee": {
+      "free": "Free",
+      "paid": "Paid",
+      "pending": "Payment being checked",
+      "unpaid": "Not paid yet"
+    },
+    "book": {
+      "title": "Book a video consultation",
+      "description": "Talk to the doctor by video before you travel. Ask your questions and share your reports.",
+      "chooseDoctorTitle": "Choose a doctor first",
+      "chooseDoctorText": "Open a doctor's page and choose Book video consultation.",
+      "browseDoctors": "Browse doctors",
+      "doctorStep": "Doctor",
+      "doctorLabel": "Doctor offering video consultations",
+      "doctorPlaceholder": "Choose a doctor",
+      "noTeleDoctors": "No doctor at this hospital offers video consultations at the moment. You can request a quote instead.",
+      "guestAction": "book a video consultation",
+      "slotStep": "Preferred time",
+      "slotHint": "Green dates have consultation slots. The hospital confirms the exact time.",
+      "calendarLabel": "Consultation dates",
+      "noSlots": "No free consultation slots this month. Try the next month, or send your request without a date preference.",
+      "dateLabel": "Date",
+      "noDate": "Pick a green date in the calendar",
+      "timeLabel": "Time (India time)",
+      "istTime": "{{time}} India time",
+      "localTime": "That is {{time}} where you are.",
+      "timeHint": "Pick a date to see the time where you are.",
+      "confirmNote": "This is a preference. The hospital confirms the time and sends you the video link.",
+      "questionStep": "Your question and reports",
+      "questionLabel": "What would you like to ask the doctor?",
+      "questionHint": "For example your symptoms, past treatment and what you want to know before travelling.",
+      "reportsLabel": "Reports to share",
+      "reportsHint": "Choose the reports the doctor should see. They are shared only with this hospital.",
+      "noReports": "You have not uploaded any medical reports yet.",
+      "uploadReport": "Upload a report",
+      "consentLabel": "I agree to share my details and the chosen reports with this hospital",
+      "consentText": "{{hospital}} sees your question, your screening (if chosen) and the reports you picked so the doctor can prepare. You can withdraw this later in Profile > Privacy.",
+      "payNext": "You pay the consultation fee on the next step. The hospital confirms the time once your request arrives.",
+      "submit": "Request consultation",
+      "submitPaid": "Continue to payment",
+      "requested": "Consultation requested"
+    },
+    "errors": {
+      "exists": "You already have an open consultation with this doctor. Open it from Video consultations.",
+      "teleconsultUnavailable": "This doctor does not offer video consultations.",
+      "invalidDoctor": "This doctor cannot take the consultation. Please choose another doctor.",
+      "caseClosed": "Your case with this hospital is closed. Please request a new quote first.",
+      "failed": "We could not send your consultation request. Please try again."
+    },
+    "list": {
+      "title": "Video consultations",
+      "description": "Your consultations with doctors before and after treatment.",
+      "book": "Book a consultation",
+      "all": "All",
+      "emptyTitle": "No consultations yet",
+      "emptyText": "Find a doctor who offers video consultations and talk to them before you travel.",
+      "open": "Open"
+    },
+    "detail": {
+      "when": "When",
+      "preferred": "Your preferred time: {{time}}",
+      "awaitingTime": "Waiting for the hospital to set a time",
+      "requestedText": "The hospital will confirm a time and send you the video link. We will notify you.",
+      "localTimeNote": "Shown in your local time · about {{minutes}} minutes",
+      "join": "Join video call",
+      "joinHint": "The link opens in a new tab. Join a few minutes early and check your camera and microphone.",
+      "linkSoon": "The video link will appear here before the call.",
+      "phoneCall": "The doctor will call you on the phone number in your profile.",
+      "completedText": "This consultation has taken place.",
+      "cancelledText": "This consultation was cancelled.",
+      "reminders": "We remind you 24 hours and 1 hour before the call by notification and email.",
+      "feeTitle": "Fee and payment",
+      "paymentStatus": "Payment",
+      "confirmingPayment": "We are confirming your payment. This can take a minute.",
+      "pay": "Pay consultation fee",
+      "payAgain": "Pay another way",
+      "detailsTitle": "Details",
+      "mode": "Type",
+      "case": "Case",
+      "requestedOn": "Requested on",
+      "notes": "Your question",
+      "cancel": "Cancel consultation",
+      "cancelTitle": "Cancel this consultation?",
+      "cancelText": "The hospital is told that you no longer need this consultation.",
+      "cancelPaidText": "The hospital is told that you no longer need this consultation. You have paid the fee: contact support about a refund.",
+      "cancelled": "Consultation cancelled"
+    },
+    "pay": {
+      "title": "Pay consultation fee",
+      "description": "Video consultation with {{doctor}}, {{hospital}}",
+      "back": "Back to consultation",
+      "summary": "Summary",
+      "doctor": "Doctor",
+      "time": "Time"
     }
   }
 }

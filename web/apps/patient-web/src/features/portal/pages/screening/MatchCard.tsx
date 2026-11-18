@@ -1,5 +1,5 @@
-import { BadgeCheck, Bookmark, BookmarkCheck, CirclePlus, CircleCheck, MapPin } from 'lucide-react';
-import type { MatchOut } from '@hig/shared/api';
+import { BadgeCheck, Bookmark, BookmarkCheck, CirclePlus, CircleCheck, MapPin, Video } from 'lucide-react';
+import type { MatchOut, Uuid } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
 import { Link } from 'react-router';
 import { Accreditations, Avatar, Money, Rating } from '../../components/common';
@@ -17,8 +17,11 @@ export function MatchCard({
   showActions,
   saved,
   onToggleSave,
+  screeningId,
 }: {
   match: MatchOut;
+  /** passed on to the video consultation booking (the screening is shared with the hospital) */
+  screeningId?: Uuid;
   selected: boolean;
   canSelect: boolean;
   onToggleSelect: () => void;
@@ -143,6 +146,16 @@ export function MatchCard({
                 {t('screening.match.viewHospital')}
               </ButtonLink>
             )}
+            {doctor?.teleconsult_available ? (
+              <ButtonLink
+                to={paths.bookConsultation({ doctor: doctor.id, screening: screeningId })}
+                variant="outline"
+                size="sm"
+                icon={<Video className="h-4 w-4" aria-hidden />}
+              >
+                {t('consult.bookVideo')}
+              </ButtonLink>
+            ) : null}
             <Button size="sm" variant="danger" onClick={onRequestQuote}>
               {t('screening.match.requestQuote')}
             </Button>

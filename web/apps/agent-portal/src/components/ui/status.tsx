@@ -2,6 +2,7 @@ import {
   AGENT_STATUS_LABELS,
   BOOKING_STATUS_LABELS,
   CASE_STATUS_LABELS,
+  CONSULTATION_STATUS_LABELS,
   DOCUMENT_STATUS_LABELS,
   KYC_STATUS_LABELS,
   ORDER_STATUS_LABELS,
@@ -14,6 +15,7 @@ import {
   type AgentStatus,
   type BookingStatus,
   type CaseStatus,
+  type ConsultationStatus,
   type DocumentStatus,
   type KycStatus,
   type OrderStatus,
@@ -28,6 +30,7 @@ import { Badge, type BadgeTone } from './core';
 
 type Kind =
   | 'case'
+  | 'consultation'
   | 'quote'
   | 'booking'
   | 'screening'
@@ -50,6 +53,7 @@ const TONES: Record<Kind, Record<string, BadgeTone>> = {
     cancelled: 'danger',
     declined: 'danger',
   },
+  consultation: { requested: 'warning', scheduled: 'info', completed: 'success', cancelled: 'neutral' },
   quote: { draft: 'neutral', sent: 'accent', accepted: 'success', rejected: 'danger', expired: 'neutral', withdrawn: 'neutral' },
   booking: { pending_payment: 'warning', confirmed: 'success', admitted: 'info', completed: 'neutral', cancelled: 'danger' },
   screening: { draft: 'neutral', processing: 'info', completed: 'success', failed: 'danger' },
@@ -73,6 +77,7 @@ const TONES: Record<Kind, Record<string, BadgeTone>> = {
 
 const LABELS: Record<Kind, Record<string, string>> = {
   case: CASE_STATUS_LABELS satisfies Record<CaseStatus, string>,
+  consultation: CONSULTATION_STATUS_LABELS satisfies Record<ConsultationStatus, string>,
   quote: QUOTE_STATUS_LABELS satisfies Record<QuoteStatus, string>,
   booking: BOOKING_STATUS_LABELS satisfies Record<BookingStatus, string>,
   screening: SCREENING_STATUS_LABELS satisfies Record<ScreeningStatus, string>,

@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { toast } from 'sonner';
-import { Bookmark, BookmarkCheck, Building2, Globe, Languages, MapPin, Plane, Stethoscope } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Building2, Globe, Languages, MapPin, Plane, Stethoscope, Video } from 'lucide-react';
 import { errorMessage, PACKAGE_TIER_LABELS, type HospitalProcedureOut } from '@hig/shared/api';
 import { useAppTranslation } from '../../../../i18n';
 import { useHospitalDetail, useHospitalReviews } from '../../api/phase1';
@@ -288,6 +288,15 @@ export function HospitalPage() {
                           {d.registration_verified ? <RegistrationVerified /> : null}
                           <EarliestChips consultation={d.next_available_consultation} showConsultation />
                         </div>
+                        {d.teleconsult_available ? (
+                          <Link
+                            to={paths.bookConsultation({ doctor: d.id })}
+                            className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary-ink hover:underline"
+                          >
+                            <Video className="size-3.5" aria-hidden />
+                            {t('consult.bookVideo')}
+                          </Link>
+                        ) : null}
                       </div>
                     </li>
                   ))}

@@ -438,6 +438,7 @@ export function ResultsPage() {
                 <MatchCard
                   key={m.id}
                   match={m}
+                  screeningId={id}
                   selected={selected.includes(m.id)}
                   canSelect={selected.length < MAX_COMPARE}
                   onToggleSelect={() => toggleSelect(m.id)}

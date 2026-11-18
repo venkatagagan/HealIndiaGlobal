@@ -86,7 +86,14 @@ export function DoctorPage() {
             <EarliestChips consultation={d.next_available_consultation} admission={d.next_available_admission} />
           </div>
           <div className="flex flex-wrap gap-2 sm:flex-col">
-            <ButtonLink to={paths.quickQuote({ hospitals: [d.hospital.id] })}>{t('doctor.requestQuote')}</ButtonLink>
+            {d.teleconsult_available ? (
+              <ButtonLink to={paths.bookConsultation({ doctor: d.id })} icon={<Video className="size-4" aria-hidden />}>
+                {t('consult.bookVideo')}
+              </ButtonLink>
+            ) : null}
+            <ButtonLink to={paths.quickQuote({ hospitals: [d.hospital.id] })} variant={d.teleconsult_available ? 'outline' : 'primary'}>
+              {t('doctor.requestQuote')}
+            </ButtonLink>
             {canSave ? (
               <Button
                 variant="outline"

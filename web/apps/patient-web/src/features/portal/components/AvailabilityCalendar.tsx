@@ -25,6 +25,7 @@ export function AvailabilityCalendar({
   minMonth,
   maxMonth,
   loading,
+  label,
 }: {
   month: Date;
   onMonth: (d: Date) => void;
@@ -34,6 +35,8 @@ export function AvailabilityCalendar({
   minMonth: Date;
   maxMonth: Date;
   loading?: boolean;
+  /** accessible name of the day grid (default: admission dates) */
+  label?: string;
 }) {
   const days = useMemo(
     () =>
@@ -78,7 +81,7 @@ export function AvailabilityCalendar({
           <span key={d.getDay()}>{format(d, 'EEEEE', { locale })}</span>
         ))}
       </div>
-      <div className="mt-2 grid grid-cols-7 gap-1.5" role="grid" aria-label={t('calendar.admissionDates')}>
+      <div className="mt-2 grid grid-cols-7 gap-1.5" role="grid" aria-label={label ?? t('calendar.admissionDates')}>
         {days.map((day) => {
           const iso = format(day, 'yyyy-MM-dd');
           const inMonth = isSameMonth(day, month);

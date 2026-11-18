@@ -1434,5 +1434,44 @@
       "sent": "Bilan envoyé.",
       "sentFlagged": "Bilan envoyé. L'hôpital et le coordinateur ont été alertés."
     }
+  },
+  "teleconsult": {
+    "open": "Réserver une consultation vidéo",
+    "title": "Réserver une consultation vidéo",
+    "description": "Consultation vidéo avant le voyage avec {{doctor}}, {{hospital}}. L'hôpital confirme l'heure et envoie le lien vidéo.",
+    "patientLine": "Patient : {{name}}",
+    "fee": "Honoraires de consultation : {{fee}}",
+    "free": "Pas d'honoraires de consultation",
+    "date": "Date souhaitée",
+    "dateHint": "Dates avec des créneaux de consultation libres.",
+    "noSlots": "Aucun créneau libre dans les 60 prochains jours. Envoyez la demande sans date.",
+    "noPreference": "Pas de préférence de date",
+    "time": "Heure (heure de l'Inde)",
+    "istTime": "{{time}} heure de l'Inde",
+    "localTime": "Soit {{time}} dans votre fuseau horaire.",
+    "confirmNote": "L'hôpital confirme l'heure exacte.",
+    "question": "Question pour le médecin",
+    "questionHint": "Symptômes, traitements passés et ce que le patient veut savoir avant de voyager.",
+    "reports": "Comptes rendus à partager",
+    "reportsHint": "Partagés uniquement avec cet hôpital, 20 au maximum.",
+    "consent": "Le patient a accepté de partager ces informations avec l'hôpital",
+    "consentHint": "{{hospital}} voit la question, la pré-évaluation et les comptes rendus choisis pour que le médecin se prépare.",
+    "payNote": "Le patient règle les honoraires depuis son propre compte (Téléconsultations).",
+    "submit": "Demander la consultation",
+    "cancel": "Annuler",
+    "requested": "Consultation demandée",
+    "caseTitle": "Consultations vidéo",
+    "followup": "Suivi post-traitement",
+    "preferredAt": "Souhaité : {{time}}",
+    "awaitingTime": "En attente de l'horaire fixé par l'hôpital",
+    "join": "Rejoindre l'appel vidéo",
+    "slotsLeft_one": "{{count}} créneau libre",
+    "slotsLeft_other": "{{count}} créneaux libres",
+    "errors": {
+      "exists": "Ce patient a déjà une consultation en cours avec ce médecin.",
+      "unavailable": "Ce médecin ne propose pas de consultation vidéo.",
+      "caseClosed": "Le dossier du patient avec cet hôpital est clos. Envoyez d'abord une nouvelle demande.",
+      "failed": "La demande de consultation n'a pas pu être envoyée. Veuillez réessayer."
+    }
   }
 }

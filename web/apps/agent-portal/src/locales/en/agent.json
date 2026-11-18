@@ -1434,5 +1434,44 @@
       "sent": "Check-in sent.",
       "sentFlagged": "Check-in sent. The hospital and the coordinator have been alerted."
     }
+  },
+  "teleconsult": {
+    "open": "Book video consultation",
+    "title": "Book a video consultation",
+    "description": "Pre-travel video consultation with {{doctor}}, {{hospital}}. The hospital confirms the time and sends the video link.",
+    "patientLine": "Patient: {{name}}",
+    "fee": "Consultation fee: {{fee}}",
+    "free": "No consultation fee",
+    "date": "Preferred date",
+    "dateHint": "Dates with free consultation slots.",
+    "noSlots": "No free consultation slots in the next 60 days. Send the request without a date.",
+    "noPreference": "No date preference",
+    "time": "Time (India time)",
+    "istTime": "{{time}} India time",
+    "localTime": "That is {{time}} in your time zone.",
+    "confirmNote": "The hospital confirms the exact time.",
+    "question": "Question for the doctor",
+    "questionHint": "Symptoms, past treatment and what the patient wants to know before travelling.",
+    "reports": "Reports to share",
+    "reportsHint": "Shared only with this hospital, at most 20.",
+    "consent": "The patient agreed to share these details with the hospital",
+    "consentHint": "{{hospital}} sees the question, the screening and the chosen reports so the doctor can prepare.",
+    "payNote": "The patient pays the consultation fee from their own account (Video consultations).",
+    "submit": "Request consultation",
+    "cancel": "Cancel",
+    "requested": "Consultation requested",
+    "caseTitle": "Video consultations",
+    "followup": "Aftercare follow-up",
+    "preferredAt": "Preferred: {{time}}",
+    "awaitingTime": "Waiting for the hospital to set a time",
+    "join": "Join video call",
+    "slotsLeft_one": "{{count}} slot left",
+    "slotsLeft_other": "{{count}} slots left",
+    "errors": {
+      "exists": "This patient already has an open consultation with this doctor.",
+      "unavailable": "This doctor does not offer video consultations.",
+      "caseClosed": "The patient's case with this hospital is closed. Send a new enquiry first.",
+      "failed": "The consultation request could not be sent. Please try again."
+    }
   }
 }

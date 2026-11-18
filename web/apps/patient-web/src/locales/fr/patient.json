@@ -1351,7 +1351,8 @@
       "tripDocuments": "Voyage et documents",
       "aftercare": "Suivi post-traitement",
       "reviews": "Mes avis",
-      "browse": "Hôpitaux et médecins"
+      "browse": "Hôpitaux et médecins",
+      "consultations": "Téléconsultations"
     },
     "pageError": {
       "description": "Veuillez recharger la page. Si le problème persiste, contactez l'assistance.",
@@ -2138,6 +2139,112 @@
       "passwordNumber": "Incluez au moins un chiffre",
       "age": "Veuillez confirmer votre âge",
       "mismatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "consult": {
+    "title": "Consultation vidéo",
+    "bookVideo": "Réserver une consultation vidéo",
+    "kind": {
+      "followup": "Suivi post-traitement"
+    },
+    "mode": {
+      "video": "Appel vidéo",
+      "phone": "Appel téléphonique"
+    },
+    "fee": {
+      "free": "Gratuit",
+      "paid": "Payé",
+      "pending": "Paiement en vérification",
+      "unpaid": "Pas encore payé"
+    },
+    "book": {
+      "title": "Réserver une consultation vidéo",
+      "description": "Parlez au médecin en vidéo avant votre voyage. Posez vos questions et partagez vos comptes rendus.",
+      "chooseDoctorTitle": "Choisissez d'abord un médecin",
+      "chooseDoctorText": "Ouvrez la page d'un médecin et choisissez Réserver une consultation vidéo.",
+      "browseDoctors": "Parcourir les médecins",
+      "doctorStep": "Médecin",
+      "doctorLabel": "Médecin proposant des consultations vidéo",
+      "doctorPlaceholder": "Choisissez un médecin",
+      "noTeleDoctors": "Aucun médecin de cet hôpital ne propose de consultation vidéo pour le moment. Vous pouvez demander un devis à la place.",
+      "guestAction": "réserver une consultation vidéo",
+      "slotStep": "Horaire souhaité",
+      "slotHint": "Les dates en vert ont des créneaux de consultation. L'hôpital confirme l'heure exacte.",
+      "calendarLabel": "Dates de consultation",
+      "noSlots": "Aucun créneau libre ce mois-ci. Essayez le mois suivant ou envoyez votre demande sans préférence de date.",
+      "dateLabel": "Date",
+      "noDate": "Choisissez une date en vert dans le calendrier",
+      "timeLabel": "Heure (heure de l'Inde)",
+      "istTime": "{{time}} heure de l'Inde",
+      "localTime": "Soit {{time}} chez vous.",
+      "timeHint": "Choisissez une date pour voir l'heure chez vous.",
+      "confirmNote": "Il s'agit d'une préférence. L'hôpital confirme l'heure et vous envoie le lien vidéo.",
+      "questionStep": "Votre question et vos comptes rendus",
+      "questionLabel": "Que souhaitez-vous demander au médecin ?",
+      "questionHint": "Par exemple vos symptômes, vos traitements passés et ce que vous voulez savoir avant de voyager.",
+      "reportsLabel": "Comptes rendus à partager",
+      "reportsHint": "Choisissez les comptes rendus que le médecin doit voir. Ils ne sont partagés qu'avec cet hôpital.",
+      "noReports": "Vous n'avez encore téléversé aucun compte rendu médical.",
+      "uploadReport": "Téléverser un compte rendu",
+      "consentLabel": "J'accepte de partager mes informations et les comptes rendus choisis avec cet hôpital",
+      "consentText": "{{hospital}} voit votre question, votre pré-évaluation (si choisie) et les comptes rendus sélectionnés pour que le médecin se prépare. Vous pouvez retirer ce consentement plus tard dans Profil > Confidentialité.",
+      "payNext": "Vous réglez les honoraires de consultation à l'étape suivante. L'hôpital confirme l'heure dès réception de votre demande.",
+      "submit": "Demander la consultation",
+      "submitPaid": "Continuer vers le paiement",
+      "requested": "Consultation demandée"
+    },
+    "errors": {
+      "exists": "Vous avez déjà une consultation en cours avec ce médecin. Ouvrez-la depuis Téléconsultations.",
+      "teleconsultUnavailable": "Ce médecin ne propose pas de consultation vidéo.",
+      "invalidDoctor": "Ce médecin ne peut pas assurer la consultation. Veuillez choisir un autre médecin.",
+      "caseClosed": "Votre dossier avec cet hôpital est clos. Veuillez d'abord demander un nouveau devis.",
+      "failed": "Nous n'avons pas pu envoyer votre demande de consultation. Veuillez réessayer."
+    },
+    "list": {
+      "title": "Téléconsultations",
+      "description": "Vos consultations avec les médecins avant et après le traitement.",
+      "book": "Réserver une consultation",
+      "all": "Toutes",
+      "emptyTitle": "Aucune consultation pour l'instant",
+      "emptyText": "Trouvez un médecin qui propose des consultations vidéo et parlez-lui avant votre voyage.",
+      "open": "Ouvrir"
+    },
+    "detail": {
+      "when": "Quand",
+      "preferred": "Votre horaire souhaité : {{time}}",
+      "awaitingTime": "En attente de l'horaire fixé par l'hôpital",
+      "requestedText": "L'hôpital confirmera un horaire et vous enverra le lien vidéo. Nous vous préviendrons.",
+      "localTimeNote": "Affiché à votre heure locale · environ {{minutes}} minutes",
+      "join": "Rejoindre l'appel vidéo",
+      "joinHint": "Le lien s'ouvre dans un nouvel onglet. Connectez-vous quelques minutes en avance et vérifiez caméra et micro.",
+      "linkSoon": "Le lien vidéo apparaîtra ici avant l'appel.",
+      "phoneCall": "Le médecin vous appellera au numéro de téléphone de votre profil.",
+      "completedText": "Cette consultation a eu lieu.",
+      "cancelledText": "Cette consultation a été annulée.",
+      "reminders": "Nous vous envoyons un rappel 24 heures et 1 heure avant l'appel, par notification et par e-mail.",
+      "feeTitle": "Honoraires et paiement",
+      "paymentStatus": "Paiement",
+      "confirmingPayment": "Nous confirmons votre paiement. Cela peut prendre une minute.",
+      "pay": "Payer la consultation",
+      "payAgain": "Payer autrement",
+      "detailsTitle": "Détails",
+      "mode": "Type",
+      "case": "Dossier",
+      "requestedOn": "Demandée le",
+      "notes": "Votre question",
+      "cancel": "Annuler la consultation",
+      "cancelTitle": "Annuler cette consultation ?",
+      "cancelText": "L'hôpital est informé que vous n'avez plus besoin de cette consultation.",
+      "cancelPaidText": "L'hôpital est informé que vous n'avez plus besoin de cette consultation. Vous avez payé les honoraires : contactez l'assistance pour un remboursement.",
+      "cancelled": "Consultation annulée"
+    },
+    "pay": {
+      "title": "Payer la consultation",
+      "description": "Consultation vidéo avec {{doctor}}, {{hospital}}",
+      "back": "Retour à la consultation",
+      "summary": "Récapitulatif",
+      "doctor": "Médecin",
+      "time": "Horaire"
     }
   }
 }
