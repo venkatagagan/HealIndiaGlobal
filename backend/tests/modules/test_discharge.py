@@ -6,7 +6,7 @@ from __future__ import annotations
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from app.core.enums import (
     BookingStatus,
@@ -121,7 +121,7 @@ async def test_prefill_create_finalize_and_versions(
     assert again.json()["error"]["details"]["discharge_summary_id"] == sid
 
     # health text is encrypted at rest
-    raw = (await db.execute(select(DischargeSummary.__table__.c.diagnosis))).scalar_one()
+    raw = (await db.execute(text("SELECT diagnosis FROM discharge_summaries"))).scalar_one()
     assert raw.startswith("v1:") and "OA" not in raw
 
     # the patient does not see drafts
@@ -132,10 +132,8 @@ async def test_prefill_create_finalize_and_versions(
 
     resp = await client.post(f"{P}/{sid}/finalize", headers=h)
     assert resp.status_code == 400
-    assert (
-        set(resp.json()["error"]["details"]) == {"discharge_date", "follow_up_instructions"}
-        or "follow_up_instructions" in resp.json()["error"]["details"]
-    )
+    # admission/discharge dates came from the booking; the follow-up plan is still missing
+    assert resp.json()["error"]["details"] == ["follow_up_instructions"]
 
     resp = await client.patch(
         f"{P}/{sid}", json={**FULL, "discharge_date": date.today().isoformat()}, headers=h
@@ -360,7 +358,7 @@ async def test_share_with_home_doctor(
     stranger = await create_user(db, role="patient")
     foreign_doc = await make_document(db, stranger, kind="lab_result")
 
-    body = {"doctor_email": "dr.home@clinic.example.test", "doctor_name": "Dr. Home", "consent": False}
+    body = {"doctor_email": "dr.home@clinic-example.com", "doctor_name": "Dr. Home", "consent": False}
     resp = await client.post(f"{P}/{sid}/shares", json=body, headers=h)
     assert resp.status_code == 400 and resp.json()["error"]["code"] == "consent_required"
     resp = await client.post(
@@ -378,7 +376,7 @@ async def test_share_with_home_doctor(
     )
     assert resp.status_code == 201, resp.text
     share = resp.json()
-    assert share["active"] is True and share["doctor_email_masked"] == "dr***@clinic.example.test"
+    assert share["active"] is True and share["doctor_email_masked"] == "dr***@clinic-example.com"
     assert share["url"].startswith(share_url("x").rsplit("/", 1)[0])
     token = share["url"].rsplit("/", 1)[1]
     expires = datetime.fromisoformat(share["expires_at"])
@@ -392,7 +390,7 @@ async def test_share_with_home_doctor(
     assert consent.granted and consent.case_id == case.id
 
     await run_jobs()
-    mail = [m for m in email_outbox if m["to"] == ["dr.home@clinic.example.test"]]
+    mail = [m for m in email_outbox if m["to"] == ["dr.home@clinic-example.com"]]
     assert len(mail) == 1 and token in mail[0]["html"]
 
     pub = f"/api/v1/public/discharge-shares/{token}"

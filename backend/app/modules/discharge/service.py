@@ -490,6 +490,30 @@ async def _apply_fields(
     return changed
 
 
+async def _apply_defaults(
+    db: AsyncSession, summary: DischargeSummary, case: Case, booking: Booking | None
+) -> None:
+    """Start a new draft from what the platform already knows (the body's values win)."""
+    doctor_id = (booking.doctor_id if booking else None) or case.doctor_id
+    doctor = await db.get(Doctor, doctor_id) if doctor_id else None
+    if doctor is not None and doctor.hospital_id == summary.hospital_id:
+        summary.doctor_id = doctor.id
+        summary.doctor_name = doctor.full_name
+        summary.doctor_registration = doctor.registration_number
+    if booking is not None:
+        admitted = booking.admitted_at.date() if booking.admitted_at else booking.admission_date
+        discharged = booking.completed_at.date() if booking.completed_at else booking.discharge_date
+        summary.admission_date = admitted
+        summary.discharge_date = None if admitted and discharged and discharged < admitted else discharged
+    procedure_id = (booking.procedure_id if booking else None) or case.procedure_id
+    procedure = await db.get(Procedure, procedure_id) if procedure_id else None
+    if procedure is not None:
+        summary.procedure_name = procedure.name
+    patient = await db.get(PatientProfile, case.patient_id)
+    if patient is not None and patient.allergies:
+        summary.allergies = patient.allergies
+
+
 async def create_summary(
     db: AsyncSession, user: User, body: s.DischargeSummaryCreate, request: Request | None
 ) -> DischargeSummary:
@@ -533,6 +557,7 @@ async def create_summary(
         attachment_document_ids=[],
     )
     db.add(summary)
+    await _apply_defaults(db, summary, case, booking)
     changed = await _apply_fields(db, summary, case, body)
     try:
         await db.flush()
