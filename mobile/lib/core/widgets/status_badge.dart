@@ -30,11 +30,16 @@ class StatusBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[Icon(icon, size: dense ? 12 : 14, color: c), const SizedBox(width: 4)],
-          Text(
-            label,
-            style: (dense ? context.text.labelSmall : context.text.labelMedium)?.copyWith(
-              color: c,
-              fontWeight: FontWeight.w700,
+          // Long labels (treatment names, translations) shrink with an ellipsis instead of overflowing.
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: (dense ? context.text.labelSmall : context.text.labelMedium)?.copyWith(
+                color: c,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],

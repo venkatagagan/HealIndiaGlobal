@@ -77,6 +77,7 @@ class _CheckinFormScreenState extends ConsumerState<CheckinFormScreen> {
               if (_wound) 'wound_concerns',
             ];
       if (flags.isNotEmpty) {
+        setState(() => _busy = false);
         await _urgent(flags);
       } else {
         showInfoSnack(context, context.l10n.aftercareCheckinThanks);
