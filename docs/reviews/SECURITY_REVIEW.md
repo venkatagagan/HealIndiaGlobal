@@ -63,6 +63,21 @@ New settings: `AI_USER_DAILY_LIMIT_SCREENING`, `AI_USER_DAILY_LIMIT_DOCAI`, `AI_
 Still open after this pass (Medium): SEC-010 (partial), 017 (partial: targeted lock of new sign-ins), 022
 (deployment step: own host for the console).
 
+### Gap-fix pass (2026-11-18, migration `0010d`)
+
+| Finding | Now | Fix |
+|---|---|---|
+| SEC-010 (Medium) refunds | **Fixed** | Approved bank-transfer refunds are no longer `processed` with a synthetic id: `payments.process_refund` moves them to `awaiting_payout` (finance notified). A finance user records the payout (`POST /payments/refunds/{id}/payout`: UTR/reference - normalised and unique across refunds -, value date, optional proof document, note); a DIFFERENT finance user confirms the reviewed reference (`POST .../payout/confirm`, 403 `second_approver_required` for the recorder, 409 `payout_changed` if the record changed) or rejects it (`.../payout/reject`, the record is cleared). Only the confirmation finalises the refund (payment/order state, `refund.processed`, ledger posting). Each step is audited. Admin portal: Refunds "Awaiting payout" queue with record/confirm/reject dialogs. Test: `test_payments_refund_payout.py` |
+| SEC-017 (Medium) lockout DoS | **Fixed** | Failed sign-ins are throttled per (account, client IP) first: after 5 failures in 15 min that IP is throttled for that account only (wrong password: the generic 401, not counted again; right password: 403 `login_throttled` with `Retry-After`), so the owner can still sign in from elsewhere. The account-wide lock needs 20 failures within one window from throttle-free pairs (distributed attack). The non-oracle behaviour and the owner email are kept. Tests: `test_auth.py::test_failed_logins_from_one_ip_do_not_lock_the_owner_out`, `::test_login_lockout_after_distributed_failures` |
+| SEC-031 (Low) open WebSockets | **Fixed** | Every session revocation (logout, refresh reuse, password change/reset, admin revocation, hospital/agent suspension, moderation suspension, erasure) queues a close of the affected sockets after the commit: the hub tracks each socket's session id and a `control` envelope on the `hig:rt` Redis channel reaches every API process (close code 4401 `session_revoked`). Open sockets also re-check session, user and organisation every 60 s. Test: `test_messaging_ws.py::test_ws_closed_when_its_session_is_revoked` |
+| SEC-044 (Low) commission rates | **Fixed** | Hospital/agent `commission_rate_bps` and commission rules are maker-checker (`commission_change_requests`): the change is pending until a DIFFERENT admin/finance user approves it (`/admin/commission-changes/{id}/approve`); superseded requests (409 `request_changed`) and targets changed since the request (409 `target_changed`) are refused; new rules start inactive. `default_commission_bps` / `default_agent_commission_bps` joined the settings dual control (finance). Admin portal queue + inline approve/reject. Test: `test_commission_dual_control.py` |
+| SEC-046 (Low) webhook hardening | **Fixed** | Razorpay events are deduplicated on signed body fields (event, entity id, `created_at`), not the unsigned `X-Razorpay-Event-Id` header, and refused as `stale_webhook` (not stored) when the signed `created_at` is older than `WEBHOOK_MAX_AGE_SECONDS` (default 300 s; widen temporarily after an outage so gateway retries are accepted) or in the future. Stripe already dedupes on the signed payload id and checks its signed delivery timestamp (5 min). Test: `test_payments_gateways.py::test_razorpay_webhook_replay_and_stale_events_refused` |
+
+New setting: `WEBHOOK_MAX_AGE_SECONDS`. New error codes: `login_throttled`, `stale_webhook`, `payout_changed`,
+`no_payout_recorded`, `invalid_payout_date`, `target_changed`.
+
+Still open after this pass (Medium): SEC-022 (deployment step: own host for the console).
+
 ## 1. Summary
 
 | Severity | Pass 1 | New in pass 2 | Fixed | Partially fixed | Still open |
