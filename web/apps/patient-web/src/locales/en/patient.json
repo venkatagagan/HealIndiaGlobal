@@ -1944,7 +1944,8 @@
       "updated": "Review updated.",
       "notEligibleTitle": "Nothing to review",
       "notEligibleMessage": "You can review a hospital after your treatment there is completed, once per booking."
-    }
+    },
+    "reportLabel": "Report this review"
   },
   "aftercare": {
     "title": "Aftercare",

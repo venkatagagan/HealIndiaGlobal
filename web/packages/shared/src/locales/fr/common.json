@@ -792,5 +792,30 @@
     "server": "Le serveur a rencontré un problème. Veuillez réessayer sous peu.",
     "requestFailed": "La requête a échoué.",
     "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+  },
+  "report": {
+    "button": "Signaler",
+    "send": "Envoyer le signalement",
+    "reason": "Motif",
+    "note": "Note",
+    "noteHint": "{{max}} caractères maximum.",
+    "description": "Dites-nous ce qui ne va pas. Votre signalement est confidentiel et transmis à notre équipe.",
+    "chooseReason": "Choisissez un motif.",
+    "sent": "Merci. Notre équipe va examiner ce signalement.",
+    "tooMany": "Vous avez envoyé beaucoup de signalements. Veuillez réessayer plus tard.",
+    "gone": "Cet élément n'est plus disponible.",
+    "reasons": {
+      "spam": "Spam",
+      "abusive": "Insultant ou harcelant",
+      "inappropriate": "Inapproprié",
+      "inaccurate": "Inexact ou trompeur",
+      "privacy": "Atteinte à la vie privée",
+      "other": "Autre"
+    },
+    "titles": {
+      "message": "Signaler ce message",
+      "result": "Signaler ce résultat",
+      "review": "Signaler cet avis"
+    }
   }
 }

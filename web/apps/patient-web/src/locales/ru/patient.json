@@ -2019,7 +2019,8 @@
     "stars_few": "{{count}} звезды",
     "stars_many": "{{count}} звёзд",
     "stars_other": "{{count}} звезды",
-    "doctor": "Врач: {{name}}"
+    "doctor": "Врач: {{name}}",
+    "reportLabel": "Пожаловаться на отзыв"
   },
   "aftercare": {
     "title": "Наблюдение после лечения",

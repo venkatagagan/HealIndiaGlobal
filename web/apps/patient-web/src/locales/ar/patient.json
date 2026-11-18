@@ -2098,7 +2098,8 @@
     "stars_few": "{{count}} نجوم",
     "stars_many": "{{count}} نجمة",
     "stars_other": "{{count}} نجمة",
-    "doctor": "الطبيب: {{name}}"
+    "doctor": "الطبيب: {{name}}",
+    "reportLabel": "الإبلاغ عن هذا التقييم"
   },
   "aftercare": {
     "title": "الرعاية بعد العلاج",

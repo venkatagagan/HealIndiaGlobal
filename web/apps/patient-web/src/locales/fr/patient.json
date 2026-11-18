@@ -1939,7 +1939,8 @@
     },
     "stars_one": "1 étoile",
     "stars_other": "{{count}} étoiles",
-    "doctor": "Médecin : {{name}}"
+    "doctor": "Médecin : {{name}}",
+    "reportLabel": "Signaler cet avis"
   },
   "aftercare": {
     "title": "Suivi post-traitement",

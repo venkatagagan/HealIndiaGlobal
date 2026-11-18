@@ -1939,7 +1939,8 @@
     },
     "stars_one": "{{count}} তারকা",
     "stars_other": "{{count}} তারকা",
-    "doctor": "ডাক্তার: {{name}}"
+    "doctor": "ডাক্তার: {{name}}",
+    "reportLabel": "এই রিভিউটি রিপোর্ট করুন"
   },
   "aftercare": {
     "title": "চিকিৎসা-পরবর্তী সেবা",

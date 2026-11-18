@@ -792,5 +792,30 @@
     "server": "The server had a problem. Please try again shortly.",
     "requestFailed": "Request failed.",
     "network": "Cannot reach the server. Check your connection and try again."
+  },
+  "report": {
+    "button": "Report",
+    "send": "Send report",
+    "reason": "Reason",
+    "note": "Note",
+    "noteHint": "Up to {{max}} characters.",
+    "description": "Tell us what is wrong. Your report is private and goes to our team.",
+    "chooseReason": "Choose a reason.",
+    "sent": "Thanks. Our team will review this report.",
+    "tooMany": "You have sent a lot of reports. Please try again later.",
+    "gone": "This item is no longer available.",
+    "reasons": {
+      "spam": "Spam",
+      "abusive": "Abusive or harassing",
+      "inappropriate": "Inappropriate",
+      "inaccurate": "Inaccurate or misleading",
+      "privacy": "Privacy concern",
+      "other": "Other"
+    },
+    "titles": {
+      "message": "Report this message",
+      "result": "Report this result",
+      "review": "Report this review"
+    }
   }
 }

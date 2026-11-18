@@ -168,7 +168,7 @@ export function DoctorPage() {
               ) : (
                 <>
                   {reviews.data.items.map((r) => (
-                    <ReviewCard key={r.id} review={r} />
+                    <ReviewCard key={r.id} review={r} reportable={!!me.data} />
                   ))}
                   {reviews.data.pages > 1 ? <Pagination page={page} pages={reviews.data.pages} onChange={setPage} /> : null}
                 </>
