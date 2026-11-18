@@ -1,0 +1,232 @@
+# Deploy to the AWS starter box (deploy/terraform/aws-starter + deploy/starter).
+#
+#   * on push to main: runs after the CI workflow finished successfully for that commit (workflow_run)
+#   * by hand: Actions -> "Deploy (AWS starter)" -> Run workflow (on main)
+#
+# Builds linux/arm64 images (Graviton) for api (with local Whisper), web (the four SPAs) and website, pushes them to
+# ECR tagged with the commit SHA, uploads the deploy bundle (infra/ + deploy/starter/) to S3 and runs the fixed SSM
+# document "<name>-deploy" on the instance, which migrates, starts and health-checks the release (automatic
+# rollback on failure). AWS access is GitHub OIDC -> IAM role (no stored AWS keys).
+#
+# Until the AWS account exists this workflow does nothing: it is skipped with a notice unless the repository
+# variable AWS_DEPLOY_ENABLED is "true". Repository variables (terraform output github_repository_variables):
+#   AWS_DEPLOY_ENABLED, AWS_REGION, AWS_DEPLOY_ROLE_ARN, AWS_DEPLOYMENT_NAME, AWS_ECR_PREFIX,
+#   AWS_ARTIFACTS_BUCKET, AWS_SSM_DOCUMENT, AWS_SITE_DOMAIN, AWS_STAFF_HOST, GOOGLE_CLIENT_ID (public)
+# Optional: AWS_BUILD_RUNNER (e.g. ubuntu-24.04-arm for native arm64 builds instead of QEMU emulation).
+# No repository secrets are needed.
+
+name: Deploy (AWS starter)
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-aws-starter
+  cancel-in-progress: false
+
+jobs:
+  # -----------------------------------------------------------------------------------------------------
+  gate:
+    name: Should we deploy?
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.check.outputs.deploy }}
+      sha: ${{ steps.check.outputs.sha }}
+    steps:
+      - name: Check switches
+        id: check
+        env:
+          ENABLED: ${{ vars.AWS_DEPLOY_ENABLED }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_EVENT: ${{ github.event.workflow_run.event }}
+          SHA: ${{ github.sha }}
+        run: |
+          deploy=true
+          if [ "$ENABLED" != "true" ]; then
+            echo "::notice title=AWS deploy skipped::Repository variable AWS_DEPLOY_ENABLED is not 'true' (no AWS account configured yet). Nothing was built or deployed."
+            deploy=false
+          elif [ "$EVENT" = "workflow_run" ]; then
+            if [ "$RUN_CONCLUSION" != "success" ] || [ "$RUN_BRANCH" != "main" ] || [ "$RUN_EVENT" != "push" ]; then
+              echo "::notice title=AWS deploy skipped::CI on $RUN_BRANCH ($RUN_EVENT) concluded '$RUN_CONCLUSION' - only successful pushes to main deploy."
+              deploy=false
+            fi
+            SHA="$RUN_SHA"
+          elif [ "$REF" != "refs/heads/main" ]; then
+            echo "::notice title=AWS deploy skipped::Manual deploys run from main only (the AWS role trusts main only)."
+            deploy=false
+          fi
+          echo "deploy=$deploy" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+  # -----------------------------------------------------------------------------------------------------
+  images:
+    name: Build ${{ matrix.image }} (linux/arm64)
+    needs: gate
+    if: needs.gate.outputs.deploy == 'true'
+    runs-on: ${{ vars.AWS_BUILD_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: true
+      matrix:
+        image: [api, web, website]
+    env:
+      SHA: ${{ needs.gate.outputs.sha }}
+      SITE: https://${{ vars.AWS_SITE_DOMAIN }}
+      STAFF: https://${{ vars.AWS_STAFF_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: gha-build-${{ matrix.image }}
+
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Image settings
+        id: cfg
+        env:
+          IMAGE: ${{ matrix.image }}
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          PREFIX: ${{ vars.AWS_ECR_PREFIX }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+        run: |
+          {
+            echo "tag=$REGISTRY/$PREFIX/$IMAGE:$SHA"
+            case "$IMAGE" in
+              api) echo "context=backend"; echo "file=backend/Dockerfile" ;;
+              web) echo "context=web"; echo "file=web/Dockerfile" ;;
+              website) echo "context=website"; echo "file=infra/website/Dockerfile" ;;
+            esac
+            echo "build-args<<ARGS"
+            case "$IMAGE" in
+              api)
+                echo "INSTALL_VOICE=true" ;;
+              web)
+                echo "VITE_API_BASE_URL=/api/v1"
+                echo "VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"
+                echo "VITE_PATIENT_WEB_URL=$SITE"
+                echo "VITE_PATIENT_APP_URL=$SITE/app/"
+                echo "VITE_AGENT_PORTAL_URL=$SITE/agent/"
+                echo "VITE_HOSPITAL_PORTAL_URL=$SITE/hospital/"
+                echo "VITE_ADMIN_PORTAL_URL=$STAFF/gahi/"
+                echo "VITE_PUBLIC_SITE_URL=$SITE"
+                echo "VITE_WEBSITE_URL=$SITE"
+                echo "VITE_PUBLIC_LOGIN_URL=$SITE/login"
+                echo "VITE_PUBLIC_REGISTER_URL=$SITE/register"
+                echo "VITE_PUBLIC_FORGOT_PASSWORD_URL=$SITE/forgot-password" ;;
+              website)
+                echo "NEXT_PUBLIC_SITE_URL=$SITE"
+                echo "NEXT_PUBLIC_API_BASE=/api/v1"
+                echo "NEXT_PUBLIC_PATIENT_APP_URL=$SITE/app/"
+                echo "NEXT_PUBLIC_AGENT_PORTAL_URL=$SITE/agent/"
+                echo "NEXT_PUBLIC_HOSPITAL_PORTAL_URL=$SITE/hospital/"
+                echo "NEXT_PUBLIC_STAFF_URL=$STAFF/gahi/"
+                echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"
+                echo "CONTENT_INCLUDE_DRAFTS=false" ;;
+            esac
+            echo "ARGS"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.cfg.outputs.context }}
+          file: ${{ steps.cfg.outputs.file }}
+          platforms: linux/arm64
+          push: true
+          provenance: false
+          tags: ${{ steps.cfg.outputs.tag }}
+          build-args: ${{ steps.cfg.outputs.build-args }}
+          cache-from: type=gha,scope=aws-${{ matrix.image }}-arm64
+          cache-to: type=gha,mode=max,scope=aws-${{ matrix.image }}-arm64
+
+  # -----------------------------------------------------------------------------------------------------
+  deploy:
+    name: Deploy to the box
+    needs: [gate, images]
+    if: needs.gate.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      SHA: ${{ needs.gate.outputs.sha }}
+      BUCKET: ${{ vars.AWS_ARTIFACTS_BUCKET }}
+      DOCUMENT: ${{ vars.AWS_SSM_DOCUMENT }}
+      DEPLOYMENT: ${{ vars.AWS_DEPLOYMENT_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: gha-deploy
+
+      - name: Upload the deploy bundle (infra/ + deploy/starter/)
+        run: |
+          tar --exclude='infra/nginx/certs/*' --exclude='infra/.env' -czf bundle.tar.gz infra deploy/starter
+          aws s3 cp --only-show-errors bundle.tar.gz "s3://$BUCKET/bundles/$SHA.tar.gz"
+
+      - name: Run the deploy document on the instance
+        run: |
+          instance="$(aws ec2 describe-instances \
+            --filters "Name=tag:hig:deployment,Values=$DEPLOYMENT" "Name=tag:hig:role,Values=app" \
+                      "Name=instance-state-name,Values=running" \
+            --query 'Reservations[].Instances[].InstanceId' --output text)"
+          if [ -z "$instance" ] || [ "$(wc -w <<<"$instance")" -ne 1 ]; then
+            echo "::error::expected exactly one running instance tagged hig:deployment=$DEPLOYMENT, found: '$instance'"
+            exit 1
+          fi
+          command_id="$(aws ssm send-command --instance-ids "$instance" --document-name "$DOCUMENT" \
+            --parameters "ImageTag=$SHA" --timeout-seconds 600 \
+            --comment "GitHub ${GITHUB_RUN_ID}: deploy ${SHA:0:12}" \
+            --query Command.CommandId --output text)"
+          echo "SSM command $command_id on $instance"
+          status=Pending
+          for _ in $(seq 1 420); do
+            sleep 10
+            status="$(aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance" \
+              --query Status --output text 2>/dev/null || echo Pending)"
+            case "$status" in Pending|InProgress|Delayed) continue ;; *) break ;; esac
+          done
+          aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance" \
+            --query StandardOutputContent --output text | tail -n 120 || true
+          if [ "$status" != "Success" ]; then
+            aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance" \
+              --query StandardErrorContent --output text | tail -n 60 || true
+            echo "::error::deploy of ${SHA:0:12} ended with status $status (see the output above and /var/log/hig-deploy.log)"
+            exit 1
+          fi
+          {
+            echo "### Deployed \`${SHA:0:12}\`"
+            echo "https://${{ vars.AWS_SITE_DOMAIN }}/ - staff: https://${{ vars.AWS_STAFF_HOST }}/gahi/"
+          } >> "$GITHUB_STEP_SUMMARY"
