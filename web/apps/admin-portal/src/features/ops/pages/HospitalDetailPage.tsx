@@ -47,6 +47,9 @@ import {
 import { ConfirmDialog, Field, Input, ReasonDialog, Switch } from '../ui';
 import { Banner, DetailHero, DetailTabs, FactList, FieldGrid, Panel, StatusTrack, useDetailTab } from '../ui/detail';
 import { DocumentList } from '../components/DocumentList';
+import { AccreditationsPanel } from '../components/AccreditationsPanel';
+import { ProfileChangesPanel } from '../components/DualControl';
+import type { AdminHospitalWithPending } from '../lib/phase1Api';
 import { bpsToPctInput, cn, formatBps, formatDate, formatDateTime, pctInputToBps, useDocumentTitle } from '../lib/format';
 import { opsKeys, useOpsMutation } from '../lib/mutations';
 import { opsPaths } from '../lib/paths';
@@ -55,7 +58,7 @@ import { useSettingValue } from '../lib/settings';
 import { formatNumber } from '@hig/shared/lib';
 import { useAppTranslation } from '../../../i18n';
 
-const TABS = ['overview', 'kyc', 'doctors', 'team', 'cases', 'activity'] as const;
+const TABS = ['overview', 'kyc', 'accreditations', 'doctors', 'team', 'cases', 'activity'] as const;
 type HospitalTab = (typeof TABS)[number];
 
 export default function HospitalDetailPage() {
@@ -222,6 +225,7 @@ export default function HospitalDetailPage() {
       </DetailHero>
 
       <div className="mb-5 space-y-3">
+        <ProfileChangesPanel hospital={h as AdminHospitalWithPending} />
         {h.rejection_reason && closed && (
           <Banner
             tone="danger"
@@ -264,6 +268,7 @@ export default function HospitalDetailPage() {
             tabs={[
               { value: 'overview', label: t('hospitalDetail.tabs.overview') },
               { value: 'kyc', label: t('hospitalDetail.tabs.kyc'), count: h.kyc_documents.length },
+              { value: 'accreditations', label: t('accreditations.tab') },
               { value: 'doctors', label: t('hospitalDetail.tabs.doctors'), count: h.doctors ? doctors.length : (h.doctors_count ?? null) },
               { value: 'team', label: t('hospitalDetail.tabs.team'), count: h.members.length },
               { value: 'cases', label: t('hospitalDetail.tabs.cases'), count: h.cases_count ?? null },
@@ -282,6 +287,7 @@ export default function HospitalDetailPage() {
                 />
               </Panel>
             )}
+            {tab === 'accreditations' && <AccreditationsPanel hospitalId={h.id} canEdit={perms.approvePartners} />}
             {tab === 'doctors' && (
               <DoctorsTab
                 doctors={doctors}

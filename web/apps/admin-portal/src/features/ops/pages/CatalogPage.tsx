@@ -337,6 +337,10 @@ function ProceduresSection({ canEdit }: { canEdit: boolean }) {
 }
 
 // ---------------------------------------------------------------------------------------------------------
+const CONFIDENCE_LEVELS = ['high', 'medium', 'low'] as const;
+type Confidence = (typeof CONFIDENCE_LEVELS)[number];
+const CONFIDENCE_TONES: Record<Confidence, 'success' | 'info' | 'warning'> = { high: 'success', medium: 'info', low: 'warning' };
+
 const BENCHMARK_FILTERS = { q: filterParam.text(), procedure: filterParam.text(), country: filterParam.text() };
 
 function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
@@ -376,7 +380,17 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
       { name: 'cost_min_minor', label: t('catalog.fields.homeCostFrom'), kind: 'money', required: true, currencyField: 'currency' },
       { name: 'cost_max_minor', label: t('catalog.fields.homeCostTo'), kind: 'money', required: true, currencyField: 'currency' },
       { name: 'wait_time_text', label: t('catalog.fields.waitTime'), kind: 'text', maxLength: 60, hint: t('catalog.fields.waitTimeHint') },
-      { name: 'source', label: t('catalog.fields.source'), kind: 'text', maxLength: 300, hint: t('catalog.fields.sourceHint') },
+      { name: 'source', label: t('catalog.fields.source'), kind: 'text', maxLength: 255, hint: t('catalog.fields.sourceHint') },
+      { name: 'source_url', label: t('catalog.fields.sourceUrl'), kind: 'url', maxLength: 1024, hint: t('catalog.fields.sourceUrlHint'), wide: true },
+      { name: 'price_year', label: t('catalog.fields.priceYear'), kind: 'int', min: 1990, max: 2100, hint: t('catalog.fields.priceYearHint') },
+      {
+        name: 'confidence',
+        label: t('catalog.fields.confidence'),
+        kind: 'select',
+        options: CONFIDENCE_LEVELS.map((c) => ({ value: c, label: t(`catalog.confidence.${c}`) })),
+        hint: t('catalog.fields.confidenceHint'),
+      },
+      { name: 'wait_source', label: t('catalog.fields.waitSource'), kind: 'text', maxLength: 255, hint: t('catalog.fields.waitSourceHint'), wide: true },
     ],
     [t, procedureOptions, filters.procedure],
   );
@@ -426,8 +440,61 @@ function BenchmarksSection({ canEdit }: { canEdit: boolean }) {
       key: 'source',
       header: t('catalog.columns.source'),
       className: 'max-w-56',
-      cell: (b) => <TextCell primary={<span className="text-xs text-muted">{b.source ?? '—'}</span>} />,
-      exportValue: (b) => b.source ?? '',
+      cell: (b) => (
+        <TextCell
+          primary={
+            b.source_url ? (
+              <a
+                href={b.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-primary-ink hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {b.source ?? b.source_url.replace(/^https?:\/\//, '')}
+              </a>
+            ) : (
+              <span className="text-xs text-muted">{b.source ?? '—'}</span>
+            )
+          }
+          secondary={
+            [b.price_year ? t('catalog.benchmarks.priceYear', { year: b.price_year }) : null, b.wait_source ? t('catalog.benchmarks.waitSource', { source: b.wait_source }) : null]
+              .filter(Boolean)
+              .join(' · ') || undefined
+          }
+        />
+      ),
+      exportValue: (b) => [b.source ?? '', b.source_url ?? ''].filter(Boolean).join(' '),
+    },
+    {
+      key: 'price_year',
+      header: t('catalog.columns.priceYear'),
+      align: 'end',
+      sortable: true,
+      sortDescFirst: true,
+      hideOnMobile: true,
+      sortValue: (b) => b.price_year ?? 0,
+      cell: (b) =>
+        b.price_year ? (
+          <span className={b.price_year < new Date().getFullYear() - 2 ? 'tabular-nums text-warning-ink' : 'tabular-nums'}>{b.price_year}</span>
+        ) : (
+          <span className="text-muted">—</span>
+        ),
+      exportValue: (b) => b.price_year ?? '',
+    },
+    {
+      key: 'confidence',
+      header: t('catalog.columns.confidence'),
+      sortable: true,
+      hideOnMobile: true,
+      sortValue: (b) => CONFIDENCE_LEVELS.indexOf((b.confidence ?? '') as Confidence),
+      cell: (b) =>
+        b.confidence ? (
+          <Badge tone={CONFIDENCE_TONES[b.confidence as Confidence] ?? 'neutral'}>{t(`catalog.confidence.${b.confidence}`, { defaultValue: b.confidence })}</Badge>
+        ) : (
+          <span className="text-xs text-warning-ink">{t('catalog.benchmarks.noConfidence')}</span>
+        ),
+      exportValue: (b) => b.confidence ?? '',
     },
   ];
   return (

@@ -12,6 +12,11 @@ import { isFinanceSettingKey } from '../lib/permissions';
 import { useOpsPermissions } from '../lib/session';
 import { useSettings } from '../lib/settings';
 import { opsPaths } from '../lib/paths';
+import { SettingPendingChange } from '../components/DualControl';
+import type { SettingWithPending } from '../lib/phase1Api';
+
+/** SEC-011: changes of these keys wait for a second finance user. */
+const DUAL_CONTROL_KEYS: ReadonlySet<string> = new Set(['bank_transfer_details']);
 
 type EditorKind =
   | 'bps'
@@ -148,9 +153,13 @@ function SettingRow({ setting, canEdit, finance }: { setting: PlatformSettingOut
 
   const save = useOpsMutation({
     mutationFn: (value: unknown) => adminApi.updateSetting(setting.key, value),
-    success: t('settings.updated', { label: meta.label }),
+    success: (result) =>
+      (result as SettingWithPending).pending_change && DUAL_CONTROL_KEYS.has(setting.key)
+        ? t('security.setting.sentForApproval', { label: meta.label })
+        : t('settings.updated', { label: meta.label }),
     invalidate: [opsKeys.settings],
   });
+  const dualControl = DUAL_CONTROL_KEYS.has(setting.key);
 
   const dirty = JSON.stringify(draft) !== savedJson;
   const onChange = (value: unknown, ok = true, message: string | null = null) => {
@@ -182,6 +191,8 @@ function SettingRow({ setting, canEdit, finance }: { setting: PlatformSettingOut
         )}
       </div>
       <div className="space-y-2">
+        {dualControl && <SettingPendingChange setting={setting as SettingWithPending} label={meta.label} />}
+        {dualControl && canEdit && <p className="text-xs text-muted">{t('security.setting.dualControlNote')}</p>}
         <SettingEditor key={version} kind={meta.editor} value={draft} disabled={!canEdit} onChange={onChange} />
         {error && (
           <p className="text-xs text-red-500" role="alert">

@@ -27,6 +27,8 @@ import { useAppTranslation } from '../../../i18n';
 import { Tabs } from '../ui';
 import { CrudSection, type FieldDef } from '../components/CrudSection';
 import { opsKeys } from '../lib/mutations';
+import { FxPendingPanel, fxRatesQueryKey } from '../components/DualControl';
+import type { FxRateWithPending } from '../lib/phase1Api';
 import { useOpsPermissions } from '../lib/session';
 
 const TABS = ['tips', 'accommodation', 'services', 'fx'] as const;
@@ -71,7 +73,7 @@ export default function ContentPage() {
       {tab === 'tips' && <TipsSection canEdit={perms.editCatalog} />}
       {tab === 'accommodation' && <AccommodationSection canEdit={perms.editCatalog} />}
       {tab === 'services' && <ServicesSection canEdit={perms.editCatalog} />}
-      {tab === 'fx' && <FxSection canEdit={perms.editCatalog} />}
+      {tab === 'fx' && <FxSection canEdit={perms.editFinanceSettings} />}
     </div>
   );
 }
@@ -484,11 +486,21 @@ const fxColumns = (t: TFunction): DataTableColumn<FxRateOut>[] => [
     align: 'end',
     sortable: true,
     sortValue: (r) => Number(r.rate),
-    cell: (r) => (
-      <span className="tabular-nums" dir="ltr">
-        1 {r.quote_currency} = ₹{formatNumber(Number(r.rate), { maximumFractionDigits: 6 })}
-      </span>
-    ),
+    cell: (r) => {
+      const pending = (r as FxRateWithPending).pending_rate;
+      return (
+        <span className="inline-flex flex-col items-end gap-0.5">
+          <span className="tabular-nums" dir="ltr">
+            1 {r.quote_currency} = ₹{formatNumber(Number(r.rate), { maximumFractionDigits: 6 })}
+          </span>
+          {pending != null && (
+            <Badge tone="warning">
+              {t('security.fx.pendingBadge', { rate: formatNumber(Number(pending), { maximumFractionDigits: 6 }) })}
+            </Badge>
+          )}
+        </span>
+      );
+    },
     exportValue: (r) => String(r.rate),
   },
   {
@@ -516,12 +528,14 @@ function FxSection({ canEdit }: { canEdit: boolean }) {
   const fields = useMemo(() => fxFields(t), [t]);
   const columns = useMemo(() => fxColumns(t), [t]);
   return (
+    <>
+    <FxPendingPanel />
     <CrudSection<FxRateOut, FxRateIn>
       id="admin.content.fx"
       table={table}
       entityName={t('content.entities.fx')}
       entityPlural={t('content.entities.fxPlural')}
-      queryKey={[...opsKeys.content, 'fx-rates']}
+      queryKey={fxRatesQueryKey}
       endpoints={adminApi.fxRates}
       fields={fields}
       columns={columns}
@@ -530,7 +544,13 @@ function FxSection({ canEdit }: { canEdit: boolean }) {
       rowLabel={(r) => r.quote_currency}
       canEdit={canEdit}
       searchText={(r) => `${r.quote_currency} ${r.source ?? ''}`}
-      description={t('content.fx.description')}
+      description={
+        <>
+          {t('content.fx.description')} {t('security.fx.dualControlNote')}
+          {!canEdit && <span className="mt-1 block text-xs">{t('security.fx.financeOnlyNote')}</span>}
+        </>
+      }
     />
+    </>
   );
 }
