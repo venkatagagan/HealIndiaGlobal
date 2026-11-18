@@ -11,6 +11,7 @@ import { AccessLogCard, DownloadMyDataCard, NomineeCard, PrivacyRequestsCard } f
 import { GuardianStatusCard } from '../../components/GuardianConsent';
 import { CompanionsSection, ConsentsSection, SecuritySection } from './ProfileExtras';
 import { EmergencyForm, PassportForm, PersonalForm, PreferencesForm } from './ProfileForms';
+import { WhatsAppCard } from './WhatsAppCard';
 
 type Tab = 'personal' | 'travel' | 'companions' | 'preferences' | 'privacy' | 'security';
 const TAB_VALUES: Tab[] = ['personal', 'travel', 'companions', 'preferences', 'privacy', 'security'];
@@ -60,7 +61,12 @@ export function ProfilePage() {
             </div>
           ) : null}
           {tab === 'companions' ? <CompanionsSection /> : null}
-          {tab === 'preferences' ? <PreferencesForm profile={profile.data} /> : null}
+          {tab === 'preferences' ? (
+            <div className="space-y-6">
+              <PreferencesForm profile={profile.data} />
+              <WhatsAppCard />
+            </div>
+          ) : null}
           {tab === 'privacy' ? (
             <div className="space-y-6">
               {isGuest ? null : <GuardianStatusCard />}

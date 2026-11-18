@@ -37,6 +37,8 @@ const VisaGuidePage = lazy(() => import('./pages/trip/VisaGuidePage').then((m) =
 const MyReviewsPage = lazy(() => import('./pages/reviews/MyReviewsPage').then((m) => ({ default: m.MyReviewsPage })));
 const ReviewFormPage = lazy(() => import('./pages/reviews/ReviewFormPage').then((m) => ({ default: m.ReviewFormPage })));
 const AftercarePage = lazy(() => import('./pages/aftercare/AftercarePage').then((m) => ({ default: m.AftercarePage })));
+const DischargeListPage = lazy(() => import('./pages/discharge/DischargeListPage').then((m) => ({ default: m.DischargeListPage })));
+const DischargeDetailPage = lazy(() => import('./pages/discharge/DischargeDetailPage').then((m) => ({ default: m.DischargeDetailPage })));
 const FreeCallPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallPage })));
 const FreeCallStatusPage = lazy(() => import('./pages/guest/FreeCallPage').then((m) => ({ default: m.FreeCallStatusPage })));
 
@@ -78,6 +80,8 @@ export const portalChildRoutes: RouteObject[] = [
   { path: 'reviews/new', element: <ReviewFormPage /> },
   { path: 'reviews/:reviewId/edit', element: <ReviewFormPage /> },
   { path: 'aftercare', element: <AftercarePage /> },
+  { path: 'discharge-summaries', element: <DischargeListPage /> },
+  { path: 'discharge-summaries/:id', element: <DischargeDetailPage /> },
   { path: 'free-call', element: <FreeCallPage /> },
   { path: 'free-call/status', element: <FreeCallStatusPage /> },
   { path: '*', element: <Navigate to={PORTAL_BASE} replace /> },

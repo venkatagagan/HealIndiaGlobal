@@ -9,6 +9,7 @@ import {
   Building2,
   CalendarCheck,
   ClipboardList,
+  FileHeart,
   HeartPulse,
   Inbox,
   LayoutDashboard,
@@ -54,6 +55,7 @@ function buildNav(t: TFunction, { unread, canFinance }: { unread: number; canFin
         { to: '/cases', label: t('nav.cases'), icon: Inbox },
         { to: '/bookings', label: t('nav.bookings'), icon: CalendarCheck },
         { to: '/aftercare', label: t('nav.aftercare'), icon: Activity },
+        { to: '/discharge-summaries', label: t('discharge.nav'), icon: FileHeart },
       ],
     },
     {

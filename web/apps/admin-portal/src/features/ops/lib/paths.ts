@@ -21,6 +21,7 @@ export const opsPaths = {
   website: `${OPS_BASE}/settings/website`,
   languages: `${OPS_BASE}/settings/languages`,
   translations: `${OPS_BASE}/settings/translations`,
+  whatsapp: `${OPS_BASE}/settings/whatsapp`,
   audit: `${OPS_BASE}/audit-logs`,
   messages: `${OPS_BASE}/messages`,
   privacy: `${OPS_BASE}/privacy-requests`,

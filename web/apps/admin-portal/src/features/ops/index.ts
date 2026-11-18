@@ -34,6 +34,7 @@ import {
   Users,
   UsersRound,
   Globe,
+  MessageCircle,
   MessageSquareQuote,
   Stamp,
   Type,
@@ -71,6 +72,7 @@ export const opsRoutes: RouteObject[] = [
   { path: 'settings/website', lazy: page(() => import('./pages/WebsiteSettingsPage')) },
   { path: 'settings/languages', lazy: page(() => import('./pages/LanguagesPage')) },
   { path: 'settings/translations', lazy: page(() => import('./pages/TranslationsPage')) },
+  { path: 'settings/whatsapp', lazy: page(() => import('./pages/WhatsAppSettingsPage')) },
   { path: 'audit-logs', lazy: page(() => import('./pages/AuditLogsPage')) },
   { path: 'messages', lazy: page(() => import('./pages/MessagesPage')) },
   { path: 'privacy-requests', lazy: page(() => import('./pages/PrivacyRequestsPage')) },
@@ -133,6 +135,7 @@ export const opsNav: OpsNavItem[] = [
   { to: opsPaths.website, label: 'Website & contact', labelKey: 'nav.website', icon: Globe, roles: ALL_STAFF, group: 'system' },
   { to: opsPaths.languages, label: 'Languages', labelKey: 'nav.languages', icon: Languages, roles: ADMINS, group: 'system' },
   { to: opsPaths.translations, label: 'Translations', labelKey: 'nav.translations', icon: Type, roles: ADMINS, group: 'system' },
+  { to: opsPaths.whatsapp, label: 'WhatsApp', labelKey: 'whatsapp.nav', icon: MessageCircle, roles: ALL_STAFF, group: 'system' },
   { to: opsPaths.audit, label: 'Audit log', labelKey: 'nav.audit', icon: FileClock, roles: ALL_STAFF, group: 'system' },
 ];
 

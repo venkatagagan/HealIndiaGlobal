@@ -34,6 +34,9 @@ const AftercarePage = lazyPage(() => import('./features/aftercare/AftercarePage'
 const AccreditationsPage = lazyPage(() => import('./features/accreditations/AccreditationsPage'), 'AccreditationsPage');
 const FinancePage = lazyPage(() => import('./features/finance/FinancePage'), 'FinancePage');
 const MessagesPage = lazyPage(() => import('./features/messages/MessagesPage'), 'MessagesPage');
+const DischargeListPage = lazyPage(() => import('./features/discharge/DischargeListPage'), 'DischargeListPage');
+const DischargeNewPage = lazyPage(() => import('./features/discharge/DischargeEditorPage'), 'DischargeNewPage');
+const DischargeEditorPage = lazyPage(() => import('./features/discharge/DischargeEditorPage'), 'DischargeEditorPage');
 const NotificationsPage = lazyPage(() => import('./features/notifications/NotificationsPage'), 'NotificationsPage');
 const OnboardingPage = lazyPage(async () => {
     const m = await import('./features/onboarding/HospitalSetupPage');
@@ -96,6 +99,9 @@ export const router = createBrowserRouter([
           { path: 'procedures', element: <ProceduresPage /> },
           { path: 'team', element: <TeamPage /> },
           { path: 'aftercare', element: <AftercarePage /> },
+          { path: 'discharge-summaries', element: <DischargeListPage /> },
+          { path: 'discharge-summaries/new', element: <DischargeNewPage /> },
+          { path: 'discharge-summaries/:summaryId', element: <DischargeEditorPage /> },
           { path: 'accreditations', element: <AccreditationsPage /> },
           { path: 'reviews', element: <ReviewsPage /> },
           { path: 'finance', element: <FinancePage /> },

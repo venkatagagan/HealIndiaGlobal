@@ -72,6 +72,10 @@ export const paths = {
   writeReview: (bookingId: Uuid) => `${PORTAL_BASE}/reviews/new?booking=${encodeURIComponent(bookingId)}`,
   editReview: (reviewId: Uuid) => `${PORTAL_BASE}/reviews/${encodeURIComponent(reviewId)}/edit`,
   aftercare: `${PORTAL_BASE}/aftercare`,
+  dischargeSummaries: `${PORTAL_BASE}/discharge-summaries`,
+  dischargeSummary: (id: Uuid) => `${PORTAL_BASE}/discharge-summaries/${encodeURIComponent(id)}`,
+  /** public, read-only home-doctor view (no login) */
+  dischargeShare: (token: string) => `${PORTAL_BASE}/share/${encodeURIComponent(token)}`,
   freeCall: (screeningId?: Uuid) =>
     `${PORTAL_BASE}/free-call${screeningId ? `?screening=${encodeURIComponent(screeningId)}` : ''}`,
   freeCallStatus: `${PORTAL_BASE}/free-call/status`,

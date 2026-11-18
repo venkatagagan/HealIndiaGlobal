@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { AlertTriangle, CalendarClock, ClipboardCheck, HeartPulse, Siren, Video } from 'lucide-react';
+import { AlertTriangle, CalendarClock, ClipboardCheck, FileHeart, HeartPulse, Siren, Video } from 'lucide-react';
 import {
   errorMessage,
   type AftercareCaseOut,
@@ -18,11 +18,13 @@ import { useAppTranslation } from '../../../../i18n';
 import { useAftercare, useRequestFollowup, useSubmitCheckin } from '../../api/phase1';
 import { StatusBadge } from '../../components/common';
 import { HelplineList, SosButton } from '../../components/SupportDialogs';
+import { paths } from '../../lib/paths';
 import { useMe } from '../../lib/session';
 import { cn, formatDate, formatDateTime, formatNumber, useDocumentTitle } from '../../lib/shared';
 import {
   Alert,
   Button,
+  ButtonLink,
   Card,
   CardBody,
   CardHeader,
@@ -309,7 +311,15 @@ export function AftercarePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t('aftercare.title')} description={t('aftercare.subtitle')} />
+      <PageHeader
+        title={t('aftercare.title')}
+        description={t('aftercare.subtitle')}
+        actions={
+          <ButtonLink to={paths.dischargeSummaries} variant="outline" icon={<FileHeart className="size-4" aria-hidden />}>
+            {t('discharge.aftercareLink')}
+          </ButtonLink>
+        }
+      />
       <Alert tone="amber" icon={<AlertTriangle className="size-5" aria-hidden />}>
         {t('aftercare.emergencyNote')}
       </Alert>

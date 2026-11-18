@@ -248,3 +248,47 @@ Machine-assisted like the rest; same review rules. Arabic uses all six plural fo
 - Privacy: `enquiryDialog.shareReports`, `enquiryDialog.shareReportsHint`.
 - Money: `displayCurrency.hint`, `displayCurrency.approxTitle` (approximate amounts; payments use the original
   currency), `quoteGroup.total`.
+
+## WhatsApp updates and discharge summaries (web, added 2026-11)
+
+Machine-assisted like the rest; same review rules. New top-level sections only: `patient:whatsapp.*`,
+`patient:discharge.*`, `hospital:discharge.*`, `admin:whatsapp.*`. Arabic uses all six plural forms, Russian
+one/few/many/other; the English `_one` forms say "1 day" / "Opened once" / "1 document" so other languages may
+write the number as a word (ar "يوم واحد", "مرتين"). French says "compte rendu de sortie", Russian "выписной
+эпикриз", Arabic "ملخص الخروج", Bengali keeps "ডিসচার্জ সামারি" (the term patients see on hospital paperwork).
+
+### Patient web (`patient:`)
+
+- Medical / emergency (highest priority): `discharge.sections.redFlags` + `redFlagsHint` ("Warning signs: get medical
+  help straight away"; "contact a doctor or local emergency services immediately"), `discharge.emergencyNote`,
+  `discharge.medication.*` (column labels "How often", "How to take", "Ongoing"; `days_*`),
+  `discharge.reminders.disclaimer` ("Always follow your doctor's instructions ..."), `discharge.reminders.description`,
+  `discharge.detail.disclaimer` and `discharge.public.footerDisclaimer` (Heal India Global does not change the
+  hospital's medical content).
+- Privacy / consent / legal: `discharge.share.consent` and `discharge.share.consentDetail` (the patient agrees to
+  share the summary and selected documents with one doctor; anyone with the link can read them until it expires or
+  is revoked; every opening is recorded), `discharge.share.onceHint` (link shown once), `discharge.links.revokeBody`,
+  `discharge.public.confidentialTitle` / `confidentialBody` (confidential health information; do not forward without
+  the patient's permission), `discharge.public.footerAudit`, `discharge.public.invalidBody`.
+- WhatsApp (non-clinical channel): `whatsapp.privacy` ("We never send medical details, reports or diagnoses on
+  WhatsApp" - must stay explicit), `whatsapp.stopHint` (the word STOP stays in Latin letters in every language: it is
+  the keyword WhatsApp users type), `whatsapp.consentNote`, `whatsapp.turnOffBody`, `whatsapp.errors.invalidCodeLeft_*`.
+- FHIR wording: `discharge.detail.fhirHint`, `discharge.public.fhirHint` ("HL7 FHIR R4 document bundle" kept in
+  Latin script).
+
+### Hospital portal (`hospital:`)
+
+- Medical: `discharge.editor.fields.redFlags*` (hint asks for plain-language warning signs, e.g. "fever above
+  38 °C"), `discharge.editor.fields.followUpHint`, `discharge.editor.fields.allergiesHint` ("No known allergies"),
+  `discharge.editor.fields.diagnosisCodeHint` (ICD-10 = CIM-10 in French, МКБ-10 in Russian),
+  `discharge.editor.medications.*` (route, frequency, "Empty = ongoing").
+- Legal / record-keeping: `discharge.editor.finalizeBody` (finalizing locks the summary, creates the PDF and
+  notifies the patient), `discharge.editor.newVersionBody` (final versions are never edited; a new version is
+  created), `discharge.editor.discardBody`.
+- Reviewer notes: "Finalize" is fr "Valider", ru "Утвердить", ar "اعتماد", bn "চূড়ান্ত করুন".
+
+### Admin portal (`admin:`)
+
+- `whatsapp.description`, `whatsapp.log.description` (message text is never stored), `whatsapp.provider.secretsNote`
+  (secrets are never shown), `whatsapp.notConfigured`. Technical names (Webhook, Graph API, Meta Business Manager,
+  STOP) stay in Latin script.

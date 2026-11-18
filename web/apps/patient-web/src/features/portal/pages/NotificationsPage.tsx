@@ -22,6 +22,8 @@ function str(data: Record<string, unknown> | null, key: string): string | null {
 /** Where a notification should take the patient, based on its payload. */
 export function notificationTarget(n: NotificationOut): string | null {
   const d = n.data;
+  const discharge = str(d, 'discharge_summary_id');
+  if (discharge) return paths.dischargeSummary(discharge);
   const conversation = str(d, 'conversation_id');
   if (conversation) return paths.conversation(conversation);
   const screening = str(d, 'screening_id');
@@ -45,6 +47,7 @@ const CATEGORIES: Record<string, { label: string; icon: typeof Bell; tone: strin
   travel: { label: 'trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
   visa: { label: 'trip', icon: Plane, tone: 'bg-info-soft text-info-ink' },
   document: { label: 'document', icon: FileText, tone: 'bg-neutral-soft text-neutral-ink' },
+  discharge_summary: { label: 'document', icon: FileText, tone: 'bg-neutral-soft text-neutral-ink' },
 };
 const categoryOf = (n: NotificationOut) => CATEGORIES[n.kind.split('.')[0] ?? ''] ?? { label: 'update', icon: Bell, tone: 'bg-neutral-soft text-neutral-ink' };
 

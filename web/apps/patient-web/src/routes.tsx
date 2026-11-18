@@ -1,10 +1,34 @@
-import { useEffect } from 'react';
-import { createBrowserRouter, useLocation, type RouteObject } from 'react-router';
+import { lazy, Suspense, useEffect } from 'react';
+import { createBrowserRouter, Navigate, useLocation, useParams, type RouteObject } from 'react-router';
 import { DoorRedirect, RequireAuth, websiteUrl } from '@hig/shared/auth';
 import { LoadingState } from '@hig/shared/ui';
-import { portalRoute } from './features/portal';
+import { portalPaths, portalRoute } from './features/portal';
 
 const PATIENT_ONLY = ['patient'] as const;
+
+/** Public home-doctor view of a shared discharge summary: no login, no portal layout. */
+const PublicSharePage = lazy(() =>
+  import('./features/portal/pages/discharge/PublicSharePage').then((m) => ({ default: m.PublicSharePage })),
+);
+
+function PublicShare() {
+  return (
+    <Suspense fallback={<LoadingState fullScreen />}>
+      <PublicSharePage />
+    </Suspense>
+  );
+}
+
+/** Links built as `<patient web>/share/<token>` or `/discharge-summaries/<id>` (emails) -> the /app routes. */
+function ShareRedirect() {
+  const { token = '' } = useParams();
+  return <Navigate to={portalPaths.dischargeShare(token)} replace />;
+}
+
+function DischargeRedirect() {
+  const { id = '' } = useParams();
+  return <Navigate to={portalPaths.dischargeSummary(id)} replace />;
+}
 
 /**
  * Anything outside /app (public pages: hospitals, doctors, specialties, ...) belongs to the website: full-page
@@ -20,6 +44,10 @@ function ToWebsite() {
 }
 
 const routes: RouteObject[] = [
+  // before the protected portal: the home doctor has no account
+  { path: '/app/share/:token', element: <PublicShare /> },
+  { path: '/share/:token', element: <ShareRedirect /> },
+  { path: '/discharge-summaries/:id', element: <DischargeRedirect /> },
   {
     // PLAN 3.1: anonymous -> website door with ?next=<url>; other roles -> their own portal
     element: <RequireAuth roles={PATIENT_ONLY} redirectWrongRole />,

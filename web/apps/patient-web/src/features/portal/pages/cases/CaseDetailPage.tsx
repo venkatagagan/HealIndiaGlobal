@@ -42,6 +42,7 @@ import {
   Textarea,
 } from '../../ui/primitives';
 import { screeningHref } from '../screening/ScreeningsListPage';
+import { CaseDischargeCard } from '../discharge/CaseDischargeCard';
 
 type TFn = ReturnType<typeof useAppTranslation>['t'];
 
@@ -346,6 +347,7 @@ function CaseDetailView({ data }: { data: CaseDetail }) {
         </div>
 
         <div className="space-y-6">
+          <CaseDischargeCard caseId={data.id} />
           <Card>
             <CardHeader title={t('cases.detail.details')} />
             <CardBody>

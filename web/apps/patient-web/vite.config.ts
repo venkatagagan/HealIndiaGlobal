@@ -12,10 +12,14 @@ const apiTarget = process.env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:8000';
 function redirectBareBase(base: string): Plugin {
   const bare = base.replace(/\/$/, '');
   const redirect = (req: { url?: string }, res: ServerResponse, next: () => void) => {
-    const [path, query] = (req.url ?? '').split('?');
-    if (path !== bare) return next();
+    const [path = '', query] = (req.url ?? '').split('?');
+    // Links the API builds from PATIENT_WEB_URL without the /app prefix: home-doctor share links
+    // (/share/<token>) and notification links (/discharge-summaries/<id>).
+    const portalPath = /^\/(share|discharge-summaries)\/[^/]+$/.test(path) ? `${bare}${path}` : null;
+    if (path !== bare && !portalPath) return next();
     res.statusCode = 302;
-    res.setHeader('Location', base + (query ? `?${query}` : ''));
+    res.setHeader('Location', (portalPath ?? base) + (query ? `?${query}` : ''));
+    if (portalPath) res.setHeader('Referrer-Policy', 'no-referrer');
     res.end();
   };
   return {

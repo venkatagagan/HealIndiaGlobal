@@ -5,6 +5,7 @@ import {
   BriefcaseMedical,
   CalendarCheck,
   CalendarRange,
+  FileHeart,
   FileText,
   HeartHandshake,
   HeartPulse,
@@ -61,6 +62,7 @@ function buildNav(unread: number, t: TFunction): NavItem[] {
         { to: paths.browse(), label: t('shell.nav.browse'), icon: Search },
         { to: paths.cases, label: t('shell.nav.cases'), icon: BriefcaseMedical },
         { to: paths.aftercare, label: t('shell.nav.aftercare'), icon: HeartHandshake },
+        { to: paths.dischargeSummaries, label: t('discharge.nav'), icon: FileHeart },
       ],
     },
     {
