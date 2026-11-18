@@ -51,6 +51,28 @@ abstract final class Routes {
   static const freeConsultation = '/free-consultation';
   static const freeConsultationStatus = '/free-consultation/status';
 
+  // pre-travel video tele-consultations
+  static const consultations = '/consultations';
+
+  /// `/consultations/book?hospital=&doctor=&screening=&specialty=&procedure=`
+  static String consultationBook({
+    required String hospitalId,
+    String? doctorId,
+    String? screeningId,
+    String? specialtyId,
+    String? procedureId,
+  }) => _q('$consultations/book', {
+    'hospital': hospitalId,
+    'doctor': doctorId,
+    'screening': screeningId,
+    'specialty': specialtyId,
+    'procedure': procedureId,
+  });
+
+  /// `/consultations/:id?pay=1` — `pay` opens the payment sheet while the fee is due.
+  static String consultationDetail(String id, {bool pay = false}) =>
+      _q('$consultations/${Uri.encodeComponent(id)}', {'pay': pay ? '1' : null});
+
   /// `/procedures/:slug/earliest` — hospitals offering a procedure, earliest date first.
   static String procedureEarliest(String slug) => '/procedures/${Uri.encodeComponent(slug)}/earliest';
 
@@ -228,4 +250,7 @@ abstract final class RouteNames {
   static const visaGuide = 'visa-guide';
   static const freeConsultation = 'free-consultation';
   static const freeConsultationStatus = 'free-consultation-status';
+  static const consultations = 'consultations';
+  static const consultationBook = 'consultation-book';
+  static const consultationDetail = 'consultation-detail';
 }

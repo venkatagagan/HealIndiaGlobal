@@ -15976,6 +15976,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact details not published yet'**
   String get privacyContactNotPublished;
+
+  /// Title of the pre-travel video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation'**
+  String get consultBookTitle;
+
+  /// Intro of the video consultation booking screen
+  ///
+  /// In en, this message translates to:
+  /// **'Talk to a specialist by video before you travel. The hospital confirms the exact time and sends you the video link.'**
+  String get consultBookIntro;
+
+  /// Section title: choose the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get consultDoctorSection;
+
+  /// No doctor of the hospital offers video consultations
+  ///
+  /// In en, this message translates to:
+  /// **'No doctor at {hospital} offers video consultations yet. You can request a quote instead.'**
+  String consultNoTeleconsultDoctors(String hospital);
+
+  /// Button: request a quote (case) instead of a video consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Request a quote instead'**
+  String get consultRequestQuoteInstead;
+
+  /// Section title: preferred day of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred day'**
+  String get consultDateSection;
+
+  /// Hint under the consultation calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Green days have free consultation places.'**
+  String get consultDateHint;
+
+  /// Section title: preferred time of the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred time'**
+  String get consultTimeSection;
+
+  /// Note: consultation times are shown in the device time zone
+  ///
+  /// In en, this message translates to:
+  /// **'Times are shown in your time zone ({zone}).'**
+  String consultTimesLocal(String zone);
+
+  /// Label of the question / notes field for the doctor
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to ask the doctor?'**
+  String get consultQuestionLabel;
+
+  /// Hint of the question field
+  ///
+  /// In en, this message translates to:
+  /// **'Your symptoms, the treatment you are considering, questions about travel and recovery...'**
+  String get consultQuestionHint;
+
+  /// Section title: medical reports to share before the call
+  ///
+  /// In en, this message translates to:
+  /// **'Reports to share'**
+  String get consultReportsSection;
+
+  /// Hint of the reports section
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor can read these before the call.'**
+  String get consultReportsHint;
+
+  /// Reports section when the patient already has an open case at the hospital
+  ///
+  /// In en, this message translates to:
+  /// **'Reports you upload here are added to your case {caseNumber} with {hospital}.'**
+  String consultReportsExistingCase(String caseNumber, String hospital);
+
+  /// Button: upload a medical report
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a report'**
+  String get consultUpload;
+
+  /// Label of the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation fee'**
+  String get consultFeeLabel;
+
+  /// Consultation fee: free
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get consultFeeFree;
+
+  /// Note: when and how the consultation fee is paid
+  ///
+  /// In en, this message translates to:
+  /// **'You pay the fee by card right after sending the request. The hospital then confirms the time.'**
+  String get consultFeePayNote;
+
+  /// Button: send the consultation request
+  ///
+  /// In en, this message translates to:
+  /// **'Request consultation'**
+  String get consultSubmit;
+
+  /// Validation: choose a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a doctor.'**
+  String get consultPickDoctor;
+
+  /// Validation: choose a day and a time
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a day and a time.'**
+  String get consultPickSlot;
+
+  /// Snackbar after the consultation was requested
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation requested. The hospital will confirm the time.'**
+  String get consultRequestedSnack;
+
+  /// API error consultation_exists
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an open consultation with this doctor. You can find it under My consultations.'**
+  String get consultErrorExists;
+
+  /// API error teleconsult_unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not offer video consultations. Please choose another doctor.'**
+  String get consultErrorUnavailable;
+
+  /// API error doctor_required
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a doctor for the consultation.'**
+  String get consultErrorDoctorRequired;
+
+  /// API error invalid_doctor
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor does not practise at this hospital. Please choose another doctor.'**
+  String get consultErrorInvalidDoctor;
+
+  /// Title of the patient's consultations list and its links
+  ///
+  /// In en, this message translates to:
+  /// **'My consultations'**
+  String get consultMineTitle;
+
+  /// Subtitle of links to the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Video calls with doctors before and after treatment'**
+  String get consultMineSubtitle;
+
+  /// Empty state title of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'No consultations yet'**
+  String get consultListEmpty;
+
+  /// Empty state body of the consultations list
+  ///
+  /// In en, this message translates to:
+  /// **'Book a video consultation from a doctor\'s page or from your hospital matches.'**
+  String get consultListEmptyBody;
+
+  /// Button: search for a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Find a doctor'**
+  String get consultFindDoctor;
+
+  /// Title of a consultation detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get consultDetailTitle;
+
+  /// Heading: video consultation with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Video consultation with {doctor}'**
+  String consultWithDoctor(String doctor);
+
+  /// Heading: aftercare follow-up call with a doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Aftercare follow-up with {doctor}'**
+  String consultFollowupWith(String doctor);
+
+  /// Placeholder when the doctor of a consultation is not known
+  ///
+  /// In en, this message translates to:
+  /// **'the hospital\'s doctor'**
+  String get consultDoctorTbc;
+
+  /// Confirmed consultation time (local) and duration
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for {when} ({minutes} min)'**
+  String consultScheduledAt(String when, int minutes);
+
+  /// The hospital has not confirmed a time yet
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the hospital to confirm a time.'**
+  String get consultAwaitingTime;
+
+  /// The time the patient asked for (local)
+  ///
+  /// In en, this message translates to:
+  /// **'You asked for {when}.'**
+  String consultPreferredTime(String when);
+
+  /// Button: open the video call link
+  ///
+  /// In en, this message translates to:
+  /// **'Join video call'**
+  String get consultJoinVideo;
+
+  /// Hint under the join button
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the private video room in your browser or the Jitsi Meet app.'**
+  String get consultJoinHint;
+
+  /// The video link is not available yet
+  ///
+  /// In en, this message translates to:
+  /// **'The video link appears here once the hospital confirms the time.'**
+  String get consultLinkSoon;
+
+  /// Reminder note for a scheduled consultation
+  ///
+  /// In en, this message translates to:
+  /// **'We will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderScheduled;
+
+  /// Reminder note before the time is confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Once the time is confirmed, we will remind you 24 hours and 1 hour before the call.'**
+  String get consultReminderPending;
+
+  /// Fee status: paid
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get consultPaid;
+
+  /// Fee status: not paid yet
+  ///
+  /// In en, this message translates to:
+  /// **'Payment due'**
+  String get consultPaymentDue;
+
+  /// Fee status: payment being confirmed
+  ///
+  /// In en, this message translates to:
+  /// **'Payment being confirmed'**
+  String get consultPaymentPending;
+
+  /// Button: pay the consultation fee
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount}'**
+  String consultPayButton(String amount);
+
+  /// Title of the consultation fee payment sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Pay consultation fee'**
+  String get consultPayTitle;
+
+  /// Consultation fee paid
+  ///
+  /// In en, this message translates to:
+  /// **'Payment received. Thank you.'**
+  String get consultPaySuccess;
+
+  /// Consultation fee payment failed
+  ///
+  /// In en, this message translates to:
+  /// **'The payment did not go through and no money was taken. You can try again.'**
+  String get consultPayFailed;
+
+  /// Consultation fee payment pending
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is being confirmed. This page updates when it is done.'**
+  String get consultPayPending;
+
+  /// Button: cancel the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel consultation'**
+  String get consultCancel;
+
+  /// Confirm dialog title: cancel consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this consultation?'**
+  String get consultCancelConfirmTitle;
+
+  /// Confirm dialog body: cancel consultation (fee handling)
+  ///
+  /// In en, this message translates to:
+  /// **'The hospital will be told. If you already paid the fee, our team will contact you about it.'**
+  String get consultCancelConfirmBody;
+
+  /// Dialog button: keep the consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get consultKeep;
+
+  /// Snackbar: consultation cancelled
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation cancelled'**
+  String get consultCancelled;
+
+  /// Link from a consultation to its case
+  ///
+  /// In en, this message translates to:
+  /// **'Open case {caseNumber}'**
+  String consultOpenCase(String caseNumber);
+
+  /// Section title: the patient's notes on a consultation
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes'**
+  String get consultNotesSection;
+
+  /// Button on a doctor page: book a video consultation with this doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Book video consultation'**
+  String get consultBookVideoButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

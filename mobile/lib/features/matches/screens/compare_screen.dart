@@ -9,7 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
-import '../widgets/consultation_request.dart';
+import '../../consultations/screens/consultation_book_screen.dart';
 import 'match_detail_screen.dart';
 
 /// Side-by-side comparison of up to 3 matches.
@@ -228,11 +228,13 @@ class _CompareTable extends StatelessWidget {
                         PrimaryButton(
                           label: l10n.compareBook,
                           tone: ButtonTone.red,
-                          onPressed: () => requestConsultation(
+                          onPressed: () => bookVideoConsultation(
                             context,
-                            match: m,
+                            hospitalId: m.hospital.id,
+                            doctorId: m.doctor?.id,
                             screeningId: screeningId,
-                            specialtyId: screening?.specialty?.id,
+                            specialtyId: screening?.specialty?.id ?? m.doctor?.specialty?.id,
+                            procedureId: m.procedure?.id,
                           ),
                         ),
                         const SizedBox(height: 8),

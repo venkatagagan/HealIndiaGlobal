@@ -13,7 +13,7 @@ import '../../../core/utils/money.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../providers/match_view.dart';
-import '../widgets/consultation_request.dart';
+import '../../consultations/screens/consultation_book_screen.dart';
 
 /// Procedures for the treatment picker (when no procedure is known).
 final _procedureOptionsProvider = FutureProvider.autoDispose.family<List<Procedure>, String?>(
@@ -23,7 +23,7 @@ final _procedureOptionsProvider = FutureProvider.autoDispose.family<List<Procedu
 /// Home countries offered in the "Compare with" picker.
 const List<String> kComparisonCountries = ['US', 'GB', 'CA', 'AU', 'AE', 'SA', 'OM', 'QA', 'KW', 'NG', 'KE', 'BD'];
 
-/// Treatment Comparison home country vs India + itemized breakdown + Book Consultation (creates a case).
+/// Treatment Comparison home country vs India + itemized breakdown + Book Consultation (video consultation).
 ///
 /// Route: `/cost-comparison?procedure=&country=&currency=&screening=&match=` · Owner: fl-screening.
 class CostComparisonScreen extends ConsumerStatefulWidget {
@@ -106,11 +106,13 @@ class _CostComparisonScreenState extends ConsumerState<CostComparisonScreen> {
                   icon: match != null ? Icons.event_available_rounded : Icons.search_rounded,
                   onPressed: () {
                     if (match != null) {
-                      requestConsultation(
+                      bookVideoConsultation(
                         context,
-                        match: match,
+                        hospitalId: match.hospital.id,
+                        doctorId: match.doctor?.id,
                         screeningId: sid,
-                        specialtyId: screening?.specialty?.id,
+                        specialtyId: screening?.specialty?.id ?? match.doctor?.specialty?.id,
+                        procedureId: match.procedure?.id,
                       );
                     } else if (sid != null) {
                       context.go(Routes.matches(sid));

@@ -12856,5 +12856,294 @@
   "privacyContactNotPublished": "Contact details not published yet",
   "@privacyContactNotPublished": {
     "description": "Shown when a contact person has no details published yet"
+  },
+  "consultBookTitle": "Book a video consultation",
+  "@consultBookTitle": {
+    "description": "Title of the pre-travel video consultation booking screen"
+  },
+  "consultBookIntro": "Talk to a specialist by video before you travel. The hospital confirms the exact time and sends you the video link.",
+  "@consultBookIntro": {
+    "description": "Intro of the video consultation booking screen"
+  },
+  "consultDoctorSection": "Doctor",
+  "@consultDoctorSection": {
+    "description": "Section title: choose the doctor"
+  },
+  "consultNoTeleconsultDoctors": "No doctor at {hospital} offers video consultations yet. You can request a quote instead.",
+  "@consultNoTeleconsultDoctors": {
+    "description": "No doctor of the hospital offers video consultations",
+    "placeholders": {
+      "hospital": {
+        "type": "String"
+      }
+    }
+  },
+  "consultRequestQuoteInstead": "Request a quote instead",
+  "@consultRequestQuoteInstead": {
+    "description": "Button: request a quote (case) instead of a video consultation"
+  },
+  "consultDateSection": "Preferred day",
+  "@consultDateSection": {
+    "description": "Section title: preferred day of the consultation"
+  },
+  "consultDateHint": "Green days have free consultation places.",
+  "@consultDateHint": {
+    "description": "Hint under the consultation calendar"
+  },
+  "consultTimeSection": "Preferred time",
+  "@consultTimeSection": {
+    "description": "Section title: preferred time of the consultation"
+  },
+  "consultTimesLocal": "Times are shown in your time zone ({zone}).",
+  "@consultTimesLocal": {
+    "description": "Note: consultation times are shown in the device time zone",
+    "placeholders": {
+      "zone": {
+        "type": "String",
+        "example": "GMT+1"
+      }
+    }
+  },
+  "consultQuestionLabel": "What would you like to ask the doctor?",
+  "@consultQuestionLabel": {
+    "description": "Label of the question / notes field for the doctor"
+  },
+  "consultQuestionHint": "Your symptoms, the treatment you are considering, questions about travel and recovery...",
+  "@consultQuestionHint": {
+    "description": "Hint of the question field"
+  },
+  "consultReportsSection": "Reports to share",
+  "@consultReportsSection": {
+    "description": "Section title: medical reports to share before the call"
+  },
+  "consultReportsHint": "The doctor can read these before the call.",
+  "@consultReportsHint": {
+    "description": "Hint of the reports section"
+  },
+  "consultReportsExistingCase": "Reports you upload here are added to your case {caseNumber} with {hospital}.",
+  "@consultReportsExistingCase": {
+    "description": "Reports section when the patient already has an open case at the hospital",
+    "placeholders": {
+      "caseNumber": {
+        "type": "String"
+      },
+      "hospital": {
+        "type": "String"
+      }
+    }
+  },
+  "consultUpload": "Upload a report",
+  "@consultUpload": {
+    "description": "Button: upload a medical report"
+  },
+  "consultFeeLabel": "Consultation fee",
+  "@consultFeeLabel": {
+    "description": "Label of the consultation fee"
+  },
+  "consultFeeFree": "Free",
+  "@consultFeeFree": {
+    "description": "Consultation fee: free"
+  },
+  "consultFeePayNote": "You pay the fee by card right after sending the request. The hospital then confirms the time.",
+  "@consultFeePayNote": {
+    "description": "Note: when and how the consultation fee is paid"
+  },
+  "consultSubmit": "Request consultation",
+  "@consultSubmit": {
+    "description": "Button: send the consultation request"
+  },
+  "consultPickDoctor": "Choose a doctor.",
+  "@consultPickDoctor": {
+    "description": "Validation: choose a doctor"
+  },
+  "consultPickSlot": "Choose a day and a time.",
+  "@consultPickSlot": {
+    "description": "Validation: choose a day and a time"
+  },
+  "consultRequestedSnack": "Consultation requested. The hospital will confirm the time.",
+  "@consultRequestedSnack": {
+    "description": "Snackbar after the consultation was requested"
+  },
+  "consultErrorExists": "You already have an open consultation with this doctor. You can find it under My consultations.",
+  "@consultErrorExists": {
+    "description": "API error consultation_exists"
+  },
+  "consultErrorUnavailable": "This doctor does not offer video consultations. Please choose another doctor.",
+  "@consultErrorUnavailable": {
+    "description": "API error teleconsult_unavailable"
+  },
+  "consultErrorDoctorRequired": "Please choose a doctor for the consultation.",
+  "@consultErrorDoctorRequired": {
+    "description": "API error doctor_required"
+  },
+  "consultErrorInvalidDoctor": "This doctor does not practise at this hospital. Please choose another doctor.",
+  "@consultErrorInvalidDoctor": {
+    "description": "API error invalid_doctor"
+  },
+  "consultMineTitle": "My consultations",
+  "@consultMineTitle": {
+    "description": "Title of the patient's consultations list and its links"
+  },
+  "consultMineSubtitle": "Video calls with doctors before and after treatment",
+  "@consultMineSubtitle": {
+    "description": "Subtitle of links to the consultations list"
+  },
+  "consultListEmpty": "No consultations yet",
+  "@consultListEmpty": {
+    "description": "Empty state title of the consultations list"
+  },
+  "consultListEmptyBody": "Book a video consultation from a doctor's page or from your hospital matches.",
+  "@consultListEmptyBody": {
+    "description": "Empty state body of the consultations list"
+  },
+  "consultFindDoctor": "Find a doctor",
+  "@consultFindDoctor": {
+    "description": "Button: search for a doctor"
+  },
+  "consultDetailTitle": "Consultation",
+  "@consultDetailTitle": {
+    "description": "Title of a consultation detail screen"
+  },
+  "consultWithDoctor": "Video consultation with {doctor}",
+  "@consultWithDoctor": {
+    "description": "Heading: video consultation with a doctor",
+    "placeholders": {
+      "doctor": {
+        "type": "String"
+      }
+    }
+  },
+  "consultFollowupWith": "Aftercare follow-up with {doctor}",
+  "@consultFollowupWith": {
+    "description": "Heading: aftercare follow-up call with a doctor",
+    "placeholders": {
+      "doctor": {
+        "type": "String"
+      }
+    }
+  },
+  "consultDoctorTbc": "the hospital's doctor",
+  "@consultDoctorTbc": {
+    "description": "Placeholder when the doctor of a consultation is not known"
+  },
+  "consultScheduledAt": "Scheduled for {when} ({minutes} min)",
+  "@consultScheduledAt": {
+    "description": "Confirmed consultation time (local) and duration",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "consultAwaitingTime": "Waiting for the hospital to confirm a time.",
+  "@consultAwaitingTime": {
+    "description": "The hospital has not confirmed a time yet"
+  },
+  "consultPreferredTime": "You asked for {when}.",
+  "@consultPreferredTime": {
+    "description": "The time the patient asked for (local)",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "consultJoinVideo": "Join video call",
+  "@consultJoinVideo": {
+    "description": "Button: open the video call link"
+  },
+  "consultJoinHint": "Opens the private video room in your browser or the Jitsi Meet app.",
+  "@consultJoinHint": {
+    "description": "Hint under the join button"
+  },
+  "consultLinkSoon": "The video link appears here once the hospital confirms the time.",
+  "@consultLinkSoon": {
+    "description": "The video link is not available yet"
+  },
+  "consultReminderScheduled": "We will remind you 24 hours and 1 hour before the call.",
+  "@consultReminderScheduled": {
+    "description": "Reminder note for a scheduled consultation"
+  },
+  "consultReminderPending": "Once the time is confirmed, we will remind you 24 hours and 1 hour before the call.",
+  "@consultReminderPending": {
+    "description": "Reminder note before the time is confirmed"
+  },
+  "consultPaid": "Paid",
+  "@consultPaid": {
+    "description": "Fee status: paid"
+  },
+  "consultPaymentDue": "Payment due",
+  "@consultPaymentDue": {
+    "description": "Fee status: not paid yet"
+  },
+  "consultPaymentPending": "Payment being confirmed",
+  "@consultPaymentPending": {
+    "description": "Fee status: payment being confirmed"
+  },
+  "consultPayButton": "Pay {amount}",
+  "@consultPayButton": {
+    "description": "Button: pay the consultation fee",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹1,500"
+      }
+    }
+  },
+  "consultPayTitle": "Pay consultation fee",
+  "@consultPayTitle": {
+    "description": "Title of the consultation fee payment sheet"
+  },
+  "consultPaySuccess": "Payment received. Thank you.",
+  "@consultPaySuccess": {
+    "description": "Consultation fee paid"
+  },
+  "consultPayFailed": "The payment did not go through and no money was taken. You can try again.",
+  "@consultPayFailed": {
+    "description": "Consultation fee payment failed"
+  },
+  "consultPayPending": "Your payment is being confirmed. This page updates when it is done.",
+  "@consultPayPending": {
+    "description": "Consultation fee payment pending"
+  },
+  "consultCancel": "Cancel consultation",
+  "@consultCancel": {
+    "description": "Button: cancel the consultation"
+  },
+  "consultCancelConfirmTitle": "Cancel this consultation?",
+  "@consultCancelConfirmTitle": {
+    "description": "Confirm dialog title: cancel consultation"
+  },
+  "consultCancelConfirmBody": "The hospital will be told. If you already paid the fee, our team will contact you about it.",
+  "@consultCancelConfirmBody": {
+    "description": "Confirm dialog body: cancel consultation (fee handling)"
+  },
+  "consultKeep": "Keep it",
+  "@consultKeep": {
+    "description": "Dialog button: keep the consultation"
+  },
+  "consultCancelled": "Consultation cancelled",
+  "@consultCancelled": {
+    "description": "Snackbar: consultation cancelled"
+  },
+  "consultOpenCase": "Open case {caseNumber}",
+  "@consultOpenCase": {
+    "description": "Link from a consultation to its case",
+    "placeholders": {
+      "caseNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "consultNotesSection": "Your notes",
+  "@consultNotesSection": {
+    "description": "Section title: the patient's notes on a consultation"
+  },
+  "consultBookVideoButton": "Book video consultation",
+  "@consultBookVideoButton": {
+    "description": "Button on a doctor page: book a video consultation with this doctor"
   }
 }

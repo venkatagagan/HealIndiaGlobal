@@ -9004,4 +9004,201 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get privacyContactNotPublished => 'যোগাযোগের তথ্য এখনও প্রকাশিত হয়নি';
+
+  @override
+  String get consultBookTitle => 'ভিডিও পরামর্শ বুক করুন';
+
+  @override
+  String get consultBookIntro =>
+      'ভ্রমণের আগে ভিডিওতে একজন বিশেষজ্ঞের সঙ্গে কথা বলুন। হাসপাতাল সঠিক সময় নিশ্চিত করে আপনাকে ভিডিও লিংক পাঠাবে।';
+
+  @override
+  String get consultDoctorSection => 'ডাক্তার';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return '$hospital-এর কোনো ডাক্তার এখনও ভিডিও পরামর্শ দেন না। এর বদলে আপনি কোটেশন চাইতে পারেন।';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'এর বদলে কোটেশন চান';
+
+  @override
+  String get consultDateSection => 'পছন্দের দিন';
+
+  @override
+  String get consultDateHint => 'সবুজ দিনগুলিতে পরামর্শের খালি জায়গা আছে।';
+
+  @override
+  String get consultTimeSection => 'পছন্দের সময়';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'সময় আপনার টাইম জোন অনুযায়ী দেখানো হয়েছে ($zone)।';
+  }
+
+  @override
+  String get consultQuestionLabel => 'আপনি ডাক্তারকে কী জিজ্ঞেস করতে চান?';
+
+  @override
+  String get consultQuestionHint => 'আপনার উপসর্গ, যে চিকিৎসার কথা ভাবছেন, ভ্রমণ ও সেরে ওঠা নিয়ে প্রশ্ন...';
+
+  @override
+  String get consultReportsSection => 'শেয়ার করার রিপোর্ট';
+
+  @override
+  String get consultReportsHint => 'ডাক্তার কলের আগে এগুলি পড়ে নিতে পারবেন।';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'এখানে আপলোড করা রিপোর্ট $hospital-এ আপনার কেস $caseNumber-এ যোগ হবে।';
+  }
+
+  @override
+  String get consultUpload => 'রিপোর্ট আপলোড করুন';
+
+  @override
+  String get consultFeeLabel => 'পরামর্শ ফি';
+
+  @override
+  String get consultFeeFree => 'বিনামূল্যে';
+
+  @override
+  String get consultFeePayNote => 'অনুরোধ পাঠানোর পরপরই কার্ডে ফি দেবেন। এরপর হাসপাতাল সময় নিশ্চিত করবে।';
+
+  @override
+  String get consultSubmit => 'পরামর্শের অনুরোধ করুন';
+
+  @override
+  String get consultPickDoctor => 'একজন ডাক্তার বেছে নিন।';
+
+  @override
+  String get consultPickSlot => 'একটি দিন ও সময় বেছে নিন।';
+
+  @override
+  String get consultRequestedSnack => 'পরামর্শের অনুরোধ পাঠানো হয়েছে। হাসপাতাল সময় নিশ্চিত করবে।';
+
+  @override
+  String get consultErrorExists => 'এই ডাক্তারের সঙ্গে আপনার ইতিমধ্যে একটি খোলা পরামর্শ আছে। এটি আমার পরামর্শ-এ পাবেন।';
+
+  @override
+  String get consultErrorUnavailable => 'এই ডাক্তার ভিডিও পরামর্শ দেন না। অনুগ্রহ করে অন্য ডাক্তার বেছে নিন।';
+
+  @override
+  String get consultErrorDoctorRequired => 'পরামর্শের জন্য একজন ডাক্তার বেছে নিন।';
+
+  @override
+  String get consultErrorInvalidDoctor => 'এই ডাক্তার এই হাসপাতালে কাজ করেন না। অনুগ্রহ করে অন্য ডাক্তার বেছে নিন।';
+
+  @override
+  String get consultMineTitle => 'আমার পরামর্শ';
+
+  @override
+  String get consultMineSubtitle => 'চিকিৎসার আগে ও পরে ডাক্তারদের সঙ্গে ভিডিও কল';
+
+  @override
+  String get consultListEmpty => 'এখনও কোনো পরামর্শ নেই';
+
+  @override
+  String get consultListEmptyBody => 'ডাক্তারের পেজ থেকে বা আপনার মিলে যাওয়া হাসপাতাল থেকে ভিডিও পরামর্শ বুক করুন।';
+
+  @override
+  String get consultFindDoctor => 'ডাক্তার খুঁজুন';
+
+  @override
+  String get consultDetailTitle => 'পরামর্শ';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return '$doctor-এর সঙ্গে ভিডিও পরামর্শ';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return '$doctor-এর সঙ্গে চিকিৎসা-পরবর্তী ফলো-আপ';
+  }
+
+  @override
+  String get consultDoctorTbc => 'হাসপাতালের ডাক্তার';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'নির্ধারিত সময়: $when ($minutes মিনিট)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'হাসপাতালের সময় নিশ্চিত করার অপেক্ষায়।';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'আপনি চেয়েছেন: $when।';
+  }
+
+  @override
+  String get consultJoinVideo => 'ভিডিও কলে যোগ দিন';
+
+  @override
+  String get consultJoinHint => 'আপনার ব্রাউজারে বা Jitsi Meet অ্যাপে ব্যক্তিগত ভিডিও রুম খুলবে।';
+
+  @override
+  String get consultLinkSoon => 'হাসপাতাল সময় নিশ্চিত করলে ভিডিও লিংক এখানে দেখা যাবে।';
+
+  @override
+  String get consultReminderScheduled => 'কলের ২৪ ঘণ্টা ও ১ ঘণ্টা আগে আমরা আপনাকে মনে করিয়ে দেব।';
+
+  @override
+  String get consultReminderPending => 'সময় নিশ্চিত হলে কলের ২৪ ঘণ্টা ও ১ ঘণ্টা আগে আমরা আপনাকে মনে করিয়ে দেব।';
+
+  @override
+  String get consultPaid => 'পরিশোধিত';
+
+  @override
+  String get consultPaymentDue => 'পেমেন্ট বাকি';
+
+  @override
+  String get consultPaymentPending => 'পেমেন্ট নিশ্চিত করা হচ্ছে';
+
+  @override
+  String consultPayButton(String amount) {
+    return '$amount পরিশোধ করুন';
+  }
+
+  @override
+  String get consultPayTitle => 'পরামর্শ ফি পরিশোধ করুন';
+
+  @override
+  String get consultPaySuccess => 'পেমেন্ট পাওয়া গেছে। ধন্যবাদ।';
+
+  @override
+  String get consultPayFailed => 'পেমেন্ট সম্পন্ন হয়নি এবং কোনো টাকা কাটা হয়নি। আবার চেষ্টা করতে পারেন।';
+
+  @override
+  String get consultPayPending => 'আপনার পেমেন্ট নিশ্চিত করা হচ্ছে। সম্পন্ন হলে এই পেজ আপডেট হবে।';
+
+  @override
+  String get consultCancel => 'পরামর্শ বাতিল করুন';
+
+  @override
+  String get consultCancelConfirmTitle => 'এই পরামর্শটি বাতিল করবেন?';
+
+  @override
+  String get consultCancelConfirmBody =>
+      'হাসপাতালকে জানানো হবে। আপনি ইতিমধ্যে ফি দিয়ে থাকলে আমাদের দল এ বিষয়ে আপনার সঙ্গে যোগাযোগ করবে।';
+
+  @override
+  String get consultKeep => 'রেখে দিন';
+
+  @override
+  String get consultCancelled => 'পরামর্শ বাতিল হয়েছে';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'কেস $caseNumber খুলুন';
+  }
+
+  @override
+  String get consultNotesSection => 'আপনার নোট';
+
+  @override
+  String get consultBookVideoButton => 'ভিডিও পরামর্শ বুক করুন';
 }

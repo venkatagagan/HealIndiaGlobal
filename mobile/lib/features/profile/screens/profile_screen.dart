@@ -101,6 +101,14 @@ class ProfileScreen extends ConsumerWidget {
                       onTap: () => context.push(Routes.myReviews),
                     ),
                     SettingsTile(
+                      key: const Key('profile-consultations'),
+                      icon: Icons.videocam_outlined,
+                      title: l10n.consultMineTitle,
+                      subtitle: l10n.consultMineSubtitle,
+                      color: AppColors.info,
+                      onTap: () => context.push(Routes.consultations),
+                    ),
+                    SettingsTile(
                       key: const Key('profile-aftercare'),
                       icon: Icons.healing_outlined,
                       title: l10n.aftercareTitle,

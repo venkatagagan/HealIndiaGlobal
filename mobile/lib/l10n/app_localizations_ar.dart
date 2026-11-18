@@ -9291,4 +9291,200 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get privacyContactNotPublished => 'لم تُنشر بيانات الاتصال بعد';
+
+  @override
+  String get consultBookTitle => 'حجز استشارة بالفيديو';
+
+  @override
+  String get consultBookIntro =>
+      'تحدّث مع طبيب مختص عبر الفيديو قبل سفرك. يؤكّد المستشفى الموعد الدقيق ويرسل إليك رابط الفيديو.';
+
+  @override
+  String get consultDoctorSection => 'الطبيب';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return 'لا يقدّم أي طبيب في $hospital استشارات بالفيديو بعد. يمكنك طلب عرض سعر بدلًا من ذلك.';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'طلب عرض سعر بدلًا من ذلك';
+
+  @override
+  String get consultDateSection => 'اليوم المفضّل';
+
+  @override
+  String get consultDateHint => 'الأيام الخضراء فيها أماكن متاحة للاستشارة.';
+
+  @override
+  String get consultTimeSection => 'الوقت المفضّل';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'تُعرض الأوقات حسب منطقتك الزمنية ($zone).';
+  }
+
+  @override
+  String get consultQuestionLabel => 'ماذا تودّ أن تسأل الطبيب؟';
+
+  @override
+  String get consultQuestionHint => 'أعراضك، والعلاج الذي تفكر فيه، وأسئلتك عن السفر والتعافي...';
+
+  @override
+  String get consultReportsSection => 'التقارير المراد مشاركتها';
+
+  @override
+  String get consultReportsHint => 'يمكن للطبيب قراءتها قبل المكالمة.';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'تُضاف التقارير التي ترفعها هنا إلى حالتك $caseNumber لدى $hospital.';
+  }
+
+  @override
+  String get consultUpload => 'رفع تقرير';
+
+  @override
+  String get consultFeeLabel => 'رسوم الاستشارة';
+
+  @override
+  String get consultFeeFree => 'مجانًا';
+
+  @override
+  String get consultFeePayNote => 'تدفع الرسوم بالبطاقة مباشرةً بعد إرسال الطلب، ثم يؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultSubmit => 'طلب الاستشارة';
+
+  @override
+  String get consultPickDoctor => 'اختر طبيبًا.';
+
+  @override
+  String get consultPickSlot => 'اختر يومًا ووقتًا.';
+
+  @override
+  String get consultRequestedSnack => 'تم طلب الاستشارة. سيؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultErrorExists => 'لديك بالفعل استشارة مفتوحة مع هذا الطبيب. تجدها ضمن استشاراتي.';
+
+  @override
+  String get consultErrorUnavailable => 'لا يقدّم هذا الطبيب استشارات بالفيديو. يُرجى اختيار طبيب آخر.';
+
+  @override
+  String get consultErrorDoctorRequired => 'يُرجى اختيار طبيب للاستشارة.';
+
+  @override
+  String get consultErrorInvalidDoctor => 'لا يعمل هذا الطبيب في هذا المستشفى. يُرجى اختيار طبيب آخر.';
+
+  @override
+  String get consultMineTitle => 'استشاراتي';
+
+  @override
+  String get consultMineSubtitle => 'مكالمات فيديو مع الأطباء قبل العلاج وبعده';
+
+  @override
+  String get consultListEmpty => 'لا توجد استشارات بعد';
+
+  @override
+  String get consultListEmptyBody => 'احجز استشارة بالفيديو من صفحة الطبيب أو من المستشفيات المقترحة لك.';
+
+  @override
+  String get consultFindDoctor => 'ابحث عن طبيب';
+
+  @override
+  String get consultDetailTitle => 'الاستشارة';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return 'استشارة بالفيديو مع $doctor';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return 'متابعة ما بعد العلاج مع $doctor';
+  }
+
+  @override
+  String get consultDoctorTbc => 'طبيب المستشفى';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'الموعد: $when (المدة $minutes دقيقة)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'بانتظار تأكيد المستشفى للموعد.';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'الموعد الذي طلبته: $when.';
+  }
+
+  @override
+  String get consultJoinVideo => 'الانضمام إلى مكالمة الفيديو';
+
+  @override
+  String get consultJoinHint => 'يفتح غرفة الفيديو الخاصة في متصفحك أو في تطبيق Jitsi Meet.';
+
+  @override
+  String get consultLinkSoon => 'سيظهر رابط الفيديو هنا بعد أن يؤكّد المستشفى الموعد.';
+
+  @override
+  String get consultReminderScheduled => 'سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+
+  @override
+  String get consultReminderPending => 'بعد تأكيد الموعد، سنذكّرك قبل المكالمة بـ 24 ساعة وبساعة واحدة.';
+
+  @override
+  String get consultPaid => 'مدفوع';
+
+  @override
+  String get consultPaymentDue => 'بانتظار الدفع';
+
+  @override
+  String get consultPaymentPending => 'جارٍ تأكيد الدفع';
+
+  @override
+  String consultPayButton(String amount) {
+    return 'ادفع $amount';
+  }
+
+  @override
+  String get consultPayTitle => 'دفع رسوم الاستشارة';
+
+  @override
+  String get consultPaySuccess => 'تم استلام الدفعة. شكرًا لك.';
+
+  @override
+  String get consultPayFailed => 'لم تتم عملية الدفع ولم يُخصم أي مبلغ. يمكنك المحاولة مرة أخرى.';
+
+  @override
+  String get consultPayPending => 'جارٍ تأكيد دفعتك. ستُحدَّث هذه الصفحة عند الانتهاء.';
+
+  @override
+  String get consultCancel => 'إلغاء الاستشارة';
+
+  @override
+  String get consultCancelConfirmTitle => 'إلغاء هذه الاستشارة؟';
+
+  @override
+  String get consultCancelConfirmBody => 'سيتم إبلاغ المستشفى. إذا كنت قد دفعت الرسوم، فسيتواصل معك فريقنا بشأنها.';
+
+  @override
+  String get consultKeep => 'الإبقاء عليها';
+
+  @override
+  String get consultCancelled => 'تم إلغاء الاستشارة';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'فتح الحالة $caseNumber';
+  }
+
+  @override
+  String get consultNotesSection => 'ملاحظاتك';
+
+  @override
+  String get consultBookVideoButton => 'حجز استشارة بالفيديو';
 }

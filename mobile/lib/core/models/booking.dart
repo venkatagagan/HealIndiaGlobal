@@ -213,10 +213,12 @@ class Consultation {
     this.dueAt,
     this.followupDay,
     this.hospitalName,
+    this.hospitalId,
   });
 
   factory Consultation.fromJson(JsonMap j) => Consultation(
     id: jStr(j, 'id'),
+    hospitalId: jStrOrNull(jMap(j, 'hospital'), 'id'),
     caseId: jStr(j, 'case_id'),
     kind: jStr(j, 'kind', 'standard'),
     dueAt: jDate(j, 'due_at'),
@@ -264,8 +266,12 @@ class Consultation {
   /// Follow-ups: day after discharge (7, 30, 90).
   final int? followupDay;
   final String? hospitalName;
+  final String? hospitalId;
 
   bool get isFollowup => kind == 'followup';
+
+  /// Still open: the patient may cancel it (and pay its fee).
+  bool get isOpen => status == ConsultationStatus.requested || status == ConsultationStatus.scheduled;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -273,6 +279,7 @@ class Consultation {
     'kind': kind,
     'case_number': caseNumber,
     'doctor': doctorId == null && doctorName == null ? null : {'id': doctorId, 'full_name': doctorName},
+    'hospital': hospitalId == null && hospitalName == null ? null : {'id': hospitalId, 'name': hospitalName},
     'patient': patientId == null && patientName == null ? null : {'id': patientId, 'full_name': patientName},
     'scheduled_at': scheduledAt?.toUtc().toIso8601String(),
     'duration_min': durationMin,

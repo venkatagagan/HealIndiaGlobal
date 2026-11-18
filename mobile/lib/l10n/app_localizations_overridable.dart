@@ -2336,6 +2336,56 @@ class OverridableLocalizations extends AppLocalizations {
     'privacyContactBoard' => privacyContactBoard,
     'privacyContactBoardLink' => privacyContactBoardLink,
     'privacyContactNotPublished' => privacyContactNotPublished,
+    'consultBookTitle' => consultBookTitle,
+    'consultBookIntro' => consultBookIntro,
+    'consultDoctorSection' => consultDoctorSection,
+    'consultRequestQuoteInstead' => consultRequestQuoteInstead,
+    'consultDateSection' => consultDateSection,
+    'consultDateHint' => consultDateHint,
+    'consultTimeSection' => consultTimeSection,
+    'consultQuestionLabel' => consultQuestionLabel,
+    'consultQuestionHint' => consultQuestionHint,
+    'consultReportsSection' => consultReportsSection,
+    'consultReportsHint' => consultReportsHint,
+    'consultUpload' => consultUpload,
+    'consultFeeLabel' => consultFeeLabel,
+    'consultFeeFree' => consultFeeFree,
+    'consultFeePayNote' => consultFeePayNote,
+    'consultSubmit' => consultSubmit,
+    'consultPickDoctor' => consultPickDoctor,
+    'consultPickSlot' => consultPickSlot,
+    'consultRequestedSnack' => consultRequestedSnack,
+    'consultErrorExists' => consultErrorExists,
+    'consultErrorUnavailable' => consultErrorUnavailable,
+    'consultErrorDoctorRequired' => consultErrorDoctorRequired,
+    'consultErrorInvalidDoctor' => consultErrorInvalidDoctor,
+    'consultMineTitle' => consultMineTitle,
+    'consultMineSubtitle' => consultMineSubtitle,
+    'consultListEmpty' => consultListEmpty,
+    'consultListEmptyBody' => consultListEmptyBody,
+    'consultFindDoctor' => consultFindDoctor,
+    'consultDetailTitle' => consultDetailTitle,
+    'consultDoctorTbc' => consultDoctorTbc,
+    'consultAwaitingTime' => consultAwaitingTime,
+    'consultJoinVideo' => consultJoinVideo,
+    'consultJoinHint' => consultJoinHint,
+    'consultLinkSoon' => consultLinkSoon,
+    'consultReminderScheduled' => consultReminderScheduled,
+    'consultReminderPending' => consultReminderPending,
+    'consultPaid' => consultPaid,
+    'consultPaymentDue' => consultPaymentDue,
+    'consultPaymentPending' => consultPaymentPending,
+    'consultPayTitle' => consultPayTitle,
+    'consultPaySuccess' => consultPaySuccess,
+    'consultPayFailed' => consultPayFailed,
+    'consultPayPending' => consultPayPending,
+    'consultCancel' => consultCancel,
+    'consultCancelConfirmTitle' => consultCancelConfirmTitle,
+    'consultCancelConfirmBody' => consultCancelConfirmBody,
+    'consultKeep' => consultKeep,
+    'consultCancelled' => consultCancelled,
+    'consultNotesSection' => consultNotesSection,
+    'consultBookVideoButton' => consultBookVideoButton,
     _ => null,
   };
 
@@ -10276,6 +10326,183 @@ class OverridableLocalizations extends AppLocalizations {
 
   @override
   String get privacyContactNotPublished => _t('privacyContactNotPublished') ?? base.privacyContactNotPublished;
+
+  @override
+  String get consultBookTitle => _t('consultBookTitle') ?? base.consultBookTitle;
+
+  @override
+  String get consultBookIntro => _t('consultBookIntro') ?? base.consultBookIntro;
+
+  @override
+  String get consultDoctorSection => _t('consultDoctorSection') ?? base.consultDoctorSection;
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) => _f('consultNoTeleconsultDoctors', {'hospital': hospital}) ?? base.consultNoTeleconsultDoctors(hospital);
+
+  @override
+  String get consultRequestQuoteInstead => _t('consultRequestQuoteInstead') ?? base.consultRequestQuoteInstead;
+
+  @override
+  String get consultDateSection => _t('consultDateSection') ?? base.consultDateSection;
+
+  @override
+  String get consultDateHint => _t('consultDateHint') ?? base.consultDateHint;
+
+  @override
+  String get consultTimeSection => _t('consultTimeSection') ?? base.consultTimeSection;
+
+  @override
+  String consultTimesLocal(String zone) => _f('consultTimesLocal', {'zone': zone}) ?? base.consultTimesLocal(zone);
+
+  @override
+  String get consultQuestionLabel => _t('consultQuestionLabel') ?? base.consultQuestionLabel;
+
+  @override
+  String get consultQuestionHint => _t('consultQuestionHint') ?? base.consultQuestionHint;
+
+  @override
+  String get consultReportsSection => _t('consultReportsSection') ?? base.consultReportsSection;
+
+  @override
+  String get consultReportsHint => _t('consultReportsHint') ?? base.consultReportsHint;
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) => _f('consultReportsExistingCase', {'caseNumber': caseNumber, 'hospital': hospital}) ?? base.consultReportsExistingCase(caseNumber, hospital);
+
+  @override
+  String get consultUpload => _t('consultUpload') ?? base.consultUpload;
+
+  @override
+  String get consultFeeLabel => _t('consultFeeLabel') ?? base.consultFeeLabel;
+
+  @override
+  String get consultFeeFree => _t('consultFeeFree') ?? base.consultFeeFree;
+
+  @override
+  String get consultFeePayNote => _t('consultFeePayNote') ?? base.consultFeePayNote;
+
+  @override
+  String get consultSubmit => _t('consultSubmit') ?? base.consultSubmit;
+
+  @override
+  String get consultPickDoctor => _t('consultPickDoctor') ?? base.consultPickDoctor;
+
+  @override
+  String get consultPickSlot => _t('consultPickSlot') ?? base.consultPickSlot;
+
+  @override
+  String get consultRequestedSnack => _t('consultRequestedSnack') ?? base.consultRequestedSnack;
+
+  @override
+  String get consultErrorExists => _t('consultErrorExists') ?? base.consultErrorExists;
+
+  @override
+  String get consultErrorUnavailable => _t('consultErrorUnavailable') ?? base.consultErrorUnavailable;
+
+  @override
+  String get consultErrorDoctorRequired => _t('consultErrorDoctorRequired') ?? base.consultErrorDoctorRequired;
+
+  @override
+  String get consultErrorInvalidDoctor => _t('consultErrorInvalidDoctor') ?? base.consultErrorInvalidDoctor;
+
+  @override
+  String get consultMineTitle => _t('consultMineTitle') ?? base.consultMineTitle;
+
+  @override
+  String get consultMineSubtitle => _t('consultMineSubtitle') ?? base.consultMineSubtitle;
+
+  @override
+  String get consultListEmpty => _t('consultListEmpty') ?? base.consultListEmpty;
+
+  @override
+  String get consultListEmptyBody => _t('consultListEmptyBody') ?? base.consultListEmptyBody;
+
+  @override
+  String get consultFindDoctor => _t('consultFindDoctor') ?? base.consultFindDoctor;
+
+  @override
+  String get consultDetailTitle => _t('consultDetailTitle') ?? base.consultDetailTitle;
+
+  @override
+  String consultWithDoctor(String doctor) => _f('consultWithDoctor', {'doctor': doctor}) ?? base.consultWithDoctor(doctor);
+
+  @override
+  String consultFollowupWith(String doctor) => _f('consultFollowupWith', {'doctor': doctor}) ?? base.consultFollowupWith(doctor);
+
+  @override
+  String get consultDoctorTbc => _t('consultDoctorTbc') ?? base.consultDoctorTbc;
+
+  @override
+  String consultScheduledAt(String when, int minutes) => _f('consultScheduledAt', {'when': when, 'minutes': minutes}) ?? base.consultScheduledAt(when, minutes);
+
+  @override
+  String get consultAwaitingTime => _t('consultAwaitingTime') ?? base.consultAwaitingTime;
+
+  @override
+  String consultPreferredTime(String when) => _f('consultPreferredTime', {'when': when}) ?? base.consultPreferredTime(when);
+
+  @override
+  String get consultJoinVideo => _t('consultJoinVideo') ?? base.consultJoinVideo;
+
+  @override
+  String get consultJoinHint => _t('consultJoinHint') ?? base.consultJoinHint;
+
+  @override
+  String get consultLinkSoon => _t('consultLinkSoon') ?? base.consultLinkSoon;
+
+  @override
+  String get consultReminderScheduled => _t('consultReminderScheduled') ?? base.consultReminderScheduled;
+
+  @override
+  String get consultReminderPending => _t('consultReminderPending') ?? base.consultReminderPending;
+
+  @override
+  String get consultPaid => _t('consultPaid') ?? base.consultPaid;
+
+  @override
+  String get consultPaymentDue => _t('consultPaymentDue') ?? base.consultPaymentDue;
+
+  @override
+  String get consultPaymentPending => _t('consultPaymentPending') ?? base.consultPaymentPending;
+
+  @override
+  String consultPayButton(String amount) => _f('consultPayButton', {'amount': amount}) ?? base.consultPayButton(amount);
+
+  @override
+  String get consultPayTitle => _t('consultPayTitle') ?? base.consultPayTitle;
+
+  @override
+  String get consultPaySuccess => _t('consultPaySuccess') ?? base.consultPaySuccess;
+
+  @override
+  String get consultPayFailed => _t('consultPayFailed') ?? base.consultPayFailed;
+
+  @override
+  String get consultPayPending => _t('consultPayPending') ?? base.consultPayPending;
+
+  @override
+  String get consultCancel => _t('consultCancel') ?? base.consultCancel;
+
+  @override
+  String get consultCancelConfirmTitle => _t('consultCancelConfirmTitle') ?? base.consultCancelConfirmTitle;
+
+  @override
+  String get consultCancelConfirmBody => _t('consultCancelConfirmBody') ?? base.consultCancelConfirmBody;
+
+  @override
+  String get consultKeep => _t('consultKeep') ?? base.consultKeep;
+
+  @override
+  String get consultCancelled => _t('consultCancelled') ?? base.consultCancelled;
+
+  @override
+  String consultOpenCase(String caseNumber) => _f('consultOpenCase', {'caseNumber': caseNumber}) ?? base.consultOpenCase(caseNumber);
+
+  @override
+  String get consultNotesSection => _t('consultNotesSection') ?? base.consultNotesSection;
+
+  @override
+  String get consultBookVideoButton => _t('consultBookVideoButton') ?? base.consultBookVideoButton;
 }
 
 /// Every ARB key, in template order.
@@ -12926,4 +13153,63 @@ const List<String> kL10nKeys = [
   'privacyContactBoard',
   'privacyContactBoardLink',
   'privacyContactNotPublished',
+  'consultBookTitle',
+  'consultBookIntro',
+  'consultDoctorSection',
+  'consultNoTeleconsultDoctors',
+  'consultRequestQuoteInstead',
+  'consultDateSection',
+  'consultDateHint',
+  'consultTimeSection',
+  'consultTimesLocal',
+  'consultQuestionLabel',
+  'consultQuestionHint',
+  'consultReportsSection',
+  'consultReportsHint',
+  'consultReportsExistingCase',
+  'consultUpload',
+  'consultFeeLabel',
+  'consultFeeFree',
+  'consultFeePayNote',
+  'consultSubmit',
+  'consultPickDoctor',
+  'consultPickSlot',
+  'consultRequestedSnack',
+  'consultErrorExists',
+  'consultErrorUnavailable',
+  'consultErrorDoctorRequired',
+  'consultErrorInvalidDoctor',
+  'consultMineTitle',
+  'consultMineSubtitle',
+  'consultListEmpty',
+  'consultListEmptyBody',
+  'consultFindDoctor',
+  'consultDetailTitle',
+  'consultWithDoctor',
+  'consultFollowupWith',
+  'consultDoctorTbc',
+  'consultScheduledAt',
+  'consultAwaitingTime',
+  'consultPreferredTime',
+  'consultJoinVideo',
+  'consultJoinHint',
+  'consultLinkSoon',
+  'consultReminderScheduled',
+  'consultReminderPending',
+  'consultPaid',
+  'consultPaymentDue',
+  'consultPaymentPending',
+  'consultPayButton',
+  'consultPayTitle',
+  'consultPaySuccess',
+  'consultPayFailed',
+  'consultPayPending',
+  'consultCancel',
+  'consultCancelConfirmTitle',
+  'consultCancelConfirmBody',
+  'consultKeep',
+  'consultCancelled',
+  'consultOpenCase',
+  'consultNotesSection',
+  'consultBookVideoButton',
 ];

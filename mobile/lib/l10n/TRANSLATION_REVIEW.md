@@ -117,6 +117,8 @@ per action may read better.
 | `privacyContactTitle`, `privacyContactGrievance`, `privacyContactDpo`, `privacyContactResponse`, `privacyContactBoard` | Grievance Officer, Data Protection Officer, statutory reply time, escalation to the Data Protection Board of India |
 | `reportSheetIntroReview` | Moderation promise (reporter not disclosed) |
 | `orgSuspendedBodyAgent`, `orgSuspendedBodyHospital` | Account suspension notice to partners |
+| `consultBookIntro`, `consultFeePayNote`, `consultPayFailed`, `consultPayPending`, `consultCancelConfirmBody` | Video consultation fee: when it is paid, "no money was taken", what happens to a paid fee on cancellation |
+| `consultReminderScheduled`, `consultReminderPending`, `consultJoinHint`, `consultTimesLocal` | Appointment reminders and time-zone wording for a medical call |
 
 ## Politically sensitive names
 

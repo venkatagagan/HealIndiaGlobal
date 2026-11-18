@@ -9121,4 +9121,207 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get privacyContactNotPublished => 'Coordonnées pas encore publiées';
+
+  @override
+  String get consultBookTitle => 'Réserver une téléconsultation';
+
+  @override
+  String get consultBookIntro =>
+      'Parlez à un spécialiste en vidéo avant votre voyage. L’hôpital confirme l’heure exacte et vous envoie le lien vidéo.';
+
+  @override
+  String get consultDoctorSection => 'Médecin';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return 'Aucun médecin de cet établissement ($hospital) ne propose encore de téléconsultation. Vous pouvez demander un devis à la place.';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'Demander un devis à la place';
+
+  @override
+  String get consultDateSection => 'Jour souhaité';
+
+  @override
+  String get consultDateHint => 'Les jours en vert ont des créneaux de consultation libres.';
+
+  @override
+  String get consultTimeSection => 'Heure souhaitée';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'Les heures sont indiquées dans votre fuseau horaire ($zone).';
+  }
+
+  @override
+  String get consultQuestionLabel => 'Que souhaitez-vous demander au médecin ?';
+
+  @override
+  String get consultQuestionHint =>
+      'Vos symptômes, le traitement envisagé, vos questions sur le voyage et la convalescence...';
+
+  @override
+  String get consultReportsSection => 'Comptes rendus à partager';
+
+  @override
+  String get consultReportsHint => 'Le médecin peut les lire avant l’appel.';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'Les comptes rendus que vous ajoutez ici rejoignent votre dossier $caseNumber auprès de : $hospital.';
+  }
+
+  @override
+  String get consultUpload => 'Ajouter un compte rendu';
+
+  @override
+  String get consultFeeLabel => 'Tarif de la consultation';
+
+  @override
+  String get consultFeeFree => 'Gratuit';
+
+  @override
+  String get consultFeePayNote =>
+      'Vous réglez le tarif par carte juste après l’envoi de la demande. L’hôpital confirme ensuite l’heure.';
+
+  @override
+  String get consultSubmit => 'Demander la consultation';
+
+  @override
+  String get consultPickDoctor => 'Choisissez un médecin.';
+
+  @override
+  String get consultPickSlot => 'Choisissez un jour et une heure.';
+
+  @override
+  String get consultRequestedSnack => 'Consultation demandée. L’hôpital confirmera l’heure.';
+
+  @override
+  String get consultErrorExists =>
+      'Vous avez déjà une consultation en cours avec ce médecin. Retrouvez-la dans Mes consultations.';
+
+  @override
+  String get consultErrorUnavailable => 'Ce médecin ne propose pas de téléconsultation. Choisissez un autre médecin.';
+
+  @override
+  String get consultErrorDoctorRequired => 'Choisissez un médecin pour la consultation.';
+
+  @override
+  String get consultErrorInvalidDoctor => 'Ce médecin n’exerce pas dans cet hôpital. Choisissez un autre médecin.';
+
+  @override
+  String get consultMineTitle => 'Mes consultations';
+
+  @override
+  String get consultMineSubtitle => 'Appels vidéo avec les médecins avant et après le traitement';
+
+  @override
+  String get consultListEmpty => 'Aucune consultation pour l’instant';
+
+  @override
+  String get consultListEmptyBody =>
+      'Réservez une téléconsultation depuis la page d’un médecin ou vos hôpitaux recommandés.';
+
+  @override
+  String get consultFindDoctor => 'Trouver un médecin';
+
+  @override
+  String get consultDetailTitle => 'Consultation';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return 'Téléconsultation avec $doctor';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return 'Suivi post-traitement avec $doctor';
+  }
+
+  @override
+  String get consultDoctorTbc => 'le médecin de l’hôpital';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'Prévue le $when ($minutes min)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'En attente de la confirmation de l’heure par l’hôpital.';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'Vous avez demandé : $when.';
+  }
+
+  @override
+  String get consultJoinVideo => 'Rejoindre l’appel vidéo';
+
+  @override
+  String get consultJoinHint => 'Ouvre la salle vidéo privée dans votre navigateur ou l’application Jitsi Meet.';
+
+  @override
+  String get consultLinkSoon => 'Le lien vidéo apparaîtra ici dès que l’hôpital aura confirmé l’heure.';
+
+  @override
+  String get consultReminderScheduled => 'Nous vous enverrons un rappel 24 heures et 1 heure avant l’appel.';
+
+  @override
+  String get consultReminderPending =>
+      'Une fois l’heure confirmée, nous vous enverrons un rappel 24 heures et 1 heure avant l’appel.';
+
+  @override
+  String get consultPaid => 'Payé';
+
+  @override
+  String get consultPaymentDue => 'Paiement à effectuer';
+
+  @override
+  String get consultPaymentPending => 'Paiement en cours de confirmation';
+
+  @override
+  String consultPayButton(String amount) {
+    return 'Payer $amount';
+  }
+
+  @override
+  String get consultPayTitle => 'Payer la consultation';
+
+  @override
+  String get consultPaySuccess => 'Paiement reçu. Merci.';
+
+  @override
+  String get consultPayFailed => 'Le paiement n’a pas abouti et aucun montant n’a été prélevé. Vous pouvez réessayer.';
+
+  @override
+  String get consultPayPending =>
+      'Votre paiement est en cours de confirmation. Cette page se met à jour une fois terminé.';
+
+  @override
+  String get consultCancel => 'Annuler la consultation';
+
+  @override
+  String get consultCancelConfirmTitle => 'Annuler cette consultation ?';
+
+  @override
+  String get consultCancelConfirmBody =>
+      'L’hôpital sera prévenu. Si vous avez déjà payé, notre équipe vous contactera à ce sujet.';
+
+  @override
+  String get consultKeep => 'La conserver';
+
+  @override
+  String get consultCancelled => 'Consultation annulée';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'Ouvrir le dossier $caseNumber';
+  }
+
+  @override
+  String get consultNotesSection => 'Vos notes';
+
+  @override
+  String get consultBookVideoButton => 'Réserver une téléconsultation';
 }

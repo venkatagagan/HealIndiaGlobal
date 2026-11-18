@@ -9273,4 +9273,204 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get privacyContactNotPublished => 'Контакты пока не опубликованы';
+
+  @override
+  String get consultBookTitle => 'Записаться на видеоконсультацию';
+
+  @override
+  String get consultBookIntro =>
+      'Поговорите со специалистом по видео до поездки. Больница подтвердит точное время и пришлёт ссылку на видеозвонок.';
+
+  @override
+  String get consultDoctorSection => 'Врач';
+
+  @override
+  String consultNoTeleconsultDoctors(String hospital) {
+    return 'В больнице «$hospital» пока нет врачей с видеоконсультациями. Вместо этого можно запросить расчёт стоимости.';
+  }
+
+  @override
+  String get consultRequestQuoteInstead => 'Запросить расчёт стоимости';
+
+  @override
+  String get consultDateSection => 'Желаемый день';
+
+  @override
+  String get consultDateHint => 'Зелёным отмечены дни со свободными местами.';
+
+  @override
+  String get consultTimeSection => 'Желаемое время';
+
+  @override
+  String consultTimesLocal(String zone) {
+    return 'Время указано в вашем часовом поясе ($zone).';
+  }
+
+  @override
+  String get consultQuestionLabel => 'Что вы хотите спросить у врача?';
+
+  @override
+  String get consultQuestionHint =>
+      'Ваши симптомы, лечение, которое вы рассматриваете, вопросы о поездке и восстановлении...';
+
+  @override
+  String get consultReportsSection => 'Документы для врача';
+
+  @override
+  String get consultReportsHint => 'Врач сможет ознакомиться с ними до звонка.';
+
+  @override
+  String consultReportsExistingCase(String caseNumber, String hospital) {
+    return 'Загруженные здесь документы будут добавлены в ваше обращение $caseNumber ($hospital).';
+  }
+
+  @override
+  String get consultUpload => 'Загрузить документ';
+
+  @override
+  String get consultFeeLabel => 'Стоимость консультации';
+
+  @override
+  String get consultFeeFree => 'Бесплатно';
+
+  @override
+  String get consultFeePayNote => 'Оплата картой — сразу после отправки запроса. Затем больница подтвердит время.';
+
+  @override
+  String get consultSubmit => 'Отправить запрос';
+
+  @override
+  String get consultPickDoctor => 'Выберите врача.';
+
+  @override
+  String get consultPickSlot => 'Выберите день и время.';
+
+  @override
+  String get consultRequestedSnack => 'Запрос отправлен. Больница подтвердит время.';
+
+  @override
+  String get consultErrorExists =>
+      'У вас уже есть открытая консультация с этим врачом. Она в разделе «Мои консультации».';
+
+  @override
+  String get consultErrorUnavailable => 'Этот врач не проводит видеоконсультации. Выберите другого врача.';
+
+  @override
+  String get consultErrorDoctorRequired => 'Выберите врача для консультации.';
+
+  @override
+  String get consultErrorInvalidDoctor => 'Этот врач не работает в этой больнице. Выберите другого врача.';
+
+  @override
+  String get consultMineTitle => 'Мои консультации';
+
+  @override
+  String get consultMineSubtitle => 'Видеозвонки с врачами до и после лечения';
+
+  @override
+  String get consultListEmpty => 'Консультаций пока нет';
+
+  @override
+  String get consultListEmptyBody =>
+      'Записаться на видеоконсультацию можно со страницы врача или из подобранных больниц.';
+
+  @override
+  String get consultFindDoctor => 'Найти врача';
+
+  @override
+  String get consultDetailTitle => 'Консультация';
+
+  @override
+  String consultWithDoctor(String doctor) {
+    return 'Видеоконсультация: $doctor';
+  }
+
+  @override
+  String consultFollowupWith(String doctor) {
+    return 'Контроль после лечения: $doctor';
+  }
+
+  @override
+  String get consultDoctorTbc => 'врач больницы';
+
+  @override
+  String consultScheduledAt(String when, int minutes) {
+    return 'Назначено: $when ($minutes мин)';
+  }
+
+  @override
+  String get consultAwaitingTime => 'Ждём, когда больница подтвердит время.';
+
+  @override
+  String consultPreferredTime(String when) {
+    return 'Вы просили: $when.';
+  }
+
+  @override
+  String get consultJoinVideo => 'Подключиться к видеозвонку';
+
+  @override
+  String get consultJoinHint => 'Откроет закрытую видеокомнату в браузере или приложении Jitsi Meet.';
+
+  @override
+  String get consultLinkSoon => 'Ссылка на видеозвонок появится здесь после подтверждения времени.';
+
+  @override
+  String get consultReminderScheduled => 'Мы напомним за 24 часа и за 1 час до звонка.';
+
+  @override
+  String get consultReminderPending => 'После подтверждения времени мы напомним за 24 часа и за 1 час до звонка.';
+
+  @override
+  String get consultPaid => 'Оплачено';
+
+  @override
+  String get consultPaymentDue => 'Ожидает оплаты';
+
+  @override
+  String get consultPaymentPending => 'Платёж подтверждается';
+
+  @override
+  String consultPayButton(String amount) {
+    return 'Оплатить $amount';
+  }
+
+  @override
+  String get consultPayTitle => 'Оплата консультации';
+
+  @override
+  String get consultPaySuccess => 'Оплата получена. Спасибо.';
+
+  @override
+  String get consultPayFailed => 'Платёж не прошёл, деньги не списаны. Попробуйте ещё раз.';
+
+  @override
+  String get consultPayPending => 'Платёж подтверждается. Страница обновится, когда всё будет готово.';
+
+  @override
+  String get consultCancel => 'Отменить консультацию';
+
+  @override
+  String get consultCancelConfirmTitle => 'Отменить эту консультацию?';
+
+  @override
+  String get consultCancelConfirmBody =>
+      'Больница получит уведомление. Если вы уже оплатили консультацию, наша команда свяжется с вами.';
+
+  @override
+  String get consultKeep => 'Оставить';
+
+  @override
+  String get consultCancelled => 'Консультация отменена';
+
+  @override
+  String consultOpenCase(String caseNumber) {
+    return 'Открыть обращение $caseNumber';
+  }
+
+  @override
+  String get consultNotesSection => 'Ваши заметки';
+
+  @override
+  String get consultBookVideoButton => 'Записаться на видеоконсультацию';
 }
