@@ -65,6 +65,7 @@ CreateConversationLimit = Annotated[
 
 WS_CLOSE_UNAUTHORIZED = 4401
 WS_HEARTBEAT_SECONDS = 25.0
+WS_SESSION_RECHECK_SECONDS = 60.0  # SEC-031: open sockets re-check their session at least this often
 
 
 # -------------------------------------------------------------------------------------------- conversations
@@ -151,8 +152,10 @@ async def notification_read(notification_id: uuid.UUID, db: DbSession, user: Cur
 
 
 # ------------------------------------------------------------------------------------------------ websocket
-async def _authenticate_ws(token: str | None, websocket: WebSocket) -> tuple[uuid.UUID, float] | None:
-    """Return ``(user_id, exp_timestamp)`` for a valid access token of an active user, else ``None``.
+async def _authenticate_ws(
+    token: str | None, websocket: WebSocket
+) -> tuple[uuid.UUID, float, dict[str, Any]] | None:
+    """Return ``(user_id, exp_timestamp, claims)`` for a valid access token of an active user, else ``None``.
 
     SEC-061: the same door checks as HTTP (``deps._user_from_token``): the token's ``portal`` claim must
     match the role (staff tokens only for staff and vice versa) and staff connect only from
@@ -178,7 +181,22 @@ async def _authenticate_ws(token: str | None, websocket: WebSocket) -> tuple[uui
         # the helpers read only ``.client`` / ``.headers``, which a WebSocket (HTTPConnection) has too
         if is_staff(user) and not staff_ip_allowed(cast(Request, websocket)):
             return None
-    return user_id, float(payload.get("exp", 0))
+    return user_id, float(payload.get("exp", 0)), payload
+
+
+async def _session_still_valid(user_id: uuid.UUID, payload: dict[str, Any]) -> bool:
+    """SEC-031 safety net for an OPEN socket: the session is still live, the user active and the
+    organisation not suspended (revocations also close sockets at once through ``realtime``)."""
+    async with SessionLocal() as db:
+        user = await db.get(User, user_id)
+        if user is None or not is_active_user(user):
+            return False
+        try:
+            await ensure_session_live(db, payload)
+            await ensure_organisation_active(db, user, None)
+        except AppError:
+            return False
+    return True
 
 
 def _frame(event_type: str, data: Any = None) -> str:
@@ -205,11 +223,17 @@ async def websocket_endpoint(websocket: WebSocket, token: str | None = None) -> 
     if auth is None:
         await websocket.close(code=WS_CLOSE_UNAUTHORIZED, reason="unauthorized")
         return
-    user_id, expires_at = auth
-    await realtime.connect(user_id, websocket, accept=False)
+    user_id, expires_at, claims = auth
+    await realtime.connect(user_id, websocket, accept=False, family_id=claims.get("sid"))
+    next_check = time.time() + WS_SESSION_RECHECK_SECONDS
     try:
         await websocket.send_text(_frame("connected", {"user_id": str(user_id)}))
         while True:
+            if time.time() >= next_check:
+                next_check = time.time() + WS_SESSION_RECHECK_SECONDS
+                if not await _session_still_valid(user_id, claims):
+                    await websocket.close(code=WS_CLOSE_UNAUTHORIZED, reason="session_revoked")
+                    return
             remaining = expires_at - time.time()
             if remaining <= 0:
                 await websocket.close(code=WS_CLOSE_UNAUTHORIZED, reason="token_expired")

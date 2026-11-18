@@ -29,6 +29,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.attributes import set_committed_value
 
+from app.core import realtime
 from app.core.audit import audit_log
 from app.core.config import settings
 from app.core.currency import default_currency_for_country
@@ -305,13 +306,23 @@ async def issue_session(
 
 
 async def revoke_family(db: AsyncSession, family_id: uuid.UUID) -> int:
-    result = await db.execute(
-        update(RefreshToken)
-        .where(RefreshToken.family_id == family_id, RefreshToken.revoked_at.is_(None))
-        .values(revoked_at=func.now())
-        .execution_options(synchronize_session=False)
+    """Revoke one session; its open WebSockets are closed after the commit (SEC-031)."""
+    user_ids = (
+        (
+            await db.execute(
+                update(RefreshToken)
+                .where(RefreshToken.family_id == family_id, RefreshToken.revoked_at.is_(None))
+                .values(revoked_at=func.now())
+                .returning(RefreshToken.user_id)
+                .execution_options(synchronize_session=False)
+            )
+        )
+        .scalars()
+        .all()
     )
-    return int(getattr(result, "rowcount", 0) or 0)
+    for uid in set(user_ids):
+        realtime.queue_close_sessions(db, uid, family_id)
+    return len(user_ids)
 
 
 async def revoke_all_sessions(
@@ -321,6 +332,8 @@ async def revoke_all_sessions(
     if except_family is not None:
         stmt = stmt.where(RefreshToken.family_id != except_family)
     result = await db.execute(stmt.values(revoked_at=func.now()).execution_options(synchronize_session=False))
+    # SEC-031: the revoked sessions' open WebSockets are closed after the commit
+    realtime.queue_close_sessions(db, user_id, except_family=except_family)
     return int(getattr(result, "rowcount", 0) or 0)
 
 
@@ -706,23 +719,22 @@ async def _register_failure(db: AsyncSession, user: User, request: Request, reas
             request=request,
         )
         if user.email:
-            # SEC-017: the sign-in answer does not reveal the lock, so tell the owner by email.
+            # SEC-017: the sign-in answer does not reveal the lock, so tell the owner by email (E6: in the
+            # owner's language).
+            await i18n_runtime.ensure_fresh()
+            locale = recipient_locale(user)
             await enqueue(
                 db,
                 "email.send",
                 {
                     "to": user.email,
-                    "subject": f"Sign-in to your {settings.APP_NAME} account was paused",
+                    "subject": t("email.account_locked.subject", locale, app_name=settings.APP_NAME),
+                    "locale": locale,
                     "template": "generic_notification.html",
                     "context": {
-                        "title": "Sign-in paused for 15 minutes",
+                        "title": t("email.account_locked.title", locale, minutes=LOCKOUT_MINUTES),
                         "name": user.full_name or "there",
-                        "body": (
-                            "We noticed several unsuccessful attempts to sign in to your account, so new "
-                            f"sign-ins are paused for {LOCKOUT_MINUTES} minutes. You stay signed in on your "
-                            "devices.\n\nIf this was not you, we recommend changing your password and "
-                            "turning on two-factor authentication."
-                        ),
+                        "body": t("email.account_locked.body", locale, minutes=LOCKOUT_MINUTES),
                     },
                 },
                 dedupe_key=f"account-locked:{user.id}:{int(locked.timestamp()) // 60}",

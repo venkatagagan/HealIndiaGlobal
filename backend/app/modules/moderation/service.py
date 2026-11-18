@@ -401,6 +401,9 @@ async def resolve_report(
                 .execution_options(synchronize_session=False)
             )
             revoked = int(getattr(result, "rowcount", 0) or 0)
+            from app.core import realtime
+
+            realtime.queue_close_sessions(db, author.id)  # SEC-031
             detail = {"user_status_before": before_status, "sessions_revoked": revoked}
             await audit_log(
                 db,
